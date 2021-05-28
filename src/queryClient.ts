@@ -2,60 +2,78 @@ import { QueryClient, QueryClientProvider, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 import configureMutations from './mutations';
-import type { QueryClientConfig, UUID } from './types';
-// import buildApiCalls from './api'
 import configureHooks from './hooks';
 import {
   CACHE_TIME_MILLISECONDS,
   STALE_TIME_MILLISECONDS,
 } from './config/constants';
 
-type Hooks = {
-  useOwnItems: () => {};
-  useItem: (id: UUID) => {};
-  useSharedItems: () => {};
-  useChildren: (itemId: UUID) => {};
-  useParents: () => {};
-  useItemMemberships: (id: UUID) => {};
-  useItemLogin: () => {};
+// type Hooks = {
+//   useOwnItems: () => {};
+//   useItem: (id: UUID) => {};
+//   useSharedItems: () => {};
+//   useChildren: (id: UUID) => {};
+//   useParents: (opts: { id: UUID; path: string; enabled: string }) => {};
+//   useItemMemberships: (id: UUID) => {};
+//   useItemLogin: (id: UUID) => {};
+//   useCurrentMember: () => {};
+//   useItemTags: (id: UUID) => {};
+//   useTags: () => {};
+// };
+
+export type Notifier = (e: any) => any;
+
+type QueryClientConfig = {
+  API_HOST: string;
+  S3_FILES_HOST?: string;
+  SHOW_NOTIFICATIONS?: boolean;
+  notifier?: Notifier;
 };
 
-export default (config: QueryClientConfig) => {
+// Query client retry function decides when and how many times a request should be retried
+const retry = (failureCount: any, error: { name: string }) => {
+  // do not retry if the request was not authorized
+  // the user is probably not signed in
+  if (error.name === getReasonPhrase(StatusCodes.UNAUTHORIZED)) {
+    return 0;
+  }
+  return failureCount;
+};
+
+export default (config: Partial<QueryClientConfig>) => {
+  // define config for query client
   const queryConfig = {
     API_HOST:
-      config.API_HOST ||
+      config?.API_HOST ||
       process.env.REACT_APP_API_HOST ||
       'http://localhost:3111',
     S3_FILES_HOST:
-      config.S3_FILES_HOST ||
+      config?.S3_FILES_HOST ||
       process.env.REACT_APP_S3_FILES_HOST ||
       'localhost',
     SHOW_NOTIFICATIONS:
-      config.SHOW_NOTIFICATIONS ||
+      config?.SHOW_NOTIFICATIONS ||
       process.env.REACT_APP_SHOW_NOTIFICATIONS === 'true' ||
       false,
 
-    notifier: config.notifier,
+    notifier: config?.notifier,
 
     staleTime: STALE_TIME_MILLISECONDS, // time until data in cache considered stale if cache not invalidated
     cacheTime: CACHE_TIME_MILLISECONDS, // time before cache labeled as inactive to be garbage collected
-    retry: (failureCount: any, error: { name: string }) => {
-      // do not retry if the request was not authorized
-      // the user is probably not signed in
-      if (error.name === getReasonPhrase(StatusCodes.UNAUTHORIZED)) {
-        return 0;
-      }
-      return failureCount;
-    },
+    retry,
   };
 
-  // const apiCalls = buildApiCalls(queryConfig)
-
+  // create queryclient with given config
   const queryClient = new QueryClient();
 
+  // set up mutations given config
+  // mutations are attached to queryClient
   configureMutations(queryClient, queryConfig);
-  const hooks: Hooks = configureHooks(queryClient, queryConfig);
 
+  // set up hooks given config
+  const hooks = configureHooks(queryClient, queryConfig);
+
+  // returns the queryClient and relative instances
   return {
     queryClient,
     QueryClientProvider,

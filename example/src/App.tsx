@@ -1,17 +1,32 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { hooks, useMutation } from './configureQueryClient';
 
 const App = () => {
   const { mutate: postItem }: any = useMutation('postItem');
+  const { data: user, isLoading }: any = hooks.useOwnItems();
 
-  useEffect(() => {
-    postItem({ id: 'wef', parentId: 'wefoik' });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const onClick = () => {
+    // use the post item mutation
+    // the payload is incorrect, so it will fail
+    postItem({ id: 'myitemid', parentId: 'myparentid' });
+  };
 
-  const { data: user }: any = hooks.useOwnItems();
+  const renderMyItems = () => {
+    if (isLoading) {
+      return 'Fetching data...';
+    }
 
-  return <div>hello: {user}</div>;
+    return <div>My own Items: {JSON.stringify(user)}</div>;
+  };
+
+  return (
+    <>
+      <button type="button" onClick={onClick}>
+        Post an Item
+      </button>
+      {renderMyItems()}
+    </>
+  );
 };
 
 export default App;

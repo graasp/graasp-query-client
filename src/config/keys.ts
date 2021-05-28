@@ -8,7 +8,7 @@ export const SHARED_ITEMS_KEY = 'shared';
 export const CURRENT_MEMBER_KEY = 'currentMember';
 export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, id, 'parents'];
 
-export const getKeyForParentId = (parentId: UUID) =>
+export const getKeyForParentId = (parentId: UUID | null) =>
   parentId ? buildItemChildrenKey(parentId) : OWN_ITEMS_KEY;
 
 export const POST_ITEM_MUTATION_KEY = 'postItem';
