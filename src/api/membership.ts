@@ -34,7 +34,8 @@ export const shareItemWith = async (
   }
   const res = await fetch(`${API_HOST}/${buildShareItemWithRoute(id)}`, {
     ...DEFAULT_POST,
-    body: JSON.stringify({ memberId: member[0].id, permission }), // supposed to have only one member for this mail
+    // supposed to have only one member for this mail
+    body: JSON.stringify({ memberId: member[0].id, permission }),
   }).then(failOnError);
 
   return res.ok;

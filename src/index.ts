@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/prefer-default-export
-export { default as configureQueryClient } from './queryClient';
+import configureQueryClient from './queryClient';
 
+export default configureQueryClient;
 export * as routines from './routines';

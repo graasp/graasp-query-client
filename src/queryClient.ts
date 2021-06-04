@@ -8,19 +8,6 @@ import {
   STALE_TIME_MILLISECONDS,
 } from './config/constants';
 
-// type Hooks = {
-//   useOwnItems: () => {};
-//   useItem: (id: UUID) => {};
-//   useSharedItems: () => {};
-//   useChildren: (id: UUID) => {};
-//   useParents: (opts: { id: UUID; path: string; enabled: string }) => {};
-//   useItemMemberships: (id: UUID) => {};
-//   useItemLogin: (id: UUID) => {};
-//   useCurrentMember: () => {};
-//   useItemTags: (id: UUID) => {};
-//   useTags: () => {};
-// };
-
 export type Notifier = (e: any) => any;
 
 type QueryClientConfig = {
@@ -57,9 +44,10 @@ export default (config: Partial<QueryClientConfig>) => {
       false,
 
     notifier: config?.notifier,
-
-    staleTime: STALE_TIME_MILLISECONDS, // time until data in cache considered stale if cache not invalidated
-    cacheTime: CACHE_TIME_MILLISECONDS, // time before cache labeled as inactive to be garbage collected
+    // time until data in cache considered stale if cache not invalidated
+    staleTime: STALE_TIME_MILLISECONDS,
+    // time before cache labeled as inactive to be garbage collected
+    cacheTime: CACHE_TIME_MILLISECONDS,
     retry,
   };
 

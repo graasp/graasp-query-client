@@ -38,7 +38,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       queryClient.setQueryData(itemTagKey, (old) => {
         const oldTags = (old as any) as List<ItemTag>;
-        // oldTags.filter(({ id: tId }) => tId !== tagId);
         oldTags.filter(({ id: tId }) => tId !== tagId);
       });
       return prevValue;

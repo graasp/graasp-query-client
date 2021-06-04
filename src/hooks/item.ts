@@ -27,7 +27,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => ({
       },
     }),
 
-  useChildren: (id: UUID) =>
+  useChildren: (id: UUID, options: { enabled: boolean }) =>
     useQuery({
       queryKey: buildItemChildrenKey(id),
       queryFn: () =>
@@ -41,7 +41,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => ({
           });
         }
       },
-      enabled: Boolean(id),
+      enabled: Boolean(id) && options?.enabled,
     }),
 
   useParents: ({

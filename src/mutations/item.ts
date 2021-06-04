@@ -63,28 +63,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     return prevValue;
   };
 
-  // const mutateParentItem = async (args: IdOrPathWithValue) => {
-  //   const { value } = args;
-  //   const parentId =
-  //     (args as IdAndValue).id ||
-  //     getDirectParentId((args as PathAndValue).childPath);
-
-  //   // get parent key
-  //   const parentKey = getKeyForParentId(parentId);
-
-  //   // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-  //   await queryClient.cancelQueries(parentKey);
-
-  //   // Snapshot the previous value
-  //   const prevParent = queryClient.getQueryData(parentKey);
-
-  //   // Optimistically update
-  //   queryClient.setQueryData(parentKey, value);
-
-  //   // Return a context object with the snapshotted value
-  //   return prevParent;
-  // };
-
   const mutateParentChildren = async (args: IdOrPathWithValue) => {
     const { value } = args;
     const parentId =
@@ -110,26 +88,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     // Return a context object with the snapshotted value
     return prevParent;
   };
-
-  // const onErrorParentItem = (id:UUID, prevValue: any) => {
-  //   const parentKey = getKeyForParentId(id || getDirectParentId(childPath));
-  //   queryClient.setQueryData(parentKey, prevValue);
-  // };
-
-  // const onErrorItem = ({ id, prevValue }: { id: UUID; prevValue: any }) => {
-  //   const itemKey = buildItemKey(id);
-  //   queryClient.setQueryData(itemKey, prevValue);
-  // };
-
-  // const onSettledParentItem = ({ id, childPath }: IdOrPathType) => {
-  //   const parentKey = getKeyForParentId(id || getDirectParentId(childPath));
-  //   queryClient.invalidateQueries(parentKey);
-  // };
-
-  // const onSettledItem = ({ id }: { id: UUID }) => {
-  //   const itemKey = buildItemKey(id);
-  //   queryClient.invalidateQueries(itemKey);
-  // };
 
   queryClient.setMutationDefaults(POST_ITEM_MUTATION_KEY, {
     mutationFn: async (item) => ({
