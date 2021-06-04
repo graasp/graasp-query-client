@@ -6,8 +6,7 @@ import {
 } from './routes';
 import { QueryClientConfig, UUID } from '../types';
 
-// eslint-disable-next-line import/prefer-default-export
-export const itemLoginSignIn = async (
+export const postItemLoginSignIn = async (
   {
     itemId,
     username,

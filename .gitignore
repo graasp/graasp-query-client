@@ -32,3 +32,7 @@ cypress/videos
 
 # jetbrains
 .idea
+
+# react-app-env
+src/react-app-env.d.ts
+example/src/react-app-env.d.ts

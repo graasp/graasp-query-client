@@ -11,6 +11,7 @@ import {
   shareItemRoutine,
   uploadFileRoutine,
   putItemLoginRoutine,
+  postItemLoginRoutine,
 } from '../routines';
 import {
   buildItemChildrenKey,
@@ -24,7 +25,7 @@ import {
   MOVE_ITEM_MUTATION_KEY,
   COPY_ITEM_MUTATION_KEY,
   DELETE_ITEMS_MUTATION_KEY,
-  ITEM_LOGIN_MUTATION_KEY,
+  POST_ITEM_LOGIN_MUTATION_KEY,
   PUT_ITEM_LOGIN_MUTATION_KEY,
   buildItemLoginKey,
 } from '../config/keys';
@@ -374,8 +375,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  queryClient.setMutationDefaults(ITEM_LOGIN_MUTATION_KEY, {
-    mutationFn: (payload) => Api.itemLoginSignIn(payload, queryConfig),
+  queryClient.setMutationDefaults(POST_ITEM_LOGIN_MUTATION_KEY, {
+    mutationFn: (payload) => Api.postItemLoginSignIn(payload, queryConfig),
+    onError: (error) => {
+      notifier?.({ type: postItemLoginRoutine.FAILURE, payload: { error } });
+    },
     onSettled: () => {
       queryClient.resetQueries();
     },

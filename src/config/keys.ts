@@ -20,7 +20,7 @@ export const MOVE_ITEM_MUTATION_KEY = 'moveItem';
 export const SHARE_ITEM_MUTATION_KEY = 'shareItem';
 export const FILE_UPLOAD_MUTATION_KEY = 'fileUpload';
 export const SIGN_OUT_MUTATION_KEY = 'signOut';
-export const ITEM_LOGIN_MUTATION_KEY = 'itemLoginSignIn';
+export const POST_ITEM_LOGIN_MUTATION_KEY = 'postItemLoginSignIn';
 export const buildItemMembershipsKey = (id: UUID) => [
   ITEMS_KEY,
   id,
