@@ -1,10 +1,6 @@
 import { QueryClient } from 'react-query';
 import { List } from 'immutable';
-import {
-  buildItemTagsKey,
-  DELETE_ITEM_TAG_MUTATION_KEY,
-  POST_ITEM_TAG_MUTATION_KEY,
-} from '../config/keys';
+import { buildItemTagsKey, MUTATION_KEYS } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
 import * as Api from '../api';
 import { ItemTag, QueryClientConfig } from '../types';
@@ -12,7 +8,7 @@ import { ItemTag, QueryClientConfig } from '../types';
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  queryClient.setMutationDefaults(POST_ITEM_TAG_MUTATION_KEY, {
+  queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_TAG, {
     mutationFn: (payload) =>
       Api.postItemTag(payload, queryConfig).then(() => payload),
     onSuccess: () => {
@@ -26,7 +22,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  queryClient.setMutationDefaults(DELETE_ITEM_TAG_MUTATION_KEY, {
+  queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_ITEM_TAG, {
     mutationFn: (payload) =>
       Api.deleteItemTag(payload, queryConfig).then(() => payload),
     onMutate: async ({ id, tagId }) => {

@@ -5,12 +5,13 @@ import { CURRENT_MEMBER_KEY } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
+  const { retry } = queryConfig;
   const useCurrentMember = () =>
     useQuery({
       queryKey: CURRENT_MEMBER_KEY,
       queryFn: () =>
         Api.getCurrentMember(queryConfig).then((data) => Map(data)),
-      ...queryConfig,
+      retry,
     });
 
   return { useCurrentMember };

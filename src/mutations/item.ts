@@ -17,20 +17,25 @@ import {
   buildItemChildrenKey,
   buildItemKey,
   getKeyForParentId,
-  POST_ITEM_MUTATION_KEY,
-  DELETE_ITEM_MUTATION_KEY,
-  EDIT_ITEM_MUTATION_KEY,
-  FILE_UPLOAD_MUTATION_KEY,
-  SHARE_ITEM_MUTATION_KEY,
-  MOVE_ITEM_MUTATION_KEY,
-  COPY_ITEM_MUTATION_KEY,
-  DELETE_ITEMS_MUTATION_KEY,
-  POST_ITEM_LOGIN_MUTATION_KEY,
-  PUT_ITEM_LOGIN_MUTATION_KEY,
+  MUTATION_KEYS,
   buildItemLoginKey,
+  OWN_ITEMS_KEY,
 } from '../config/keys';
 import { buildPath, getDirectParentId } from '../utils/item';
 import { Item, QueryClientConfig, UUID } from '../types';
+
+const {
+  POST_ITEM,
+  DELETE_ITEM,
+  EDIT_ITEM,
+  FILE_UPLOAD,
+  SHARE_ITEM,
+  MOVE_ITEM,
+  COPY_ITEM,
+  DELETE_ITEMS,
+  POST_ITEM_LOGIN,
+  PUT_ITEM_LOGIN,
+} = MUTATION_KEYS;
 
 interface Value {
   value: any;
@@ -70,12 +75,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       (args as IdAndValue).id ||
       getDirectParentId((args as PathAndValue).childPath);
 
-    if (!parentId) {
-      return;
-    }
-
     // get parent key
-    const childrenKey = buildItemChildrenKey(parentId);
+    const childrenKey = !parentId
+      ? OWN_ITEMS_KEY
+      : buildItemChildrenKey(parentId);
 
     // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
     await queryClient.cancelQueries(childrenKey);
@@ -90,7 +93,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     return prevParent;
   };
 
-  queryClient.setMutationDefaults(POST_ITEM_MUTATION_KEY, {
+  queryClient.setMutationDefaults(POST_ITEM, {
     mutationFn: async (item) => ({
       parentId: item.parentId,
       item: await Api.postItem(item, queryConfig),
@@ -108,13 +111,16 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  queryClient.setMutationDefaults(EDIT_ITEM_MUTATION_KEY, {
+  queryClient.setMutationDefaults(EDIT_ITEM, {
     mutationFn: (item) => Api.editItem(item.id, item, queryConfig),
     onMutate: async (newItem) => {
       const previousItems = {
         parent: await mutateParentChildren({
           childPath: newItem.path,
           value: (old: List<Item>) => {
+            if (!old || old.isEmpty()) {
+              return old;
+            }
             const idx = old.findIndex(({ id }) => id === newItem.id);
             return old.set(idx, newItem);
           },
@@ -143,16 +149,20 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  queryClient.setMutationDefaults(DELETE_ITEM_MUTATION_KEY, {
+  queryClient.setMutationDefaults(DELETE_ITEM, {
     mutationFn: ([itemId]) =>
       Api.deleteItem(itemId, queryConfig).then(() => itemId),
 
     onMutate: async ([itemId]) => {
       const itemKey = buildItemKey(itemId);
-      const itemData = queryClient.getQueryData(itemKey);
+      const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
+      const parentKey = getKeyForParentId(
+        getDirectParentId(itemData.get('path')),
+      );
+      const parentData = queryClient.getQueryData(parentKey);
       const previousItems = {
         ...(Boolean(itemData) && {
-          parent: 'dd',
+          parent: parentData,
           item: await mutateItem({ id: itemId, value: null }),
         }),
       };
@@ -189,7 +199,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  queryClient.setMutationDefaults(DELETE_ITEMS_MUTATION_KEY, {
+  queryClient.setMutationDefaults(DELETE_ITEMS, {
     mutationFn: (itemIds) =>
       Api.deleteItems(itemIds, queryConfig).then(() => itemIds),
 
@@ -248,7 +258,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  queryClient.setMutationDefaults(COPY_ITEM_MUTATION_KEY, {
+  queryClient.setMutationDefaults(COPY_ITEM, {
     mutationFn: (payload) =>
       Api.copyItem(payload, queryConfig).then((newItem) => ({
         to: payload.to,
@@ -267,7 +277,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  queryClient.setMutationDefaults(MOVE_ITEM_MUTATION_KEY, {
+  queryClient.setMutationDefaults(MOVE_ITEM, {
     mutationFn: (payload) =>
       Api.moveItem(payload, queryConfig).then(() => payload),
     onMutate: async ({ id: itemId, to }) => {
@@ -341,7 +351,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  queryClient.setMutationDefaults(SHARE_ITEM_MUTATION_KEY, {
+  queryClient.setMutationDefaults(SHARE_ITEM, {
     mutationFn: (payload) =>
       Api.shareItemWith(payload, queryConfig).then(() => payload),
     onSuccess: () => {
@@ -360,7 +370,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
 
   // this mutation is used for its callback
-  queryClient.setMutationDefaults(FILE_UPLOAD_MUTATION_KEY, {
+  queryClient.setMutationDefaults(FILE_UPLOAD, {
     mutationFn: ({ id, error }) => Promise.resolve({ id, error }),
     onSuccess: ({ error }) => {
       if (!error) {
@@ -375,7 +385,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  queryClient.setMutationDefaults(POST_ITEM_LOGIN_MUTATION_KEY, {
+  queryClient.setMutationDefaults(POST_ITEM_LOGIN, {
     mutationFn: (payload) => Api.postItemLoginSignIn(payload, queryConfig),
     onError: (error) => {
       notifier?.({ type: postItemLoginRoutine.FAILURE, payload: { error } });
@@ -385,7 +395,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  queryClient.setMutationDefaults(PUT_ITEM_LOGIN_MUTATION_KEY, {
+  queryClient.setMutationDefaults(PUT_ITEM_LOGIN, {
     mutationFn: (payload) =>
       Api.putItemLoginSchema(payload, queryConfig).then(() => payload),
     onSuccess: () => {
