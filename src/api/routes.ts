@@ -65,5 +65,36 @@ export const buildPostItemLoginSignInRoute = (id: UUID) =>
 export const GET_TAGS_ROUTE = `${ITEMS_ROUTE}/tags`;
 export const buildGetItemLoginRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema`;
-export const buildItemAppApiAccessTokenRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/${id}/app-api-access-token`;
+
+export const API_ROUTES = {
+  ITEMS_ROUTE,
+  SHARE_ITEM_WITH_ROUTE,
+  GET_OWN_ITEMS_ROUTE,
+  SIGN_OUT_ROUTE,
+  GET_CURRENT_MEMBER_ROUTE,
+  GET_TAGS_ROUTE,
+  buildGetS3MetadataRoute,
+  buildGetMember,
+  buildUploadFilesRoute,
+  buildDownloadFilesRoute,
+  buildS3FileUrl,
+  buildS3UploadFileRoute,
+  buildShareItemWithRoute,
+  buildSignInPath,
+  buildPostItemLoginSignInRoute,
+  buildGetItemMembershipForItemRoute,
+  buildMoveItemRoute,
+  buildPostItemRoute,
+  buildPostItemTagRoute,
+  buildPutItemLoginSchema,
+  buildEditItemRoute,
+  buildGetChildrenRoute,
+  buildGetItemLoginRoute,
+  buildGetItemRoute,
+  buildGetItemTagsRoute,
+  buildGetMemberBy,
+  buildDeleteItemTagRoute,
+  buildDeleteItemRoute,
+  buildDeleteItemsRoute,
+  buildCopyItemRoute,
+};
