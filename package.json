@@ -53,6 +53,7 @@
   "scripts": {
     "build": "microbundle-crl --no-compress --format modern,cjs",
     "start": "microbundle-crl watch --no-compress --format modern,cjs",
+    "prepare": "run-s build",
     "prettier:check": "prettier --check src/**/*.{js,ts}",
     "prettier:write": "prettier --write src/**/*.{js,ts}",
     "hooks:uninstall": "node node_modules/husky/husky.js uninstall",
@@ -60,7 +61,6 @@
     "predeploy": "cd example && yarn install && yarn run build",
     "deploy": "gh-pages -d example/build",
     "release": "standard-version",
-    "prepare": "husky install",
     "commit-msg": "commitlint --edit $1",
     "pre-commit": "pretty-quick --staged",
     "post-commit": "git status"
