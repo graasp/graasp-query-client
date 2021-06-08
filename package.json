@@ -1,0 +1,86 @@
+{
+  "name": "@graasp/query-client",
+  "version": "0.1.0",
+  "private": true,
+  "repository": "graasp/query-client",
+  "main": "dist/index.js",
+  "module": "dist/index.modern.js",
+  "source": "src/index.ts",
+  "peerDependencies": {
+    "react": "^17.0.0"
+  },
+  "dependencies": {
+    "http-status-codes": "2.1.4",
+    "immutable": "4.0.0-rc.12",
+    "node-fetch": "2.6.1",
+    "qs": "6.10.1",
+    "react-query": "3.16.0",
+    "uuid": "8.3.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "12.1.4",
+    "@commitlint/config-conventional": "12.1.4",
+    "@testing-library/jest-dom": "5.11.6",
+    "@testing-library/react": "11.2.2",
+    "@testing-library/user-event": "12.6.0",
+    "@types/jest": "25.1.4",
+    "@types/node": "12.12.38",
+    "@types/qs": "6.9.6",
+    "@types/react": "16.9.27",
+    "@types/react-dom": "16.9.7",
+    "@types/react-query": "1.1.2",
+    "@types/redux-saga-routines": "3.1.1",
+    "@typescript-eslint/eslint-plugin": "2.26.0",
+    "@typescript-eslint/parser": "2.26.0",
+    "env-cmd": "10.1.0",
+    "eslint-config-airbnb": "18.2.1",
+    "eslint-config-prettier": "7.1.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-jsx-a11y": "6.4.1",
+    "eslint-plugin-react": "7.22.0",
+    "husky": "6.0.0",
+    "microbundle-crl": "0.13.10",
+    "npm-run-all": "4.1.5",
+    "prettier": "2.2.1",
+    "pretty-quick": "3.1.0",
+    "react": "link: ./example/node_modules/react",
+    "react-dom": "link: ./example/node_modules/react-dom",
+    "react-scripts": "link: ./example/node_modules/react-scripts",
+    "standard-version": "9.1.0",
+    "typescript": "4.1.3",
+    "wait-on": "5.3.0"
+  },
+  "scripts": {
+    "build": "microbundle-crl --no-compress --format modern,cjs",
+    "start": "microbundle-crl watch --no-compress --format modern,cjs",
+    "prepare": "run-s build",
+    "prettier:check": "prettier --check src/**/*.{js,ts}",
+    "prettier:write": "prettier --write src/**/*.{js,ts}",
+    "hooks:uninstall": "node node_modules/husky/husky.js uninstall",
+    "hooks:install": "node node_modules/husky/husky.js install",
+    "predeploy": "cd example && yarn install && yarn run build",
+    "deploy": "gh-pages -d example/build",
+    "release": "standard-version",
+    "commit-msg": "commitlint --edit $1",
+    "pre-commit": "pretty-quick --staged",
+    "post-commit": "git status"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "files": [
+    "dist"
+  ],
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
