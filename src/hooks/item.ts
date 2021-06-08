@@ -6,6 +6,8 @@ import {
   buildItemLoginKey,
   buildItemMembershipsKey,
   buildItemParentsKey,
+  buildFileContentKey,
+  buildS3FileContentKey,
   OWN_ITEMS_KEY,
   SHARED_ITEMS_KEY,
 } from '../config/keys';
@@ -113,6 +115,32 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         queryFn: () =>
           Api.getItemLogin(id, queryConfig).then((data) => Map(data)),
         enabled: Boolean(id),
+        retry,
+      }),
+
+    useFileContent: (
+      id: UUID,
+      { enabled = true }: { enabled?: boolean } = {},
+    ) =>
+      useQuery({
+        queryKey: buildFileContentKey(id),
+        queryFn: () =>
+          Api.getFileContent({ id }, queryConfig).then((data) => data.blob()),
+        enabled: Boolean(id) && enabled,
+        retry,
+      }),
+
+    useS3FileContent: (
+      id: UUID,
+      { enabled = true }: { enabled?: boolean } = {},
+    ) =>
+      useQuery({
+        queryKey: buildS3FileContentKey(id),
+        queryFn: () =>
+          Api.getS3FileUrl({ id }, queryConfig)
+            .then((url) => fetch(url))
+            .then((data) => data.blob()),
+        enabled: Boolean(id) && enabled,
         retry,
       }),
   };
