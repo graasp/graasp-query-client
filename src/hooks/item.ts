@@ -15,7 +15,12 @@ import * as Api from '../api';
 import { Item, QueryClientConfig, UUID } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
-  const { retry } = queryConfig;
+  const { retry, cacheTime, staleTime } = queryConfig;
+  const defaultOptions = {
+    retry,
+    cacheTime,
+    staleTime,
+  };
 
   return {
     useOwnItems: () =>
@@ -30,7 +35,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             queryClient.setQueryData(buildItemKey(id), Map(item));
           });
         },
-        retry,
+        ...defaultOptions,
       }),
 
     useChildren: (id: UUID, options: { enabled?: boolean } = {}) =>
@@ -47,7 +52,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             });
           }
         },
-        retry,
+        ...defaultOptions,
         enabled: Boolean(id) && options?.enabled,
       }),
 
@@ -73,7 +78,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             });
           }
         },
-        retry,
+        ...defaultOptions,
         enabled: enabled && Boolean(id),
       }),
 
@@ -89,7 +94,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             queryClient.setQueryData(buildItemKey(id), Map(item));
           });
         },
-        retry,
+        ...defaultOptions,
       }),
 
     useItem: (id: UUID) =>
@@ -97,7 +102,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         queryKey: buildItemKey(id),
         queryFn: () => Api.getItem(id, queryConfig).then((data) => Map(data)),
         enabled: Boolean(id),
-        retry,
+        ...defaultOptions,
       }),
 
     useItemMemberships: (id: UUID) =>
@@ -106,7 +111,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         queryFn: () =>
           Api.getMembershipsForItem(id, queryConfig).then((data) => List(data)),
         enabled: Boolean(id),
-        retry,
+        ...defaultOptions,
       }),
 
     useItemLogin: (id: UUID) =>
@@ -115,7 +120,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         queryFn: () =>
           Api.getItemLogin(id, queryConfig).then((data) => Map(data)),
         enabled: Boolean(id),
-        retry,
+        ...defaultOptions,
       }),
 
     useFileContent: (
@@ -127,7 +132,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         queryFn: () =>
           Api.getFileContent({ id }, queryConfig).then((data) => data.blob()),
         enabled: Boolean(id) && enabled,
-        retry,
+        ...defaultOptions,
       }),
 
     useS3FileContent: (
@@ -141,7 +146,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             .then((url) => fetch(url))
             .then((data) => data.blob()),
         enabled: Boolean(id) && enabled,
-        retry,
+        ...defaultOptions,
       }),
   };
 };
