@@ -24,6 +24,13 @@ export type Item = {
   extra: {};
 };
 
+export type Member = {
+  id: UUID;
+  name: string;
+  email: string;
+  extra: {};
+};
+
 export type ExtendedItem = Item & {
   parentId: UUID;
 };

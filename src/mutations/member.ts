@@ -1,8 +1,9 @@
 import { QueryClient } from 'react-query';
+import { Map, Record } from 'immutable';
 import * as Api from '../api';
-import { signOutRoutine } from '../routines';
+import { editMemberRoutine, signOutRoutine } from '../routines';
 import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
-import { QueryClientConfig } from '../types';
+import { Member, QueryClientConfig } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -14,13 +15,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
 
       // Snapshot the previous value
-      const previousItems = queryClient.getQueryData(CURRENT_MEMBER_KEY);
+      const previousMember = queryClient.getQueryData(CURRENT_MEMBER_KEY);
 
       // Optimistically update to the new value
       queryClient.setQueryData(CURRENT_MEMBER_KEY, null);
 
       // Return a context object with the snapshotted value
-      return { previousItems };
+      return { previousMember };
     },
     onSuccess: () => {
       notifier?.({ type: signOutRoutine.SUCCESS });
@@ -33,6 +34,42 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onSettled: () => {
       // invalidate all queries
       queryClient.resetQueries();
+    },
+  });
+
+  // suppose you can only edit yourself
+  queryClient.setMutationDefaults(MUTATION_KEYS.EDIT_MEMBER, {
+    mutationFn: (payload) =>
+      Api.editMember(payload, queryConfig).then((member) => Map(member)),
+    onMutate: async (payload) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
+
+      // Snapshot the previous value
+      const previousMember = queryClient.getQueryData(
+        CURRENT_MEMBER_KEY,
+      ) as Record<Member>;
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(
+        CURRENT_MEMBER_KEY,
+        previousMember.merge(payload),
+      );
+
+      // Return a context object with the snapshotted value
+      return { previousMember };
+    },
+    onSuccess: () => {
+      notifier?.({ type: editMemberRoutine.SUCCESS });
+    },
+    // If the mutation fails, use the context returned from onMutate to roll back
+    onError: (error) => {
+      notifier?.({ type: editMemberRoutine.FAILURE, payload: { error } });
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      // invalidate all queries
+      queryClient.invalidateQueries(CURRENT_MEMBER_KEY);
     },
   });
 };
