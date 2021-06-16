@@ -130,13 +130,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           const itemKey = buildItemKey(newItem.id);
           await queryClient.cancelQueries(itemKey);
           const prevValue = queryClient.getQueryData(itemKey) as Record<Item>;
-          queryClient.setQueryData(
-            itemKey,
-            Map({
-              ...prevValue.toJS(),
-              ...newItem,
-            }),
-          );
+          queryClient.setQueryData(itemKey, prevValue.merge(Map(newItem)));
           return prevValue;
         })(),
       };
