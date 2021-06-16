@@ -98,4 +98,5 @@ export const API_ROUTES = {
   buildDeleteItemRoute,
   buildDeleteItemsRoute,
   buildCopyItemRoute,
+  buildPatchMember,
 };
