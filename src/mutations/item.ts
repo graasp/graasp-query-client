@@ -1,4 +1,4 @@
-import { List, Record } from 'immutable';
+import { List, Record, Map } from 'immutable';
 import { QueryClient } from 'react-query';
 import * as Api from '../api';
 import {
@@ -113,6 +113,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(EDIT_ITEM, {
     mutationFn: (item) => Api.editItem(item.id, item, queryConfig),
+    // newItem contains only changed value
     onMutate: async (newItem) => {
       const previousItems = {
         parent: await mutateParentChildren({
@@ -125,7 +126,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             return old.set(idx, newItem);
           },
         }),
-        item: await mutateItem({ id: newItem.id, value: newItem }),
+        item: await (async () => {
+          const itemKey = buildItemKey(newItem.id);
+          await queryClient.cancelQueries(itemKey);
+          const prevValue = queryClient.getQueryData(itemKey) as Record<Item>;
+          queryClient.setQueryData(itemKey, prevValue.merge(Map(newItem)));
+          return prevValue;
+        })(),
       };
 
       return previousItems;

@@ -165,7 +165,7 @@ export const getFileContent = async (
   const response = await fetch(
     `${API_HOST}/${buildDownloadFilesRoute(id)}`,
     DEFAULT_GET,
-  );
+  ).then(failOnError);
   return response;
 };
 

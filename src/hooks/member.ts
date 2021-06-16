@@ -5,13 +5,19 @@ import { CURRENT_MEMBER_KEY } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
-  const { retry } = queryConfig;
+  const { retry, cacheTime, staleTime } = queryConfig;
+  const defaultOptions = {
+    retry,
+    cacheTime,
+    staleTime,
+  };
+
   const useCurrentMember = () =>
     useQuery({
       queryKey: CURRENT_MEMBER_KEY,
       queryFn: () =>
         Api.getCurrentMember(queryConfig).then((data) => Map(data)),
-      retry,
+      ...defaultOptions,
     });
 
   return { useCurrentMember };

@@ -19,6 +19,8 @@ export const buildItemMembershipsKey = (id: UUID) => [
 export const buildItemLoginKey = (id: UUID) => [ITEMS_KEY, id, 'login'];
 export const ITEM_TAGS = 'itemTags';
 export const buildItemTagsKey = (id: UUID) => [ITEMS_KEY, id, 'tags'];
+export const buildFileContentKey = (id: UUID) => [ITEMS_KEY, id, 'content'];
+export const buildS3FileContentKey = (id: UUID) => [ITEMS_KEY, id, 'content'];
 
 export const MUTATION_KEYS = {
   POST_ITEM: 'postItem',
