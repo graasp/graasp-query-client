@@ -6,6 +6,8 @@ export const buildItemKey = (id: UUID) => [ITEMS_KEY, id];
 export const buildItemChildrenKey = (id: UUID) => [ITEMS_KEY, id, 'children'];
 export const SHARED_ITEMS_KEY = 'shared';
 export const CURRENT_MEMBER_KEY = 'currentMember';
+export const MEMBERS_KEY = 'members';
+export const buildMemberKey = (id: UUID) => [MEMBERS_KEY, id];
 export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, id, 'parents'];
 
 export const getKeyForParentId = (parentId: UUID | null) =>
