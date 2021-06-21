@@ -29,6 +29,7 @@ export const MEMBERS_ROUTE = `members`;
 export const buildGetMemberBy = (email: string) =>
   `${MEMBERS_ROUTE}?email=${email}`;
 export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
+export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildUploadFilesRoute = (parentId: UUID) =>
   parentId
     ? `${ITEMS_ROUTE}/upload?parentId=${parentId}`
@@ -97,4 +98,5 @@ export const API_ROUTES = {
   buildDeleteItemRoute,
   buildDeleteItemsRoute,
   buildCopyItemRoute,
+  buildPatchMember,
 };
