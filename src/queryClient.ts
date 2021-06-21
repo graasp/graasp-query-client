@@ -14,6 +14,8 @@ type QueryClientConfig = {
   API_HOST: string;
   S3_FILES_HOST?: string;
   SHOW_NOTIFICATIONS?: boolean;
+  WS_HOST?: string;
+  enableWebsocket?: boolean;
   notifier?: Notifier;
 };
 
@@ -28,8 +30,7 @@ const retry = (failureCount: any, error: { name: string }) => {
 };
 
 export default (config: Partial<QueryClientConfig>) => {
-  // define config for query client
-  const queryConfig = {
+  const baseConfig = {
     API_HOST:
       config?.API_HOST ||
       process.env.REACT_APP_API_HOST ||
@@ -42,7 +43,18 @@ export default (config: Partial<QueryClientConfig>) => {
       config?.SHOW_NOTIFICATIONS ||
       process.env.REACT_APP_SHOW_NOTIFICATIONS === 'true' ||
       false,
+  }
 
+  // define config for query client
+  const queryConfig = {
+    ...baseConfig,
+    // derive WS_HOST from API_HOST if needed
+    WS_HOST:
+      config?.WS_HOST ||
+      process.env.REACT_APP_WS_HOST ||
+      `${baseConfig.API_HOST.replace('http', 'ws')}/ws`,
+    // wether websocket support should be enabled
+    enableWebsocket: config?.enableWebsocket ?? true,
     notifier: config?.notifier,
     // time until data in cache considered stale if cache not invalidated
     staleTime: STALE_TIME_MILLISECONDS,

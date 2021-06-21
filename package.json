@@ -15,7 +15,8 @@
     "node-fetch": "2.6.1",
     "qs": "6.10.1",
     "react-query": "3.16.0",
-    "uuid": "8.3.2"
+    "uuid": "8.3.2",
+    "graasp-websockets": "git://github.com/graasp/graasp-websockets.git#master"
   },
   "devDependencies": {
     "@commitlint/cli": "12.1.4",
