@@ -3,6 +3,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 import configureMutations from './mutations';
 import configureHooks from './hooks';
+import configureWebsockets from './ws';
 import {
   CACHE_TIME_MILLISECONDS,
   STALE_TIME_MILLISECONDS,
@@ -72,6 +73,11 @@ export default (config: Partial<QueryClientConfig>) => {
 
   // set up hooks given config
   const hooks = configureHooks(queryClient, queryConfig);
+
+  // set up websocket client and hooks given config
+  if (queryConfig.enableWebsocket) {
+    configureWebsockets(queryClient, queryConfig);
+  }
 
   // returns the queryClient and relative instances
   return {

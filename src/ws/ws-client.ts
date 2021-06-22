@@ -19,14 +19,30 @@ type UpdateHandlerFn = (data: ServerMessage) => void;
  * Helper to remove the first element in an array that
  * matches the provided value IN PLACE
  */
-function arrayRemoveFirst<T>(array: Array<T>, value: T, eqFn = (a: T, b: T) => a === b) {
+function arrayRemoveFirstEqual<T>(array: Array<T>, value: T, eqFn = (a: T, b: T) => a === b) {
     const pos = array.findIndex(v => eqFn(v, value));
-    array.splice(pos, 1);
+    const removed = array.splice(pos, 1);
+    return (removed.length > 0);
+}
+
+/**
+ * Helper to add a value to a mapped array, creating the array
+ * if the map entry does not exist
+ */
+function addToMappedArray<S, T>(map: Map<S, Array<T>>, key: S, value: T) {
+    const array = map.get(key);
+    if (array === undefined) {
+        map.set(key, [value]);
+    } else {
+        array.push(value);
+    }
 }
 
 export const configureWebsocketClient = (config: QueryClientConfig) => {
     // native client WebSocket instance
     const ws = new WebSocket(config.WS_HOST);
+
+    // TODO: heartbeat
 
     // (de-)serializer instance
     const serdes = {
@@ -63,66 +79,76 @@ export const configureWebsocketClient = (config: QueryClientConfig) => {
         current: new Map<Channel, Array<UpdateHandlerFn>>(),
         info: new Array<UpdateHandlerFn>(),
 
-        add: (channel: Channel | "info", handler: UpdateHandlerFn) => {
+        add: (channel: Channel | "info", handler: UpdateHandlerFn): boolean => {
             if (channel === "info") {
                 // if subscribed to info, no ack to wait for
                 subscriptions.info.push(handler);
+                return false;
+            } else if (subscriptions.current.has(channel)) {
+                // if already subscribed, don't subscribe again, simply register handler in current
+                addToMappedArray(subscriptions.current, channel, handler);
+                return false;
             } else {
                 // if WS not ready, add to early, otherwise add to waiting ack
                 const map = (ws.readyState === ws.OPEN) ? subscriptions.waitingAck : subscriptions.early;
                 // create queue if doesn't exist for this channel, otherwise push to it
-                const queue = map.get(channel);
-                if (queue === undefined) {
-                    map.set(channel, [handler]);
-                } else {
-                    queue.push(handler);
-                }
+                addToMappedArray(map, channel, handler);
+                return true;
             }
         },
 
-        remove: (channel: Channel | "info", handler: UpdateHandlerFn) => {
+        remove: (channel: Channel | "info", handler: UpdateHandlerFn): boolean => {
             if (channel === "info") {
-                arrayRemoveFirst(subscriptions.info, handler);
+                arrayRemoveFirstEqual(subscriptions.info, handler);
+                return false;
             } else {
                 // helper to remove from a subscription map
-                const _remove = (map: Map<Channel, Array<UpdateHandlerFn>>, channel: Channel, handler: UpdateHandlerFn) => {
+                const _remove = (map: Map<Channel, Array<UpdateHandlerFn>>, channel: Channel, handler: UpdateHandlerFn): boolean => {
                     const queue = map.get(channel);
                     if (queue !== undefined) {
-                        arrayRemoveFirst(queue, handler);
+                        return arrayRemoveFirstEqual(queue, handler);
+                    } else {
+                        return false;
                     }
                 };
 
-                // remove from all maps
-                _remove(subscriptions.early, channel, handler);
-                _remove(subscriptions.waitingAck, channel, handler);
-                _remove(subscriptions.current, channel, handler);
+                // find first map from which to remove from
+                if (_remove(subscriptions.early, channel, handler)) {
+                    // no need to send unsubscribe if still in early
+                    return false;
+                } else if (
+                    _remove(subscriptions.waitingAck, channel, handler) ||
+                    _remove(subscriptions.current, channel, handler)
+                ) {
+                    // if in waitingAck or current, must send unsubscribe if both empty
+                    return (subscriptions.waitingAck.size === 0 && subscriptions.current.size === 0);
+                } else {
+                    return false;
+                }
             }
         },
 
-        ackOne: (channel: Channel) => {
-            // move first handler from waitingAck to current
-            const handler = subscriptions.waitingAck.get(channel)?.shift();
-            if (handler) {
-                const current = subscriptions.current.get(channel);
-                if (channel === undefined) {
-                    subscriptions.current.set(channel, [handler]);
-                } else {
-                    current?.push(handler);
-                }
-             }
+        ack: (channel: Channel) => {
+            // move all pending handlers from waitingAck to current
+            const handlers = subscriptions.waitingAck.get(channel);
+            handlers?.forEach(handler => {
+                addToMappedArray(subscriptions.current, channel, handler);
+            });
+            subscriptions.waitingAck.delete(channel);
         },
     };
 
     ws.addEventListener('open', () => {
         console.debug('Websocket connection opened');
 
-        // send all early subscriptions
+        // send early subscriptions
         subscriptions.early.forEach((queue, channel) => {
+            // move all handlers and send only one subscribtion per channel
             queue.forEach(handler => {
                 // move handler to waitingAck (guaranteed now since ws.readyState === OPEN)
                 subscriptions.add(channel, handler);
-                sendSubscribeRequest(channel);
             });
+            sendSubscribeRequest(channel);
         });
         subscriptions.early.clear();
     });
@@ -140,7 +166,8 @@ export const configureWebsocketClient = (config: QueryClientConfig) => {
                 if (update.status === "success") {
                     const req = update.request;
                     if (req?.action === "subscribe") {
-                        subscriptions.ackOne({ name: req?.channel, entity: req?.entity });
+                        // when ack, move all from waiting acks to current
+                        subscriptions.ack({ name: req?.channel, entity: req?.entity });
                     }
                 }
                 else {
@@ -150,6 +177,7 @@ export const configureWebsocketClient = (config: QueryClientConfig) => {
             };
 
             case "update": {
+                // send update to all handlers of this channel
                 const handlers = subscriptions.current.get({ name: update.channel, entity: update.body.entity });
                 handlers?.forEach(fn => fn(update));
                 break;
@@ -162,12 +190,14 @@ export const configureWebsocketClient = (config: QueryClientConfig) => {
 
     return {
         subscribe: (channel: Channel | "info", handler: UpdateHandlerFn) => {
-            subscriptions.add(channel, handler);
-            if (channel !== "info") { sendSubscribeRequest(channel); };
+            if (subscriptions.add(channel, handler) && channel !== "info") {
+                sendSubscribeRequest(channel);
+            };
         },
         unsubscribe: (channel: Channel | "info", handler: UpdateHandlerFn) => {
-            subscriptions.remove(channel, handler);
-            if (channel !== "info") { sendUnsubscribeRequest(channel); };
+            if (subscriptions.remove(channel, handler) && channel !== "info") {
+                sendUnsubscribeRequest(channel);
+            }
         },
     };
 };
