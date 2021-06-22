@@ -9,7 +9,7 @@
 import { ClientMessage, ServerMessage } from "graasp-websockets/src/interfaces/message";
 import { QueryClientConfig } from "../types";
 
-type Channel = {
+export type Channel = {
     entity: "item" | "member";
     name: string,
 };
@@ -38,7 +38,26 @@ function addToMappedArray<S, T>(map: Map<S, Array<T>>, key: S, value: T) {
     }
 }
 
-export const configureWebsocketClient = (config: QueryClientConfig) => {
+/**
+ * Websocket client for the graasp-websockets protocol
+ */
+export interface GraaspWebsocketClient {
+    /**
+     * Subscribe a handler to a given channel
+     * @param channel Channel to which to subscribe to
+     * @param handler Handler function to register
+     */
+    subscribe(channel: Channel, handler: UpdateHandlerFn): void
+
+    /**
+     * Unsubscribe a handler from a channel, THE HANDLER MUST === THE ONE PASSED TO SUBSCRIBE
+     * @param channel Channel from wihch to unsubscribe the provided handler from
+     * @param handler Handler function to unregster, MUST BE EQUAL (===) TO PREVIOUSLY REGISTERED HANDLE WITH @see subscribe !
+     */
+    unsubscribe(channel: Channel, handler: UpdateHandlerFn): void
+}
+
+export const configureWebsocketClient = (config: QueryClientConfig): GraaspWebsocketClient => {
     // native client WebSocket instance
     const ws = new WebSocket(config.WS_HOST);
 

@@ -75,15 +75,14 @@ export default (config: Partial<QueryClientConfig>) => {
   const hooks = configureHooks(queryClient, queryConfig);
 
   // set up websocket client and hooks given config
-  if (queryConfig.enableWebsocket) {
-    configureWebsockets(queryClient, queryConfig);
-  }
+  const ws = (queryConfig.enableWebsocket) ? { ws: configureWebsockets(queryClient, queryConfig) } : {};
 
   // returns the queryClient and relative instances
   return {
     queryClient,
     QueryClientProvider,
     hooks,
+    ...ws,
     useMutation,
     ReactQueryDevtools,
   };
