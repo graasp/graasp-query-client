@@ -39,6 +39,17 @@ function addToMappedArray<S, T>(map: Map<S, Array<T>>, key: S, value: T) {
 }
 
 /**
+ * Helper to convert a channel object into a unique string
+ * (deep equality) to serve as map keys
+ */
+function buildChannelKey(channel: Channel): string {
+    return JSON.stringify(channel);
+};
+function keyToChannel(key: string): Channel {
+    return JSON.parse(key);
+};
+
+/**
  * Websocket client for the graasp-websockets protocol
  */
 export interface GraaspWebsocketClient {
@@ -93,9 +104,9 @@ export const configureWebsocketClient = (config: QueryClientConfig): GraaspWebso
     };
 
     const subscriptions = {
-        early: new Map<Channel, Array<UpdateHandlerFn>>(),
-        waitingAck: new Map<Channel, Array<UpdateHandlerFn>>(),
-        current: new Map<Channel, Array<UpdateHandlerFn>>(),
+        early: new Map<string, Array<UpdateHandlerFn>>(),
+        waitingAck: new Map<string, Array<UpdateHandlerFn>>(),
+        current: new Map<string, Array<UpdateHandlerFn>>(),
         info: new Array<UpdateHandlerFn>(),
 
         add: (channel: Channel | "info", handler: UpdateHandlerFn): boolean => {
@@ -103,16 +114,20 @@ export const configureWebsocketClient = (config: QueryClientConfig): GraaspWebso
                 // if subscribed to info, no ack to wait for
                 subscriptions.info.push(handler);
                 return false;
-            } else if (subscriptions.current.has(channel)) {
-                // if already subscribed, don't subscribe again, simply register handler in current
-                addToMappedArray(subscriptions.current, channel, handler);
-                return false;
             } else {
-                // if WS not ready, add to early, otherwise add to waiting ack
-                const map = (ws.readyState === ws.OPEN) ? subscriptions.waitingAck : subscriptions.early;
-                // create queue if doesn't exist for this channel, otherwise push to it
-                addToMappedArray(map, channel, handler);
-                return true;
+                const channelKey = buildChannelKey(channel);
+                const maybeCurrent = subscriptions.current.get(channelKey);
+                if (maybeCurrent !== undefined && maybeCurrent.length > 0) {
+                    // if already subscribed, don't subscribe again, simply register handler in current
+                    addToMappedArray(subscriptions.current, channelKey, handler);
+                    return false;
+                } else {
+                    // if WS not ready, add to early, otherwise add to waiting ack
+                    const map = (ws.readyState === ws.OPEN) ? subscriptions.waitingAck : subscriptions.early;
+                    // create queue if doesn't exist for this channel, otherwise push to it
+                    addToMappedArray(map, channelKey, handler);
+                    return true;
+                }
             }
         },
 
@@ -122,25 +137,35 @@ export const configureWebsocketClient = (config: QueryClientConfig): GraaspWebso
                 return false;
             } else {
                 // helper to remove from a subscription map
-                const _remove = (map: Map<Channel, Array<UpdateHandlerFn>>, channel: Channel, handler: UpdateHandlerFn): boolean => {
-                    const queue = map.get(channel);
+                const _remove = (map: Map<string, Array<UpdateHandlerFn>>, channelKey: string, handler: UpdateHandlerFn): boolean => {
+                    const queue = map.get(channelKey);
                     if (queue !== undefined) {
                         return arrayRemoveFirstEqual(queue, handler);
                     } else {
                         return false;
                     }
                 };
+                // helper to cleanup mapped array if it is empty
+                const _cleanup = (map: Map<string, Array<UpdateHandlerFn>>, channelKey: string): boolean => {
+                    const isNowEmpty = (map.get(channelKey)?.length === 0);
+                    if (isNowEmpty) {
+                        // cleanup array
+                        map.delete(channelKey);
+                    }
+                    return isNowEmpty;
+                }
 
+                const channelKey = buildChannelKey(channel);
                 // find first map from which to remove from
-                if (_remove(subscriptions.early, channel, handler)) {
+                if (_remove(subscriptions.early, channelKey, handler)) {
                     // no need to send unsubscribe if still in early
                     return false;
-                } else if (
-                    _remove(subscriptions.waitingAck, channel, handler) ||
-                    _remove(subscriptions.current, channel, handler)
-                ) {
-                    // if in waitingAck or current, must send unsubscribe if both empty
-                    return (subscriptions.waitingAck.size === 0 && subscriptions.current.size === 0);
+                } else if (_remove(subscriptions.waitingAck, channelKey, handler)) {
+                    // if in waitingAck must send unsubscribe if just got emptied
+                    return _cleanup(subscriptions.waitingAck, channelKey);
+                } else if (_remove(subscriptions.current, channelKey, handler)) {
+                    // if in current must send unsubscribe if just got emptied
+                    return _cleanup(subscriptions.current, channelKey);
                 } else {
                     return false;
                 }
@@ -148,12 +173,13 @@ export const configureWebsocketClient = (config: QueryClientConfig): GraaspWebso
         },
 
         ack: (channel: Channel) => {
+            const channelKey = buildChannelKey(channel);
             // move all pending handlers from waitingAck to current
-            const handlers = subscriptions.waitingAck.get(channel);
+            const handlers = subscriptions.waitingAck.get(channelKey);
             handlers?.forEach(handler => {
-                addToMappedArray(subscriptions.current, channel, handler);
+                addToMappedArray(subscriptions.current, channelKey, handler);
             });
-            subscriptions.waitingAck.delete(channel);
+            subscriptions.waitingAck.delete(channelKey);
         },
     };
 
@@ -161,7 +187,8 @@ export const configureWebsocketClient = (config: QueryClientConfig): GraaspWebso
         console.debug('Websocket connection opened');
 
         // send early subscriptions
-        subscriptions.early.forEach((queue, channel) => {
+        subscriptions.early.forEach((queue, channelKey) => {
+            const channel = keyToChannel(channelKey);
             // move all handlers and send only one subscribtion per channel
             queue.forEach(handler => {
                 // move handler to waitingAck (guaranteed now since ws.readyState === OPEN)
@@ -197,7 +224,9 @@ export const configureWebsocketClient = (config: QueryClientConfig): GraaspWebso
 
             case "update": {
                 // send update to all handlers of this channel
-                const handlers = subscriptions.current.get({ name: update.channel, entity: update.body.entity });
+                const channel = { name: update.channel, entity: update.body.entity };
+                const channelKey = buildChannelKey(channel);
+                const handlers = subscriptions.current.get(channelKey);
                 handlers?.forEach(fn => fn(update));
                 break;
             };
