@@ -43,7 +43,9 @@ function addToMappedArray<S, T>(map: Map<S, Array<T>>, key: S, value: T) {
  * (deep equality) to serve as map keys
  */
 function buildChannelKey(channel: Channel): string {
-    return JSON.stringify(channel);
+    // ensure serialized key is always identical (properties + order)
+    const rebuiltChannel: Channel = { name: channel.name, entity: channel.entity };
+    return JSON.stringify(rebuiltChannel);
 };
 function keyToChannel(key: string): Channel {
     return JSON.parse(key);
