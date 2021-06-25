@@ -17,6 +17,7 @@ export const buildDeleteItemsRoute = (ids: UUID[]) =>
 export const buildGetChildrenRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/children`;
 export const buildGetItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
+export const buildGetItemsRoute = (ids: UUID[]) => `${ITEMS_ROUTE}?${ids.map(i => "id="+i).join("&")}`;
 export const buildMoveItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/move`;
 export const buildCopyItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/copy`;
 export const buildEditItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;

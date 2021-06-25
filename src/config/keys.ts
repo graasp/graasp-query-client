@@ -3,6 +3,7 @@ import type { UUID } from '../types';
 export const ITEMS_KEY = 'items';
 export const OWN_ITEMS_KEY = [ITEMS_KEY, 'own'];
 export const buildItemKey = (id: UUID) => [ITEMS_KEY, id];
+export const MULTIPLE_ITEMS_KEY = [ITEMS_KEY, 'multiple']
 export const buildItemChildrenKey = (id: UUID) => [ITEMS_KEY, id, 'children'];
 export const SHARED_ITEMS_KEY = 'shared';
 export const CURRENT_MEMBER_KEY = 'currentMember';

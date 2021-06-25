@@ -9,7 +9,7 @@ import {
   buildFileContentKey,
   buildS3FileContentKey,
   OWN_ITEMS_KEY,
-  SHARED_ITEMS_KEY,
+  SHARED_ITEMS_KEY, MULTIPLE_ITEMS_KEY,
 } from '../config/keys';
 import * as Api from '../api';
 import { Item, QueryClientConfig, UUID } from '../types';
@@ -102,6 +102,20 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         queryKey: buildItemKey(id),
         queryFn: () => Api.getItem(id, queryConfig).then((data) => Map(data)),
         enabled: Boolean(id),
+        ...defaultOptions,
+      }),
+
+    useItems: (ids: UUID[]) =>
+      useQuery({
+        queryKey: MULTIPLE_ITEMS_KEY,
+        queryFn: () => Api.getItems(ids, queryConfig).then((data) => List(data)),
+        onSuccess: async (items: List<Item>) => {
+          // save items in their own key
+          items?.forEach(async (item) => {
+            const { id } = item;
+            queryClient.setQueryData(buildItemKey(id), Map(item));
+          });
+        },
         ...defaultOptions,
       }),
 
