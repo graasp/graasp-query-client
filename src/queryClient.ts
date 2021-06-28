@@ -7,7 +7,7 @@ import {
 } from './config/constants';
 import configureHooks from './hooks';
 import configureMutations from './mutations';
-import configureWebsockets from './ws';
+import configureWebSockets from './ws';
 
 export type Notifier = (e: any) => any;
 
@@ -54,8 +54,8 @@ export default (config: Partial<QueryClientConfig>) => {
       config?.WS_HOST ||
       process.env.REACT_APP_WS_HOST ||
       `${baseConfig.API_HOST.replace('http', 'ws')}/ws`,
-    // wether websocket support should be enabled
-    enableWebsocket: config?.enableWebsocket ?? true,
+    // whether websocket support should be enabled
+    enableWebsocket: config?.enableWebsocket ?? false,
     notifier: config?.notifier,
     // time until data in cache considered stale if cache not invalidated
     staleTime: STALE_TIME_MILLISECONDS,
@@ -76,7 +76,7 @@ export default (config: Partial<QueryClientConfig>) => {
 
   // set up websocket client and hooks given config
   const ws = queryConfig.enableWebsocket
-    ? { ws: configureWebsockets(queryClient, queryConfig) }
+    ? { ws: configureWebSockets(queryClient, queryConfig) }
     : {};
 
   // returns the queryClient and relative instances

@@ -7,8 +7,8 @@
  */
 
 import {
-    ClientMessage,
-    ServerMessage
+  ClientMessage,
+  ServerMessage,
 } from 'graasp-websockets/src/interfaces/message';
 import { QueryClientConfig } from '../types';
 
@@ -28,6 +28,9 @@ function arrayRemoveFirstEqual<T>(
   eqFn = (a: T, b: T) => a === b,
 ) {
   const pos = array.findIndex((v) => eqFn(v, value));
+  if (pos === -1) {
+    return false;
+  }
   const removed = array.splice(pos, 1);
   return removed.length > 0;
 }
