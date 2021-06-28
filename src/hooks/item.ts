@@ -3,13 +3,14 @@ import { List, Map } from 'immutable';
 import {
   buildItemChildrenKey,
   buildItemKey,
+  buildItemsKey,
   buildItemLoginKey,
   buildItemMembershipsKey,
   buildItemParentsKey,
   buildFileContentKey,
   buildS3FileContentKey,
   OWN_ITEMS_KEY,
-  SHARED_ITEMS_KEY, MULTIPLE_ITEMS_KEY,
+  SHARED_ITEMS_KEY,
 } from '../config/keys';
 import * as Api from '../api';
 import { Item, QueryClientConfig, UUID } from '../types';
@@ -105,10 +106,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ...defaultOptions,
       }),
 
+    // todo: add optimisation to avoid fetching items already in cache
     useItems: (ids: UUID[]) =>
       useQuery({
-        queryKey: MULTIPLE_ITEMS_KEY,
-        queryFn: () => Api.getItems(ids, queryConfig).then((data) => List(data)),
+        queryKey: buildItemsKey(ids),
+        queryFn: () =>
+          Api.getItems(ids, queryConfig).then((data) => List(data)),
         onSuccess: async (items: List<Item>) => {
           // save items in their own key
           items?.forEach(async (item) => {
@@ -116,6 +119,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             queryClient.setQueryData(buildItemKey(id), Map(item));
           });
         },
+        enabled: ids.every((id) => Boolean(id)),
         ...defaultOptions,
       }),
 

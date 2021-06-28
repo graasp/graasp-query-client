@@ -13,11 +13,11 @@ export const buildPostItemRoute = (parentId: UUID) => {
 };
 export const buildDeleteItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
 export const buildDeleteItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}?${ids.map((id) => `id=${id}`).join('&')}`;
+  `${ITEMS_ROUTE}?${qs.stringify({id: ids}, {arrayFormat: 'repeat'})}`;
 export const buildGetChildrenRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/children`;
 export const buildGetItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
-export const buildGetItemsRoute = (ids: UUID[]) => `${ITEMS_ROUTE}?${ids.map(i => "id="+i).join("&")}`;
+export const buildGetItemsRoute = (ids: UUID[]) => `${ITEMS_ROUTE}?${qs.stringify({id: ids}, {arrayFormat: 'repeat'})}`;
 export const buildMoveItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/move`;
 export const buildCopyItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/copy`;
 export const buildEditItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
