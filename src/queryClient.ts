@@ -1,13 +1,13 @@
+import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 import { QueryClient, QueryClientProvider, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { getReasonPhrase, StatusCodes } from 'http-status-codes';
-import configureMutations from './mutations';
-import configureHooks from './hooks';
-import configureWebsockets from './ws';
 import {
   CACHE_TIME_MILLISECONDS,
   STALE_TIME_MILLISECONDS,
 } from './config/constants';
+import configureHooks from './hooks';
+import configureMutations from './mutations';
+import configureWebsockets from './ws';
 
 export type Notifier = (e: any) => any;
 
@@ -44,7 +44,7 @@ export default (config: Partial<QueryClientConfig>) => {
       config?.SHOW_NOTIFICATIONS ||
       process.env.REACT_APP_SHOW_NOTIFICATIONS === 'true' ||
       false,
-  }
+  };
 
   // define config for query client
   const queryConfig = {
@@ -75,7 +75,9 @@ export default (config: Partial<QueryClientConfig>) => {
   const hooks = configureHooks(queryClient, queryConfig);
 
   // set up websocket client and hooks given config
-  const ws = (queryConfig.enableWebsocket) ? { ws: configureWebsockets(queryClient, queryConfig) } : {};
+  const ws = queryConfig.enableWebsocket
+    ? { ws: configureWebsockets(queryClient, queryConfig) }
+    : {};
 
   // returns the queryClient and relative instances
   return {
