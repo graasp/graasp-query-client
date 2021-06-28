@@ -59,8 +59,10 @@ export default (
               break;
             }
             case 'delete': {
-              mutation = current?.filter((i) => i.id !== value.id);
-              queryClient.setQueryData(parentChildrenKey, mutation);
+              if (current) {
+                mutation = current.filter((i) => i.id !== value.id);
+                queryClient.setQueryData(parentChildrenKey, mutation);
+              }
               break;
             }
           }
@@ -104,8 +106,10 @@ export default (
               break;
             }
             case 'delete': {
-              mutation = current?.filter((i) => i.id !== value.id);
-              queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
+              if (current) {
+                mutation = current.filter((i) => i.id !== value.id);
+                queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
+              }
               break;
             }
           }
