@@ -111,7 +111,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       useQuery({
         queryKey: buildItemsKey(ids),
         queryFn: () =>
-          Api.getItems(ids, queryConfig).then((data) => List(data)),
+          ids.length == 1
+            ? Api.getItem(ids[0], queryConfig).then((data) => List([data]))
+            : Api.getItems(ids, queryConfig).then((data) => List(data)),
         onSuccess: async (items: List<Item>) => {
           // save items in their own key
           items?.forEach(async (item) => {
