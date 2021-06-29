@@ -8,7 +8,7 @@ import {
 } from './utils';
 import {
   buildShareItemWithRoute,
-  buildGetItemMembershipForItemRoute,
+  buildGetItemMembershipsForItemRoute,
   buildEditItemMembershipRoute,
   buildDeleteItemMembershipRoute,
 } from './routes';
@@ -20,7 +20,7 @@ export const getMembershipsForItem = async (
   { API_HOST }: QueryClientConfig,
 ) => {
   const res = await fetch(
-    `${API_HOST}/${buildGetItemMembershipForItemRoute(id)}`,
+    `${API_HOST}/${buildGetItemMembershipsForItemRoute(id)}`,
     DEFAULT_GET,
   ).then(failOnError);
 

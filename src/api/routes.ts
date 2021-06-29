@@ -24,7 +24,7 @@ export const buildCopyItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/copy`;
 export const buildEditItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
 export const buildShareItemWithRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
-export const buildGetItemMembershipForItemRoute = (id: UUID) =>
+export const buildGetItemMembershipsForItemRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
 
 export const buildGetMemberBy = (email: string) =>
@@ -88,7 +88,7 @@ export const API_ROUTES = {
   buildShareItemWithRoute,
   buildSignInPath,
   buildPostItemLoginSignInRoute,
-  buildGetItemMembershipForItemRoute,
+  buildGetItemMembershipsForItemRoute,
   buildMoveItemRoute,
   buildPostItemRoute,
   buildPostItemTagRoute,
