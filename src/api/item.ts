@@ -6,23 +6,18 @@ import {
   buildEditItemRoute,
   buildGetChildrenRoute,
   buildGetItemRoute,
+  buildGetItemsRoute,
   buildGetS3MetadataRoute,
   buildMoveItemRoute,
   buildPostItemRoute,
-  GET_OWN_ITEMS_ROUTE,
-  SHARE_ITEM_WITH_ROUTE,
   buildS3FileUrl,
   buildS3UploadFileRoute,
+  GET_OWN_ITEMS_ROUTE,
+  SHARE_ITEM_WITH_ROUTE,
 } from './routes';
-import {
-  DEFAULT_DELETE,
-  DEFAULT_GET,
-  DEFAULT_POST,
-  DEFAULT_PATCH,
-  failOnError,
-} from './utils';
+import { DEFAULT_DELETE, DEFAULT_GET, DEFAULT_PATCH, DEFAULT_POST, failOnError } from './utils';
 import { getParentsIdsFromPath } from '../utils/item';
-import { Item, QueryClientConfig, UUID, ExtendedItem } from '../types';
+import { ExtendedItem, Item, QueryClientConfig, UUID } from '../types';
 
 export const getItem = async (id: UUID, { API_HOST }: QueryClientConfig) => {
   const res = await fetch(
@@ -31,6 +26,15 @@ export const getItem = async (id: UUID, { API_HOST }: QueryClientConfig) => {
   ).then(failOnError);
   const item = await res.json();
   return item;
+};
+
+export const getItems = async (ids: UUID[], { API_HOST }: QueryClientConfig) => {
+  const res = await fetch(
+    `${API_HOST}/${buildGetItemsRoute(ids)}`,
+    DEFAULT_GET,
+  ).then(failOnError);
+  const items = await res.json();
+  return items;
 };
 
 export const getOwnItems = async ({ API_HOST }: QueryClientConfig) => {

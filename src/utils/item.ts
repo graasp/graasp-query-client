@@ -2,6 +2,7 @@
  * todo: use utils from a dedicated repo */
 
 import type { UUID } from '../types';
+import crypto from 'crypto';
 
 // eslint-disable-next-line no-useless-escape
 export const transformIdForPath = (id: UUID) => id.replace(/\-/g, '_');
@@ -43,3 +44,10 @@ export const getDirectParentId = (path: string) => {
   }
   return ids[parentIdx];
 };
+
+export const hashItemsIds = (ids: UUID[]) =>
+  crypto
+    .createHash('sha1')
+    .update(ids.sort().join(''))
+    .digest('hex')
+    .toString();
