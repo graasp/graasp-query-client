@@ -119,7 +119,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             queryClient.setQueryData(buildItemKey(id), Map(item));
           });
         },
-        enabled: ids.every((id) => Boolean(id)),
+        enabled: Boolean(ids.length) && ids.every((id) => Boolean(id)),
         ...defaultOptions,
       }),
 
