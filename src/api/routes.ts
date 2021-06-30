@@ -2,6 +2,8 @@ import qs from 'qs';
 import { UUID } from '../types';
 
 export const ITEMS_ROUTE = 'items';
+export const ITEM_MEMBERSHIPS_ROUTE = 'item-memberships';
+export const MEMBERS_ROUTE = `members`;
 export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const SHARE_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 export const buildPostItemRoute = (parentId: UUID) => {
@@ -13,19 +15,19 @@ export const buildPostItemRoute = (parentId: UUID) => {
 };
 export const buildDeleteItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
 export const buildDeleteItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}?${ids.map((id) => `id=${id}`).join('&')}`;
+  `${ITEMS_ROUTE}?${qs.stringify({id: ids}, {arrayFormat: 'repeat'})}`;
 export const buildGetChildrenRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/children`;
 export const buildGetItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
+export const buildGetItemsRoute = (ids: UUID[]) => `${ITEMS_ROUTE}?${qs.stringify({id: ids}, {arrayFormat: 'repeat'})}`;
 export const buildMoveItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/move`;
 export const buildCopyItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/copy`;
 export const buildEditItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
 export const buildShareItemWithRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
-export const buildGetItemMembershipForItemRoute = (id: UUID) =>
+export const buildGetItemMembershipsForItemRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
 
-export const MEMBERS_ROUTE = `members`;
 export const buildGetMemberBy = (email: string) =>
   `${MEMBERS_ROUTE}?email=${email}`;
 export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
@@ -66,6 +68,10 @@ export const buildPostItemLoginSignInRoute = (id: UUID) =>
 export const GET_TAGS_ROUTE = `${ITEMS_ROUTE}/tags`;
 export const buildGetItemLoginRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema`;
+export const buildEditItemMembershipRoute = (id: UUID) =>
+  `${ITEM_MEMBERSHIPS_ROUTE}/${id}`;
+export const buildDeleteItemMembershipRoute = (id: UUID) =>
+  `${ITEM_MEMBERSHIPS_ROUTE}/${id}`;
 
 export const API_ROUTES = {
   ITEMS_ROUTE,
@@ -83,7 +89,7 @@ export const API_ROUTES = {
   buildShareItemWithRoute,
   buildSignInPath,
   buildPostItemLoginSignInRoute,
-  buildGetItemMembershipForItemRoute,
+  buildGetItemMembershipsForItemRoute,
   buildMoveItemRoute,
   buildPostItemRoute,
   buildPostItemTagRoute,
@@ -99,4 +105,6 @@ export const API_ROUTES = {
   buildDeleteItemsRoute,
   buildCopyItemRoute,
   buildPatchMember,
+  buildEditItemMembershipRoute,
+  buildDeleteItemMembershipRoute,
 };

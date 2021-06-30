@@ -3,6 +3,7 @@ import { List, Map } from 'immutable';
 import {
   buildItemChildrenKey,
   buildItemKey,
+  buildItemsKey,
   buildItemLoginKey,
   buildItemMembershipsKey,
   buildItemParentsKey,
@@ -102,6 +103,25 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         queryKey: buildItemKey(id),
         queryFn: () => Api.getItem(id, queryConfig).then((data) => Map(data)),
         enabled: Boolean(id),
+        ...defaultOptions,
+      }),
+
+    // todo: add optimisation to avoid fetching items already in cache
+    useItems: (ids: UUID[]) =>
+      useQuery({
+        queryKey: buildItemsKey(ids),
+        queryFn: () =>
+          ids.length == 1
+            ? Api.getItem(ids[0], queryConfig).then((data) => List([data]))
+            : Api.getItems(ids, queryConfig).then((data) => List(data)),
+        onSuccess: async (items: List<Item>) => {
+          // save items in their own key
+          items?.forEach(async (item) => {
+            const { id } = item;
+            queryClient.setQueryData(buildItemKey(id), Map(item));
+          });
+        },
+        enabled: Boolean(ids.length) && ids.every((id) => Boolean(id)),
         ...defaultOptions,
       }),
 

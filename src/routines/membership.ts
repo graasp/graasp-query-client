@@ -1,4 +1,7 @@
 import createRoutine from './utils';
 
-// eslint-disable-next-line import/prefer-default-export
 export const shareItemRoutine = createRoutine('SHARE_ITEM');
+export const editItemMembershipRoutine = createRoutine('EDIT_ITEM_MEMBERSHIP');
+export const deleteItemMembershipRoutine = createRoutine(
+  'DELETE_ITEM_MEMBERSHIP',
+);
