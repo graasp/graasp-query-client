@@ -18,6 +18,7 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
+    "@graasp/websockets": "git://github.com/graasp/graasp-websockets.git#master",
     "@commitlint/cli": "12.1.4",
     "@commitlint/config-conventional": "12.1.4",
     "@testing-library/jest-dom": "5.11.6",

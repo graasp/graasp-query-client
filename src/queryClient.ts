@@ -1,12 +1,13 @@
+import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 import { QueryClient, QueryClientProvider, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { getReasonPhrase, StatusCodes } from 'http-status-codes';
-import configureMutations from './mutations';
-import configureHooks from './hooks';
 import {
   CACHE_TIME_MILLISECONDS,
   STALE_TIME_MILLISECONDS,
 } from './config/constants';
+import configureHooks from './hooks';
+import configureMutations from './mutations';
+import configureWebSockets from './ws';
 
 export type Notifier = (e: any) => any;
 
@@ -14,6 +15,8 @@ type QueryClientConfig = {
   API_HOST: string;
   S3_FILES_HOST?: string;
   SHOW_NOTIFICATIONS?: boolean;
+  WS_HOST?: string;
+  enableWebsocket?: boolean;
   notifier?: Notifier;
 };
 
@@ -28,8 +31,7 @@ const retry = (failureCount: any, error: { name: string }) => {
 };
 
 export default (config: Partial<QueryClientConfig>) => {
-  // define config for query client
-  const queryConfig = {
+  const baseConfig = {
     API_HOST:
       config?.API_HOST ||
       process.env.REACT_APP_API_HOST ||
@@ -42,7 +44,18 @@ export default (config: Partial<QueryClientConfig>) => {
       config?.SHOW_NOTIFICATIONS ||
       process.env.REACT_APP_SHOW_NOTIFICATIONS === 'true' ||
       false,
+  };
 
+  // define config for query client
+  const queryConfig = {
+    ...baseConfig,
+    // derive WS_HOST from API_HOST if needed
+    WS_HOST:
+      config?.WS_HOST ||
+      process.env.REACT_APP_WS_HOST ||
+      `${baseConfig.API_HOST.replace('http', 'ws')}/ws`,
+    // whether websocket support should be enabled
+    enableWebsocket: config?.enableWebsocket ?? false,
     notifier: config?.notifier,
     // time until data in cache considered stale if cache not invalidated
     staleTime: STALE_TIME_MILLISECONDS,
@@ -61,11 +74,17 @@ export default (config: Partial<QueryClientConfig>) => {
   // set up hooks given config
   const hooks = configureHooks(queryClient, queryConfig);
 
+  // set up websocket client and hooks given config
+  const ws = queryConfig.enableWebsocket
+    ? { ws: configureWebSockets(queryClient, queryConfig) }
+    : {};
+
   // returns the queryClient and relative instances
   return {
     queryClient,
     QueryClientProvider,
     hooks,
+    ...ws,
     useMutation,
     ReactQueryDevtools,
   };
