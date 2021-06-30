@@ -15,11 +15,11 @@ import {
   WS_SERVER_TYPE_INFO,
   WS_SERVER_TYPE_RESPONSE,
   WS_SERVER_TYPE_UPDATE,
-} from 'graasp-websockets/src/interfaces/constants';
+} from '@graasp/websockets/src/interfaces/constants';
 import {
   ClientMessage,
   ServerMessage,
-} from 'graasp-websockets/src/interfaces/message';
+} from '@graasp/websockets/src/interfaces/message';
 import { QueryClientConfig } from '../types';
 
 export type Channel = {

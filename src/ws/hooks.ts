@@ -13,8 +13,8 @@ import {
   WS_UPDATE_KIND_SHARED_WITH,
   WS_UPDATE_OP_CREATE,
   WS_UPDATE_OP_DELETE,
-} from 'graasp-websockets/src/interfaces/constants';
-import { ServerMessage } from 'graasp-websockets/src/interfaces/message';
+} from '@graasp/websockets/src/interfaces/constants';
+import { ServerMessage } from '@graasp/websockets/src/interfaces/message';
 import { List } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
