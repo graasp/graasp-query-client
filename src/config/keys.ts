@@ -5,7 +5,7 @@ export const ITEMS_KEY = 'items';
 export const OWN_ITEMS_KEY = [ITEMS_KEY, 'own'];
 export const buildItemKey = (id?: UUID) => [ITEMS_KEY, id];
 export const buildItemsKey = (ids: UUID[]) => [ITEMS_KEY, hashItemsIds(ids)];
-export const buildItemChildrenKey = (id: UUID) => [ITEMS_KEY, id, 'children'];
+export const buildItemChildrenKey = (id?: UUID) => [ITEMS_KEY, id, 'children'];
 export const SHARED_ITEMS_KEY = 'shared';
 export const CURRENT_MEMBER_KEY = 'currentMember';
 export const MEMBERS_KEY = 'members';
@@ -15,16 +15,16 @@ export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, id, 'parents'];
 export const getKeyForParentId = (parentId: UUID | null) =>
   parentId ? buildItemChildrenKey(parentId) : OWN_ITEMS_KEY;
 
-export const buildItemMembershipsKey = (id: UUID) => [
+export const buildItemMembershipsKey = (id?: UUID) => [
   ITEMS_KEY,
   id,
   'memberships',
 ];
-export const buildItemLoginKey = (id: UUID) => [ITEMS_KEY, id, 'login'];
+export const buildItemLoginKey = (id?: UUID) => [ITEMS_KEY, id, 'login'];
 export const ITEM_TAGS = 'itemTags';
 export const buildItemTagsKey = (id: UUID) => [ITEMS_KEY, id, 'tags'];
-export const buildFileContentKey = (id: UUID) => [ITEMS_KEY, id, 'content'];
-export const buildS3FileContentKey = (id: UUID) => [ITEMS_KEY, id, 'content'];
+export const buildFileContentKey = (id?: UUID) => [ITEMS_KEY, id, 'content'];
+export const buildS3FileContentKey = (id?: UUID) => [ITEMS_KEY, id, 'content'];
 
 export const ITEM_FLAGS = 'itemFlags';
 export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, id, 'flags'];

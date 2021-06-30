@@ -1,3 +1,5 @@
+import { RetryValue } from 'react-query/types/core/retryer';
+
 export type Notifier = (e: any) => void;
 
 export type QueryClientConfig = {
@@ -35,6 +37,13 @@ export type Member = {
   extra: {};
 };
 
+export type Membership = {
+  id: UUID;
+  memberId: string;
+  itemId: string;
+  permission: string;
+};
+
 export type ExtendedItem = Item & {
   parentId: UUID;
 };
@@ -43,4 +52,17 @@ export type Permission = string;
 
 export type ItemTag = {
   id: UUID;
+};
+
+export class UndefinedArgument extends Error {
+  constructor() {
+    super();
+    this.message = 'UnexpectedInput';
+    this.name = 'UnexpectedInput';
+    this.stack = (<any>new Error()).stack;
+  }
+}
+
+export type ItemLogin = {
+  loginSchema: string;
 };

@@ -1,28 +1,36 @@
+export enum REQUEST_METHODS {
+  GET = 'GET',
+  POST = 'POST',
+  DELETE = 'DELETE',
+  PUT = 'PUT',
+  PATCH = 'PATCH',
+}
+
 export const DEFAULT_GET: RequestInit = {
   credentials: 'include',
-  method: 'GET',
+  method: REQUEST_METHODS.GET,
   headers: { 'Content-Type': 'application/json' },
 };
 
 export const DEFAULT_POST: RequestInit = {
-  method: 'POST',
+  method: REQUEST_METHODS.POST,
   credentials: 'include',
   headers: { 'Content-Type': 'application/json' },
 };
 
 export const DEFAULT_DELETE: RequestInit = {
-  method: 'DELETE',
+  method: REQUEST_METHODS.DELETE,
   credentials: 'include',
 };
 
 export const DEFAULT_PATCH: RequestInit = {
-  method: 'PATCH',
+  method: REQUEST_METHODS.PATCH,
   headers: { 'Content-Type': 'application/json' },
   credentials: 'include',
 };
 
 export const DEFAULT_PUT: RequestInit = {
-  method: 'PUT',
+  method: REQUEST_METHODS.PUT,
   headers: { 'Content-Type': 'application/json' },
   credentials: 'include',
 };

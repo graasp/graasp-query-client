@@ -7,6 +7,7 @@ import {
 } from './routes';
 import { Member, QueryClientConfig, UUID } from '../types';
 import { StatusCodes } from 'http-status-codes';
+import { SIGNED_OUT_USER } from '../config/constants';
 
 export const getMemberBy = async (
   { email }: { email: string },
@@ -42,7 +43,7 @@ export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) => {
   // return valid response for unauthorized requests
   // avoid infinite loading induced by failure in react-query
   if (res.status === StatusCodes.UNAUTHORIZED) {
-    return {};
+    return SIGNED_OUT_USER;
   }
 
   throw new Error(res.statusText);
