@@ -5,6 +5,15 @@
  * @author Alexandre CHAU
  */
 
+import {
+  WS_ENTITY_ITEM,
+  WS_ENTITY_MEMBER,
+  WS_SERVER_TYPE_UPDATE,
+  WS_UPDATE_KIND_CHILD_ITEM,
+  WS_UPDATE_KIND_SHARED_WITH,
+  WS_UPDATE_OP_CREATE,
+  WS_UPDATE_OP_DELETE,
+} from 'graasp-websockets/src/interfaces/constants';
 import { ServerMessage } from 'graasp-websockets/src/interfaces/message';
 import { List } from 'immutable';
 import { useEffect } from 'react';
@@ -16,9 +25,6 @@ import {
 } from '../config/keys';
 import { Item, UUID } from '../types';
 import { Channel, GraaspWebsocketClient } from './ws-client';
-
-const ITEM_ENTITY_TYPE = 'item';
-const MEMBER_ENTITY_TYPE = 'member';
 
 export default (
   websocketClient: GraaspWebsocketClient,
@@ -35,14 +41,14 @@ export default (
         return;
       }
 
-      const channel: Channel = { name: parentId, entity: ITEM_ENTITY_TYPE };
+      const channel: Channel = { name: parentId, entity: WS_ENTITY_ITEM };
       const parentChildrenKey = buildItemChildrenKey(parentId);
 
       const handler = (data: ServerMessage) => {
         if (
-          data.type === 'update' &&
-          data.body.kind === 'childItem' &&
-          data.body.entity === ITEM_ENTITY_TYPE
+          data.type === WS_SERVER_TYPE_UPDATE &&
+          data.body.kind === WS_UPDATE_KIND_CHILD_ITEM &&
+          data.body.entity === WS_ENTITY_ITEM
         ) {
           const current: List<Item> | undefined = queryClient.getQueryData(
             parentChildrenKey,
@@ -50,7 +56,7 @@ export default (
           const value = data.body.value;
           let mutation;
           switch (data.body.op) {
-            case 'create': {
+            case WS_UPDATE_OP_CREATE: {
               if (current && !current.find((i) => i.id === value.id)) {
                 mutation = current.push(value);
                 queryClient.setQueryData(parentChildrenKey, mutation);
@@ -58,7 +64,7 @@ export default (
               }
               break;
             }
-            case 'delete': {
+            case WS_UPDATE_OP_DELETE: {
               if (current) {
                 mutation = current.filter((i) => i.id !== value.id);
                 queryClient.setQueryData(parentChildrenKey, mutation);
@@ -83,13 +89,13 @@ export default (
         return;
       }
 
-      const channel: Channel = { name: userId, entity: MEMBER_ENTITY_TYPE };
+      const channel: Channel = { name: userId, entity: WS_ENTITY_MEMBER };
 
       const handler = (data: ServerMessage) => {
         if (
-          data.type === 'update' &&
-          data.body.kind === 'sharedWith' &&
-          data.body.entity === MEMBER_ENTITY_TYPE
+          data.type === WS_SERVER_TYPE_UPDATE &&
+          data.body.kind === WS_UPDATE_KIND_SHARED_WITH &&
+          data.body.entity === WS_ENTITY_MEMBER
         ) {
           const current: List<Item> | undefined = queryClient.getQueryData(
             SHARED_ITEMS_KEY,
@@ -97,7 +103,7 @@ export default (
           const value = data.body.value;
           let mutation;
           switch (data.body.op) {
-            case 'create': {
+            case WS_UPDATE_OP_CREATE: {
               if (current && !current.find((i) => i.id === value.id)) {
                 mutation = current.push(value);
                 queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
@@ -105,7 +111,7 @@ export default (
               }
               break;
             }
-            case 'delete': {
+            case WS_UPDATE_OP_DELETE: {
               if (current) {
                 mutation = current.filter((i) => i.id !== value.id);
                 queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);

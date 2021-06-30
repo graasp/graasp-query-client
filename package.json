@@ -10,13 +10,13 @@
     "react": "^17.0.0"
   },
   "dependencies": {
+    "graasp-websockets": "git://github.com/graasp/graasp-websockets.git#master",
     "http-status-codes": "2.1.4",
     "immutable": "4.0.0-rc.12",
     "node-fetch": "2.6.1",
     "qs": "6.10.1",
     "react-query": "3.16.0",
-    "uuid": "8.3.2",
-    "graasp-websockets": "git://github.com/graasp/graasp-websockets.git#master"
+    "uuid": "8.3.2"
   },
   "devDependencies": {
     "@commitlint/cli": "12.1.4",

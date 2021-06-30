@@ -7,15 +7,29 @@
  */
 
 import {
+  EntityName,
+  WS_CLIENT_ACTION_SUBSCRIBE,
+  WS_CLIENT_ACTION_UNSUBSCRIBE,
+  WS_REALM_NOTIF,
+  WS_RESPONSE_STATUS_SUCCESS,
+  WS_SERVER_TYPE_INFO,
+  WS_SERVER_TYPE_RESPONSE,
+  WS_SERVER_TYPE_UPDATE,
+} from 'graasp-websockets/src/interfaces/constants';
+import {
   ClientMessage,
   ServerMessage,
 } from 'graasp-websockets/src/interfaces/message';
 import { QueryClientConfig } from '../types';
 
 export type Channel = {
-  entity: 'item' | 'member';
+  entity: EntityName;
   name: string;
 };
+
+// client-side representation of unsollicited server info messages channel
+export const INFO_CHANNEL_NAME = 'info';
+
 type UpdateHandlerFn = (data: ServerMessage) => void;
 
 /**
@@ -105,8 +119,8 @@ export const configureWebsocketClient = (
 
   const sendSubscribeRequest = (channel: Channel) => {
     send({
-      realm: 'notif',
-      action: 'subscribe',
+      realm: WS_REALM_NOTIF,
+      action: WS_CLIENT_ACTION_SUBSCRIBE,
       entity: channel.entity,
       channel: channel.name,
     });
@@ -114,8 +128,8 @@ export const configureWebsocketClient = (
 
   const sendUnsubscribeRequest = (channel: Channel) => {
     send({
-      realm: 'notif',
-      action: 'unsubscribe',
+      realm: WS_REALM_NOTIF,
+      action: WS_CLIENT_ACTION_UNSUBSCRIBE,
       channel: channel.name,
     });
   };
@@ -126,8 +140,11 @@ export const configureWebsocketClient = (
     current: new Map<string, Array<UpdateHandlerFn>>(),
     info: new Array<UpdateHandlerFn>(),
 
-    add: (channel: Channel | 'info', handler: UpdateHandlerFn): boolean => {
-      if (channel === 'info') {
+    add: (
+      channel: Channel | typeof INFO_CHANNEL_NAME,
+      handler: UpdateHandlerFn,
+    ): boolean => {
+      if (channel === INFO_CHANNEL_NAME) {
         // if subscribed to info, no ack to wait for
         subscriptions.info.push(handler);
         return false;
@@ -151,8 +168,11 @@ export const configureWebsocketClient = (
       }
     },
 
-    remove: (channel: Channel | 'info', handler: UpdateHandlerFn): boolean => {
-      if (channel === 'info') {
+    remove: (
+      channel: Channel | typeof INFO_CHANNEL_NAME,
+      handler: UpdateHandlerFn,
+    ): boolean => {
+      if (channel === INFO_CHANNEL_NAME) {
         arrayRemoveFirstEqual(subscriptions.info, handler);
         return false;
       } else {
@@ -230,15 +250,15 @@ export const configureWebsocketClient = (
     const update = serdes.parse(event.data);
 
     switch (update.type) {
-      case 'info': {
+      case WS_SERVER_TYPE_INFO: {
         subscriptions.info.forEach((fn) => fn(update));
         break;
       }
 
-      case 'response': {
-        if (update.status === 'success') {
+      case WS_SERVER_TYPE_RESPONSE: {
+        if (update.status === WS_RESPONSE_STATUS_SUCCESS) {
           const req = update.request;
-          if (req?.action === 'subscribe') {
+          if (req?.action === WS_CLIENT_ACTION_SUBSCRIBE) {
             // when ack, move all from waiting acks to current
             subscriptions.ack({ name: req?.channel, entity: req?.entity });
           }
@@ -250,7 +270,7 @@ export const configureWebsocketClient = (
         break;
       }
 
-      case 'update': {
+      case WS_SERVER_TYPE_UPDATE: {
         // send update to all handlers of this channel
         const channel = { name: update.channel, entity: update.body.entity };
         const channelKey = buildChannelKey(channel);
@@ -265,13 +285,25 @@ export const configureWebsocketClient = (
   });
 
   return {
-    subscribe: (channel: Channel | 'info', handler: UpdateHandlerFn) => {
-      if (subscriptions.add(channel, handler) && channel !== 'info') {
+    subscribe: (
+      channel: Channel | typeof INFO_CHANNEL_NAME,
+      handler: UpdateHandlerFn,
+    ) => {
+      if (
+        subscriptions.add(channel, handler) &&
+        channel !== INFO_CHANNEL_NAME
+      ) {
         sendSubscribeRequest(channel);
       }
     },
-    unsubscribe: (channel: Channel | 'info', handler: UpdateHandlerFn) => {
-      if (subscriptions.remove(channel, handler) && channel !== 'info') {
+    unsubscribe: (
+      channel: Channel | typeof INFO_CHANNEL_NAME,
+      handler: UpdateHandlerFn,
+    ) => {
+      if (
+        subscriptions.remove(channel, handler) &&
+        channel !== INFO_CHANNEL_NAME
+      ) {
         sendUnsubscribeRequest(channel);
       }
     },
