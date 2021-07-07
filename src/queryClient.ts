@@ -18,6 +18,8 @@ type QueryClientConfig = {
   WS_HOST?: string;
   enableWebsocket?: boolean;
   notifier?: Notifier;
+  staleTime?: number;
+  cacheTime?: number;
 };
 
 // Query client retry function decides when and how many times a request should be retried
@@ -58,9 +60,9 @@ export default (config: Partial<QueryClientConfig>) => {
     enableWebsocket: config?.enableWebsocket ?? false,
     notifier: config?.notifier,
     // time until data in cache considered stale if cache not invalidated
-    staleTime: STALE_TIME_MILLISECONDS,
+    staleTime: config?.staleTime ?? STALE_TIME_MILLISECONDS,
     // time before cache labeled as inactive to be garbage collected
-    cacheTime: CACHE_TIME_MILLISECONDS,
+    cacheTime: config?.cacheTime ?? CACHE_TIME_MILLISECONDS,
     retry,
   };
 
