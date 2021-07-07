@@ -2,6 +2,7 @@ import { QueryClient } from 'react-query';
 import itemMutations from './item';
 import memberMutations from './member';
 import tagsMutations from './itemTag';
+import flagsMutations from './itemFlag';
 import itemMembershipMutations from './membership';
 import { QueryClientConfig } from '../types';
 
@@ -13,6 +14,7 @@ const configureMutations = (
   itemMembershipMutations(queryClient, queryConfig);
   memberMutations(queryClient, queryConfig);
   tagsMutations(queryClient, queryConfig);
+  flagsMutations(queryClient, queryConfig);
 };
 
 export default configureMutations;
