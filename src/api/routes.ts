@@ -15,11 +15,12 @@ export const buildPostItemRoute = (parentId: UUID) => {
 };
 export const buildDeleteItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
 export const buildDeleteItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}?${qs.stringify({id: ids}, {arrayFormat: 'repeat'})}`;
+  `${ITEMS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildGetChildrenRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/children`;
 export const buildGetItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
-export const buildGetItemsRoute = (ids: UUID[]) => `${ITEMS_ROUTE}?${qs.stringify({id: ids}, {arrayFormat: 'repeat'})}`;
+export const buildGetItemsRoute = (ids: UUID[]) =>
+  `${ITEMS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildMoveItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/move`;
 export const buildCopyItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/copy`;
 export const buildEditItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
@@ -73,6 +74,10 @@ export const buildEditItemMembershipRoute = (id: UUID) =>
 export const buildDeleteItemMembershipRoute = (id: UUID) =>
   `${ITEM_MEMBERSHIPS_ROUTE}/${id}`;
 
+export const GET_FLAGS_ROUTE = `${ITEMS_ROUTE}/flags`;
+export const buildPostItemFlagRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/flags`;
+
 export const API_ROUTES = {
   ITEMS_ROUTE,
   SHARE_ITEM_WITH_ROUTE,
@@ -80,6 +85,7 @@ export const API_ROUTES = {
   SIGN_OUT_ROUTE,
   GET_CURRENT_MEMBER_ROUTE,
   GET_TAGS_ROUTE,
+  GET_FLAGS_ROUTE,
   buildGetS3MetadataRoute,
   buildGetMember,
   buildUploadFilesRoute,
@@ -105,6 +111,7 @@ export const API_ROUTES = {
   buildDeleteItemsRoute,
   buildCopyItemRoute,
   buildPatchMember,
+  buildPostItemFlagRoute,
   buildEditItemMembershipRoute,
   buildDeleteItemMembershipRoute,
 };

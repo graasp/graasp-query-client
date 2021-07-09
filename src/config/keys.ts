@@ -26,6 +26,9 @@ export const buildItemTagsKey = (id: UUID) => [ITEMS_KEY, id, 'tags'];
 export const buildFileContentKey = (id: UUID) => [ITEMS_KEY, id, 'content'];
 export const buildS3FileContentKey = (id: UUID) => [ITEMS_KEY, id, 'content'];
 
+export const ITEM_FLAGS = 'itemFlags';
+export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, id, 'flags'];
+
 export const MUTATION_KEYS = {
   POST_ITEM: 'postItem',
   EDIT_ITEM: 'editItem',
@@ -42,6 +45,7 @@ export const MUTATION_KEYS = {
   POST_ITEM_TAG: 'postItemTags',
   PUT_ITEM_LOGIN: 'putItemLogin',
   EDIT_MEMBER: 'editMember',
+  POST_ITEM_FLAG: 'postItemFlag',
   EDIT_ITEM_MEMBERSHIP: 'editItemMembership',
   DELETE_ITEM_MEMBERSHIP: 'deleteItemMembership',
 };
