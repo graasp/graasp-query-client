@@ -7,20 +7,10 @@ import {
 } from './config/constants';
 import configureHooks from './hooks';
 import configureMutations from './mutations';
+import type { QueryClientConfig } from './types';
 import configureWebSockets from './ws';
 
 export type Notifier = (e: any) => any;
-
-type QueryClientConfig = {
-  API_HOST: string;
-  S3_FILES_HOST?: string;
-  SHOW_NOTIFICATIONS?: boolean;
-  WS_HOST?: string;
-  enableWebsocket?: boolean;
-  notifier?: Notifier;
-  staleTime?: number;
-  cacheTime?: number;
-};
 
 // Query client retry function decides when and how many times a request should be retried
 const retry = (failureCount: any, error: { name: string }) => {
@@ -46,6 +36,7 @@ export default (config: Partial<QueryClientConfig>) => {
       config?.SHOW_NOTIFICATIONS ||
       process.env.REACT_APP_SHOW_NOTIFICATIONS === 'true' ||
       false,
+    keepPreviousData: config?.keepPreviousData || false,
   };
 
   // define config for query client
@@ -57,7 +48,7 @@ export default (config: Partial<QueryClientConfig>) => {
       process.env.REACT_APP_WS_HOST ||
       `${baseConfig.API_HOST.replace('http', 'ws')}/ws`,
     // whether websocket support should be enabled
-    enableWebsocket: config?.enableWebsocket ?? false,
+    enableWebsocket: config?.enableWebsocket || false,
     notifier: config?.notifier,
     // time until data in cache considered stale if cache not invalidated
     staleTime: config?.staleTime ?? STALE_TIME_MILLISECONDS,
@@ -67,7 +58,13 @@ export default (config: Partial<QueryClientConfig>) => {
   };
 
   // create queryclient with given config
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: config?.refetchOnWindowFocus || false,
+      },
+    },
+  });
 
   // set up mutations given config
   // mutations are attached to queryClient
