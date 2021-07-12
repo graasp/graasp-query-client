@@ -111,9 +111,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       useQuery({
         queryKey: buildItemsKey(ids),
         queryFn: () =>
-          ids.length == 1
-            ? Api.getItem(ids[0], queryConfig).then((data) => List([data]))
-            : Api.getItems(ids, queryConfig).then((data) => List(data)),
+          ids
+            ? ids.length == 1
+              ? Api.getItem(ids[0], queryConfig).then((data) => List([data]))
+              : Api.getItems(ids, queryConfig).then((data) => List(data))
+            : undefined,
         onSuccess: async (items: List<Item>) => {
           // save items in their own key
           items?.forEach(async (item) => {
@@ -121,7 +123,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             queryClient.setQueryData(buildItemKey(id), Map(item));
           });
         },
-        enabled: Boolean(ids.length) && ids.every((id) => Boolean(id)),
+        enabled: ids && Boolean(ids.length) && ids.every((id) => Boolean(id)),
         ...defaultOptions,
       }),
 
