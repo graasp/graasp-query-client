@@ -1,3 +1,6 @@
 // React Query Configs
-export const STALE_TIME_MILLISECONDS = 1000 * 60 * 60;
-export const CACHE_TIME_MILLISECONDS = 1000 * 60 * 60;
+
+// time during which cache entry is never refetched
+export const STALE_TIME_MILLISECONDS = 0; // default is 0 to always refetch, can increase to trade load against consistency
+// time during which cache entry is still served while refetches are pending
+export const CACHE_TIME_MILLISECONDS = 1000 * 60 * 5; // default is 5 min
