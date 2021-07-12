@@ -10,6 +10,8 @@ export type QueryClientConfig = {
   staleTime: number;
   cacheTime: number;
   retry: RetryValue<any>;
+  refetchOnWindowFocus?: boolean;
+  keepPreviousData?: boolean;
 };
 
 // Graasp Core Types
