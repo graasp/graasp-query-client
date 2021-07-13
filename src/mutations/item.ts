@@ -1,4 +1,4 @@
-import { List, Record, Map } from 'immutable';
+import { List, Record } from 'immutable';
 import { QueryClient } from 'react-query';
 import * as Api from '../api';
 import {
@@ -113,25 +113,32 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(EDIT_ITEM, {
     mutationFn: (item) => Api.editItem(item.id, item, queryConfig),
-    // newItem contains only changed value
-    onMutate: async (newItem) => {
+    // newItem contains only changed values
+    onMutate: async (newItem: Partial<Item>) => {
+      const itemKey = buildItemKey(newItem.id);
+
+      // invalidate key
+      await queryClient.cancelQueries(itemKey);
+
+      // build full item with new values
+      const prevItem = queryClient.getQueryData(itemKey) as Record<Item>;
+      const newFullItem = prevItem.merge(newItem);
+
       const previousItems = {
         parent: await mutateParentChildren({
-          childPath: newItem.path,
+          childPath: prevItem.get('path'),
           value: (old: List<Item>) => {
             if (!old || old.isEmpty()) {
               return old;
             }
             const idx = old.findIndex(({ id }) => id === newItem.id);
-            return old.set(idx, newItem);
+            // todo: remove toJS when moving to List<Map<Item>>
+            return old.set(idx, newFullItem.toJS());
           },
         }),
         item: await (async () => {
-          const itemKey = buildItemKey(newItem.id);
-          await queryClient.cancelQueries(itemKey);
-          const prevValue = queryClient.getQueryData(itemKey) as Record<Item>;
-          queryClient.setQueryData(itemKey, prevValue.merge(Map(newItem)));
-          return prevValue;
+          queryClient.setQueryData(itemKey, newFullItem);
+          return prevItem;
         })(),
       };
 
