@@ -148,14 +148,20 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: editItemRoutine.SUCCESS });
     },
     onError: (error, newItem, context) => {
-      const parentKey = getKeyForParentId(getDirectParentId(newItem.path));
+      const { item: prevItem } = context;
+      const parentKey = getKeyForParentId(
+        getDirectParentId(prevItem.get('path')),
+      );
       queryClient.setQueryData(parentKey, context.parent);
       const itemKey = buildItemKey(newItem.id);
       queryClient.setQueryData(itemKey, context.item);
       notifier?.({ type: editItemRoutine.FAILURE, payload: { error } });
     },
-    onSettled: (newItem) => {
-      const parentKey = getKeyForParentId(getDirectParentId(newItem.path));
+    onSettled: (newItem, _error, _variables, context) => {
+      const { item: prevItem } = context;
+      const parentKey = getKeyForParentId(
+        getDirectParentId(prevItem.get('path')),
+      );
       queryClient.invalidateQueries(parentKey);
 
       const itemKey = buildItemKey(newItem.id);
