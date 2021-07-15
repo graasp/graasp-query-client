@@ -53,3 +53,6 @@ export const hashItemsIds = (ids: UUID[]) =>
         .digest('hex')
         .toString()
     : undefined;
+
+export const getChildrenOrderFromFolderExtra = (extra: {}) =>
+  extra['folder']?.['childrenOrder'] ?? [];

@@ -11,9 +11,11 @@ import {
   buildS3FileContentKey,
   OWN_ITEMS_KEY,
   SHARED_ITEMS_KEY,
+  buildItemSortedChildrenKey,
 } from '../config/keys';
 import * as Api from '../api';
 import { Item, QueryClientConfig, UUID } from '../types';
+import { getUserOrderComparator } from '../utils/sorting';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { retry, cacheTime, staleTime } = queryConfig;
@@ -23,7 +25,17 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     staleTime,
   };
 
+  const useItem = (id: UUID) =>
+    useQuery({
+      queryKey: buildItemKey(id),
+      queryFn: () => Api.getItem(id, queryConfig).then((data) => Map(data)),
+      enabled: Boolean(id),
+      ...defaultOptions,
+    });
+
   return {
+    useItem,
+
     useOwnItems: () =>
       useQuery({
         queryKey: OWN_ITEMS_KEY,
@@ -56,6 +68,29 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ...defaultOptions,
         enabled: Boolean(id) && options?.enabled,
       }),
+
+    useSortedChildren: (id: UUID, options: { enabled?: boolean } = {}) => {
+      const { data: parentItem } = useItem(id);
+
+      return useQuery({
+        queryKey: buildItemSortedChildrenKey(id),
+        queryFn: () =>
+          Api.getChildren(id, queryConfig).then((data) =>
+            List(data).sort(getUserOrderComparator(parentItem)),
+          ),
+        onSuccess: async (items: List<Item>) => {
+          if (items?.size) {
+            // save items in their own key
+            items.forEach(async (item) => {
+              const { id: itemId } = item;
+              queryClient.setQueryData(buildItemKey(itemId), Map(item));
+            });
+          }
+        },
+        ...defaultOptions,
+        enabled: Boolean(parentItem) && Boolean(id) && options?.enabled,
+      });
+    },
 
     useParents: ({
       id,
@@ -95,14 +130,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             queryClient.setQueryData(buildItemKey(id), Map(item));
           });
         },
-        ...defaultOptions,
-      }),
-
-    useItem: (id: UUID) =>
-      useQuery({
-        queryKey: buildItemKey(id),
-        queryFn: () => Api.getItem(id, queryConfig).then((data) => Map(data)),
-        enabled: Boolean(id),
         ...defaultOptions,
       }),
 

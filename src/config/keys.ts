@@ -11,7 +11,11 @@ export const CURRENT_MEMBER_KEY = 'currentMember';
 export const MEMBERS_KEY = 'members';
 export const buildMemberKey = (id: UUID) => [MEMBERS_KEY, id];
 export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, id, 'parents'];
-
+export const buildItemSortedChildrenKey = (id: UUID) => [
+  ITEMS_KEY,
+  id,
+  'sortedChildren',
+];
 export const getKeyForParentId = (parentId: UUID | null) =>
   parentId ? buildItemChildrenKey(parentId) : OWN_ITEMS_KEY;
 
