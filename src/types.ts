@@ -44,3 +44,8 @@ export type Permission = string;
 export type ItemTag = {
   id: UUID;
 };
+
+export type PartialChatMessage = {
+  chatId: string;
+  body: string;
+};

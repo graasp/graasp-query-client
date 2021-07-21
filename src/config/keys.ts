@@ -11,6 +11,8 @@ export const CURRENT_MEMBER_KEY = 'currentMember';
 export const MEMBERS_KEY = 'members';
 export const buildMemberKey = (id: UUID) => [MEMBERS_KEY, id];
 export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, id, 'parents'];
+export const CHATS_KEY = 'chats';
+export const buildItemChatKey = (id: UUID) => [CHATS_KEY, id];
 
 export const getKeyForParentId = (parentId: UUID | null) =>
   parentId ? buildItemChildrenKey(parentId) : OWN_ITEMS_KEY;
@@ -48,4 +50,5 @@ export const MUTATION_KEYS = {
   POST_ITEM_FLAG: 'postItemFlag',
   EDIT_ITEM_MEMBERSHIP: 'editItemMembership',
   DELETE_ITEM_MEMBERSHIP: 'deleteItemMembership',
+  POST_ITEM_CHAT_MESSAGE: 'postChatMessage',
 };

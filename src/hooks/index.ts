@@ -3,6 +3,7 @@ import configureItemHooks from './item';
 import configureMemberHooks from './member';
 import configureItemTagHooks from './itemTag';
 import configureItemFlagHooks from './itemFlag';
+import configureChatHooks from './chat';
 import { QueryClientConfig } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => ({
@@ -10,4 +11,5 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => ({
   ...configureMemberHooks(queryConfig),
   ...configureItemTagHooks(queryConfig),
   ...configureItemFlagHooks(queryConfig),
+  ...configureChatHooks(queryConfig),
 });

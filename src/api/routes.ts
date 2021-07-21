@@ -28,6 +28,9 @@ export const buildShareItemWithRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
 export const buildGetItemMembershipsForItemRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
+export const buildGetItemChatRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/chat`;
+export const buildPostItemChatMessageRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/chat`;
 
 export const buildGetMemberBy = (email: string) =>
   `${MEMBERS_ROUTE}?email=${email}`;

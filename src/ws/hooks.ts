@@ -19,6 +19,7 @@ import { List } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 import {
+  buildItemChatKey,
   buildItemChildrenKey,
   buildItemKey,
   SHARED_ITEMS_KEY,
@@ -128,5 +129,40 @@ export default (
         websocketClient.unsubscribe(channel, handler);
       };
     }, [userId]);
+  },
+
+  useItemChatUpdates: (chatId: UUID) => {
+    useEffect(() => {
+      if (!chatId) {
+        return;
+      }
+
+      const channel: Channel = { name: chatId, entity: WS_ENTITY_CHAT };
+
+      const handler = (data: ServerMessage) => {
+        if (
+          data.type === WS_SERVER_TYPE_UPDATE &&
+          data.body.kind === WS_UPDATE_KIND_CHAT_ITEM &&
+          data.body.entity === WS_ENTITY_CHAT
+        ) {
+          const key = buildItemChatKey(chatId);
+          const current: Chat | undefined = queryClient.getQueryData(key);
+          const value = data.body.value;
+          if (data.body.op === WS_UPDATE_OP_PUBLISH) {
+            if (current) {
+              const newChat = Object.assign({}, current);
+              newChat.messages = [...current.messages].push(value);
+              queryClient.setQueryData(key, newChat);
+            }
+          }
+        }
+      };
+
+      websocketClient.subscribe(channel, handler);
+
+      return function cleanup() {
+        websocketClient.unsubscribe(channel, handler);
+      };
+    }, [chatId]);
   },
 });
