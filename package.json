@@ -18,9 +18,10 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
-    "@graasp/websockets": "git://github.com/graasp/graasp-websockets.git#master",
     "@commitlint/cli": "12.1.4",
     "@commitlint/config-conventional": "12.1.4",
+    "@graasp/plugin-chatbox": "git://github.com/graasp/graasp-plugin-chatbox.git#main",
+    "@graasp/websockets": "git://github.com/graasp/graasp-websockets.git#master",
     "@testing-library/jest-dom": "5.11.6",
     "@testing-library/react": "11.2.2",
     "@testing-library/user-event": "12.6.0",

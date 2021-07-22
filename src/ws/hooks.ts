@@ -6,15 +6,19 @@
  */
 
 import {
+  WS_ENTITY_CHAT,
   WS_ENTITY_ITEM,
   WS_ENTITY_MEMBER,
   WS_SERVER_TYPE_UPDATE,
+  WS_UPDATE_KIND_CHAT_ITEM,
   WS_UPDATE_KIND_CHILD_ITEM,
   WS_UPDATE_KIND_SHARED_WITH,
   WS_UPDATE_OP_CREATE,
   WS_UPDATE_OP_DELETE,
+  WS_UPDATE_OP_PUBLISH,
 } from '@graasp/websockets/src/interfaces/constants';
 import { ServerMessage } from '@graasp/websockets/src/interfaces/message';
+import { Chat } from '@graasp/plugin-chatbox/src/interfaces/chat';
 import { List } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
@@ -24,7 +28,7 @@ import {
   buildItemKey,
   SHARED_ITEMS_KEY,
 } from '../config/keys';
-import { Item, UUID } from '../types';
+import { isChatMessage, isItem, Item, UUID } from '../types';
 import { Channel, GraaspWebsocketClient } from './ws-client';
 
 export default (
@@ -55,6 +59,9 @@ export default (
             parentChildrenKey,
           );
           const value = data.body.value;
+          if (!isItem(value)) {
+            return;
+          }
           let mutation;
           switch (data.body.op) {
             case WS_UPDATE_OP_CREATE: {
@@ -102,6 +109,9 @@ export default (
             SHARED_ITEMS_KEY,
           );
           const value = data.body.value;
+          if (!isItem(value)) {
+            return;
+          }
           let mutation;
           switch (data.body.op) {
             case WS_UPDATE_OP_CREATE: {
@@ -148,10 +158,14 @@ export default (
           const key = buildItemChatKey(chatId);
           const current: Chat | undefined = queryClient.getQueryData(key);
           const value = data.body.value;
+          if (!isChatMessage(value)) {
+            return;
+          }
           if (data.body.op === WS_UPDATE_OP_PUBLISH) {
             if (current) {
               const newChat = Object.assign({}, current);
-              newChat.messages = [...current.messages].push(value);
+              newChat.messages = [...current.messages];
+              newChat.messages.push(value);
               queryClient.setQueryData(key, newChat);
             }
           }

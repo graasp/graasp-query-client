@@ -1,3 +1,6 @@
+import { ChatMessage } from '@graasp/plugin-chatbox/src/interfaces/chat-message';
+import { RetryValue } from 'react-query/types/core/retryer';
+
 export type Notifier = (e: any) => void;
 
 export type QueryClientConfig = {
@@ -28,6 +31,23 @@ export type Item = {
   extra: {};
 };
 
+export function isItem(data: unknown): data is Item {
+  const d = data as any;
+  return (
+    typeof d === 'object' &&
+    d.id &&
+    typeof d.id === 'string' &&
+    d.name &&
+    typeof d.name === 'string' &&
+    d.path &&
+    typeof d.path === 'string' &&
+    d.type &&
+    typeof d.type === 'string' &&
+    d.description &&
+    typeof d.description === 'string'
+  );
+}
+
 export type Member = {
   id: UUID;
   name: string;
@@ -49,3 +69,16 @@ export type PartialChatMessage = {
   chatId: string;
   body: string;
 };
+
+export function isChatMessage(data: unknown): data is ChatMessage {
+  const d = data as any;
+  return (
+    typeof d === 'object' &&
+    d.chatId &&
+    typeof d.chatId === 'string' &&
+    d.creator &&
+    typeof d.creator === 'string' &&
+    d.body &&
+    typeof d.body === 'string'
+  );
+}
