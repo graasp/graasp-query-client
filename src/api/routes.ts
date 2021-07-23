@@ -19,6 +19,9 @@ export const buildDeleteItemsRoute = (ids: UUID[]) =>
 export const buildGetChildrenRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/children`;
 export const buildGetItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
+export const buildGetPublicItemRoute = (id: UUID) => `p/${ITEMS_ROUTE}/${id}`;
+export const buildGetPublicChildrenRoute = (id: UUID) =>
+  `p/${ITEMS_ROUTE}/${id}/children`;
 export const buildGetItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildMoveItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/move`;

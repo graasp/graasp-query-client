@@ -7,6 +7,8 @@ import {
   buildGetChildrenRoute,
   buildGetItemRoute,
   buildGetItemsRoute,
+  buildGetPublicChildrenRoute,
+  buildGetPublicItemRoute,
   buildGetS3MetadataRoute,
   buildMoveItemRoute,
   buildPostItemRoute,
@@ -15,20 +17,38 @@ import {
   GET_OWN_ITEMS_ROUTE,
   SHARE_ITEM_WITH_ROUTE,
 } from './routes';
-import { DEFAULT_DELETE, DEFAULT_GET, DEFAULT_PATCH, DEFAULT_POST, failOnError } from './utils';
+import {
+  DEFAULT_DELETE,
+  DEFAULT_GET,
+  DEFAULT_PATCH,
+  DEFAULT_POST,
+  failOnError,
+} from './utils';
 import { getParentsIdsFromPath } from '../utils/item';
 import { ExtendedItem, Item, QueryClientConfig, UUID } from '../types';
+import { StatusCodes } from 'http-status-codes';
 
 export const getItem = async (id: UUID, { API_HOST }: QueryClientConfig) => {
-  const res = await fetch(
-    `${API_HOST}/${buildGetItemRoute(id)}`,
-    DEFAULT_GET,
-  ).then(failOnError);
+  let res = await fetch(`${API_HOST}/${buildGetItemRoute(id)}`, DEFAULT_GET);
+
+  // try to fetch public items if cannot access privately
+  if (res.status === StatusCodes.UNAUTHORIZED) {
+    res = await fetch(
+      `${API_HOST}/${buildGetPublicItemRoute(id)}`,
+      DEFAULT_GET,
+    ).then(failOnError);
+  }
+  if (!res.ok) {
+    throw new Error(res.statusText);
+  }
   const item = await res.json();
   return item;
 };
 
-export const getItems = async (ids: UUID[], { API_HOST }: QueryClientConfig) => {
+export const getItems = async (
+  ids: UUID[],
+  { API_HOST }: QueryClientConfig,
+) => {
   const res = await fetch(
     `${API_HOST}/${buildGetItemsRoute(ids)}`,
     DEFAULT_GET,
@@ -103,10 +123,21 @@ export const getChildren = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,
 ) => {
-  const res = await fetch(
+  let res = await fetch(
     `${API_HOST}/${buildGetChildrenRoute(id)}`,
     DEFAULT_GET,
-  ).then(failOnError);
+  );
+
+  // try to fetch public items if cannot access privately
+  if (res.status === StatusCodes.UNAUTHORIZED) {
+    res = await fetch(
+      `${API_HOST}/${buildGetPublicChildrenRoute(id)}`,
+      DEFAULT_GET,
+    ).then(failOnError);
+  }
+  if (!res.ok) {
+    throw new Error(res.statusText);
+  }
 
   const children = await res.json();
 
