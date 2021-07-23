@@ -19,10 +19,14 @@ export type QueryClientConfig = {
 
 export type UUID = string;
 
+export const enum ITEM_KEYS {
+  PATH = 'path',
+}
+
 export type Item = {
   id: UUID;
   name: string;
-  path: string;
+  [ITEM_KEYS.PATH]: string;
   type: string;
   description: string;
   extra: {};

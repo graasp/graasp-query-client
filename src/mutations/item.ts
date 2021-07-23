@@ -22,7 +22,7 @@ import {
   OWN_ITEMS_KEY,
 } from '../config/keys';
 import { buildPath, getDirectParentId } from '../utils/item';
-import { Item, QueryClientConfig, UUID } from '../types';
+import { Item, ITEM_KEYS, QueryClientConfig, UUID } from '../types';
 
 const {
   POST_ITEM,
@@ -126,7 +126,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       const previousItems = {
         parent: await mutateParentChildren({
-          childPath: prevItem.get('path'),
+          childPath: prevItem.get(ITEM_KEYS.PATH),
           value: (old: List<Item>) => {
             if (!old || old.isEmpty()) {
               return old;
@@ -150,7 +150,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onError: (error, newItem, context) => {
       const { item: prevItem } = context;
       const parentKey = getKeyForParentId(
-        getDirectParentId(prevItem.get('path')),
+        getDirectParentId(prevItem.get(ITEM_KEYS.PATH)),
       );
       queryClient.setQueryData(parentKey, context.parent);
       const itemKey = buildItemKey(newItem.id);
@@ -160,7 +160,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onSettled: (newItem, _error, _variables, context) => {
       const { item: prevItem } = context;
       const parentKey = getKeyForParentId(
-        getDirectParentId(prevItem.get('path')),
+        getDirectParentId(prevItem.get(ITEM_KEYS.PATH)),
       );
       queryClient.invalidateQueries(parentKey);
 
@@ -177,7 +177,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       const itemKey = buildItemKey(itemId);
       const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
       const parentKey = getKeyForParentId(
-        getDirectParentId(itemData.get('path')),
+        getDirectParentId(itemData.get(ITEM_KEYS.PATH)),
       );
       const parentData = queryClient.getQueryData(parentKey);
       const previousItems = {
@@ -198,7 +198,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         const itemKey = buildItemKey(itemId);
         queryClient.setQueryData(itemKey, context.item);
         const parentKey = getKeyForParentId(
-          getDirectParentId(itemData.get('path')),
+          getDirectParentId(itemData.get(ITEM_KEYS.PATH)),
         );
         queryClient.setQueryData(parentKey, context.parent);
       }
@@ -212,7 +212,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         queryClient.invalidateQueries(itemKey);
 
         const parentKey = getKeyForParentId(
-          getDirectParentId(itemData.get('path')),
+          getDirectParentId(itemData.get(ITEM_KEYS.PATH)),
         );
         queryClient.invalidateQueries(parentKey);
       }
@@ -227,7 +227,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       // get path from first item
       const itemKey = buildItemKey(itemIds[0]);
       const item = queryClient.getQueryData(itemKey) as Record<Item>;
-      const itemPath = item?.get('path');
+      const itemPath = item?.get(ITEM_KEYS.PATH);
 
       const previousItems = {
         ...(Boolean(itemPath) && {
@@ -249,7 +249,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: deleteItemRoutine.SUCCESS });
     },
     onError: (error, itemIds: UUID[], context) => {
-      const itemPath = context[itemIds[0]]?.get('path');
+      const itemPath = context[itemIds[0]]?.get(ITEM_KEYS.PATH);
 
       if (itemPath) {
         const parentKey = getKeyForParentId(getDirectParentId(itemPath));
@@ -264,7 +264,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: deleteItemsRoutine.FAILURE, payload: { error } });
     },
     onSettled: (itemIds: UUID[], _error, _variables, context) => {
-      const itemPath = context[itemIds[0]]?.get('path');
+      const itemPath = context[itemIds[0]]?.get(ITEM_KEYS.PATH);
 
       itemIds.forEach((id) => {
         const itemKey = buildItemKey(id);
@@ -313,7 +313,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
           // remove item in original folder
           originalParent: await mutateParentChildren({
-            childPath: itemData.get('path'),
+            childPath: itemData.get(ITEM_KEYS.PATH),
             value: (old: List<Item>) => old?.filter(({ id }) => id !== itemId),
           }),
 
@@ -322,9 +322,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             id: itemId,
             value: (item: Record<Item>) =>
               item.set(
-                'path',
+                ITEM_KEYS.PATH,
                 buildPath({
-                  prefix: itemData.get('path'),
+                  prefix: itemData.get(ITEM_KEYS.PATH),
                   ids: [itemId],
                 }),
               ),
@@ -347,7 +347,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       const itemData = context.item;
       if (itemData) {
         const parentKey = getKeyForParentId(
-          getDirectParentId(itemData.get('path')),
+          getDirectParentId(itemData.get(ITEM_KEYS.PATH)),
         );
         queryClient.setQueryData(parentKey, context.originalParent);
       }
@@ -364,7 +364,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       const itemData = queryClient.getQueryData(id) as Record<Item>;
       if (itemData) {
         const parentKey = getKeyForParentId(
-          getDirectParentId(itemData.get('path')),
+          getDirectParentId(itemData.get(ITEM_KEYS.PATH)),
         );
         queryClient.invalidateQueries(parentKey);
       }
