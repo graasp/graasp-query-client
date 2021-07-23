@@ -51,9 +51,9 @@ export default (config: Partial<QueryClientConfig>) => {
     enableWebsocket: config?.enableWebsocket || false,
     notifier: config?.notifier,
     // time until data in cache considered stale if cache not invalidated
-    staleTime: config?.staleTime ?? STALE_TIME_MILLISECONDS,
+    staleTime: config?.staleTime || STALE_TIME_MILLISECONDS,
     // time before cache labeled as inactive to be garbage collected
-    cacheTime: config?.cacheTime ?? CACHE_TIME_MILLISECONDS,
+    cacheTime: config?.cacheTime || CACHE_TIME_MILLISECONDS,
     retry,
   };
 
