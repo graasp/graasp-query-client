@@ -6,6 +6,7 @@ import {
   buildPatchMember,
 } from './routes';
 import { Member, QueryClientConfig, UUID } from '../types';
+import { StatusCodes } from 'http-status-codes';
 
 export const getMemberBy = async (
   { email }: { email: string },
@@ -32,9 +33,19 @@ export const getMember = async (
 export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) => {
   const res = await fetch(`${API_HOST}/${GET_CURRENT_MEMBER_ROUTE}`, {
     ...DEFAULT_GET,
-  }).then(failOnError);
+  });
 
-  return res.json();
+  if (res.ok) {
+    return res.json();
+  }
+
+  // return valid response for unauthorized requests
+  // avoid infinite loading induced by failure in react-query
+  if (res.status === StatusCodes.UNAUTHORIZED) {
+    return {};
+  }
+
+  throw new Error(res.statusText);
 };
 
 export const editMember = async (
