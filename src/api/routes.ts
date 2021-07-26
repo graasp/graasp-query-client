@@ -117,4 +117,5 @@ export const API_ROUTES = {
   buildPostItemFlagRoute,
   buildEditItemMembershipRoute,
   buildDeleteItemMembershipRoute,
+  buildGetPublicItemRoute,
 };
