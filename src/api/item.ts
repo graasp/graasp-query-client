@@ -121,17 +121,18 @@ export const editItem = async (
 
 export const getChildren = async (
   id: UUID,
+  ordered = true,
   { API_HOST }: QueryClientConfig,
 ) => {
   let res = await fetch(
-    `${API_HOST}/${buildGetChildrenRoute(id)}`,
+    `${API_HOST}/${buildGetChildrenRoute(id, ordered)}`,
     DEFAULT_GET,
   );
 
   // try to fetch public items if cannot access privately
   if (res.status === StatusCodes.UNAUTHORIZED) {
     res = await fetch(
-      `${API_HOST}/${buildGetPublicChildrenRoute(id)}`,
+      `${API_HOST}/${buildGetPublicChildrenRoute(id, ordered)}`,
       DEFAULT_GET,
     ).then(failOnError);
   }

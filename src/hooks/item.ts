@@ -39,11 +39,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ...defaultOptions,
       }),
 
-    useChildren: (id: UUID, options: { enabled?: boolean } = {}) =>
+    useChildren: (id: UUID, options: { enabled?: boolean, ordered?: boolean } = {}) =>
       useQuery({
         queryKey: buildItemChildrenKey(id),
         queryFn: () =>
-          Api.getChildren(id, queryConfig).then((data) => List(data)),
+          Api.getChildren(id, options?.ordered, queryConfig).then((data) => List(data)),
         onSuccess: async (items: List<Item>) => {
           if (items?.size) {
             // save items in their own key
