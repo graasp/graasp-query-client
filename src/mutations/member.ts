@@ -1,9 +1,11 @@
 import { QueryClient } from 'react-query';
 import { Map, Record } from 'immutable';
+import Cookies from 'js-cookie';
 import * as Api from '../api';
 import { editMemberRoutine, signOutRoutine } from '../routines';
 import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
 import { Member, QueryClientConfig } from '../types';
+import { COOKIE_SESSION_NAME } from '../config/constants';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -25,15 +27,15 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onSuccess: () => {
       notifier?.({ type: signOutRoutine.SUCCESS });
+      queryClient.invalidateQueries();
+
+      // remove cookies from browser
+      Cookies.remove(COOKIE_SESSION_NAME);
     },
     // If the mutation fails, use the context returned from onMutate to roll back
-    onError: (error) => {
+    onError: (error, _args, context) => {
       notifier?.({ type: signOutRoutine.FAILURE, payload: { error } });
-    },
-    // Always refetch after error or success:
-    onSettled: () => {
-      // invalidate all queries
-      queryClient.resetQueries();
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, context.previousMember);
     },
   });
 
