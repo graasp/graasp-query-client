@@ -1,0 +1,16 @@
+name: tests and coverage
+on: [push]
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: install local packages and example packages
+        # network-concurrency 1 is necessary to avoid errors when using github packages
+        run: yarn install --network-concurrency 1 && cd example && yarn install --network-concurrency 1 && cd .. 
+
+      - name: jest test
+        run: yarn test
+
