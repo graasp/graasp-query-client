@@ -2,6 +2,9 @@
   "name": "@graasp/query-client",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "example"
+  ],
   "repository": "graasp/query-client",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
@@ -19,6 +22,9 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
+    "@babel/core": "7.14.6",
+    "@babel/preset-env": "7.14.7",
+    "@babel/preset-typescript": "7.14.5",
     "@commitlint/cli": "12.1.4",
     "@commitlint/config-conventional": "12.1.4",
     "@graasp/websockets": "git://github.com/graasp/graasp-websockets.git#master",
@@ -52,15 +58,16 @@
   },
   "localDependencies": {
     "react": "./example/node_modules/react",
-    "react-dom": "./example/node_modules/react-dom",
-    "react-scripts": "./example/node_modules/react-scripts"
+    "react-dom": "./example/node_modules/react-dom"
   },
   "scripts": {
     "build": "microbundle-crl --no-compress --format modern,cjs",
     "start": "microbundle-crl watch --no-compress --format modern,cjs",
-    "prepare": "run-s build",
-    "prettier:check": "prettier --check src/**/*.{js,ts}",
-    "prettier:write": "prettier --write src/**/*.{js,ts}",
+    "start:example": "yarn workspace graasp-query-client-example start",
+    "prepack": "run-s build",
+    "prepare": "yarn prepack",
+    "prettier:check": "prettier --check {src,test}/**/*.{js,ts,tsx}",
+    "prettier:write": "prettier --write {src,test}/**/*.{js,ts,tsx}",
     "hooks:uninstall": "node node_modules/husky/husky.js uninstall",
     "hooks:install": "node node_modules/husky/husky.js install",
     "predeploy": "cd example && yarn install && yarn run build",
@@ -87,5 +94,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "packageManager": "yarn@3.0.1-rc.1"
 }

@@ -53,7 +53,7 @@ export default (
           const current: List<Item> | undefined = queryClient.getQueryData(
             parentChildrenKey,
           );
-          const value = data.body.value;
+          const value = data.body.value as Item;
           let mutation;
           switch (data.body.op) {
             case WS_UPDATE_OP_CREATE: {
@@ -71,6 +71,8 @@ export default (
               }
               break;
             }
+            default:
+              break;
           }
         }
       };
@@ -100,7 +102,7 @@ export default (
           const current: List<Item> | undefined = queryClient.getQueryData(
             SHARED_ITEMS_KEY,
           );
-          const value = data.body.value;
+          const value = data.body.value as Item;
           let mutation;
           switch (data.body.op) {
             case WS_UPDATE_OP_CREATE: {
