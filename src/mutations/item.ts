@@ -3,6 +3,7 @@ import { QueryClient } from 'react-query';
 import * as Api from '../api';
 import {
   copyItemRoutine,
+  copyItemsRoutine,
   createItemRoutine,
   deleteItemsRoutine,
   deleteItemRoutine,
@@ -32,6 +33,7 @@ const {
   SHARE_ITEM,
   MOVE_ITEM,
   COPY_ITEM,
+  COPY_ITEMS,
   DELETE_ITEMS,
   POST_ITEM_LOGIN,
   PUT_ITEM_LOGIN,
@@ -295,6 +297,25 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onError: (error) => {
       notifier?.({ type: copyItemRoutine.FAILURE, payload: { error } });
+    },
+    onSettled: (newItem) => {
+      const parentKey = getKeyForParentId(newItem?.to);
+      queryClient.invalidateQueries(parentKey);
+    },
+  });
+
+  queryClient.setMutationDefaults(COPY_ITEMS, {
+    mutationFn: (payload) =>
+      Api.copyItems(payload, queryConfig).then((newItem) => ({
+        to: payload.to,
+        ...newItem,
+      })),
+    // cannot mutate because it needs the id
+    onSuccess: () => {
+      notifier?.({ type: copyItemsRoutine.SUCCESS });
+    },
+    onError: (error) => {
+      notifier?.({ type: copyItemsRoutine.FAILURE, payload: { error } });
     },
     onSettled: (newItem) => {
       const parentKey = getKeyForParentId(newItem?.to);

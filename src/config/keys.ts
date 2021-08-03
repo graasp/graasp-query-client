@@ -37,6 +37,7 @@ export const MUTATION_KEYS = {
   DELETE_ITEM: 'deleteItem',
   DELETE_ITEMS: 'deleteItems',
   COPY_ITEM: 'copyItem',
+  COPY_ITEMS: 'copyItems',
   MOVE_ITEM: 'moveItem',
   SHARE_ITEM: 'shareItem',
   FILE_UPLOAD: 'fileUpload',

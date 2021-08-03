@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import {
   buildCopyItemRoute,
+  buildCopyItemsRoute,
   buildDeleteItemRoute,
   buildDeleteItemsRoute,
   buildDownloadFilesRoute,
@@ -180,6 +181,22 @@ export const copyItem = async (
   // send parentId if defined
   const body = { ...(to && { parentId: to }) };
   const res = await fetch(`${API_HOST}/${buildCopyItemRoute(id)}`, {
+    ...DEFAULT_POST,
+    body: JSON.stringify(body),
+  }).then(failOnError);
+
+  const newItem = await res.json();
+
+  return newItem;
+};
+
+export const copyItems = async (
+  { id, to }: { id: UUID[]; to: UUID },
+  { API_HOST }: QueryClientConfig,
+) => {
+  // send parentId if defined
+  const body = { ...(to && { parentId: to }) };
+  const res = await fetch(`${API_HOST}/${buildCopyItemsRoute(id)}`, {
     ...DEFAULT_POST,
     body: JSON.stringify(body),
   }).then(failOnError);
