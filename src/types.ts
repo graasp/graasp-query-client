@@ -77,3 +77,20 @@ export enum PERMISSION_LEVELS {
   WRITE = 'write',
   ADMIN = 'admin',
 }
+
+export type PartialChatMessage = {
+  chatId: string;
+  body: string;
+};
+
+export type ChatMessage = {
+  chatId: string;
+  creator: string;
+  createdAt: string;
+  body: string;
+};
+
+export interface Chat {
+  id: string;
+  messages: Array<ChatMessage>;
+}
