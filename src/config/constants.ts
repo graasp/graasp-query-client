@@ -6,3 +6,4 @@ export const STALE_TIME_MILLISECONDS = 0; // default is 0 to always refetch, can
 export const CACHE_TIME_MILLISECONDS = 1000 * 60 * 5; // default is 5 min
 
 export const COOKIE_SESSION_NAME = 'session';
+export const SIGNED_OUT_USER = {};

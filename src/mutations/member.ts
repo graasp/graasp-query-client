@@ -27,7 +27,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onSuccess: () => {
       notifier?.({ type: signOutRoutine.SUCCESS });
-      queryClient.invalidateQueries();
+      queryClient.resetQueries();
 
       // remove cookies from browser
       Cookies.remove(COOKIE_SESSION_NAME);
@@ -43,7 +43,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   queryClient.setMutationDefaults(MUTATION_KEYS.EDIT_MEMBER, {
     mutationFn: (payload) =>
       Api.editMember(payload, queryConfig).then((member) => Map(member)),
-    onMutate: async (payload) => {
+    onMutate: async ({ member }) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
 
@@ -55,7 +55,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       // Optimistically update to the new value
       queryClient.setQueryData(
         CURRENT_MEMBER_KEY,
-        previousMember.merge(payload),
+        previousMember.merge(member),
       );
 
       // Return a context object with the snapshotted value
@@ -65,8 +65,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: editMemberRoutine.SUCCESS });
     },
     // If the mutation fails, use the context returned from onMutate to roll back
-    onError: (error) => {
+    onError: (error, _, context) => {
       notifier?.({ type: editMemberRoutine.FAILURE, payload: { error } });
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, context.previousMember);
     },
     // Always refetch after error or success:
     onSettled: () => {

@@ -13,7 +13,7 @@ import {
   SHARED_ITEMS_KEY,
 } from '../config/keys';
 import * as Api from '../api';
-import { Item, QueryClientConfig, UUID } from '../types';
+import { Item, QueryClientConfig, UndefinedArgument, UUID } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { retry, cacheTime, staleTime } = queryConfig;
@@ -39,11 +39,25 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ...defaultOptions,
       }),
 
-    useChildren: (id: UUID, options: { enabled?: boolean, ordered?: boolean } = {}) =>
+    useChildren: (
+      id: UUID | undefined,
+      options: { enabled?: boolean; ordered?: boolean } = {
+        enabled: true,
+        ordered: true,
+      },
+    ) =>
       useQuery({
         queryKey: buildItemChildrenKey(id),
-        queryFn: () =>
-          Api.getChildren(id, options?.ordered, queryConfig).then((data) => List(data)),
+        queryFn: () => {
+          if (!id) {
+            throw new UndefinedArgument();
+          }
+          return Api.getChildren(
+            id,
+            options?.ordered,
+            queryConfig,
+          ).then((data) => List(data));
+        },
         onSuccess: async (items: List<Item>) => {
           if (items?.size) {
             // save items in their own key
@@ -64,7 +78,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     }: {
       id: UUID;
       path: string;
-      enabled: boolean;
+      enabled?: boolean;
     }) =>
       useQuery({
         queryKey: buildItemParentsKey(id),
@@ -98,10 +112,15 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ...defaultOptions,
       }),
 
-    useItem: (id: UUID) =>
+    useItem: (id?: UUID) =>
       useQuery({
         queryKey: buildItemKey(id),
-        queryFn: () => Api.getItem(id, queryConfig).then((data) => Map(data)),
+        queryFn: () => {
+          if (!id) {
+            throw new UndefinedArgument();
+          }
+          return Api.getItem(id, queryConfig).then((data) => Map(data));
+        },
         enabled: Boolean(id),
         ...defaultOptions,
       }),
@@ -127,46 +146,68 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ...defaultOptions,
       }),
 
-    useItemMemberships: (id: UUID) =>
+    useItemMemberships: (id?: UUID) =>
       useQuery({
         queryKey: buildItemMembershipsKey(id),
-        queryFn: () =>
-          Api.getMembershipsForItem(id, queryConfig).then((data) => List(data)),
+        queryFn: () => {
+          if (!id) {
+            throw new UndefinedArgument();
+          }
+
+          return Api.getMembershipsForItem(id, queryConfig).then((data) =>
+            List(data),
+          );
+        },
         enabled: Boolean(id),
         ...defaultOptions,
       }),
 
-    useItemLogin: (id: UUID) =>
+    useItemLogin: (id?: UUID) =>
       useQuery({
         queryKey: buildItemLoginKey(id),
-        queryFn: () =>
-          Api.getItemLogin(id, queryConfig).then((data) => Map(data)),
+        queryFn: () => {
+          if (!id) {
+            throw new UndefinedArgument();
+          }
+          return Api.getItemLogin(id, queryConfig).then((data) => Map(data));
+        },
         enabled: Boolean(id),
         ...defaultOptions,
       }),
 
     useFileContent: (
-      id: UUID,
+      id?: UUID,
       { enabled = true }: { enabled?: boolean } = {},
     ) =>
       useQuery({
         queryKey: buildFileContentKey(id),
-        queryFn: () =>
-          Api.getFileContent({ id }, queryConfig).then((data) => data.blob()),
+        queryFn: () => {
+          if (!id) {
+            throw new UndefinedArgument();
+          }
+          return Api.getFileContent({ id }, queryConfig).then((data) =>
+            data.blob(),
+          );
+        },
         enabled: Boolean(id) && enabled,
         ...defaultOptions,
       }),
 
     useS3FileContent: (
-      id: UUID,
+      id?: UUID,
       { enabled = true }: { enabled?: boolean } = {},
     ) =>
       useQuery({
         queryKey: buildS3FileContentKey(id),
-        queryFn: () =>
-          Api.getS3FileUrl({ id }, queryConfig)
+        queryFn: () => {
+          if (!id) {
+            throw new UndefinedArgument();
+          }
+
+          return Api.getS3FileUrl({ id }, queryConfig)
             .then((url) => fetch(url))
-            .then((data) => data.blob()),
+            .then((data) => data.blob());
+        },
         enabled: Boolean(id) && enabled,
         ...defaultOptions,
       }),

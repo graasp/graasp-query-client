@@ -20,13 +20,14 @@ export default (queryConfig: QueryClientConfig) => {
       ...defaultOptions,
     });
 
-    const useMember = (id: UUID) =>
-      useQuery({
-        queryKey: buildMemberKey(id),
-        queryFn: () => Api.getMember({id}, queryConfig).then((data) => Map(data)),
-        enabled: Boolean(id),
-        ...defaultOptions,
-      })
+  const useMember = (id: UUID) =>
+    useQuery({
+      queryKey: buildMemberKey(id),
+      queryFn: () =>
+        Api.getMember({ id }, queryConfig).then((data) => Map(data)),
+      enabled: Boolean(id),
+      ...defaultOptions,
+    });
 
   return { useCurrentMember, useMember };
 };
