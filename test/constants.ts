@@ -1,4 +1,11 @@
-import { Item, ItemLogin, Member, Membership } from '../src/types';
+import {
+  Item,
+  ItemLogin,
+  ITEM_TYPES,
+  Member,
+  Membership,
+  PERMISSION_LEVELS,
+} from '../src/types';
 
 export const API_HOST = 'http://localhost:3000';
 export const UNAUTHORIZED_RESPONSE = { some: 'error' };
@@ -7,7 +14,7 @@ export const ITEMS: Item[] = [
     id: '42',
     name: 'item1',
     path: '42',
-    type: 'folder',
+    type: ITEM_TYPES.FOLDER,
     description: '',
     extra: {},
   },
@@ -15,7 +22,7 @@ export const ITEMS: Item[] = [
     id: '5243',
     name: 'item2',
     path: '5243',
-    type: 'folder',
+    type: ITEM_TYPES.FOLDER,
     description: '',
     extra: {},
   },
@@ -35,7 +42,7 @@ export const ITEM_MEMBERSHIPS_RESPONSE: Membership[] = [
     id: 'membership-id',
     memberId: 'member-id',
     itemId: 'item-id',
-    permission: 'read',
+    permission: PERMISSION_LEVELS.READ,
   },
 ];
 
@@ -43,17 +50,13 @@ export const ITEM_LOGIN_RESPONSE: ItemLogin = {
   loginSchema: 'username',
 };
 
-export const FILE_RESPONSE = {
-  blob: () => {
-    return 'blob';
-  },
+const BlobMock = {
+  blob: () => 'blob',
 };
+
+export const FILE_RESPONSE = BlobMock;
 
 export const S3_FILE_RESPONSE = {
   key: 'someurl',
 };
-export const S3_FILE_BLOB_RESPONSE = {
-  blob: () => {
-    return 'blob';
-  },
-};
+export const S3_FILE_BLOB_RESPONSE = BlobMock;

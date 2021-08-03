@@ -27,7 +27,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onSuccess: () => {
       notifier?.({ type: signOutRoutine.SUCCESS });
-      queryClient.invalidateQueries();
+      queryClient.resetQueries();
 
       // remove cookies from browser
       Cookies.remove(COOKIE_SESSION_NAME);

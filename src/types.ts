@@ -66,3 +66,14 @@ export class UndefinedArgument extends Error {
 export type ItemLogin = {
   loginSchema: string;
 };
+
+// todo: use types from graasp types
+export enum ITEM_TYPES {
+  FOLDER = 'folder',
+}
+
+export enum PERMISSION_LEVELS {
+  READ = 'read',
+  WRITE = 'write',
+  ADMIN = 'admin',
+}
