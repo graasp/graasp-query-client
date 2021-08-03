@@ -35,6 +35,20 @@ export type Member = {
   extra: {};
 };
 
+export type GroupMembership = {
+  id: UUID;
+  member: UUID;
+  group: UUID;
+};
+
+export type Group = Member & {
+  type: string
+}
+
+export type ExtendedGroup = Member & {
+  parentId: UUID;
+}
+
 export type ExtendedItem = Item & {
   parentId: UUID;
 };

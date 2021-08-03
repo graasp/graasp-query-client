@@ -5,3 +5,5 @@ export * from './authentication';
 export * from './itemTag';
 export * from './itemLogin';
 export * from './itemFlag';
+export * from './group';
+export * from './groupMembership';

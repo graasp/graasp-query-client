@@ -1,16 +1,26 @@
 import type { UUID } from '../types';
-import { hashItemsIds } from '../utils/item';
+import { hashIds } from '../utils/item';
 
 export const ITEMS_KEY = 'items';
 export const OWN_ITEMS_KEY = [ITEMS_KEY, 'own'];
 export const buildItemKey = (id?: UUID) => [ITEMS_KEY, id];
-export const buildItemsKey = (ids: UUID[]) => [ITEMS_KEY, hashItemsIds(ids)];
+export const buildItemsKey = (ids: UUID[]) => [ITEMS_KEY, hashIds(ids)];
 export const buildItemChildrenKey = (id: UUID) => [ITEMS_KEY, id, 'children'];
 export const SHARED_ITEMS_KEY = 'shared';
 export const CURRENT_MEMBER_KEY = 'currentMember';
 export const MEMBERS_KEY = 'members';
+
 export const buildMemberKey = (id: UUID) => [MEMBERS_KEY, id];
 export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, id, 'parents'];
+
+export const GROUPS_KEY = 'groups';
+export const buildGroupKey = (id: UUID) => [GROUPS_KEY, id];
+export const buildGroupsKey = (ids: UUID[]) => [ITEMS_KEY, hashIds(ids)];
+
+export const GROUP_MEMBERSHIPS_KEY = 'group-memberships';
+export const OWN_GROUP_MEMBERSHIPS_KEY = [GROUP_MEMBERSHIPS_KEY, 'own'];
+export const buildGroupMembershipKey = (id?: UUID) => [GROUP_MEMBERSHIPS_KEY, id];
+
 
 export const getKeyForParentId = (parentId: UUID | null) =>
   parentId ? buildItemChildrenKey(parentId) : OWN_ITEMS_KEY;
@@ -31,6 +41,8 @@ export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, id, 'flags'];
 
 export const MUTATION_KEYS = {
   POST_ITEM: 'postItem',
+  POST_GROUP: 'postGroup',
+  SHARE_GROUP: 'shareGroup',
   EDIT_ITEM: 'editItem',
   DELETE_ITEM: 'deleteItem',
   DELETE_ITEMS: 'deleteItems',
