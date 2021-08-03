@@ -1,5 +1,3 @@
-import { RetryValue } from 'react-query/types/core/retryer';
-
 export type Notifier = (e: any) => void;
 
 export type QueryClientConfig = {
@@ -43,6 +41,20 @@ export type Membership = {
   itemId: string;
   permission: string;
 };
+
+export type GroupMembership = {
+  id: UUID;
+  member: UUID;
+  group: UUID;
+};
+
+export type Group = Member & {
+  type: string
+}
+
+export type ExtendedGroup = Member & {
+  parentId: UUID;
+}
 
 export type ExtendedItem = Item & {
   parentId: UUID;

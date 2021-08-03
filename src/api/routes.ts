@@ -4,6 +4,9 @@ import { UUID } from '../types';
 export const ITEMS_ROUTE = 'items';
 export const ITEM_MEMBERSHIPS_ROUTE = 'item-memberships';
 export const MEMBERS_ROUTE = `members`;
+export const GROUPS_ROUTE = 'groups';
+export const GROUP_MEMBERSHIPS_ROUTE = 'group-memberships';
+
 export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const SHARE_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 export const buildPostItemRoute = (parentId: UUID) => {
@@ -90,6 +93,22 @@ export const GET_FLAGS_ROUTE = `${ITEMS_ROUTE}/flags`;
 export const buildPostItemFlagRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/flags`;
 
+export const buildGetGroupRoute = (id: UUID) => `${GROUPS_ROUTE}/${id}`;
+export const buildPostGroupRoute = (parentId: UUID) => {
+  let url = GROUPS_ROUTE;
+  if (parentId) {
+    url += `?parentId=${parentId}`;
+  }
+  return url;
+};
+export const buildGetGroupsRoute = (ids: UUID[]) =>
+  `${GROUPS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
+
+export const GET_OWN_GROUP_MEMBERSHIPS_ROUTES = `${GROUP_MEMBERSHIPS_ROUTE}/own`;
+export const buildPostGroupMembershipRoute = (id: UUID) =>
+  `${GROUP_MEMBERSHIPS_ROUTE}?groupId=${id}`;
+
+
 export const API_ROUTES = {
   ITEMS_ROUTE,
   SHARE_ITEM_WITH_ROUTE,
@@ -98,6 +117,11 @@ export const API_ROUTES = {
   GET_CURRENT_MEMBER_ROUTE,
   GET_TAGS_ROUTE,
   GET_FLAGS_ROUTE,
+  GET_OWN_GROUP_MEMBERSHIPS_ROUTES,
+  buildPostGroupRoute,
+  buildPostGroupMembershipRoute,
+  buildGetGroupRoute,
+  buildGetGroupsRoute,
   buildGetS3MetadataRoute,
   buildGetMember,
   buildUploadFilesRoute,
