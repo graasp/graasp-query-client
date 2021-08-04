@@ -1,8 +1,6 @@
 /**
  * Graasp websocket client top-level file
  * Entry point to use the Graasp WebSocket client in front-end applications
- *
- * @author Alexandre CHAU
  */
 
 import { QueryClient } from 'react-query';
