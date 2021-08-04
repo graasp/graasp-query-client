@@ -25,6 +25,7 @@ export const buildGetChildrenRoute = (id: UUID, ordered: boolean) =>
     { addQueryPrefix: true },
   )}`;
 export const buildGetItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
+export const buildGetGroupOwnItemRoute = (id: UUID) => `${ITEMS_ROUTE}/group/${id}/own`;
 export const buildGetPublicItemRoute = (id: UUID) => `p/${ITEMS_ROUTE}/${id}`;
 export const buildGetPublicChildrenRoute = (id: UUID, ordered: boolean) =>
   `p/${ITEMS_ROUTE}/${id}/children${qs.stringify(
@@ -94,6 +95,8 @@ export const buildPostItemFlagRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/flags`;
 
 export const buildGetGroupRoute = (id: UUID) => `${GROUPS_ROUTE}/${id}`;
+export const buildGetGroupChildrenRoute = (id: UUID) => `${GROUPS_ROUTE}/${id}/children`;
+export const GET_ROOT_GROUPS_ROUTE = `${GROUPS_ROUTE}/root`;
 export const buildPostGroupRoute = (parentId: UUID) => {
   let url = GROUPS_ROUTE;
   if (parentId) {
@@ -118,6 +121,8 @@ export const API_ROUTES = {
   GET_TAGS_ROUTE,
   GET_FLAGS_ROUTE,
   GET_OWN_GROUP_MEMBERSHIPS_ROUTES,
+  GET_ROOT_GROUPS_ROUTE,
+  buildGetGroupChildrenRoute,
   buildPostGroupRoute,
   buildPostGroupMembershipRoute,
   buildGetGroupRoute,

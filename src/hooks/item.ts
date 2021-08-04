@@ -10,7 +10,7 @@ import {
   buildFileContentKey,
   buildS3FileContentKey,
   OWN_ITEMS_KEY,
-  SHARED_ITEMS_KEY,
+  SHARED_ITEMS_KEY, buildGroupItemsOwnKey,
 } from '../config/keys';
 import * as Api from '../api';
 import { Item, QueryClientConfig, UndefinedArgument, UUID } from '../types';
@@ -24,10 +24,17 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   };
 
   return {
-    useOwnItems: () =>
+    useOwnItems: (groupId: string) =>
       useQuery({
-        queryKey: OWN_ITEMS_KEY,
-        queryFn: () => Api.getOwnItems(queryConfig).then((data) => List(data)),
+        queryKey:
+        groupId?
+          buildGroupItemsOwnKey(groupId):
+        OWN_ITEMS_KEY,
+        queryFn: () =>
+          groupId?
+            Api.getGroupOwnItems(groupId,queryConfig).then((data)=> List(data))
+            :
+          Api.getOwnItems(queryConfig).then((data) => List(data)),
         onSuccess: async (items: List<Item>) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions

@@ -4,7 +4,7 @@ import {
   buildDeleteItemsRoute,
   buildDownloadFilesRoute,
   buildEditItemRoute,
-  buildGetChildrenRoute,
+  buildGetChildrenRoute, buildGetGroupOwnItemRoute,
   buildGetItemRoute,
   buildGetItemsRoute,
   buildGetPublicChildrenRoute,
@@ -66,8 +66,12 @@ export const getOwnItems = async ({ API_HOST }: QueryClientConfig) => {
   return res.json();
 };
 
-// payload = {name, type, description, extra}
-// querystring = {parentId}
+export const getGroupOwnItems = async (id: UUID, { API_HOST }: QueryClientConfig) => {
+  const res = await fetch(`${API_HOST}/${buildGetGroupOwnItemRoute(id)}`, DEFAULT_GET);
+
+  return res.json();
+};
+
 export const postItem = async (
   { name, type, description, extra, parentId }: ExtendedItem,
   { API_HOST }: QueryClientConfig,
