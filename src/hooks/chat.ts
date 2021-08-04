@@ -1,4 +1,4 @@
-import { fromJS } from 'immutable';
+import { Map } from 'immutable';
 import { useQuery } from 'react-query';
 import * as Api from '../api';
 import { buildItemChatKey } from '../config/keys';
@@ -17,7 +17,7 @@ export default (queryConfig: QueryClientConfig) => {
       useQuery({
         queryKey: buildItemChatKey(itemId),
         queryFn: () =>
-          Api.getItemChat(itemId, queryConfig).then((data) => fromJS(data)),
+          Api.getItemChat(itemId, queryConfig).then((data) => Map(data)),
         ...defaultOptions,
         enabled: Boolean(itemId),
       }),
