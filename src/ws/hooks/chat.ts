@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 import { buildItemChatKey } from '../../config/keys';
 import { Chat, ChatMessage, UUID } from '../../types';
-import { Channel, GraaspWebsocketClient } from '../ws-client';
+import { Channel, WebsocketClient } from '../ws-client';
 
 // todo: use graasp-types?
 interface ChatEvent {
@@ -12,15 +12,15 @@ interface ChatEvent {
   message: ChatMessage;
 }
 
-export default (
-  websocketClient: GraaspWebsocketClient,
+export const configureWsChatHooks = (
   queryClient: QueryClient,
+  websocketClient: WebsocketClient,
 ) => ({
   /**
    * React hook to subscribe to the updates of the given chat ID
    * @param chatId The ID of the chat of which to observe updates
    */
-  useItemChatUpdates: (chatId: UUID) => {
+  useItemChatUpdates: (chatId: UUID | null) => {
     useEffect(() => {
       if (!chatId) {
         return;

@@ -13,7 +13,7 @@ import {
   SHARED_ITEMS_KEY,
 } from '../../config/keys';
 import { Item, UUID } from '../../types';
-import { Channel, GraaspWebsocketClient } from '../ws-client';
+import { Channel, WebsocketClient } from '../ws-client';
 
 // TODO: use graasp-types?
 interface ItemEvent {
@@ -22,15 +22,15 @@ interface ItemEvent {
   item: Item;
 }
 
-export default (
-  websocketClient: GraaspWebsocketClient,
+export const configureWsItemHooks = (
   queryClient: QueryClient,
+  websocketClient: WebsocketClient,
 ) => ({
   /**
    * React hook to subscribe to the updates of the given item ID
    * @param itemId The ID of the item of which to observe updates
    */
-  useItemUpdates: (itemId: UUID) => {
+  useItemUpdates: (itemId?: UUID | null) => {
     useEffect(() => {
       if (!itemId) {
         return;
@@ -73,7 +73,7 @@ export default (
    * React hook to subscribe to the children updates of the given parent item ID
    * @param parentId The ID of the parent on which to observe children updates
    */
-  useChildrenUpdates: (parentId: UUID) => {
+  useChildrenUpdates: (parentId?: UUID | null) => {
     useEffect(() => {
       if (!parentId) {
         return;
@@ -131,7 +131,7 @@ export default (
    * React hook to subscribe to the owned items updates of the given user ID
    * @param userId The ID of the user on which to observe owned items updates
    */
-  useOwnItemsUpdates: (userId: UUID) => {
+  useOwnItemsUpdates: (userId?: UUID | null) => {
     useEffect(() => {
       if (!userId) {
         return;
@@ -189,7 +189,7 @@ export default (
    * React hook to subscribe to the shared items updates of the given user ID
    * @param parentId The ID of the user on which to observe shared items updates
    */
-  useSharedItemsUpdates: (userId: UUID) => {
+  useSharedItemsUpdates: (userId?: UUID | null) => {
     useEffect(() => {
       if (!userId) {
         return;

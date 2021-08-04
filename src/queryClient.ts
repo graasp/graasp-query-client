@@ -8,7 +8,7 @@ import {
 import configureHooks from './hooks';
 import configureMutations from './mutations';
 import type { QueryClientConfig } from './types';
-import configureWebSockets from './ws';
+import { configureWebsocketClient } from './ws';
 
 export type Notifier = (e: any) => any;
 
@@ -71,19 +71,16 @@ export default (config: Partial<QueryClientConfig>) => {
   configureMutations(queryClient, queryConfig);
 
   // set up hooks given config
-  const hooks = configureHooks(queryClient, queryConfig);
-
-  // set up websocket client and hooks given config
-  const ws = queryConfig.enableWebsocket
-    ? { ws: configureWebSockets(queryClient, queryConfig) }
-    : {};
+  const websocketClient = queryConfig.enableWebsocket
+    ? configureWebsocketClient(queryConfig)
+    : undefined;
+  const hooks = configureHooks(queryClient, queryConfig, websocketClient);
 
   // returns the queryClient and relative instances
   return {
     queryClient,
     QueryClientProvider,
     hooks,
-    ...ws,
     useMutation,
     ReactQueryDevtools,
   };

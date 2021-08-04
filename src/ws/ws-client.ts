@@ -72,7 +72,7 @@ function keyToChannel(key: string): Channel {
 /**
  * Websocket client for the graasp-websockets protocol
  */
-export interface GraaspWebsocketClient {
+export interface WebsocketClient {
   /**
    * Subscribe a handler to a given channel
    * @param channel Channel to which to subscribe to
@@ -90,7 +90,7 @@ export interface GraaspWebsocketClient {
 
 export const configureWebsocketClient = (
   config: QueryClientConfig,
-): GraaspWebsocketClient => {
+): WebsocketClient => {
   // native client WebSocket instance
   const ws = new WebSocket(config.WS_HOST);
 
