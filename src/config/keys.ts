@@ -39,6 +39,7 @@ export const MUTATION_KEYS = {
   COPY_ITEM: 'copyItem',
   COPY_ITEMS: 'copyItems',
   MOVE_ITEM: 'moveItem',
+  MOVE_ITEMS: 'moveItems',
   SHARE_ITEM: 'shareItem',
   FILE_UPLOAD: 'fileUpload',
   SIGN_OUT: 'signOut',

@@ -13,6 +13,7 @@ import {
   buildGetPublicItemRoute,
   buildGetS3MetadataRoute,
   buildMoveItemRoute,
+  buildMoveItemsRoute,
   buildPostItemRoute,
   buildS3FileUrl,
   buildS3UploadFileRoute,
@@ -167,6 +168,20 @@ export const moveItem = async (
   // send parentId if defined
   const body = { ...(to && { parentId: to }) };
   const res = await fetch(`${API_HOST}/${buildMoveItemRoute(id)}`, {
+    ...DEFAULT_POST,
+    body: JSON.stringify(body),
+  }).then(failOnError);
+
+  return res.ok;
+};
+
+export const moveItems = async (
+  { to, id }: { id: UUID[]; to: UUID },
+  { API_HOST }: QueryClientConfig,
+) => {
+  // send parentId if defined
+  const body = { ...(to && { parentId: to }) };
+  const res = await fetch(`${API_HOST}/${buildMoveItemsRoute(id)}`, {
     ...DEFAULT_POST,
     body: JSON.stringify(body),
   }).then(failOnError);

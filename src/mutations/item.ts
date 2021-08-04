@@ -9,6 +9,7 @@ import {
   deleteItemRoutine,
   editItemRoutine,
   moveItemRoutine,
+  moveItemsRoutine,
   shareItemRoutine,
   uploadFileRoutine,
   putItemLoginRoutine,
@@ -32,6 +33,7 @@ const {
   FILE_UPLOAD,
   SHARE_ITEM,
   MOVE_ITEM,
+  MOVE_ITEMS,
   COPY_ITEM,
   COPY_ITEMS,
   DELETE_ITEMS,
@@ -394,6 +396,90 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         );
         queryClient.invalidateQueries(parentKey);
       }
+    },
+  });
+
+  queryClient.setMutationDefaults(MOVE_ITEMS, {
+    mutationFn: (payload) =>
+      Api.moveItems(payload, queryConfig).then(() => payload),
+    onMutate: async ({ id: itemIds, to }) => {
+      const itemsData: List<Item> = List();
+      for(const id of itemIds){
+        const itemKey = buildItemKey(id);
+        const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
+        itemsData.push(itemData.toJS());
+      }
+
+      const previousItems = {
+        ...(Boolean(itemsData) && {
+          // add item in target folder
+          targetParent: await mutateParentChildren({
+            id: to,
+            value: (old: List<Item>) => old.concat(itemsData),
+          }),
+
+          // remove item in original folder
+          originalParent: await mutateParentChildren({
+            childPath: itemsData[0].get('path'),
+            value: (old: List<Item>) => old?.filter(({ id }) => !itemIds.includes(id)),
+          }),
+        }),
+      };
+      // update item's path
+      itemIds.forEach(async (id: any) => {
+        previousItems[id] = await mutateItem({
+          id: id,
+          value: (item: Record<Item>) =>
+            item.set(
+              'path',
+              buildPath({
+                prefix: itemsData[0].get('path'),
+                ids: [id],
+              }),
+            ),
+        })
+      });
+      return previousItems;
+    },
+    onSuccess: () => {
+      notifier?.({ type: moveItemsRoutine.SUCCESS });
+    },
+    // If the mutation fails, use the context returned from onMutate to roll back
+    onError: (error, { itemIds, to }, context) => {
+      const parentKey = getKeyForParentId(to);
+      queryClient.setQueryData(parentKey, context.targetParent);
+
+      itemIds.forEach((id: UUID) => {
+        const itemKey = buildItemKey(id);
+        queryClient.setQueryData(itemKey, context[id].item);
+
+        const itemData = context[id].item;
+        if (itemData) {
+          const parentKey = getKeyForParentId(
+            getDirectParentId(itemData.get('path')),
+          );
+          queryClient.setQueryData(parentKey, context.originalParent);
+        }
+      });
+      notifier?.({ type: moveItemsRoutine.FAILURE, payload: { error } });
+    },
+    // Always refetch after error or success:
+    onSettled: ({id: itemIds, to }) => {
+      const parentKey = getKeyForParentId(to);
+      queryClient.invalidateQueries(parentKey);
+
+      itemIds.forEach((id: UUID) => {
+        const itemKey = buildItemKey(id);
+        queryClient.invalidateQueries(itemKey);
+  
+        const itemData = queryClient.getQueryData(id) as Record<Item>;
+        if (itemData) {
+          const parentKey = getKeyForParentId(
+            getDirectParentId(itemData.get('path')),
+          );
+          queryClient.invalidateQueries(parentKey);
+        }  
+      });
     },
   });
 
