@@ -13,7 +13,6 @@ export const getOwnGroupMemberships = async (
   const res = await fetch(`${API_HOST}/${GET_OWN_GROUP_MEMBERSHIPS_ROUTES}`, {
     ...DEFAULT_GET,
   }).then(failOnError);
-  console.log(res)
   return res.json();
 };
 
@@ -35,6 +34,5 @@ export const postGroupMemberships = async (
     body: JSON.stringify({ member: member[0].id }),
   }).then(failOnError);
 
-  const groupMembership = await res.json();
-  return groupMembership;
+  return res.json();
 };
