@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 import { buildItemMembershipsKey } from '../../config/keys';
 import { Membership, UUID } from '../../types';
-import { Channel, GraaspWebsocketClient } from '../ws-client';
+import { Channel, WebsocketClient } from '../ws-client';
 
 // todo: use graasp-types?
 interface MembershipEvent {
@@ -12,15 +12,15 @@ interface MembershipEvent {
   membership: Membership;
 }
 
-export default (
-  websocketClient: GraaspWebsocketClient,
+export const configureWsMembershipHooks = (
   queryClient: QueryClient,
+  websocketClient: WebsocketClient,
 ) => ({
   /**
    * React hooks to subscribe to membership updates for a given item ID
    * @param itemId The ID of the item of which to observe memberships updates
    */
-  useItemMembershipsUpdates: (itemId: UUID) => {
+  useItemMembershipsUpdates: (itemId?: UUID | null) => {
     useEffect(() => {
       if (!itemId) {
         return;

@@ -3,7 +3,7 @@
  * React effect hooks to subscribe to real-time updates and mutate query client
  */
 
-import { List, Record } from 'immutable';
+import { List, Map, Record } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 import {
@@ -13,7 +13,7 @@ import {
   SHARED_ITEMS_KEY,
 } from '../../config/keys';
 import { Item, UUID } from '../../types';
-import { Channel, GraaspWebsocketClient } from '../ws-client';
+import { Channel, WebsocketClient } from '../ws-client';
 
 // TODO: use graasp-types?
 interface ItemEvent {
@@ -22,15 +22,15 @@ interface ItemEvent {
   item: Item;
 }
 
-export default (
-  websocketClient: GraaspWebsocketClient,
+export const configureWsItemHooks = (
   queryClient: QueryClient,
+  websocketClient: WebsocketClient,
 ) => ({
   /**
    * React hook to subscribe to the updates of the given item ID
    * @param itemId The ID of the item of which to observe updates
    */
-  useItemUpdates: (itemId: UUID) => {
+  useItemUpdates: (itemId?: UUID | null) => {
     useEffect(() => {
       if (!itemId) {
         return;
@@ -49,7 +49,7 @@ export default (
           if (current?.get('id') === item.id) {
             switch (event.op) {
               case 'update': {
-                queryClient.setQueryData(itemKey, item);
+                queryClient.setQueryData(itemKey, Map(item));
                 break;
               }
               case 'delete': {
@@ -73,7 +73,7 @@ export default (
    * React hook to subscribe to the children updates of the given parent item ID
    * @param parentId The ID of the parent on which to observe children updates
    */
-  useChildrenUpdates: (parentId: UUID) => {
+  useChildrenUpdates: (parentId?: UUID | null) => {
     useEffect(() => {
       if (!parentId) {
         return;
@@ -97,7 +97,7 @@ export default (
                 if (!current.find((i) => i.id === item.id)) {
                   mutation = current.push(item);
                   queryClient.setQueryData(parentChildrenKey, mutation);
-                  queryClient.setQueryData(buildItemKey(item.id), item);
+                  queryClient.setQueryData(buildItemKey(item.id), Map(item));
                 }
                 break;
               }
@@ -105,7 +105,7 @@ export default (
                 // replace value if it exists
                 mutation = current.map((i) => (i.id === item.id ? item : i));
                 queryClient.setQueryData(parentChildrenKey, mutation);
-                queryClient.setQueryData(buildItemKey(item.id), item);
+                queryClient.setQueryData(buildItemKey(item.id), Map(item));
 
                 break;
               }
@@ -131,7 +131,7 @@ export default (
    * React hook to subscribe to the owned items updates of the given user ID
    * @param userId The ID of the user on which to observe owned items updates
    */
-  useOwnItemsUpdates: (userId: UUID) => {
+  useOwnItemsUpdates: (userId?: UUID | null) => {
     useEffect(() => {
       if (!userId) {
         return;
@@ -154,7 +154,7 @@ export default (
                 if (!current.find((i) => i.id === item.id)) {
                   mutation = current.push(item);
                   queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
-                  queryClient.setQueryData(buildItemKey(item.id), item);
+                  queryClient.setQueryData(buildItemKey(item.id), Map(item));
                 }
                 break;
               }
@@ -162,7 +162,7 @@ export default (
                 // replace value if it exists
                 mutation = current.map((i) => (i.id === item.id ? item : i));
                 queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
-                queryClient.setQueryData(buildItemKey(item.id), item);
+                queryClient.setQueryData(buildItemKey(item.id), Map(item));
 
                 break;
               }
@@ -189,7 +189,7 @@ export default (
    * React hook to subscribe to the shared items updates of the given user ID
    * @param parentId The ID of the user on which to observe shared items updates
    */
-  useSharedItemsUpdates: (userId: UUID) => {
+  useSharedItemsUpdates: (userId?: UUID | null) => {
     useEffect(() => {
       if (!userId) {
         return;
@@ -212,7 +212,7 @@ export default (
                 if (!current.find((i) => i.id === item.id)) {
                   mutation = current.push(item);
                   queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
-                  queryClient.setQueryData(buildItemKey(item.id), item);
+                  queryClient.setQueryData(buildItemKey(item.id), Map(item));
                 }
                 break;
               }
@@ -220,7 +220,7 @@ export default (
                 // replace value if it exists
                 mutation = current.map((i) => (i.id === item.id ? item : i));
                 queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
-                queryClient.setQueryData(buildItemKey(item.id), item);
+                queryClient.setQueryData(buildItemKey(item.id), Map(item));
 
                 break;
               }

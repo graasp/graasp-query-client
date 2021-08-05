@@ -1,31 +1,54 @@
-import { QueryClient, useQuery } from 'react-query';
 import { List, Map } from 'immutable';
+import { QueryClient, useQuery } from 'react-query';
+import * as Api from '../api';
 import {
+  buildFileContentKey,
   buildItemChildrenKey,
   buildItemKey,
-  buildItemsKey,
   buildItemLoginKey,
   buildItemMembershipsKey,
   buildItemParentsKey,
-  buildFileContentKey,
+  buildItemsKey,
   buildS3FileContentKey,
   OWN_ITEMS_KEY,
   SHARED_ITEMS_KEY,
 } from '../config/keys';
-import * as Api from '../api';
 import { Item, QueryClientConfig, UndefinedArgument, UUID } from '../types';
+import { configureWsItemHooks, configureWsMembershipHooks } from '../ws';
+import { WebsocketClient } from '../ws/ws-client';
 
-export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
-  const { retry, cacheTime, staleTime } = queryConfig;
+export default (
+  queryClient: QueryClient,
+  queryConfig: QueryClientConfig,
+  useCurrentMember: Function,
+  websocketClient?: WebsocketClient,
+) => {
+  const { retry, cacheTime, staleTime, enableWebsocket } = queryConfig;
   const defaultOptions = {
     retry,
     cacheTime,
     staleTime,
   };
 
+  const itemWsHooks =
+    enableWebsocket && websocketClient // required to type-check non-null
+      ? configureWsItemHooks(queryClient, websocketClient)
+      : undefined;
+  const membershipWsHooks =
+    enableWebsocket && websocketClient // required to type-check non-null
+      ? configureWsMembershipHooks(queryClient, websocketClient)
+      : undefined;
+
   return {
-    useOwnItems: () =>
-      useQuery({
+    useOwnItems: (options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
+      const { data: currentMember } = useCurrentMember();
+      itemWsHooks?.useOwnItemsUpdates(
+        getUpdates ? currentMember?.get('id') : null,
+      );
+
+      return useQuery({
         queryKey: OWN_ITEMS_KEY,
         queryFn: () => Api.getOwnItems(queryConfig).then((data) => List(data)),
         onSuccess: async (items: List<Item>) => {
@@ -37,26 +60,28 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           });
         },
         ...defaultOptions,
-      }),
+      });
+    },
 
     useChildren: (
       id: UUID | undefined,
-      options: { enabled?: boolean; ordered?: boolean } = {
-        enabled: true,
-        ordered: true,
-      },
-    ) =>
-      useQuery({
+      options?: { enabled?: boolean; ordered?: boolean; getUpdates?: boolean },
+    ) => {
+      const enabled = options?.enabled ?? true;
+      const ordered = options?.ordered ?? true;
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
+      itemWsHooks?.useChildrenUpdates(getUpdates ? id : null);
+
+      return useQuery({
         queryKey: buildItemChildrenKey(id),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getChildren(
-            id,
-            options?.ordered,
-            queryConfig,
-          ).then((data) => List(data));
+          return Api.getChildren(id, ordered, queryConfig).then((data) =>
+            List(data),
+          );
         },
         onSuccess: async (items: List<Item>) => {
           if (items?.size) {
@@ -68,8 +93,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           }
         },
         ...defaultOptions,
-        enabled: Boolean(id) && options?.enabled,
-      }),
+        enabled: Boolean(id) && enabled,
+      });
+    },
 
     useParents: ({
       id,
@@ -97,8 +123,15 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         enabled: enabled && Boolean(id),
       }),
 
-    useSharedItems: () =>
-      useQuery({
+    useSharedItems: (options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
+      const { data: currentMember } = useCurrentMember();
+      itemWsHooks?.useSharedItemsUpdates(
+        getUpdates ? currentMember?.get('id') : null,
+      );
+
+      return useQuery({
         queryKey: SHARED_ITEMS_KEY,
         queryFn: () =>
           Api.getSharedItems(queryConfig).then((data) => List(data)),
@@ -110,10 +143,15 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           });
         },
         ...defaultOptions,
-      }),
+      });
+    },
 
-    useItem: (id?: UUID) =>
-      useQuery({
+    useItem: (id?: UUID, options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
+      itemWsHooks?.useItemUpdates(getUpdates ? id : null);
+
+      return useQuery({
         queryKey: buildItemKey(id),
         queryFn: () => {
           if (!id) {
@@ -123,11 +161,16 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         },
         enabled: Boolean(id),
         ...defaultOptions,
-      }),
+      });
+    },
 
     // todo: add optimisation to avoid fetching items already in cache
-    useItems: (ids: UUID[]) =>
-      useQuery({
+    useItems: (ids: UUID[], options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
+      ids.map((id) => itemWsHooks?.useItemUpdates(getUpdates ? id : null));
+
+      return useQuery({
         queryKey: buildItemsKey(ids),
         queryFn: () =>
           ids
@@ -144,10 +187,15 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         },
         enabled: ids && Boolean(ids.length) && ids.every((id) => Boolean(id)),
         ...defaultOptions,
-      }),
+      });
+    },
 
-    useItemMemberships: (id?: UUID) =>
-      useQuery({
+    useItemMemberships: (id?: UUID, options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
+      membershipWsHooks?.useItemMembershipsUpdates(getUpdates ? id : null);
+
+      return useQuery({
         queryKey: buildItemMembershipsKey(id),
         queryFn: () => {
           if (!id) {
@@ -160,7 +208,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         },
         enabled: Boolean(id),
         ...defaultOptions,
-      }),
+      });
+    },
 
     useItemLogin: (id?: UUID) =>
       useQuery({

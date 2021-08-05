@@ -1,25 +1,41 @@
 import { Map } from 'immutable';
-import { useQuery } from 'react-query';
+import { QueryClient, useQuery } from 'react-query';
 import * as Api from '../api';
 import { buildItemChatKey } from '../config/keys';
 import { QueryClientConfig, UUID } from '../types';
+import { configureWsChatHooks } from '../ws';
+import { WebsocketClient } from '../ws/ws-client';
 
-export default (queryConfig: QueryClientConfig) => {
-  const { retry, cacheTime, staleTime } = queryConfig;
+export default (
+  queryClient: QueryClient,
+  queryConfig: QueryClientConfig,
+  websocketClient?: WebsocketClient,
+) => {
+  const { retry, cacheTime, staleTime, enableWebsocket } = queryConfig;
   const defaultOptions = {
     retry,
     cacheTime,
     staleTime,
   };
 
+  const wsHooks =
+    enableWebsocket && websocketClient
+      ? configureWsChatHooks(queryClient, websocketClient)
+      : undefined;
+
   return {
-    useItemChat: (itemId: UUID) =>
-      useQuery({
+    useItemChat: (itemId: UUID, options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
+      wsHooks?.useItemChatUpdates(getUpdates ? itemId : null);
+
+      return useQuery({
         queryKey: buildItemChatKey(itemId),
         queryFn: () =>
           Api.getItemChat(itemId, queryConfig).then((data) => Map(data)),
         ...defaultOptions,
         enabled: Boolean(itemId),
-      }),
+      });
+    },
   };
 };
