@@ -40,7 +40,9 @@ export default (
       : undefined;
 
   return {
-    useOwnItems: (getUpdates: boolean = enableWebsocket) => {
+    useOwnItems: (options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
       const { data: currentMember } = useCurrentMember();
       itemWsHooks?.useOwnItemsUpdates(
         getUpdates ? currentMember?.get('id') : null,
@@ -63,12 +65,12 @@ export default (
 
     useChildren: (
       id: UUID | undefined,
-      options: { enabled?: boolean; ordered?: boolean } = {
-        enabled: true,
-        ordered: true,
-      },
-      getUpdates: boolean = enableWebsocket,
+      options?: { enabled?: boolean; ordered?: boolean; getUpdates?: boolean },
     ) => {
+      const enabled = options?.enabled ?? true;
+      const ordered = options?.ordered ?? true;
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
       itemWsHooks?.useChildrenUpdates(getUpdates ? id : null);
 
       return useQuery({
@@ -77,11 +79,9 @@ export default (
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getChildren(
-            id,
-            options?.ordered,
-            queryConfig,
-          ).then((data) => List(data));
+          return Api.getChildren(id, ordered, queryConfig).then((data) =>
+            List(data),
+          );
         },
         onSuccess: async (items: List<Item>) => {
           if (items?.size) {
@@ -93,7 +93,7 @@ export default (
           }
         },
         ...defaultOptions,
-        enabled: Boolean(id) && options?.enabled,
+        enabled: Boolean(id) && enabled,
       });
     },
 
@@ -123,7 +123,9 @@ export default (
         enabled: enabled && Boolean(id),
       }),
 
-    useSharedItems: (getUpdates: boolean = enableWebsocket) => {
+    useSharedItems: (options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
       const { data: currentMember } = useCurrentMember();
       itemWsHooks?.useSharedItemsUpdates(
         getUpdates ? currentMember?.get('id') : null,
@@ -144,7 +146,9 @@ export default (
       });
     },
 
-    useItem: (id?: UUID, getUpdates: boolean = enableWebsocket) => {
+    useItem: (id?: UUID, options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
       itemWsHooks?.useItemUpdates(getUpdates ? id : null);
 
       return useQuery({
@@ -161,7 +165,9 @@ export default (
     },
 
     // todo: add optimisation to avoid fetching items already in cache
-    useItems: (ids: UUID[], getUpdates: boolean = enableWebsocket) => {
+    useItems: (ids: UUID[], options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
       ids.map((id) => itemWsHooks?.useItemUpdates(getUpdates ? id : null));
 
       return useQuery({
@@ -184,7 +190,9 @@ export default (
       });
     },
 
-    useItemMemberships: (id?: UUID, getUpdates: boolean = enableWebsocket) => {
+    useItemMemberships: (id?: UUID, options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
       membershipWsHooks?.useItemMembershipsUpdates(getUpdates ? id : null);
 
       return useQuery({

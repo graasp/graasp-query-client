@@ -24,7 +24,9 @@ export default (
       : undefined;
 
   return {
-    useItemChat: (itemId: UUID, getUpdates: boolean = enableWebsocket) => {
+    useItemChat: (itemId: UUID, options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
       wsHooks?.useItemChatUpdates(getUpdates ? itemId : null);
 
       return useQuery({
