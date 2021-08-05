@@ -23,7 +23,7 @@ export default (queryClient: QueryClient,queryConfig: QueryClientConfig) => {
       queryKey: buildGroupKey(id),
       queryFn: () =>
         Api.getGroup(id,queryConfig).then((data) => Map(data)),
-      enabled: id !=='',
+      enabled: id !=='' && Boolean(id),
       ...defaultOptions,
     });
 
