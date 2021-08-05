@@ -3,7 +3,7 @@
  * React effect hooks to subscribe to real-time updates and mutate query client
  */
 
-import { List, Record } from 'immutable';
+import { List, Map, Record } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 import {
@@ -49,7 +49,7 @@ export const configureWsItemHooks = (
           if (current?.get('id') === item.id) {
             switch (event.op) {
               case 'update': {
-                queryClient.setQueryData(itemKey, item);
+                queryClient.setQueryData(itemKey, Map(item));
                 break;
               }
               case 'delete': {
@@ -97,7 +97,7 @@ export const configureWsItemHooks = (
                 if (!current.find((i) => i.id === item.id)) {
                   mutation = current.push(item);
                   queryClient.setQueryData(parentChildrenKey, mutation);
-                  queryClient.setQueryData(buildItemKey(item.id), item);
+                  queryClient.setQueryData(buildItemKey(item.id), Map(item));
                 }
                 break;
               }
@@ -105,7 +105,7 @@ export const configureWsItemHooks = (
                 // replace value if it exists
                 mutation = current.map((i) => (i.id === item.id ? item : i));
                 queryClient.setQueryData(parentChildrenKey, mutation);
-                queryClient.setQueryData(buildItemKey(item.id), item);
+                queryClient.setQueryData(buildItemKey(item.id), Map(item));
 
                 break;
               }
@@ -154,7 +154,7 @@ export const configureWsItemHooks = (
                 if (!current.find((i) => i.id === item.id)) {
                   mutation = current.push(item);
                   queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
-                  queryClient.setQueryData(buildItemKey(item.id), item);
+                  queryClient.setQueryData(buildItemKey(item.id), Map(item));
                 }
                 break;
               }
@@ -162,7 +162,7 @@ export const configureWsItemHooks = (
                 // replace value if it exists
                 mutation = current.map((i) => (i.id === item.id ? item : i));
                 queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
-                queryClient.setQueryData(buildItemKey(item.id), item);
+                queryClient.setQueryData(buildItemKey(item.id), Map(item));
 
                 break;
               }
@@ -212,7 +212,7 @@ export const configureWsItemHooks = (
                 if (!current.find((i) => i.id === item.id)) {
                   mutation = current.push(item);
                   queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
-                  queryClient.setQueryData(buildItemKey(item.id), item);
+                  queryClient.setQueryData(buildItemKey(item.id), Map(item));
                 }
                 break;
               }
@@ -220,7 +220,7 @@ export const configureWsItemHooks = (
                 // replace value if it exists
                 mutation = current.map((i) => (i.id === item.id ? item : i));
                 queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
-                queryClient.setQueryData(buildItemKey(item.id), item);
+                queryClient.setQueryData(buildItemKey(item.id), Map(item));
 
                 break;
               }
