@@ -115,6 +115,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: (item) => Api.editItem(item.id, item, queryConfig),
     // newItem contains only changed values
     onMutate: async (newItem: Partial<Item>) => {
+      newItem = {
+        ...newItem,
+        name: newItem.name?.trim()
+      };
+
+      console.log(newItem);
+
       const itemKey = buildItemKey(newItem.id);
 
       // invalidate key
