@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes';
 import {
   buildCopyItemRoute,
   buildDeleteItemRoute,
@@ -26,7 +27,6 @@ import {
 } from './utils';
 import { getParentsIdsFromPath } from '../utils/item';
 import { ExtendedItem, Item, QueryClientConfig, UUID } from '../types';
-import { StatusCodes } from 'http-status-codes';
 
 export const getItem = async (id: UUID, { API_HOST }: QueryClientConfig) => {
   let res = await fetch(`${API_HOST}/${buildGetItemRoute(id)}`, DEFAULT_GET);
@@ -74,7 +74,7 @@ export const postItem = async (
 ) => {
   const res = await fetch(`${API_HOST}/${buildPostItemRoute(parentId)}`, {
     ...DEFAULT_POST,
-    body: JSON.stringify({ name, type, description, extra }),
+    body: JSON.stringify({ name: name.trim(), type, description, extra }),
   }).then(failOnError);
 
   const newItem = await res.json();
@@ -112,7 +112,10 @@ export const editItem = async (
 ) => {
   const req = await fetch(`${API_HOST}/${buildEditItemRoute(id)}`, {
     ...DEFAULT_PATCH,
-    body: JSON.stringify(item),
+    body: JSON.stringify({
+      ...item,
+      name: item.name?.trim()
+    }),
   }).then(failOnError);
 
   const newItem = await req.json();
