@@ -115,21 +115,19 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: (item) => Api.editItem(item.id, item, queryConfig),
     // newItem contains only changed values
     onMutate: async (newItem: Partial<Item>) => {
-      newItem = {
+      const trimmed = {
         ...newItem,
         name: newItem.name?.trim()
       };
 
-      console.log(newItem);
-
-      const itemKey = buildItemKey(newItem.id);
+      const itemKey = buildItemKey(trimmed.id);
 
       // invalidate key
       await queryClient.cancelQueries(itemKey);
 
       // build full item with new values
       const prevItem = queryClient.getQueryData(itemKey) as Record<Item>;
-      const newFullItem = prevItem.merge(newItem);
+      const newFullItem = prevItem.merge(trimmed);
 
       const previousItems = {
         parent: await mutateParentChildren({
@@ -138,7 +136,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             if (!old || old.isEmpty()) {
               return old;
             }
-            const idx = old.findIndex(({ id }) => id === newItem.id);
+            const idx = old.findIndex(({ id }) => id === trimmed.id);
             // todo: remove toJS when moving to List<Map<Item>>
             return old.set(idx, newFullItem.toJS());
           },
