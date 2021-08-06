@@ -308,9 +308,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(COPY_ITEMS, {
     mutationFn: (payload) =>
-      Api.copyItems(payload, queryConfig).then((newItem) => ({
+      Api.copyItems(payload, queryConfig).then((newItems) => ({
         to: payload.to,
-        ...newItem,
+        ...newItems,
       })),
     // cannot mutate because it needs the id
     onSuccess: () => {
@@ -319,8 +319,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onError: (error) => {
       notifier?.({ type: copyItemsRoutine.FAILURE, payload: { error } });
     },
-    onSettled: (newItem) => {
-      const parentKey = getKeyForParentId(newItem?.to);
+    onSettled: (newItems) => {
+      const parentKey = getKeyForParentId(newItems?.to);
       queryClient.invalidateQueries(parentKey);
     },
   });

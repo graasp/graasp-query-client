@@ -216,9 +216,9 @@ export const copyItems = async (
     body: JSON.stringify(body),
   }).then(failOnError);
 
-  const newItem = await res.json();
+  const newItems = await res.json();
 
-  return newItem;
+  return newItems;
 };
 
 export const getSharedItems = async ({ API_HOST }: QueryClientConfig) => {
