@@ -33,7 +33,7 @@ export const getParentsIdsFromPath = (
 
 export const buildPath = (opts: { prefix: string; ids: UUID[] }) => {
   const { prefix, ids } = opts;
-  return `${prefix}${ids.map((id) => transformIdForPath(id)).join('.')}`;
+  return `${prefix}.${ids.map((id) => transformIdForPath(id)).join('.')}`;
 };
 
 export const getDirectParentId = (path: string) => {

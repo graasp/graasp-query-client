@@ -352,7 +352,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
               item.set(
                 'path',
                 buildPath({
-                  prefix: itemData.get('path'),
+                  prefix: queryClient.getQueryData<Record<Item>>(buildItemKey(to))?.get('path') ?? '',
                   ids: [itemId],
                 }),
               ),
@@ -403,24 +403,26 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: (payload) =>
       Api.moveItems(payload, queryConfig).then(() => payload),
     onMutate: async ({ id: itemIds, to }) => {
-      const itemsData: List<Item> = List();
-      for(const id of itemIds){
+
+      const itemsData = itemIds.map((id: UUID) => {
         const itemKey = buildItemKey(id);
         const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
-        itemsData.push(itemData.toJS());
-      }
+        return itemData.toJS();
+      });
+
+      const path = itemsData[0].path;
 
       const previousItems = {
         ...(Boolean(itemsData) && {
           // add item in target folder
           targetParent: await mutateParentChildren({
             id: to,
-            value: (old: List<Item>) => old.concat(itemsData),
+            value: (old: List<Item>) => old?.push(itemsData),
           }),
 
           // remove item in original folder
           originalParent: await mutateParentChildren({
-            childPath: itemsData[0].get('path'),
+            childPath: path,
             value: (old: List<Item>) => old?.filter(({ id }) => !itemIds.includes(id)),
           }),
         }),
@@ -433,7 +435,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             item.set(
               'path',
               buildPath({
-                prefix: itemsData[0].get('path'),
+                prefix: queryClient.getQueryData<Record<Item>>(buildItemKey(to))?.get('path') ?? '',
                 ids: [id],
               }),
             ),
@@ -464,7 +466,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: moveItemsRoutine.FAILURE, payload: { error } });
     },
     // Always refetch after error or success:
-    onSettled: ({id: itemIds, to }) => {
+    onSettled: ({ id: itemIds, to }) => {
       const parentKey = getKeyForParentId(to);
       queryClient.invalidateQueries(parentKey);
 
