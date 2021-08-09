@@ -26,6 +26,14 @@ export const ITEMS: Item[] = [
     description: '',
     extra: {},
   },
+  {
+    id: '5896',
+    name: 'item3',
+    path: '5896',
+    type: ITEM_TYPES.FOLDER,
+    description: '',
+    extra: {},
+  },
 ];
 
 export const MEMBER_RESPONSE: Member = {
