@@ -417,7 +417,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           // add item in target folder
           targetParent: await mutateParentChildren({
             id: to,
-            value: (old: List<Item>) => old?.push(itemsData),
+            value: (old: List<Item>) => old?.concat(itemsData),
           }),
 
           // remove item in original folder
