@@ -71,7 +71,7 @@ export default (
       const ordered = options?.ordered ?? true;
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
-      itemWsHooks?.useChildrenUpdates(getUpdates ? id : null);
+      itemWsHooks?.useChildrenUpdates(enabled && getUpdates ? id : null);
 
       return useQuery({
         queryKey: buildItemChildrenKey(id),
