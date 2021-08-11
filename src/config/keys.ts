@@ -20,10 +20,14 @@ export const buildGroupKey = (id: UUID) => [GROUPS_KEY, id];
 export const buildGroupsKey = (ids: UUID[]) => [ITEMS_KEY, hashIds(ids)];
 export const buildGroupChildrenKey = (id: UUID) => [GROUPS_KEY, id, 'children'];
 export const buildGroupItemsOwnKey = (id: UUID) => [GROUPS_KEY, id, 'own'];
+export const buildGroupItemsSharedKey = (id: UUID) => [GROUPS_KEY, id, 'shared'];
+export const buildGroupParentsKey = (id: UUID) => [GROUPS_KEY, id, 'parents'];
+
 
 export const GROUP_MEMBERSHIPS_KEY = 'group-memberships';
 export const OWN_GROUP_MEMBERSHIPS_KEY = [GROUP_MEMBERSHIPS_KEY, 'own'];
-export const ROOT_GROUP_KEY = [GROUPS_KEY, 'own'];
+export const ROOT_GROUPS_KEY = [GROUPS_KEY, 'root'];
+export const OWN_GROUPS_KEY = [GROUPS_KEY, 'own'];
 export const buildGroupMembershipKey = (id?: UUID) => [GROUP_MEMBERSHIPS_KEY, id];
 
 

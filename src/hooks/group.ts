@@ -4,9 +4,9 @@ import * as Api from '../api';
 import {
   buildGroupChildrenKey,
   buildGroupKey,
-  buildGroupMembershipKey,
+  buildGroupMembershipKey, buildGroupParentsKey,
   buildGroupsKey,
-  OWN_GROUP_MEMBERSHIPS_KEY, ROOT_GROUP_KEY,
+  OWN_GROUP_MEMBERSHIPS_KEY, OWN_GROUPS_KEY, ROOT_GROUPS_KEY,
 } from '../config/keys';
 import { Group, GroupMembership, QueryClientConfig, UUID } from '../types';
 
@@ -79,10 +79,42 @@ export default (queryClient: QueryClient,queryConfig: QueryClientConfig) => {
       ...defaultOptions,
     });
 
+  const useGroupParents = (id: UUID) =>
+    useQuery({
+      queryKey: buildGroupParentsKey(id),
+      queryFn: () =>
+        Api.getGroupParents(id,queryConfig).then((data) => List(data)),
+      onSuccess: async (groups: List<Group>) => {
+        // save items in their own key
+        // eslint-disable-next-line no-unused-expressions
+        groups?.forEach(async (group) => {
+          const { id } = group;
+          queryClient.setQueryData(buildGroupKey(id), Map(group));
+        });
+      },
+      ...defaultOptions,
+      enabled: Boolean(id)
+    });
+
   const useRootGroups = () =>
     useQuery({
-      queryKey: ROOT_GROUP_KEY,
+      queryKey: ROOT_GROUPS_KEY,
       queryFn: () => Api.getRootGroups(queryConfig).then((data) => List(data)),
+      onSuccess: async (groups: List<Group>) => {
+        // save items in their own key
+        // eslint-disable-next-line no-unused-expressions
+        groups?.forEach(async (group) => {
+          const { id } = group;
+          queryClient.setQueryData(buildGroupKey(id), Map(group));
+        });
+      },
+      ...defaultOptions,
+    });
+
+  const useOwnGroups = () =>
+    useQuery({
+      queryKey: OWN_GROUPS_KEY,
+      queryFn: () => Api.getOwnGroups(queryConfig).then((data) => List(data)),
       onSuccess: async (groups: List<Group>) => {
         // save items in their own key
         // eslint-disable-next-line no-unused-expressions
@@ -98,8 +130,10 @@ export default (queryClient: QueryClient,queryConfig: QueryClientConfig) => {
   return {
     useGroup,
     useGroups,
+    useOwnGroups,
     useOwnGroupMemberships,
     useRootGroups,
-    useGroupChildren
+    useGroupChildren,
+    useGroupParents
   };
 };

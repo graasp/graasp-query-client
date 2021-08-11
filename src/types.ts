@@ -1,3 +1,4 @@
+import { RetryValue } from 'react-query/types/core/retryer'
 export type Notifier = (e: any) => void;
 
 export type QueryClientConfig = {

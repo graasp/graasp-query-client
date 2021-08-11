@@ -4,7 +4,7 @@ import {
   buildDeleteItemsRoute,
   buildDownloadFilesRoute,
   buildEditItemRoute,
-  buildGetChildrenRoute, buildGetGroupOwnItemRoute,
+  buildGetChildrenRoute, buildGetGroupOwnItemRoute, buildGetGroupSharedItemRoute,
   buildGetItemRoute,
   buildGetItemsRoute,
   buildGetPublicChildrenRoute,
@@ -68,7 +68,6 @@ export const getOwnItems = async ({ API_HOST }: QueryClientConfig) => {
 
 export const getGroupOwnItems = async (id: UUID, { API_HOST }: QueryClientConfig) => {
   const res = await fetch(`${API_HOST}/${buildGetGroupOwnItemRoute(id)}`, DEFAULT_GET);
-
   return res.json();
 };
 
@@ -82,7 +81,6 @@ export const postItem = async (
   }).then(failOnError);
 
   const newItem = await res.json();
-
   return newItem;
 };
 
@@ -192,6 +190,16 @@ export const copyItem = async (
 
 export const getSharedItems = async ({ API_HOST }: QueryClientConfig) => {
   const res = await fetch(`${API_HOST}/${SHARE_ITEM_WITH_ROUTE}`, {
+    ...DEFAULT_GET,
+  }).then(failOnError);
+
+  return res.json();
+};
+
+export const getSharedGroupItems = async (
+   id: UUID ,
+  { API_HOST }: QueryClientConfig) => {
+  const res = await fetch(`${API_HOST}/${buildGetGroupSharedItemRoute(id)}`, {
     ...DEFAULT_GET,
   }).then(failOnError);
 

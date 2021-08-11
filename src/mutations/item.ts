@@ -19,7 +19,7 @@ import {
   getKeyForParentId,
   MUTATION_KEYS,
   buildItemLoginKey,
-  OWN_ITEMS_KEY,
+  OWN_ITEMS_KEY, buildGroupItemsOwnKey,
 } from '../config/keys';
 import { buildPath, getDirectParentId } from '../utils/item';
 import type { Item, QueryClientConfig, UUID } from '../types';
@@ -41,6 +41,11 @@ interface Value {
   value: any;
 }
 
+interface GroupValue {
+  groupId: UUID,
+  groupRoot: Boolean
+}
+
 interface IdAndValue extends Value {
   id: UUID;
 }
@@ -49,7 +54,10 @@ interface PathAndValue extends Value {
   childPath: string;
 }
 
-type IdOrPathWithValue = IdAndValue | PathAndValue;
+interface PathAndValueAndGroups extends PathAndValue, GroupValue {}
+interface IdAndValueAndGroups extends IdAndValue, GroupValue {}
+
+type IdOrPathWithValueAndGroup = IdAndValueAndGroups | PathAndValueAndGroups;
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -69,14 +77,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     return prevValue;
   };
 
-  const mutateParentChildren = async (args: IdOrPathWithValue) => {
-    const { value } = args;
+  const mutateParentChildren = async (args: IdOrPathWithValueAndGroup) => {
+    const { value, groupId,groupRoot } = args;
     const parentId =
       (args as IdAndValue).id ||
       getDirectParentId((args as PathAndValue).childPath);
 
-    // get parent key
-    const childrenKey = !parentId
+    const childrenKey = groupRoot ? buildGroupItemsOwnKey(groupId) : !parentId
       ? OWN_ITEMS_KEY
       : buildItemChildrenKey(parentId);
 
@@ -97,6 +104,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: async (item) => ({
       parentId: item.parentId,
       item: await Api.postItem(item, queryConfig),
+      groupId: item.groupId,
+      groupRoot: item.groupRoot
     }),
     // we cannot optimistically add an item because we need its id
     onSuccess: () => {
@@ -106,7 +115,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: createItemRoutine.FAILURE, payload: { error } });
     },
     onSettled: (newItem) => {
-      const key = getKeyForParentId(newItem?.parentId);
+      const key = newItem.groupRoot ? buildGroupItemsOwnKey(newItem.groupId) : getKeyForParentId(newItem?.parentId);
       queryClient.invalidateQueries(key);
     },
   });
@@ -114,7 +123,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   queryClient.setMutationDefaults(EDIT_ITEM, {
     mutationFn: (item) => Api.editItem(item.id, item, queryConfig),
     // newItem contains only changed values
-    onMutate: async (newItem: Partial<Item>) => {
+    onMutate: async ({ newItem,groupId,groupRoot
+}) => {
       const itemKey = buildItemKey(newItem.id);
 
       // invalidate key
@@ -135,6 +145,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             // todo: remove toJS when moving to List<Map<Item>>
             return old.set(idx, newFullItem.toJS());
           },
+          groupId,groupRoot
         }),
         item: await (async () => {
           queryClient.setQueryData(itemKey, newFullItem);
@@ -219,11 +230,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  queryClient.setMutationDefaults(DELETE_ITEMS, {
-    mutationFn: (itemIds) =>
+  queryClient.setMutationDefaults( DELETE_ITEMS , {
+    mutationFn: ({ itemIds }) =>
       Api.deleteItems(itemIds, queryConfig).then(() => itemIds),
 
-    onMutate: async (itemIds: UUID[]) => {
+    onMutate: async ({ itemIds, groupRoot, groupId }) => {
       // get path from first item
       const itemKey = buildItemKey(itemIds[0]);
       const item = queryClient.getQueryData(itemKey) as Record<Item>;
@@ -235,11 +246,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             childPath: itemPath,
             value: (old: List<Item>) =>
               old.filter(({ id }) => !itemIds.includes(id)),
-          }),
+            groupId,
+            groupRoot
+          })
         }),
       };
 
-      itemIds.forEach(async (id) => {
+      itemIds.forEach(async (id: UUID) => {
         previousItems[id] = await mutateItem({ id, value: null });
       });
 
@@ -300,7 +313,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   queryClient.setMutationDefaults(MOVE_ITEM, {
     mutationFn: (payload) =>
       Api.moveItem(payload, queryConfig).then(() => payload),
-    onMutate: async ({ id: itemId, to }) => {
+    onMutate: async ({ id: itemId, to,groupId,
+                       groupRoot }) => {
       const itemKey = buildItemKey(itemId);
       const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
       const previousItems = {
@@ -309,12 +323,16 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           targetParent: await mutateParentChildren({
             id: to,
             value: (old: List<Item>) => old?.push(itemData.toJS()),
+            groupId,
+            groupRoot
           }),
 
           // remove item in original folder
           originalParent: await mutateParentChildren({
             childPath: itemData.get('path'),
             value: (old: List<Item>) => old?.filter(({ id }) => id !== itemId),
+            groupId,
+            groupRoot
           }),
 
           // update item's path

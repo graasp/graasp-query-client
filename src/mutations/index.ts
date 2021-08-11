@@ -5,6 +5,7 @@ import tagsMutations from './itemTag';
 import flagsMutations from './itemFlag';
 import itemMembershipMutations from './membership';
 import chatMutations from './chat';
+import groupMutations from './group';
 import { QueryClientConfig } from '../types';
 
 const configureMutations = (
@@ -12,6 +13,7 @@ const configureMutations = (
   queryConfig: QueryClientConfig,
 ) => {
   itemMutations(queryClient, queryConfig);
+  groupMutations(queryClient, queryConfig);
   itemMembershipMutations(queryClient, queryConfig);
   memberMutations(queryClient, queryConfig);
   tagsMutations(queryClient, queryConfig);

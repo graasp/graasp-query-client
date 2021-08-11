@@ -9,6 +9,7 @@ export const GROUP_MEMBERSHIPS_ROUTE = 'group-memberships';
 
 export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const SHARE_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
+
 export const buildPostItemRoute = (parentId: UUID) => {
   let url = ITEMS_ROUTE;
   if (parentId) {
@@ -26,6 +27,7 @@ export const buildGetChildrenRoute = (id: UUID, ordered: boolean) =>
   )}`;
 export const buildGetItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
 export const buildGetGroupOwnItemRoute = (id: UUID) => `${ITEMS_ROUTE}/group/${id}/own`;
+export const buildGetGroupSharedItemRoute = (id: UUID) => `${ITEMS_ROUTE}/group/${id}/shared-with`;
 export const buildGetPublicItemRoute = (id: UUID) => `p/${ITEMS_ROUTE}/${id}`;
 export const buildGetPublicChildrenRoute = (id: UUID, ordered: boolean) =>
   `p/${ITEMS_ROUTE}/${id}/children${qs.stringify(
@@ -96,7 +98,9 @@ export const buildPostItemFlagRoute = (id: UUID) =>
 
 export const buildGetGroupRoute = (id: UUID) => `${GROUPS_ROUTE}/${id}`;
 export const buildGetGroupChildrenRoute = (id: UUID) => `${GROUPS_ROUTE}/${id}/children`;
+export const buildGetGroupParentsRoute = (id: UUID) => `${GROUPS_ROUTE}/${id}/parents`;
 export const GET_ROOT_GROUPS_ROUTE = `${GROUPS_ROUTE}/root`;
+export const GET_OWN_GROUPS_ROUTE = `${GROUPS_ROUTE}/own`;
 export const buildPostGroupRoute = (parentId: UUID) => {
   let url = GROUPS_ROUTE;
   if (parentId) {

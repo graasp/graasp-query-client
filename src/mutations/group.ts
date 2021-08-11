@@ -4,7 +4,11 @@ import {
   createGroupMembershipRoutine,
   createGroupRoutine,
 } from '../routines';
-import {  MUTATION_KEYS } from '../config/keys';
+import {
+  buildGroupChildrenKey,
+  MUTATION_KEYS, OWN_GROUPS_KEY,
+  ROOT_GROUPS_KEY,
+} from '../config/keys';
 import { QueryClientConfig } from '../types';
 
 const { POST_GROUP,SHARE_GROUP} = MUTATION_KEYS;
@@ -23,6 +27,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onError: (error) => {
       notifier?.({ type: createGroupRoutine.FAILURE, payload: { error } });
     },
+    onSettled: (newGroup) => {
+      const key = newGroup.parentId ? buildGroupChildrenKey(newGroup.parentId) : ROOT_GROUPS_KEY;
+      queryClient.invalidateQueries(OWN_GROUPS_KEY);
+      queryClient.invalidateQueries(key);
+    }
   });
 
   queryClient.setMutationDefaults(SHARE_GROUP, {
