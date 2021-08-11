@@ -333,13 +333,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
       const previousItems = {
         ...(Boolean(itemData) && {
-          // add item in target folder
+          // add item in target item
           targetParent: await mutateParentChildren({
             id: to,
             value: (old: List<Item>) => old?.push(itemData.toJS()),
           }),
 
-          // remove item in original folder
+          // remove item in original item
           originalParent: await mutateParentChildren({
             childPath: itemData.get('path'),
             value: (old: List<Item>) => old?.filter(({ id }) => id !== itemId),
@@ -389,7 +389,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       const itemKey = buildItemKey(id);
       queryClient.invalidateQueries(itemKey);
 
-      const itemData = queryClient.getQueryData(id) as Record<Item>;
+      const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
       if (itemData) {
         const parentKey = getKeyForParentId(
           getDirectParentId(itemData.get('path')),
@@ -414,13 +414,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       const previousItems = {
         ...(Boolean(itemsData) && {
-          // add item in target folder
+          // add item in target item
           targetParent: await mutateParentChildren({
             id: to,
             value: (old: List<Item>) => old?.concat(itemsData),
           }),
 
-          // remove item in original folder
+          // remove item in original item
           originalParent: await mutateParentChildren({
             childPath: path,
             value: (old: List<Item>) => old?.filter(({ id }) => !itemIds.includes(id)),
@@ -447,15 +447,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: moveItemsRoutine.SUCCESS });
     },
     // If the mutation fails, use the context returned from onMutate to roll back
-    onError: (error, { itemIds, to }, context) => {
+    onError: (error, { id: itemIds, to }, context) => {  
       const parentKey = getKeyForParentId(to);
       queryClient.setQueryData(parentKey, context.targetParent);
-
       itemIds.forEach((id: UUID) => {
         const itemKey = buildItemKey(id);
-        queryClient.setQueryData(itemKey, context[id].item);
+        queryClient.setQueryData(itemKey, context[id]);
 
-        const itemData = context[id].item;
+        const itemData = context[id];
         if (itemData) {
           const parentKey = getKeyForParentId(
             getDirectParentId(itemData.get('path')),
@@ -474,7 +473,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         const itemKey = buildItemKey(id);
         queryClient.invalidateQueries(itemKey);
   
-        const itemData = queryClient.getQueryData(id) as Record<Item>;
+        const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
         if (itemData) {
           const parentKey = getKeyForParentId(
             getDirectParentId(itemData.get('path')),
