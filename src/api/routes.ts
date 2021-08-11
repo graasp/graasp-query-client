@@ -128,4 +128,6 @@ export const API_ROUTES = {
   buildDeleteItemMembershipRoute,
   buildGetPublicItemRoute,
   buildGetPublicChildrenRoute,
+  buildGetItemChatRoute,
+  buildPostItemChatMessageRoute,
 };
