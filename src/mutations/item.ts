@@ -121,7 +121,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onMutate: async (newItem: Partial<Item>) => {
       const trimmed = {
         ...newItem,
-        name: newItem.name?.trim()
+        name: newItem.name?.trim(),
       };
 
       const itemKey = buildItemKey(trimmed.id);
@@ -142,7 +142,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             }
             const idx = old.findIndex(({ id }) => id === trimmed.id);
             // todo: remove toJS when moving to List<Map<Item>>
-            return old.set(idx, newFullItem.toJS());
+            return old.set(idx, newFullItem.toJS() as Item);
           },
         }),
         item: await (async () => {
@@ -336,7 +336,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           // add item in target item
           targetParent: await mutateParentChildren({
             id: to,
-            value: (old: List<Item>) => old?.push(itemData.toJS()),
+            value: (old: List<Item>) => old?.push(itemData.toJS() as Item),
           }),
 
           // remove item in original item

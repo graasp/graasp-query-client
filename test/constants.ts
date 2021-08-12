@@ -5,6 +5,7 @@ import {
   Member,
   Membership,
   PERMISSION_LEVELS,
+  UUID,
 } from '../src/types';
 
 export const API_HOST = 'http://localhost:3000';
@@ -68,3 +69,19 @@ export const S3_FILE_RESPONSE = {
   key: 'someurl',
 };
 export const S3_FILE_BLOB_RESPONSE = BlobMock;
+
+export const buildChatMessages = (id: UUID) => [
+  { chatId: id, body: 'some text', creator: 'somememberid' },
+  { chatId: id, body: 'someother text', creator: 'someothermemberid' },
+];
+
+export const FLAGS = [
+  {
+    id: 'flag-1-id',
+    name: 'flag-1',
+  },
+  {
+    id: 'flag-2-id',
+    name: 'flag-2',
+  },
+];
