@@ -14,6 +14,7 @@ import configureItemValidationHooks from './itemValidation';
 import configureActionHooks from './action';
 import configureInvitationHooks from './invitation';
 import configureMembershipHooks from './membership';
+import configurePlanHooks from './plan';
 
 export default (
   queryClient: QueryClient,
@@ -41,5 +42,6 @@ export default (
     ...configureActionHooks(queryConfig),
     ...configureInvitationHooks(queryConfig),
     ...memberHooks,
+    ...configurePlanHooks(queryConfig),
   };
 };

@@ -276,6 +276,16 @@ export const buildPostInvitationsRoute = (itemId: UUID) =>
 export const buildResendInvitationRoute = (args: { itemId: UUID; id: UUID }) =>
   `${ITEMS_ROUTE}/${args.itemId}/${INVITATIONS_ROUTE}/${args.id}/send`;
 
+export const GET_PLANS_ROUTE = `${MEMBERS_ROUTE}/plans`;
+export const GET_OWN_PLAN_ROUTE = `${MEMBERS_ROUTE}/plans/own`;
+export const buildChangePlanRoute = (planId: string) =>
+  `${MEMBERS_ROUTE}/plans/${planId}`;
+export const GET_CARDS_ROUTE = `${MEMBERS_ROUTE}/cards`;
+export const buildSetDefaultCardRoute = (cardId: string) =>
+  `${MEMBERS_ROUTE}/cards/${cardId}/default`;
+export const CREATE_SETUP_INTENT_ROUTE = `${MEMBERS_ROUTE}/setup-intent`;
+export const GET_CURRENT_CUSTOMER = `${MEMBERS_ROUTE}/customer/current`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   ITEMS_ROUTE,

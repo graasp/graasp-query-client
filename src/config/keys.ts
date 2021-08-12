@@ -183,6 +183,11 @@ export const DATA_KEYS = {
   buildInvitationKey,
   buildItemInvitationsKey,
 };
+export const PLANS_KEY = 'plans';
+export const OWN_PLAN_KEY = 'ownPlan';
+export const buildPlansKey = (id: string) => [MEMBERS_KEY, id, 'plans'];
+export const CARDS_KEY = 'cards';
+export const CURRENT_CUSTOMER_KEY = 'currentCustomer';
 
 export const MUTATION_KEYS = {
   POST_ITEM: 'postItem',
@@ -232,4 +237,7 @@ export const MUTATION_KEYS = {
   PATCH_INVITATION: 'patchInvitation',
   DELETE_INVITATION: 'deleteInvitation',
   RESEND_INVITATION: 'resendInvitation',
+  CHANGE_PLAN: 'changePlan',
+  CREATE_SETUP_INTENT: 'createSetupIntent',
+  SET_DEFAULT_CARD: 'setDefaultCard',
 };
