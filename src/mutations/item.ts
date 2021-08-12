@@ -300,8 +300,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onError: (error) => {
       notifier?.({ type: copyItemRoutine.FAILURE, payload: { error } });
     },
-    onSettled: (newItem) => {
-      const parentKey = getKeyForParentId(newItem?.to);
+    onSettled: (_newItem, _err, payload) => {
+      const parentKey = getKeyForParentId(payload.to);
       queryClient.invalidateQueries(parentKey);
     },
   });
@@ -319,8 +319,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onError: (error) => {
       notifier?.({ type: copyItemsRoutine.FAILURE, payload: { error } });
     },
-    onSettled: (newItems) => {
-      const parentKey = getKeyForParentId(newItems?.to);
+    onSettled: (_newItems, _err, payload) => {
+      const parentKey = getKeyForParentId(payload.to);
       queryClient.invalidateQueries(parentKey);
     },
   });
@@ -382,20 +382,18 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: moveItemRoutine.FAILURE, payload: { error } });
     },
     // Always refetch after error or success:
-    onSettled: ({ id, to }) => {
-      const parentKey = getKeyForParentId(to);
-      queryClient.invalidateQueries(parentKey);
+    onSettled: (_newItem, _err, { id, to }, context) => {
+      // Invalidate new parent
+      const newParentKey = getKeyForParentId(to);
+      queryClient.invalidateQueries(newParentKey);
 
+      // Invalidate old parent
+      const oldParentKey = getKeyForParentId(context.originalParent.id);
+      queryClient.invalidateQueries(oldParentKey);
+
+      // Invalidate moved item
       const itemKey = buildItemKey(id);
       queryClient.invalidateQueries(itemKey);
-
-      const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
-      if (itemData) {
-        const parentKey = getKeyForParentId(
-          getDirectParentId(itemData.get('path')),
-        );
-        queryClient.invalidateQueries(parentKey);
-      }
     },
   });
 
@@ -465,21 +463,19 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: moveItemsRoutine.FAILURE, payload: { error } });
     },
     // Always refetch after error or success:
-    onSettled: ({ id: itemIds, to }) => {
-      const parentKey = getKeyForParentId(to);
-      queryClient.invalidateQueries(parentKey);
+    onSettled: (_newItem, _err, { id: itemIds, to }, context) => {
+      // Invalidate new parent
+      const newParentKey = getKeyForParentId(to);
+      queryClient.invalidateQueries(newParentKey);
+
+      // Invalidate old parent
+      const oldParentKey = getKeyForParentId(context.originalParent.id);
+      queryClient.invalidateQueries(oldParentKey);
 
       itemIds.forEach((id: UUID) => {
+        // Invalidate moved item
         const itemKey = buildItemKey(id);
         queryClient.invalidateQueries(itemKey);
-  
-        const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
-        if (itemData) {
-          const parentKey = getKeyForParentId(
-            getDirectParentId(itemData.get('path')),
-          );
-          queryClient.invalidateQueries(parentKey);
-        }  
       });
     },
   });
