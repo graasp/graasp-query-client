@@ -19,7 +19,7 @@ import { Item } from '../types';
 
 
 const { wrapper, queryClient, useMutation } = setUpTest();
-describe('items Mutations', () => {
+describe('Items Mutations', () => {
   afterEach(() => {
     queryClient.clear();
     nock.cleanAll();
