@@ -24,7 +24,7 @@ import {
   OWN_ITEMS_KEY,
 } from '../config/keys';
 import { Item, ITEM_TYPES } from '../types';
-import { buildPath } from '../utils/item';
+import { buildPath, transformIdForPath } from '../utils/item';
 
 const { wrapper, queryClient, useMutation } = setUpTest();
 describe('Items Mutations', () => {
@@ -564,7 +564,7 @@ describe('Items Mutations', () => {
 
     const mutation = () => useMutation(MUTATION_KEYS.MOVE_ITEMS);
 
-    it('Move items from root to fist level item', async () => {
+    it('Move items from root to first level item', async () => {
       // set data in cache
       ITEMS.forEach((item) => {
         const itemKey = buildItemKey(item.id);
@@ -602,7 +602,7 @@ describe('Items Mutations', () => {
         const path = queryClient
           .getQueryData<Record<Item>>(itemKey)
           ?.get('path');
-        expect(path).toEqual(`${to.path}.${item.path}`);
+        expect(path).toEqual(`${to.path}.${transformIdForPath(item.id)}`);
       });
 
       // Check new parent is correctly invalidated
