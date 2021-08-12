@@ -31,7 +31,11 @@ export const buildGetPublicChildrenRoute = (id: UUID, ordered: boolean) =>
 export const buildGetItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildMoveItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/move`;
+export const buildMoveItemsRoute = (ids: UUID[]) => 
+  `${ITEMS_ROUTE}/move?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildCopyItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/copy`;
+export const buildCopyItemsRoute = (ids: UUID[]) =>
+  `${ITEMS_ROUTE}/copy?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildEditItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
 export const buildShareItemWithRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
@@ -109,6 +113,7 @@ export const API_ROUTES = {
   buildPostItemLoginSignInRoute,
   buildGetItemMembershipsForItemRoute,
   buildMoveItemRoute,
+  buildMoveItemsRoute,
   buildPostItemRoute,
   buildPostItemTagRoute,
   buildPutItemLoginSchema,
@@ -122,6 +127,7 @@ export const API_ROUTES = {
   buildDeleteItemRoute,
   buildDeleteItemsRoute,
   buildCopyItemRoute,
+  buildCopyItemsRoute,
   buildPatchMember,
   buildPostItemFlagRoute,
   buildEditItemMembershipRoute,

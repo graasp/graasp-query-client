@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import {
   buildCopyItemRoute,
+  buildCopyItemsRoute,
   buildDeleteItemRoute,
   buildDeleteItemsRoute,
   buildDownloadFilesRoute,
@@ -12,6 +13,7 @@ import {
   buildGetPublicItemRoute,
   buildGetS3MetadataRoute,
   buildMoveItemRoute,
+  buildMoveItemsRoute,
   buildPostItemRoute,
   buildS3FileUrl,
   buildS3UploadFileRoute,
@@ -173,6 +175,20 @@ export const moveItem = async (
   return res.ok;
 };
 
+export const moveItems = async (
+  { to, id }: { id: UUID[]; to: UUID },
+  { API_HOST }: QueryClientConfig,
+) => {
+  // send parentId if defined
+  const body = { ...(to && { parentId: to }) };
+  const res = await fetch(`${API_HOST}/${buildMoveItemsRoute(id)}`, {
+    ...DEFAULT_POST,
+    body: JSON.stringify(body),
+  }).then(failOnError);
+
+  return res.ok;
+};
+
 export const copyItem = async (
   { id, to }: { id: UUID; to: UUID },
   { API_HOST }: QueryClientConfig,
@@ -187,6 +203,22 @@ export const copyItem = async (
   const newItem = await res.json();
 
   return newItem;
+};
+
+export const copyItems = async (
+  { id, to }: { id: UUID[]; to: UUID },
+  { API_HOST }: QueryClientConfig,
+) => {
+  // send parentId if defined
+  const body = { ...(to && { parentId: to }) };
+  const res = await fetch(`${API_HOST}/${buildCopyItemsRoute(id)}`, {
+    ...DEFAULT_POST,
+    body: JSON.stringify(body),
+  }).then(failOnError);
+
+  const newItems = await res.json();
+
+  return newItems;
 };
 
 export const getSharedItems = async ({ API_HOST }: QueryClientConfig) => {

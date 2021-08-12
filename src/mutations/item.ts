@@ -3,11 +3,13 @@ import { QueryClient } from 'react-query';
 import * as Api from '../api';
 import {
   copyItemRoutine,
+  copyItemsRoutine,
   createItemRoutine,
   deleteItemsRoutine,
   deleteItemRoutine,
   editItemRoutine,
   moveItemRoutine,
+  moveItemsRoutine,
   shareItemRoutine,
   uploadFileRoutine,
   putItemLoginRoutine,
@@ -31,7 +33,9 @@ const {
   FILE_UPLOAD,
   SHARE_ITEM,
   MOVE_ITEM,
+  MOVE_ITEMS,
   COPY_ITEM,
+  COPY_ITEMS,
   DELETE_ITEMS,
   POST_ITEM_LOGIN,
   PUT_ITEM_LOGIN,
@@ -296,8 +300,27 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onError: (error) => {
       notifier?.({ type: copyItemRoutine.FAILURE, payload: { error } });
     },
-    onSettled: (newItem) => {
-      const parentKey = getKeyForParentId(newItem?.to);
+    onSettled: (_newItem, _err, payload) => {
+      const parentKey = getKeyForParentId(payload.to);
+      queryClient.invalidateQueries(parentKey);
+    },
+  });
+
+  queryClient.setMutationDefaults(COPY_ITEMS, {
+    mutationFn: (payload) =>
+      Api.copyItems(payload, queryConfig).then((newItems) => ({
+        to: payload.to,
+        ...newItems,
+      })),
+    // cannot mutate because it needs the id
+    onSuccess: () => {
+      notifier?.({ type: copyItemsRoutine.SUCCESS });
+    },
+    onError: (error) => {
+      notifier?.({ type: copyItemsRoutine.FAILURE, payload: { error } });
+    },
+    onSettled: (_newItems, _err, payload) => {
+      const parentKey = getKeyForParentId(payload.to);
       queryClient.invalidateQueries(parentKey);
     },
   });
@@ -310,13 +333,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
       const previousItems = {
         ...(Boolean(itemData) && {
-          // add item in target folder
+          // add item in target item
           targetParent: await mutateParentChildren({
             id: to,
             value: (old: List<Item>) => old?.push(itemData.toJS()),
           }),
 
-          // remove item in original folder
+          // remove item in original item
           originalParent: await mutateParentChildren({
             childPath: itemData.get('path'),
             value: (old: List<Item>) => old?.filter(({ id }) => id !== itemId),
@@ -329,7 +352,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
               item.set(
                 'path',
                 buildPath({
-                  prefix: itemData.get('path'),
+                  prefix: queryClient.getQueryData<Record<Item>>(buildItemKey(to))?.get('path') ?? '',
                   ids: [itemId],
                 }),
               ),
@@ -359,20 +382,101 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: moveItemRoutine.FAILURE, payload: { error } });
     },
     // Always refetch after error or success:
-    onSettled: ({ id, to }) => {
-      const parentKey = getKeyForParentId(to);
-      queryClient.invalidateQueries(parentKey);
+    onSettled: (_newItem, _err, { id, to }, context) => {
+      // Invalidate new parent
+      const newParentKey = getKeyForParentId(to);
+      queryClient.invalidateQueries(newParentKey);
 
+      // Invalidate old parent
+      const oldParentKey = getKeyForParentId(context.originalParent.id);
+      queryClient.invalidateQueries(oldParentKey);
+
+      // Invalidate moved item
       const itemKey = buildItemKey(id);
       queryClient.invalidateQueries(itemKey);
+    },
+  });
 
-      const itemData = queryClient.getQueryData(id) as Record<Item>;
-      if (itemData) {
-        const parentKey = getKeyForParentId(
-          getDirectParentId(itemData.get('path')),
-        );
-        queryClient.invalidateQueries(parentKey);
-      }
+  queryClient.setMutationDefaults(MOVE_ITEMS, {
+    mutationFn: (payload) =>
+      Api.moveItems(payload, queryConfig).then(() => payload),
+    onMutate: async ({ id: itemIds, to }) => {
+
+      const itemsData = itemIds.map((id: UUID) => {
+        const itemKey = buildItemKey(id);
+        const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
+        return itemData.toJS();
+      });
+
+      const path = itemsData[0].path;
+
+      const previousItems = {
+        ...(Boolean(itemsData) && {
+          // add item in target item
+          targetParent: await mutateParentChildren({
+            id: to,
+            value: (old: List<Item>) => old?.concat(itemsData),
+          }),
+
+          // remove item in original item
+          originalParent: await mutateParentChildren({
+            childPath: path,
+            value: (old: List<Item>) => old?.filter(({ id }) => !itemIds.includes(id)),
+          }),
+        }),
+      };
+      // update item's path
+      itemIds.forEach(async (id: any) => {
+        previousItems[id] = await mutateItem({
+          id: id,
+          value: (item: Record<Item>) =>
+            item.set(
+              'path',
+              buildPath({
+                prefix: queryClient.getQueryData<Record<Item>>(buildItemKey(to))?.get('path') ?? '',
+                ids: [id],
+              }),
+            ),
+        })
+      });
+      return previousItems;
+    },
+    onSuccess: () => {
+      notifier?.({ type: moveItemsRoutine.SUCCESS });
+    },
+    // If the mutation fails, use the context returned from onMutate to roll back
+    onError: (error, { id: itemIds, to }, context) => {  
+      const parentKey = getKeyForParentId(to);
+      queryClient.setQueryData(parentKey, context.targetParent);
+      itemIds.forEach((id: UUID) => {
+        const itemKey = buildItemKey(id);
+        queryClient.setQueryData(itemKey, context[id]);
+
+        const itemData = context[id];
+        if (itemData) {
+          const parentKey = getKeyForParentId(
+            getDirectParentId(itemData.get('path')),
+          );
+          queryClient.setQueryData(parentKey, context.originalParent);
+        }
+      });
+      notifier?.({ type: moveItemsRoutine.FAILURE, payload: { error } });
+    },
+    // Always refetch after error or success:
+    onSettled: (_newItem, _err, { id: itemIds, to }, context) => {
+      // Invalidate new parent
+      const newParentKey = getKeyForParentId(to);
+      queryClient.invalidateQueries(newParentKey);
+
+      // Invalidate old parent
+      const oldParentKey = getKeyForParentId(context.originalParent.id);
+      queryClient.invalidateQueries(oldParentKey);
+
+      itemIds.forEach((id: UUID) => {
+        // Invalidate moved item
+        const itemKey = buildItemKey(id);
+        queryClient.invalidateQueries(itemKey);
+      });
     },
   });
 
