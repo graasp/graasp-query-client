@@ -46,8 +46,10 @@ export const buildPostItemChatMessageRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/chat`;
 
 export const buildGetMemberBy = (email: string) =>
-  `${MEMBERS_ROUTE}?email=${email}`;
+  `${MEMBERS_ROUTE}/search?email=${email}`;
 export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
+export const buildGetMembers = (ids: UUID[]) =>
+  `${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildUploadFilesRoute = (parentId: UUID) =>
   parentId
@@ -104,6 +106,7 @@ export const API_ROUTES = {
   GET_FLAGS_ROUTE,
   buildGetS3MetadataRoute,
   buildGetMember,
+  buildGetMembers,
   buildUploadFilesRoute,
   buildDownloadFilesRoute,
   buildS3FileUrl,
