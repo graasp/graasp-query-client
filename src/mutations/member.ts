@@ -19,9 +19,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       // Snapshot the previous value
       const previousMember = queryClient.getQueryData(CURRENT_MEMBER_KEY);
 
-      // Optimistically update to the new value
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, null);
-
       // Return a context object with the snapshotted value
       return { previousMember };
     },
@@ -29,8 +26,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: signOutRoutine.SUCCESS });
       queryClient.resetQueries();
 
-      // remove cookies from browser
+      // remove cookies from browser when the logout is confirmed
       Cookies.remove(COOKIE_SESSION_NAME);
+
+      // Update when the server confirmed the logout, instead optimistically updating the member 
+      // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, undefined);
     },
     // If the mutation fails, use the context returned from onMutate to roll back
     onError: (error, _args, context) => {
