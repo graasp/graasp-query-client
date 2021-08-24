@@ -46,7 +46,7 @@ export const buildPostItemChatMessageRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/chat`;
 
 export const buildGetMemberBy = (email: string) =>
-  `${MEMBERS_ROUTE}?email=${email}`;
+  `${MEMBERS_ROUTE}?email=${email.toLowerCase()}`;
 export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildUploadFilesRoute = (parentId: UUID) =>
