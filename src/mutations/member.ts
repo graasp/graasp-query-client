@@ -24,9 +24,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.setQueryData(CURRENT_MEMBER_KEY, undefined);
     },
     // If the mutation fails, use the context returned from onMutate to roll back
-    onError: (error, _args, context) => {
+    onError: (error, _args, _context) => {
       notifier?.({ type: signOutRoutine.FAILURE, payload: { error } });
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, context.previousMember);
     },
   });
 
