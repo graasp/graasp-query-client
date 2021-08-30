@@ -6,7 +6,7 @@ export const ITEM_MEMBERSHIPS_ROUTE = 'item-memberships';
 export const MEMBERS_ROUTE = `members`;
 export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const SHARE_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
-export const buildPostItemRoute = (parentId: UUID) => {
+export const buildPostItemRoute = (parentId?: UUID) => {
   let url = ITEMS_ROUTE;
   if (parentId) {
     url += `?parentId=${parentId}`;
@@ -31,7 +31,7 @@ export const buildGetPublicChildrenRoute = (id: UUID, ordered: boolean) =>
 export const buildGetItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildMoveItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/move`;
-export const buildMoveItemsRoute = (ids: UUID[]) => 
+export const buildMoveItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/move?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildCopyItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/copy`;
 export const buildCopyItemsRoute = (ids: UUID[]) =>
@@ -46,7 +46,7 @@ export const buildPostItemChatMessageRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/chat`;
 
 export const buildGetMemberBy = (email: string) =>
-  `${MEMBERS_ROUTE}/search?email=${email}`;
+  `${MEMBERS_ROUTE}/search?email=${email.toLowerCase()}`;
 export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildGetMembers = (ids: UUID[]) =>
   `${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;

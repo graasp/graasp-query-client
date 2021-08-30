@@ -77,7 +77,7 @@
     "hooks:uninstall": "node node_modules/husky/husky.js uninstall",
     "hooks:install": "node node_modules/husky/husky.js install",
     "predeploy": "cd example && yarn install && yarn run build",
-    "test:watch": "jest src/hooks/item.test.ts --watchAll",
+    "test:watch": "jest src --watchAll",
     "test": "jest src --silent",
     "test:ci": "yarn && cd example && yarn && cd .. && yarn test",
     "deploy": "gh-pages -d example/build",
