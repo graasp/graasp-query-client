@@ -23,12 +23,12 @@ export const buildItemMembershipsKey = (id?: UUID) => [
   'memberships',
 ];
 export const buildItemLoginKey = (id?: UUID) => [ITEMS_KEY, id, 'login'];
-export const ITEM_TAGS = 'itemTags';
+export const ITEM_TAGS_KEY = 'itemTags';
 export const buildItemTagsKey = (id: UUID) => [ITEMS_KEY, id, 'tags'];
 export const buildFileContentKey = (id?: UUID) => [ITEMS_KEY, id, 'content'];
 export const buildS3FileContentKey = (id?: UUID) => [ITEMS_KEY, id, 'content'];
 
-export const ITEM_FLAGS = 'itemFlags';
+export const ITEM_FLAGS_KEY = 'itemFlags';
 export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, id, 'flags'];
 
 export const MUTATION_KEYS = {
