@@ -12,16 +12,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(MUTATION_KEYS.SIGN_OUT, {
     mutationFn: () => Api.signOut(queryConfig),
-    onMutate: async () => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
-
-      // Snapshot the previous value
-      const previousMember = queryClient.getQueryData(CURRENT_MEMBER_KEY);
-
-      // Return a context object with the snapshotted value
-      return { previousMember };
-    },
     onSuccess: () => {
       notifier?.({ type: signOutRoutine.SUCCESS });
       queryClient.resetQueries();
