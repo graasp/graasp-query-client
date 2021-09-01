@@ -15,9 +15,12 @@ import {
   buildMoveItemRoute,
   buildMoveItemsRoute,
   buildPostItemRoute,
+  buildRecycleItemRoute,
+  buildRecycleItemsRoute,
   buildS3FileUrl,
   buildS3UploadFileRoute,
   GET_OWN_ITEMS_ROUTE,
+  GET_RECYCLED_ITEMS_ROUTE,
   SHARE_ITEM_WITH_ROUTE,
 } from './routes';
 import {
@@ -116,7 +119,7 @@ export const editItem = async (
     ...DEFAULT_PATCH,
     body: JSON.stringify({
       ...item,
-      name: item.name?.trim()
+      name: item.name?.trim(),
     }),
   }).then(failOnError);
 
@@ -278,4 +281,37 @@ export const getS3FileUrl = async (
 
   const { key } = await response.json();
   return buildS3FileUrl(S3_FILES_HOST, key);
+};
+
+export const getRecycledItems = async ({ API_HOST }: QueryClientConfig) => {
+  const res = await fetch(
+    `${API_HOST}/${GET_RECYCLED_ITEMS_ROUTE}`,
+    DEFAULT_GET,
+  ).then(failOnError);
+  const items = await res.json();
+  return items;
+};
+
+export const recycleItem = async (
+  id: UUID,
+  { API_HOST }: QueryClientConfig,
+) => {
+  const res = await fetch(`${API_HOST}/${buildRecycleItemRoute(id)}`, {
+    ...DEFAULT_POST,
+    headers: {},
+  }).then(failOnError);
+
+  return res.ok;
+};
+
+export const recycleItems = async (
+  ids: UUID[],
+  { API_HOST }: QueryClientConfig,
+) => {
+  const res = await fetch(`${API_HOST}/${buildRecycleItemsRoute(ids)}`, {
+    ...DEFAULT_POST,
+    headers: {},
+  }).then(failOnError);
+
+  return res.ok;
 };

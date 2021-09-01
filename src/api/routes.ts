@@ -5,6 +5,7 @@ export const ITEMS_ROUTE = 'items';
 export const ITEM_MEMBERSHIPS_ROUTE = 'item-memberships';
 export const MEMBERS_ROUTE = `members`;
 export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
+export const GET_RECYCLED_ITEMS_ROUTE = `${ITEMS_ROUTE}/recycled`;
 export const SHARE_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 export const buildPostItemRoute = (parentId?: UUID) => {
   let url = ITEMS_ROUTE;
@@ -95,11 +96,19 @@ export const buildDeleteItemMembershipRoute = (id: UUID) =>
 export const GET_FLAGS_ROUTE = `${ITEMS_ROUTE}/flags`;
 export const buildPostItemFlagRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/flags`;
+export const buildRecycleItemRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/recycle`;
+export const buildRecycleItemsRoute = (ids: UUID[]) =>
+  `${ITEMS_ROUTE}/recycle?${qs.stringify(
+    { id: ids },
+    { arrayFormat: 'repeat' },
+  )}`;
 
 export const API_ROUTES = {
   ITEMS_ROUTE,
   SHARE_ITEM_WITH_ROUTE,
   GET_OWN_ITEMS_ROUTE,
+  GET_RECYCLED_ITEMS_ROUTE,
   SIGN_OUT_ROUTE,
   GET_CURRENT_MEMBER_ROUTE,
   GET_TAGS_ROUTE,
@@ -139,4 +148,6 @@ export const API_ROUTES = {
   buildGetPublicChildrenRoute,
   buildGetItemChatRoute,
   buildPostItemChatMessageRoute,
+  buildRecycleItemRoute,
+  buildRecycleItemsRoute,
 };

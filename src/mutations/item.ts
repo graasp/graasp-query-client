@@ -14,6 +14,7 @@ import {
   uploadFileRoutine,
   putItemLoginRoutine,
   postItemLoginRoutine,
+  recycleItemsRoutine,
 } from '../routines';
 import {
   buildItemChildrenKey,
@@ -39,6 +40,8 @@ const {
   DELETE_ITEMS,
   POST_ITEM_LOGIN,
   PUT_ITEM_LOGIN,
+  RECYCLE_ITEM,
+  RECYCLE_ITEMS,
 } = MUTATION_KEYS;
 
 interface Value {
@@ -83,18 +86,17 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     const childrenKey = !parentId
       ? OWN_ITEMS_KEY
       : buildItemChildrenKey(parentId);
-
     // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
     await queryClient.cancelQueries(childrenKey);
 
     // Snapshot the previous value
-    const prevParent = queryClient.getQueryData(childrenKey);
+    const prevChildren = queryClient.getQueryData(childrenKey);
 
     // Optimistically update
     queryClient.setQueryData(childrenKey, value);
 
     // Return a context object with the snapshotted value
-    return prevParent;
+    return prevChildren;
   };
 
   queryClient.setMutationDefaults(POST_ITEM, {
@@ -180,6 +182,108 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
+  queryClient.setMutationDefaults(RECYCLE_ITEM, {
+    mutationFn: (itemId) =>
+      Api.recycleItem(itemId, queryConfig).then(() => itemId),
+
+    onMutate: async (itemId) => {
+      const itemKey = buildItemKey(itemId);
+      const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
+      const previousItems = {
+        ...(Boolean(itemData) && {
+          children: await mutateParentChildren({
+            childPath: itemData.get('path'),
+            value: (children: List<Item>) =>
+              children.filter((child) => child.id !== itemId),
+          }),
+          // item itself still exists but the path is different
+          item: itemData,
+        }),
+      };
+      return previousItems;
+    },
+    onSuccess: () => {
+      notifier?.({ type: recycleItemsRoutine.SUCCESS });
+    },
+    onError: (error, _itemId, context) => {
+      const itemData = context.item;
+
+      if (itemData) {
+        const childrenKey = getKeyForParentId(
+          getDirectParentId(itemData.get('path')),
+        );
+        queryClient.setQueryData(childrenKey, context.children);
+      }
+      notifier?.({ type: recycleItemsRoutine.FAILURE, payload: { error } });
+    },
+    onSettled: (itemId, _error, _variables, context) => {
+      const itemData = context.item;
+
+      if (itemData) {
+        const itemKey = buildItemKey(itemId);
+        queryClient.invalidateQueries(itemKey);
+
+        const childrenKey = getKeyForParentId(
+          getDirectParentId(itemData.get('path')),
+        );
+        queryClient.invalidateQueries(childrenKey);
+      }
+    },
+  });
+
+  queryClient.setMutationDefaults(RECYCLE_ITEMS, {
+    mutationFn: (itemIds) =>
+      Api.recycleItems(itemIds, queryConfig).then(() => itemIds),
+
+    onMutate: async (itemIds: UUID[]) => {
+      // get path from first item
+      const itemKey = buildItemKey(itemIds[0]);
+      const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
+      const itemPath = itemData?.get('path');
+
+      const previousItems = {
+        ...(Boolean(itemPath) && {
+          parent: await mutateParentChildren({
+            childPath: itemPath,
+            value: (old: List<Item>) =>
+              old.filter(({ id }) => !itemIds.includes(id)),
+          }),
+        }),
+      };
+      // items themselves still exists but the path is different
+      return previousItems;
+    },
+    onSuccess: () => {
+      notifier?.({ type: recycleItemsRoutine.SUCCESS });
+    },
+    onError: (error, itemIds: UUID[], context) => {
+      const itemKey = buildItemKey(itemIds[0]);
+      const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
+      const itemPath = itemData?.get('path');
+
+      if (itemPath) {
+        const childrenKey = getKeyForParentId(getDirectParentId(itemPath));
+        queryClient.setQueryData(childrenKey, context.parent);
+      }
+      notifier?.({ type: recycleItemsRoutine.FAILURE, payload: { error } });
+    },
+    onSettled: (_data, _error, itemIds: UUID[], _variables) => {
+      const itemKey = buildItemKey(itemIds[0]);
+      const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
+      const itemPath = itemData?.get('path');
+
+      itemIds.forEach((id) => {
+        const itemKey = buildItemKey(id);
+        queryClient.invalidateQueries(itemKey);
+      });
+
+      if (itemPath) {
+        const childrenKey = getKeyForParentId(getDirectParentId(itemPath));
+        queryClient.invalidateQueries(childrenKey);
+      }
+    },
+  });
+
   queryClient.setMutationDefaults(DELETE_ITEM, {
     mutationFn: ([itemId]) =>
       Api.deleteItem(itemId, queryConfig).then(() => itemId),
@@ -187,13 +291,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onMutate: async ([itemId]) => {
       const itemKey = buildItemKey(itemId);
       const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
-      const parentKey = getKeyForParentId(
-        getDirectParentId(itemData.get('path')),
-      );
-      const parentData = queryClient.getQueryData(parentKey);
       const previousItems = {
         ...(Boolean(itemData) && {
-          parent: parentData,
+          parent: await mutateParentChildren({
+            childPath: itemData?.get('path'),
+            value: (old: List<Item>) => old.filter(({ id }) => itemId !== id),
+          }),
           item: await mutateItem({ id: itemId, value: null }),
         }),
       };
@@ -274,7 +377,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       notifier?.({ type: deleteItemsRoutine.FAILURE, payload: { error } });
     },
-    onSettled: (itemIds: UUID[], _error, _variables, context) => {
+    onSettled: (_data, _error, itemIds: UUID[], context) => {
       const itemPath = context[itemIds[0]]?.get('path');
 
       itemIds.forEach((id) => {

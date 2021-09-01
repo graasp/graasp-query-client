@@ -10,6 +10,7 @@ import {
   buildGetItemsRoute,
   buildGetS3MetadataRoute,
   GET_OWN_ITEMS_ROUTE,
+  GET_RECYCLED_ITEMS_ROUTE,
   SHARE_ITEM_WITH_ROUTE,
 } from '../api/routes';
 import { Endpoint, mockHook, setUpTest } from '../../test/utils';
@@ -17,6 +18,7 @@ import {
   FILE_RESPONSE,
   ITEMS,
   ITEM_MEMBERSHIPS_RESPONSE,
+  MEMBER_RESPONSE,
   S3_FILE_BLOB_RESPONSE,
   S3_FILE_RESPONSE,
   UNAUTHORIZED_RESPONSE,
@@ -695,6 +697,48 @@ describe('Items Hooks', () => {
       expect(data).toBeFalsy();
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+  });
+
+  describe('useRecycledItems', () => {
+    const route = `/${GET_RECYCLED_ITEMS_ROUTE}`;
+    const hook = () => hooks.useRecycledItems(MEMBER_RESPONSE);
+    const recycleBinId = MEMBER_RESPONSE.extra.recycleBin.itemId;
+    const recycleBinKey = buildItemChildrenKey(recycleBinId);
+
+    it(`Receive recycled items`, async () => {
+      const response = ITEMS;
+      const endpoints = [{ route, response }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+      expect((data as Record<Item>).toJS()).toEqual(response);
+
+      // verify cache keys
+      expect(queryClient.getQueryData(recycleBinKey)).toEqual(List(response));
+      for (const item of response) {
+        expect(queryClient.getQueryData(buildItemKey(item.id))).toEqual(
+          Map(item),
+        );
+      }
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(recycleBinKey)).toBeFalsy();
     });
   });
 });
