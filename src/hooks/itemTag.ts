@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 import { List } from 'immutable';
-import { QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig, UndefinedArgument, UUID } from '../types';
 import * as Api from '../api';
 import { buildItemTagsKey, ITEM_TAGS_KEY } from '../config/keys';
 
@@ -19,11 +19,15 @@ export default (queryConfig: QueryClientConfig) => {
       ...defaultOptions,
     });
 
-  const useItemTags = (id: UUID) =>
+  const useItemTags = (id?: UUID) =>
     useQuery({
       queryKey: buildItemTagsKey(id),
-      queryFn: () =>
-        Api.getItemTags(id, queryConfig).then((data) => List(data)),
+      queryFn: () => {
+        if (!id) {
+          throw new UndefinedArgument();
+        }
+        return Api.getItemTags(id, queryConfig).then((data) => List(data));
+      },
       enabled: Boolean(id),
       ...defaultOptions,
     });

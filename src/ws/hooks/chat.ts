@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 import { buildItemChatKey } from '../../config/keys';
 import { Chat, ChatMessage, UUID } from '../../types';
+import { KINDS, OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 
 // todo: use graasp-types?
@@ -12,6 +13,7 @@ interface ChatEvent {
   message: ChatMessage;
 }
 
+// eslint-disable-next-line import/prefer-default-export
 export const configureWsChatHooks = (
   queryClient: QueryClient,
   websocketClient: WebsocketClient,
@@ -26,10 +28,10 @@ export const configureWsChatHooks = (
         return;
       }
 
-      const channel: Channel = { name: chatId, topic: 'chat/item' };
+      const channel: Channel = { name: chatId, topic: TOPICS.CHAT_ITEM };
 
       const handler = (event: ChatEvent) => {
-        if (event.kind === 'item') {
+        if (event.kind === KINDS.ITEM) {
           const chatKey = buildItemChatKey(chatId);
           const current: Record<Chat> | undefined = queryClient.getQueryData(
             chatKey,
@@ -37,7 +39,7 @@ export const configureWsChatHooks = (
 
           if (current) {
             switch (event.op) {
-              case 'publish': {
+              case OPS.PUBLISH: {
                 const mutation = current.update('messages', (messages) => [
                   ...messages,
                   event.message,

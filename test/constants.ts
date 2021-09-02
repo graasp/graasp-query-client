@@ -1,6 +1,7 @@
 import {
   Item,
   ItemLogin,
+  ITEM_LOGIN_SCHEMAS,
   ITEM_TYPES,
   Member,
   Membership,
@@ -47,6 +48,14 @@ export const ITEMS: Item[] = [
     id: 'eeee',
     name: 'item5',
     path: '5896.eeee',
+    type: ITEM_TYPES.FOLDER,
+    description: '',
+    extra: {},
+  },
+  {
+    id: 'gggg',
+    name: 'item5',
+    path: '5896.gggg',
     type: ITEM_TYPES.FOLDER,
     description: '',
     extra: {},
@@ -128,13 +137,19 @@ export const ITEM_MEMBERSHIPS_RESPONSE: Membership[] = [
   {
     id: 'membership-id',
     memberId: 'member-id',
-    itemId: 'item-id',
+    itemId: ITEMS[0].id,
     permission: PERMISSION_LEVELS.READ,
+  },
+  {
+    id: 'membership-id1',
+    memberId: 'member-id1',
+    itemId: ITEMS[0].id,
+    permission: PERMISSION_LEVELS.ADMIN,
   },
 ];
 
 export const ITEM_LOGIN_RESPONSE: ItemLogin = {
-  loginSchema: 'username',
+  loginSchema: ITEM_LOGIN_SCHEMAS.USERNAME,
 };
 
 const BlobMock = {
@@ -163,3 +178,35 @@ export const FLAGS = [
     name: 'flag-2',
   },
 ];
+export const TAGS = [
+  {
+    id: 'item-login-tag-id',
+    name: 'item-login',
+  },
+  {
+    id: 'item-public-tag-id',
+    name: 'item-public',
+  },
+];
+
+export const ITEM_TAGS = [
+  {
+    id: 'tag-id',
+    path: 'somepath',
+    tagId: 'tag-id',
+  },
+  {
+    id: 'tag-id1',
+    path: 'somepath1',
+    tagId: 'tag-id1',
+  },
+];
+
+export const ITEM_CHAT = {
+  messages: [
+    {
+      creator: MEMBER_RESPONSE.id,
+      content: 'text',
+    },
+  ],
+};

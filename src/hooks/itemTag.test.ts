@@ -1,10 +1,10 @@
 import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
-import { GET_FLAGS_ROUTE } from '../api/routes';
+import { buildGetItemTagsRoute, GET_TAGS_ROUTE } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
-import { FLAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { ITEM_FLAGS_KEY } from '../config/keys';
+import { ITEMS, TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import { buildItemTagsKey, ITEM_TAGS_KEY } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -15,17 +15,57 @@ describe('Item Tags Hooks', () => {
   });
 
   describe('useTags', () => {
-    const route = `/${GET_FLAGS_ROUTE}`;
-    const key = ITEM_FLAGS_KEY;
+    const route = `/${GET_TAGS_ROUTE}`;
+    const key = ITEM_TAGS_KEY;
 
-    const hook = () => hooks.useFlags();
+    const hook = () => hooks.useTags();
 
     it(`Receive tags`, async () => {
-      const response = FLAGS;
+      const response = TAGS;
       const endpoints = [{ route, response }];
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<typeof FLAGS[0]>).toJS()).toEqual(response);
+      expect((data as List<typeof TAGS[0]>).toJS()).toEqual(response);
+
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(isSuccess).toBeTruthy();
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+  });
+
+  describe('useItemTags', () => {
+    const itemId = ITEMS[0].id;
+    const route = `/${buildGetItemTagsRoute(itemId)}`;
+    const key = buildItemTagsKey(itemId);
+
+    const hook = () => hooks.useItemTags(itemId);
+
+    it(`Receive tags of given item`, async () => {
+      const response = TAGS;
+      const endpoints = [{ route, response }];
+      const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
+
+      expect((data as List<typeof TAGS[0]>).toJS()).toEqual(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(List(response));

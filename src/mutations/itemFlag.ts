@@ -8,16 +8,15 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_FLAG, {
-    mutationFn: (payload) =>
-      Api.postItemFlag(payload, queryConfig).then(() => payload),
+    mutationFn: (payload) => Api.postItemFlag(payload, queryConfig),
     onSuccess: () => {
       notifier?.({ type: postItemFlagRoutine.SUCCESS });
     },
     onError: (error) => {
       notifier?.({ type: postItemFlagRoutine.FAILURE, payload: { error } });
     },
-    onSettled: ({ id }) => {
-      queryClient.invalidateQueries(buildItemFlagsKey(id));
+    onSettled: (_data, _error, { itemId }) => {
+      queryClient.invalidateQueries(buildItemFlagsKey(itemId));
     },
   });
 };
