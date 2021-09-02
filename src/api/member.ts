@@ -1,12 +1,13 @@
+import { StatusCodes } from 'http-status-codes';
 import { failOnError, DEFAULT_GET, DEFAULT_PATCH } from './utils';
 import {
   buildGetMemberBy,
   buildGetMember,
   GET_CURRENT_MEMBER_ROUTE,
   buildPatchMember,
+  buildGetMembersRoute,
 } from './routes';
 import { Member, QueryClientConfig, UUID } from '../types';
-import { StatusCodes } from 'http-status-codes';
 import { SIGNED_OUT_USER } from '../config/constants';
 
 export const getMemberBy = async (
@@ -25,6 +26,17 @@ export const getMember = async (
   { API_HOST }: QueryClientConfig,
 ) => {
   const res = await fetch(`${API_HOST}/${buildGetMember(id)}`, {
+    ...DEFAULT_GET,
+  }).then(failOnError);
+
+  return res.json();
+};
+
+export const getMembers = async (
+  { ids }: { ids: UUID[] },
+  { API_HOST }: QueryClientConfig,
+) => {
+  const res = await fetch(`${API_HOST}/${buildGetMembersRoute(ids)}`, {
     ...DEFAULT_GET,
   }).then(failOnError);
 

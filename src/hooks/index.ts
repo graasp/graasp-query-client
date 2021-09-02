@@ -12,7 +12,7 @@ export default (
   queryConfig: QueryClientConfig,
   websocketClient?: WebsocketClient,
 ) => {
-  const memberHooks = configureMemberHooks(queryConfig);
+  const memberHooks = configureMemberHooks(queryClient, queryConfig);
 
   return {
     ...configureChatHooks(queryClient, queryConfig, websocketClient),

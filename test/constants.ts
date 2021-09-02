@@ -52,6 +52,16 @@ export const MEMBER_RESPONSE: Member = {
   extra: {},
 };
 
+export const MEMBERS_RESPONSE: Member[] = [
+  MEMBER_RESPONSE,
+  {
+    id: '421',
+    name: 'username1',
+    email: 'username1@graasp.org',
+    extra: {},
+  },
+];
+
 export const OK_RESPONSE = {};
 
 export const ITEM_MEMBERSHIPS_RESPONSE: Membership[] = [

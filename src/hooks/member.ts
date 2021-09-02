@@ -1,10 +1,14 @@
-import { useQuery } from 'react-query';
-import { Map } from 'immutable';
+import { QueryClient, useQuery } from 'react-query';
+import { Map, List } from 'immutable';
 import * as Api from '../api';
-import { buildMemberKey, CURRENT_MEMBER_KEY } from '../config/keys';
-import { QueryClientConfig, UUID } from '../types';
+import {
+  buildMemberKey,
+  buildMembersKey,
+  CURRENT_MEMBER_KEY,
+} from '../config/keys';
+import { Member, QueryClientConfig, UUID } from '../types';
 
-export default (queryConfig: QueryClientConfig) => {
+export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { retry, cacheTime, staleTime } = queryConfig;
   const defaultOptions = {
     retry,
@@ -29,5 +33,22 @@ export default (queryConfig: QueryClientConfig) => {
       ...defaultOptions,
     });
 
-  return { useCurrentMember, useMember };
+  const useMembers = (ids: UUID[]) =>
+    useQuery({
+      queryKey: buildMembersKey(ids),
+      queryFn: () =>
+        Api.getMembers({ ids }, queryConfig).then((data) => List(data)),
+      enabled: Boolean(ids?.length),
+      onSuccess: async (members: List<Member>) => {
+        // save members in their own key
+        // eslint-disable-next-line no-unused-expressions
+        members?.forEach(async (member) => {
+          const { id } = member;
+          queryClient.setQueryData(buildMemberKey(id), Map(member));
+        });
+      },
+      ...defaultOptions,
+    });
+
+  return { useCurrentMember, useMember, useMembers };
 };
