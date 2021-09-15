@@ -10,6 +10,10 @@ export const SHARED_ITEMS_KEY = 'shared';
 export const CURRENT_MEMBER_KEY = 'currentMember';
 export const MEMBERS_KEY = 'members';
 export const buildMemberKey = (id: UUID) => [MEMBERS_KEY, id];
+export const buildMembersKey = (ids: UUID[]) => [
+  MEMBERS_KEY,
+  hashItemsIds(ids),
+];
 export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, id, 'parents'];
 export const CHATS_KEY = 'chats';
 export const buildItemChatKey = (id: UUID) => [CHATS_KEY, id];
