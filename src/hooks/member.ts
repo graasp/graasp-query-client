@@ -41,7 +41,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       enabled: Boolean(ids?.length),
       onSuccess: async (members: List<Member>) => {
         // save members in their own key
-        // eslint-disable-next-line no-unused-expressions
         members?.forEach(async (member) => {
           const { id } = member;
           queryClient.setQueryData(buildMemberKey(id), Map(member));
