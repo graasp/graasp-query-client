@@ -14,6 +14,34 @@ import configureQueryClient from '../src/queryClient';
 import { REQUEST_METHODS } from '../src/api/utils';
 import { StatusCodes } from 'http-status-codes';
 
+// const currentMemberResponse: QueryObserverSuccessResult<
+//   Map<unknown, unknown>
+// > = {
+//   data: Map(MEMBER_RESPONSE),
+//   error: null,
+//   isSuccess: true,
+//   isLoading: false,
+//   isError: false,
+//   isIdle: false,
+//   isLoadingError: false,
+//   isRefetchError: false,
+//   status: 'success',
+//   dataUpdatedAt: 1,
+//   errorUpdatedAt: 1,
+//   failureCount: 0,
+//   isFetched: true,
+//   isFetchedAfterMount: false,
+//   isFetching: false,
+//   isPlaceholderData: false,
+//   isPreviousData: false,
+//   isStale: true,
+//   refetch: () =>
+//     new Promise<QueryObserverResult<Map<unknown, unknown>, unknown>>(
+//       () => true,
+//     ),
+//   remove: () => {},
+// };
+
 export const setUpTest = ({ enableWebsocket = false } = {}) => {
   const queryConfig: QueryClientConfig = {
     API_HOST,

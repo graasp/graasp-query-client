@@ -43,13 +43,73 @@ export const ITEMS: Item[] = [
     description: '',
     extra: {},
   },
+  {
+    id: 'eeee',
+    name: 'item5',
+    path: '5896.eeee',
+    type: ITEM_TYPES.FOLDER,
+    description: '',
+    extra: {},
+  },
 ];
 
 export const MEMBER_RESPONSE: Member = {
   id: '42',
   name: 'username',
   email: 'username@graasp.org',
-  extra: {},
+  extra: {
+    recycleBin: {
+      itemId: 'recycleBinId',
+    },
+  },
+};
+
+const recycleBinItemId = 'recycleBinId';
+export const GET_RECYCLED_ITEMS_FIXTURES = {
+  items: [
+    {
+      id: `${recycleBinItemId}.42`,
+      name: 'item1',
+      path: '42',
+      type: ITEM_TYPES.FOLDER,
+      description: '',
+      extra: {},
+    },
+    {
+      id: `${recycleBinItemId}.5243`,
+      name: 'item2',
+      path: '5243',
+      type: ITEM_TYPES.FOLDER,
+      description: '',
+      extra: {},
+    },
+    {
+      id: `${recycleBinItemId}.5896`,
+      name: 'item3',
+      path: '5896',
+      type: ITEM_TYPES.FOLDER,
+      description: '',
+      extra: {},
+    },
+    {
+      id: `${recycleBinItemId}.dddd`,
+      name: 'item4',
+      path: '5896.dddd',
+      type: ITEM_TYPES.FOLDER,
+      description: '',
+      extra: {},
+    },
+  ],
+  member: {
+    id: '42',
+    name: 'username',
+    email: 'username@graasp.org',
+    extra: {
+      recycleBin: {
+        itemId: recycleBinItemId,
+      },
+    },
+  },
 };
 
 export const MEMBERS_RESPONSE: Member[] = [

@@ -13,7 +13,13 @@ import {
   OWN_ITEMS_KEY,
   SHARED_ITEMS_KEY,
 } from '../config/keys';
-import { Item, QueryClientConfig, UndefinedArgument, UUID } from '../types';
+import {
+  Item,
+  Member,
+  QueryClientConfig,
+  UndefinedArgument,
+  UUID,
+} from '../types';
 import { configureWsItemHooks, configureWsMembershipHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
@@ -173,8 +179,9 @@ export default (
       return useQuery({
         queryKey: buildItemsKey(ids),
         queryFn: () =>
+          // eslint-disable-next-line no-nested-ternary
           ids
-            ? ids.length == 1
+            ? ids.length === 1
               ? Api.getItem(ids[0], queryConfig).then((data) => List([data]))
               : Api.getItems(ids, queryConfig).then((data) => List(data))
             : undefined,
@@ -260,5 +267,24 @@ export default (
         enabled: Boolean(id) && enabled,
         ...defaultOptions,
       }),
+
+    useRecycledItems: (member?: Member) => {
+      const dd = member?.extra ?? useCurrentMember().data?.get('extra');
+      const itemId = dd?.recycleBin?.itemId;
+      return useQuery({
+        queryKey: buildItemChildrenKey(itemId),
+        queryFn: () =>
+          Api.getRecycledItems(queryConfig).then((data) => List(data)),
+        onSuccess: async (items: List<Item>) => {
+          // save items in their own key
+          // eslint-disable-next-line no-unused-expressions
+          items?.forEach(async (item) => {
+            const { id } = item;
+            queryClient.setQueryData(buildItemKey(id), Map(item));
+          });
+        },
+        ...defaultOptions,
+      });
+    },
   };
 };

@@ -34,7 +34,7 @@ export type Member = {
   id: UUID;
   name: string;
   email: string;
-  extra: {};
+  extra: any;
 };
 
 export type Membership = {
