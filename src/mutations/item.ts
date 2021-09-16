@@ -243,7 +243,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           }),
         }),
       };
-      // items themselves still exists but the path is different
+      // items themselves still exist but the path is different
       return previousItems;
     },
     onSuccess: () => {

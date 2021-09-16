@@ -703,7 +703,7 @@ describe('Items Hooks', () => {
   describe('useRecycledItems', () => {
     const route = `/${GET_RECYCLED_ITEMS_ROUTE}`;
     const hook = () => hooks.useRecycledItems(MEMBER_RESPONSE);
-    const recycleBinId = MEMBER_RESPONSE.extra.recycleBin.itemId;
+    const recycleBinId = MEMBER_RESPONSE.extra?.recycleBin?.itemId;
     const recycleBinKey = buildItemChildrenKey(recycleBinId);
 
     it(`Receive recycled items`, async () => {
