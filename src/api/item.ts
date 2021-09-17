@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
+import axios from 'axios';
 import {
   buildCopyItemRoute,
   buildCopyItemsRoute,
@@ -11,6 +12,7 @@ import {
   buildGetItemsRoute,
   buildGetPublicChildrenRoute,
   buildGetPublicItemRoute,
+  buildGetPublicItemsWithTag,
   buildGetS3MetadataRoute,
   buildMoveItemRoute,
   buildMoveItemsRoute,
@@ -33,22 +35,31 @@ import {
 import { getParentsIdsFromPath } from '../utils/item';
 import { ExtendedItem, Item, QueryClientConfig, UUID } from '../types';
 
-export const getItem = async (id: UUID, { API_HOST }: QueryClientConfig) => {
-  let res = await fetch(`${API_HOST}/${buildGetItemRoute(id)}`, DEFAULT_GET);
+export const getItem = (
+  id: UUID,
+  options: { withMemberships?: boolean },
+  { API_HOST }: QueryClientConfig,
+) =>
+  axios
+    .get(`${API_HOST}/${buildGetItemRoute(id)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data)
+    .catch((e) => {
+      if (e.response.status === StatusCodes.UNAUTHORIZED) {
+        // try to fetch public items if cannot access privately
+        return axios
+          .get(`${API_HOST}/${buildGetPublicItemRoute(id, options)}`, {
+            withCredentials: true,
+          })
+          .then(({ data: d }) => d)
+          .catch(() => {
+            throw new Error(e.response?.statusText);
+          });
+      }
 
-  // try to fetch public items if cannot access privately
-  if (res.status === StatusCodes.UNAUTHORIZED) {
-    res = await fetch(
-      `${API_HOST}/${buildGetPublicItemRoute(id)}`,
-      DEFAULT_GET,
-    ).then(failOnError);
-  }
-  if (!res.ok) {
-    throw new Error(res.statusText);
-  }
-  const item = await res.json();
-  return item;
-};
+      throw new Error(e.response?.statusText);
+    });
 
 export const getItems = async (
   ids: UUID[],
@@ -159,7 +170,7 @@ export const getParents = async (
 ) => {
   const parentIds = getParentsIdsFromPath(path, { ignoreSelf: true });
   if (parentIds.length) {
-    return Promise.all(parentIds.map((id) => getItem(id, config)));
+    return Promise.all(parentIds.map((id) => getItem(id, {}, config)));
   }
   return [];
 };
@@ -315,3 +326,13 @@ export const recycleItems = async (
 
   return res.ok;
 };
+
+export const getPublicItemsWithTag = async (
+  options: { tagId: UUID; withMemberships: boolean },
+  { API_HOST }: QueryClientConfig,
+) =>
+  axios
+    .get(`${API_HOST}/${buildGetPublicItemsWithTag(options)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data);

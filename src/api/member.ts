@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
+import axios from 'axios';
 import { failOnError, DEFAULT_GET, DEFAULT_PATCH } from './utils';
 import {
   buildGetMemberBy,
@@ -6,6 +7,8 @@ import {
   GET_CURRENT_MEMBER_ROUTE,
   buildPatchMember,
   buildGetMembersRoute,
+  buildGetPublicMembers,
+  buildGetPublicMember,
 } from './routes';
 import { Member, QueryClientConfig, UUID } from '../types';
 import { SIGNED_OUT_USER } from '../config/constants';
@@ -24,24 +27,68 @@ export const getMemberBy = async (
 export const getMember = async (
   { id }: { id: UUID },
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(`${API_HOST}/${buildGetMember(id)}`, {
-    ...DEFAULT_GET,
-  }).then(failOnError);
+) =>
+  axios
+    .get(`${API_HOST}/${buildGetMember(id)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data)
+    .catch((e) => {
+      if (e.response.status === StatusCodes.UNAUTHORIZED) {
+        // try to fetch public items if cannot access privately
+        return axios
+          .get(`${API_HOST}/${buildGetPublicMember(id)}`, {
+            withCredentials: true,
+          })
+          .then(({ data: d }) => d)
+          .catch(() => {
+            throw new Error(e.response?.statusText);
+          });
+      }
 
-  return res.json();
-};
+      throw new Error(e.response?.statusText);
+    });
 
-export const getMembers = async (
+// {
+//   const res = await fetch(`${API_HOST}/${buildGetMember(id)}`, {
+//     ...DEFAULT_GET,
+//   }).then(failOnError);
+
+//   return res.json();
+// };
+
+export const getMembers = (
   { ids }: { ids: UUID[] },
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(`${API_HOST}/${buildGetMembersRoute(ids)}`, {
-    ...DEFAULT_GET,
-  }).then(failOnError);
+) =>
+  axios
+    .get(`${API_HOST}/${buildGetMembersRoute(ids)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data)
+    .catch((e) => {
+      if (e.response.status === StatusCodes.UNAUTHORIZED) {
+        // try to fetch public items if cannot access privately
+        return axios
+          .get(`${API_HOST}/${buildGetPublicMembers(ids)}`, {
+            withCredentials: true,
+          })
+          .then(({ data: d }) => d)
+          .catch(() => {
+            throw new Error(e.response?.statusText);
+          });
+      }
 
-  return res.json();
-};
+      throw new Error(e.response?.statusText);
+    });
+
+//   {
+//   const res = await fetch(`${API_HOST}/${buildGetMembersRoute(ids)}`, {
+//     ...DEFAULT_GET,
+//   }).then(failOnError);
+
+//   return res.json();
+// };
 
 export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) => {
   const res = await fetch(`${API_HOST}/${GET_CURRENT_MEMBER_ROUTE}`, {

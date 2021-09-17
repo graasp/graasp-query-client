@@ -6,7 +6,7 @@ import {
   buildMembersKey,
   CURRENT_MEMBER_KEY,
 } from '../config/keys';
-import { Member, QueryClientConfig, UUID } from '../types';
+import { Member, QueryClientConfig, UndefinedArgument, UUID } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { retry, cacheTime, staleTime } = queryConfig;
@@ -24,11 +24,15 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       ...defaultOptions,
     });
 
-  const useMember = (id: UUID) =>
+  const useMember = (id?: UUID) =>
     useQuery({
       queryKey: buildMemberKey(id),
-      queryFn: () =>
-        Api.getMember({ id }, queryConfig).then((data) => Map(data)),
+      queryFn: () => {
+        if (!id) {
+          throw new UndefinedArgument();
+        }
+        return Api.getMember({ id }, queryConfig).then((data) => Map(data));
+      },
       enabled: Boolean(id),
       ...defaultOptions,
     });

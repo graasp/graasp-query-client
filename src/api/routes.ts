@@ -23,7 +23,10 @@ export const buildGetChildrenRoute = (id: UUID, ordered: boolean) =>
     { addQueryPrefix: true },
   )}`;
 export const buildGetItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
-export const buildGetPublicItemRoute = (id: UUID) => `p/${ITEMS_ROUTE}/${id}`;
+export const buildGetPublicItemRoute = (
+  id: UUID,
+  options: { withMemberships?: boolean },
+) => `p/${ITEMS_ROUTE}/${id}${qs.stringify(options, { addQueryPrefix: true })}`;
 export const buildGetPublicChildrenRoute = (id: UUID, ordered: boolean) =>
   `p/${ITEMS_ROUTE}/${id}/children${qs.stringify(
     { ordered },
@@ -103,6 +106,14 @@ export const buildRecycleItemsRoute = (ids: UUID[]) =>
     { id: ids },
     { arrayFormat: 'repeat' },
   )}`;
+export const buildGetPublicItemsWithTag = (options: {
+  tagId: UUID;
+  withMemberships: boolean;
+}) => `p/${ITEMS_ROUTE}?${qs.stringify(options)}`;
+export const buildGetPublicMembers = (ids: UUID[]) =>
+  `p/${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
+
+export const buildGetPublicMember = (id: UUID) => `p/${MEMBERS_ROUTE}/${id}`;
 
 export const API_ROUTES = {
   ITEMS_ROUTE,
@@ -150,4 +161,7 @@ export const API_ROUTES = {
   buildPostItemChatMessageRoute,
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
+  buildGetPublicItemsWithTag,
+  buildGetPublicMember,
+  buildGetPublicMembers,
 };

@@ -394,8 +394,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ...newItem,
       })),
     // cannot mutate because it needs the id
-    onSuccess: () => {
-      notifier?.({ type: copyItemRoutine.SUCCESS });
+    onSuccess: (data) => {
+      notifier?.({ type: copyItemRoutine.SUCCESS, payload: data });
     },
     onError: (error) => {
       notifier?.({ type: copyItemRoutine.FAILURE, payload: { error } });

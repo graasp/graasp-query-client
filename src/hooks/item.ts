@@ -9,6 +9,7 @@ import {
   buildItemMembershipsKey,
   buildItemParentsKey,
   buildItemsKey,
+  buildPublicItemsWithTagKey,
   buildS3FileContentKey,
   OWN_ITEMS_KEY,
   SHARED_ITEMS_KEY,
@@ -71,7 +72,12 @@ export default (
 
     useChildren: (
       id: UUID | undefined,
-      options?: { enabled?: boolean; ordered?: boolean; getUpdates?: boolean },
+      options?: {
+        enabled?: boolean;
+        ordered?: boolean;
+        getUpdates?: boolean;
+        placeholderData?: List<Item>;
+      },
     ) => {
       const enabled = options?.enabled ?? true;
       const ordered = options?.ordered ?? true;
@@ -100,6 +106,7 @@ export default (
         },
         ...defaultOptions,
         enabled: Boolean(id) && enabled,
+        placeholderData: options?.placeholderData,
       });
     },
 
@@ -152,7 +159,15 @@ export default (
       });
     },
 
-    useItem: (id?: UUID, options?: { getUpdates?: boolean }) => {
+    useItem: (
+      id?: UUID,
+      // todo: directly provide a Map<Item>
+      options?: {
+        getUpdates?: boolean;
+        placeholderData?: Item;
+        withMemberships?: boolean;
+      },
+    ) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       itemWsHooks?.useItemUpdates(getUpdates ? id : null);
@@ -163,15 +178,25 @@ export default (
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getItem(id, queryConfig).then((data) => Map(data));
+          return Api.getItem(
+            id,
+            { withMemberships: options?.withMemberships },
+            queryConfig,
+          ).then((data) => Map(data));
         },
         enabled: Boolean(id),
         ...defaultOptions,
+        placeholderData: options?.placeholderData
+          ? Map(options?.placeholderData)
+          : undefined,
       });
     },
 
     // todo: add optimisation to avoid fetching items already in cache
-    useItems: (ids: UUID[], options?: { getUpdates?: boolean }) => {
+    useItems: (
+      ids: UUID[],
+      options?: { getUpdates?: boolean; withMemberships?: boolean },
+    ) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       ids.map((id) => itemWsHooks?.useItemUpdates(getUpdates ? id : null));
@@ -182,7 +207,11 @@ export default (
           // eslint-disable-next-line no-nested-ternary
           ids
             ? ids.length === 1
-              ? Api.getItem(ids[0], queryConfig).then((data) => List([data]))
+              ? Api.getItem(
+                  ids[0],
+                  { withMemberships: options?.withMemberships ?? false },
+                  queryConfig,
+                ).then((data) => List([data]))
               : Api.getItems(ids, queryConfig).then((data) => List(data))
             : undefined,
         onSuccess: async (items: List<Item>) => {
@@ -269,8 +298,9 @@ export default (
       }),
 
     useRecycledItems: (member?: Member) => {
-      const dd = member?.extra ?? useCurrentMember().data?.get('extra');
-      const itemId = dd?.recycleBin?.itemId;
+      const memberExtra =
+        member?.extra ?? useCurrentMember().data?.get('extra');
+      const itemId = memberExtra?.recycleBin?.itemId;
       return useQuery({
         queryKey: buildItemChildrenKey(itemId),
         queryFn: () =>
@@ -286,5 +316,31 @@ export default (
         ...defaultOptions,
       });
     },
+
+    usePublicItemsWithTag: (
+      tagId: UUID,
+      {
+        withMemberships = false,
+        placeholderData,
+      }: { withMemberships?: boolean; placeholderData?: List<Item> },
+    ) =>
+      useQuery({
+        queryKey: buildPublicItemsWithTagKey(tagId),
+        queryFn: () =>
+          Api.getPublicItemsWithTag(
+            { tagId, withMemberships },
+            queryConfig,
+          ).then((data) => List(data)),
+        onSuccess: async (items: List<Item>) => {
+          // save items in their own key
+          // eslint-disable-next-line no-unused-expressions
+          items?.forEach(async (item) => {
+            const { id } = item;
+            queryClient.setQueryData(buildItemKey(id), Map(item));
+          });
+        },
+        ...defaultOptions,
+        placeholderData,
+      }),
   };
 };
