@@ -1,4 +1,3 @@
-import { StatusCodes } from 'http-status-codes';
 import axios from 'axios';
 import {
   buildCopyItemRoute,
@@ -34,6 +33,7 @@ import {
 } from './utils';
 import { getParentsIdsFromPath } from '../utils/item';
 import { ExtendedItem, Item, QueryClientConfig, UUID } from '../types';
+import { FALLBACK_TO_PUBLIC_FOR_STATUS_CODES } from '../config/constants';
 
 export const getItem = (
   id: UUID,
@@ -46,7 +46,7 @@ export const getItem = (
     })
     .then(({ data }) => data)
     .catch((e) => {
-      if (e.response.status === StatusCodes.UNAUTHORIZED) {
+      if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(e.response.status)) {
         // try to fetch public items if cannot access privately
         return axios
           .get(`${API_HOST}/${buildGetPublicItemRoute(id, options)}`, {
@@ -149,7 +149,7 @@ export const getChildren = async (
   );
 
   // try to fetch public items if cannot access privately
-  if (res.status === StatusCodes.UNAUTHORIZED) {
+  if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(res.status)) {
     res = await fetch(
       `${API_HOST}/${buildGetPublicChildrenRoute(id, ordered)}`,
       DEFAULT_GET,

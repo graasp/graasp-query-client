@@ -11,7 +11,10 @@ import {
   buildGetPublicMember,
 } from './routes';
 import { Member, QueryClientConfig, UUID } from '../types';
-import { SIGNED_OUT_USER } from '../config/constants';
+import {
+  FALLBACK_TO_PUBLIC_FOR_STATUS_CODES,
+  SIGNED_OUT_USER,
+} from '../config/constants';
 
 export const getMemberBy = async (
   { email }: { email: string },
@@ -34,7 +37,7 @@ export const getMember = async (
     })
     .then(({ data }) => data)
     .catch((e) => {
-      if (e.response.status === StatusCodes.UNAUTHORIZED) {
+      if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(e.response.status)) {
         // try to fetch public items if cannot access privately
         return axios
           .get(`${API_HOST}/${buildGetPublicMember(id)}`, {
@@ -48,14 +51,6 @@ export const getMember = async (
 
       throw new Error(e.response?.statusText);
     });
-
-// {
-//   const res = await fetch(`${API_HOST}/${buildGetMember(id)}`, {
-//     ...DEFAULT_GET,
-//   }).then(failOnError);
-
-//   return res.json();
-// };
 
 export const getMembers = (
   { ids }: { ids: UUID[] },
@@ -81,14 +76,6 @@ export const getMembers = (
 
       throw new Error(e.response?.statusText);
     });
-
-//   {
-//   const res = await fetch(`${API_HOST}/${buildGetMembersRoute(ids)}`, {
-//     ...DEFAULT_GET,
-//   }).then(failOnError);
-
-//   return res.json();
-// };
 
 export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) => {
   const res = await fetch(`${API_HOST}/${GET_CURRENT_MEMBER_ROUTE}`, {
