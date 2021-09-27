@@ -569,7 +569,7 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as Blob).text()).toBeTruthy();
+      expect(data).toBeTruthy();
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeTruthy();
     });

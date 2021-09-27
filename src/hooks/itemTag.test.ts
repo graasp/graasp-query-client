@@ -4,7 +4,8 @@ import { List } from 'immutable';
 import { buildGetItemTagsRoute, GET_TAGS_ROUTE } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
 import { ITEMS, TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { buildItemTagsKey, ITEM_TAGS_KEY } from '../config/keys';
+import { buildItemTagsKey, TAGS_KEY } from '../config/keys';
+import { ItemTag } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -16,7 +17,7 @@ describe('Item Tags Hooks', () => {
 
   describe('useTags', () => {
     const route = `/${GET_TAGS_ROUTE}`;
-    const key = ITEM_TAGS_KEY;
+    const key = TAGS_KEY;
 
     const hook = () => hooks.useTags();
 
@@ -25,7 +26,7 @@ describe('Item Tags Hooks', () => {
       const endpoints = [{ route, response }];
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<typeof TAGS[0]>).toJS()).toEqual(response);
+      expect((data as List<ItemTag>).toJS()).toEqual(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(List(response));

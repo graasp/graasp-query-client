@@ -270,9 +270,7 @@ export default (
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getFileContent({ id }, queryConfig).then((data) =>
-            data.blob(),
-          );
+          return Api.getFileContent({ id }, queryConfig).then((data) => data);
         },
         enabled: Boolean(id) && enabled,
         ...defaultOptions,

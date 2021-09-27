@@ -61,12 +61,16 @@ export const buildUploadFilesRoute = (parentId: UUID) =>
     : `${ITEMS_ROUTE}/upload`;
 export const buildDownloadFilesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/download`;
+export const buildPublicDownloadFilesRoute = (id: UUID) =>
+  `p/${buildDownloadFilesRoute(id)}`;
 export const buildS3UploadFileRoute = (parentId: UUID) =>
   parentId
     ? `${ITEMS_ROUTE}/s3-upload?parentId=${parentId}`
     : `${ITEMS_ROUTE}/s3-upload`;
 export const buildGetS3MetadataRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/s3-metadata`;
+export const buildGetPublicS3MetadataRoute = (id: UUID) =>
+  `p/${buildGetS3MetadataRoute(id)}`;
 export const buildS3FileUrl = (S3_FILES_HOST: string, key: string) =>
   `${S3_FILES_HOST}/${key}`;
 export const GET_CURRENT_MEMBER_ROUTE = `${MEMBERS_ROUTE}/current`;
