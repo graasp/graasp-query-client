@@ -1001,61 +1001,117 @@ describe('Items Mutations', () => {
       ).toBeTruthy();
     });
   });
-});
 
-describe(MUTATION_KEYS.RECYCLE_ITEMS, () => {
-  const mutation = () => useMutation(MUTATION_KEYS.RECYCLE_ITEMS);
+  describe(MUTATION_KEYS.RECYCLE_ITEMS, () => {
+    const mutation = () => useMutation(MUTATION_KEYS.RECYCLE_ITEMS);
 
-  it('Recycle root items', async () => {
-    const items = ITEMS.slice(2);
-    const itemIds = items.map(({ id }) => id);
-    const route = `/${buildRecycleItemsRoute(itemIds)}`;
+    it('Recycle root items', async () => {
+      const items = ITEMS.slice(2);
+      const itemIds = items.map(({ id }) => id);
+      const route = `/${buildRecycleItemsRoute(itemIds)}`;
 
-    // set data in cache
-    ITEMS.forEach((item) => {
-      const itemKey = buildItemKey(item.id);
-      queryClient.setQueryData(itemKey, Map(item));
+      // set data in cache
+      ITEMS.forEach((item) => {
+        const itemKey = buildItemKey(item.id);
+        queryClient.setQueryData(itemKey, Map(item));
+      });
+      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+
+      const response = OK_RESPONSE;
+
+      const endpoints = [
+        {
+          response,
+          method: REQUEST_METHODS.POST,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate(itemIds);
+        await waitForMutation();
+      });
+
+      // verify item is still available
+      // in real cases, the path should be different
+      for (const itemId of itemIds) {
+        const itemKey = buildItemKey(itemId);
+        const data = queryClient.getQueryData<Record<Item>>(itemKey);
+        expect(data?.toJS()).toEqual(ITEMS.find(({ id }) => id === itemId));
+      }
+
+      // Check parent's children key is correctly invalidated
+      // and should not contain recycled item
+      const childrenKey = getKeyForParentId(null);
+      expect(
+        queryClient
+          .getQueryData<List<Item>>(childrenKey)
+          ?.filter(({ id: thisId }) => itemIds.includes(thisId)).size,
+      ).toBeFalsy();
+      expect(
+        queryClient.getQueryState(childrenKey)?.isInvalidated,
+      ).toBeTruthy();
     });
-    queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
 
-    const response = OK_RESPONSE;
+    it('Recycle child items', async () => {
+      const items = [ITEMS[3], ITEMS[4], ITEMS[5]];
+      const itemIds = items.map(({ id }) => id);
+      const route = `/${buildRecycleItemsRoute(itemIds)}`;
 
-    const endpoints = [
-      {
-        response,
-        method: REQUEST_METHODS.POST,
-        route,
-      },
-    ];
+      // set data in cache
+      ITEMS.forEach((item) => {
+        const itemKey = buildItemKey(item.id);
+        queryClient.setQueryData(itemKey, Map(item));
+      });
+      const childrenKey = getKeyForParentId(ITEMS[2].id);
+      queryClient.setQueryData(childrenKey, List(ITEMS));
 
-    const mockedMutation = await mockMutation({
-      endpoints,
-      mutation,
-      wrapper,
+      const response = OK_RESPONSE;
+
+      const endpoints = [
+        {
+          response,
+          method: REQUEST_METHODS.POST,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate(itemIds);
+        await waitForMutation();
+      });
+
+      // verify item is still available
+      // in real cases, the path should be different
+      for (const itemId of itemIds) {
+        const itemKey = buildItemKey(itemId);
+        const data = queryClient.getQueryData<Record<Item>>(itemKey);
+        expect(data?.toJS()).toEqual(ITEMS.find(({ id }) => id === itemId));
+      }
+
+      // Check parent's children key is correctly invalidated
+      // and should not contain recycled item
+      expect(
+        queryClient.getQueryState(childrenKey)?.isInvalidated,
+      ).toBeTruthy();
+      expect(
+        queryClient
+          .getQueryData<List<Item>>(childrenKey)
+          ?.filter(({ id }) => itemIds.includes(id)).size,
+      ).toBeFalsy();
     });
-
-    await act(async () => {
-      await mockedMutation.mutate(itemIds);
-      await waitForMutation();
-    });
-
-    // verify item is still available
-    // in real cases, the path should be different
-    for (const itemId of itemIds) {
-      const itemKey = buildItemKey(itemId);
-      const data = queryClient.getQueryData<Record<Item>>(itemKey);
-      expect(data?.toJS()).toEqual(ITEMS.find(({ id }) => id === itemId));
-    }
-
-    // Check parent's children key is correctly invalidated
-    // and should not contain recycled item
-    const childrenKey = getKeyForParentId(null);
-    expect(
-      queryClient
-        .getQueryData<List<Item>>(childrenKey)
-        ?.filter(({ id: thisId }) => itemIds.includes(thisId)).size,
-    ).toBeFalsy();
-    expect(queryClient.getQueryState(childrenKey)?.isInvalidated).toBeTruthy();
   });
 
   describe(MUTATION_KEYS.DELETE_ITEMS, () => {
@@ -1109,60 +1165,6 @@ describe(MUTATION_KEYS.RECYCLE_ITEMS, () => {
         queryClient
           .getQueryData<List<Item>>(childrenKey)
           ?.filter(({ id: thisId }) => itemIds.includes(thisId)).size,
-      ).toBeFalsy();
-      expect(
-        queryClient.getQueryState(childrenKey)?.isInvalidated,
-      ).toBeTruthy();
-    });
-
-    it('Recycle child items', async () => {
-      const items = [ITEMS[3], ITEMS[4]];
-      const itemIds = items.map(({ id }) => id);
-      const route = `/${buildRecycleItemsRoute(itemIds)}`;
-
-      // set data in cache
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, Map(item));
-      });
-      const childrenKey = getKeyForParentId(ITEMS[2].id);
-      queryClient.setQueryData(childrenKey, List(ITEMS));
-
-      const response = OK_RESPONSE;
-
-      const endpoints = [
-        {
-          response,
-          method: REQUEST_METHODS.POST,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate(itemIds);
-        await waitForMutation();
-      });
-
-      // verify item is still available
-      // in real cases, the path should be different
-      for (const itemId of itemIds) {
-        const itemKey = buildItemKey(itemId);
-        const data = queryClient.getQueryData<Record<Item>>(itemKey);
-        expect(data?.toJS()).toEqual(ITEMS.find(({ id }) => id === itemId));
-      }
-
-      // Check parent's children key is correctly invalidated
-      // and should not contain recycled item
-      expect(
-        queryClient
-          .getQueryData<List<Item>>(childrenKey)
-          ?.filter(({ id }) => itemIds.includes(id)).size,
       ).toBeFalsy();
       expect(
         queryClient.getQueryState(childrenKey)?.isInvalidated,
