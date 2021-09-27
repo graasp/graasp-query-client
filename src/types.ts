@@ -63,8 +63,12 @@ export class UndefinedArgument extends Error {
   }
 }
 
+export enum ITEM_LOGIN_SCHEMAS {
+  USERNAME = 'username',
+  USERNAME_AND_PASSWORD = 'username+password',
+}
 export type ItemLogin = {
-  loginSchema: string;
+  loginSchema: ITEM_LOGIN_SCHEMAS;
 };
 
 // todo: use types from graasp types

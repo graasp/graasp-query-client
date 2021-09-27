@@ -17,7 +17,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onError: (error) => {
       notifier?.({ type: postItemTagRoutine.FAILURE, payload: { error } });
     },
-    onSettled: ({ id }) => {
+    onSettled: (_data, _error, { id }) => {
       queryClient.invalidateQueries(buildItemTagsKey(id));
     },
   });
@@ -30,23 +30,26 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       await queryClient.cancelQueries(itemTagKey);
 
       // Snapshot the previous value
-      const prevValue = queryClient.getQueryData(itemTagKey);
+      const prevValue = queryClient.getQueryData<List<ItemTag>>(itemTagKey);
 
-      queryClient.setQueryData(itemTagKey, (old) => {
-        const oldTags = (old as any) as List<ItemTag>;
-        oldTags.filter(({ id: tId }) => tId !== tagId);
-      });
-      return prevValue;
+      // remove tag from list
+      if (prevValue) {
+        queryClient.setQueryData(
+          itemTagKey,
+          prevValue.filter(({ id: tId }) => tId !== tagId),
+        );
+      }
+      return { itemTags: prevValue };
     },
     onSuccess: () => {
       notifier?.({ type: deleteItemTagRoutine.SUCCESS });
     },
     onError: (error, { id }, context) => {
       const itemKey = buildItemTagsKey(id);
-      queryClient.setQueryData(itemKey, context.prevValue);
+      queryClient.setQueryData(itemKey, context.itemTags);
       notifier?.({ type: deleteItemTagRoutine.FAILURE, payload: { error } });
     },
-    onSettled: ({ id }) => {
+    onSettled: (_data, _error, { id }) => {
       queryClient.invalidateQueries(buildItemTagsKey(id));
     },
   });

@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
 import {
   renderHook,
@@ -14,35 +13,10 @@ import configureQueryClient from '../src/queryClient';
 import { REQUEST_METHODS } from '../src/api/utils';
 import { StatusCodes } from 'http-status-codes';
 
-// const currentMemberResponse: QueryObserverSuccessResult<
-//   Map<unknown, unknown>
-// > = {
-//   data: Map(MEMBER_RESPONSE),
-//   error: null,
-//   isSuccess: true,
-//   isLoading: false,
-//   isError: false,
-//   isIdle: false,
-//   isLoadingError: false,
-//   isRefetchError: false,
-//   status: 'success',
-//   dataUpdatedAt: 1,
-//   errorUpdatedAt: 1,
-//   failureCount: 0,
-//   isFetched: true,
-//   isFetchedAfterMount: false,
-//   isFetching: false,
-//   isPlaceholderData: false,
-//   isPreviousData: false,
-//   isStale: true,
-//   refetch: () =>
-//     new Promise<QueryObserverResult<Map<unknown, unknown>, unknown>>(
-//       () => true,
-//     ),
-//   remove: () => {},
-// };
+type Args = { enableWebsocket?: boolean; notifier?: (payload: any) => void };
 
-export const setUpTest = ({ enableWebsocket = false } = {}) => {
+export const setUpTest = (args?: Args) => {
+  const { enableWebsocket = false, notifier = () => {} } = args ?? {};
   const queryConfig: QueryClientConfig = {
     API_HOST,
     retry: 0,
@@ -50,7 +24,7 @@ export const setUpTest = ({ enableWebsocket = false } = {}) => {
     staleTime: 0,
     S3_FILES_HOST: API_HOST,
     SHOW_NOTIFICATIONS: false,
-    notifier: () => {},
+    notifier,
     enableWebsocket,
     WS_HOST: 'ws host',
   };

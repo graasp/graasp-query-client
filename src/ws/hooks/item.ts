@@ -13,6 +13,7 @@ import {
   SHARED_ITEMS_KEY,
 } from '../../config/keys';
 import { Item, UUID } from '../../types';
+import { TOPICS, OPS, KINDS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 
 // TODO: use graasp-types?
@@ -22,6 +23,7 @@ interface ItemEvent {
   item: Item;
 }
 
+// eslint-disable-next-line import/prefer-default-export
 export const configureWsItemHooks = (
   queryClient: QueryClient,
   websocketClient: WebsocketClient,
@@ -36,11 +38,11 @@ export const configureWsItemHooks = (
         return;
       }
 
-      const channel: Channel = { name: itemId, topic: 'item' };
+      const channel: Channel = { name: itemId, topic: TOPICS.ITEM };
       const itemKey = buildItemKey(itemId);
 
       const handler = (event: ItemEvent) => {
-        if (event.kind === 'self') {
+        if (event.kind === KINDS.SELF) {
           const current: Record<Item> | undefined = queryClient.getQueryData(
             itemKey,
           );
@@ -48,14 +50,17 @@ export const configureWsItemHooks = (
 
           if (current?.get('id') === item.id) {
             switch (event.op) {
-              case 'update': {
+              case OPS.UPDATE: {
                 queryClient.setQueryData(itemKey, Map(item));
                 break;
               }
-              case 'delete': {
+              case OPS.DELETE: {
                 queryClient.setQueryData(itemKey, null);
                 break;
               }
+              default:
+                console.error('unhandled event for useItemUpdates');
+                break;
             }
           }
         }
@@ -79,12 +84,12 @@ export const configureWsItemHooks = (
         return;
       }
 
-      const channel: Channel = { name: parentId, topic: 'item' };
+      const channel: Channel = { name: parentId, topic: TOPICS.ITEM };
       const parentChildrenKey = buildItemChildrenKey(parentId);
 
       const handler = (event: ItemEvent) => {
-        if (event.kind === 'child') {
-          const current: List<Item> | undefined = queryClient.getQueryData(
+        if (event.kind === KINDS.CHILD) {
+          const current = queryClient.getQueryData<List<Item>>(
             parentChildrenKey,
           );
 
@@ -93,7 +98,7 @@ export const configureWsItemHooks = (
             let mutation;
 
             switch (event.op) {
-              case 'create': {
+              case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
                   mutation = current.push(item);
                   queryClient.setQueryData(parentChildrenKey, mutation);
@@ -101,7 +106,7 @@ export const configureWsItemHooks = (
                 }
                 break;
               }
-              case 'update': {
+              case OPS.UPDATE: {
                 // replace value if it exists
                 mutation = current.map((i) => (i.id === item.id ? item : i));
                 queryClient.setQueryData(parentChildrenKey, mutation);
@@ -109,11 +114,15 @@ export const configureWsItemHooks = (
 
                 break;
               }
-              case 'delete': {
+              case OPS.DELETE: {
                 mutation = current.filter((i) => i.id !== item.id);
                 queryClient.setQueryData(parentChildrenKey, mutation);
+                // question: reset item key
                 break;
               }
+              default:
+                console.error('unhandled event for useChildrenUpdates');
+                break;
             }
           }
         }
@@ -137,20 +146,18 @@ export const configureWsItemHooks = (
         return;
       }
 
-      const channel: Channel = { name: userId, topic: 'item/member' };
+      const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
 
       const handler = (event: ItemEvent) => {
-        if (event.kind === 'own') {
-          const current: List<Item> | undefined = queryClient.getQueryData(
-            OWN_ITEMS_KEY,
-          );
+        if (event.kind === KINDS.OWN) {
+          const current = queryClient.getQueryData<List<Item>>(OWN_ITEMS_KEY);
 
           if (current) {
             const item = event.item;
             let mutation;
 
             switch (event.op) {
-              case 'create': {
+              case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
                   mutation = current.push(item);
                   queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
@@ -158,7 +165,7 @@ export const configureWsItemHooks = (
                 }
                 break;
               }
-              case 'update': {
+              case OPS.UPDATE: {
                 // replace value if it exists
                 mutation = current.map((i) => (i.id === item.id ? item : i));
                 queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
@@ -166,12 +173,15 @@ export const configureWsItemHooks = (
 
                 break;
               }
-              case 'delete': {
+              case OPS.DELETE: {
                 mutation = current.filter((i) => i.id !== item.id);
                 queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
 
                 break;
               }
+              default:
+                console.error('unhandled event for useOwnItemsUpdates');
+                break;
             }
           }
         }
@@ -195,10 +205,10 @@ export const configureWsItemHooks = (
         return;
       }
 
-      const channel: Channel = { name: userId, topic: 'item/member' };
+      const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
 
       const handler = (event: ItemEvent) => {
-        if (event.kind === 'shared') {
+        if (event.kind === KINDS.SHARED) {
           const current: List<Item> | undefined = queryClient.getQueryData(
             SHARED_ITEMS_KEY,
           );
@@ -208,7 +218,7 @@ export const configureWsItemHooks = (
             let mutation;
 
             switch (event.op) {
-              case 'create': {
+              case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
                   mutation = current.push(item);
                   queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
@@ -216,7 +226,7 @@ export const configureWsItemHooks = (
                 }
                 break;
               }
-              case 'update': {
+              case OPS.UPDATE: {
                 // replace value if it exists
                 mutation = current.map((i) => (i.id === item.id ? item : i));
                 queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
@@ -224,7 +234,7 @@ export const configureWsItemHooks = (
 
                 break;
               }
-              case 'delete': {
+              case OPS.DELETE: {
                 mutation = current.filter((i) => i.id !== item.id);
                 queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
 
