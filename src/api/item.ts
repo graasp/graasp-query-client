@@ -43,7 +43,7 @@ export const getItem = (
   { API_HOST }: QueryClientConfig,
 ) =>
   axios
-    .get(`${API_HOST}/${buildGetItemRoute(id)}`, {
+    .get(`${API_HOST}/${buildGetItemRoute(id, options)}`, {
       withCredentials: true,
     })
     .then(({ data }) => data)
@@ -358,7 +358,7 @@ export const recycleItems = async (
 };
 
 export const getPublicItemsWithTag = async (
-  options: { tagId: UUID; withMemberships: boolean },
+  options: { tagId: UUID; withMemberships?: boolean },
   { API_HOST }: QueryClientConfig,
 ) =>
   axios

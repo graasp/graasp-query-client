@@ -7,7 +7,7 @@ import {
   GET_CURRENT_MEMBER_ROUTE,
   buildPatchMember,
   buildGetMembersRoute,
-  buildGetPublicMembers,
+  buildGetPublicMembersRoute,
   buildGetPublicMember,
 } from './routes';
 import { Member, QueryClientConfig, UUID } from '../types';
@@ -65,7 +65,7 @@ export const getMembers = (
       if (e.response.status === StatusCodes.UNAUTHORIZED) {
         // try to fetch public items if cannot access privately
         return axios
-          .get(`${API_HOST}/${buildGetPublicMembers(ids)}`, {
+          .get(`${API_HOST}/${buildGetPublicMembersRoute(ids)}`, {
             withCredentials: true,
           })
           .then(({ data: d }) => d)

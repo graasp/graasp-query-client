@@ -316,19 +316,23 @@ export default (
     },
 
     usePublicItemsWithTag: (
-      tagId: UUID,
-      {
-        withMemberships = false,
-        placeholderData,
-      }: { withMemberships?: boolean; placeholderData?: List<Item> },
-    ) =>
-      useQuery({
+      tagId?: UUID,
+      options?: { withMemberships?: boolean; placeholderData?: List<Item> },
+    ) => {
+      const placeholderData = options?.placeholderData;
+      const withMemberships = options?.withMemberships;
+      return useQuery({
         queryKey: buildPublicItemsWithTagKey(tagId),
-        queryFn: () =>
-          Api.getPublicItemsWithTag(
+        queryFn: () => {
+          if (!tagId) {
+            throw new UndefinedArgument();
+          }
+
+          return Api.getPublicItemsWithTag(
             { tagId, withMemberships },
             queryConfig,
-          ).then((data) => List(data)),
+          ).then((data) => List(data));
+        },
         onSuccess: async (items: List<Item>) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
@@ -339,6 +343,8 @@ export default (
         },
         ...defaultOptions,
         placeholderData,
-      }),
+        enabled: Boolean(tagId),
+      });
+    },
   };
 };
