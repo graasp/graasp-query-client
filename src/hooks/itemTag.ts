@@ -2,7 +2,7 @@ import { useQuery } from 'react-query';
 import { List } from 'immutable';
 import { QueryClientConfig, UndefinedArgument, UUID } from '../types';
 import * as Api from '../api';
-import { buildItemTagsKey, ITEM_TAGS_KEY } from '../config/keys';
+import { buildItemTagsKey, TAGS_KEY } from '../config/keys';
 
 export default (queryConfig: QueryClientConfig) => {
   const { retry, cacheTime, staleTime } = queryConfig;
@@ -14,7 +14,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useTags = () =>
     useQuery({
-      queryKey: ITEM_TAGS_KEY,
+      queryKey: TAGS_KEY,
       queryFn: () => Api.getTags(queryConfig).then((data) => List(data)),
       ...defaultOptions,
     });

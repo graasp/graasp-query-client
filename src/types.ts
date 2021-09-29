@@ -30,11 +30,17 @@ export type Item = {
   extra: {};
 };
 
+type MemberExtra = {
+  recycleBin?: {
+    itemId: string;
+  };
+};
+
 export type Member = {
   id: UUID;
   name: string;
   email: string;
-  extra: any;
+  extra: MemberExtra;
 };
 
 export type Membership = {

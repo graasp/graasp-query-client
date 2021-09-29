@@ -1,4 +1,4 @@
-import { StatusCodes } from 'http-status-codes';
+import axios, { AxiosResponse } from 'axios';
 import {
   buildCopyItemRoute,
   buildCopyItemsRoute,
@@ -11,10 +11,13 @@ import {
   buildGetItemsRoute,
   buildGetPublicChildrenRoute,
   buildGetPublicItemRoute,
+  buildGetPublicItemsWithTag,
+  buildGetPublicS3MetadataRoute,
   buildGetS3MetadataRoute,
   buildMoveItemRoute,
   buildMoveItemsRoute,
   buildPostItemRoute,
+  buildPublicDownloadFilesRoute,
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
   buildS3FileUrl,
@@ -32,23 +35,33 @@ import {
 } from './utils';
 import { getParentsIdsFromPath } from '../utils/item';
 import { ExtendedItem, Item, QueryClientConfig, UUID } from '../types';
+import { FALLBACK_TO_PUBLIC_FOR_STATUS_CODES } from '../config/constants';
 
-export const getItem = async (id: UUID, { API_HOST }: QueryClientConfig) => {
-  let res = await fetch(`${API_HOST}/${buildGetItemRoute(id)}`, DEFAULT_GET);
+export const getItem = (
+  id: UUID,
+  options: { withMemberships?: boolean },
+  { API_HOST }: QueryClientConfig,
+) =>
+  axios
+    .get(`${API_HOST}/${buildGetItemRoute(id, options)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data)
+    .catch((e) => {
+      if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(e.response.status)) {
+        // try to fetch public items if cannot access privately
+        return axios
+          .get(`${API_HOST}/${buildGetPublicItemRoute(id, options)}`, {
+            withCredentials: true,
+          })
+          .then(({ data: d }) => d)
+          .catch(() => {
+            throw new Error(e.response?.statusText);
+          });
+      }
 
-  // try to fetch public items if cannot access privately
-  if (res.status === StatusCodes.UNAUTHORIZED) {
-    res = await fetch(
-      `${API_HOST}/${buildGetPublicItemRoute(id)}`,
-      DEFAULT_GET,
-    ).then(failOnError);
-  }
-  if (!res.ok) {
-    throw new Error(res.statusText);
-  }
-  const item = await res.json();
-  return item;
-};
+      throw new Error(e.response?.statusText);
+    });
 
 export const getItems = async (
   ids: UUID[],
@@ -138,7 +151,7 @@ export const getChildren = async (
   );
 
   // try to fetch public items if cannot access privately
-  if (res.status === StatusCodes.UNAUTHORIZED) {
+  if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(res.status)) {
     res = await fetch(
       `${API_HOST}/${buildGetPublicChildrenRoute(id, ordered)}`,
       DEFAULT_GET,
@@ -159,7 +172,7 @@ export const getParents = async (
 ) => {
   const parentIds = getParentsIdsFromPath(path, { ignoreSelf: true });
   if (parentIds.length) {
-    return Promise.all(parentIds.map((id) => getItem(id, config)));
+    return Promise.all(parentIds.map((id) => getItem(id, {}, config)));
   }
   return [];
 };
@@ -235,13 +248,28 @@ export const getSharedItems = async ({ API_HOST }: QueryClientConfig) => {
 export const getFileContent = async (
   { id }: { id: UUID },
   { API_HOST }: QueryClientConfig,
-) => {
-  const response = await fetch(
-    `${API_HOST}/${buildDownloadFilesRoute(id)}`,
-    DEFAULT_GET,
-  ).then(failOnError);
-  return response;
-};
+) =>
+  axios
+    .get(`${API_HOST}/${buildDownloadFilesRoute(id)}`, {
+      withCredentials: true,
+      responseType: 'blob',
+    })
+    .then(({ data }) => data)
+    .catch((e) => {
+      if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(e.response.status)) {
+        // try to fetch public items if cannot access privately
+        return axios
+          .get(`${API_HOST}/${buildPublicDownloadFilesRoute(id)}`, {
+            responseType: 'blob',
+          })
+          .then(({ data }) => data)
+          .catch(() => {
+            throw new Error(e.response?.statusText);
+          });
+      }
+
+      throw new Error(e.response?.statusText);
+    });
 
 export const uploadItemToS3 = async (
   {
@@ -274,13 +302,26 @@ export const getS3FileUrl = async (
   { id }: { id: UUID },
   { API_HOST, S3_FILES_HOST }: QueryClientConfig,
 ) => {
-  const response = await fetch(
-    `${API_HOST}/${buildGetS3MetadataRoute(id)}`,
-    DEFAULT_GET,
-  ).then(failOnError);
+  const onSuccess = ({ data }: AxiosResponse<{ key: string }>) =>
+    buildS3FileUrl(S3_FILES_HOST, data.key);
+  return axios
+    .get(`${API_HOST}/${buildGetS3MetadataRoute(id)}`, {
+      withCredentials: true,
+    })
+    .then(onSuccess)
+    .catch((e) => {
+      if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(e.response.status)) {
+        // try to fetch public items if cannot access privately
+        return axios
+          .get(`${API_HOST}/${buildGetPublicS3MetadataRoute(id)}`, {})
+          .then(onSuccess)
+          .catch(() => {
+            throw new Error(e.response?.statusText);
+          });
+      }
 
-  const { key } = await response.json();
-  return buildS3FileUrl(S3_FILES_HOST, key);
+      throw new Error(e.response?.statusText);
+    });
 };
 
 export const getRecycledItems = async ({ API_HOST }: QueryClientConfig) => {
@@ -315,3 +356,13 @@ export const recycleItems = async (
 
   return res.ok;
 };
+
+export const getPublicItemsWithTag = async (
+  options: { tagId: UUID; withMemberships?: boolean },
+  { API_HOST }: QueryClientConfig,
+) =>
+  axios
+    .get(`${API_HOST}/${buildGetPublicItemsWithTag(options)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data);

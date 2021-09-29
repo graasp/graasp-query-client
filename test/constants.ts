@@ -156,7 +156,7 @@ const BlobMock = {
   blob: () => 'blob',
 };
 
-export const FILE_RESPONSE = BlobMock;
+export const FILE_RESPONSE = 'somedata';
 
 export const S3_FILE_RESPONSE = {
   key: 'someurl',

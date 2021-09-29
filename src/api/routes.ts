@@ -22,8 +22,14 @@ export const buildGetChildrenRoute = (id: UUID, ordered: boolean) =>
     { ordered },
     { addQueryPrefix: true },
   )}`;
-export const buildGetItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
-export const buildGetPublicItemRoute = (id: UUID) => `p/${ITEMS_ROUTE}/${id}`;
+export const buildGetItemRoute = (
+  id: UUID,
+  options?: { withMemberships?: boolean },
+) => `${ITEMS_ROUTE}/${id}${qs.stringify(options, { addQueryPrefix: true })}`;
+export const buildGetPublicItemRoute = (
+  id: UUID,
+  options?: { withMemberships?: boolean },
+) => `p/${ITEMS_ROUTE}/${id}${qs.stringify(options, { addQueryPrefix: true })}`;
 export const buildGetPublicChildrenRoute = (id: UUID, ordered: boolean) =>
   `p/${ITEMS_ROUTE}/${id}/children${qs.stringify(
     { ordered },
@@ -58,12 +64,16 @@ export const buildUploadFilesRoute = (parentId: UUID) =>
     : `${ITEMS_ROUTE}/upload`;
 export const buildDownloadFilesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/download`;
+export const buildPublicDownloadFilesRoute = (id: UUID) =>
+  `p/${buildDownloadFilesRoute(id)}`;
 export const buildS3UploadFileRoute = (parentId: UUID) =>
   parentId
     ? `${ITEMS_ROUTE}/s3-upload?parentId=${parentId}`
     : `${ITEMS_ROUTE}/s3-upload`;
 export const buildGetS3MetadataRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/s3-metadata`;
+export const buildGetPublicS3MetadataRoute = (id: UUID) =>
+  `p/${buildGetS3MetadataRoute(id)}`;
 export const buildS3FileUrl = (S3_FILES_HOST: string, key: string) =>
   `${S3_FILES_HOST}/${key}`;
 export const GET_CURRENT_MEMBER_ROUTE = `${MEMBERS_ROUTE}/current`;
@@ -103,6 +113,14 @@ export const buildRecycleItemsRoute = (ids: UUID[]) =>
     { id: ids },
     { arrayFormat: 'repeat' },
   )}`;
+export const buildGetPublicItemsWithTag = (options: {
+  tagId: UUID;
+  withMemberships?: boolean;
+}) => `p/${ITEMS_ROUTE}?${qs.stringify(options)}`;
+export const buildGetPublicMembersRoute = (ids: UUID[]) =>
+  `p/${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
+
+export const buildGetPublicMember = (id: UUID) => `p/${MEMBERS_ROUTE}/${id}`;
 
 export const API_ROUTES = {
   ITEMS_ROUTE,
@@ -150,4 +168,7 @@ export const API_ROUTES = {
   buildPostItemChatMessageRoute,
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
+  buildGetPublicItemsWithTag,
+  buildGetPublicMember,
+  buildGetPublicMembersRoute,
 };

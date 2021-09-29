@@ -1,6 +1,5 @@
-import configureQueryClient from './queryClient';
-
+export { default as configureQueryClient } from './queryClient';
+export * as Api from './api';
 export * as routines from './routines';
-export default configureQueryClient;
 export { MUTATION_KEYS } from './config/keys';
 export { API_ROUTES } from './api/routes';

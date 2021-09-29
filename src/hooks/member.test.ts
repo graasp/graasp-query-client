@@ -4,6 +4,8 @@ import nock from 'nock';
 import {
   buildGetMember,
   buildGetMembersRoute,
+  buildGetPublicMember,
+  buildGetPublicMembersRoute,
   GET_CURRENT_MEMBER_ROUTE,
 } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
@@ -65,9 +67,9 @@ describe('Member Hooks', () => {
 
   describe('useMember', () => {
     const id = 'member-id';
+    const response = MEMBER_RESPONSE;
 
     it(`Receive member id = ${id}`, async () => {
-      const response = MEMBER_RESPONSE;
       const endpoints = [
         {
           route: `/${buildGetMember(id)}`,
@@ -105,6 +107,30 @@ describe('Member Hooks', () => {
       expect(isError).toBeTruthy();
       // verify cache keys
       expect(queryClient.getQueryData(buildMemberKey(id))).toBeFalsy();
+    });
+
+    it(`Fallback to public`, async () => {
+      const hook = () => hooks.useMember(id);
+      const endpoints = [
+        {
+          route: `/${buildGetMember(id)}`,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+        {
+          route: `/${buildGetPublicMember(id)}`,
+          response,
+        },
+      ];
+      const { data } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      expect((data as Record<Member>).toJS()).toEqual(response);
+      // verify cache keys
+      expect(queryClient.getQueryData(buildMemberKey(id))).toEqual(data);
     });
   });
 
@@ -210,6 +236,36 @@ describe('Member Hooks', () => {
         expect(
           queryClient.getQueryData<Record<Member>>(buildMemberKey(id))?.toJS(),
         ).toBeFalsy();
+      }
+    });
+
+    it(`Fallback to public`, async () => {
+      const endpoints = [
+        {
+          route: `/${buildGetMembersRoute(ids)}`,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+        {
+          route: `/${buildGetPublicMembersRoute(ids)}`,
+          response,
+        },
+      ];
+      const hook = () => hooks.useMembers(ids);
+      const { data } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      const members = data as List<Member>;
+      expect(members.toJS()).toEqual(response);
+      // verify cache keys
+      expect(queryClient.getQueryData(buildMembersKey(ids))).toEqual(data);
+      for (const id of ids) {
+        expect(
+          queryClient.getQueryData<Record<Member>>(buildMemberKey(id))?.toJS(),
+        ).toEqual(members.find(({ id: thisId }) => thisId === id));
       }
     });
   });

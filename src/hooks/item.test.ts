@@ -8,7 +8,11 @@ import {
   buildGetItemMembershipsForItemRoute,
   buildGetItemRoute,
   buildGetItemsRoute,
+  buildGetPublicItemRoute,
+  buildGetPublicItemsWithTag,
+  buildGetPublicS3MetadataRoute,
   buildGetS3MetadataRoute,
+  buildPublicDownloadFilesRoute,
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_ROUTE,
   SHARE_ITEM_WITH_ROUTE,
@@ -21,6 +25,7 @@ import {
   MEMBER_RESPONSE,
   S3_FILE_BLOB_RESPONSE,
   S3_FILE_RESPONSE,
+  TAGS,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
 import {
@@ -31,6 +36,7 @@ import {
   buildItemMembershipsKey,
   buildItemParentsKey,
   buildItemsKey,
+  buildPublicItemsWithTagKey,
   buildS3FileContentKey,
   OWN_ITEMS_KEY,
   SHARED_ITEMS_KEY,
@@ -377,6 +383,11 @@ describe('Items Hooks', () => {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
+        {
+          route: `/${buildGetPublicItemRoute(id)}`,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
       ];
       const { data, isError } = await mockHook({
         hook,
@@ -389,13 +400,93 @@ describe('Items Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
     });
+
+    it(`Successfully fallback to public`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+        {
+          route: `/${buildGetPublicItemRoute(id)}`,
+          response,
+        },
+      ];
+      const { data, isSuccess } = await mockHook({
+        hook,
+        endpoints,
+        wrapper,
+      });
+
+      expect(isSuccess).toBeTruthy();
+      expect((data as Record<Item>).toJS()).toEqual(response);
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toEqual(Map(response));
+    });
+
+    describe('withMemberships=true', () => {
+      const itemWithMemberships = {
+        ...response,
+        itemMemberships: ITEM_MEMBERSHIPS_RESPONSE,
+      };
+      const hookWithMemberships = () =>
+        hooks.useItem(id, { withMemberships: true });
+      const routeWithMemberships = `/${buildGetItemRoute(id, {
+        withMemberships: true,
+      })}`;
+
+      it(`Get item with memberships`, async () => {
+        const endpoints = [
+          {
+            route: routeWithMemberships,
+            response: itemWithMemberships,
+          },
+        ];
+        const { data, isSuccess } = await mockHook({
+          hook: hookWithMemberships,
+          endpoints,
+          wrapper,
+        });
+
+        expect(isSuccess).toBeTruthy();
+        expect((data as Record<Item>).toJS()).toEqual(itemWithMemberships);
+        // verify cache keys
+        expect(queryClient.getQueryData(key)).toEqual(Map(itemWithMemberships));
+      });
+
+      it(`Fallback to public`, async () => {
+        const endpoints = [
+          {
+            route: routeWithMemberships,
+            response: UNAUTHORIZED_RESPONSE,
+            statusCode: StatusCodes.UNAUTHORIZED,
+          },
+          {
+            route: `/${buildGetPublicItemRoute(id, { withMemberships: true })}`,
+            response: itemWithMemberships,
+          },
+        ];
+        const { data, isSuccess } = await mockHook({
+          hook: hookWithMemberships,
+          endpoints,
+          wrapper,
+        });
+
+        expect(isSuccess).toBeTruthy();
+        expect((data as Record<Item>).toJS()).toEqual(itemWithMemberships);
+        // verify cache keys
+        expect(queryClient.getQueryData(key)).toEqual(Map(itemWithMemberships));
+      });
+    });
   });
 
   describe('useItems', () => {
     it(`Receive one item`, async () => {
       const response = ITEMS[0];
       const { id } = response;
-      const route = `/${buildGetItemRoute(id)}`;
+      // use single item call
+      const route = `/${buildGetItemRoute(id, { withMemberships: false })}`;
       const endpoints = [{ route, response }];
       const hook = () => hooks.useItems([id]);
       const { data } = await mockHook({ endpoints, hook, wrapper });
@@ -569,7 +660,7 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as Blob).text()).toBeTruthy();
+      expect(data).toBeTruthy();
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeTruthy();
     });
@@ -623,6 +714,30 @@ describe('Items Hooks', () => {
       expect(data).toBeFalsy();
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+
+    it(`Successfully fallback to public`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+        {
+          route: `/${buildPublicDownloadFilesRoute(id)}`,
+          response,
+        },
+      ];
+      const { data, isSuccess } = await mockHook({
+        hook,
+        endpoints,
+        wrapper,
+      });
+
+      expect(isSuccess).toBeTruthy();
+      expect(data).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeTruthy();
     });
   });
 
@@ -698,12 +813,32 @@ describe('Items Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
     });
+
+    it(`Fallback to public call`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+        { route: `/${buildGetPublicS3MetadataRoute(id)}`, response },
+        {
+          route: `/${response.key}`,
+          response: S3_FILE_BLOB_RESPONSE,
+        },
+      ];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+
+      expect((data as Blob).text()).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeTruthy();
+    });
   });
 
   describe('useRecycledItems', () => {
     const route = `/${GET_RECYCLED_ITEMS_ROUTE}`;
     const hook = () => hooks.useRecycledItems(MEMBER_RESPONSE);
-    const recycleBinId = MEMBER_RESPONSE.extra.recycleBin.itemId;
+    const recycleBinId = MEMBER_RESPONSE.extra?.recycleBin?.itemId;
     const recycleBinKey = buildItemChildrenKey(recycleBinId);
 
     it(`Receive recycled items`, async () => {
@@ -739,6 +874,59 @@ describe('Items Hooks', () => {
       expect(isError).toBeTruthy();
       // verify cache keys
       expect(queryClient.getQueryData(recycleBinKey)).toBeFalsy();
+    });
+  });
+
+  describe('usePublicItemsWithTag', () => {
+    const response = ITEMS;
+    const id = TAGS[0].id;
+    const route = `/${buildGetPublicItemsWithTag({ tagId: id })}`;
+    const hook = () => hooks.usePublicItemsWithTag(id);
+    const key = buildPublicItemsWithTagKey(id);
+
+    it(`Receive items`, async () => {
+      const endpoints = [{ route, response }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+
+      expect((data as List<Item>).toJS()).toEqual(response);
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toEqual(List(response));
+    });
+
+    it(`Undefined id does not fetch`, async () => {
+      const endpoints = [
+        {
+          route,
+          response,
+        },
+      ];
+      const { data, isFetched } = await mockHook({
+        endpoints,
+        hook: () => hooks.usePublicItemsWithTag(undefined),
+        wrapper,
+        enabled: false,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isFetched).toBeFalsy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({ endpoints, hook, wrapper });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
     });
   });
 });
