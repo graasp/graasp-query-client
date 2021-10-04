@@ -1,6 +1,7 @@
 import type { UUID } from '../types';
 import { hashItemsIds } from '../utils/item';
 
+export const APPS_KEY = 'apps';
 export const ITEMS_KEY = 'items';
 export const OWN_ITEMS_KEY = [ITEMS_KEY, 'own'];
 export const buildItemKey = (id?: UUID) => [ITEMS_KEY, id];

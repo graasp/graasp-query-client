@@ -1,12 +1,16 @@
 import qs from 'qs';
 import { UUID } from '../types';
 
+export const APPS_ROUTE = 'app-items';
 export const ITEMS_ROUTE = 'items';
 export const ITEM_MEMBERSHIPS_ROUTE = 'item-memberships';
 export const MEMBERS_ROUTE = `members`;
 export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const GET_RECYCLED_ITEMS_ROUTE = `${ITEMS_ROUTE}/recycled`;
 export const SHARE_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
+
+export const buildAppListRoute = `${APPS_ROUTE}/list`;
+
 export const buildPostItemRoute = (parentId?: UUID) => {
   let url = ITEMS_ROUTE;
   if (parentId) {
@@ -123,6 +127,7 @@ export const buildGetPublicMembersRoute = (ids: UUID[]) =>
 export const buildGetPublicMember = (id: UUID) => `p/${MEMBERS_ROUTE}/${id}`;
 
 export const API_ROUTES = {
+  APPS_ROUTE,
   ITEMS_ROUTE,
   SHARE_ITEM_WITH_ROUTE,
   GET_OWN_ITEMS_ROUTE,
@@ -131,6 +136,7 @@ export const API_ROUTES = {
   GET_CURRENT_MEMBER_ROUTE,
   GET_TAGS_ROUTE,
   GET_FLAGS_ROUTE,
+  buildAppListRoute,
   buildGetS3MetadataRoute,
   buildGetMember,
   buildGetMembersRoute,
