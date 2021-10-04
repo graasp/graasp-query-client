@@ -163,6 +163,26 @@ export const S3_FILE_RESPONSE = {
 };
 export const S3_FILE_BLOB_RESPONSE = BlobMock;
 
+export const APPS = [
+  {
+    name: "Code App",
+    url: "http://codeapp.com",
+    description: "description",
+    extra: {
+      image: "http://codeapp.com/logo.png"
+    }
+  },
+  {
+    name: "File App",
+    description: "description",
+    url: "http://fileapp.com",
+    extra: {
+      image: "http://fileapp.com/logo.png"
+    }
+  }
+]
+
+
 export const buildChatMessages = (id: UUID) => [
   { chatId: id, body: 'some text', creator: 'somememberid' },
   { chatId: id, body: 'someother text', creator: 'someothermemberid' },
