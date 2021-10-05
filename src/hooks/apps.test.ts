@@ -2,10 +2,11 @@ import nock from 'nock';
 import { buildAppListRoute } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
 import {
-    APPS,
+    APPS, UNAUTHORIZED_RESPONSE
 } from '../../test/constants';
 import { APPS_KEY } from '../config/keys';
 import { List } from 'immutable';
+import { StatusCodes } from 'http-status-codes';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -21,7 +22,7 @@ describe('Apps Hooks', () => {
 
     const hook = () => hooks.useApps();
 
-    it(`Recieve list of apps`, async () => {
+    it(`Receive list of apps`, async () => {
       const response = APPS;
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
@@ -30,6 +31,26 @@ describe('Apps Hooks', () => {
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(List(response));
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
     });
   });
 });
