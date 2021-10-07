@@ -12,3 +12,4 @@ export const editItemRoutine = createRoutine('EDIT_ITEM');
 export const deleteItemsRoutine = createRoutine('DELETE_ITEMS');
 export const uploadFileRoutine = createRoutine('UPLOAD_FILE');
 export const recycleItemsRoutine = createRoutine('RECYCLE_ITEMS');
+export const restoreItemsRoutine = createRoutine('RESTORE_ITEMS');

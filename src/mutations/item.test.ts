@@ -14,6 +14,7 @@ import {
   buildPostItemRoute,
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
+  buildRestoreItemsRoute,
   buildShareItemWithRoute,
 } from '../api/routes';
 import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
@@ -32,11 +33,11 @@ import {
   getKeyForParentId,
   MUTATION_KEYS,
   OWN_ITEMS_KEY,
+  RECYCLED_ITEMS_KEY,
 } from '../config/keys';
 import { Item, ITEM_TYPES, PERMISSION_LEVELS } from '../types';
 import {
   buildPath,
-  getDirectParentId,
   transformIdForPath,
 } from '../utils/item';
 import { uploadFileRoutine } from '../routines';
@@ -793,57 +794,6 @@ describe('Items Mutations', () => {
         queryClient.getQueryState(childrenKey)?.isInvalidated,
       ).toBeTruthy();
     });
-
-    it('Unauthorized to recycle an item', async () => {
-      const item = ITEMS[0];
-      const itemId = item.id;
-      const route = `/${buildRecycleItemRoute(itemId)}`;
-
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, Map(item));
-      });
-      const childrenKey = getKeyForParentId(null);
-      queryClient.setQueryData(childrenKey, List(ITEMS));
-
-      const response = UNAUTHORIZED_RESPONSE;
-
-      const endpoints = [
-        {
-          response,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate(itemId);
-        await waitForMutation();
-      });
-
-      // verify item is still available
-      // in real cases, the path should be different
-      const itemKey = buildItemKey(itemId);
-      const data = queryClient.getQueryData<Record<Item>>(itemKey);
-      expect(data?.toJS()).toEqual(item);
-
-      // Check parent's children key is correctly invalidated
-      expect(
-        queryClient
-          .getQueryData<List<Item>>(childrenKey)
-          ?.find(({ id }) => id === itemId),
-      ).toBeTruthy();
-      expect(
-        queryClient.getQueryState(childrenKey)?.isInvalidated,
-      ).toBeTruthy();
-    });
   });
 
   describe(MUTATION_KEYS.DELETE_ITEM, () => {
@@ -859,7 +809,7 @@ describe('Items Mutations', () => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, Map(item));
       });
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(RECYCLED_ITEMS_KEY, List(ITEMS));
 
       const response = OK_RESPONSE;
 
@@ -886,16 +836,15 @@ describe('Items Mutations', () => {
       const data = queryClient.getQueryData<Record<Item>>(itemKey);
       expect(data?.toJS()).toBeFalsy();
 
-      // Check parent's children key is correctly invalidated
+      // Check recycled key is correctly invalidated
       // and should not contain deleted item
-      const childrenKey = getKeyForParentId(null);
       expect(
         queryClient
-          .getQueryData<List<Item>>(childrenKey)
+          .getQueryData<List<Item>>(RECYCLED_ITEMS_KEY)
           ?.find(({ id }) => id === itemId),
       ).toBeFalsy();
       expect(
-        queryClient.getQueryState(childrenKey)?.isInvalidated,
+        queryClient.getQueryState(RECYCLED_ITEMS_KEY)?.isInvalidated,
       ).toBeTruthy();
     });
 
@@ -909,7 +858,7 @@ describe('Items Mutations', () => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, Map(item));
       });
-      const childrenKey = getKeyForParentId(getDirectParentId(item.path));
+      const childrenKey = RECYCLED_ITEMS_KEY
       queryClient.setQueryData(childrenKey, List(ITEMS));
 
       const response = OK_RESPONSE;
@@ -959,7 +908,7 @@ describe('Items Mutations', () => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, Map(item));
       });
-      const childrenKey = getKeyForParentId(null);
+      const childrenKey = RECYCLED_ITEMS_KEY
       queryClient.setQueryData(childrenKey, List(ITEMS));
 
       const response = UNAUTHORIZED_RESPONSE;
@@ -1112,121 +1061,8 @@ describe('Items Mutations', () => {
           ?.filter(({ id }) => itemIds.includes(id)).size,
       ).toBeFalsy();
     });
-  });
 
-  describe(MUTATION_KEYS.DELETE_ITEMS, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEMS);
-
-    it('Delete root items', async () => {
-      const items = ITEMS.slice(2);
-      const itemIds = items.map(({ id }) => id);
-      const route = `/${buildDeleteItemsRoute(itemIds)}`;
-
-      // set data in cache
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, Map(item));
-      });
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
-
-      const response = OK_RESPONSE;
-
-      const endpoints = [
-        {
-          response,
-          method: REQUEST_METHODS.DELETE,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate(itemIds);
-        await waitForMutation();
-      });
-
-      // verify item is still available
-      // in real cases, the path should be different
-      for (const itemId of itemIds) {
-        const itemKey = buildItemKey(itemId);
-        const data = queryClient.getQueryData<Record<Item>>(itemKey);
-        expect(data?.toJS()).toBeFalsy();
-      }
-
-      // Check parent's children key is correctly invalidated
-      // and should not contain recycled item
-      const childrenKey = getKeyForParentId(null);
-      expect(
-        queryClient
-          .getQueryData<List<Item>>(childrenKey)
-          ?.filter(({ id: thisId }) => itemIds.includes(thisId)).size,
-      ).toBeFalsy();
-      expect(
-        queryClient.getQueryState(childrenKey)?.isInvalidated,
-      ).toBeTruthy();
-    });
-
-    it('Delete child items', async () => {
-      const items = [ITEMS[3], ITEMS[4]];
-      console.log('items: ', items);
-      const itemIds = items.map(({ id }) => id);
-      const route = `/${buildDeleteItemsRoute(itemIds)}`;
-
-      // set data in cache
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, Map(item));
-      });
-      const childrenKey = getKeyForParentId(ITEMS[2].id);
-      queryClient.setQueryData(childrenKey, List(ITEMS));
-
-      const response = OK_RESPONSE;
-
-      const endpoints = [
-        {
-          response,
-          method: REQUEST_METHODS.DELETE,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate(itemIds);
-        await waitForMutation();
-      });
-
-      // verify item is still available
-      // in real cases, the path should be different
-      for (const itemId of itemIds) {
-        const itemKey = buildItemKey(itemId);
-        const data = queryClient.getQueryData<Record<Item>>(itemKey);
-        expect(data?.toJS()).toBeFalsy();
-      }
-
-      // Check parent's children key is correctly invalidated
-      // and should not contain recycled item
-      expect(
-        queryClient
-          .getQueryData<List<Item>>(childrenKey)
-          ?.filter(({ id }) => itemIds.includes(id)).size,
-      ).toBeFalsy();
-      expect(
-        queryClient.getQueryState(childrenKey)?.isInvalidated,
-      ).toBeTruthy();
-    });
-
-    it('Unauthorized to recycle an item', async () => {
+    it('Unauthorized to recycle items', async () => {
       const items = ITEMS.slice(2);
       const itemIds = items.map(({ id }) => id);
       const route = `/${buildRecycleItemsRoute(itemIds)}`;
@@ -1279,6 +1115,119 @@ describe('Items Mutations', () => {
         queryClient.getQueryState(childrenKey)?.isInvalidated,
       ).toBeTruthy();
     });
+  });
+
+  describe(MUTATION_KEYS.DELETE_ITEMS, () => {
+    const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEMS);
+
+    it('Delete root items', async () => {
+      const items = ITEMS.slice(2);
+      const itemIds = items.map(({ id }) => id);
+      const route = `/${buildDeleteItemsRoute(itemIds)}`;
+
+      // set data in cache
+      ITEMS.forEach((item) => {
+        const itemKey = buildItemKey(item.id);
+        queryClient.setQueryData(itemKey, Map(item));
+      });
+      queryClient.setQueryData(RECYCLED_ITEMS_KEY, List(ITEMS));
+
+      const response = OK_RESPONSE;
+
+      const endpoints = [
+        {
+          response,
+          method: REQUEST_METHODS.DELETE,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate(itemIds);
+        await waitForMutation();
+      });
+
+      // verify item is still available
+      // in real cases, the path should be different
+      for (const itemId of itemIds) {
+        const itemKey = buildItemKey(itemId);
+        const data = queryClient.getQueryData<Record<Item>>(itemKey);
+        expect(data?.toJS()).toBeFalsy();
+      }
+
+      // Check parent's children key is correctly invalidated
+      // and should not contain recycled item
+      const childrenKey = RECYCLED_ITEMS_KEY
+      expect(
+        queryClient
+          .getQueryData<List<Item>>(childrenKey)
+          ?.filter(({ id: thisId }) => itemIds.includes(thisId)).size,
+      ).toBeFalsy();
+      expect(
+        queryClient.getQueryState(childrenKey)?.isInvalidated,
+      ).toBeTruthy();
+    });
+
+    it('Delete child items', async () => {
+      const items = [ITEMS[3], ITEMS[4]];
+      const itemIds = items.map(({ id }) => id);
+      const route = `/${buildDeleteItemsRoute(itemIds)}`;
+
+      // set data in cache
+      ITEMS.forEach((item) => {
+        const itemKey = buildItemKey(item.id);
+        queryClient.setQueryData(itemKey, Map(item));
+      });
+      const childrenKey = RECYCLED_ITEMS_KEY
+      queryClient.setQueryData(childrenKey, List(ITEMS));
+
+      const response = OK_RESPONSE;
+
+      const endpoints = [
+        {
+          response,
+          method: REQUEST_METHODS.DELETE,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate(itemIds);
+        await waitForMutation();
+      });
+
+      // verify item is still available
+      // in real cases, the path should be different
+      for (const itemId of itemIds) {
+        const itemKey = buildItemKey(itemId);
+        const data = queryClient.getQueryData<Record<Item>>(itemKey);
+        expect(data?.toJS()).toBeFalsy();
+      }
+
+      // Check parent's children key is correctly invalidated
+      // and should not contain recycled item
+      expect(
+        queryClient
+          .getQueryData<List<Item>>(childrenKey)
+          ?.filter(({ id }) => itemIds.includes(id)).size,
+      ).toBeFalsy();
+      expect(
+        queryClient.getQueryState(childrenKey)?.isInvalidated,
+      ).toBeTruthy();
+    });
+
 
     it('Unauthorized to delete an item', async () => {
       const items = ITEMS.slice(2);
@@ -1289,7 +1238,7 @@ describe('Items Mutations', () => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, Map(item));
       });
-      const childrenKey = getKeyForParentId(null);
+      const childrenKey = RECYCLED_ITEMS_KEY
       queryClient.setQueryData(childrenKey, List(ITEMS));
 
       const response = UNAUTHORIZED_RESPONSE;
@@ -1499,6 +1448,120 @@ describe('Items Mutations', () => {
         type: uploadFileRoutine.FAILURE,
         payload: { error },
       });
+    });
+  });
+
+
+  describe(MUTATION_KEYS.RESTORE_ITEMS, () => {
+    const mutation = () => useMutation(MUTATION_KEYS.RESTORE_ITEMS);
+
+    it('Restore items', async () => {
+      const items = ITEMS.slice(2);
+      const itemIds = items.map(({ id }) => id);
+      const route = `/${buildRestoreItemsRoute(itemIds)}`;
+
+      // set data in cache
+      ITEMS.forEach((item) => {
+        const itemKey = buildItemKey(item.id);
+        queryClient.setQueryData(itemKey, Map(item));
+      });
+      const childrenKey = RECYCLED_ITEMS_KEY
+      queryClient.setQueryData(childrenKey, List(ITEMS));
+
+      const response = OK_RESPONSE;
+
+      const endpoints = [
+        {
+          response,
+          method: REQUEST_METHODS.POST,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate(itemIds);
+        await waitForMutation();
+      });
+
+      // verify item is still available
+      // in real cases, the path should be different
+      for (const item of items) {
+        const itemKey = buildItemKey(item.id);
+        const data = queryClient.getQueryData<Record<Item>>(itemKey);
+        expect(data?.toJS()).toEqual(item);
+      }
+
+      // Check parent's children key is correctly invalidated
+      // and should not contain recycled item
+      expect(
+        queryClient
+          .getQueryData<List<Item>>(childrenKey)
+          ?.filter(({ id: thisId }) => itemIds.includes(thisId)).size,
+      ).toBeFalsy();
+      expect(
+        queryClient.getQueryState(childrenKey)?.isInvalidated,
+      ).toBeTruthy();
+    });
+
+
+    it('Unauthorized to restore an item', async () => {
+      const items = ITEMS.slice(2);
+      const itemIds = items.map(({ id }) => id);
+      const route = `/${buildRestoreItemsRoute(itemIds)}`;
+
+      ITEMS.forEach((item) => {
+        const itemKey = buildItemKey(item.id);
+        queryClient.setQueryData(itemKey, Map(item));
+      });
+      const childrenKey = RECYCLED_ITEMS_KEY
+      queryClient.setQueryData(childrenKey, List(ITEMS));
+
+      const response = UNAUTHORIZED_RESPONSE;
+
+      const endpoints = [
+        {
+          response,
+          statusCode: StatusCodes.UNAUTHORIZED,
+          method: REQUEST_METHODS.POST,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate(itemIds);
+        await waitForMutation();
+      });
+
+      // verify item is still available
+      // in real cases, the path should be different
+      for (const item of items) {
+        const itemKey = buildItemKey(item.id);
+        const data = queryClient.getQueryData<Record<Item>>(itemKey);
+        expect(data?.toJS()).toEqual(item);
+      }
+
+      // Check parent's children key is correctly invalidated
+      // and still contains the items
+      expect(
+        queryClient
+          .getQueryData<List<Item>>(childrenKey)
+          ?.filter(({ id }) => itemIds.includes(id)).size,
+      ).toBeTruthy();
+      expect(
+        queryClient.getQueryState(childrenKey)?.isInvalidated,
+      ).toBeTruthy();
     });
   });
 });

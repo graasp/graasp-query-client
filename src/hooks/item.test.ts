@@ -22,7 +22,6 @@ import {
   FILE_RESPONSE,
   ITEMS,
   ITEM_MEMBERSHIPS_RESPONSE,
-  MEMBER_RESPONSE,
   S3_FILE_BLOB_RESPONSE,
   S3_FILE_RESPONSE,
   TAGS,
@@ -39,12 +38,14 @@ import {
   buildPublicItemsWithTagKey,
   buildS3FileContentKey,
   OWN_ITEMS_KEY,
+  RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
 } from '../config/keys';
 import type { Item, ItemLogin, Membership } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 describe('Items Hooks', () => {
+
   afterEach(() => {
     nock.cleanAll();
     queryClient.clear();
@@ -837,9 +838,8 @@ describe('Items Hooks', () => {
 
   describe('useRecycledItems', () => {
     const route = `/${GET_RECYCLED_ITEMS_ROUTE}`;
-    const hook = () => hooks.useRecycledItems(MEMBER_RESPONSE);
-    const recycleBinId = MEMBER_RESPONSE.extra?.recycleBin?.itemId;
-    const recycleBinKey = buildItemChildrenKey(recycleBinId);
+    const hook = () => hooks.useRecycledItems();
+    const recycleBinKey = RECYCLED_ITEMS_KEY
 
     it(`Receive recycled items`, async () => {
       const response = ITEMS;

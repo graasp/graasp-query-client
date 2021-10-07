@@ -121,6 +121,11 @@ export const buildGetPublicMembersRoute = (ids: UUID[]) =>
   `p/${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 
 export const buildGetPublicMember = (id: UUID) => `p/${MEMBERS_ROUTE}/${id}`;
+export const buildRestoreItemsRoute = (ids: UUID[]) =>
+  `${ITEMS_ROUTE}/restore?${qs.stringify(
+    { id: ids },
+    { arrayFormat: 'repeat' },
+  )}`;
 
 export const API_ROUTES = {
   ITEMS_ROUTE,
@@ -171,4 +176,5 @@ export const API_ROUTES = {
   buildGetPublicItemsWithTag,
   buildGetPublicMember,
   buildGetPublicMembersRoute,
+  buildRestoreItemsRoute
 };
