@@ -38,6 +38,7 @@ import {
 import { Item, ITEM_TYPES, PERMISSION_LEVELS } from '../types';
 import {
   buildPath,
+  getDirectParentId,
   transformIdForPath,
 } from '../utils/item';
 import { uploadFileRoutine } from '../routines';
@@ -1464,6 +1465,9 @@ describe('Items Mutations', () => {
       ITEMS.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, Map(item));
+        const parentKey = getKeyForParentId(getDirectParentId(item.path))
+        queryClient.setQueryData(parentKey, List([item]));
+
       });
       const childrenKey = RECYCLED_ITEMS_KEY
       queryClient.setQueryData(childrenKey, List(ITEMS));
@@ -1507,6 +1511,14 @@ describe('Items Mutations', () => {
       expect(
         queryClient.getQueryState(childrenKey)?.isInvalidated,
       ).toBeTruthy();
+
+      // check original parent is invalidated
+      for (const item of items) {
+        const childrenKey = getKeyForParentId(getDirectParentId(item.path))
+        expect(
+          queryClient.getQueryState(childrenKey)?.isInvalidated,
+        ).toBeTruthy();
+      }
     });
 
 

@@ -617,7 +617,15 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.setQueryData(key, items.filter(({ id }) => !itemIds.includes(id)))
       return items;
     },
-    onSuccess: () => {
+    onSuccess: (_data, itemIds) => {
+      // invalidate parents' children to now get the restored items
+      for (const id of itemIds) {
+        const item = queryClient.getQueryData<Record<Item>>(buildItemKey(id))
+        if (item) {
+          const key = getKeyForParentId(getDirectParentId(item?.get('path')) ?? null)
+          queryClient.invalidateQueries(key);
+        }
+      }
       notifier?.({ type: restoreItemsRoutine.SUCCESS });
     },
     onError: (error, _itemId, context) => {
