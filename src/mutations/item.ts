@@ -13,6 +13,7 @@ import {
   shareItemRoutine,
   uploadFileRoutine,
   recycleItemsRoutine,
+  restoreItemsRoutine,
 } from '../routines';
 import {
   buildItemChildrenKey,
@@ -21,6 +22,7 @@ import {
   MUTATION_KEYS,
   OWN_ITEMS_KEY,
   buildItemMembershipsKey,
+  RECYCLED_ITEMS_KEY,
 } from '../config/keys';
 import { buildPath, getDirectParentId } from '../utils/item';
 import type { Item, QueryClientConfig, UUID } from '../types';
@@ -38,6 +40,7 @@ const {
   DELETE_ITEMS,
   RECYCLE_ITEM,
   RECYCLE_ITEMS,
+  RESTORE_ITEMS
 } = MUTATION_KEYS;
 
 interface Value {
@@ -282,18 +285,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       Api.deleteItem(itemId, queryConfig).then(() => itemId),
 
     onMutate: async ([itemId]) => {
-      const itemKey = buildItemKey(itemId);
-      const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
-      const itemPath = itemData.get('path');
+      const key = RECYCLED_ITEMS_KEY
+      const data = queryClient.getQueryData(key) as List<Item>;
+      queryClient.setQueryData(key,
+        data?.filter(({ id }) => id !== itemId))
       const previousItems = {
-        ...(Boolean(itemData) && {
-          parent: await mutateParentChildren({
-            childPath: itemPath,
-            value: (children: List<Item>) =>
-              children.filter(({ id }) => id !== itemId),
-          }),
-          item: await mutateItem({ id: itemId, value: null }),
-        }),
+        parent: data,
+        item: await mutateItem({ id: itemId, value: null }),
       };
       return previousItems;
     },
@@ -306,10 +304,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       if (itemData) {
         const itemKey = buildItemKey(itemId);
         queryClient.setQueryData(itemKey, context.item);
-        const parentKey = getKeyForParentId(
-          getDirectParentId(itemData.get('path')),
-        );
-        queryClient.setQueryData(parentKey, context.parent);
+        queryClient.setQueryData(RECYCLED_ITEMS_KEY, context.parent);
       }
       notifier?.({ type: deleteItemRoutine.FAILURE, payload: { error } });
     },
@@ -319,11 +314,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       if (itemData) {
         const itemKey = buildItemKey(itemId);
         queryClient.invalidateQueries(itemKey);
-
-        const parentKey = getKeyForParentId(
-          getDirectParentId(itemData.get('path')),
-        );
-        queryClient.invalidateQueries(parentKey);
+        queryClient.invalidateQueries(RECYCLED_ITEMS_KEY);
       }
     },
   });
@@ -334,18 +325,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
     onMutate: async (itemIds: UUID[]) => {
       // get path from first item
-      const itemKey = buildItemKey(itemIds[0]);
-      const item = queryClient.getQueryData(itemKey) as Record<Item>;
-      const itemPath = item?.get('path');
-
+      const itemKey = RECYCLED_ITEMS_KEY
+      const items = queryClient.getQueryData(itemKey) as List<Item>;
+      queryClient.setQueryData(RECYCLED_ITEMS_KEY, items?.filter(({ id }) => !itemIds.includes(id)))
       const previousItems = {
-        ...(Boolean(itemPath) && {
-          parent: await mutateParentChildren({
-            childPath: itemPath,
-            value: (old: List<Item>) =>
-              old.filter(({ id }) => !itemIds.includes(id)),
-          }),
-        }),
+        parent: items
       };
 
       itemIds.forEach(async (id) => {
@@ -361,8 +345,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       const itemPath = context[itemIds[0]]?.get('path');
 
       if (itemPath) {
-        const parentKey = getKeyForParentId(getDirectParentId(itemPath));
-        queryClient.setQueryData(parentKey, context.parent);
+        queryClient.setQueryData(RECYCLED_ITEMS_KEY, context.parent);
       }
 
       itemIds.forEach((id) => {
@@ -381,8 +364,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
 
       if (itemPath) {
-        const parentKey = getKeyForParentId(getDirectParentId(itemPath));
-        queryClient.invalidateQueries(parentKey);
+        queryClient.invalidateQueries(RECYCLED_ITEMS_KEY);
       }
     },
   });
@@ -621,6 +603,37 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onSettled: (_data, _error, { id }) => {
       const parentKey = buildItemChildrenKey(id);
       queryClient.invalidateQueries(parentKey);
+    },
+  });
+
+
+  queryClient.setMutationDefaults(RESTORE_ITEMS, {
+    mutationFn: (itemIds) =>
+      Api.restoreItems(itemIds, queryConfig).then(() => true),
+
+    onMutate: async (itemIds) => {
+      const key = RECYCLED_ITEMS_KEY;
+      const items = queryClient.getQueryData(key) as List<Item>;
+      queryClient.setQueryData(key, items.filter(({ id }) => !itemIds.includes(id)))
+      return items;
+    },
+    onSuccess: (_data, itemIds) => {
+      // invalidate parents' children to now get the restored items
+      for (const id of itemIds) {
+        const item = queryClient.getQueryData<Record<Item>>(buildItemKey(id))
+        if (item) {
+          const key = getKeyForParentId(getDirectParentId(item?.get('path')) ?? null)
+          queryClient.invalidateQueries(key);
+        }
+      }
+      notifier?.({ type: restoreItemsRoutine.SUCCESS });
+    },
+    onError: (error, _itemId, context) => {
+      queryClient.setQueryData(RECYCLED_ITEMS_KEY, context);
+      notifier?.({ type: restoreItemsRoutine.FAILURE, payload: { error } });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(RECYCLED_ITEMS_KEY);
     },
   });
 };

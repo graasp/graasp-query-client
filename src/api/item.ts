@@ -20,6 +20,7 @@ import {
   buildPublicDownloadFilesRoute,
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
+  buildRestoreItemsRoute,
   buildS3FileUrl,
   buildS3UploadFileRoute,
   GET_OWN_ITEMS_ROUTE,
@@ -366,3 +367,14 @@ export const getPublicItemsWithTag = async (
       withCredentials: true,
     })
     .then(({ data }) => data);
+
+
+export const restoreItems = async (itemIds: UUID[], { API_HOST }: QueryClientConfig) => {
+  const res = await fetch(
+    `${API_HOST}/${buildRestoreItemsRoute(itemIds)}`, {
+    ...DEFAULT_POST,
+    headers: {}
+  },
+  ).then(failOnError);
+  return res.ok;
+};
