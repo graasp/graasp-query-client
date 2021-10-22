@@ -27,6 +27,11 @@ export const buildItemMembershipsKey = (id?: UUID) => [
   id,
   'memberships',
 ];
+export const buildManyItemMembershipsKey = (ids?: UUID[]) => [
+  ITEMS_KEY,
+  hashItemsIds(ids),
+  'memberships',
+];
 export const buildItemLoginKey = (id?: UUID) => [ITEMS_KEY, id, 'login'];
 export const TAGS_KEY = 'tags';
 export const ITEM_TAGS_KEY = 'itemTags';

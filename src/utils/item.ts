@@ -46,7 +46,7 @@ export const getDirectParentId = (path: string) => {
   return ids[parentIdx];
 };
 
-export const hashItemsIds = (ids: UUID[]) =>
+export const hashItemsIds = (ids?: UUID[]) =>
   ids
     ? crypto
       .createHash('sha1')

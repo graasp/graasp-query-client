@@ -50,8 +50,11 @@ export const buildCopyItemsRoute = (ids: UUID[]) =>
 export const buildEditItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
 export const buildShareItemWithRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
-export const buildGetItemMembershipsForItemRoute = (id: UUID) =>
-  `item-memberships?itemId=${id}`;
+export const buildGetItemMembershipsForItemsRoute = (ids: UUID[]) =>
+  `item-memberships${qs.stringify(
+    { itemId: ids },
+    { addQueryPrefix: true, arrayFormat: 'repeat' },
+  )}`;
 export const buildGetItemChatRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/chat`;
 export const buildPostItemChatMessageRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/chat`;
@@ -152,7 +155,7 @@ export const API_ROUTES = {
   buildShareItemWithRoute,
   buildSignInPath,
   buildPostItemLoginSignInRoute,
-  buildGetItemMembershipsForItemRoute,
+  buildGetItemMembershipsForItemsRoute,
   buildMoveItemRoute,
   buildMoveItemsRoute,
   buildPostItemRoute,

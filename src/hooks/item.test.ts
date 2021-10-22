@@ -5,7 +5,7 @@ import {
   buildDownloadFilesRoute,
   buildGetChildrenRoute,
   buildGetItemLoginRoute,
-  buildGetItemMembershipsForItemRoute,
+  buildGetItemMembershipsForItemsRoute,
   buildGetItemRoute,
   buildGetItemsRoute,
   buildGetPublicItemRoute,
@@ -32,9 +32,9 @@ import {
   buildItemChildrenKey,
   buildItemKey,
   buildItemLoginKey,
-  buildItemMembershipsKey,
   buildItemParentsKey,
   buildItemsKey,
+  buildManyItemMembershipsKey,
   buildPublicItemsWithTagKey,
   buildS3FileContentKey,
   OWN_ITEMS_KEY,
@@ -545,22 +545,36 @@ describe('Items Hooks', () => {
   });
 
   describe('useItemMemberships', () => {
-    const id = ITEMS[0].id;
-    const response = ITEM_MEMBERSHIPS_RESPONSE;
-    const route = `/${buildGetItemMembershipsForItemRoute(id)}`;
-    const key = buildItemMembershipsKey(id);
+    const ids = [ITEMS[0].id, ITEMS[1].id];
+    const response = [ITEM_MEMBERSHIPS_RESPONSE, ITEM_MEMBERSHIPS_RESPONSE];
+    const route = `/${buildGetItemMembershipsForItemsRoute(ids)}`;
+    const key = buildManyItemMembershipsKey(ids);
 
-    it(`Receive item memberships`, async () => {
+    it(`Receive one item memberships`, async () => {
+      const id = [ITEMS[0].id];
+      const oneRoute = `/${buildGetItemMembershipsForItemsRoute(id)}`;
+      const oneResponse = [ITEM_MEMBERSHIPS_RESPONSE];
+      const oneKey = buildManyItemMembershipsKey(id);
       const hook = () => hooks.useItemMemberships(id);
+      const endpoints = [{ route: oneRoute, response: oneResponse }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+
+      expect((data as List<Membership[]>).toJS()).toEqual(oneResponse);
+      // verify cache keys
+      expect(queryClient.getQueryData(oneKey)).toEqual(List(oneResponse));
+    });
+
+    it(`Receive multiple item memberships`, async () => {
+      const hook = () => hooks.useItemMemberships(ids);
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<Membership>).toJS()).toEqual(response);
+      expect((data as List<Membership[]>).toJS()).toEqual(response);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(List(response));
     });
 
-    it(`Undefined id does not fetch`, async () => {
+    it(`Undefined ids does not fetch`, async () => {
       const hook = () => hooks.useItemMemberships(undefined);
       const endpoints = [{ route, response }];
       const { data, isFetched } = await mockHook({
@@ -577,7 +591,7 @@ describe('Items Hooks', () => {
     });
 
     it(`Unauthorized`, async () => {
-      const hook = () => hooks.useItemMemberships(id);
+      const hook = () => hooks.useItemMemberships(ids);
       const endpoints = [
         {
           route,

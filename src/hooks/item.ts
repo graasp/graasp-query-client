@@ -6,9 +6,9 @@ import {
   buildItemChildrenKey,
   buildItemKey,
   buildItemLoginKey,
-  buildItemMembershipsKey,
   buildItemParentsKey,
   buildItemsKey,
+  buildManyItemMembershipsKey,
   buildPublicItemsWithTagKey,
   buildS3FileContentKey,
   OWN_ITEMS_KEY,
@@ -21,7 +21,7 @@ import {
   UndefinedArgument,
   UUID,
 } from '../types';
-import { configureWsItemHooks, configureWsMembershipHooks } from '../ws';
+import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
 export default (
@@ -41,10 +41,10 @@ export default (
     enableWebsocket && websocketClient // required to type-check non-null
       ? configureWsItemHooks(queryClient, websocketClient)
       : undefined;
-  const membershipWsHooks =
-    enableWebsocket && websocketClient // required to type-check non-null
-      ? configureWsMembershipHooks(queryClient, websocketClient)
-      : undefined;
+  // const membershipWsHooks =
+  //   enableWebsocket && websocketClient // required to type-check non-null
+  //     ? configureWsMembershipHooks(queryClient, websocketClient)
+  //     : undefined;
 
   return {
     useOwnItems: (options?: { getUpdates?: boolean }) => {
@@ -226,26 +226,21 @@ export default (
       });
     },
 
-    useItemMemberships: (id?: UUID, options?: { getUpdates?: boolean }) => {
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
+    // todo: set up websockets
+    useItemMemberships: (ids?: UUID[]) => useQuery({
+      queryKey: buildManyItemMembershipsKey(ids),
+      queryFn: () => {
+        if (!ids) {
+          throw new UndefinedArgument();
+        }
 
-      membershipWsHooks?.useItemMembershipsUpdates(getUpdates ? id : null);
-
-      return useQuery({
-        queryKey: buildItemMembershipsKey(id),
-        queryFn: () => {
-          if (!id) {
-            throw new UndefinedArgument();
-          }
-
-          return Api.getMembershipsForItem(id, queryConfig).then((data) =>
-            List(data),
-          );
-        },
-        enabled: Boolean(id),
-        ...defaultOptions,
-      });
-    },
+        return Api.getMembershipsForItems(ids, queryConfig).then((data) =>
+          List(data),
+        );
+      },
+      enabled: Boolean(ids?.length) && ids?.every((id) => Boolean(id)),
+      ...defaultOptions,
+    }),
 
     useItemLogin: (id?: UUID) =>
       useQuery({

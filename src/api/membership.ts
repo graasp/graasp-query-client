@@ -8,19 +8,19 @@ import {
 } from './utils';
 import {
   buildShareItemWithRoute,
-  buildGetItemMembershipsForItemRoute,
   buildEditItemMembershipRoute,
   buildDeleteItemMembershipRoute,
+  buildGetItemMembershipsForItemsRoute,
 } from './routes';
 import { MEMBER_NOT_FOUND_ERROR } from '../config/errors';
 import { Permission, QueryClientConfig, UUID } from '../types';
 
-export const getMembershipsForItem = async (
-  id: UUID,
+export const getMembershipsForItems = async (
+  ids: UUID[],
   { API_HOST }: QueryClientConfig,
 ) => {
   const res = await fetch(
-    `${API_HOST}/${buildGetItemMembershipsForItemRoute(id)}`,
+    `${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`,
     DEFAULT_GET,
   ).then(failOnError);
 
