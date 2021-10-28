@@ -23,6 +23,7 @@ import {
   OWN_ITEMS_KEY,
   buildItemMembershipsKey,
   RECYCLED_ITEMS_KEY,
+  buildManyItemMembershipsKey,
 } from '../config/keys';
 import { buildPath, getDirectParentId } from '../utils/item';
 import type { Item, QueryClientConfig, UUID } from '../types';
@@ -586,6 +587,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onSettled: (_data, _error, { id }) => {
       // invalidate memberships
+      // todo: invalidate all pack of memberships containing the given id
+      // this won't trigger too many errors as long as the stale time is low
+      queryClient.invalidateQueries(buildManyItemMembershipsKey([id]));
       queryClient.invalidateQueries(buildItemMembershipsKey(id));
     },
   });

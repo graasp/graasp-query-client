@@ -6,6 +6,7 @@ import {
   buildItemChildrenKey,
   buildItemKey,
   buildItemLoginKey,
+  buildItemMembershipsKey,
   buildItemParentsKey,
   buildItemsKey,
   buildManyItemMembershipsKey,
@@ -236,6 +237,12 @@ export default (
           return Api.getMembershipsForItems(ids, queryConfig).then((data) =>
             List(data),
           );
+        },
+        onSuccess: async (memberships) => {
+          // save memberships in their own key
+          ids?.forEach(async (id, idx) => {
+            queryClient.setQueryData(buildItemMembershipsKey(id), List(memberships[idx]));
+          });
         },
         enabled: Boolean(ids?.length) && ids?.every((id) => Boolean(id)),
         ...defaultOptions,
