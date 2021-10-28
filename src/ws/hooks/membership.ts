@@ -22,57 +22,71 @@ export const configureWsMembershipHooks = (
    * React hooks to subscribe to membership updates for a given item ID
    * @param itemId The ID of the item of which to observe memberships updates
    */
-  useItemMembershipsUpdates: (itemId?: UUID | null) => {
+  useItemMembershipsUpdates: (itemIds?: UUID[] | null) => {
     useEffect(() => {
-      if (!itemId) {
+      if (!itemIds?.length) {
         return;
       }
 
-      const channel: Channel = { name: itemId, topic: TOPICS.MEMBERSHIPS_ITEM };
-      const itemMembershipsKey = buildItemMembershipsKey(itemId);
+      const unsubscribeFunctions = itemIds.map((itemId) => {
+        const channel: Channel = {
+          name: itemId,
+          topic: TOPICS.MEMBERSHIPS_ITEM,
+        };
+        const itemMembershipsKey = buildItemMembershipsKey(itemId);
 
-      const handler = (event: MembershipEvent) => {
-        if (event.kind === KINDS.ITEM) {
-          const current = queryClient.getQueryData<List<Membership>>(
-            itemMembershipsKey,
-          );
-          const membership = event.membership;
+        const handler = (event: MembershipEvent) => {
+          if (event.kind === KINDS.ITEM) {
+            const current = queryClient.getQueryData<List<Membership>>(
+              itemMembershipsKey,
+            );
+            const membership = event.membership;
 
-          if (current && membership.itemId === itemId) {
-            let mutation;
-            switch (event.op) {
-              case OPS.CREATE: {
-                if (!current.find((m) => m.id === membership.id)) {
-                  mutation = current.push(membership);
-                  queryClient.setQueryData(itemMembershipsKey, mutation);
+            if (current && membership.itemId === itemId) {
+              let mutation;
+              switch (event.op) {
+                case OPS.CREATE: {
+                  if (!current.find((m) => m.id === membership.id)) {
+                    mutation = current.push(membership);
+                    queryClient.setQueryData(itemMembershipsKey, mutation);
+                  }
+                  break;
                 }
-                break;
+                case OPS.UPDATE: {
+                  mutation = current.map((m) =>
+                    m.id === membership.id ? membership : m,
+                  );
+                  queryClient.setQueryData(itemMembershipsKey, mutation);
+                  break;
+                }
+                case OPS.DELETE: {
+                  mutation = current.filter((m) => m.id !== membership.id);
+                  queryClient.setQueryData(itemMembershipsKey, mutation);
+                  break;
+                }
+                default:
+                  console.error(
+                    'unhandled event for useItemMembershipsUpdates',
+                  );
+                  break;
               }
-              case OPS.UPDATE: {
-                mutation = current.map((m) =>
-                  m.id === membership.id ? membership : m,
-                );
-                queryClient.setQueryData(itemMembershipsKey, mutation);
-                break;
-              }
-              case OPS.DELETE: {
-                mutation = current.filter((m) => m.id !== membership.id);
-                queryClient.setQueryData(itemMembershipsKey, mutation);
-                break;
-              }
-              default:
-                console.error('unhandled event for useItemMembershipsUpdates');
-                break;
             }
           }
-        }
-      };
+        };
 
-      websocketClient.subscribe(channel, handler);
+        websocketClient.subscribe(channel, handler);
 
-      return function cleanup() {
-        websocketClient.unsubscribe(channel, handler);
+        return function cleanup() {
+          websocketClient.unsubscribe(channel, handler);
+        };
+      });
+
+      // eslint-disable-next-line consistent-return
+      return () => {
+        unsubscribeFunctions.forEach((f) => {
+          f();
+        });
       };
-    }, [itemId]);
+    }, [itemIds]);
   },
 });

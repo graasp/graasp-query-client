@@ -20,7 +20,10 @@ export const buildPostItemRoute = (parentId?: UUID) => {
 };
 export const buildDeleteItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/delete`;
 export const buildDeleteItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}/delete?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
+  `${ITEMS_ROUTE}/delete?${qs.stringify(
+    { id: ids },
+    { arrayFormat: 'repeat' },
+  )}`;
 export const buildGetChildrenRoute = (id: UUID, ordered: boolean) =>
   `${ITEMS_ROUTE}/${id}/children${qs.stringify(
     { ordered },
@@ -185,5 +188,5 @@ export const API_ROUTES = {
   buildGetPublicItemsWithTag,
   buildGetPublicMember,
   buildGetPublicMembersRoute,
-  buildRestoreItemsRoute
+  buildRestoreItemsRoute,
 };

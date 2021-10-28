@@ -1,9 +1,7 @@
 import nock from 'nock';
 import { buildAppListRoute } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
-import {
-    APPS, UNAUTHORIZED_RESPONSE
-} from '../../test/constants';
+import { APPS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { APPS_KEY } from '../config/keys';
 import { List } from 'immutable';
 import { StatusCodes } from 'http-status-codes';

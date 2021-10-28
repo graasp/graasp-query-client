@@ -19,7 +19,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       // remove cookies from browser when the logout is confirmed
       Cookies.remove(COOKIE_SESSION_NAME);
 
-      // Update when the server confirmed the logout, instead optimistically updating the member 
+      // Update when the server confirmed the logout, instead optimistically updating the member
       // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
       queryClient.setQueryData(CURRENT_MEMBER_KEY, undefined);
     },

@@ -47,7 +47,7 @@ export const buildPublicItemsWithTagKey = (id?: UUID) => [
   ITEM_TAGS_KEY,
   id,
 ];
-export const RECYCLED_ITEMS_KEY = 'recycledItems'
+export const RECYCLED_ITEMS_KEY = 'recycledItems';
 
 export const MUTATION_KEYS = {
   POST_ITEM: 'postItem',
@@ -73,5 +73,5 @@ export const MUTATION_KEYS = {
   POST_ITEM_CHAT_MESSAGE: 'postChatMessage',
   RECYCLE_ITEM: 'recycleItem',
   RECYCLE_ITEMS: 'recycleItems',
-  RESTORE_ITEMS: 'restoreItems'
+  RESTORE_ITEMS: 'restoreItems',
 };

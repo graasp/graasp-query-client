@@ -45,7 +45,6 @@ import type { Item, ItemLogin, Membership } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 describe('Items Hooks', () => {
-
   afterEach(() => {
     nock.cleanAll();
     queryClient.clear();
@@ -853,7 +852,7 @@ describe('Items Hooks', () => {
   describe('useRecycledItems', () => {
     const route = `/${GET_RECYCLED_ITEMS_ROUTE}`;
     const hook = () => hooks.useRecycledItems();
-    const recycleBinKey = RECYCLED_ITEMS_KEY
+    const recycleBinKey = RECYCLED_ITEMS_KEY;
 
     it(`Receive recycled items`, async () => {
       const response = ITEMS;
