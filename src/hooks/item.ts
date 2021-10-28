@@ -21,7 +21,7 @@ import {
   UndefinedArgument,
   UUID,
 } from '../types';
-import { configureWsItemHooks } from '../ws';
+import { configureWsItemHooks, configureWsMembershipHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
 export default (
@@ -41,10 +41,10 @@ export default (
     enableWebsocket && websocketClient // required to type-check non-null
       ? configureWsItemHooks(queryClient, websocketClient)
       : undefined;
-  // const membershipWsHooks =
-  //   enableWebsocket && websocketClient // required to type-check non-null
-  //     ? configureWsMembershipHooks(queryClient, websocketClient)
-  //     : undefined;
+  const membershipWsHooks =
+    enableWebsocket && websocketClient // required to type-check non-null
+      ? configureWsMembershipHooks(queryClient, websocketClient)
+      : undefined;
 
   return {
     useOwnItems: (options?: { getUpdates?: boolean }) => {
@@ -199,7 +199,7 @@ export default (
     ) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
-      ids.map((id) => itemWsHooks?.useItemUpdates(getUpdates ? id : null));
+      ids?.map((id) => itemWsHooks?.useItemUpdates(getUpdates ? id : null));
 
       return useQuery({
         queryKey: buildItemsKey(ids),
@@ -226,21 +226,26 @@ export default (
       });
     },
 
-    // todo: set up websockets
-    useItemMemberships: (ids?: UUID[]) => useQuery({
-      queryKey: buildManyItemMembershipsKey(ids),
-      queryFn: () => {
-        if (!ids) {
-          throw new UndefinedArgument();
-        }
+    useItemMemberships: (ids?: UUID[], options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
 
-        return Api.getMembershipsForItems(ids, queryConfig).then((data) =>
-          List(data),
-        );
-      },
-      enabled: Boolean(ids?.length) && ids?.every((id) => Boolean(id)),
-      ...defaultOptions,
-    }),
+      ids?.map(id => membershipWsHooks?.useItemMembershipsUpdates(getUpdates ? id : null));
+
+      return useQuery({
+        queryKey: buildManyItemMembershipsKey(ids),
+        queryFn: () => {
+          if (!ids) {
+            throw new UndefinedArgument();
+          }
+
+          return Api.getMembershipsForItems(ids, queryConfig).then((data) =>
+            List(data),
+          );
+        },
+        enabled: Boolean(ids?.length) && ids?.every((id) => Boolean(id)),
+        ...defaultOptions,
+      })
+    },
 
     useItemLogin: (id?: UUID) =>
       useQuery({
