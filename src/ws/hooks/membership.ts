@@ -81,6 +81,8 @@ export const configureWsMembershipHooks = (
         };
       });
 
+      // todo: handle many memberships key
+
       // eslint-disable-next-line consistent-return
       return () => {
         unsubscribeFunctions.forEach((f) => {
