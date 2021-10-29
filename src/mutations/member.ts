@@ -2,10 +2,18 @@ import { QueryClient } from 'react-query';
 import { Map, Record } from 'immutable';
 import Cookies from 'js-cookie';
 import * as Api from '../api';
-import { editMemberRoutine, signOutRoutine } from '../routines';
-import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
+import {
+  editMemberRoutine,
+  signOutRoutine,
+  uploadAvatarRoutine,
+} from '../routines';
+import {
+  buildAvatarKey,
+  CURRENT_MEMBER_KEY,
+  MUTATION_KEYS,
+} from '../config/keys';
 import { Member, QueryClientConfig } from '../types';
-import { COOKIE_SESSION_NAME } from '../config/constants';
+import { COOKIE_SESSION_NAME, THUMBNAIL_SIZES } from '../config/constants';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -63,6 +71,29 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onSettled: () => {
       // invalidate all queries
       queryClient.invalidateQueries(CURRENT_MEMBER_KEY);
+    },
+  });
+
+  // this mutation is used for its callback and invalidate the keys
+  /**
+   * @param {UUID} id parent item id wher the file is uploaded in
+   * @param {error} [error] error occured during the file uploading
+   */
+  queryClient.setMutationDefaults(MUTATION_KEYS.UPLOAD_AVATAR, {
+    mutationFn: async ({ error } = {}) => {
+      if (error) throw new Error(JSON.stringify(error));
+    },
+    onSuccess: () => {
+      notifier?.({ type: uploadAvatarRoutine.SUCCESS });
+    },
+    onError: (_error, { error }) => {
+      notifier?.({ type: uploadAvatarRoutine.FAILURE, payload: { error } });
+    },
+    onSettled: (_data, _error, { id }) => {
+      Object.values(THUMBNAIL_SIZES).forEach((size) => {
+        const key = buildAvatarKey({ id, size });
+        queryClient.invalidateQueries(key);
+      });
     },
   });
 };

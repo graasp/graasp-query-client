@@ -1,6 +1,7 @@
 import { List, Map } from 'immutable';
 import { QueryClient, useQuery, UseQueryResult } from 'react-query';
 import * as Api from '../api';
+import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
 import {
   buildFileContentKey,
   buildItemChildrenKey,
@@ -13,11 +14,13 @@ import {
   buildManyItemMembershipsKey,
   buildPublicItemsWithTagKey,
   buildS3FileContentKey,
+  buildItemThumbnailKey,
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
 } from '../config/keys';
 import { Item, QueryClientConfig, UndefinedArgument, UUID } from '../types';
+import { getRequestBlob } from '../utils/thumbnails';
 import { configureWsItemHooks, configureWsMembershipHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
@@ -27,7 +30,13 @@ export default (
   useCurrentMember: Function,
   websocketClient?: WebsocketClient,
 ) => {
-  const { retry, cacheTime, staleTime, enableWebsocket } = queryConfig;
+  const {
+    retry,
+    cacheTime,
+    staleTime,
+    enableWebsocket,
+    S3_FILES_HOST,
+  } = queryConfig;
   const defaultOptions = {
     retry,
     cacheTime,
@@ -393,5 +402,25 @@ export default (
         enabled: Boolean(tagId),
       });
     },
+
+    useItemThumbnail: ({
+      id,
+      size = DEFAULT_THUMBNAIL_SIZES,
+    }: {
+      id?: UUID;
+      size?: string;
+    }) =>
+      useQuery({
+        queryKey: buildItemThumbnailKey({ id, size }),
+        queryFn: async () => {
+          if (!id) {
+            throw new UndefinedArgument();
+          }
+          const data = await Api.downloadItemThumbnail({ id, size }, queryConfig)
+          return getRequestBlob(data, S3_FILES_HOST)
+        },
+        ...defaultOptions,
+        enabled: Boolean(id),
+      }),
   };
 };

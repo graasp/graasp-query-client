@@ -13,3 +13,11 @@ export const FALLBACK_TO_PUBLIC_FOR_STATUS_CODES = [
   StatusCodes.UNAUTHORIZED,
   StatusCodes.FORBIDDEN,
 ];
+
+export const THUMBNAIL_SIZES = {
+  SMALL: 'small',
+  MEDIUM: 'medium',
+  LARGE: 'large',
+  ORIGINAL: 'original',
+};
+export const DEFAULT_THUMBNAIL_SIZES = THUMBNAIL_SIZES.SMALL;

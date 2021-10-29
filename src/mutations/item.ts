@@ -14,6 +14,7 @@ import {
   uploadFileRoutine,
   recycleItemsRoutine,
   restoreItemsRoutine,
+  uploadItemThumbnailRoutine,
 } from '../routines';
 import {
   buildItemChildrenKey,
@@ -24,9 +25,11 @@ import {
   buildItemMembershipsKey,
   RECYCLED_ITEMS_KEY,
   buildManyItemMembershipsKey,
+  buildItemThumbnailKey,
 } from '../config/keys';
 import { buildPath, getDirectParentId } from '../utils/item';
 import type { Item, QueryClientConfig, UUID } from '../types';
+import { THUMBNAIL_SIZES } from '../config/constants';
 
 const {
   POST_ITEM,
@@ -42,6 +45,7 @@ const {
   RECYCLE_ITEM,
   RECYCLE_ITEMS,
   RESTORE_ITEMS,
+  UPLOAD_ITEM_THUMBNAIL,
   COPY_PUBLIC_ITEM,
 } = MUTATION_KEYS;
 
@@ -613,14 +617,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  // this mutation is used for its callback
+  // this mutation is used for its callback and invalidate the keys
   /**
    * @param {UUID} id parent item id wher the file is uploaded in
    * @param {error} [error] error occured during the file uploading
    */
   queryClient.setMutationDefaults(FILE_UPLOAD, {
     mutationFn: async ({ error }) => {
-      if (error) throw new Error(error);
+      if (error) throw new Error(JSON.stringify(error));
     },
     onSuccess: () => {
       notifier?.({ type: uploadFileRoutine.SUCCESS });
@@ -631,6 +635,32 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onSettled: (_data, _error, { id }) => {
       const parentKey = buildItemChildrenKey(id);
       queryClient.invalidateQueries(parentKey);
+    },
+  });
+
+  // this mutation is used for its callback and invalidate the keys
+  /**
+   * @param {UUID} id parent item id wher the file is uploaded in
+   * @param {error} [error] error occured during the file uploading
+   */
+  queryClient.setMutationDefaults(UPLOAD_ITEM_THUMBNAIL, {
+    mutationFn: async ({ error } = {}) => {
+      if (error) throw new Error(JSON.stringify(error));
+    },
+    onSuccess: () => {
+      notifier?.({ type: uploadItemThumbnailRoutine.SUCCESS });
+    },
+    onError: (_error, { error }) => {
+      notifier?.({
+        type: uploadItemThumbnailRoutine.FAILURE,
+        payload: { error },
+      });
+    },
+    onSettled: (_data, _error, { id }) => {
+      Object.values(THUMBNAIL_SIZES).forEach((size) => {
+        const key = buildItemThumbnailKey({ id, size });
+        queryClient.invalidateQueries(key);
+      });
     },
   });
 

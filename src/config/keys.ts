@@ -1,5 +1,6 @@
 import type { UUID } from '../types';
 import { hashItemsIds } from '../utils/item';
+import { DEFAULT_THUMBNAIL_SIZES } from './constants';
 
 export const APPS_KEY = 'apps';
 export const ITEMS_KEY = 'items';
@@ -59,6 +60,20 @@ export const buildPublicItemsWithTagKey = (id?: UUID) => [
   id,
 ];
 export const RECYCLED_ITEMS_KEY = 'recycledItems';
+export const buildItemThumbnailKey = ({
+  id,
+  size = DEFAULT_THUMBNAIL_SIZES,
+}: {
+  id?: UUID;
+  size?: string;
+}) => [ITEMS_KEY, id, 'thumbnails', size];
+export const buildAvatarKey = ({
+  id,
+  size = DEFAULT_THUMBNAIL_SIZES,
+}: {
+  id?: UUID;
+  size?: string;
+}) => [MEMBERS_KEY, id, 'avatars', size];
 
 export const MUTATION_KEYS = {
   POST_ITEM: 'postItem',
@@ -88,4 +103,6 @@ export const MUTATION_KEYS = {
   RESTORE_ITEMS: 'restoreItems',
   POST_ITEM_CATEGORY: 'postItemCategory',
   DELETE_ITEM_CATEGORY: 'deleteItemCategory',
+  UPLOAD_ITEM_THUMBNAIL: 'uploadItemThumbnail',
+  UPLOAD_AVATAR: 'uploadAvatar',
 };

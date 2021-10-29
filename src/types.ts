@@ -120,3 +120,12 @@ export interface Chat {
   id: string;
   messages: Array<ChatMessage>;
 }
+
+// todo: get from graasp types
+export type GraaspError = {
+  name: string;
+  code: string;
+  statusCode?: number;
+  message: string;
+  data?: unknown;
+}
