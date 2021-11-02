@@ -74,6 +74,61 @@ export const configureWsItemHooks = (
     }, [itemId]);
   },
 
+
+  /**
+   * React hook to subscribe to the updates of the given item ID
+   * @param itemId The ID of the item of which to observe updates
+   */
+  useItemsUpdates: (itemIds?: UUID[] | null) => {
+    useEffect(() => {
+      if (!itemIds?.length) {
+        return;
+      }
+
+      const unsubscribeFunctions = itemIds.map((itemId) => {
+        const channel: Channel = { name: itemId, topic: TOPICS.ITEM };
+        const itemKey = buildItemKey(itemId);
+
+        const handler = (event: ItemEvent) => {
+          if (event.kind === KINDS.SELF) {
+            const current: Record<Item> | undefined = queryClient.getQueryData(
+              itemKey,
+            );
+            const item = event.item;
+
+            if (current?.get('id') === item.id) {
+              switch (event.op) {
+                case OPS.UPDATE: {
+                  queryClient.setQueryData(itemKey, Map(item));
+                  break;
+                }
+                case OPS.DELETE: {
+                  queryClient.setQueryData(itemKey, null);
+                  break;
+                }
+                default:
+                  console.error('unhandled event for useItemUpdates');
+                  break;
+              }
+            }
+          }
+        };
+
+        websocketClient.subscribe(channel, handler);
+
+
+        return function cleanup() {
+          websocketClient.unsubscribe(channel, handler);
+        };
+      })
+
+      // eslint-disable-next-line consistent-return
+      return () => {
+        unsubscribeFunctions.forEach(f => f())
+      }
+    }, [itemIds]);
+  },
+
   /**
    * React hook to subscribe to the children updates of the given parent item ID
    * @param parentId The ID of the parent on which to observe children updates

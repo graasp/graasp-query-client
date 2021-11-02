@@ -9,18 +9,14 @@ import {
   buildItemMembershipsKey,
   buildItemParentsKey,
   buildItemsKey,
+  buildManyItemMembershipsKey,
   buildPublicItemsWithTagKey,
   buildS3FileContentKey,
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
 } from '../config/keys';
-import {
-  Item,
-  QueryClientConfig,
-  UndefinedArgument,
-  UUID,
-} from '../types';
+import { Item, QueryClientConfig, UndefinedArgument, UUID } from '../types';
 import { configureWsItemHooks, configureWsMembershipHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
@@ -199,7 +195,7 @@ export default (
     ) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
-      ids.map((id) => itemWsHooks?.useItemUpdates(getUpdates ? id : null));
+      itemWsHooks?.useItemsUpdates(getUpdates ? ids : null);
 
       return useQuery({
         queryKey: buildItemsKey(ids),
@@ -226,23 +222,29 @@ export default (
       });
     },
 
-    useItemMemberships: (id?: UUID, options?: { getUpdates?: boolean }) => {
+    useItemMemberships: (ids?: UUID[], options?: { getUpdates?: boolean }) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
-      membershipWsHooks?.useItemMembershipsUpdates(getUpdates ? id : null);
+      membershipWsHooks?.useItemMembershipsUpdates(getUpdates ? ids : null);
 
       return useQuery({
-        queryKey: buildItemMembershipsKey(id),
+        queryKey: buildManyItemMembershipsKey(ids),
         queryFn: () => {
-          if (!id) {
+          if (!ids) {
             throw new UndefinedArgument();
           }
 
-          return Api.getMembershipsForItem(id, queryConfig).then((data) =>
+          return Api.getMembershipsForItems(ids, queryConfig).then((data) =>
             List(data),
           );
         },
-        enabled: Boolean(id),
+        onSuccess: async (memberships) => {
+          // save memberships in their own key
+          ids?.forEach(async (id, idx) => {
+            queryClient.setQueryData(buildItemMembershipsKey(id), List(memberships[idx]));
+          });
+        },
+        enabled: Boolean(ids?.length) && ids?.every((id) => Boolean(id)),
         ...defaultOptions,
       });
     },
@@ -295,20 +297,21 @@ export default (
         ...defaultOptions,
       }),
 
-    useRecycledItems: () => useQuery({
-      queryKey: RECYCLED_ITEMS_KEY,
-      queryFn: () =>
-        Api.getRecycledItems(queryConfig).then((data) => List(data)),
-      onSuccess: async (items: List<Item>) => {
-        // save items in their own key
-        // eslint-disable-next-line no-unused-expressions
-        items?.forEach(async (item) => {
-          const { id } = item;
-          queryClient.setQueryData(buildItemKey(id), Map(item));
-        });
-      },
-      ...defaultOptions,
-    }),
+    useRecycledItems: () =>
+      useQuery({
+        queryKey: RECYCLED_ITEMS_KEY,
+        queryFn: () =>
+          Api.getRecycledItems(queryConfig).then((data) => List(data)),
+        onSuccess: async (items: List<Item>) => {
+          // save items in their own key
+          // eslint-disable-next-line no-unused-expressions
+          items?.forEach(async (item) => {
+            const { id } = item;
+            queryClient.setQueryData(buildItemKey(id), Map(item));
+          });
+        },
+        ...defaultOptions,
+      }),
 
     usePublicItemsWithTag: (
       tagId?: UUID,

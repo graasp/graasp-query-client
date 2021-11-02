@@ -368,13 +368,13 @@ export const getPublicItemsWithTag = async (
     })
     .then(({ data }) => data);
 
-
-export const restoreItems = async (itemIds: UUID[], { API_HOST }: QueryClientConfig) => {
-  const res = await fetch(
-    `${API_HOST}/${buildRestoreItemsRoute(itemIds)}`, {
+export const restoreItems = async (
+  itemIds: UUID[],
+  { API_HOST }: QueryClientConfig,
+) => {
+  const res = await fetch(`${API_HOST}/${buildRestoreItemsRoute(itemIds)}`, {
     ...DEFAULT_POST,
-    headers: {}
-  },
-  ).then(failOnError);
+    headers: {},
+  }).then(failOnError);
   return res.ok;
 };

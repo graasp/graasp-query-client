@@ -23,6 +23,7 @@ import {
   OWN_ITEMS_KEY,
   buildItemMembershipsKey,
   RECYCLED_ITEMS_KEY,
+  buildManyItemMembershipsKey,
 } from '../config/keys';
 import { buildPath, getDirectParentId } from '../utils/item';
 import type { Item, QueryClientConfig, UUID } from '../types';
@@ -40,7 +41,7 @@ const {
   DELETE_ITEMS,
   RECYCLE_ITEM,
   RECYCLE_ITEMS,
-  RESTORE_ITEMS
+  RESTORE_ITEMS,
 } = MUTATION_KEYS;
 
 interface Value {
@@ -285,10 +286,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       Api.deleteItem(itemId, queryConfig).then(() => itemId),
 
     onMutate: async ([itemId]) => {
-      const key = RECYCLED_ITEMS_KEY
+      const key = RECYCLED_ITEMS_KEY;
       const data = queryClient.getQueryData(key) as List<Item>;
-      queryClient.setQueryData(key,
-        data?.filter(({ id }) => id !== itemId))
+      queryClient.setQueryData(
+        key,
+        data?.filter(({ id }) => id !== itemId),
+      );
       const previousItems = {
         parent: data,
         item: await mutateItem({ id: itemId, value: null }),
@@ -325,11 +328,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
     onMutate: async (itemIds: UUID[]) => {
       // get path from first item
-      const itemKey = RECYCLED_ITEMS_KEY
+      const itemKey = RECYCLED_ITEMS_KEY;
       const items = queryClient.getQueryData(itemKey) as List<Item>;
-      queryClient.setQueryData(RECYCLED_ITEMS_KEY, items?.filter(({ id }) => !itemIds.includes(id)))
+      queryClient.setQueryData(
+        RECYCLED_ITEMS_KEY,
+        items?.filter(({ id }) => !itemIds.includes(id)),
+      );
       const previousItems = {
-        parent: items
+        parent: items,
       };
 
       itemIds.forEach(async (id) => {
@@ -581,6 +587,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onSettled: (_data, _error, { id }) => {
       // invalidate memberships
+      // todo: invalidate all pack of memberships containing the given id
+      // this won't trigger too many errors as long as the stale time is low
+      queryClient.invalidateQueries(buildManyItemMembershipsKey([id]));
       queryClient.invalidateQueries(buildItemMembershipsKey(id));
     },
   });
@@ -606,7 +615,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-
   queryClient.setMutationDefaults(RESTORE_ITEMS, {
     mutationFn: (itemIds) =>
       Api.restoreItems(itemIds, queryConfig).then(() => true),
@@ -614,15 +622,20 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onMutate: async (itemIds) => {
       const key = RECYCLED_ITEMS_KEY;
       const items = queryClient.getQueryData(key) as List<Item>;
-      queryClient.setQueryData(key, items.filter(({ id }) => !itemIds.includes(id)))
+      queryClient.setQueryData(
+        key,
+        items.filter(({ id }) => !itemIds.includes(id)),
+      );
       return items;
     },
     onSuccess: (_data, itemIds) => {
       // invalidate parents' children to now get the restored items
       for (const id of itemIds) {
-        const item = queryClient.getQueryData<Record<Item>>(buildItemKey(id))
+        const item = queryClient.getQueryData<Record<Item>>(buildItemKey(id));
         if (item) {
-          const key = getKeyForParentId(getDirectParentId(item?.get('path')) ?? null)
+          const key = getKeyForParentId(
+            getDirectParentId(item?.get('path')) ?? null,
+          );
           queryClient.invalidateQueries(key);
         }
       }

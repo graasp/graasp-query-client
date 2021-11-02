@@ -859,7 +859,7 @@ describe('Items Mutations', () => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, Map(item));
       });
-      const childrenKey = RECYCLED_ITEMS_KEY
+      const childrenKey = RECYCLED_ITEMS_KEY;
       queryClient.setQueryData(childrenKey, List(ITEMS));
 
       const response = OK_RESPONSE;
@@ -909,7 +909,7 @@ describe('Items Mutations', () => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, Map(item));
       });
-      const childrenKey = RECYCLED_ITEMS_KEY
+      const childrenKey = RECYCLED_ITEMS_KEY;
       queryClient.setQueryData(childrenKey, List(ITEMS));
 
       const response = UNAUTHORIZED_RESPONSE;
@@ -1164,7 +1164,7 @@ describe('Items Mutations', () => {
 
       // Check parent's children key is correctly invalidated
       // and should not contain recycled item
-      const childrenKey = RECYCLED_ITEMS_KEY
+      const childrenKey = RECYCLED_ITEMS_KEY;
       expect(
         queryClient
           .getQueryData<List<Item>>(childrenKey)
@@ -1185,7 +1185,7 @@ describe('Items Mutations', () => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, Map(item));
       });
-      const childrenKey = RECYCLED_ITEMS_KEY
+      const childrenKey = RECYCLED_ITEMS_KEY;
       queryClient.setQueryData(childrenKey, List(ITEMS));
 
       const response = OK_RESPONSE;
@@ -1229,7 +1229,6 @@ describe('Items Mutations', () => {
       ).toBeTruthy();
     });
 
-
     it('Unauthorized to delete an item', async () => {
       const items = ITEMS.slice(2);
       const itemIds = items.map(({ id }) => id);
@@ -1239,7 +1238,7 @@ describe('Items Mutations', () => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, Map(item));
       });
-      const childrenKey = RECYCLED_ITEMS_KEY
+      const childrenKey = RECYCLED_ITEMS_KEY;
       queryClient.setQueryData(childrenKey, List(ITEMS));
 
       const response = UNAUTHORIZED_RESPONSE;
@@ -1452,7 +1451,6 @@ describe('Items Mutations', () => {
     });
   });
 
-
   describe(MUTATION_KEYS.RESTORE_ITEMS, () => {
     const mutation = () => useMutation(MUTATION_KEYS.RESTORE_ITEMS);
 
@@ -1465,11 +1463,10 @@ describe('Items Mutations', () => {
       ITEMS.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, Map(item));
-        const parentKey = getKeyForParentId(getDirectParentId(item.path))
+        const parentKey = getKeyForParentId(getDirectParentId(item.path));
         queryClient.setQueryData(parentKey, List([item]));
-
       });
-      const childrenKey = RECYCLED_ITEMS_KEY
+      const childrenKey = RECYCLED_ITEMS_KEY;
       queryClient.setQueryData(childrenKey, List(ITEMS));
 
       const response = OK_RESPONSE;
@@ -1514,13 +1511,12 @@ describe('Items Mutations', () => {
 
       // check original parent is invalidated
       for (const item of items) {
-        const childrenKey = getKeyForParentId(getDirectParentId(item.path))
+        const childrenKey = getKeyForParentId(getDirectParentId(item.path));
         expect(
           queryClient.getQueryState(childrenKey)?.isInvalidated,
         ).toBeTruthy();
       }
     });
-
 
     it('Unauthorized to restore an item', async () => {
       const items = ITEMS.slice(2);
@@ -1531,7 +1527,7 @@ describe('Items Mutations', () => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, Map(item));
       });
-      const childrenKey = RECYCLED_ITEMS_KEY
+      const childrenKey = RECYCLED_ITEMS_KEY;
       queryClient.setQueryData(childrenKey, List(ITEMS));
 
       const response = UNAUTHORIZED_RESPONSE;

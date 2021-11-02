@@ -18,9 +18,12 @@ export const buildPostItemRoute = (parentId?: UUID) => {
   }
   return url;
 };
-export const buildDeleteItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
+export const buildDeleteItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/delete`;
 export const buildDeleteItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
+  `${ITEMS_ROUTE}/delete?${qs.stringify(
+    { id: ids },
+    { arrayFormat: 'repeat' },
+  )}`;
 export const buildGetChildrenRoute = (id: UUID, ordered: boolean) =>
   `${ITEMS_ROUTE}/${id}/children${qs.stringify(
     { ordered },
@@ -50,8 +53,11 @@ export const buildCopyItemsRoute = (ids: UUID[]) =>
 export const buildEditItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
 export const buildShareItemWithRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
-export const buildGetItemMembershipsForItemRoute = (id: UUID) =>
-  `item-memberships?itemId=${id}`;
+export const buildGetItemMembershipsForItemsRoute = (ids: UUID[]) =>
+  `item-memberships${qs.stringify(
+    { itemId: ids },
+    { addQueryPrefix: true, arrayFormat: 'repeat' },
+  )}`;
 export const buildGetItemChatRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/chat`;
 export const buildPostItemChatMessageRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/chat`;
@@ -152,7 +158,7 @@ export const API_ROUTES = {
   buildShareItemWithRoute,
   buildSignInPath,
   buildPostItemLoginSignInRoute,
-  buildGetItemMembershipsForItemRoute,
+  buildGetItemMembershipsForItemsRoute,
   buildMoveItemRoute,
   buildMoveItemsRoute,
   buildPostItemRoute,
@@ -182,5 +188,5 @@ export const API_ROUTES = {
   buildGetPublicItemsWithTag,
   buildGetPublicMember,
   buildGetPublicMembersRoute,
-  buildRestoreItemsRoute
+  buildRestoreItemsRoute,
 };
