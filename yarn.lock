@@ -2100,7 +2100,7 @@ __metadata:
     prettier: 2.2.1
     pretty-quick: 3.1.0
     qs: 6.10.1
-    react-query: 3.16.0
+    react-query: 3.31.0
     react-test-renderer: 17.0.2
     standard-version: 9.1.0
     ts-jest: 27.0.3
@@ -15688,6 +15688,24 @@ fsevents@^1.2.7:
     react-native:
       optional: true
   checksum: d2d62777fdec0b575b465f0875e421ecbbd8ed8cc911eb14fef18138fb59ad481aac2618d46febab8d8feb0de673af0e866854cfc7def103198622dcb37d33fe
+  languageName: node
+  linkType: hard
+
+"react-query@npm:3.31.0":
+  version: 3.31.0
+  resolution: "react-query@npm:3.31.0"
+  dependencies:
+    "@babel/runtime": ^7.5.5
+    broadcast-channel: ^3.4.1
+    match-sorter: ^6.0.2
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: a00e05ea485f61a63686b98e7bd591112f321c732dc313e43ba4787ae9d767666e2cfff3da0dc2a3626fe229b87b3e5433d32c5d45f3647a031f24366678f586
   languageName: node
   linkType: hard
 

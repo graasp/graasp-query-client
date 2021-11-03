@@ -1,5 +1,7 @@
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
-import { QueryClient, QueryClientProvider, useMutation } from 'react-query';
+import {
+  QueryClient, QueryClientProvider, useMutation, Hydrate, dehydrate
+} from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import {
   CACHE_TIME_MILLISECONDS,
@@ -83,5 +85,7 @@ export default (config: Partial<QueryClientConfig>) => {
     hooks,
     useMutation,
     ReactQueryDevtools,
+    dehydrate,
+    Hydrate
   };
 };
