@@ -1,5 +1,3 @@
-import { RetryValue } from 'react-query/types/core/retryer';
-
 export type Notifier = (e: any) => void;
 
 export type QueryClientConfig = {
@@ -11,7 +9,7 @@ export type QueryClientConfig = {
   notifier?: Notifier;
   staleTime: number;
   cacheTime: number;
-  retry: RetryValue<any>;
+  retry: (failureCount: number, error: Error) => boolean;
   refetchOnWindowFocus?: boolean;
   keepPreviousData?: boolean;
 };
