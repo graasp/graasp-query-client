@@ -9,7 +9,7 @@ export type QueryClientConfig = {
   notifier?: Notifier;
   staleTime: number;
   cacheTime: number;
-  retry: (failureCount: number, error: Error) => boolean;
+  retry: number | ((failureCount: number, error: Error) => boolean);
   refetchOnWindowFocus?: boolean;
   keepPreviousData?: boolean;
 };
