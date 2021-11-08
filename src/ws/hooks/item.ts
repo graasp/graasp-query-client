@@ -74,7 +74,6 @@ export const configureWsItemHooks = (
     }, [itemId]);
   },
 
-
   /**
    * React hook to subscribe to the updates of the given item ID
    * @param itemId The ID of the item of which to observe updates
@@ -116,16 +115,15 @@ export const configureWsItemHooks = (
 
         websocketClient.subscribe(channel, handler);
 
-
         return function cleanup() {
           websocketClient.unsubscribe(channel, handler);
         };
-      })
+      });
 
       // eslint-disable-next-line consistent-return
       return () => {
-        unsubscribeFunctions.forEach(f => f())
-      }
+        unsubscribeFunctions.forEach((f) => f());
+      };
     }, [itemIds]);
   },
 

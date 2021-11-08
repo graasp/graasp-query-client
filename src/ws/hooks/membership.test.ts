@@ -5,7 +5,7 @@ import {
   setUpWsTest,
 } from '../../../test/wsUtils';
 import { ITEMS, ITEM_MEMBERSHIPS_RESPONSE } from '../../../test/constants';
-import { buildItemMembershipsKey, } from '../../config/keys';
+import { buildItemMembershipsKey } from '../../config/keys';
 import { configureWsMembershipHooks } from './membership';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { Membership, PERMISSION_LEVELS } from '../../types';

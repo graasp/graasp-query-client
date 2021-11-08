@@ -1,6 +1,10 @@
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 import {
-  QueryClient, QueryClientProvider, useMutation, Hydrate, dehydrate
+  QueryClient,
+  QueryClientProvider,
+  useMutation,
+  Hydrate,
+  dehydrate,
 } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import {
@@ -86,6 +90,6 @@ export default (config: Partial<QueryClientConfig>) => {
     useMutation,
     ReactQueryDevtools,
     dehydrate,
-    Hydrate
+    Hydrate,
   };
 };

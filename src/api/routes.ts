@@ -48,6 +48,8 @@ export const buildMoveItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/move`;
 export const buildMoveItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/move?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildCopyItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/copy`;
+export const buildCopyPublicItemRoute = (id: UUID) =>
+  `p/${ITEMS_ROUTE}/${id}/copy`;
 export const buildCopyItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/copy?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildEditItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
@@ -174,6 +176,7 @@ export const API_ROUTES = {
   buildDeleteItemRoute,
   buildDeleteItemsRoute,
   buildCopyItemRoute,
+  buildCopyPublicItemRoute,
   buildCopyItemsRoute,
   buildPatchMember,
   buildPostItemFlagRoute,
