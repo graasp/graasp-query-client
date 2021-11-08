@@ -204,10 +204,10 @@ export default (
           ids
             ? ids.length === 1
               ? Api.getItem(
-                  ids[0],
-                  { withMemberships: options?.withMemberships ?? false },
-                  queryConfig,
-                ).then((data) => List([data]))
+                ids[0],
+                { withMemberships: options?.withMemberships ?? false },
+                queryConfig,
+              ).then((data) => List([data]))
               : Api.getItems(ids, queryConfig).then((data) => List(data))
             : undefined,
         onSuccess: async (items: List<Item>) => {

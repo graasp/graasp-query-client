@@ -9,7 +9,7 @@ export type QueryClientConfig = {
   notifier?: Notifier;
   staleTime: number;
   cacheTime: number;
-  retry: number | ((failureCount: number, error: Error) => boolean);
+  retry: number | boolean | ((failureCount: number, error: Error) => boolean);
   refetchOnWindowFocus?: boolean;
   keepPreviousData?: boolean;
 };
@@ -69,10 +69,11 @@ export class UndefinedArgument extends Error {
 
 export enum ITEM_LOGIN_SCHEMAS {
   USERNAME = 'username',
-  USERNAME_AND_PASSWORD = 'username+password',
+  USERNAME_AND_PASSWORD = 'username+password'
 }
+
 export type ItemLogin = {
-  loginSchema: ITEM_LOGIN_SCHEMAS;
+  loginSchema: ITEM_LOGIN_SCHEMAS
 };
 
 // todo: use types from graasp types

@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import {
   buildCopyItemRoute,
   buildCopyItemsRoute,
+  buildCopyPublicItemRoute,
   buildDeleteItemRoute,
   buildDeleteItemsRoute,
   buildEditItemRoute,
@@ -278,6 +279,102 @@ describe('Items Mutations', () => {
 
     const route = `/${buildCopyItemRoute(copiedId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.COPY_ITEM);
+
+    const key = getKeyForParentId(to);
+
+    it('Copy a single item from root item to first level item', async () => {
+      ITEMS.forEach((item) => {
+        const itemKey = buildItemKey(item.id);
+        queryClient.setQueryData(itemKey, Map(item));
+      });
+      queryClient.setQueryData(key, List([ITEMS[1]]));
+
+      const response = OK_RESPONSE;
+
+      const endpoints = [
+        {
+          response,
+          method: REQUEST_METHODS.POST,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({
+          to,
+          id: copiedId,
+        });
+        await waitForMutation();
+      });
+
+      // original item path have not changed
+      const itemKey = buildItemKey(copiedId);
+      expect(
+        queryClient.getQueryData<Record<Item>>(itemKey)?.get('path'),
+      ).toEqual(copied.path);
+
+      // Check new parent is correctly invalidated
+      expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
+    });
+
+    it('Unauthorized to copy a single item', async () => {
+      ITEMS.forEach((item) => {
+        const itemKey = buildItemKey(item.id);
+        queryClient.setQueryData(itemKey, Map(item));
+      });
+      queryClient.setQueryData(key, List([ITEMS[1]]));
+
+      const response = UNAUTHORIZED_RESPONSE;
+
+      const endpoints = [
+        {
+          response,
+          statusCode: StatusCodes.UNAUTHORIZED,
+          method: REQUEST_METHODS.POST,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({
+          to,
+          id: copiedId,
+        });
+        await waitForMutation();
+      });
+
+      // original item path have not changed
+      const itemKey = buildItemKey(copiedId);
+      expect(
+        queryClient.getQueryData<Record<Item>>(itemKey)?.get('path'),
+      ).toEqual(copied.path);
+
+      // Check new parent is correctly invalidated
+      expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
+    });
+  });
+
+
+
+  describe(MUTATION_KEYS.COPY_PUBLIC_ITEM, () => {
+    const to = ITEMS[0].id;
+    const copied = ITEMS[1];
+    const copiedId = copied.id;
+
+    const route = `/${buildCopyPublicItemRoute(copiedId)}`;
+    const mutation = () => useMutation(MUTATION_KEYS.COPY_PUBLIC_ITEM);
 
     const key = getKeyForParentId(to);
 
