@@ -15,7 +15,7 @@
     "immutable": "4.0.0-rc.12",
     "js-cookie": "3.0.0",
     "qs": "6.10.1",
-    "react-query": "3.16.0",
+    "react-query": "3.31.0",
     "uuid": "8.3.2"
   },
   "devDependencies": {

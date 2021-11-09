@@ -42,6 +42,7 @@ const {
   RECYCLE_ITEM,
   RECYCLE_ITEMS,
   RESTORE_ITEMS,
+  COPY_PUBLIC_ITEM,
 } = MUTATION_KEYS;
 
 interface Value {
@@ -382,6 +383,24 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ...newItem,
       })),
     // cannot mutate because it needs the id
+    onSuccess: (data) => {
+      notifier?.({ type: copyItemRoutine.SUCCESS, payload: data });
+    },
+    onError: (error) => {
+      notifier?.({ type: copyItemRoutine.FAILURE, payload: { error } });
+    },
+    onSettled: (_newItem, _err, payload) => {
+      const parentKey = getKeyForParentId(payload.to);
+      queryClient.invalidateQueries(parentKey);
+    },
+  });
+
+  queryClient.setMutationDefaults(COPY_PUBLIC_ITEM, {
+    mutationFn: (payload) =>
+      Api.copyPublicItem(payload, queryConfig).then((newItem) => ({
+        to: payload.to,
+        ...newItem,
+      })),
     onSuccess: (data) => {
       notifier?.({ type: copyItemRoutine.SUCCESS, payload: data });
     },

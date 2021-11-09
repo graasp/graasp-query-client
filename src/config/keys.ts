@@ -55,6 +55,7 @@ export const MUTATION_KEYS = {
   DELETE_ITEM: 'deleteItem',
   DELETE_ITEMS: 'deleteItems',
   COPY_ITEM: 'copyItem',
+  COPY_PUBLIC_ITEM: 'copyPublicItem',
   COPY_ITEMS: 'copyItems',
   MOVE_ITEM: 'moveItem',
   MOVE_ITEMS: 'moveItems',

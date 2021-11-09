@@ -1,5 +1,11 @@
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
-import { QueryClient, QueryClientProvider, useMutation } from 'react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useMutation,
+  Hydrate,
+  dehydrate,
+} from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import {
   CACHE_TIME_MILLISECONDS,
@@ -13,13 +19,13 @@ import { configureWebsocketClient } from './ws';
 export type Notifier = (e: any) => any;
 
 // Query client retry function decides when and how many times a request should be retried
-const retry = (failureCount: any, error: { name: string }) => {
+const retry = (failureCount: number, error: Error) => {
   // do not retry if the request was not authorized
   // the user is probably not signed in
   if (error.name === getReasonPhrase(StatusCodes.UNAUTHORIZED)) {
-    return 0;
+    return false;
   }
-  return failureCount;
+  return failureCount < 3
 };
 
 export default (config: Partial<QueryClientConfig>) => {
@@ -40,7 +46,7 @@ export default (config: Partial<QueryClientConfig>) => {
   };
 
   // define config for query client
-  const queryConfig = {
+  const queryConfig: QueryClientConfig = {
     ...baseConfig,
     // derive WS_HOST from API_HOST if needed
     WS_HOST:
@@ -83,5 +89,7 @@ export default (config: Partial<QueryClientConfig>) => {
     hooks,
     useMutation,
     ReactQueryDevtools,
+    dehydrate,
+    Hydrate,
   };
 };

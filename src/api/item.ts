@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import {
   buildCopyItemRoute,
   buildCopyItemsRoute,
+  buildCopyPublicItemRoute,
   buildDeleteItemRoute,
   buildDeleteItemsRoute,
   buildDownloadFilesRoute,
@@ -213,6 +214,22 @@ export const copyItem = async (
   // send parentId if defined
   const body = { ...(to && { parentId: to }) };
   const res = await fetch(`${API_HOST}/${buildCopyItemRoute(id)}`, {
+    ...DEFAULT_POST,
+    body: JSON.stringify(body),
+  }).then(failOnError);
+
+  const newItem = await res.json();
+
+  return newItem;
+};
+
+export const copyPublicItem = async (
+  { id, to }: { id: UUID; to: UUID },
+  { API_HOST }: QueryClientConfig,
+) => {
+  // send parentId if defined
+  const body = { ...(to && { parentId: to }) };
+  const res = await fetch(`${API_HOST}/${buildCopyPublicItemRoute(id)}`, {
     ...DEFAULT_POST,
     body: JSON.stringify(body),
   }).then(failOnError);

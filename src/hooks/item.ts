@@ -1,5 +1,5 @@
 import { List, Map } from 'immutable';
-import { QueryClient, useQuery } from 'react-query';
+import { QueryClient, useQuery, UseQueryResult } from 'react-query';
 import * as Api from '../api';
 import {
   buildFileContentKey,
@@ -74,7 +74,7 @@ export default (
         getUpdates?: boolean;
         placeholderData?: List<Item>;
       },
-    ) => {
+    ): UseQueryResult<List<Item>> => {
       const enabled = options?.enabled ?? true;
       const ordered = options?.ordered ?? true;
       const getUpdates = options?.getUpdates ?? enableWebsocket;
@@ -241,7 +241,10 @@ export default (
         onSuccess: async (memberships) => {
           // save memberships in their own key
           ids?.forEach(async (id, idx) => {
-            queryClient.setQueryData(buildItemMembershipsKey(id), List(memberships[idx]));
+            queryClient.setQueryData(
+              buildItemMembershipsKey(id),
+              List(memberships[idx]),
+            );
           });
         },
         enabled: Boolean(ids?.length) && ids?.every((id) => Boolean(id)),
