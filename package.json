@@ -15,7 +15,7 @@
     "immutable": "4.0.0-rc.12",
     "js-cookie": "3.0.0",
     "qs": "6.10.1",
-    "react-query": "3.16.0",
+    "react-query": "3.31.0",
     "uuid": "8.3.2"
   },
   "devDependencies": {
@@ -54,7 +54,7 @@
     "prettier": "2.2.1",
     "pretty-quick": "3.1.0",
     "react-test-renderer": "17.0.2",
-    "standard-version": "9.1.0",
+    "standard-version": "^9.3.2",
     "ts-jest": "27.0.3",
     "ts-node": "10.1.0",
     "typescript": "4.1.3",
