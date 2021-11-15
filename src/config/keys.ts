@@ -42,6 +42,9 @@ export const buildS3FileContentKey = (id?: UUID) => [ITEMS_KEY, id, 'content'];
 export const ITEM_FLAGS_KEY = 'itemFlags';
 export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, id, 'flags'];
 
+export const CATEGORY_AGE_KEY = 'categoryAge';
+export const CATEGORY_DISCIPLINE_KEY = 'categoryDiscipline';
+
 export const buildPublicItemsWithTagKey = (id?: UUID) => [
   ITEMS_KEY,
   ITEM_TAGS_KEY,

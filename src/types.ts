@@ -58,6 +58,11 @@ export type ItemTag = {
   id: UUID;
 };
 
+export type Category = {
+  id: string;
+  name: string;
+}
+
 export class UndefinedArgument extends Error {
   constructor() {
     super();

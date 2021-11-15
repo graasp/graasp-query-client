@@ -139,6 +139,9 @@ export const buildRestoreItemsRoute = (ids: UUID[]) =>
     { arrayFormat: 'repeat' },
   )}`;
 
+export const GET_CATEGORY_AGE_ROUTE = `${ITEMS_ROUTE}/allcategories/age`;
+export const GET_CATEGORY_DISCIPLINE_ROUTE = `${ITEMS_ROUTE}/allcategories/discipline`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   ITEMS_ROUTE,
@@ -149,6 +152,8 @@ export const API_ROUTES = {
   GET_CURRENT_MEMBER_ROUTE,
   GET_TAGS_ROUTE,
   GET_FLAGS_ROUTE,
+  GET_CATEGORY_AGE_ROUTE,
+  GET_CATEGORY_DISCIPLINE_ROUTE,
   buildAppListRoute,
   buildGetS3MetadataRoute,
   buildGetMember,
