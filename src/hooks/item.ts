@@ -8,6 +8,7 @@ import {
   buildItemLoginKey,
   buildItemMembershipsKey,
   buildItemParentsKey,
+  buildItemsChildrenKey,
   buildItemsKey,
   buildManyItemMembershipsKey,
   buildPublicItemsWithTagKey,
@@ -102,6 +103,40 @@ export default (
         },
         ...defaultOptions,
         enabled: Boolean(id) && enabled,
+        placeholderData: options?.placeholderData,
+      });
+    },
+
+    useItemsChildren: (
+      ids: UUID[],
+      options?: {
+        enabled?: boolean;
+        ordered?: boolean;
+        getUpdates?: boolean;
+        placeholderData?: List<Item>[];
+      },
+    ): UseQueryResult<List<Item>[]> => {
+      const enabled = options?.enabled ?? true;
+      const ordered = options?.ordered ?? true;
+
+      return useQuery({
+        queryKey: buildItemsChildrenKey(ids),
+        queryFn: () => 
+           Promise.all(ids.map((id) => Api.getChildren(id, ordered, queryConfig).then((data) => List(data)))),
+        onSuccess: async (items: List<Item>[]) => {
+          if(items.length){
+            items.forEach((item) => {
+              if(item.size) {
+                item.forEach((elt) =>{
+                  const { id } = elt;
+                  queryClient.setQueryData(buildItemKey(id), Map(elt));
+                })
+              }
+            });
+          }
+        },
+        ...defaultOptions,
+        enabled: Boolean(ids) && enabled,
         placeholderData: options?.placeholderData,
       });
     },
