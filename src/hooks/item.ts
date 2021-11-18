@@ -137,7 +137,7 @@ export default (
             // For each item, get the list of its childrens
             items.forEach((item) => {
               // If the item has children, save them in query client
-              if (item.isEmpty()) {
+              if (item.size) {
                 item.forEach((child) => {
                   const { id } = child;
                   queryClient.setQueryData(buildItemKey(id), Map(child));
