@@ -130,12 +130,17 @@ export default (
             ),
           ),
         onSuccess: async (items: List<Item>[]) => {
+          /* Because the query function loops over the ids, this returns an array 
+          of immutable list of items, each list correspond to an item and contains 
+          their children */
           if (items.length) {
+            // For each item, get the list of its childrens
             items.forEach((item) => {
-              if (item.size) {
-                item.forEach((elt) => {
-                  const { id } = elt;
-                  queryClient.setQueryData(buildItemKey(id), Map(elt));
+              // If the item has children, save them in query client
+              if (item.isEmpty()) {
+                item.forEach((child) => {
+                  const { id } = child;
+                  queryClient.setQueryData(buildItemKey(id), Map(child));
                 });
               }
             });
