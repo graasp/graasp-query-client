@@ -121,16 +121,22 @@ export default (
 
       return useQuery({
         queryKey: buildItemsChildrenKey(ids),
-        queryFn: () => 
-           Promise.all(ids.map((id) => Api.getChildren(id, ordered, queryConfig).then((data) => List(data)))),
+        queryFn: () =>
+          Promise.all(
+            ids.map((id) =>
+              Api.getChildren(id, ordered, queryConfig).then((data) =>
+                List(data),
+              ),
+            ),
+          ),
         onSuccess: async (items: List<Item>[]) => {
-          if(items.length){
+          if (items.length) {
             items.forEach((item) => {
-              if(item.size) {
-                item.forEach((elt) =>{
+              if (item.size) {
+                item.forEach((elt) => {
                   const { id } = elt;
                   queryClient.setQueryData(buildItemKey(id), Map(elt));
-                })
+                });
               }
             });
           }
@@ -239,10 +245,10 @@ export default (
           ids
             ? ids.length === 1
               ? Api.getItem(
-                ids[0],
-                { withMemberships: options?.withMemberships ?? false },
-                queryConfig,
-              ).then((data) => List([data]))
+                  ids[0],
+                  { withMemberships: options?.withMemberships ?? false },
+                  queryConfig,
+                ).then((data) => List([data]))
               : Api.getItems(ids, queryConfig).then((data) => List(data))
             : undefined,
         onSuccess: async (items: List<Item>) => {

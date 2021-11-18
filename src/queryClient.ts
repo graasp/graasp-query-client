@@ -25,7 +25,7 @@ const retry = (failureCount: number, error: Error) => {
   if (error.name === getReasonPhrase(StatusCodes.UNAUTHORIZED)) {
     return false;
   }
-  return failureCount < 3
+  return failureCount < 3;
 };
 
 export default (config: Partial<QueryClientConfig>) => {
