@@ -139,8 +139,12 @@ export const buildRestoreItemsRoute = (ids: UUID[]) =>
     { arrayFormat: 'repeat' },
   )}`;
 
-export const GET_CATEGORY_AGE_ROUTE = `${ITEMS_ROUTE}/allcategories/age`;
-export const GET_CATEGORY_DISCIPLINE_ROUTE = `${ITEMS_ROUTE}/allcategories/discipline`;
+export const GET_CATEGORY_AGE_ROUTE = `${ITEMS_ROUTE}/categories/age`;
+export const GET_CATEGORY_DISCIPLINE_ROUTE = `${ITEMS_ROUTE}/categories/discipline`;
+export const GET_CATEGORY_NAME_AGE_ROUTE = (id: string) => `${ITEMS_ROUTE}/category/age/${id}`;
+export const GET_CATEGORY_NAME_DISC_ROUTE = (id: string) => `${ITEMS_ROUTE}/category/discipline/${id}`;
+export const GET_ITEM_CATEGORY_ROUTE = (id: UUID) => `${ITEMS_ROUTE}/${id}/category`;
+export const GET_ITEMS_IN_CATEGORY_ROUTE = (table: string, id: string) => `${ITEMS_ROUTE}/${table}/${id}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,

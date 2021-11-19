@@ -63,6 +63,12 @@ export type Category = {
   name: string;
 }
 
+export type ItemCategory = {
+  itemId: string;
+  categoryAge?: string;
+  categoryDiscipline?: string;
+}
+
 export class UndefinedArgument extends Error {
   constructor() {
     super();
