@@ -48,6 +48,8 @@ export const CATEGORY_NAME_AGE = 'categoryNameAge';
 export const CATEGORY_NAME_DISCIPLINE = 'categoryNameDiscipline';
 export const itemCategoryKey = (id?: UUID) => [ITEMS_KEY, id, 'itemCategory'];
 export const ITEMS_IN_CATEGORY = 'itemsInCategory';
+export const buildItemCategoryAgeKey = (id?: UUID) => [ITEMS_KEY, id, 'categoryAge'];
+export const buildItemCategoryDisciplineKey = (id?: UUID) => [ITEMS_KEY, id, 'categoryDiscipline'];
 
 export const buildPublicItemsWithTagKey = (id?: UUID) => [
   ITEMS_KEY,
@@ -82,4 +84,6 @@ export const MUTATION_KEYS = {
   RECYCLE_ITEM: 'recycleItem',
   RECYCLE_ITEMS: 'recycleItems',
   RESTORE_ITEMS: 'restoreItems',
+  POST_ITEM_CATEGORY_AGE: 'postItemCategoryAge',
+  POST_ITEM_CATEGORY_DISCIPLINE: 'postItemCategoryDiscipline',
 };
