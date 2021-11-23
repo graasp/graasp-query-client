@@ -47,7 +47,7 @@ export const CATEGORY_DISCIPLINE_KEY = 'categoryDiscipline';
 export const CATEGORY_NAME_AGE = 'categoryNameAge';
 export const CATEGORY_NAME_DISCIPLINE = 'categoryNameDiscipline';
 export const itemCategoryKey = (id?: UUID) => [ITEMS_KEY, id, 'itemCategory'];
-export const ITEMS_IN_CATEGORY = 'itemsInCategory';
+export const buildItemsByCategoryKey = (table_name: string, id: string) => [table_name, id, 'itemsInCategory'];
 export const buildItemCategoryAgeKey = (id?: UUID) => [ITEMS_KEY, id, 'itemCategory'];
 export const buildItemCategoryDisciplineKey = (id?: UUID) => [ITEMS_KEY, id, 'itemCategory'];
 

@@ -2,7 +2,7 @@ import { useQuery } from 'react-query';
 import { List } from 'immutable';
 import { QueryClientConfig, UUID } from '../types';
 import * as Api from '../api';
-import { CATEGORY_AGE_KEY, CATEGORY_DISCIPLINE_KEY, CATEGORY_NAME_AGE, CATEGORY_NAME_DISCIPLINE, itemCategoryKey, ITEMS_IN_CATEGORY } from '../config/keys';
+import { buildItemsByCategoryKey, CATEGORY_AGE_KEY, CATEGORY_DISCIPLINE_KEY, CATEGORY_NAME_AGE, CATEGORY_NAME_DISCIPLINE, itemCategoryKey } from '../config/keys';
 
 export default (queryConfig: QueryClientConfig) => {
   const { retry, cacheTime, staleTime } = queryConfig;
@@ -52,7 +52,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useItemsInCategory = (categoryName: string, categoryId: string) =>
     useQuery({
-      queryKey: ITEMS_IN_CATEGORY,
+      queryKey: buildItemsByCategoryKey(categoryName, categoryId),
       queryFn: () => Api.getItemsInCategory(categoryName, categoryId, queryConfig).then((data) => List(data)),
       ...defaultOptions,
     });
