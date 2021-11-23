@@ -33,6 +33,7 @@ import {
   buildItemKey,
   buildItemLoginKey,
   buildItemParentsKey,
+  buildItemsChildrenKey,
   buildItemsKey,
   buildManyItemMembershipsKey,
   buildPublicItemsWithTagKey,
@@ -194,6 +195,59 @@ describe('Items Hooks', () => {
       expect(isError).toBeTruthy();
       // verify cache keys
       expect(queryClient.getQueryData(buildItemChildrenKey(id))).toBeFalsy();
+    });
+  });
+
+  describe('useItemsChildren', () => {
+    const ids = ['item-id-1', 'item-id-2'];
+    const response = ITEMS;
+    const key = buildItemsChildrenKey(ids);
+
+    it(`Receive children of item by id`, async () => {
+      const hook = () => hooks.useItemsChildren(ids);
+      const endpoints = ids.map((id) => ({
+        route: `/${buildGetChildrenRoute(id, true)}`,
+        response,
+      }));
+      const { data, isSuccess } = await mockHook({
+        endpoints,
+        hook,
+        wrapper,
+      });
+
+      expect(isSuccess).toBeTruthy();
+      for (const item of data as List<Item>[]) {
+        expect(item).toEqual(List(response));
+      }
+
+      // verify cache keys
+      for (const item of queryClient.getQueryData(key) as List<Item>[]) {
+        expect(item).toEqual(List(response));
+      }
+      for (const item of response) {
+        expect(queryClient.getQueryData(buildItemKey(item.id))).toEqual(
+          Map(item),
+        );
+      }
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = ids.map((id) => ({
+        route: `/${buildGetChildrenRoute(id, true)}`,
+        response: UNAUTHORIZED_RESPONSE,
+        statusCode: StatusCodes.UNAUTHORIZED,
+      }));
+
+      const { data, isError } = await mockHook({
+        endpoints,
+        hook: () => hooks.useItemsChildren(ids),
+        wrapper,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(buildItemsChildrenKey(ids))).toBeFalsy();
     });
   });
 

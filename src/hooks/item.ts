@@ -8,6 +8,7 @@ import {
   buildItemLoginKey,
   buildItemMembershipsKey,
   buildItemParentsKey,
+  buildItemsChildrenKey,
   buildItemsKey,
   buildManyItemMembershipsKey,
   buildPublicItemsWithTagKey,
@@ -102,6 +103,51 @@ export default (
         },
         ...defaultOptions,
         enabled: Boolean(id) && enabled,
+        placeholderData: options?.placeholderData,
+      });
+    },
+
+    useItemsChildren: (
+      ids: UUID[],
+      options?: {
+        enabled?: boolean;
+        ordered?: boolean;
+        getUpdates?: boolean;
+        placeholderData?: List<Item>[];
+      },
+    ): UseQueryResult<List<Item>[]> => {
+      const enabled = options?.enabled ?? true;
+      const ordered = options?.ordered ?? true;
+
+      return useQuery({
+        queryKey: buildItemsChildrenKey(ids),
+        queryFn: () =>
+          Promise.all(
+            ids.map((id) =>
+              Api.getChildren(id, ordered, queryConfig).then((data) =>
+                List(data),
+              ),
+            ),
+          ),
+        onSuccess: async (items: List<Item>[]) => {
+          /* Because the query function loops over the ids, this returns an array 
+          of immutable list of items, each list correspond to an item and contains 
+          their children */
+          if (items.length) {
+            // For each item, get the list of its childrens
+            items.forEach((item) => {
+              // If the item has children, save them in query client
+              if (item.size) {
+                item.forEach((child) => {
+                  const { id } = child;
+                  queryClient.setQueryData(buildItemKey(id), Map(child));
+                });
+              }
+            });
+          }
+        },
+        ...defaultOptions,
+        enabled: Boolean(ids) && enabled,
         placeholderData: options?.placeholderData,
       });
     },
@@ -204,10 +250,10 @@ export default (
           ids
             ? ids.length === 1
               ? Api.getItem(
-                ids[0],
-                { withMemberships: options?.withMemberships ?? false },
-                queryConfig,
-              ).then((data) => List([data]))
+                  ids[0],
+                  { withMemberships: options?.withMemberships ?? false },
+                  queryConfig,
+                ).then((data) => List([data]))
               : Api.getItems(ids, queryConfig).then((data) => List(data))
             : undefined,
         onSuccess: async (items: List<Item>) => {

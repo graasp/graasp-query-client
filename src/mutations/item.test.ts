@@ -366,8 +366,6 @@ describe('Items Mutations', () => {
     });
   });
 
-
-
   describe(MUTATION_KEYS.COPY_PUBLIC_ITEM, () => {
     const to = ITEMS[0].id;
     const copied = ITEMS[1];
