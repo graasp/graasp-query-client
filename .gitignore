@@ -44,3 +44,5 @@ example/src/react-app-env.d.ts
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+package-lock.json
