@@ -1,33 +1,28 @@
 import { QueryClientConfig, UUID} from '../types';
-import { buildPostItemCategoryAge, buildPostItemCategoryDiscipline, GET_CATEGORY_AGE_ROUTE, GET_CATEGORY_DISCIPLINE_ROUTE, GET_CATEGORY_NAME_AGE_ROUTE, GET_ITEMS_IN_CATEGORY_ROUTE, GET_ITEM_CATEGORY_ROUTE } from './routes';
-import { DEFAULT_GET, DEFAULT_POST, failOnError } from './utils';
+import { buildGetCategoriesRoute, buildGetCategoryInfoRoute, buildGetItemCategoryRoute, 
+  buildGetItemsInCategoryRoute, buildPostItemCategoryRoute, buildDeleteItemCategoryRoute, GET_CATEGORY_TYPES_ROUTE } from './routes';
+import { DEFAULT_DELETE, DEFAULT_GET, DEFAULT_POST, failOnError } from './utils';
 
-export const getCategoriesAge = async ({ API_HOST }: QueryClientConfig) => {
-  const res = await fetch(`${API_HOST}/${GET_CATEGORY_AGE_ROUTE}`, DEFAULT_GET).then(
+export const getCategoryTypes = async ({ API_HOST }: QueryClientConfig) => {
+  const res = await fetch(`${API_HOST}/${GET_CATEGORY_TYPES_ROUTE}`, DEFAULT_GET).then(
     failOnError,
   );
 
   return res.json();
 };
 
-export const getCategoriesDiscipline = async ({ API_HOST }: QueryClientConfig) => {
-    const res = await fetch(`${API_HOST}/${GET_CATEGORY_DISCIPLINE_ROUTE}`, DEFAULT_GET).then(
-      failOnError,
-    );
-  
-    return res.json();
-  };
+export const getCategories = async (typeId: UUID[], { API_HOST }: QueryClientConfig) => {
+  console.log(typeId);
+  console.log(buildGetCategoriesRoute(typeId));
+  const res = await fetch(`${API_HOST}/${buildGetCategoriesRoute(typeId)}`, DEFAULT_GET).then(
+    failOnError,
+  );
 
-export const getCategoryNameAge = async (categoryId: string, { API_HOST }: QueryClientConfig) => {
-    const res = await fetch(`${API_HOST}/${GET_CATEGORY_NAME_AGE_ROUTE(categoryId)}`, DEFAULT_GET).then(
-      failOnError,
-    );
-  
-    return res.json();
-  };
+  return res.json();
+};
 
-export const getCategoryNameDiscipline = async (categoryId: string, { API_HOST }: QueryClientConfig) => {
-    const res = await fetch(`${API_HOST}/${GET_CATEGORY_NAME_AGE_ROUTE(categoryId)}`, DEFAULT_GET).then(
+export const getCategoryInfo = async (categoryId: UUID, { API_HOST }: QueryClientConfig) => {
+    const res = await fetch(`${API_HOST}/${buildGetCategoryInfoRoute(categoryId)}`, DEFAULT_GET).then(
       failOnError,
     );
   
@@ -35,47 +30,40 @@ export const getCategoryNameDiscipline = async (categoryId: string, { API_HOST }
   };
 
 export const getItemCategory = async (itemId: UUID, { API_HOST }: QueryClientConfig) => {
-    const res = await fetch(`${API_HOST}/${GET_ITEM_CATEGORY_ROUTE(itemId)}`, DEFAULT_GET).then(
+    const res = await fetch(`${API_HOST}/${buildGetItemCategoryRoute(itemId)}`, DEFAULT_GET).then(
       failOnError,
     );
     return res.json();
   };
 
-export const getItemsInCategory = async (categoryName: string, categoryId: string, { API_HOST }: QueryClientConfig) => {
-    const res = await fetch(`${API_HOST}/${GET_ITEMS_IN_CATEGORY_ROUTE(categoryName, categoryId)}`, DEFAULT_GET).then(
+export const getItemsInCategory = async (categoryId: UUID[], { API_HOST }: QueryClientConfig) => {
+    const res = await fetch(`${API_HOST}/${buildGetItemsInCategoryRoute(categoryId)}`, DEFAULT_GET).then(
       failOnError,
     );
   
     return res.json();
   };
 
-// payload: tagId, itemPath, creator
-export const postItemCategoryAge = async (
+// payload: itemId, categoryId
+export const postItemCategory = async (
   {
     itemId,
-    categoryAge,
-  }: { itemId: UUID; categoryAge: string },
+    categoryId,
+  }: { itemId: UUID; categoryId: UUID },
   { API_HOST }: QueryClientConfig,
 ) => {
-  const res = await fetch(`${API_HOST}/${buildPostItemCategoryAge(itemId)}`, {
+  console.log(JSON.stringify({itemId, categoryId}));
+  const res = await fetch(`${API_HOST}/${buildPostItemCategoryRoute(itemId)}`, {
     ...DEFAULT_POST,
-    body: JSON.stringify({ itemId, categoryAge }),
+    body: JSON.stringify({ itemId, categoryId }),
   }).then(failOnError);
 
   return res.json();
 };
 
-// payload: tagId, itemPath, creator
-export const postItemCategoryDiscipline = async (
-  {
-    itemId,
-    categoryDiscipline,
-  }: { itemId: UUID; categoryDiscipline: string },
-  { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(`${API_HOST}/${buildPostItemCategoryDiscipline(itemId)}`, {
-    ...DEFAULT_POST,
-    body: JSON.stringify({ itemId, categoryDiscipline }),
+export const deleteItemCategory = async (itemId: UUID, { API_HOST }: QueryClientConfig) => {
+  const res = await fetch(`${API_HOST}/${buildDeleteItemCategoryRoute(itemId)}`, {
+    ...DEFAULT_DELETE,
   }).then(failOnError);
 
   return res.json();

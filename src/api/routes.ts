@@ -139,16 +139,23 @@ export const buildRestoreItemsRoute = (ids: UUID[]) =>
     { arrayFormat: 'repeat' },
   )}`;
 
-export const GET_CATEGORY_AGE_ROUTE = `${ITEMS_ROUTE}/categories/age`;
-export const GET_CATEGORY_DISCIPLINE_ROUTE = `${ITEMS_ROUTE}/categories/discipline`;
-export const GET_CATEGORY_NAME_AGE_ROUTE = (id: string) => `${ITEMS_ROUTE}/category/age/${id}`;
-export const GET_CATEGORY_NAME_DISC_ROUTE = (id: string) => `${ITEMS_ROUTE}/category/discipline/${id}`;
-export const GET_ITEM_CATEGORY_ROUTE = (id: UUID) => `${ITEMS_ROUTE}/${id}/category`;
-export const GET_ITEMS_IN_CATEGORY_ROUTE = (table: string, id: string) => `${ITEMS_ROUTE}/${table}/${id}`;
-export const buildPostItemCategoryAge = (id: UUID) =>
-  `${ITEMS_ROUTE}/category/${id}/age`;
-  export const buildPostItemCategoryDiscipline = (id: UUID) =>
-  `${ITEMS_ROUTE}/category/${id}/discipline`;
+export const GET_CATEGORY_TYPES_ROUTE = `${ITEMS_ROUTE}/category-types`
+export const buildGetCategoriesRoute = (ids: UUID[]) => 
+  `${ITEMS_ROUTE}/categories?${qs.stringify(
+    { type: ids },
+    { arrayFormat: 'repeat' }
+  )}`;
+export const buildGetCategoryInfoRoute = (id: UUID) => `${ITEMS_ROUTE}/category/${id}`;
+export const buildGetItemCategoryRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/categories`;
+export const buildGetItemsInCategoryRoute = (ids: UUID[]) => 
+  `${ITEMS_ROUTE}/item-category?${qs.stringify(
+    { category: ids },
+    { arrayFormat: 'repeat' }
+  )}`;
+export const buildPostItemCategoryRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/categories`;
+  export const buildDeleteItemCategoryRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/item-category/${id}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,
@@ -160,8 +167,7 @@ export const API_ROUTES = {
   GET_CURRENT_MEMBER_ROUTE,
   GET_TAGS_ROUTE,
   GET_FLAGS_ROUTE,
-  GET_CATEGORY_AGE_ROUTE,
-  GET_CATEGORY_DISCIPLINE_ROUTE,
+  GET_CATEGORY_TYPES_ROUTE,
   buildAppListRoute,
   buildGetS3MetadataRoute,
   buildGetMember,
@@ -205,6 +211,8 @@ export const API_ROUTES = {
   buildGetPublicMember,
   buildGetPublicMembersRoute,
   buildRestoreItemsRoute,
-  buildPostItemCategoryAge,
-  buildPostItemCategoryDiscipline,
+  buildGetCategoriesRoute,
+  buildGetCategoryInfoRoute,
+  buildPostItemCategoryRoute,
+  buildDeleteItemCategoryRoute,
 };

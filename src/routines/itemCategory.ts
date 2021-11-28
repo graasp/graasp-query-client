@@ -1,4 +1,4 @@
 import createRoutine from './utils';
 
-export const postItemCategoryAgeRoutine = createRoutine('POST_ITEM_CATEGORY_AGE');
-export const postItemCategoryDisciplineRoutine = createRoutine('POST_ITEM_CATEGORY_DISCIPLINE');
+export const postItemCategoryRoutine = createRoutine('POST_ITEM_CATEGORY');
+export const deleteItemCategoryRoutine = createRoutine('DELETE_ITEM_CATEGORY');

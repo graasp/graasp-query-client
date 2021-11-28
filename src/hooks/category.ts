@@ -2,7 +2,7 @@ import { useQuery } from 'react-query';
 import { List } from 'immutable';
 import { QueryClientConfig, UUID } from '../types';
 import * as Api from '../api';
-import { buildItemsByCategoryKey, CATEGORY_AGE_KEY, CATEGORY_DISCIPLINE_KEY, CATEGORY_NAME_AGE, CATEGORY_NAME_DISCIPLINE, itemCategoryKey } from '../config/keys';
+import { buildItemCategoryKey, buildItemsByCategoryKey, buildCategoriesKey, CATEGORY_INFO, CATEGORY_TYPES_KEY } from '../config/keys';
 
 export default (queryConfig: QueryClientConfig) => {
   const { retry, cacheTime, staleTime } = queryConfig;
@@ -11,52 +11,44 @@ export default (queryConfig: QueryClientConfig) => {
     cacheTime,
     staleTime,
   };
-
-  // get age categories
-  const useCategoryAge = () =>
+  
+  // get category types
+  const useCategoryTypes = () =>
     useQuery({
-      queryKey: CATEGORY_AGE_KEY,
-      queryFn: () => Api.getCategoriesAge(queryConfig).then((data) => List(data)),
+      queryKey: CATEGORY_TYPES_KEY,
+      queryFn: () => Api.getCategoryTypes(queryConfig).then((data) => List(data)),
       ...defaultOptions,
     });
 
-  // get discipline categories
-  const useCategoryDiscipline = () =>
+  // get categories
+  const useCategories = (typeId: UUID[]) =>
     useQuery({
-      queryKey: CATEGORY_DISCIPLINE_KEY,
-      queryFn: () => Api.getCategoriesDiscipline(queryConfig).then((data) => List(data)),
+      queryKey: buildCategoriesKey(typeId),
+      queryFn: () => Api.getCategories(typeId, queryConfig).then((data) => List(data)),
       ...defaultOptions,
     });
 
-  const useCategoryNameAge = (categoryId: string) =>
+  const useCategoryInfo = (categoryId: UUID) =>
     useQuery({
-      queryKey: CATEGORY_NAME_AGE,
-      queryFn: () => Api.getCategoryNameAge(categoryId ,queryConfig).then((data) => (data)),
-      ...defaultOptions,
-    });
-
-  const useCategoryNameDiscipline = (categoryId: string) =>
-    useQuery({
-      queryKey: CATEGORY_NAME_DISCIPLINE,
-      queryFn: () => Api.getCategoryNameDiscipline(categoryId, queryConfig).then((data) => (data)),
+      queryKey: CATEGORY_INFO,
+      queryFn: () => Api.getCategoryInfo(categoryId ,queryConfig).then((data) => (data)),
       ...defaultOptions,
     });
 
   const useItemCategory = (itemId: UUID) =>
     useQuery({
-      queryKey: itemCategoryKey(itemId),
-      queryFn: () => Api.getItemCategory(itemId, queryConfig).then((data) => (data)),
+      queryKey: buildItemCategoryKey(itemId),
+      queryFn: () => Api.getItemCategory(itemId, queryConfig).then((data) => List(data)),
       ...defaultOptions,
       enabled: Boolean(itemId),
     });
 
-  const useItemsInCategory = (categoryName: string, categoryId: string) =>
+  const useItemsInCategory = (categoryId: UUID[]) =>
     useQuery({
-      queryKey: buildItemsByCategoryKey(categoryName, categoryId),
-      queryFn: () => Api.getItemsInCategory(categoryName, categoryId, queryConfig).then((data) => List(data)),
+      queryKey: buildItemsByCategoryKey(categoryId),
+      queryFn: () => Api.getItemsInCategory(categoryId, queryConfig).then((data) => List(data)),
       ...defaultOptions,
     });
 
-  return { useCategoryAge, useCategoryDiscipline, useCategoryNameAge, useCategoryNameDiscipline, useItemCategory,
-          useItemsInCategory };
+  return { useCategoryTypes,useCategories, useCategoryInfo, useItemCategory, useItemsInCategory };
 };

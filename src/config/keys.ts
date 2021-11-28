@@ -42,14 +42,11 @@ export const buildS3FileContentKey = (id?: UUID) => [ITEMS_KEY, id, 'content'];
 export const ITEM_FLAGS_KEY = 'itemFlags';
 export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, id, 'flags'];
 
-export const CATEGORY_AGE_KEY = 'categoryAge';
-export const CATEGORY_DISCIPLINE_KEY = 'categoryDiscipline';
-export const CATEGORY_NAME_AGE = 'categoryNameAge';
-export const CATEGORY_NAME_DISCIPLINE = 'categoryNameDiscipline';
-export const itemCategoryKey = (id?: UUID) => [ITEMS_KEY, id, 'itemCategory'];
-export const buildItemsByCategoryKey = (table_name: string, id: string) => [table_name, id, 'itemsInCategory'];
-export const buildItemCategoryAgeKey = (id?: UUID) => [ITEMS_KEY, id, 'itemCategory'];
-export const buildItemCategoryDisciplineKey = (id?: UUID) => [ITEMS_KEY, id, 'itemCategory'];
+export const CATEGORY_TYPES_KEY = 'categoryTypes'
+export const CATEGORY_INFO = 'categoryInfo';
+export const buildCategoriesKey = (id?: UUID[]) => ['Categories', id?.toString()]
+export const buildItemCategoryKey = (id?: UUID) => [ITEMS_KEY, id, 'Categories'];
+export const buildItemsByCategoryKey = (ids: UUID[]) => ['itemsInCategory', hashItemsIds(ids)];
 
 export const buildPublicItemsWithTagKey = (id?: UUID) => [
   ITEMS_KEY,
@@ -84,6 +81,6 @@ export const MUTATION_KEYS = {
   RECYCLE_ITEM: 'recycleItem',
   RECYCLE_ITEMS: 'recycleItems',
   RESTORE_ITEMS: 'restoreItems',
-  POST_ITEM_CATEGORY_AGE: 'postItemCategoryAge',
-  POST_ITEM_CATEGORY_DISCIPLINE: 'postItemCategoryDiscipline',
+  POST_ITEM_CATEGORY: 'postItemCategory',
+  DELETE_ITEM_CATEGORY: 'deleteItemCategory',
 };

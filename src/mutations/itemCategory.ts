@@ -1,37 +1,37 @@
 import { QueryClient } from 'react-query';
-import { buildItemCategoryAgeKey, buildItemCategoryDisciplineKey, MUTATION_KEYS } from '../config/keys';
-import { postItemCategoryAgeRoutine, postItemCategoryDisciplineRoutine } from '../routines';
 import * as Api from '../api';
+import { buildItemCategoryKey, MUTATION_KEYS } from '../config/keys';
+import { deleteItemCategoryRoutine, postItemCategoryRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_CATEGORY_AGE, {
+  queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_CATEGORY, {
     mutationFn: (payload) =>
-      Api.postItemCategoryAge(payload, queryConfig).then(() => payload),
+      Api.postItemCategory(payload, queryConfig).then(() => payload),
     onSuccess: () => {
-      notifier?.({ type: postItemCategoryAgeRoutine.SUCCESS });
+      notifier?.({ type: postItemCategoryRoutine.SUCCESS });
     },
     onError: (error) => {
-      notifier?.({ type: postItemCategoryAgeRoutine.FAILURE, payload: { error } });
+      notifier?.({ type: postItemCategoryRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_data, _error, { id }) => {
-      queryClient.invalidateQueries(buildItemCategoryAgeKey(id));
+      queryClient.invalidateQueries(buildItemCategoryKey(id));
     },
   });
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_CATEGORY_DISCIPLINE, {
-    mutationFn: (payload) =>
-      Api.postItemCategoryDiscipline(payload, queryConfig).then(() => payload),
+  queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_ITEM_CATEGORY, {
+    mutationFn: (id) =>
+      Api.deleteItemCategory(id, queryConfig).then(() => id),
     onSuccess: () => {
-      notifier?.({ type: postItemCategoryDisciplineRoutine.SUCCESS });
+      notifier?.({ type: deleteItemCategoryRoutine.SUCCESS });
     },
     onError: (error) => {
-      notifier?.({ type: postItemCategoryDisciplineRoutine.FAILURE, payload: { error } });
+      notifier?.({ type: deleteItemCategoryRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_data, _error, { id }) => {
-      queryClient.invalidateQueries(buildItemCategoryDisciplineKey(id));
+      queryClient.invalidateQueries(buildItemCategoryKey(id));
     },
   });
 };
