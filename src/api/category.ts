@@ -11,7 +11,7 @@ export const getCategoryTypes = async ({ API_HOST }: QueryClientConfig) => {
   return res.json();
 };
 
-export const getCategories = async (typeId: UUID[], { API_HOST }: QueryClientConfig) => {
+export const getCategories = async ({ API_HOST }: QueryClientConfig, typeId?: UUID[], ) => {
   console.log(typeId);
   console.log(buildGetCategoriesRoute(typeId));
   const res = await fetch(`${API_HOST}/${buildGetCategoriesRoute(typeId)}`, DEFAULT_GET).then(

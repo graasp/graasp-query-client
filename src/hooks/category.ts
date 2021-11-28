@@ -21,10 +21,10 @@ export default (queryConfig: QueryClientConfig) => {
     });
 
   // get categories
-  const useCategories = (typeId: UUID[]) =>
+  const useCategories = (typeId?: UUID[]) =>
     useQuery({
       queryKey: buildCategoriesKey(typeId),
-      queryFn: () => Api.getCategories(typeId, queryConfig).then((data) => List(data)),
+      queryFn: () => Api.getCategories(queryConfig, typeId).then((data) => List(data)),
       ...defaultOptions,
     });
 

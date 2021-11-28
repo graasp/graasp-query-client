@@ -140,7 +140,7 @@ export const buildRestoreItemsRoute = (ids: UUID[]) =>
   )}`;
 
 export const GET_CATEGORY_TYPES_ROUTE = `${ITEMS_ROUTE}/category-types`
-export const buildGetCategoriesRoute = (ids: UUID[]) => 
+export const buildGetCategoriesRoute = (ids?: UUID[]) => 
   `${ITEMS_ROUTE}/categories?${qs.stringify(
     { type: ids },
     { arrayFormat: 'repeat' }
