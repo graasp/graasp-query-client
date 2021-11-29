@@ -16,8 +16,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onError: (error) => {
       notifier?.({ type: postItemCategoryRoutine.FAILURE, payload: { error } });
     },
-    onSettled: (_data, _error, { id }) => {
-      queryClient.invalidateQueries(buildItemCategoryKey(id));
+    onSettled: (_data, _error, { itemId }) => {
+      queryClient.invalidateQueries(buildItemCategoryKey(itemId));
     },
   });
 

@@ -1,5 +1,5 @@
 import { QueryClientConfig, UUID} from '../types';
-import { buildGetCategoriesRoute, buildGetCategoryInfoRoute, buildGetItemCategoryRoute, 
+import { buildGetCategoriesRoute, buildGetCategoryInfoRoute, buildGetItemCategoriesRoute, 
   buildGetItemsInCategoryRoute, buildPostItemCategoryRoute, buildDeleteItemCategoryRoute, GET_CATEGORY_TYPES_ROUTE } from './routes';
 import { DEFAULT_DELETE, DEFAULT_GET, DEFAULT_POST, failOnError } from './utils';
 
@@ -12,8 +12,6 @@ export const getCategoryTypes = async ({ API_HOST }: QueryClientConfig) => {
 };
 
 export const getCategories = async ({ API_HOST }: QueryClientConfig, typeId?: UUID[], ) => {
-  console.log(typeId);
-  console.log(buildGetCategoriesRoute(typeId));
   const res = await fetch(`${API_HOST}/${buildGetCategoriesRoute(typeId)}`, DEFAULT_GET).then(
     failOnError,
   );
@@ -21,7 +19,7 @@ export const getCategories = async ({ API_HOST }: QueryClientConfig, typeId?: UU
   return res.json();
 };
 
-export const getCategoryInfo = async (categoryId: UUID, { API_HOST }: QueryClientConfig) => {
+export const getCategory = async (categoryId: UUID, { API_HOST }: QueryClientConfig) => {
     const res = await fetch(`${API_HOST}/${buildGetCategoryInfoRoute(categoryId)}`, DEFAULT_GET).then(
       failOnError,
     );
@@ -29,15 +27,15 @@ export const getCategoryInfo = async (categoryId: UUID, { API_HOST }: QueryClien
     return res.json();
   };
 
-export const getItemCategory = async (itemId: UUID, { API_HOST }: QueryClientConfig) => {
-    const res = await fetch(`${API_HOST}/${buildGetItemCategoryRoute(itemId)}`, DEFAULT_GET).then(
+export const getItemCategories = async (itemId: UUID, { API_HOST }: QueryClientConfig) => {
+    const res = await fetch(`${API_HOST}/${buildGetItemCategoriesRoute(itemId)}`, DEFAULT_GET).then(
       failOnError,
     );
     return res.json();
   };
 
-export const getItemsInCategory = async (categoryId: UUID[], { API_HOST }: QueryClientConfig) => {
-    const res = await fetch(`${API_HOST}/${buildGetItemsInCategoryRoute(categoryId)}`, DEFAULT_GET).then(
+export const getItemsForCategories = async (categoryIds: UUID[], { API_HOST }: QueryClientConfig) => {
+    const res = await fetch(`${API_HOST}/${buildGetItemsInCategoryRoute(categoryIds)}`, DEFAULT_GET).then(
       failOnError,
     );
   
@@ -61,8 +59,8 @@ export const postItemCategory = async (
   return res.json();
 };
 
-export const deleteItemCategory = async (itemId: UUID, { API_HOST }: QueryClientConfig) => {
-  const res = await fetch(`${API_HOST}/${buildDeleteItemCategoryRoute(itemId)}`, {
+export const deleteItemCategory = async (entryId: UUID, { API_HOST }: QueryClientConfig) => {
+  const res = await fetch(`${API_HOST}/${buildDeleteItemCategoryRoute(entryId)}`, {
     ...DEFAULT_DELETE,
   }).then(failOnError);
 

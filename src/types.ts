@@ -70,8 +70,9 @@ export type Category = {
 }
 
 export type ItemCategory = {
+  id: UUID;
   itemId: UUID;
-  category: UUID;
+  categoryId: UUID;
 }
 
 export class UndefinedArgument extends Error {

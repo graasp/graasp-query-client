@@ -28,27 +28,27 @@ export default (queryConfig: QueryClientConfig) => {
       ...defaultOptions,
     });
 
-  const useCategoryInfo = (categoryId: UUID) =>
+  const useCategory = (categoryId: UUID) =>
     useQuery({
       queryKey: CATEGORY_INFO,
-      queryFn: () => Api.getCategoryInfo(categoryId ,queryConfig).then((data) => (data)),
+      queryFn: () => Api.getCategory(categoryId ,queryConfig).then((data) => (data)),
       ...defaultOptions,
     });
 
-  const useItemCategory = (itemId: UUID) =>
+  const useItemCategories = (itemId: UUID) =>
     useQuery({
       queryKey: buildItemCategoryKey(itemId),
-      queryFn: () => Api.getItemCategory(itemId, queryConfig).then((data) => List(data)),
+      queryFn: () => Api.getItemCategories(itemId, queryConfig).then((data) => List(data)),
       ...defaultOptions,
       enabled: Boolean(itemId),
     });
 
-  const useItemsInCategory = (categoryId: UUID[]) =>
+  const useItemsInCategories = (categoryIds: UUID[]) =>
     useQuery({
-      queryKey: buildItemsByCategoryKey(categoryId),
-      queryFn: () => Api.getItemsInCategory(categoryId, queryConfig).then((data) => List(data)),
+      queryKey: buildItemsByCategoryKey(categoryIds),
+      queryFn: () => Api.getItemsForCategories(categoryIds, queryConfig).then((data) => List(data)),
       ...defaultOptions,
     });
 
-  return { useCategoryTypes,useCategories, useCategoryInfo, useItemCategory, useItemsInCategory };
+  return { useCategoryTypes,useCategories, useCategory, useItemCategories, useItemsInCategories };
 };

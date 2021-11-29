@@ -46,7 +46,7 @@ export const CATEGORY_TYPES_KEY = 'categoryTypes'
 export const CATEGORY_INFO = 'categoryInfo';
 export const buildCategoriesKey = (id?: UUID[]) => ['Categories', id?.toString()]
 export const buildItemCategoryKey = (id?: UUID) => [ITEMS_KEY, id, 'Categories'];
-export const buildItemsByCategoryKey = (ids: UUID[]) => ['itemsInCategory', hashItemsIds(ids)];
+export const buildItemsByCategoryKey = (ids: UUID[]) => ['itemsInCategory', ids?.toString()];
 
 export const buildPublicItemsWithTagKey = (id?: UUID) => [
   ITEMS_KEY,
