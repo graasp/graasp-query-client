@@ -48,6 +48,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: buildItemsByCategoryKey(categoryIds),
       queryFn: () => Api.getItemsForCategories(categoryIds, queryConfig).then((data) => List(data)),
       ...defaultOptions,
+      enabled: Boolean(categoryIds),
     });
 
   return { useCategoryTypes, useCategories, useCategory, useItemCategories, useItemsInCategories };
