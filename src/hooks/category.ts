@@ -50,5 +50,5 @@ export default (queryConfig: QueryClientConfig) => {
       ...defaultOptions,
     });
 
-  return { useCategoryTypes,useCategories, useCategory, useItemCategories, useItemsInCategories };
+  return { useCategoryTypes, useCategories, useCategory, useItemCategories, useItemsInCategories };
 };

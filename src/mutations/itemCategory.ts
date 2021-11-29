@@ -22,16 +22,16 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
 
   queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_ITEM_CATEGORY, {
-    mutationFn: (id) =>
-      Api.deleteItemCategory(id, queryConfig).then(() => id),
+    mutationFn: (payload) =>
+      Api.deleteItemCategory(payload.entryId, queryConfig).then(() => payload.entryId),
     onSuccess: () => {
       notifier?.({ type: deleteItemCategoryRoutine.SUCCESS });
     },
     onError: (error) => {
       notifier?.({ type: deleteItemCategoryRoutine.FAILURE, payload: { error } });
     },
-    onSettled: (_data, _error, { id }) => {
-      queryClient.invalidateQueries(buildItemCategoryKey(id));
+    onSettled: (_data, _error, { itemId }) => {
+      queryClient.invalidateQueries(buildItemCategoryKey(itemId));
     },
   });
 };
