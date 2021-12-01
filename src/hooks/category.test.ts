@@ -8,6 +8,10 @@ import { Category, CategoryType, ItemCategory } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
+type ItemId = {
+  item_id: string,
+}
+
 describe('Category Hooks', () => {
   afterEach(() => {
     nock.cleanAll();
@@ -37,7 +41,7 @@ describe('Category Hooks', () => {
     const route = `/${buildGetCategoriesRoute(typeIds)}`;
     const key = buildCategoriesKey(typeIds);
 
-    const hook = () => hooks.useCategories();
+    const hook = () => hooks.useCategories(typeIds);
 
     it(`Receive category types`, async () => {
       const response = CATEGORIES;
@@ -82,7 +86,7 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<ItemCategory>).toEqual(response);
+      expect((data as List<ItemCategory>).toJS()).toEqual(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(response);
@@ -101,7 +105,7 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<any>).toJS()).toEqual(response);
+      expect((data as List<ItemId>).toJS()).toEqual(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(response);

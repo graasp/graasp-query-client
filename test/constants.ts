@@ -7,9 +7,6 @@ import {
   Membership,
   PERMISSION_LEVELS,
   UUID,
-  CategoryType,
-  Category,
-  ItemCategory,
 } from '../src/types';
 
 export const API_HOST = 'http://localhost:3000';
@@ -233,14 +230,14 @@ export const ITEM_CHAT = {
   ],
 };
 
-export const CATEGORY_TYPES: CategoryType[] = [
+export const CATEGORY_TYPES = [
   {
     id: 'type-id',
     name: 'type-name',
   },
 ];
 
-export const CATEGORIES: Category[] = [
+export const CATEGORIES = [
   {
     id: 'category-id1',
     name: 'category-name1',
@@ -253,7 +250,7 @@ export const CATEGORIES: Category[] = [
   }
 ];
 
-export const ITEM_CATEGORIES: ItemCategory[] = [
+export const ITEM_CATEGORIES = [
   {
     id: 'id1',
     itemId: 'item-id',

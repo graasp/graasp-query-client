@@ -4,9 +4,10 @@ import { act } from 'react-test-renderer';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { REQUEST_METHODS } from '../api/utils';
 import { buildItemCategoryKey, MUTATION_KEYS } from '../config/keys';
-import { CATEGORIES, ITEMS, ITEM_CATEGORIES } from '../../test/constants';
 import { buildDeleteItemCategoryRoute, buildPostItemCategoryRoute } from '../api/routes';
 import { postItemCategoryRoutine } from '../routines';
+import { ITEM_CATEGORIES } from '../../test/constants';
+import { List } from 'immutable';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
@@ -19,16 +20,14 @@ describe('Item Category Mutations', () => {
   });
 
   describe(MUTATION_KEYS.POST_ITEM_CATEGORY, () => {
-    const item = ITEMS[0];
-    const category = CATEGORIES[0];
-    const itemId = item.id;
-    const categoryId = category.id;
+    const itemId = 'item-id';
+    const categoryId = 'new-category';
     const route = `/${buildPostItemCategoryRoute(itemId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_CATEGORY);
     const key = buildItemCategoryKey(itemId);
 
     it('Post item category', async () => {
-      queryClient.setQueryData(key, ITEM_CATEGORIES);
+      queryClient.setQueryData(key, List([ITEM_CATEGORIES]));
 
       const endpoints = [
         {
@@ -60,19 +59,19 @@ describe('Item Category Mutations', () => {
   });
 
   describe(MUTATION_KEYS.DELETE_ITEM_CATEGORY, () => {
-    const id = 'entry-id';
+    const entryId = 'id1';
     const itemId = 'item-id';
-    const route = `/${buildDeleteItemCategoryRoute(id)}`;
+    const route = `/${buildDeleteItemCategoryRoute(entryId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_CATEGORY);
     const key = buildItemCategoryKey(itemId);
 
     it('Delete item category', async () => {
-      queryClient.setQueryData(key, ITEM_CATEGORIES);
+      queryClient.setQueryData(key, List([ITEM_CATEGORIES]));
 
       const endpoints = [
         {
           response: {},
-          method: REQUEST_METHODS.POST,
+          method: REQUEST_METHODS.DELETE,
           route,
         },
       ];
@@ -84,7 +83,10 @@ describe('Item Category Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(id);
+        await mockedMutation.mutate({
+          entryId,
+          id: itemId}
+        );
         await waitForMutation();
       });
 
