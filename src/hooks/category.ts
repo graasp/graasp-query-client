@@ -2,7 +2,7 @@ import { useQuery } from 'react-query';
 import { List } from 'immutable';
 import { QueryClientConfig, UUID } from '../types';
 import * as Api from '../api';
-import { buildItemCategoryKey, buildItemsByCategoryKey, buildCategoriesKey, CATEGORY_TYPES_KEY, buildCategoryKey } from '../config/keys';
+import { buildCategoriesKey, CATEGORY_TYPES_KEY, buildCategoryKey, buildItemCategoriesKey, buildItemsByCategoriesKey } from '../config/keys';
 
 export default (queryConfig: QueryClientConfig) => {
   const { retry, cacheTime, staleTime } = queryConfig;
@@ -37,7 +37,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useItemCategories = (itemId: UUID) =>
     useQuery({
-      queryKey: buildItemCategoryKey(itemId),
+      queryKey: buildItemCategoriesKey(itemId),
       queryFn: () => Api.getItemCategories(itemId, queryConfig).then((data) => List(data)),
       ...defaultOptions,
       enabled: Boolean(itemId),
@@ -45,7 +45,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useItemsInCategories = (categoryIds: UUID[]) =>
     useQuery({
-      queryKey: buildItemsByCategoryKey(categoryIds),
+      queryKey: buildItemsByCategoriesKey(categoryIds),
       queryFn: () => Api.getItemsForCategories(categoryIds, queryConfig).then((data) => List(data)),
       ...defaultOptions,
       enabled: Boolean(categoryIds),

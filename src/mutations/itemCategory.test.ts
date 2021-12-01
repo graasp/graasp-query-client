@@ -3,7 +3,7 @@ import nock from 'nock';
 import { act } from 'react-test-renderer';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { REQUEST_METHODS } from '../api/utils';
-import { buildItemCategoryKey, MUTATION_KEYS } from '../config/keys';
+import { buildItemCategoriesKey, MUTATION_KEYS } from '../config/keys';
 import { buildDeleteItemCategoryRoute, buildPostItemCategoryRoute } from '../api/routes';
 import { deleteItemCategoryRoutine, postItemCategoryRoutine } from '../routines';
 import { ITEM_CATEGORIES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
@@ -25,7 +25,7 @@ describe('Item Category Mutations', () => {
     const categoryId = 'new-category';
     const route = `/${buildPostItemCategoryRoute(itemId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_CATEGORY);
-    const key = buildItemCategoryKey(itemId);
+    const key = buildItemCategoriesKey(itemId);
 
     it('Post item category', async () => {
       queryClient.setQueryData(key, List([ITEM_CATEGORIES]));
@@ -92,7 +92,7 @@ describe('Item Category Mutations', () => {
     const itemId = 'item-id';
     const route = `/${buildDeleteItemCategoryRoute(entryId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_CATEGORY);
-    const key = buildItemCategoryKey(itemId);
+    const key = buildItemCategoriesKey(itemId);
 
     it('Delete item category', async () => {
       queryClient.setQueryData(key, List([ITEM_CATEGORIES]));

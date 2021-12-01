@@ -2,7 +2,7 @@ import nock from 'nock';
 import { List } from 'immutable';
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildGetCategoriesRoute, buildGetCategoryInfoRoute, buildGetItemCategoriesRoute, buildGetItemsInCategoryRoute, GET_CATEGORY_TYPES_ROUTE } from '../api/routes';
-import { buildCategoriesKey, buildItemCategoryKey, buildItemsByCategoryKey, buildCategoryKey, CATEGORY_TYPES_KEY } from '../config/keys';
+import { buildCategoriesKey, buildCategoryKey, buildItemCategoriesKey, buildItemsByCategoriesKey, CATEGORY_TYPES_KEY } from '../config/keys';
 import { CATEGORIES, CATEGORY_TYPES, ITEM_CATEGORIES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { Category, CategoryType, ItemCategory } from '../types';
 import { StatusCodes } from 'http-status-codes';
@@ -135,7 +135,7 @@ describe('Category Hooks', () => {
   describe('useItemCategories', () => {
     const itemId = 'item-id';
     const route = `/${buildGetItemCategoriesRoute(itemId)}`;
-    const key = buildItemCategoryKey(itemId);
+    const key = buildItemCategoriesKey(itemId);
 
     const hook = () => hooks.useItemCategories(itemId);
 
@@ -173,7 +173,7 @@ describe('Category Hooks', () => {
   describe('useItemsInCategories', () => {
     const categoryIds = ['id1'];
     const route = `/${buildGetItemsInCategoryRoute(categoryIds)}`;
-    const key = buildItemsByCategoryKey(categoryIds);
+    const key = buildItemsByCategoriesKey(categoryIds);
 
     const hook = () => hooks.useItemsInCategories(categoryIds);
 
