@@ -11,8 +11,8 @@ export const getCategoryTypes = async ({ API_HOST }: QueryClientConfig) => {
   return res.json();
 };
 
-export const getCategories = async ({ API_HOST }: QueryClientConfig, typeId?: UUID[], ) => {
-  const res = await fetch(`${API_HOST}/${buildGetCategoriesRoute(typeId)}`, DEFAULT_GET).then(
+export const getCategories = async ({ API_HOST }: QueryClientConfig, typeIds?: UUID[], ) => {
+  const res = await fetch(`${API_HOST}/${buildGetCategoriesRoute(typeIds)}`, DEFAULT_GET).then(
     failOnError,
   );
 
@@ -50,7 +50,6 @@ export const postItemCategory = async (
   }: { itemId: UUID; categoryId: UUID },
   { API_HOST }: QueryClientConfig,
 ) => {
-  console.log(JSON.stringify({itemId, categoryId}));
   const res = await fetch(`${API_HOST}/${buildPostItemCategoryRoute(itemId)}`, {
     ...DEFAULT_POST,
     body: JSON.stringify({ itemId, categoryId }),

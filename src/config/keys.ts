@@ -43,10 +43,10 @@ export const ITEM_FLAGS_KEY = 'itemFlags';
 export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, id, 'flags'];
 
 export const CATEGORY_TYPES_KEY = 'categoryTypes'
-export const CATEGORY_INFO = 'categoryInfo';
-export const buildCategoriesKey = (id?: UUID[]) => ['Categories', id?.toString()]
+export const CATEGORY_KEY = 'categoryInfo';
+export const buildCategoriesKey = (typeId?: UUID[]) => ['Categories', hashItemsIds(typeId)];
 export const buildItemCategoryKey = (id?: UUID) => [ITEMS_KEY, id, 'Categories'];
-export const buildItemsByCategoryKey = (ids: UUID[]) => ['itemsInCategory', ids?.toString()];
+export const buildItemsByCategoryKey = (ids: UUID[]) => ['itemsInCategory', hashItemsIds(ids)];
 
 export const buildPublicItemsWithTagKey = (id?: UUID) => [
   ITEMS_KEY,

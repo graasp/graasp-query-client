@@ -23,7 +23,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_ITEM_CATEGORY, {
     mutationFn: (payload) =>
-      Api.deleteItemCategory(payload.entryId, queryConfig).then(() => payload.entryId),
+      Api.deleteItemCategory(payload.entryId, queryConfig),
     onSuccess: () => {
       notifier?.({ type: deleteItemCategoryRoutine.SUCCESS });
     },
