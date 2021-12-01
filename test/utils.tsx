@@ -50,6 +50,7 @@ export type Endpoint = {
   response: any;
   method?: REQUEST_METHODS;
   statusCode?: number;
+  headers?: unknown;
 };
 
 interface MockArguments {
@@ -68,10 +69,11 @@ interface MockMutationArguments extends MockArguments {
 export const mockEndpoints = (endpoints: Endpoint[]) => {
   // mock endpoint with given response
   const server = nock(API_HOST);
-  endpoints.forEach(({ route, method, statusCode, response }) => {
+  endpoints.forEach(({ route, method, statusCode, response, headers }) => {
     server[(method || REQUEST_METHODS.GET).toLowerCase()](route).reply(
       statusCode || StatusCodes.OK,
       response,
+      headers,
     );
   });
   return server;

@@ -162,6 +162,8 @@ export const S3_FILE_RESPONSE = {
   key: 'someurl',
 };
 export const S3_FILE_BLOB_RESPONSE = BlobMock;
+export const THUMBNAIL_BLOB_RESPONSE = BlobMock;
+export const AVATAR_BLOB_RESPONSE = BlobMock;
 
 export const APPS = [
   {

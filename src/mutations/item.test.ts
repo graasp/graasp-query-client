@@ -17,6 +17,7 @@ import {
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
   buildShareItemWithRoute,
+  buildUploadItemThumbnailRoute,
 } from '../api/routes';
 import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
 import { REQUEST_METHODS } from '../api/utils';
@@ -26,11 +27,13 @@ import {
   UNAUTHORIZED_RESPONSE,
   MEMBER_RESPONSE,
   ITEM_MEMBERSHIPS_RESPONSE,
+  THUMBNAIL_BLOB_RESPONSE,
 } from '../../test/constants';
 import {
   buildItemChildrenKey,
   buildItemKey,
   buildItemMembershipsKey,
+  buildItemThumbnailKey,
   getKeyForParentId,
   MUTATION_KEYS,
   OWN_ITEMS_KEY,
@@ -42,7 +45,8 @@ import {
   getDirectParentId,
   transformIdForPath,
 } from '../utils/item';
-import { uploadFileRoutine } from '../routines';
+import { uploadFileRoutine, uploadItemThumbnailRoutine } from '../routines';
+import { THUMBNAIL_SIZES } from '../config/constants';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
@@ -1665,6 +1669,97 @@ describe('Items Mutations', () => {
       expect(
         queryClient.getQueryState(childrenKey)?.isInvalidated,
       ).toBeTruthy();
+    });
+  });
+
+  describe(MUTATION_KEYS.UPLOAD_ITEM_THUMBNAIL, () => {
+    const mutation = () => useMutation(MUTATION_KEYS.UPLOAD_ITEM_THUMBNAIL);
+    const item = ITEMS[0];
+    const id = item.id;
+
+    it('Upload thumbnail', async () => {
+      const route = `/${buildUploadItemThumbnailRoute(id)}`;
+
+      // set data in cache
+      Object.values(THUMBNAIL_SIZES).forEach((size) => {
+        const key = buildItemThumbnailKey({ id, size });
+        queryClient.setQueryData(key, Math.random());
+      });
+
+      const response = THUMBNAIL_BLOB_RESPONSE;
+
+      const endpoints = [
+        {
+          response,
+          method: REQUEST_METHODS.POST,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ id });
+        await waitForMutation();
+      });
+
+      // verify item is still available
+      // in real cases, the path should be different
+      for (const size of Object.values(THUMBNAIL_SIZES)) {
+        const key = buildItemThumbnailKey({ id, size });
+        const state = queryClient.getQueryState(key);
+        expect(state?.isInvalidated).toBeTruthy();
+      }
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: uploadItemThumbnailRoutine.SUCCESS,
+      });
+    });
+
+    it('Unauthorized to upload a thumbnail', async () => {
+      const route = `/${buildUploadItemThumbnailRoute(id)}`;
+      // set data in cache
+      Object.values(THUMBNAIL_SIZES).forEach((size) => {
+        const key = buildItemThumbnailKey({ id, size });
+        queryClient.setQueryData(key, Math.random());
+      });
+
+      const response = UNAUTHORIZED_RESPONSE;
+
+      const endpoints = [
+        {
+          response,
+          statusCode: StatusCodes.UNAUTHORIZED,
+          method: REQUEST_METHODS.POST,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ id, error: StatusCodes.UNAUTHORIZED });
+        await waitForMutation();
+      });
+
+      // verify item is still available
+      // in real cases, the path should be different
+      for (const size of Object.values(THUMBNAIL_SIZES)) {
+        const key = buildItemThumbnailKey({ id, size });
+        const state = queryClient.getQueryState(key);
+        expect(state?.isInvalidated).toBeTruthy();
+      }
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: uploadItemThumbnailRoutine.FAILURE,
+        payload: { error: StatusCodes.UNAUTHORIZED },
+      });
     });
   });
 });

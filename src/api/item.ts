@@ -6,6 +6,8 @@ import {
   buildDeleteItemRoute,
   buildDeleteItemsRoute,
   buildDownloadFilesRoute,
+  buildDownloadItemThumbnailRoute,
+  buildDownloadPublicItemThumbnailRoute,
   buildEditItemRoute,
   buildGetChildrenRoute,
   buildGetItemRoute,
@@ -24,6 +26,7 @@ import {
   buildRestoreItemsRoute,
   buildS3FileUrl,
   buildS3UploadFileRoute,
+  buildUploadItemThumbnailRoute,
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_ROUTE,
   SHARE_ITEM_WITH_ROUTE,
@@ -37,7 +40,10 @@ import {
 } from './utils';
 import { getParentsIdsFromPath } from '../utils/item';
 import { ExtendedItem, Item, QueryClientConfig, UUID } from '../types';
-import { FALLBACK_TO_PUBLIC_FOR_STATUS_CODES } from '../config/constants';
+import {
+  DEFAULT_THUMBNAIL_SIZES,
+  FALLBACK_TO_PUBLIC_FOR_STATUS_CODES,
+} from '../config/constants';
 
 export const getItem = (
   id: UUID,
@@ -316,6 +322,33 @@ export const uploadItemToS3 = async (
   return response.json();
 };
 
+export const uploadItemThumbnailToS3 = async (
+  {
+    itemId,
+    filename,
+    contentType,
+  }: { itemId: UUID; filename: string; contentType: string },
+  { API_HOST }: QueryClientConfig,
+) => {
+  const response = await fetch(
+    `${API_HOST}/${buildUploadItemThumbnailRoute(itemId)}`,
+    {
+      // Send and receive JSON.
+      ...DEFAULT_POST,
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        filename,
+        contentType,
+      }),
+    },
+  ).then(failOnError);
+
+  return response.json();
+};
+
 export const getS3FileUrl = async (
   { id }: { id: UUID },
   { API_HOST, S3_FILES_HOST }: QueryClientConfig,
@@ -394,4 +427,31 @@ export const restoreItems = async (
     headers: {},
   }).then(failOnError);
   return res.ok;
+};
+
+export const downloadItemThumbnail = async (
+  { id, size = DEFAULT_THUMBNAIL_SIZES }: { id: UUID; size?: string },
+  { API_HOST }: QueryClientConfig,
+) => {
+  let res = await fetch(
+    `${API_HOST}/${buildDownloadItemThumbnailRoute({ id, size })}`,
+    {
+      ...DEFAULT_GET,
+      headers: {},
+    },
+  )
+
+  // try to fetch public items if cannot access privately
+  if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(res.status)) {
+    res = await fetch(
+      `${API_HOST}/${buildDownloadPublicItemThumbnailRoute({ id, size })}`,
+      DEFAULT_GET,
+    ).then(failOnError);
+  }
+
+  if (!res.ok) {
+    throw new Error(res.statusText);
+  }
+
+  return res;
 };

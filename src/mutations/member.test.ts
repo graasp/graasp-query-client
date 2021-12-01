@@ -2,18 +2,32 @@ import { StatusCodes } from 'http-status-codes';
 import { act } from '@testing-library/react-hooks';
 import { Map, Record } from 'immutable';
 import nock from 'nock';
-import { buildPatchMember, SIGN_OUT_ROUTE } from '../api/routes';
+import {
+  buildPatchMember,
+  buildUploadAvatarRoute,
+  SIGN_OUT_ROUTE,
+} from '../api/routes';
 import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
 import {
+  AVATAR_BLOB_RESPONSE,
   MEMBER_RESPONSE,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
-import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
+import {
+  buildAvatarKey,
+  CURRENT_MEMBER_KEY,
+  MUTATION_KEYS,
+} from '../config/keys';
 import { Member } from '../types';
 import { REQUEST_METHODS } from '../api/utils';
+import { THUMBNAIL_SIZES } from '../config/constants';
+import { uploadAvatarRoutine } from '../routines';
 
-const { wrapper, queryClient, useMutation } = setUpTest();
+const mockedNotifier = jest.fn();
+const { wrapper, queryClient, useMutation } = setUpTest({
+  notifier: mockedNotifier,
+});
 describe('Member Mutations', () => {
   afterEach(() => {
     queryClient.clear();
@@ -135,6 +149,97 @@ describe('Member Mutations', () => {
         CURRENT_MEMBER_KEY,
       ) as Record<Member>;
       expect(oldData.toJS()).toEqual(MEMBER_RESPONSE);
+    });
+  });
+
+  describe(MUTATION_KEYS.UPLOAD_AVATAR, () => {
+    const mutation = () => useMutation(MUTATION_KEYS.UPLOAD_AVATAR);
+    const member = MEMBER_RESPONSE;
+    const id = member.id;
+
+    it('Upload avatar', async () => {
+      const route = `/${buildUploadAvatarRoute(id)}`;
+
+      // set data in cache
+      Object.values(THUMBNAIL_SIZES).forEach((size) => {
+        const key = buildAvatarKey({ id, size });
+        queryClient.setQueryData(key, Math.random());
+      });
+
+      const response = AVATAR_BLOB_RESPONSE;
+
+      const endpoints = [
+        {
+          response,
+          method: REQUEST_METHODS.POST,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ id });
+        await waitForMutation();
+      });
+
+      // verify member is still available
+      // in real cases, the path should be different
+      for (const size of Object.values(THUMBNAIL_SIZES)) {
+        const key = buildAvatarKey({ id, size });
+        const state = queryClient.getQueryState(key);
+        expect(state?.isInvalidated).toBeTruthy();
+      }
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: uploadAvatarRoutine.SUCCESS,
+      });
+    });
+
+    it('Unauthorized to upload an avatar', async () => {
+      const route = `/${buildUploadAvatarRoute(id)}`;
+      // set data in cache
+      Object.values(THUMBNAIL_SIZES).forEach((size) => {
+        const key = buildAvatarKey({ id, size });
+        queryClient.setQueryData(key, Math.random());
+      });
+
+      const response = UNAUTHORIZED_RESPONSE;
+
+      const endpoints = [
+        {
+          response,
+          statusCode: StatusCodes.UNAUTHORIZED,
+          method: REQUEST_METHODS.POST,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ id, error: StatusCodes.UNAUTHORIZED });
+        await waitForMutation();
+      });
+
+      // verify member is still available
+      // in real cases, the path should be different
+      for (const size of Object.values(THUMBNAIL_SIZES)) {
+        const key = buildAvatarKey({ id, size });
+        const state = queryClient.getQueryState(key);
+        expect(state?.isInvalidated).toBeTruthy();
+      }
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: uploadAvatarRoutine.FAILURE,
+        payload: { error: StatusCodes.UNAUTHORIZED },
+      });
     });
   });
 });

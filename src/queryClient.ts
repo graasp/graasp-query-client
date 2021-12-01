@@ -22,7 +22,16 @@ export type Notifier = (e: any) => any;
 const retry = (failureCount: number, error: Error) => {
   // do not retry if the request was not authorized
   // the user is probably not signed in
-  if (error.name === getReasonPhrase(StatusCodes.UNAUTHORIZED)) {
+  const codes = [
+    StatusCodes.UNAUTHORIZED,
+    StatusCodes.NOT_FOUND,
+    StatusCodes.BAD_REQUEST,
+    StatusCodes.FORBIDDEN]
+  const reasons = codes.map(code =>
+    getReasonPhrase(code)
+  );
+
+  if (reasons.includes(error.message) || reasons.includes(error.name)) {
     return false;
   }
   return failureCount < 3;
@@ -33,7 +42,7 @@ export default (config: Partial<QueryClientConfig>) => {
     API_HOST:
       config?.API_HOST ||
       process.env.REACT_APP_API_HOST ||
-      'http://localhost:3111',
+      'http://localhost:3000',
     S3_FILES_HOST:
       config?.S3_FILES_HOST ||
       process.env.REACT_APP_S3_FILES_HOST ||

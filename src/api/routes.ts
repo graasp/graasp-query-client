@@ -1,4 +1,5 @@
 import qs from 'qs';
+import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
 import { UUID } from '../types';
 
 export const APPS_ROUTE = 'app-items';
@@ -77,6 +78,48 @@ export const buildUploadFilesRoute = (parentId: UUID) =>
     : `${ITEMS_ROUTE}/upload`;
 export const buildDownloadFilesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/download`;
+export const buildUploadAvatarRoute = (id: UUID) =>
+  `${MEMBERS_ROUTE}/avatars/${id}`;
+export const buildDownloadAvatarRoute = ({
+  id,
+  size = DEFAULT_THUMBNAIL_SIZES,
+}: {
+  id: UUID;
+  size?: string;
+}) =>
+  `${MEMBERS_ROUTE}/avatars/${id}${qs.stringify(
+    { size },
+    { addQueryPrefix: true },
+  )}`;
+export const buildDownloadPublicAvatarRoute = ({
+  id,
+  size = DEFAULT_THUMBNAIL_SIZES,
+}: {
+  id: UUID;
+  size?: string;
+}) =>
+  `p/${buildDownloadAvatarRoute({ id, size })}`;
+export const buildUploadItemThumbnailRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/thumbnails/${id}`;
+export const buildDownloadItemThumbnailRoute = ({
+  id,
+  size = DEFAULT_THUMBNAIL_SIZES,
+}: {
+  id: UUID;
+  size?: string;
+}) =>
+  `${ITEMS_ROUTE}/thumbnails/${id}${qs.stringify(
+    { size },
+    { addQueryPrefix: true },
+  )}`;
+export const buildDownloadPublicItemThumbnailRoute = ({
+  id,
+  size = DEFAULT_THUMBNAIL_SIZES,
+}: {
+  id: UUID;
+  size?: string;
+}) =>
+  `p/${buildDownloadItemThumbnailRoute({ id, size })}`;
 export const buildPublicDownloadFilesRoute = (id: UUID) =>
   `p/${buildDownloadFilesRoute(id)}`;
 export const buildS3UploadFileRoute = (parentId: UUID) =>
@@ -141,21 +184,21 @@ export const buildRestoreItemsRoute = (ids: UUID[]) =>
   )}`;
 
 export const GET_CATEGORY_TYPES_ROUTE = `${ITEMS_ROUTE}/category-types`
-export const buildGetCategoriesRoute = (ids?: UUID[]) => 
+export const buildGetCategoriesRoute = (ids?: UUID[]) =>
   `${CATEGORIES_ROUTE}?${qs.stringify(
     { type: ids },
     { arrayFormat: 'repeat' }
   )}`;
 export const buildGetCategoryInfoRoute = (id: UUID) => `${CATEGORIES_ROUTE}/${id}`;
 export const buildGetItemCategoriesRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/categories`;
-export const buildGetItemsInCategoryRoute = (ids: UUID[]) => 
+export const buildGetItemsInCategoryRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/withCategories?${qs.stringify(
     { category: ids },
     { arrayFormat: 'repeat' }
   )}`;
 export const buildPostItemCategoryRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/categories`;
-  export const buildDeleteItemCategoryRoute = (id: UUID) =>
+export const buildDeleteItemCategoryRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/item-category/${id}`;
 
 export const API_ROUTES = {
@@ -217,4 +260,10 @@ export const API_ROUTES = {
   buildGetItemCategoriesRoute,
   buildPostItemCategoryRoute,
   buildDeleteItemCategoryRoute,
+  buildUploadItemThumbnailRoute,
+  buildDownloadItemThumbnailRoute,
+  buildDownloadPublicItemThumbnailRoute,
+  buildUploadAvatarRoute,
+  buildDownloadAvatarRoute,
+  buildDownloadPublicAvatarRoute,
 };

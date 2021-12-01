@@ -13,3 +13,6 @@ export const deleteItemsRoutine = createRoutine('DELETE_ITEMS');
 export const uploadFileRoutine = createRoutine('UPLOAD_FILE');
 export const recycleItemsRoutine = createRoutine('RECYCLE_ITEMS');
 export const restoreItemsRoutine = createRoutine('RESTORE_ITEMS');
+export const uploadItemThumbnailRoutine = createRoutine(
+  'UPLOAD_ITEM_THUMBNAIL',
+);
