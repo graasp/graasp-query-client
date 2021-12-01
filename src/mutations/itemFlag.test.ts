@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { StatusCodes, ReasonPhrases } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
@@ -80,10 +80,11 @@ describe('Item Flag Mutations', () => {
       });
 
       expect(queryClient.getQueryState(flagKey)?.isInvalidated).toBeTruthy();
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: postItemFlagRoutine.FAILURE,
-        payload: { error: new Error(ReasonPhrases.UNAUTHORIZED) },
-      });
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: postItemFlagRoutine.FAILURE,
+        }),
+      );
     });
   });
 });

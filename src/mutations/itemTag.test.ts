@@ -1,5 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { List } from 'immutable';
 import { act } from 'react-test-renderer';
@@ -97,10 +96,11 @@ describe('Item Tag Mutations', () => {
       });
 
       expect(queryClient.getQueryState(itemTagKey)?.isInvalidated).toBeTruthy();
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: postItemTagRoutine.FAILURE,
-        payload: { error: new Error(ReasonPhrases.UNAUTHORIZED) },
-      });
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: postItemTagRoutine.FAILURE,
+        }),
+      );
     });
   });
 
@@ -170,10 +170,11 @@ describe('Item Tag Mutations', () => {
       const data = queryClient.getQueryState(itemTagKey);
       expect(data?.isInvalidated).toBeTruthy();
       expect((data?.data as List<ItemTag>)?.toJS()).toEqual(ITEM_TAGS);
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: deleteItemTagRoutine.FAILURE,
-        payload: { error: new Error(ReasonPhrases.UNAUTHORIZED) },
-      });
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: deleteItemTagRoutine.FAILURE,
+        }),
+      );
     });
   });
 });

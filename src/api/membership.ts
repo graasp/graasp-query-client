@@ -1,11 +1,5 @@
+import axios from 'axios';
 import { getMemberBy } from './member';
-import {
-  failOnError,
-  DEFAULT_GET,
-  DEFAULT_POST,
-  DEFAULT_PATCH,
-  DEFAULT_DELETE,
-} from './utils';
 import {
   buildShareItemWithRoute,
   buildEditItemMembershipRoute,
@@ -18,14 +12,12 @@ import { Permission, QueryClientConfig, UUID } from '../types';
 export const getMembershipsForItems = async (
   ids: UUID[],
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(
-    `${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`,
-    DEFAULT_GET,
-  ).then(failOnError);
-
-  return res.json();
-};
+) =>
+  axios
+    .get(`${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data);
 
 export const shareItemWith = async (
   {
@@ -40,36 +32,33 @@ export const shareItemWith = async (
   if (!member) {
     throw new Error(MEMBER_NOT_FOUND_ERROR);
   }
-  const res = await fetch(`${API_HOST}/${buildShareItemWithRoute(id)}`, {
-    ...DEFAULT_POST,
-    // supposed to have only one member for this mail
-    body: JSON.stringify({ memberId: member[0].id, permission }),
-  }).then(failOnError);
 
-  return res.ok;
+  return axios
+    .post(`${API_HOST}/${buildShareItemWithRoute(id)}`, {
+      withCredentials: true,
+      memberId: member[0].id,
+      permission,
+    })
+    .then(({ data }) => data);
 };
 
 export const editItemMembership = async (
   { id, permission }: { id: UUID; permission: Permission },
-  config: QueryClientConfig,
-) => {
-  const { API_HOST } = config;
-  const res = await fetch(`${API_HOST}/${buildEditItemMembershipRoute(id)}`, {
-    ...DEFAULT_PATCH,
-    body: JSON.stringify({ permission }),
-  }).then(failOnError);
-
-  return res.ok;
-};
+  { API_HOST }: QueryClientConfig,
+) =>
+  axios
+    .patch(`${API_HOST}/${buildEditItemMembershipRoute(id)}`, {
+      withCredentials: true,
+      permission,
+    })
+    .then(({ data }) => data);
 
 export const deleteItemMembership = async (
   { id }: { id: UUID },
-  config: QueryClientConfig,
-) => {
-  const { API_HOST } = config;
-  const res = await fetch(`${API_HOST}/${buildDeleteItemMembershipRoute(id)}`, {
-    ...DEFAULT_DELETE,
-  }).then(failOnError);
-
-  return res.ok;
-};
+  { API_HOST }: QueryClientConfig,
+) =>
+  axios
+    .delete(`${API_HOST}/${buildDeleteItemMembershipRoute(id)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data);

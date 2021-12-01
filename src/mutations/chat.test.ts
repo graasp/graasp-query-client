@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
 import nock from 'nock';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import { buildPostItemChatMessageRoute } from '../api/routes';
 import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
 import {
@@ -81,10 +81,11 @@ describe('Chat Mutations', () => {
 
         // verify cache keys
         expect(queryClient.getQueryState(chatKey)?.isInvalidated).toBeTruthy();
-        expect(mockedNotifier).toHaveBeenCalledWith({
-          type: postItemChatMessageRoutine.FAILURE,
-          payload: { error: new Error(ReasonPhrases.UNAUTHORIZED) },
-        });
+        expect(mockedNotifier).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: postItemChatMessageRoutine.FAILURE,
+          }),
+        );
       });
     });
   });

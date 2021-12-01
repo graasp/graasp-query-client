@@ -26,13 +26,6 @@ import {
   GET_RECYCLED_ITEMS_ROUTE,
   SHARE_ITEM_WITH_ROUTE,
 } from './routes';
-import {
-  DEFAULT_DELETE,
-  DEFAULT_GET,
-  DEFAULT_PATCH,
-  DEFAULT_POST,
-  failOnError,
-} from './utils';
 import { getParentsIdsFromPath } from '../utils/item';
 import { ExtendedItem, Item, QueryClientConfig, UUID } from '../types';
 import {
@@ -66,63 +59,52 @@ export const getItem = (
       throw new Error(e.response?.statusText);
     });
 
-export const getItems = async (
-  ids: UUID[],
-  { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(
-    `${API_HOST}/${buildGetItemsRoute(ids)}`,
-    DEFAULT_GET,
-  ).then(failOnError);
-  const items = await res.json();
-  return items;
-};
+export const getItems = async (ids: UUID[], { API_HOST }: QueryClientConfig) =>
+  axios
+    .get(`${API_HOST}/${buildGetItemsRoute(ids)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data);
 
-export const getOwnItems = async ({ API_HOST }: QueryClientConfig) => {
-  const res = await fetch(
-    `${API_HOST}/${GET_OWN_ITEMS_ROUTE}`,
-    DEFAULT_GET,
-  ).then(failOnError);
-
-  return res.json();
-};
+export const getOwnItems = async ({ API_HOST }: QueryClientConfig) =>
+  axios
+    .get(`${API_HOST}/${GET_OWN_ITEMS_ROUTE}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data);
 
 // payload = {name, type, description, extra}
 // querystring = {parentId}
 export const postItem = async (
   { name, type, description, extra, parentId }: ExtendedItem,
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(`${API_HOST}/${buildPostItemRoute(parentId)}`, {
-    ...DEFAULT_POST,
-    body: JSON.stringify({ name: name.trim(), type, description, extra }),
-  }).then(failOnError);
+) =>
+  axios
+    .post(`${API_HOST}/${buildPostItemRoute(parentId)}`, {
+      withCredentials: true,
+      name: name.trim(),
+      type,
+      description,
+      extra,
+    })
+    .then(({ data }) => data);
 
-  const newItem = await res.json();
-
-  return newItem;
-};
-
-export const deleteItem = async (id: UUID, { API_HOST }: QueryClientConfig) => {
-  const res = await fetch(
-    `${API_HOST}/${buildDeleteItemRoute(id)}`,
-    DEFAULT_DELETE,
-  ).then(failOnError);
-
-  return res.json();
-};
+export const deleteItem = async (id: UUID, { API_HOST }: QueryClientConfig) =>
+  axios
+    .delete(`${API_HOST}/${buildDeleteItemRoute(id)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data);
 
 export const deleteItems = async (
   ids: UUID[],
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(
-    `${API_HOST}/${buildDeleteItemsRoute(ids)}`,
-    DEFAULT_DELETE,
-  ).then(failOnError);
-
-  return res.json();
-};
+) =>
+  axios
+    .delete(`${API_HOST}/${buildDeleteItemsRoute(ids)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data);
 
 // payload = {name, type, description, extra}
 // querystring = {parentId}
@@ -130,44 +112,37 @@ export const editItem = async (
   id: UUID,
   item: Partial<Item>,
   { API_HOST }: QueryClientConfig,
-) => {
-  const req = await fetch(`${API_HOST}/${buildEditItemRoute(id)}`, {
-    ...DEFAULT_PATCH,
-    body: JSON.stringify({
+) =>
+  axios
+    .patch(`${API_HOST}/${buildEditItemRoute(id)}`, {
+      withCredentials: true,
       ...item,
       name: item.name?.trim(),
-    }),
-  }).then(failOnError);
-
-  const newItem = await req.json();
-  return newItem;
-};
+    })
+    .then(({ data }) => data);
 
 export const getChildren = async (
   id: UUID,
   ordered = true,
   { API_HOST }: QueryClientConfig,
-) => {
-  let res = await fetch(
-    `${API_HOST}/${buildGetChildrenRoute(id, ordered)}`,
-    DEFAULT_GET,
-  );
+) =>
+  axios
+    .get(`${API_HOST}/${buildGetChildrenRoute(id, ordered)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data)
+    .catch((e) => {
+      if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(e.response.status)) {
+        // try to fetch public items if cannot access privately
+        return axios
+          .get(`${API_HOST}/${buildGetPublicChildrenRoute(id, ordered)}`, {
+            withCredentials: true,
+          })
+          .then(({ data: d }) => d);
+      }
 
-  // try to fetch public items if cannot access privately
-  if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(res.status)) {
-    res = await fetch(
-      `${API_HOST}/${buildGetPublicChildrenRoute(id, ordered)}`,
-      DEFAULT_GET,
-    ).then(failOnError);
-  }
-  if (!res.ok) {
-    throw new Error(res.statusText);
-  }
-
-  const children = await res.json();
-
-  return children;
-};
+      throw e;
+    });
 
 export const getParents = async (
   { path }: { path: string },
@@ -186,12 +161,12 @@ export const moveItem = async (
 ) => {
   // send parentId if defined
   const body = { ...(to && { parentId: to }) };
-  const res = await fetch(`${API_HOST}/${buildMoveItemRoute(id)}`, {
-    ...DEFAULT_POST,
-    body: JSON.stringify(body),
-  }).then(failOnError);
-
-  return res.ok;
+  return axios
+    .post(`${API_HOST}/${buildMoveItemRoute(id)}`, {
+      withCredentials: true,
+      ...body,
+    })
+    .then(({ data }) => data);
 };
 
 export const moveItems = async (
@@ -200,12 +175,12 @@ export const moveItems = async (
 ) => {
   // send parentId if defined
   const body = { ...(to && { parentId: to }) };
-  const res = await fetch(`${API_HOST}/${buildMoveItemsRoute(id)}`, {
-    ...DEFAULT_POST,
-    body: JSON.stringify(body),
-  }).then(failOnError);
-
-  return res.ok;
+  return axios
+    .post(`${API_HOST}/${buildMoveItemsRoute(id)}`, {
+      withCredentials: true,
+      ...body,
+    })
+    .then(({ data }) => data);
 };
 
 export const copyItem = async (
@@ -214,14 +189,12 @@ export const copyItem = async (
 ) => {
   // send parentId if defined
   const body = { ...(to && { parentId: to }) };
-  const res = await fetch(`${API_HOST}/${buildCopyItemRoute(id)}`, {
-    ...DEFAULT_POST,
-    body: JSON.stringify(body),
-  }).then(failOnError);
-
-  const newItem = await res.json();
-
-  return newItem;
+  return axios
+    .post(`${API_HOST}/${buildCopyItemRoute(id)}`, {
+      withCredentials: true,
+      ...body,
+    })
+    .then(({ data }) => data);
 };
 
 export const copyPublicItem = async (
@@ -230,14 +203,12 @@ export const copyPublicItem = async (
 ) => {
   // send parentId if defined
   const body = { ...(to && { parentId: to }) };
-  const res = await fetch(`${API_HOST}/${buildCopyPublicItemRoute(id)}`, {
-    ...DEFAULT_POST,
-    body: JSON.stringify(body),
-  }).then(failOnError);
-
-  const newItem = await res.json();
-
-  return newItem;
+  return axios
+    .post(`${API_HOST}/${buildCopyPublicItemRoute(id)}`, {
+      withCredentials: true,
+      ...body,
+    })
+    .then(({ data }) => data);
 };
 
 export const copyItems = async (
@@ -246,23 +217,20 @@ export const copyItems = async (
 ) => {
   // send parentId if defined
   const body = { ...(to && { parentId: to }) };
-  const res = await fetch(`${API_HOST}/${buildCopyItemsRoute(id)}`, {
-    ...DEFAULT_POST,
-    body: JSON.stringify(body),
-  }).then(failOnError);
-
-  const newItems = await res.json();
-
-  return newItems;
+  return axios
+    .post(`${API_HOST}/${buildCopyItemsRoute(id)}`, {
+      withCredentials: true,
+      ...body,
+    })
+    .then(({ data }) => data);
 };
 
-export const getSharedItems = async ({ API_HOST }: QueryClientConfig) => {
-  const res = await fetch(`${API_HOST}/${SHARE_ITEM_WITH_ROUTE}`, {
-    ...DEFAULT_GET,
-  }).then(failOnError);
-
-  return res.json();
-};
+export const getSharedItems = async ({ API_HOST }: QueryClientConfig) =>
+  axios
+    .get(`${API_HOST}/${SHARE_ITEM_WITH_ROUTE}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data);
 
 export const getFileContent = async (
   { id }: { id: UUID },
@@ -281,47 +249,35 @@ export const getFileContent = async (
           .get(`${API_HOST}/${buildPublicDownloadFilesRoute(id)}`, {
             responseType: 'blob',
           })
-          .then(({ data }) => data)
-          .catch(() => {
-            throw new Error(e.response?.statusText);
-          });
+          .then(({ data }) => data);
       }
 
-      throw new Error(e.response?.statusText);
+      throw e;
     });
 
-export const getRecycledItems = async ({ API_HOST }: QueryClientConfig) => {
-  const res = await fetch(
-    `${API_HOST}/${GET_RECYCLED_ITEMS_ROUTE}`,
-    DEFAULT_GET,
-  ).then(failOnError);
-  const items = await res.json();
-  return items;
-};
+export const getRecycledItems = async ({ API_HOST }: QueryClientConfig) =>
+  axios
+    .get(`${API_HOST}/${GET_RECYCLED_ITEMS_ROUTE}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data);
 
-export const recycleItem = async (
-  id: UUID,
-  { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(`${API_HOST}/${buildRecycleItemRoute(id)}`, {
-    ...DEFAULT_POST,
-    headers: {},
-  }).then(failOnError);
-
-  return res.ok;
-};
+export const recycleItem = async (id: UUID, { API_HOST }: QueryClientConfig) =>
+  axios
+    .post(`${API_HOST}/${buildRecycleItemRoute(id)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data);
 
 export const recycleItems = async (
   ids: UUID[],
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(`${API_HOST}/${buildRecycleItemsRoute(ids)}`, {
-    ...DEFAULT_POST,
-    headers: {},
-  }).then(failOnError);
-
-  return res.ok;
-};
+) =>
+  axios
+    .post(`${API_HOST}/${buildRecycleItemsRoute(ids)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data);
 
 export const getPublicItemsWithTag = async (
   options: { tagId: UUID; withMemberships?: boolean },
@@ -336,37 +292,27 @@ export const getPublicItemsWithTag = async (
 export const restoreItems = async (
   itemIds: UUID[],
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(`${API_HOST}/${buildRestoreItemsRoute(itemIds)}`, {
-    ...DEFAULT_POST,
-    headers: {},
-  }).then(failOnError);
-  return res.ok;
-};
+) =>
+  axios
+    .post(`${API_HOST}/${buildRestoreItemsRoute(itemIds)}`, {
+      withCredentials: true,
+    })
+    .then(({ data }) => data);
 
 export const downloadItemThumbnail = async (
   { id, size = DEFAULT_THUMBNAIL_SIZES }: { id: UUID; size?: string },
   { API_HOST }: QueryClientConfig,
-) => {
-  let res = await fetch(
+) =>
+  axios.get(
     `${API_HOST}/${buildDownloadItemThumbnailRoute({ id, size })}`,
-    {
-      ...DEFAULT_GET,
-      headers: {},
-    },
-  );
+    { withCredentials: true, }
+  ).then(({ data }) => data).catch(e => {
+    if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(e.response.status)) {
+      return axios.get(
+        `${API_HOST}/${buildDownloadPublicItemThumbnailRoute({ id, size })}`,
+        { withCredentials: true },
+      ).then(({ data }) => data)
+    }
 
-  // try to fetch public items if cannot access privately
-  if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(res.status)) {
-    res = await fetch(
-      `${API_HOST}/${buildDownloadPublicItemThumbnailRoute({ id, size })}`,
-      DEFAULT_GET,
-    ).then(failOnError);
-  }
-
-  if (!res.ok) {
-    throw new Error(res.statusText);
-  }
-
-  return res;
-};
+    throw e
+  });

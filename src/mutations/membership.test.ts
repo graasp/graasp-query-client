@@ -2,7 +2,7 @@
 import nock from 'nock';
 import { List } from 'immutable';
 import { act } from 'react-test-renderer';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import {
   ITEMS,
   ITEM_MEMBERSHIPS_RESPONSE,
@@ -102,10 +102,11 @@ describe('Membership Mutations', () => {
       expect(
         queryClient.getQueryState(membershipsKey)?.isInvalidated,
       ).toBeTruthy();
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: editItemMembershipRoutine.FAILURE,
-        payload: { error: new Error(ReasonPhrases.UNAUTHORIZED) },
-      });
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: editItemMembershipRoutine.FAILURE,
+        }),
+      );
     });
   });
 
@@ -175,10 +176,11 @@ describe('Membership Mutations', () => {
       expect(
         queryClient.getQueryData<List<Membership>>(membershipsKey)?.toJS(),
       ).toEqual(memberships);
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: deleteItemMembershipRoutine.FAILURE,
-        payload: { error: new Error(ReasonPhrases.UNAUTHORIZED) },
-      });
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: deleteItemMembershipRoutine.FAILURE,
+        }),
+      );
     });
   });
 });
