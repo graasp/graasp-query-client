@@ -2,14 +2,15 @@ import nock from 'nock';
 import { List } from 'immutable';
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildGetCategoriesRoute, buildGetCategoryInfoRoute, buildGetItemCategoriesRoute, buildGetItemsInCategoryRoute, GET_CATEGORY_TYPES_ROUTE } from '../api/routes';
-import { buildCategoriesKey, buildItemCategoryKey, buildItemsByCategoryKey, CATEGORY_KEY, CATEGORY_TYPES_KEY } from '../config/keys';
-import { CATEGORIES, CATEGORY_TYPES, ITEM_CATEGORIES } from '../../test/constants';
+import { buildCategoriesKey, buildItemCategoryKey, buildItemsByCategoryKey, buildCategoryKey, CATEGORY_TYPES_KEY } from '../config/keys';
+import { CATEGORIES, CATEGORY_TYPES, ITEM_CATEGORIES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { Category, CategoryType, ItemCategory } from '../types';
+import { StatusCodes } from 'http-status-codes';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
 type ItemId = {
-  item_id: string,
+  itemId: string,
 }
 
 describe('Category Hooks', () => {
@@ -34,6 +35,25 @@ describe('Category Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(List(response));
     });
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
   });
 
   describe('useCategories', () => {
@@ -53,12 +73,31 @@ describe('Category Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(List(response));
     });
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
   });
 
   describe('useCategory', () => {
     const categoryId = 'id';
     const route = `/${buildGetCategoryInfoRoute(categoryId)}`;
-    const key = CATEGORY_KEY;
+    const key = buildCategoryKey(categoryId);
 
     const hook = () => hooks.useCategory(categoryId);
 
@@ -71,6 +110,25 @@ describe('Category Hooks', () => {
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(response);
+    });
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
     });
   });
 
@@ -91,6 +149,25 @@ describe('Category Hooks', () => {
       // verify cache keys
       expect((queryClient.getQueryData(key) as List<ItemCategory>).toJS()).toEqual(response);
     });
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
   });
 
   describe('useItemsInCategories', () => {
@@ -101,7 +178,7 @@ describe('Category Hooks', () => {
     const hook = () => hooks.useItemsInCategories(categoryIds);
 
     it(`Receive items in categories`, async () => {
-      const response = [{item_id: 'id1'}, {item_id: 'id2'}];
+      const response = [{itemId: 'id1'}, {itemId: 'id2'}];
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
@@ -109,6 +186,25 @@ describe('Category Hooks', () => {
 
       // verify cache keys
       expect((queryClient.getQueryData(key) as List<ItemId>)?.toJS()).toEqual(response);
+    });
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
     });
   });
 });
