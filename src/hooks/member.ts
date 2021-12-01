@@ -9,10 +9,9 @@ import {
 } from '../config/keys';
 import { Member, QueryClientConfig, UndefinedArgument, UUID } from '../types';
 import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
-import { getRequestBlob } from '../utils/thumbnails';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
-  const { retry, cacheTime, staleTime, S3_FILES_HOST } = queryConfig;
+  const { retry, cacheTime, staleTime } = queryConfig;
   const defaultOptions = {
     retry,
     cacheTime,
@@ -69,10 +68,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         if (!id) {
           throw new UndefinedArgument();
         }
-        return Api.downloadAvatar({ id, size }, queryConfig).then((data) => {
-          // default
-          return getRequestBlob(data, S3_FILES_HOST)
-        })
+        return Api.downloadAvatar({ id, size }, queryConfig).then((data) =>
+          data.blob(),
+        );
       },
       ...defaultOptions,
       enabled: Boolean(id),

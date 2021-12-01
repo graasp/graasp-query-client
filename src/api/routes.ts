@@ -79,7 +79,10 @@ export const buildUploadFilesRoute = (parentId: UUID) =>
 export const buildDownloadFilesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/download`;
 export const buildUploadAvatarRoute = (id: UUID) =>
-  `${MEMBERS_ROUTE}/avatars/${id}`;
+  `${MEMBERS_ROUTE}/avatars/upload${qs.stringify(
+    { id },
+    { addQueryPrefix: true },
+  )}`;
 export const buildDownloadAvatarRoute = ({
   id,
   size = DEFAULT_THUMBNAIL_SIZES,
@@ -87,7 +90,7 @@ export const buildDownloadAvatarRoute = ({
   id: UUID;
   size?: string;
 }) =>
-  `${MEMBERS_ROUTE}/avatars/${id}${qs.stringify(
+  `${MEMBERS_ROUTE}/avatars/${id}/download${qs.stringify(
     { size },
     { addQueryPrefix: true },
   )}`;
@@ -97,10 +100,9 @@ export const buildDownloadPublicAvatarRoute = ({
 }: {
   id: UUID;
   size?: string;
-}) =>
-  `p/${buildDownloadAvatarRoute({ id, size })}`;
+}) => `p/${buildDownloadAvatarRoute({ id, size })}`;
 export const buildUploadItemThumbnailRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/thumbnails/${id}`;
+  `${ITEMS_ROUTE}/thumbnails${qs.stringify({ id }, { addQueryPrefix: true })}`;
 export const buildDownloadItemThumbnailRoute = ({
   id,
   size = DEFAULT_THUMBNAIL_SIZES,
@@ -108,7 +110,7 @@ export const buildDownloadItemThumbnailRoute = ({
   id: UUID;
   size?: string;
 }) =>
-  `${ITEMS_ROUTE}/thumbnails/${id}${qs.stringify(
+  `${ITEMS_ROUTE}/thumbnails/${id}/download${qs.stringify(
     { size },
     { addQueryPrefix: true },
   )}`;
@@ -118,20 +120,9 @@ export const buildDownloadPublicItemThumbnailRoute = ({
 }: {
   id: UUID;
   size?: string;
-}) =>
-  `p/${buildDownloadItemThumbnailRoute({ id, size })}`;
+}) => `p/${buildDownloadItemThumbnailRoute({ id, size })}`;
 export const buildPublicDownloadFilesRoute = (id: UUID) =>
   `p/${buildDownloadFilesRoute(id)}`;
-export const buildS3UploadFileRoute = (parentId: UUID) =>
-  parentId
-    ? `${ITEMS_ROUTE}/s3-upload?parentId=${parentId}`
-    : `${ITEMS_ROUTE}/s3-upload`;
-export const buildGetS3MetadataRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/${id}/s3-metadata`;
-export const buildGetPublicS3MetadataRoute = (id: UUID) =>
-  `p/${buildGetS3MetadataRoute(id)}`;
-export const buildS3FileUrl = (S3_FILES_HOST: string, key: string) =>
-  `${S3_FILES_HOST}/${key}`;
 export const GET_CURRENT_MEMBER_ROUTE = `${MEMBERS_ROUTE}/current`;
 export const buildSignInPath = (to: string) => {
   const queryString = qs.stringify({ to }, { addQueryPrefix: true });
@@ -183,18 +174,20 @@ export const buildRestoreItemsRoute = (ids: UUID[]) =>
     { arrayFormat: 'repeat' },
   )}`;
 
-export const GET_CATEGORY_TYPES_ROUTE = `${ITEMS_ROUTE}/category-types`
+export const GET_CATEGORY_TYPES_ROUTE = `${ITEMS_ROUTE}/category-types`;
 export const buildGetCategoriesRoute = (ids?: UUID[]) =>
   `${CATEGORIES_ROUTE}?${qs.stringify(
     { type: ids },
-    { arrayFormat: 'repeat' }
+    { arrayFormat: 'repeat' },
   )}`;
-export const buildGetCategoryInfoRoute = (id: UUID) => `${CATEGORIES_ROUTE}/${id}`;
-export const buildGetItemCategoriesRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/categories`;
+export const buildGetCategoryInfoRoute = (id: UUID) =>
+  `${CATEGORIES_ROUTE}/${id}`;
+export const buildGetItemCategoriesRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/categories`;
 export const buildGetItemsInCategoryRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/withCategories?${qs.stringify(
     { category: ids },
-    { arrayFormat: 'repeat' }
+    { arrayFormat: 'repeat' },
   )}`;
 export const buildPostItemCategoryRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/categories`;
@@ -213,13 +206,10 @@ export const API_ROUTES = {
   GET_FLAGS_ROUTE,
   GET_CATEGORY_TYPES_ROUTE,
   buildAppListRoute,
-  buildGetS3MetadataRoute,
   buildGetMember,
   buildGetMembersRoute,
   buildUploadFilesRoute,
   buildDownloadFilesRoute,
-  buildS3FileUrl,
-  buildS3UploadFileRoute,
   buildShareItemWithRoute,
   buildSignInPath,
   buildPostItemLoginSignInRoute,
