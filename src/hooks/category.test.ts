@@ -89,7 +89,7 @@ describe('Category Hooks', () => {
       expect((data as List<ItemCategory>).toJS()).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(response);
+      expect((queryClient.getQueryData(key) as List<ItemCategory>).toJS()).toEqual(response);
     });
   });
 
@@ -108,7 +108,7 @@ describe('Category Hooks', () => {
       expect((data as List<ItemId>).toJS()).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(response);
+      expect((queryClient.getQueryData(key) as List<ItemId>)?.toJS()).toEqual(response);
     });
   });
 });

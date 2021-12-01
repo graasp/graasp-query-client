@@ -5,7 +5,7 @@ import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { REQUEST_METHODS } from '../api/utils';
 import { buildItemCategoryKey, MUTATION_KEYS } from '../config/keys';
 import { buildDeleteItemCategoryRoute, buildPostItemCategoryRoute } from '../api/routes';
-import { postItemCategoryRoutine } from '../routines';
+import { deleteItemCategoryRoutine, postItemCategoryRoutine } from '../routines';
 import { ITEM_CATEGORIES } from '../../test/constants';
 import { List } from 'immutable';
 
@@ -31,7 +31,7 @@ describe('Item Category Mutations', () => {
 
       const endpoints = [
         {
-          response: {},
+          response: {itemId: 'item-id', categoryId: 'new-category'},
           method: REQUEST_METHODS.POST,
           route,
         },
@@ -45,7 +45,7 @@ describe('Item Category Mutations', () => {
 
       await act(async () => {
         await mockedMutation.mutate({
-          id: itemId,
+          itemId,
           categoryId,
         });
         await waitForMutation();
@@ -70,7 +70,7 @@ describe('Item Category Mutations', () => {
 
       const endpoints = [
         {
-          response: {},
+          response: {itemId: 'item-id'},
           method: REQUEST_METHODS.DELETE,
           route,
         },
@@ -85,14 +85,14 @@ describe('Item Category Mutations', () => {
       await act(async () => {
         await mockedMutation.mutate({
           entryId,
-          id: itemId}
+          itemId}
         );
         await waitForMutation();
       });
 
       expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
-        type: postItemCategoryRoutine.SUCCESS,
+        type: deleteItemCategoryRoutine.SUCCESS,
       });
     });
   });
