@@ -229,3 +229,36 @@ export const ITEM_CHAT = {
     },
   ],
 };
+
+export const CATEGORY_TYPES = [
+  {
+    id: 'type-id',
+    name: 'type-name',
+  },
+];
+
+export const CATEGORIES = [
+  {
+    id: 'category-id1',
+    name: 'category-name1',
+    type: 'type-id1',
+  },
+  {
+    id: 'category-id2',
+    name: 'category-name2',
+    type: 'type-id2',    
+  }
+];
+
+export const ITEM_CATEGORIES = [
+  {
+    id: 'id1',
+    itemId: 'item-id',
+    categoryId: 'category-id1',
+  },
+  {
+    id: 'id2',
+    itemId: 'item-id',
+    categoryId: 'category-id2',
+  }
+];

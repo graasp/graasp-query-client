@@ -58,6 +58,23 @@ export type ItemTag = {
   id: UUID;
 };
 
+export type CategoryType = {
+  id: UUID;
+  name: string;
+}
+
+export type Category = {
+  id: UUID;
+  name: string;
+  type: UUID;
+}
+
+export type ItemCategory = {
+  id: UUID;
+  itemId: UUID;
+  categoryId: UUID;
+}
+
 export class UndefinedArgument extends Error {
   constructor() {
     super();

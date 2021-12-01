@@ -8,6 +8,7 @@ export const MEMBERS_ROUTE = `members`;
 export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const GET_RECYCLED_ITEMS_ROUTE = `${ITEMS_ROUTE}/recycled`;
 export const SHARE_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
+export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
 
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
 
@@ -139,6 +140,24 @@ export const buildRestoreItemsRoute = (ids: UUID[]) =>
     { arrayFormat: 'repeat' },
   )}`;
 
+export const GET_CATEGORY_TYPES_ROUTE = `${ITEMS_ROUTE}/category-types`
+export const buildGetCategoriesRoute = (ids?: UUID[]) => 
+  `${CATEGORIES_ROUTE}?${qs.stringify(
+    { type: ids },
+    { arrayFormat: 'repeat' }
+  )}`;
+export const buildGetCategoryInfoRoute = (id: UUID) => `${CATEGORIES_ROUTE}/${id}`;
+export const buildGetItemCategoriesRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/categories`;
+export const buildGetItemsInCategoryRoute = (ids: UUID[]) => 
+  `${ITEMS_ROUTE}/withCategories?${qs.stringify(
+    { category: ids },
+    { arrayFormat: 'repeat' }
+  )}`;
+export const buildPostItemCategoryRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/categories`;
+  export const buildDeleteItemCategoryRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/item-category/${id}`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   ITEMS_ROUTE,
@@ -149,6 +168,7 @@ export const API_ROUTES = {
   GET_CURRENT_MEMBER_ROUTE,
   GET_TAGS_ROUTE,
   GET_FLAGS_ROUTE,
+  GET_CATEGORY_TYPES_ROUTE,
   buildAppListRoute,
   buildGetS3MetadataRoute,
   buildGetMember,
@@ -192,4 +212,9 @@ export const API_ROUTES = {
   buildGetPublicMember,
   buildGetPublicMembersRoute,
   buildRestoreItemsRoute,
+  buildGetCategoriesRoute,
+  buildGetCategoryInfoRoute,
+  buildGetItemCategoriesRoute,
+  buildPostItemCategoryRoute,
+  buildDeleteItemCategoryRoute,
 };
