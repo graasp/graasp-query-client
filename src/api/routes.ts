@@ -102,7 +102,7 @@ export const buildDownloadPublicAvatarRoute = ({
   size?: string;
 }) => `p/${buildDownloadAvatarRoute({ id, size })}`;
 export const buildUploadItemThumbnailRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/thumbnails${qs.stringify({ id }, { addQueryPrefix: true })}`;
+  `${ITEMS_ROUTE}/thumbnails/upload${qs.stringify({ id }, { addQueryPrefix: true })}`;
 export const buildDownloadItemThumbnailRoute = ({
   id,
   size = DEFAULT_THUMBNAIL_SIZES,
