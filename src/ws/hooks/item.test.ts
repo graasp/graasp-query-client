@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { Map, Record, List } from 'immutable';
 import {
   getHandlerByChannel,
@@ -18,6 +19,8 @@ import { KINDS, OPS, TOPICS } from '../constants';
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsItemHooks,
 });
+
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Ws Item Hooks', () => {
   afterEach(() => {

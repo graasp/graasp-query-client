@@ -1,19 +1,29 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
+import Cookies from 'js-cookie';
 import { act } from 'react-test-renderer';
+import { List } from 'immutable';
+import { StatusCodes } from 'http-status-codes';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { REQUEST_METHODS } from '../api/utils';
 import { buildItemCategoriesKey, MUTATION_KEYS } from '../config/keys';
-import { buildDeleteItemCategoryRoute, buildPostItemCategoryRoute } from '../api/routes';
-import { deleteItemCategoryRoutine, postItemCategoryRoutine } from '../routines';
+import {
+  buildDeleteItemCategoryRoute,
+  buildPostItemCategoryRoute,
+} from '../api/routes';
+import {
+  deleteItemCategoryRoutine,
+  postItemCategoryRoutine,
+} from '../routines';
 import { ITEM_CATEGORIES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { List } from 'immutable';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
   notifier: mockedNotifier,
 });
+
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
+
 describe('Item Category Mutations', () => {
   afterEach(() => {
     queryClient.clear();
@@ -32,7 +42,7 @@ describe('Item Category Mutations', () => {
 
       const endpoints = [
         {
-          response: {itemId: 'item-id', categoryId: 'new-category'},
+          response: { itemId: 'item-id', categoryId: 'new-category' },
           method: REQUEST_METHODS.POST,
           route,
         },
@@ -75,15 +85,16 @@ describe('Item Category Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({itemId, categoryId});
+        await mockedMutation.mutate({ itemId, categoryId });
         await waitForMutation();
       });
 
       expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: postItemCategoryRoutine.FAILURE,
-        payload: { error: new Error(ReasonPhrases.UNAUTHORIZED) },
-      });
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: postItemCategoryRoutine.FAILURE,
+        }),
+      );
     });
   });
 
@@ -99,7 +110,7 @@ describe('Item Category Mutations', () => {
 
       const endpoints = [
         {
-          response: {itemId: 'item-id'},
+          response: { itemId: 'item-id' },
           method: REQUEST_METHODS.DELETE,
           route,
         },
@@ -114,15 +125,17 @@ describe('Item Category Mutations', () => {
       await act(async () => {
         await mockedMutation.mutate({
           entryId,
-          itemId}
-        );
+          itemId,
+        });
         await waitForMutation();
       });
 
       expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: deleteItemCategoryRoutine.SUCCESS,
-      });
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: deleteItemCategoryRoutine.SUCCESS,
+        }),
+      );
     });
     it('Unauthorized to delete item category', async () => {
       queryClient.setQueryData(key, List([ITEM_CATEGORIES]));
@@ -142,15 +155,16 @@ describe('Item Category Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({entryId, itemId});
+        await mockedMutation.mutate({ entryId, itemId });
         await waitForMutation();
       });
 
       expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: postItemCategoryRoutine.FAILURE,
-        payload: { error: new Error(ReasonPhrases.UNAUTHORIZED) },
-      });
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: deleteItemCategoryRoutine.FAILURE,
+        }),
+      );
     });
   });
 });

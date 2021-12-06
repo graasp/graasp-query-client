@@ -1,9 +1,26 @@
 import nock from 'nock';
 import { List } from 'immutable';
 import { mockHook, setUpTest } from '../../test/utils';
-import { buildGetCategoriesRoute, buildGetCategoryRoute, buildGetItemCategoriesRoute, buildGetItemsInCategoryRoute, GET_CATEGORY_TYPES_ROUTE } from '../api/routes';
-import { buildCategoriesKey, buildCategoryKey, buildItemCategoriesKey, buildItemsByCategoriesKey, CATEGORY_TYPES_KEY } from '../config/keys';
-import { CATEGORIES, CATEGORY_TYPES, ITEM_CATEGORIES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import {
+  buildGetCategoriesRoute,
+  buildGetCategoryRoute,
+  buildGetItemCategoriesRoute,
+  buildGetItemsInCategoryRoute,
+  GET_CATEGORY_TYPES_ROUTE,
+} from '../api/routes';
+import {
+  buildCategoriesKey,
+  buildCategoryKey,
+  buildItemCategoriesKey,
+  buildItemsByCategoriesKey,
+  CATEGORY_TYPES_KEY,
+} from '../config/keys';
+import {
+  CATEGORIES,
+  CATEGORY_TYPES,
+  ITEM_CATEGORIES,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants';
 import { Category, CategoryType, ItemCategory } from '../types';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
@@ -11,8 +28,8 @@ import Cookies from 'js-cookie';
 const { hooks, wrapper, queryClient } = setUpTest();
 
 type ItemId = {
-  itemId: string,
-}
+  itemId: string;
+};
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -109,7 +126,7 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as Category)).toEqual(response);
+      expect(data as Category).toEqual(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(response);
@@ -150,7 +167,9 @@ describe('Category Hooks', () => {
       expect((data as List<ItemCategory>).toJS()).toEqual(response);
 
       // verify cache keys
-      expect((queryClient.getQueryData(key) as List<ItemCategory>).toJS()).toEqual(response);
+      expect(
+        (queryClient.getQueryData(key) as List<ItemCategory>).toJS(),
+      ).toEqual(response);
     });
 
     it(`Unauthorized`, async () => {
@@ -189,7 +208,9 @@ describe('Category Hooks', () => {
       expect((data as List<ItemId>).toJS()).toEqual(response);
 
       // verify cache keys
-      expect((queryClient.getQueryData(key) as List<ItemId>)?.toJS()).toEqual(response);
+      expect((queryClient.getQueryData(key) as List<ItemId>)?.toJS()).toEqual(
+        response,
+      );
     });
     it(`Unauthorized`, async () => {
       const endpoints = [

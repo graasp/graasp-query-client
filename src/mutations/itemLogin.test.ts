@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import Cookies from 'js-cookie';
 import { Map } from 'immutable';
 import { act } from 'react-test-renderer';
 import {
@@ -27,6 +28,8 @@ const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
   notifier: mockedNotifier,
 });
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
+
 describe('Item Login Mutations', () => {
   afterEach(() => {
     queryClient.clear();

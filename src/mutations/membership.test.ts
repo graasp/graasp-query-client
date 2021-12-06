@@ -3,6 +3,7 @@ import nock from 'nock';
 import { List } from 'immutable';
 import { act } from 'react-test-renderer';
 import { StatusCodes } from 'http-status-codes';
+import Cookies from 'js-cookie';
 import {
   ITEMS,
   ITEM_MEMBERSHIPS_RESPONSE,
@@ -25,6 +26,9 @@ const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
   notifier: mockedNotifier,
 });
+
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
+
 describe('Membership Mutations', () => {
   afterEach(() => {
     queryClient.clear();

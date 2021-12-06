@@ -1,5 +1,6 @@
 import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
+import Cookies from 'js-cookie';
 import { List } from 'immutable';
 import { buildGetItemTagsRoute, GET_TAGS_ROUTE } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
@@ -8,6 +9,8 @@ import { buildItemTagsKey, TAGS_KEY } from '../config/keys';
 import { ItemTag } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
+
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Item Tags Hooks', () => {
   afterEach(() => {

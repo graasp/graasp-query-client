@@ -14,11 +14,15 @@ import { REQUEST_METHODS } from '../api/utils';
 import { buildItemTagsKey, MUTATION_KEYS } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
 import { ItemTag } from '../types';
+import Cookies from 'js-cookie';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
   notifier: mockedNotifier,
 });
+
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
+
 describe('Item Tag Mutations', () => {
   afterEach(() => {
     queryClient.clear();

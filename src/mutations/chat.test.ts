@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
 import nock from 'nock';
+import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
 import { buildPostItemChatMessageRoute } from '../api/routes';
 import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
@@ -13,6 +14,8 @@ import {
 import { buildItemChatKey, MUTATION_KEYS } from '../config/keys';
 import { REQUEST_METHODS } from '../api/utils';
 import { postItemChatMessageRoutine } from '../routines';
+
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Chat Mutations', () => {
   const itemId = ITEMS[0].id;

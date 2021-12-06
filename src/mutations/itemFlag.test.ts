@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
+import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 import { FLAGS, ITEMS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
@@ -14,6 +15,8 @@ const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
   notifier: mockedNotifier,
 });
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
+
 describe('Item Flag Mutations', () => {
   afterEach(() => {
     queryClient.clear();

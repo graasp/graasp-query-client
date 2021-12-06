@@ -28,7 +28,13 @@ export default (
   useCurrentMember: Function,
   websocketClient?: WebsocketClient,
 ) => {
-  const { retry, cacheTime, staleTime, enableWebsocket, notifier } = queryConfig;
+  const {
+    retry,
+    cacheTime,
+    staleTime,
+    enableWebsocket,
+    notifier,
+  } = queryConfig;
   const defaultOptions = {
     retry,
     cacheTime,
@@ -65,7 +71,7 @@ export default (
           });
         },
         onError: (error) => {
-          notifier?.({ type: 'ERROR', payload: { error } })
+          notifier?.({ type: 'ERROR', payload: { error } });
         },
         ...defaultOptions,
       });
@@ -254,10 +260,10 @@ export default (
           ids
             ? ids.length === 1
               ? Api.getItem(
-                ids[0],
-                { withMemberships: options?.withMemberships ?? false },
-                queryConfig,
-              ).then((data) => List([data]))
+                  ids[0],
+                  { withMemberships: options?.withMemberships ?? false },
+                  queryConfig,
+                ).then((data) => List([data]))
               : Api.getItems(ids, queryConfig).then((data) => List(data))
             : undefined,
         onSuccess: async (items: List<Item>) => {
@@ -392,11 +398,7 @@ export default (
           if (!id) {
             throw new UndefinedArgument();
           }
-          const data = await Api.downloadItemThumbnail(
-            { id, size },
-            queryConfig,
-          );
-          return data.blob();
+          return Api.downloadItemThumbnail({ id, size }, queryConfig);
         },
         ...defaultOptions,
         enabled: Boolean(id),

@@ -23,6 +23,9 @@ import { Member } from '../types';
 import { REQUEST_METHODS } from '../api/utils';
 import { THUMBNAIL_SIZES } from '../config/constants';
 import { uploadAvatarRoutine } from '../routines';
+import Cookies from 'js-cookie';
+
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({

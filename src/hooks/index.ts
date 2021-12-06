@@ -7,7 +7,7 @@ import configureItemFlagHooks from './itemFlag';
 import configureItemTagHooks from './itemTag';
 import configureMemberHooks from './member';
 import configureAppsHooks from './apps';
-import configureCategoryHooks from './category'
+import configureCategoryHooks from './category';
 
 export default (
   queryClient: QueryClient,

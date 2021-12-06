@@ -10,8 +10,11 @@ import {
 } from '../../test/constants';
 import { buildItemChatKey } from '../config/keys';
 import type { ChatMessage } from '../types';
+import Cookies from 'js-cookie';
 
 const { hooks, wrapper, queryClient } = setUpTest();
+
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Chat Hooks', () => {
   afterEach(() => {

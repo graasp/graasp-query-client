@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
@@ -7,6 +8,7 @@ import { FLAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { ITEM_FLAGS_KEY } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Item Flag Hooks', () => {
   afterEach(() => {

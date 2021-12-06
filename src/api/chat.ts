@@ -1,21 +1,24 @@
-import axios from 'axios';
 import { PartialChatMessage, QueryClientConfig, UUID } from '../types';
+import configureAxios, { verifyAuthentication } from './axios';
 import { buildGetItemChatRoute, buildPostItemChatMessageRoute } from './routes';
 
+const axios = configureAxios();
+
 export const getItemChat = async (id: UUID, { API_HOST }: QueryClientConfig) =>
-  axios
-    .get(`${API_HOST}/${buildGetItemChatRoute(id)}`, {
-      withCredentials: true,
-    })
-    .then(({ data }) => data);
+  verifyAuthentication(() =>
+    axios
+      .get(`${API_HOST}/${buildGetItemChatRoute(id)}`)
+      .then(({ data }) => data),
+  );
 
 export const postItemChatMessage = async (
   { chatId, body }: PartialChatMessage,
   { API_HOST }: QueryClientConfig,
 ) =>
-  axios
-    .post(`${API_HOST}/${buildPostItemChatMessageRoute(chatId)}`, {
-      withCredentials: true,
-      body,
-    })
-    .then(({ data }) => data);
+  verifyAuthentication(() =>
+    axios
+      .post(`${API_HOST}/${buildPostItemChatMessageRoute(chatId)}`, {
+        body,
+      })
+      .then(({ data }) => data),
+  );

@@ -1,4 +1,5 @@
 import { List } from 'immutable';
+import Cookies from 'js-cookie';
 import {
   getHandlerByChannel,
   mockWsHook,
@@ -13,6 +14,8 @@ import { Membership, PERMISSION_LEVELS } from '../../types';
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsMembershipHooks,
 });
+
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Ws Membership Hooks', () => {
   afterEach(() => {
