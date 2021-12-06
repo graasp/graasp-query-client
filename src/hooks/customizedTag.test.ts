@@ -29,7 +29,7 @@ describe('Item Flag Hooks', () => {
       expect((data as List<string>).toJS()).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(response);
+      expect(queryClient.getQueryData(key)).toEqual(List(response));
     });
 
     it(`Unauthorized`, async () => {
