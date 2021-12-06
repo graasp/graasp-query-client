@@ -10,6 +10,7 @@ export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const GET_RECYCLED_ITEMS_ROUTE = `${ITEMS_ROUTE}/recycled`;
 export const SHARE_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
+export const CUSTOMIZED_TAGS_ROUTE = 'customized-tags'
 
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
 
@@ -201,6 +202,9 @@ export const buildPostItemCategoryRoute = (id: UUID) =>
 export const buildDeleteItemCategoryRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/item-category/${id}`;
 
+export const buildGetCustomizedTagsRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/${CUSTOMIZED_TAGS_ROUTE}`;
+export const buildPostCustomizedTagsRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/${CUSTOMIZED_TAGS_ROUTE}`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   ITEMS_ROUTE,
@@ -266,4 +270,6 @@ export const API_ROUTES = {
   buildUploadAvatarRoute,
   buildDownloadAvatarRoute,
   buildDownloadPublicAvatarRoute,
+  buildGetCustomizedTagsRoute,
+  buildPostCustomizedTagsRoute,
 };

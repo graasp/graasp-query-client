@@ -54,6 +54,8 @@ export const buildCategoriesKey = (typeId?: UUID[]) => ['categories', hashItemsI
 export const buildItemCategoriesKey = (id?: UUID) => [ITEMS_KEY, id, 'categories'];
 export const buildItemsByCategoriesKey = (ids: UUID[]) => ['itemsInCategories', hashItemsIds(ids)];
 
+export const buildCustomizedTagsKey = (id: UUID) => ['customized-tags', id];
+
 export const buildPublicItemsWithTagKey = (id?: UUID) => [
   ITEMS_KEY,
   ITEM_TAGS_KEY,
@@ -105,4 +107,5 @@ export const MUTATION_KEYS = {
   DELETE_ITEM_CATEGORY: 'deleteItemCategory',
   UPLOAD_ITEM_THUMBNAIL: 'uploadItemThumbnail',
   UPLOAD_AVATAR: 'uploadAvatar',
+  POST_CUSTOMIZED_TAGS: 'postCustomizedTags',
 };

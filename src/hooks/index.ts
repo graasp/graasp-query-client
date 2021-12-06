@@ -7,7 +7,8 @@ import configureItemFlagHooks from './itemFlag';
 import configureItemTagHooks from './itemTag';
 import configureMemberHooks from './member';
 import configureAppsHooks from './apps';
-import configureCategoryHooks from './category'
+import configureCategoryHooks from './category';
+import configureCustomizedTagHooks from './customizedTag';
 
 export default (
   queryClient: QueryClient,
@@ -28,6 +29,7 @@ export default (
     ...configureItemFlagHooks(queryConfig),
     ...configureCategoryHooks(queryConfig),
     ...configureAppsHooks(queryConfig),
+    ...configureCustomizedTagHooks(queryConfig),
     ...memberHooks,
   };
 };

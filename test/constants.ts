@@ -264,3 +264,5 @@ export const ITEM_CATEGORIES = [
     categoryId: 'category-id2',
   }
 ];
+
+export const CUSTOMIZED_TAGS = ['tagA', 'tagB'];

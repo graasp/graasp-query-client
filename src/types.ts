@@ -75,6 +75,10 @@ export type ItemCategory = {
   categoryId: UUID;
 }
 
+export type CustomizedTag = {
+  values: string[];
+}
+
 export class UndefinedArgument extends Error {
   constructor() {
     super();
