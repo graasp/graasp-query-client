@@ -72,10 +72,10 @@ export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildGetMembersRoute = (ids: UUID[]) =>
   `${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
-export const buildUploadFilesRoute = (parentId: UUID) =>
-  parentId
-    ? `${ITEMS_ROUTE}/upload?parentId=${parentId}`
-    : `${ITEMS_ROUTE}/upload`;
+export const buildUploadFilesRoute = (parentId: UUID) => `${ITEMS_ROUTE}/upload${qs.stringify(
+  { id: parentId },
+  { addQueryPrefix: true },
+)}`;
 export const buildDownloadFilesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/download`;
 export const buildUploadAvatarRoute = (id: UUID) =>
