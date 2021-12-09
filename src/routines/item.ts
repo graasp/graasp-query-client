@@ -16,3 +16,6 @@ export const restoreItemsRoutine = createRoutine('RESTORE_ITEMS');
 export const uploadItemThumbnailRoutine = createRoutine(
   'UPLOAD_ITEM_THUMBNAIL',
 );
+export const importZipRoutine = createRoutine(
+  'IMPORT_ZIP',
+);
