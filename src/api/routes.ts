@@ -77,6 +77,7 @@ export const buildUploadFilesRoute = (parentId: UUID) => `${ITEMS_ROUTE}/upload$
   { id: parentId },
   { addQueryPrefix: true },
 )}`;
+export const buildImportZipRoute = (parentId: UUID) => `${ITEMS_ROUTE}/zip-import${qs.stringify({ parentId }, { addQueryPrefix: true })}`;
 export const buildDownloadFilesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/download`;
 export const buildUploadAvatarRoute = (id: UUID) =>
@@ -260,4 +261,5 @@ export const API_ROUTES = {
   buildUploadAvatarRoute,
   buildDownloadAvatarRoute,
   buildDownloadPublicAvatarRoute,
+  buildImportZipRoute
 };
