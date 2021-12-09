@@ -6,12 +6,15 @@ import { buildCategoriesKey, buildCategoryKey, buildItemCategoriesKey, buildItem
 import { CATEGORIES, CATEGORY_TYPES, ITEM_CATEGORIES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { Category, CategoryType, ItemCategory } from '../types';
 import { StatusCodes } from 'http-status-codes';
+import Cookies from 'js-cookie';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
 type ItemId = {
   itemId: string,
 }
+
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Category Hooks', () => {
   afterEach(() => {
@@ -149,6 +152,7 @@ describe('Category Hooks', () => {
       // verify cache keys
       expect((queryClient.getQueryData(key) as List<ItemCategory>).toJS()).toEqual(response);
     });
+
     it(`Unauthorized`, async () => {
       const endpoints = [
         {
