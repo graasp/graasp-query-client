@@ -1,7 +1,7 @@
 import nock from 'nock';
 import { List } from 'immutable';
 import { mockHook, setUpTest } from '../../test/utils';
-import { buildGetCategoriesRoute, buildGetCategoryInfoRoute, buildGetItemCategoriesRoute, buildGetItemsInCategoryRoute, GET_CATEGORY_TYPES_ROUTE } from '../api/routes';
+import { buildGetCategoriesRoute, buildGetCategoryRoute, buildGetItemCategoriesRoute, buildGetItemsInCategoryRoute, GET_CATEGORY_TYPES_ROUTE } from '../api/routes';
 import { buildCategoriesKey, buildCategoryKey, buildItemCategoriesKey, buildItemsByCategoriesKey, CATEGORY_TYPES_KEY } from '../config/keys';
 import { CATEGORIES, CATEGORY_TYPES, ITEM_CATEGORIES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { Category, CategoryType, ItemCategory } from '../types';
@@ -96,7 +96,7 @@ describe('Category Hooks', () => {
 
   describe('useCategory', () => {
     const categoryId = 'id';
-    const route = `/${buildGetCategoryInfoRoute(categoryId)}`;
+    const route = `/${buildGetCategoryRoute(categoryId)}`;
     const key = buildCategoryKey(categoryId);
 
     const hook = () => hooks.useCategory(categoryId);
@@ -178,7 +178,7 @@ describe('Category Hooks', () => {
     const hook = () => hooks.useItemsInCategories(categoryIds);
 
     it(`Receive items in categories`, async () => {
-      const response = [{itemId: 'id1'}, {itemId: 'id2'}];
+      const response = [{ itemId: 'id1' }, { itemId: 'id2' }];
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
