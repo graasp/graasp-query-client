@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import {
   buildCopyItemRoute,
   buildCopyItemsRoute,
@@ -15,8 +15,6 @@ import {
   buildGetPublicChildrenRoute,
   buildGetPublicItemRoute,
   buildGetPublicItemsWithTag,
-  buildGetPublicS3MetadataRoute,
-  buildGetS3MetadataRoute,
   buildMoveItemRoute,
   buildMoveItemsRoute,
   buildPostItemRoute,
@@ -24,9 +22,6 @@ import {
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
-  buildS3FileUrl,
-  buildS3UploadFileRoute,
-  buildUploadItemThumbnailRoute,
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_ROUTE,
   SHARE_ITEM_WITH_ROUTE,
@@ -295,86 +290,6 @@ export const getFileContent = async (
       throw new Error(e.response?.statusText);
     });
 
-export const uploadItemToS3 = async (
-  {
-    itemId,
-    filename,
-    contentType,
-  }: { itemId: UUID; filename: string; contentType: string },
-  { API_HOST }: QueryClientConfig,
-) => {
-  const response = await fetch(
-    `${API_HOST}/${buildS3UploadFileRoute(itemId)}`,
-    {
-      // Send and receive JSON.
-      ...DEFAULT_POST,
-      headers: {
-        accept: 'application/json',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        filename,
-        contentType,
-      }),
-    },
-  ).then(failOnError);
-
-  return response.json();
-};
-
-export const uploadItemThumbnailToS3 = async (
-  {
-    itemId,
-    filename,
-    contentType,
-  }: { itemId: UUID; filename: string; contentType: string },
-  { API_HOST }: QueryClientConfig,
-) => {
-  const response = await fetch(
-    `${API_HOST}/${buildUploadItemThumbnailRoute(itemId)}`,
-    {
-      // Send and receive JSON.
-      ...DEFAULT_POST,
-      headers: {
-        accept: 'application/json',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        filename,
-        contentType,
-      }),
-    },
-  ).then(failOnError);
-
-  return response.json();
-};
-
-export const getS3FileUrl = async (
-  { id }: { id: UUID },
-  { API_HOST, S3_FILES_HOST }: QueryClientConfig,
-) => {
-  const onSuccess = ({ data }: AxiosResponse<{ key: string }>) =>
-    buildS3FileUrl(S3_FILES_HOST, data.key);
-  return axios
-    .get(`${API_HOST}/${buildGetS3MetadataRoute(id)}`, {
-      withCredentials: true,
-    })
-    .then(onSuccess)
-    .catch((e) => {
-      if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(e.response.status)) {
-        // try to fetch public items if cannot access privately
-        return axios
-          .get(`${API_HOST}/${buildGetPublicS3MetadataRoute(id)}`, {})
-          .then(onSuccess)
-          .catch(() => {
-            throw new Error(e.response?.statusText);
-          });
-      }
-
-      throw new Error(e.response?.statusText);
-    });
-};
-
 export const getRecycledItems = async ({ API_HOST }: QueryClientConfig) => {
   const res = await fetch(
     `${API_HOST}/${GET_RECYCLED_ITEMS_ROUTE}`,
@@ -439,7 +354,7 @@ export const downloadItemThumbnail = async (
       ...DEFAULT_GET,
       headers: {},
     },
-  )
+  );
 
   // try to fetch public items if cannot access privately
   if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(res.status)) {

@@ -13,14 +13,12 @@ import {
   buildItemsKey,
   buildManyItemMembershipsKey,
   buildPublicItemsWithTagKey,
-  buildS3FileContentKey,
   buildItemThumbnailKey,
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
 } from '../config/keys';
 import { Item, QueryClientConfig, UndefinedArgument, UUID } from '../types';
-import { getRequestBlob } from '../utils/thumbnails';
 import { configureWsItemHooks, configureWsMembershipHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
@@ -30,13 +28,7 @@ export default (
   useCurrentMember: Function,
   websocketClient?: WebsocketClient,
 ) => {
-  const {
-    retry,
-    cacheTime,
-    staleTime,
-    enableWebsocket,
-    S3_FILES_HOST,
-  } = queryConfig;
+  const { retry, cacheTime, staleTime, enableWebsocket } = queryConfig;
   const defaultOptions = {
     retry,
     cacheTime,
@@ -336,25 +328,6 @@ export default (
         ...defaultOptions,
       }),
 
-    useS3FileContent: (
-      id?: UUID,
-      { enabled = true }: { enabled?: boolean } = {},
-    ) =>
-      useQuery({
-        queryKey: buildS3FileContentKey(id),
-        queryFn: () => {
-          if (!id) {
-            throw new UndefinedArgument();
-          }
-
-          return Api.getS3FileUrl({ id }, queryConfig)
-            .then((url) => fetch(url))
-            .then((data) => data.blob());
-        },
-        enabled: Boolean(id) && enabled,
-        ...defaultOptions,
-      }),
-
     useRecycledItems: () =>
       useQuery({
         queryKey: RECYCLED_ITEMS_KEY,
@@ -416,8 +389,11 @@ export default (
           if (!id) {
             throw new UndefinedArgument();
           }
-          const data = await Api.downloadItemThumbnail({ id, size }, queryConfig)
-          return getRequestBlob(data, S3_FILES_HOST)
+          const data = await Api.downloadItemThumbnail(
+            { id, size },
+            queryConfig,
+          );
+          return data.blob();
         },
         ...defaultOptions,
         enabled: Boolean(id),

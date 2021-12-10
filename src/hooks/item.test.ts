@@ -11,8 +11,6 @@ import {
   buildGetItemsRoute,
   buildGetPublicItemRoute,
   buildGetPublicItemsWithTag,
-  buildGetPublicS3MetadataRoute,
-  buildGetS3MetadataRoute,
   buildPublicDownloadFilesRoute,
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_ROUTE,
@@ -39,7 +37,6 @@ import {
   buildItemsKey,
   buildManyItemMembershipsKey,
   buildPublicItemsWithTagKey,
-  buildS3FileContentKey,
   buildItemThumbnailKey,
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_KEY,
@@ -813,100 +810,6 @@ describe('Items Hooks', () => {
     });
   });
 
-  describe('useS3FileContent', () => {
-    const response = S3_FILE_RESPONSE;
-    const id = ITEMS[0].id;
-    const route = `/${buildGetS3MetadataRoute(id)}`;
-    const hook = () => hooks.useS3FileContent(id);
-    const key = buildS3FileContentKey(id);
-
-    it(`Receive file content`, async () => {
-      const endpoints = [
-        { route, response },
-        {
-          route: `/${response.key}`,
-          response: S3_FILE_BLOB_RESPONSE,
-        },
-      ];
-      const { data } = await mockHook({ endpoints, hook, wrapper });
-
-      expect((data as Blob).text()).toBeTruthy();
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeTruthy();
-    });
-
-    it(`Undefined id does not fetch`, async () => {
-      const endpoints = [{ route, response }];
-      const { data, isFetched } = await mockHook({
-        endpoints,
-        hook: () => hooks.useS3FileContent(undefined),
-        wrapper,
-        enabled: false,
-      });
-
-      expect(data).toBeFalsy();
-      expect(isFetched).toBeFalsy();
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeFalsy();
-    });
-
-    it(`enabled=false does not fetch file`, async () => {
-      // build endpoint for each item
-      const endpoints: Endpoint[] = [];
-      const { data, isFetched } = await mockHook({
-        hook: () => hooks.useS3FileContent(id, { enabled: false }),
-        endpoints,
-        wrapper,
-        enabled: false,
-      });
-
-      expect(data).toBeFalsy();
-      expect(isFetched).toBeFalsy();
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeFalsy();
-    });
-
-    it(`Unauthorized`, async () => {
-      const endpoints = [
-        {
-          route,
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-        },
-      ];
-      const { data, isError } = await mockHook({
-        hook,
-        endpoints,
-        wrapper,
-      });
-
-      expect(isError).toBeTruthy();
-      expect(data).toBeFalsy();
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeFalsy();
-    });
-
-    it(`Fallback to public call`, async () => {
-      const endpoints = [
-        {
-          route,
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-        },
-        { route: `/${buildGetPublicS3MetadataRoute(id)}`, response },
-        {
-          route: `/${response.key}`,
-          response: S3_FILE_BLOB_RESPONSE,
-        },
-      ];
-      const { data } = await mockHook({ endpoints, hook, wrapper });
-
-      expect((data as Blob).text()).toBeTruthy();
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeTruthy();
-    });
-  });
-
   describe('useRecycledItems', () => {
     const route = `/${GET_RECYCLED_ITEMS_ROUTE}`;
     const hook = () => hooks.useRecycledItems();
@@ -1124,6 +1027,5 @@ describe('Items Hooks', () => {
         expect(queryClient.getQueryData(key)).toBeFalsy();
       });
     });
-  })
-
+  });
 });
