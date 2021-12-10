@@ -10,6 +10,7 @@ export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const GET_RECYCLED_ITEMS_ROUTE = `${ITEMS_ROUTE}/recycled`;
 export const SHARE_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
+const PUBLIC_PREFIX = `p`
 
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
 
@@ -120,9 +121,10 @@ export const buildDownloadPublicItemThumbnailRoute = ({
 }: {
   id: UUID;
   size?: string;
-}) => `p/${buildDownloadItemThumbnailRoute({ id, size })}`;
+}) => `${PUBLIC_PREFIX}/${buildDownloadItemThumbnailRoute({ id, size })}`;
 export const buildPublicDownloadFilesRoute = (id: UUID) =>
-  `p/${buildDownloadFilesRoute(id)}`;
+  `${PUBLIC_PREFIX}/${buildDownloadFilesRoute(id)}`;
+
 export const GET_CURRENT_MEMBER_ROUTE = `${MEMBERS_ROUTE}/current`;
 export const buildSignInPath = (to: string) => {
   const queryString = qs.stringify({ to }, { addQueryPrefix: true });
@@ -163,9 +165,9 @@ export const buildRecycleItemsRoute = (ids: UUID[]) =>
 export const buildGetPublicItemsWithTag = (options: {
   tagId: UUID;
   withMemberships?: boolean;
-}) => `p/${ITEMS_ROUTE}?${qs.stringify(options)}`;
+}) => `${PUBLIC_PREFIX}/${ITEMS_ROUTE}?${qs.stringify(options)}`;
 export const buildGetPublicMembersRoute = (ids: UUID[]) =>
-  `p/${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
+  `${PUBLIC_PREFIX}/${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 
 export const buildGetPublicMember = (id: UUID) => `p/${MEMBERS_ROUTE}/${id}`;
 export const buildRestoreItemsRoute = (ids: UUID[]) =>
@@ -174,18 +176,17 @@ export const buildRestoreItemsRoute = (ids: UUID[]) =>
     { arrayFormat: 'repeat' },
   )}`;
 
-export const GET_CATEGORY_TYPES_ROUTE = `${ITEMS_ROUTE}/category-types`;
+export const GET_CATEGORY_TYPES_ROUTE = `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/category-types`
 export const buildGetCategoriesRoute = (ids?: UUID[]) =>
-  `${CATEGORIES_ROUTE}?${qs.stringify(
+  `${PUBLIC_PREFIX}/${CATEGORIES_ROUTE}?${qs.stringify(
     { type: ids },
     { arrayFormat: 'repeat' },
   )}`;
-export const buildGetCategoryInfoRoute = (id: UUID) =>
-  `${CATEGORIES_ROUTE}/${id}`;
-export const buildGetItemCategoriesRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/${id}/categories`;
+export const buildGetCategoryRoute = (id: UUID) => `${PUBLIC_PREFIX}/${CATEGORIES_ROUTE}/${id}`;
+export const buildGetItemCategoriesRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/categories`;
+export const buildGetPublicItemCategoriesRoute = (id: UUID) => `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/${id}/categories`;
 export const buildGetItemsInCategoryRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}/withCategories?${qs.stringify(
+  `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/with-categories?${qs.stringify(
     { category: ids },
     { arrayFormat: 'repeat' },
   )}`;
@@ -246,7 +247,7 @@ export const API_ROUTES = {
   buildGetPublicMembersRoute,
   buildRestoreItemsRoute,
   buildGetCategoriesRoute,
-  buildGetCategoryInfoRoute,
+  buildGetCategoryRoute,
   buildGetItemCategoriesRoute,
   buildPostItemCategoryRoute,
   buildDeleteItemCategoryRoute,

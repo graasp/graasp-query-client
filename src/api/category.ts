@@ -1,6 +1,10 @@
-import { QueryClientConfig, UUID} from '../types';
-import { buildGetCategoriesRoute, buildGetCategoryInfoRoute, buildGetItemCategoriesRoute, 
-  buildGetItemsInCategoryRoute, buildPostItemCategoryRoute, buildDeleteItemCategoryRoute, GET_CATEGORY_TYPES_ROUTE } from './routes';
+import axios from 'axios'
+import { QueryClientConfig, UUID } from '../types';
+import { fallbackToPublic } from './axios';
+import {
+  buildGetCategoriesRoute, buildGetCategoryRoute, buildGetItemCategoriesRoute,
+  buildGetItemsInCategoryRoute, buildPostItemCategoryRoute, buildDeleteItemCategoryRoute, GET_CATEGORY_TYPES_ROUTE, buildGetPublicItemCategoriesRoute
+} from './routes';
 import { DEFAULT_DELETE, DEFAULT_GET, DEFAULT_POST, failOnError } from './utils';
 
 export const getCategoryTypes = async ({ API_HOST }: QueryClientConfig) => {
@@ -11,7 +15,7 @@ export const getCategoryTypes = async ({ API_HOST }: QueryClientConfig) => {
   return res.json();
 };
 
-export const getCategories = async ({ API_HOST }: QueryClientConfig, typeIds?: UUID[], ) => {
+export const getCategories = async ({ API_HOST }: QueryClientConfig, typeIds?: UUID[],) => {
   const res = await fetch(`${API_HOST}/${buildGetCategoriesRoute(typeIds)}`, DEFAULT_GET).then(
     failOnError,
   );
@@ -20,27 +24,27 @@ export const getCategories = async ({ API_HOST }: QueryClientConfig, typeIds?: U
 };
 
 export const getCategory = async (categoryId: UUID, { API_HOST }: QueryClientConfig) => {
-    const res = await fetch(`${API_HOST}/${buildGetCategoryInfoRoute(categoryId)}`, DEFAULT_GET).then(
-      failOnError,
-    );
-  
-    return res.json();
-  };
+  const res = await fetch(`${API_HOST}/${buildGetCategoryRoute(categoryId)}`, DEFAULT_GET).then(
+    failOnError,
+  );
 
-export const getItemCategories = async (itemId: UUID, { API_HOST }: QueryClientConfig) => {
-    const res = await fetch(`${API_HOST}/${buildGetItemCategoriesRoute(itemId)}`, DEFAULT_GET).then(
-      failOnError,
-    );
-    return res.json();
-  };
+  return res.json();
+};
+
+export const getItemCategories = async (itemId: UUID, { API_HOST }: QueryClientConfig) =>
+  fallbackToPublic(
+    () => axios.get(`${API_HOST}/${buildGetItemCategoriesRoute(itemId)}`),
+    () => axios.get(`${API_HOST}/${buildGetPublicItemCategoriesRoute(itemId)}`),
+  );
+
 
 export const getItemsForCategories = async (categoryIds: UUID[], { API_HOST }: QueryClientConfig) => {
-    const res = await fetch(`${API_HOST}/${buildGetItemsInCategoryRoute(categoryIds)}`, DEFAULT_GET).then(
-      failOnError,
-    );
-  
-    return res.json();
-  };
+  const res = await fetch(`${API_HOST}/${buildGetItemsInCategoryRoute(categoryIds)}`, DEFAULT_GET).then(
+    failOnError,
+  );
+
+  return res.json();
+};
 
 // payload: itemId, categoryId
 export const postItemCategory = async (

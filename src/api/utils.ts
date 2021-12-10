@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 export enum REQUEST_METHODS {
   GET = 'GET',
   POST = 'POST',
@@ -43,3 +45,6 @@ export const failOnError = (res: Response) => {
   // res.status >= 200 && res.status < 300
   return res;
 };
+
+
+export const isUserAuthenticated = () => Boolean(Cookies.get('session'));
