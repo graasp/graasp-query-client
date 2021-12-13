@@ -28,7 +28,7 @@ export type Item = {
   extra: {};
 };
 
-type MemberExtra = {
+export type MemberExtra = {
   recycleBin?: {
     itemId: string;
   };
