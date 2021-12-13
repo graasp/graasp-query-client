@@ -11,7 +11,7 @@ import {
   buildDownloadAvatarRoute,
   buildDownloadPublicAvatarRoute,
 } from './routes';
-import { Member, QueryClientConfig, UUID } from '../types';
+import { MemberExtra, QueryClientConfig, UUID } from '../types';
 import { DEFAULT_THUMBNAIL_SIZES, SIGNED_OUT_USER } from '../config/constants';
 import configureAxios, {
   fallbackToPublic,
@@ -68,12 +68,12 @@ export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) =>
   );
 
 export const editMember = async (
-  payload: { id: UUID; member: Partial<Member> },
+  payload: { id: UUID; extra: MemberExtra },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
     axios
-      .patch(`${API_HOST}/${buildPatchMember(payload.id)}`)
+      .patch(`${API_HOST}/${buildPatchMember(payload.id)}`, { extra: payload.extra })
       .then(({ data }) => data),
   );
 
