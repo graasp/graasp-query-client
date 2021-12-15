@@ -1,10 +1,12 @@
-import { failOnError, DEFAULT_POST, DEFAULT_GET, DEFAULT_PUT } from './utils';
 import {
   buildGetItemLoginRoute,
   buildPostItemLoginSignInRoute,
   buildPutItemLoginSchema,
 } from './routes';
 import { QueryClientConfig, UUID } from '../types';
+import configureAxios, { verifyAuthentication } from './axios';
+
+const axios = configureAxios();
 
 export const postItemLoginSignIn = async (
   {
@@ -14,42 +16,32 @@ export const postItemLoginSignIn = async (
     password,
   }: { itemId: UUID; username: string; memberId: UUID; password: string },
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(
-    `${API_HOST}/${buildPostItemLoginSignInRoute(itemId)}`,
-    {
-      ...DEFAULT_POST,
-      body: JSON.stringify({
+) =>
+  verifyAuthentication(() =>
+    axios
+      .post(`${API_HOST}/${buildPostItemLoginSignInRoute(itemId)}`, {
         username: username?.trim(),
         memberId: memberId?.trim(),
         password,
-      }),
-    },
-  ).then(failOnError);
+      })
+      .then(({ data }) => data),
+  );
 
-  return res.ok;
-};
-
-export const getItemLogin = async (
-  id: UUID,
-  { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(
-    `${API_HOST}/${buildGetItemLoginRoute(id)}`,
-    DEFAULT_GET,
-  ).then(failOnError);
-
-  return res.json();
-};
+export const getItemLogin = async (id: UUID, { API_HOST }: QueryClientConfig) =>
+  verifyAuthentication(() =>
+    axios
+      .get(`${API_HOST}/${buildGetItemLoginRoute(id)}`)
+      .then(({ data }) => data),
+  );
 
 export const putItemLoginSchema = async (
   { itemId, loginSchema }: { itemId: UUID; loginSchema: string },
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(`${API_HOST}/${buildPutItemLoginSchema(itemId)}`, {
-    ...DEFAULT_PUT,
-    body: JSON.stringify({ loginSchema }),
-  }).then(failOnError);
-
-  return res.json();
-};
+) =>
+  verifyAuthentication(() =>
+    axios
+      .put(`${API_HOST}/${buildPutItemLoginSchema(itemId)}`, {
+        loginSchema,
+      })
+      .then(({ data }) => data),
+  );

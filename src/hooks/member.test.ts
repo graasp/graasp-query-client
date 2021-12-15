@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
 import { Record, List } from 'immutable';
 import nock from 'nock';
@@ -14,8 +15,6 @@ import {
   AVATAR_BLOB_RESPONSE,
   MEMBERS_RESPONSE,
   MEMBER_RESPONSE,
-  S3_FILE_BLOB_RESPONSE,
-  S3_FILE_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
 import {
@@ -28,6 +27,7 @@ import type { Member, UUID } from '../types';
 import { SIGNED_OUT_USER, THUMBNAIL_SIZES } from '../config/constants';
 
 const { hooks, wrapper, queryClient } = setUpTest();
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 describe('Member Hooks', () => {
   afterEach(() => {
     queryClient.clear();
@@ -278,116 +278,83 @@ describe('Member Hooks', () => {
   describe('useAvatar', () => {
     const member = MEMBER_RESPONSE;
 
-    describe(`Default`, () => {
-      const response = AVATAR_BLOB_RESPONSE;
-      const route = `/${buildDownloadAvatarRoute({ id: member.id })}`;
-      const hook = () => hooks.useAvatar({ id: member.id });
-      const key = buildAvatarKey({ id: member.id });
+    const response = AVATAR_BLOB_RESPONSE;
+    const route = `/${buildDownloadAvatarRoute({ id: member.id })}`;
+    const hook = () => hooks.useAvatar({ id: member.id });
+    const key = buildAvatarKey({ id: member.id });
 
-      it(`Receive default avatar`, async () => {
-        const endpoints = [{ route, response, headers: { "Content-Type": "image/jpeg" } }];
-        const { data } = await mockHook({ endpoints, hook, wrapper });
+    it(`Receive default avatar`, async () => {
+      const endpoints = [
+        { route, response, headers: { 'Content-Type': 'image/jpeg' } },
+      ];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
 
-        expect((data as Blob).text()).toBeTruthy();
-        // verify cache keys
-        expect(queryClient.getQueryData(key)).toBeTruthy();
-      });
-
-      it(`Receive large avatar`, async () => {
-        const size = THUMBNAIL_SIZES.LARGE;
-        const routeLarge = `/${buildDownloadAvatarRoute({
-          id: member.id,
-          size,
-        })}`;
-        const hookLarge = () => hooks.useAvatar({ id: member.id, size });
-        const keyLarge = buildAvatarKey({ id: member.id, size });
-
-        const endpoints = [{ route: routeLarge, response, headers: { "Content-Type": "image/jpeg" } }];
-        const { data } = await mockHook({ endpoints, hook: hookLarge, wrapper });
-
-        expect((data as Blob).text()).toBeTruthy();
-        // verify cache keys
-        expect(queryClient.getQueryData(keyLarge)).toBeTruthy();
-      });
+      expect(data).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeTruthy();
     });
 
-    describe(`S3`, () => {
-      const response = S3_FILE_RESPONSE;
-      const route = `/${buildDownloadAvatarRoute({ id: member.id })}`;
-      const hook = () => hooks.useAvatar({ id: member.id });
-      const key = buildAvatarKey({ id: member.id });
+    it(`Receive large avatar`, async () => {
+      const size = THUMBNAIL_SIZES.LARGE;
+      const routeLarge = `/${buildDownloadAvatarRoute({
+        id: member.id,
+        size,
+      })}`;
+      const hookLarge = () => hooks.useAvatar({ id: member.id, size });
+      const keyLarge = buildAvatarKey({ id: member.id, size });
 
-      it(`Receive default avatar`, async () => {
-        const endpoints = [
-          { route, response },
-          {
-            route: `/${response.key}`,
-            response: S3_FILE_BLOB_RESPONSE,
-          },];
-        const { data } = await mockHook({ endpoints, hook, wrapper });
-
-        expect((data as Blob).text()).toBeTruthy();
-        // verify cache keys
-        expect(queryClient.getQueryData(key)).toBeTruthy();
-      });
-
-      it(`Receive large avatar`, async () => {
-        const size = THUMBNAIL_SIZES.LARGE;
-        const routeLarge = `/${buildDownloadAvatarRoute({
-          id: member.id,
-          size,
-        })}`;
-        const hookLarge = () => hooks.useAvatar({ id: member.id, size });
-        const keyLarge = buildAvatarKey({ id: member.id, size });
-
-        const endpoints = [{ route: routeLarge, response },
+      const endpoints = [
         {
-          route: `/${response.key}`,
-          response: S3_FILE_BLOB_RESPONSE,
-        }];
-        const { data } = await mockHook({ endpoints, hook: hookLarge, wrapper });
-
-        expect((data as Blob).text()).toBeTruthy();
-        // verify cache keys
-        expect(queryClient.getQueryData(keyLarge)).toBeTruthy();
+          route: routeLarge,
+          response,
+          headers: { 'Content-Type': 'image/jpeg' },
+        },
+      ];
+      const { data } = await mockHook({
+        endpoints,
+        hook: hookLarge,
+        wrapper,
       });
 
-      it(`Undefined id does not fetch`, async () => {
-        const endpoints = [
-          {
-            route,
-            response,
-          },
-        ];
-        const { data, isFetched } = await mockHook({
-          endpoints,
-          hook: () => hooks.useAvatar({ id: undefined }),
-          wrapper,
-          enabled: false,
-        });
-
-        expect(data).toBeFalsy();
-        expect(isFetched).toBeFalsy();
-        // verify cache keys
-        expect(queryClient.getQueryData(key)).toBeFalsy();
-      });
-
-      it(`Unauthorized`, async () => {
-        const endpoints = [
-          {
-            route,
-            response: UNAUTHORIZED_RESPONSE,
-            statusCode: StatusCodes.UNAUTHORIZED,
-          },
-        ];
-        const { data, isError } = await mockHook({ endpoints, hook, wrapper });
-
-        expect(data).toBeFalsy();
-        expect(isError).toBeTruthy();
-        // verify cache keys
-        expect(queryClient.getQueryData(key)).toBeFalsy();
-      });
+      expect(data).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(keyLarge)).toBeTruthy();
     });
 
+    it(`Undefined id does not fetch`, async () => {
+      const endpoints = [
+        {
+          route,
+          response,
+        },
+      ];
+      const { data, isFetched } = await mockHook({
+        endpoints,
+        hook: () => hooks.useAvatar({ id: undefined }),
+        wrapper,
+        enabled: false,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isFetched).toBeFalsy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({ endpoints, hook, wrapper });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
   });
 });

@@ -1,36 +1,25 @@
 import {
-  failOnError,
-  DEFAULT_DELETE,
-  DEFAULT_GET,
-  DEFAULT_POST,
-} from './utils';
-import {
   buildDeleteItemTagRoute,
   buildGetItemTagsRoute,
   buildPostItemTagRoute,
   GET_TAGS_ROUTE,
 } from './routes';
 import { QueryClientConfig, UUID } from '../types';
+import configureAxios, { verifyAuthentication } from './axios';
 
-export const getTags = async ({ API_HOST }: QueryClientConfig) => {
-  const res = await fetch(`${API_HOST}/${GET_TAGS_ROUTE}`, DEFAULT_GET).then(
-    failOnError,
+const axios = configureAxios();
+
+export const getTags = async ({ API_HOST }: QueryClientConfig) =>
+  verifyAuthentication(() =>
+    axios.get(`${API_HOST}/${GET_TAGS_ROUTE}`).then(({ data }) => data),
   );
 
-  return res.json();
-};
-
-export const getItemTags = async (
-  id: UUID,
-  { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(
-    `${API_HOST}/${buildGetItemTagsRoute(id)}`,
-    DEFAULT_GET,
-  ).then(failOnError);
-
-  return res.json();
-};
+export const getItemTags = async (id: UUID, { API_HOST }: QueryClientConfig) =>
+  verifyAuthentication(() =>
+    axios
+      .get(`${API_HOST}/${buildGetItemTagsRoute(id)}`)
+      .then(({ data }) => data),
+  );
 
 // payload: tagId, itemPath, creator
 export const postItemTag = async (
@@ -41,23 +30,23 @@ export const postItemTag = async (
     creator,
   }: { id: UUID; tagId: UUID; itemPath: string; creator: UUID },
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(`${API_HOST}/${buildPostItemTagRoute(id)}`, {
-    ...DEFAULT_POST,
-    body: JSON.stringify({ tagId, itemPath, creator }),
-  }).then(failOnError);
-
-  return res.json();
-};
+) =>
+  verifyAuthentication(() =>
+    axios
+      .post(`${API_HOST}/${buildPostItemTagRoute(id)}`, {
+        tagId,
+        itemPath,
+        creator,
+      })
+      .then(({ data }) => data),
+  );
 
 export const deleteItemTag = async (
   { id, tagId }: { id: UUID; tagId: UUID },
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(
-    `${API_HOST}/${buildDeleteItemTagRoute({ id, tagId })}`,
-    DEFAULT_DELETE,
-  ).then(failOnError);
-
-  return res.ok;
-};
+) =>
+  verifyAuthentication(() =>
+    axios
+      .delete(`${API_HOST}/${buildDeleteItemTagRoute({ id, tagId })}`)
+      .then(({ data }) => data),
+  );

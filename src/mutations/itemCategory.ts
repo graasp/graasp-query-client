@@ -1,7 +1,10 @@
 import { QueryClient } from 'react-query';
 import * as Api from '../api';
 import { buildItemCategoriesKey, MUTATION_KEYS } from '../config/keys';
-import { deleteItemCategoryRoutine, postItemCategoryRoutine } from '../routines';
+import {
+  deleteItemCategoryRoutine,
+  postItemCategoryRoutine,
+} from '../routines';
 import { QueryClientConfig } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
@@ -28,7 +31,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: deleteItemCategoryRoutine.SUCCESS });
     },
     onError: (error) => {
-      notifier?.({ type: deleteItemCategoryRoutine.FAILURE, payload: { error } });
+      notifier?.({
+        type: deleteItemCategoryRoutine.FAILURE,
+        payload: { error },
+      });
     },
     onSettled: (_data, _error, { itemId }) => {
       queryClient.invalidateQueries(buildItemCategoriesKey(itemId));

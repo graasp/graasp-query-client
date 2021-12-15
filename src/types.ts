@@ -28,7 +28,7 @@ export type Item = {
   extra: {};
 };
 
-type MemberExtra = {
+export type MemberExtra = {
   recycleBin?: {
     itemId: string;
   };
@@ -61,19 +61,19 @@ export type ItemTag = {
 export type CategoryType = {
   id: UUID;
   name: string;
-}
+};
 
 export type Category = {
   id: UUID;
   name: string;
   type: UUID;
-}
+};
 
 export type ItemCategory = {
   id: UUID;
   itemId: UUID;
   categoryId: UUID;
-}
+};
 
 export class UndefinedArgument extends Error {
   constructor() {
@@ -128,4 +128,4 @@ export type GraaspError = {
   statusCode?: number;
   message: string;
   data?: unknown;
-}
+};

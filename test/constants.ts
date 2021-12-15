@@ -248,8 +248,8 @@ export const CATEGORIES = [
   {
     id: 'category-id2',
     name: 'category-name2',
-    type: 'type-id2',    
-  }
+    type: 'type-id2',
+  },
 ];
 
 export const ITEM_CATEGORIES = [
@@ -262,5 +262,5 @@ export const ITEM_CATEGORIES = [
     id: 'id2',
     itemId: 'item-id',
     categoryId: 'category-id2',
-  }
+  },
 ];

@@ -1,12 +1,5 @@
 import { getMemberBy } from './member';
 import {
-  failOnError,
-  DEFAULT_GET,
-  DEFAULT_POST,
-  DEFAULT_PATCH,
-  DEFAULT_DELETE,
-} from './utils';
-import {
   buildShareItemWithRoute,
   buildEditItemMembershipRoute,
   buildDeleteItemMembershipRoute,
@@ -14,18 +7,19 @@ import {
 } from './routes';
 import { MEMBER_NOT_FOUND_ERROR } from '../config/errors';
 import { Permission, QueryClientConfig, UUID } from '../types';
+import configureAxios, { verifyAuthentication } from './axios';
+
+const axios = configureAxios();
 
 export const getMembershipsForItems = async (
   ids: UUID[],
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(
-    `${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`,
-    DEFAULT_GET,
-  ).then(failOnError);
-
-  return res.json();
-};
+) =>
+  verifyAuthentication(() =>
+    axios
+      .get(`${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`)
+      .then(({ data }) => data),
+  );
 
 export const shareItemWith = async (
   {
@@ -40,36 +34,35 @@ export const shareItemWith = async (
   if (!member) {
     throw new Error(MEMBER_NOT_FOUND_ERROR);
   }
-  const res = await fetch(`${API_HOST}/${buildShareItemWithRoute(id)}`, {
-    ...DEFAULT_POST,
-    // supposed to have only one member for this mail
-    body: JSON.stringify({ memberId: member[0].id, permission }),
-  }).then(failOnError);
 
-  return res.ok;
+  return verifyAuthentication(() =>
+    axios
+      .post(`${API_HOST}/${buildShareItemWithRoute(id)}`, {
+        memberId: member[0].id,
+        permission,
+      })
+      .then(({ data }) => data),
+  );
 };
 
 export const editItemMembership = async (
   { id, permission }: { id: UUID; permission: Permission },
-  config: QueryClientConfig,
-) => {
-  const { API_HOST } = config;
-  const res = await fetch(`${API_HOST}/${buildEditItemMembershipRoute(id)}`, {
-    ...DEFAULT_PATCH,
-    body: JSON.stringify({ permission }),
-  }).then(failOnError);
-
-  return res.ok;
-};
+  { API_HOST }: QueryClientConfig,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .patch(`${API_HOST}/${buildEditItemMembershipRoute(id)}`, {
+        permission,
+      })
+      .then(({ data }) => data),
+  );
 
 export const deleteItemMembership = async (
   { id }: { id: UUID },
-  config: QueryClientConfig,
-) => {
-  const { API_HOST } = config;
-  const res = await fetch(`${API_HOST}/${buildDeleteItemMembershipRoute(id)}`, {
-    ...DEFAULT_DELETE,
-  }).then(failOnError);
-
-  return res.ok;
-};
+  { API_HOST }: QueryClientConfig,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .delete(`${API_HOST}/${buildDeleteItemMembershipRoute(id)}`)
+      .then(({ data }) => data),
+  );

@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import Cookies from 'js-cookie';
 import { Map } from 'immutable';
 import { act } from 'react-test-renderer';
 import {
@@ -27,6 +28,8 @@ const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
   notifier: mockedNotifier,
 });
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
+
 describe('Item Login Mutations', () => {
   afterEach(() => {
     queryClient.clear();
@@ -105,10 +108,11 @@ describe('Item Login Mutations', () => {
       expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
       expect(queryClient.getQueryData(OWN_ITEMS_KEY)).toBeFalsy();
 
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: postItemLoginRoutine.FAILURE,
-        payload: { error: new Error(ReasonPhrases.UNAUTHORIZED) },
-      });
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: postItemLoginRoutine.FAILURE,
+        }),
+      );
     });
   });
 
@@ -178,10 +182,11 @@ describe('Item Login Mutations', () => {
         queryClient.getQueryState(itemLoginKey)?.isInvalidated,
       ).toBeTruthy();
 
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: putItemLoginRoutine.FAILURE,
-        payload: { error: new Error(ReasonPhrases.UNAUTHORIZED) },
-      });
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: putItemLoginRoutine.FAILURE,
+        }),
+      );
     });
   });
 });

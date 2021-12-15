@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
 import { Record, Map, List } from 'immutable';
@@ -21,8 +22,6 @@ import {
   FILE_RESPONSE,
   ITEMS,
   ITEM_MEMBERSHIPS_RESPONSE,
-  S3_FILE_BLOB_RESPONSE,
-  S3_FILE_RESPONSE,
   TAGS,
   THUMBNAIL_BLOB_RESPONSE,
   UNAUTHORIZED_RESPONSE,
@@ -46,6 +45,8 @@ import type { Item, ItemLogin, Membership } from '../types';
 import { THUMBNAIL_SIZES } from '../config/constants';
 
 const { hooks, wrapper, queryClient } = setUpTest();
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
+
 describe('Items Hooks', () => {
   afterEach(() => {
     nock.cleanAll();
@@ -914,16 +915,18 @@ describe('Items Hooks', () => {
       const hook = () => hooks.useItemThumbnail({ id: item.id });
 
       it(`Receive default thumbnail`, async () => {
-        const endpoints = [{
-          route, response,
-          headers: {
-            "Content-Type": "image/jpeg"
-          }
-        },
+        const endpoints = [
+          {
+            route,
+            response,
+            headers: {
+              'Content-Type': 'image/jpeg',
+            },
+          },
         ];
         const { data } = await mockHook({ endpoints, hook, wrapper });
 
-        expect((data as Blob).text()).toBeTruthy();
+        expect(data).toBeTruthy();
         // verify cache keys
         expect(queryClient.getQueryData(key)).toBeTruthy();
       });
@@ -937,56 +940,22 @@ describe('Items Hooks', () => {
         const hookLarge = () => hooks.useItemThumbnail({ id: item.id, size });
         const keyLarge = buildItemThumbnailKey({ id: item.id, size });
 
-        const endpoints = [{
-          route: routeLarge, response,
-          headers: {
-            "Content-Type": "image/jpeg"
-          }
-        }];
-        const { data } = await mockHook({ endpoints, hook: hookLarge, wrapper });
+        const endpoints = [
+          {
+            route: routeLarge,
+            response,
+            headers: {
+              'Content-Type': 'image/jpeg',
+            },
+          },
+        ];
+        const { data } = await mockHook({
+          endpoints,
+          hook: hookLarge,
+          wrapper,
+        });
 
-        expect((data as Blob).text()).toBeTruthy();
-        // verify cache keys
-        expect(queryClient.getQueryData(keyLarge)).toBeTruthy();
-      });
-    })
-
-    describe('S3', () => {
-      const response = S3_FILE_RESPONSE;
-
-      const route = `/${buildDownloadItemThumbnailRoute({ id: item.id })}`;
-      const hook = () => hooks.useItemThumbnail({ id: item.id });
-
-      it(`Receive default thumbnail`, async () => {
-        const endpoints = [{ route, response },
-        {
-          route: `/${response.key}`,
-          response: S3_FILE_BLOB_RESPONSE,
-        }];
-        const { data } = await mockHook({ endpoints, hook, wrapper });
-
-        expect((data as Blob).text()).toBeTruthy();
-        // verify cache keys
-        expect(queryClient.getQueryData(key)).toBeTruthy();
-      });
-
-      it(`Receive large thumbnail`, async () => {
-        const size = THUMBNAIL_SIZES.LARGE;
-        const routeLarge = `/${buildDownloadItemThumbnailRoute({
-          id: item.id,
-          size,
-        })}`;
-        const hookLarge = () => hooks.useItemThumbnail({ id: item.id, size });
-        const keyLarge = buildItemThumbnailKey({ id: item.id, size });
-
-        const endpoints = [{ route: routeLarge, response },
-        {
-          route: `/${response.key}`,
-          response: S3_FILE_BLOB_RESPONSE,
-        }];
-        const { data } = await mockHook({ endpoints, hook: hookLarge, wrapper });
-
-        expect((data as Blob).text()).toBeTruthy();
+        expect(data).toBeTruthy();
         // verify cache keys
         expect(queryClient.getQueryData(keyLarge)).toBeTruthy();
       });

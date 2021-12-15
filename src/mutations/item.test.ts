@@ -1,5 +1,6 @@
 import { act } from '@testing-library/react-hooks';
 import nock from 'nock';
+import Cookies from 'js-cookie';
 import { List, Map, Record } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
 import {
@@ -52,6 +53,9 @@ const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
   notifier: mockedNotifier,
 });
+
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
+
 describe('Items Mutations', () => {
   afterEach(() => {
     queryClient.clear();

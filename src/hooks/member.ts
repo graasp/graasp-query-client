@@ -68,8 +68,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         if (!id) {
           throw new UndefinedArgument();
         }
-        return Api.downloadAvatar({ id, size }, queryConfig).then((data) =>
-          data.blob(),
+        return Api.downloadAvatar({ id, size }, queryConfig).then(
+          (data) => data,
         );
       },
       ...defaultOptions,

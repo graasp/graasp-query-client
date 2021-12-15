@@ -1,30 +1,24 @@
 import { PartialChatMessage, QueryClientConfig, UUID } from '../types';
+import configureAxios, { verifyAuthentication } from './axios';
 import { buildGetItemChatRoute, buildPostItemChatMessageRoute } from './routes';
-import { DEFAULT_GET, DEFAULT_POST, failOnError } from './utils';
 
-export const getItemChat = async (
-  id: UUID,
-  { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(
-    `${API_HOST}/${buildGetItemChatRoute(id)}`,
-    DEFAULT_GET,
-  ).then(failOnError);
-  const itemChat = await res.json();
-  return itemChat;
-};
+const axios = configureAxios();
+
+export const getItemChat = async (id: UUID, { API_HOST }: QueryClientConfig) =>
+  verifyAuthentication(() =>
+    axios
+      .get(`${API_HOST}/${buildGetItemChatRoute(id)}`)
+      .then(({ data }) => data),
+  );
 
 export const postItemChatMessage = async (
   { chatId, body }: PartialChatMessage,
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(
-    `${API_HOST}/${buildPostItemChatMessageRoute(chatId)}`,
-    {
-      ...DEFAULT_POST,
-      body: JSON.stringify({ body }),
-    },
-  ).then(failOnError);
-  const publishedMessage = await res.json();
-  return publishedMessage;
-};
+) =>
+  verifyAuthentication(() =>
+    axios
+      .post(`${API_HOST}/${buildPostItemChatMessageRoute(chatId)}`, {
+        body,
+      })
+      .then(({ data }) => data),
+  );

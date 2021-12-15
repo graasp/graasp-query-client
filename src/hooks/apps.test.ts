@@ -5,9 +5,11 @@ import { APPS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { APPS_KEY } from '../config/keys';
 import { List } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
+import Cookies from 'js-cookie';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 describe('Apps Hooks', () => {
   afterEach(() => {
     nock.cleanAll();

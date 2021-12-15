@@ -1,4 +1,5 @@
-import { getReasonPhrase, StatusCodes } from 'http-status-codes';
+import { AxiosError } from 'axios';
+import { StatusCodes } from 'http-status-codes';
 import {
   QueryClient,
   QueryClientProvider,
@@ -20,21 +21,27 @@ export type Notifier = (e: any) => any;
 
 // Query client retry function decides when and how many times a request should be retried
 const retry = (failureCount: number, error: Error) => {
-  // do not retry if the request was not authorized
-  // the user is probably not signed in
+  const response = (error as AxiosError)?.response;
   const codes = [
     StatusCodes.UNAUTHORIZED,
     StatusCodes.NOT_FOUND,
     StatusCodes.BAD_REQUEST,
-    StatusCodes.FORBIDDEN]
-  const reasons = codes.map(code =>
-    getReasonPhrase(code)
-  );
+    StatusCodes.FORBIDDEN,
+    StatusCodes.INTERNAL_SERVER_ERROR,
+  ];
 
-  if (reasons.includes(error.message) || reasons.includes(error.name)) {
-    return false;
+  if (response) {
+    // do not retry if the request was not authorized
+    // the user is probably not signed in
+    if (codes.includes(response.status)) {
+      return false;
+    }
+
+    return failureCount < 3;
   }
-  return failureCount < 3;
+
+  // never retry -> this might be a code error
+  return false;
 };
 
 export default (config: Partial<QueryClientConfig>) => {

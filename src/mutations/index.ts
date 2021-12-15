@@ -6,7 +6,7 @@ import flagsMutations from './itemFlag';
 import itemLoginMutations from './itemLogin';
 import itemMembershipMutations from './membership';
 import chatMutations from './chat';
-import itemCategoryMutations from './itemCategory'
+import itemCategoryMutations from './itemCategory';
 import { QueryClientConfig } from '../types';
 
 const configureMutations = (

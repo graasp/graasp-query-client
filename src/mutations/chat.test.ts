@@ -1,7 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
 import nock from 'nock';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import Cookies from 'js-cookie';
+import { StatusCodes } from 'http-status-codes';
 import { buildPostItemChatMessageRoute } from '../api/routes';
 import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
 import {
@@ -13,6 +14,8 @@ import {
 import { buildItemChatKey, MUTATION_KEYS } from '../config/keys';
 import { REQUEST_METHODS } from '../api/utils';
 import { postItemChatMessageRoutine } from '../routines';
+
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Chat Mutations', () => {
   const itemId = ITEMS[0].id;
@@ -81,10 +84,11 @@ describe('Chat Mutations', () => {
 
         // verify cache keys
         expect(queryClient.getQueryState(chatKey)?.isInvalidated).toBeTruthy();
-        expect(mockedNotifier).toHaveBeenCalledWith({
-          type: postItemChatMessageRoutine.FAILURE,
-          payload: { error: new Error(ReasonPhrases.UNAUTHORIZED) },
-        });
+        expect(mockedNotifier).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: postItemChatMessageRoutine.FAILURE,
+          }),
+        );
       });
     });
   });

@@ -1,5 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { List } from 'immutable';
 import { act } from 'react-test-renderer';
@@ -15,11 +14,15 @@ import { REQUEST_METHODS } from '../api/utils';
 import { buildItemTagsKey, MUTATION_KEYS } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
 import { ItemTag } from '../types';
+import Cookies from 'js-cookie';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
   notifier: mockedNotifier,
 });
+
+jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
+
 describe('Item Tag Mutations', () => {
   afterEach(() => {
     queryClient.clear();
@@ -97,10 +100,11 @@ describe('Item Tag Mutations', () => {
       });
 
       expect(queryClient.getQueryState(itemTagKey)?.isInvalidated).toBeTruthy();
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: postItemTagRoutine.FAILURE,
-        payload: { error: new Error(ReasonPhrases.UNAUTHORIZED) },
-      });
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: postItemTagRoutine.FAILURE,
+        }),
+      );
     });
   });
 
@@ -170,10 +174,11 @@ describe('Item Tag Mutations', () => {
       const data = queryClient.getQueryState(itemTagKey);
       expect(data?.isInvalidated).toBeTruthy();
       expect((data?.data as List<ItemTag>)?.toJS()).toEqual(ITEM_TAGS);
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: deleteItemTagRoutine.FAILURE,
-        payload: { error: new Error(ReasonPhrases.UNAUTHORIZED) },
-      });
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: deleteItemTagRoutine.FAILURE,
+        }),
+      );
     });
   });
 });
