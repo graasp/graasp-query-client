@@ -5,22 +5,6 @@ import { UserIsSignedOut } from '../config/errors';
 
 const configureAxios = () => {
   axios.defaults.withCredentials = true;
-
-  // axios.interceptors.request.use((config) => {
-
-  //     // preventive throw for private endpoints
-  //     if (!config?.url?.includes('/p/') && !isUserAuthenticated()) {
-  //         // return Promise.reject(new Error('User is not authenticated'));
-
-  //         throw new Error('User is not authenticated')
-  //     }
-
-  //     return config;
-  // }, (e) => {
-  //     console.log(e)
-  //     return Promise.reject(e);
-  // });
-
   return axios;
 };
 
