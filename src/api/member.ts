@@ -73,7 +73,9 @@ export const editMember = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .patch(`${API_HOST}/${buildPatchMember(payload.id)}`, { extra: payload.extra })
+      .patch(`${API_HOST}/${buildPatchMember(payload.id)}`, {
+        extra: payload.extra,
+      })
       .then(({ data }) => data),
   );
 

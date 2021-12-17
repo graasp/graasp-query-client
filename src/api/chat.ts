@@ -1,14 +1,20 @@
 import { PartialChatMessage, QueryClientConfig, UUID } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
-import { buildGetItemChatRoute, buildPostItemChatMessageRoute } from './routes';
+import configureAxios, {
+  fallbackToPublic,
+  verifyAuthentication,
+} from './axios';
+import {
+  buildGetItemChatRoute,
+  buildGetPublicItemChatRoute,
+  buildPostItemChatMessageRoute,
+} from './routes';
 
 const axios = configureAxios();
 
 export const getItemChat = async (id: UUID, { API_HOST }: QueryClientConfig) =>
-  verifyAuthentication(() =>
-    axios
-      .get(`${API_HOST}/${buildGetItemChatRoute(id)}`)
-      .then(({ data }) => data),
+  fallbackToPublic(
+    () => axios.get(`${API_HOST}/${buildGetItemChatRoute(id)}`),
+    () => axios.get(`${API_HOST}/${buildGetPublicItemChatRoute(id)}`),
   );
 
 export const postItemChatMessage = async (

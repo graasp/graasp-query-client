@@ -1,5 +1,8 @@
 import { QueryClientConfig, UUID } from '../types';
-import configureAxios, { fallbackToPublic, verifyAuthentication } from './axios';
+import configureAxios, {
+  fallbackToPublic,
+  verifyAuthentication,
+} from './axios';
 import {
   buildGetCategoriesRoute,
   buildGetItemCategoriesRoute,

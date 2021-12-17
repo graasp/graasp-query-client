@@ -35,14 +35,10 @@ import configureAxios, {
 
 const axios = configureAxios();
 
-export const getItem = (
-  id: UUID,
-  options: { withMemberships?: boolean },
-  { API_HOST }: QueryClientConfig,
-) =>
+export const getItem = (id: UUID, { API_HOST }: QueryClientConfig) =>
   fallbackToPublic(
-    () => axios.get(`${API_HOST}/${buildGetItemRoute(id, options)}`),
-    () => axios.get(`${API_HOST}/${buildGetPublicItemRoute(id, options)}`),
+    () => axios.get(`${API_HOST}/${buildGetItemRoute(id)}`),
+    () => axios.get(`${API_HOST}/${buildGetPublicItemRoute(id)}`),
   );
 
 export const getItems = async (ids: UUID[], { API_HOST }: QueryClientConfig) =>
@@ -123,7 +119,7 @@ export const getParents = async (
 ) => {
   const parentIds = getParentsIdsFromPath(path, { ignoreSelf: true });
   if (parentIds.length) {
-    return Promise.all(parentIds.map((id) => getItem(id, {}, config)));
+    return Promise.all(parentIds.map((id) => getItem(id, config)));
   }
   return [];
 };
@@ -244,12 +240,12 @@ export const recycleItems = async (
   );
 
 export const getPublicItemsWithTag = async (
-  options: { tagId: UUID; withMemberships?: boolean },
+  options: { tagId: UUID },
   { API_HOST }: QueryClientConfig,
 ) =>
   axios
     .get(`${API_HOST}/${buildGetPublicItemsWithTag(options)}`)
-    .then(({ data }) => data)
+    .then(({ data }) => data);
 
 export const restoreItems = async (
   itemIds: UUID[],

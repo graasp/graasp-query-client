@@ -480,61 +480,6 @@ describe('Items Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(Map(response));
     });
-
-    describe('withMemberships=true', () => {
-      const itemWithMemberships = {
-        ...response,
-        itemMemberships: ITEM_MEMBERSHIPS_RESPONSE,
-      };
-      const hookWithMemberships = () =>
-        hooks.useItem(id, { withMemberships: true });
-      const routeWithMemberships = `/${buildGetItemRoute(id, {
-        withMemberships: true,
-      })}`;
-
-      it(`Get item with memberships`, async () => {
-        const endpoints = [
-          {
-            route: routeWithMemberships,
-            response: itemWithMemberships,
-          },
-        ];
-        const { data, isSuccess } = await mockHook({
-          hook: hookWithMemberships,
-          endpoints,
-          wrapper,
-        });
-
-        expect(isSuccess).toBeTruthy();
-        expect((data as Record<Item>).toJS()).toEqual(itemWithMemberships);
-        // verify cache keys
-        expect(queryClient.getQueryData(key)).toEqual(Map(itemWithMemberships));
-      });
-
-      it(`Fallback to public`, async () => {
-        const endpoints = [
-          {
-            route: routeWithMemberships,
-            response: UNAUTHORIZED_RESPONSE,
-            statusCode: StatusCodes.UNAUTHORIZED,
-          },
-          {
-            route: `/${buildGetPublicItemRoute(id, { withMemberships: true })}`,
-            response: itemWithMemberships,
-          },
-        ];
-        const { data, isSuccess } = await mockHook({
-          hook: hookWithMemberships,
-          endpoints,
-          wrapper,
-        });
-
-        expect(isSuccess).toBeTruthy();
-        expect((data as Record<Item>).toJS()).toEqual(itemWithMemberships);
-        // verify cache keys
-        expect(queryClient.getQueryData(key)).toEqual(Map(itemWithMemberships));
-      });
-    });
   });
 
   describe('useItems', () => {
@@ -542,7 +487,7 @@ describe('Items Hooks', () => {
       const response = ITEMS[0];
       const { id } = response;
       // use single item call
-      const route = `/${buildGetItemRoute(id, { withMemberships: false })}`;
+      const route = `/${buildGetItemRoute(id)}`;
       const endpoints = [{ route, response }];
       const hook = () => hooks.useItems([id]);
       const { data } = await mockHook({ endpoints, hook, wrapper });
