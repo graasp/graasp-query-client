@@ -247,11 +247,9 @@ export const getPublicItemsWithTag = async (
   options: { tagId: UUID; withMemberships?: boolean },
   { API_HOST }: QueryClientConfig,
 ) =>
-  verifyAuthentication(() =>
-    axios
-      .get(`${API_HOST}/${buildGetPublicItemsWithTag(options)}`)
-      .then(({ data }) => data),
-  );
+  axios
+    .get(`${API_HOST}/${buildGetPublicItemsWithTag(options)}`)
+    .then(({ data }) => data)
 
 export const restoreItems = async (
   itemIds: UUID[],
