@@ -6,12 +6,12 @@ import configureAxios, {
 import {
   buildGetCategoriesRoute,
   buildGetItemCategoriesRoute,
-  buildGetItemsInCategoryRoute,
   buildPostItemCategoryRoute,
   buildDeleteItemCategoryRoute,
   GET_CATEGORY_TYPES_ROUTE,
   buildGetPublicItemCategoriesRoute,
   buildGetCategoryRoute,
+  buildGetItemsByCategoriesRoute,
 } from './routes';
 
 const axios = configureAxios();
@@ -44,12 +44,12 @@ export const getItemCategories = async (
     () => axios.get(`${API_HOST}/${buildGetPublicItemCategoriesRoute(itemId)}`),
   );
 
-export const getItemsForCategories = async (
+export const buildGetItemsForCategoriesRoute = async (
   categoryIds: UUID[],
   { API_HOST }: QueryClientConfig,
 ) =>
   axios
-    .get(`${API_HOST}/${buildGetItemsInCategoryRoute(categoryIds)}`)
+    .get(`${API_HOST}/${buildGetItemsByCategoriesRoute(categoryIds)}`)
     .then(({ data }) => data);
 
 // payload: itemId, categoryId

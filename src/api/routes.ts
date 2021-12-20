@@ -184,9 +184,9 @@ export const buildRestoreItemsRoute = (ids: UUID[]) =>
 
 export const GET_CATEGORY_TYPES_ROUTE = `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/category-types`;
 export const buildGetCategoriesRoute = (ids?: UUID[]) =>
-  `${PUBLIC_PREFIX}/${CATEGORIES_ROUTE}?${qs.stringify(
+  `${PUBLIC_PREFIX}/${CATEGORIES_ROUTE}${qs.stringify(
     { type: ids },
-    { arrayFormat: 'repeat' },
+    { arrayFormat: 'repeat', addQueryPrefix: true },
   )}`;
 export const buildGetCategoryRoute = (id: UUID) =>
   `${PUBLIC_PREFIX}/${CATEGORIES_ROUTE}/${id}`;
@@ -194,10 +194,10 @@ export const buildGetItemCategoriesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/categories`;
 export const buildGetPublicItemCategoriesRoute = (id: UUID) =>
   `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/${id}/categories`;
-export const buildGetItemsInCategoryRoute = (ids: UUID[]) =>
-  `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/with-categories?${qs.stringify(
-    { category: ids },
-    { arrayFormat: 'repeat' },
+export const buildGetItemsByCategoriesRoute = (ids: UUID[]) =>
+  `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/with-categories${qs.stringify(
+    { categoryId: ids },
+    { arrayFormat: 'repeat', addQueryPrefix: true },
   )}`;
 export const buildPostItemCategoryRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/categories`;

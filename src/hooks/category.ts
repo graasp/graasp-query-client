@@ -57,7 +57,7 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildItemsByCategoriesKey(categoryIds),
       queryFn: () =>
-        Api.getItemsForCategories(categoryIds, queryConfig).then((data) =>
+        Api.buildGetItemsForCategoriesRoute(categoryIds, queryConfig).then((data) =>
           List(data),
         ),
       ...defaultOptions,
