@@ -185,7 +185,7 @@ export const buildRestoreItemsRoute = (ids: UUID[]) =>
 export const GET_CATEGORY_TYPES_ROUTE = `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/category-types`;
 export const buildGetCategoriesRoute = (ids?: UUID[]) =>
   `${PUBLIC_PREFIX}/${CATEGORIES_ROUTE}${qs.stringify(
-    { type: ids },
+    { typeId: ids },
     { arrayFormat: 'repeat', addQueryPrefix: true },
   )}`;
 export const buildGetCategoryRoute = (id: UUID) =>
@@ -201,8 +201,8 @@ export const buildGetItemsByCategoriesRoute = (ids: UUID[]) =>
   )}`;
 export const buildPostItemCategoryRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/categories`;
-export const buildDeleteItemCategoryRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/item-category/${id}`;
+export const buildDeleteItemCategoryRoute = (args: { itemId: UUID, itemCategoryId: UUID }) =>
+  `${ITEMS_ROUTE}/${args.itemId}/categories/${args.itemCategoryId}`;
 export const buildGetApiAccessTokenRoute = (id: UUID) =>
   `${APPS_ROUTE}/${id}/api-access-token`;
 export const buildGetPublicApiAccessTokenRoute = (id: UUID) =>

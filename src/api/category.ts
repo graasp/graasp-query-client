@@ -60,18 +60,16 @@ export const postItemCategory = async (
   verifyAuthentication(() =>
     axios
       .post(`${API_HOST}/${buildPostItemCategoryRoute(itemId)}`, {
-        itemId,
         categoryId,
       })
       .then(({ data }) => data),
   );
 
 export const deleteItemCategory = async (
-  entryId: UUID,
+  args: { itemCategoryId: UUID, itemId: UUID },
   { API_HOST }: QueryClientConfig,
-) =>
-  verifyAuthentication(() =>
-    axios
-      .delete(`${API_HOST}/${buildDeleteItemCategoryRoute(entryId)}`)
-      .then(({ data }) => data),
-  );
+) => verifyAuthentication(() =>
+  axios
+    .delete(`${API_HOST}/${buildDeleteItemCategoryRoute(args)}`)
+    .then(({ data }) => data),
+);
