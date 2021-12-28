@@ -253,6 +253,7 @@ export const API_ROUTES = {
   buildGetCategoriesRoute,
   buildGetCategoryRoute,
   buildGetItemCategoriesRoute,
+  buildGetItemsInCategoryRoute,
   buildPostItemCategoryRoute,
   buildDeleteItemCategoryRoute,
   buildUploadItemThumbnailRoute,
