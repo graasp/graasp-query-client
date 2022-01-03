@@ -5,7 +5,7 @@ import {
   buildGetCategoriesRoute,
   buildGetCategoryRoute,
   buildGetItemCategoriesRoute,
-  buildGetItemsInCategoryRoute,
+  buildGetItemsByCategoriesRoute,
   GET_CATEGORY_TYPES_ROUTE,
 } from '../api/routes';
 import {
@@ -195,7 +195,7 @@ describe('Category Hooks', () => {
 
   describe('useItemsInCategories', () => {
     const categoryIds = ['id1'];
-    const route = `/${buildGetItemsInCategoryRoute(categoryIds)}`;
+    const route = `/${buildGetItemsByCategoriesRoute(categoryIds)}`;
     const key = buildItemsByCategoriesKey(categoryIds);
 
     const hook = () => hooks.useItemsInCategories(categoryIds);

@@ -99,9 +99,9 @@ describe('Item Category Mutations', () => {
   });
 
   describe(MUTATION_KEYS.DELETE_ITEM_CATEGORY, () => {
-    const entryId = 'id1';
+    const itemCategoryId = 'id1';
     const itemId = 'item-id';
-    const route = `/${buildDeleteItemCategoryRoute(entryId)}`;
+    const route = `/${buildDeleteItemCategoryRoute({ itemId, itemCategoryId })}`;
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_CATEGORY);
     const key = buildItemCategoriesKey(itemId);
 
@@ -124,7 +124,7 @@ describe('Item Category Mutations', () => {
 
       await act(async () => {
         await mockedMutation.mutate({
-          entryId,
+          itemCategoryId,
           itemId,
         });
         await waitForMutation();
@@ -155,7 +155,7 @@ describe('Item Category Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ entryId, itemId });
+        await mockedMutation.mutate({ itemCategoryId, itemId });
         await waitForMutation();
       });
 

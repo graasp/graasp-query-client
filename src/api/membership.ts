@@ -4,10 +4,14 @@ import {
   buildEditItemMembershipRoute,
   buildDeleteItemMembershipRoute,
   buildGetItemMembershipsForItemsRoute,
+  buildGetPublicItemMembershipsForItemsRoute,
 } from './routes';
 import { MEMBER_NOT_FOUND_ERROR } from '../config/errors';
 import { Permission, QueryClientConfig, UUID } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import configureAxios, {
+  fallbackToPublic,
+  verifyAuthentication,
+} from './axios';
 
 const axios = configureAxios();
 
@@ -15,10 +19,12 @@ export const getMembershipsForItems = async (
   ids: UUID[],
   { API_HOST }: QueryClientConfig,
 ) =>
-  verifyAuthentication(() =>
-    axios
-      .get(`${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`)
-      .then(({ data }) => data),
+  fallbackToPublic(
+    () => axios.get(`${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`),
+    () =>
+      axios.get(
+        `${API_HOST}/${buildGetPublicItemMembershipsForItemsRoute(ids)}`,
+      ),
   );
 
 export const shareItemWith = async (

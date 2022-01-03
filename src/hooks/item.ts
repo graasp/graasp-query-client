@@ -217,7 +217,6 @@ export default (
       options?: {
         getUpdates?: boolean;
         placeholderData?: Item;
-        withMemberships?: boolean;
       },
     ) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
@@ -230,11 +229,7 @@ export default (
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getItem(
-            id,
-            { withMemberships: options?.withMemberships },
-            queryConfig,
-          ).then((data) => Map(data));
+          return Api.getItem(id, queryConfig).then((data) => Map(data));
         },
         enabled: Boolean(id),
         ...defaultOptions,
@@ -245,10 +240,7 @@ export default (
     },
 
     // todo: add optimisation to avoid fetching items already in cache
-    useItems: (
-      ids: UUID[],
-      options?: { getUpdates?: boolean; withMemberships?: boolean },
-    ) => {
+    useItems: (ids: UUID[], options?: { getUpdates?: boolean }) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       itemWsHooks?.useItemsUpdates(getUpdates ? ids : null);
@@ -259,11 +251,7 @@ export default (
           // eslint-disable-next-line no-nested-ternary
           ids
             ? ids.length === 1
-              ? Api.getItem(
-                  ids[0],
-                  { withMemberships: options?.withMemberships ?? false },
-                  queryConfig,
-                ).then((data) => List([data]))
+              ? Api.getItem(ids[0], queryConfig).then((data) => List([data]))
               : Api.getItems(ids, queryConfig).then((data) => List(data))
             : undefined,
         onSuccess: async (items: List<Item>) => {
@@ -355,10 +343,9 @@ export default (
 
     usePublicItemsWithTag: (
       tagId?: UUID,
-      options?: { withMemberships?: boolean; placeholderData?: List<Item> },
+      options?: { placeholderData?: List<Item> },
     ) => {
       const placeholderData = options?.placeholderData;
-      const withMemberships = options?.withMemberships;
       return useQuery({
         queryKey: buildPublicItemsWithTagKey(tagId),
         queryFn: () => {
@@ -367,7 +354,7 @@ export default (
           }
 
           return Api.getPublicItemsWithTag(
-            { tagId, withMemberships },
+            { tagId },
             queryConfig,
           ).then((data) => List(data));
         },

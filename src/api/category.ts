@@ -1,14 +1,17 @@
 import { QueryClientConfig, UUID } from '../types';
-import configureAxios, { fallbackToPublic, verifyAuthentication } from './axios';
+import configureAxios, {
+  fallbackToPublic,
+  verifyAuthentication,
+} from './axios';
 import {
   buildGetCategoriesRoute,
   buildGetItemCategoriesRoute,
-  buildGetItemsInCategoryRoute,
   buildPostItemCategoryRoute,
   buildDeleteItemCategoryRoute,
   GET_CATEGORY_TYPES_ROUTE,
   buildGetPublicItemCategoriesRoute,
   buildGetCategoryRoute,
+  buildGetItemsByCategoriesRoute,
 } from './routes';
 
 const axios = configureAxios();
@@ -41,12 +44,12 @@ export const getItemCategories = async (
     () => axios.get(`${API_HOST}/${buildGetPublicItemCategoriesRoute(itemId)}`),
   );
 
-export const getItemsForCategories = async (
+export const buildGetItemsForCategoriesRoute = async (
   categoryIds: UUID[],
   { API_HOST }: QueryClientConfig,
 ) =>
   axios
-    .get(`${API_HOST}/${buildGetItemsInCategoryRoute(categoryIds)}`)
+    .get(`${API_HOST}/${buildGetItemsByCategoriesRoute(categoryIds)}`)
     .then(({ data }) => data);
 
 // payload: itemId, categoryId
@@ -57,18 +60,16 @@ export const postItemCategory = async (
   verifyAuthentication(() =>
     axios
       .post(`${API_HOST}/${buildPostItemCategoryRoute(itemId)}`, {
-        itemId,
         categoryId,
       })
       .then(({ data }) => data),
   );
 
 export const deleteItemCategory = async (
-  entryId: UUID,
+  args: { itemCategoryId: UUID, itemId: UUID },
   { API_HOST }: QueryClientConfig,
-) =>
-  verifyAuthentication(() =>
-    axios
-      .delete(`${API_HOST}/${buildDeleteItemCategoryRoute(entryId)}`)
-      .then(({ data }) => data),
-  );
+) => verifyAuthentication(() =>
+  axios
+    .delete(`${API_HOST}/${buildDeleteItemCategoryRoute(args)}`)
+    .then(({ data }) => data),
+);
