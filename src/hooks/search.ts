@@ -12,7 +12,7 @@ export default (queryConfig: QueryClientConfig) => {
     staleTime,
   };
 
-  // get flag types
+  // get search results
   const useKeywordSearch = (range: string, keywords: string) =>
     useQuery({
       queryKey: buildSearchByKeywordKey(range, keywords),

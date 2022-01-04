@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import { buildGetItemsByKeywordRoute } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
-import { ITEMS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import { ITEMS, Ranges, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { buildSearchByKeywordKey } from '../config/keys';
 import { Item } from '../types';
 
@@ -18,7 +18,7 @@ describe('Keyword Search Hook', () => {
   });
 
   describe('useKeywordSearch', () => {
-    const range = 'all';
+    const range = Ranges.All;
     const keywords = 'cat&dog'
     const route = `/${buildGetItemsByKeywordRoute(range, keywords)}`;
     const key = buildSearchByKeywordKey(range, keywords);
