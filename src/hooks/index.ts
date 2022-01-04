@@ -8,7 +8,7 @@ import configureItemTagHooks from './itemTag';
 import configureMemberHooks from './member';
 import configureAppsHooks from './apps';
 import configureCategoryHooks from './category';
-import configureKeywordSearchHooks from './keywordSearch';
+import configureKeywordSearchHooks from './search';
 
 export default (
   queryClient: QueryClient,
