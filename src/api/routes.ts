@@ -194,7 +194,7 @@ export const buildGetItemCategoriesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/categories`;
 export const buildGetPublicItemCategoriesRoute = (id: UUID) =>
   `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/${id}/categories`;
-export const buildGetItemsByCategoriesRoute = (ids: UUID[]) =>
+export const buildGetItemsInCategoryRoute = (ids: UUID[]) =>
   `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/with-categories${qs.stringify(
     { categoryId: ids },
     { arrayFormat: 'repeat', addQueryPrefix: true },
