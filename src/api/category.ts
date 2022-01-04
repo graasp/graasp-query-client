@@ -11,7 +11,7 @@ import {
   GET_CATEGORY_TYPES_ROUTE,
   buildGetPublicItemCategoriesRoute,
   buildGetCategoryRoute,
-  buildGetItemsByCategoriesRoute,
+  buildGetItemsInCategoryRoute,
 } from './routes';
 
 const axios = configureAxios();
@@ -49,7 +49,7 @@ export const buildGetItemsForCategoriesRoute = async (
   { API_HOST }: QueryClientConfig,
 ) =>
   axios
-    .get(`${API_HOST}/${buildGetItemsByCategoriesRoute(categoryIds)}`)
+    .get(`${API_HOST}/${buildGetItemsInCategoryRoute(categoryIds)}`)
     .then(({ data }) => data);
 
 // payload: itemId, categoryId
