@@ -101,7 +101,10 @@ describe('Item Category Mutations', () => {
   describe(MUTATION_KEYS.DELETE_ITEM_CATEGORY, () => {
     const itemCategoryId = 'id1';
     const itemId = 'item-id';
-    const route = `/${buildDeleteItemCategoryRoute({ itemId, itemCategoryId })}`;
+    const route = `/${buildDeleteItemCategoryRoute({
+      itemId,
+      itemCategoryId,
+    })}`;
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_CATEGORY);
     const key = buildItemCategoriesKey(itemId);
 

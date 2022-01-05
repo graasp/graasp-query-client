@@ -1,5 +1,8 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
 import { List } from 'immutable';
+import { StatusCodes } from 'http-status-codes';
+import Cookies from 'js-cookie';
 import { mockHook, setUpTest } from '../../test/utils';
 import {
   buildGetCategoriesRoute,
@@ -22,8 +25,6 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
 import { Category, CategoryType, ItemCategory } from '../types';
-import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

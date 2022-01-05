@@ -5,18 +5,23 @@ import {
   WaitFor,
 } from '@testing-library/react-hooks';
 import nock from 'nock';
+import { StatusCodes } from 'http-status-codes';
 import { QueryObserverBaseResult, MutationObserverResult } from 'react-query';
 import configureHooks from '../src/hooks';
-import { QueryClientConfig } from '../src/types';
-import { API_HOST } from './constants';
+import { Notifier, QueryClientConfig } from '../src/types';
+import { API_HOST, WS_HOST } from './constants';
 import configureQueryClient from '../src/queryClient';
 import { REQUEST_METHODS } from '../src/api/utils';
-import { StatusCodes } from 'http-status-codes';
 
-type Args = { enableWebsocket?: boolean; notifier?: (payload: any) => void };
+type Args = { enableWebsocket?: boolean; notifier?: Notifier };
 
 export const setUpTest = (args?: Args) => {
-  const { enableWebsocket = false, notifier = () => {} } = args ?? {};
+  const {
+    enableWebsocket = false,
+    notifier = () => {
+      // do nothing
+    },
+  } = args ?? {};
   const queryConfig: QueryClientConfig = {
     API_HOST,
     retry: 0,
@@ -26,14 +31,11 @@ export const setUpTest = (args?: Args) => {
     SHOW_NOTIFICATIONS: false,
     notifier,
     enableWebsocket,
-    WS_HOST: 'ws host',
+    WS_HOST,
   };
 
-  const {
-    queryClient,
-    QueryClientProvider,
-    useMutation,
-  } = configureQueryClient(queryConfig);
+  const { queryClient, QueryClientProvider, useMutation } =
+    configureQueryClient(queryConfig);
 
   // configure hooks
   const hooks = configureHooks(queryClient, queryConfig);
@@ -47,6 +49,7 @@ export const setUpTest = (args?: Args) => {
 
 export type Endpoint = {
   route: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   response: any;
   method?: REQUEST_METHODS;
   statusCode?: number;
@@ -55,14 +58,16 @@ export type Endpoint = {
 
 interface MockArguments {
   endpoints: Endpoint[];
-  wrapper: ({ children }: { children: React.ReactNode }) => JSX.Element;
+  wrapper: (args: { children: React.ReactNode }) => JSX.Element;
 }
 
 interface MockHookArguments extends MockArguments {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   hook: () => any;
   enabled?: boolean;
 }
 interface MockMutationArguments extends MockArguments {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mutation: () => any;
 }
 
@@ -120,6 +125,7 @@ export const mockMutation = async ({
     waitFor,
   }: {
     // data, error and variables types are always different
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     result: RenderResult<MutationObserverResult<any, any, any>>;
     waitFor: WaitFor;
   } = renderHook(mutation, { wrapper });
@@ -131,6 +137,8 @@ export const mockMutation = async ({
 
 // util function to wait some time after a mutation is performed
 // this is necessary for success and error callback to fully execute
-export const waitForMutation = async (t: number = 500) => {
-  await new Promise((r) => setTimeout(r, t));
+export const waitForMutation = async (t = 500) => {
+  await new Promise((r) => {
+    setTimeout(r, t);
+  });
 };

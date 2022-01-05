@@ -2,9 +2,11 @@
   "extends": [
     "airbnb",
     "prettier",
-    "plugin:@typescript-eslint/eslint-recommended"
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
-  "plugins": ["import", "jsx-a11y", "react"],
+  "plugins": ["import", "jsx-a11y", "react", "react-hooks"],
   "ignorePatterns": ["dist"],
   "env": {
     "browser": true,
@@ -16,7 +18,7 @@
     "cy": true,
     "Cypress": true
   },
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "rules": {
     "no-underscore-dangle": [
       "error",
@@ -35,7 +37,7 @@
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [".js", ".jsx"]
+        "extensions": [".js", ".jsx", ".tsx", ".ts"]
       }
     ],
     "import/no-named-as-default": 0,
@@ -52,7 +54,7 @@
       }
     ],
     "react/state-in-constructor": ["error", "never"],
-    "no-console": [1, { "allow": ["error"] }],
+    "no-console": [1, { "allow": ["error", "debug"] }],
     "no-restricted-syntax": "off",
     "import/extensions": [
       "error",
@@ -62,6 +64,18 @@
         "jsx": "never",
         "ts": "never",
         "tsx": "never"
+      }
+    ],
+    "import/no-unresolved": [2, { "ignore": ["^react$"] }],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn", 
+      { 
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
       }
     ]
   },

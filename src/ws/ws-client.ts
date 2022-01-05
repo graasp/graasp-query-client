@@ -21,6 +21,7 @@ export type Channel = {
   name: string;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type UpdateHandlerFn = (data: any) => void;
 
 /**
@@ -139,33 +140,33 @@ export const configureWebsocketClient = (
         // if already subscribed, don't subscribe again, simply register handler in current
         addToMappedArray(subscriptions.current, channelKey, handler);
         return false;
-      } else {
-        // if WS not ready, add to early, otherwise add to waiting ack
-        const map =
-          ws.readyState === ws.OPEN
-            ? subscriptions.waitingAck
-            : subscriptions.early;
-        // create queue if doesn't exist for this channel, otherwise push to it
-        addToMappedArray(map, channelKey, handler);
-        return true;
       }
+      // if WS not ready, add to early, otherwise add to waiting ack
+      const map =
+        ws.readyState === ws.OPEN
+          ? subscriptions.waitingAck
+          : subscriptions.early;
+      // create queue if doesn't exist for this channel, otherwise push to it
+      addToMappedArray(map, channelKey, handler);
+      return true;
     },
 
     remove: (channel: Channel, handler: UpdateHandlerFn): boolean => {
       // helper to remove from a subscription map
+      // eslint-disable-next-line no-underscore-dangle
       const _remove = (
         map: Map<string, Array<UpdateHandlerFn>>,
         channelKey: string,
-        handler: UpdateHandlerFn,
+        removeHandler: UpdateHandlerFn,
       ): boolean => {
         const queue = map.get(channelKey);
         if (queue !== undefined) {
-          return arrayRemoveFirstEqual(queue, handler);
-        } else {
-          return false;
+          return arrayRemoveFirstEqual(queue, removeHandler);
         }
+        return false;
       };
       // helper to cleanup mapped array if it is empty
+      // eslint-disable-next-line no-underscore-dangle
       const _cleanup = (
         map: Map<string, Array<UpdateHandlerFn>>,
         channelKey: string,
@@ -183,15 +184,16 @@ export const configureWebsocketClient = (
       if (_remove(subscriptions.early, channelKey, handler)) {
         // no need to send unsubscribe if still in early
         return false;
-      } else if (_remove(subscriptions.waitingAck, channelKey, handler)) {
+      }
+      if (_remove(subscriptions.waitingAck, channelKey, handler)) {
         // if in waitingAck must send unsubscribe if just got emptied
         return _cleanup(subscriptions.waitingAck, channelKey);
-      } else if (_remove(subscriptions.current, channelKey, handler)) {
+      }
+      if (_remove(subscriptions.current, channelKey, handler)) {
         // if in current must send unsubscribe if just got emptied
         return _cleanup(subscriptions.current, channelKey);
-      } else {
-        return false;
       }
+      return false;
     },
 
     ack: (channel: Channel) => {

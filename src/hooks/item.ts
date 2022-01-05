@@ -1,4 +1,4 @@
-import { List, Map } from 'immutable';
+import { List, Map, Record } from 'immutable';
 import { QueryClient, useQuery, UseQueryResult } from 'react-query';
 import * as Api from '../api';
 import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
@@ -18,23 +18,24 @@ import {
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
 } from '../config/keys';
-import { Item, QueryClientConfig, UndefinedArgument, UUID } from '../types';
+import {
+  Item,
+  Member,
+  QueryClientConfig,
+  UndefinedArgument,
+  UUID,
+} from '../types';
 import { configureWsItemHooks, configureWsMembershipHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
 export default (
   queryClient: QueryClient,
   queryConfig: QueryClientConfig,
-  useCurrentMember: Function,
+  useCurrentMember: () => UseQueryResult,
   websocketClient?: WebsocketClient,
 ) => {
-  const {
-    retry,
-    cacheTime,
-    staleTime,
-    enableWebsocket,
-    notifier,
-  } = queryConfig;
+  const { retry, cacheTime, staleTime, enableWebsocket, notifier } =
+    queryConfig;
   const defaultOptions = {
     retry,
     cacheTime,
@@ -56,7 +57,7 @@ export default (
 
       const { data: currentMember } = useCurrentMember();
       itemWsHooks?.useOwnItemsUpdates(
-        getUpdates ? currentMember?.get('id') : null,
+        getUpdates ? (currentMember as Record<Member>)?.get('id') : null,
       );
 
       return useQuery({
@@ -193,7 +194,7 @@ export default (
 
       const { data: currentMember } = useCurrentMember();
       itemWsHooks?.useSharedItemsUpdates(
-        getUpdates ? currentMember?.get('id') : null,
+        getUpdates ? (currentMember as Record<Member>)?.get('id') : null,
       );
 
       return useQuery({
@@ -353,10 +354,9 @@ export default (
             throw new UndefinedArgument();
           }
 
-          return Api.getPublicItemsWithTag(
-            { tagId },
-            queryConfig,
-          ).then((data) => List(data));
+          return Api.getPublicItemsWithTag({ tagId }, queryConfig).then(
+            (data) => List(data),
+          );
         },
         onSuccess: async (items: List<Item>) => {
           // save items in their own key

@@ -50,7 +50,7 @@ const {
 } = MUTATION_KEYS;
 
 interface Value {
-  value: any;
+  value: unknown;
 }
 
 interface IdAndValue extends Value {
@@ -67,7 +67,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   // Utils functions to mutate react query data
-  const mutateItem = async ({ id, value }: { id: UUID; value: any }) => {
+  const mutateItem = async ({ id, value }: { id: UUID; value: unknown }) => {
     const itemKey = buildItemKey(id);
 
     await queryClient.cancelQueries(itemKey);
@@ -275,8 +275,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       const itemPath = itemData?.get('path');
 
       itemIds.forEach((id) => {
-        const itemKey = buildItemKey(id);
-        queryClient.invalidateQueries(itemKey);
+        const iKey = buildItemKey(id);
+        queryClient.invalidateQueries(iKey);
       });
 
       if (itemPath) {
@@ -489,10 +489,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       const itemData = context.item;
       if (itemData) {
-        const parentKey = getKeyForParentId(
-          getDirectParentId(itemData.get('path')),
-        );
-        queryClient.setQueryData(parentKey, context.originalParent);
+        const pKey = getKeyForParentId(getDirectParentId(itemData.get('path')));
+        queryClient.setQueryData(pKey, context.originalParent);
       }
       notifier?.({ type: moveItemRoutine.FAILURE, payload: { error } });
     },
@@ -522,7 +520,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         return itemData?.toJS();
       });
 
-      const path = itemsData[0].path;
+      const { path } = itemsData[0];
 
       const context = {
         ...(Boolean(itemsData) && {
@@ -545,7 +543,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       if (toData?.has('path')) {
         const toDataPath = toData.get('path');
         // update item's path
-        itemIds.forEach(async (id: any) => {
+        itemIds.forEach(async (id: UUID) => {
           context[id] = await mutateItem({
             id,
             value: (item: Record<Item>) =>
@@ -574,10 +572,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
         const itemData = context[id];
         if (itemData) {
-          const parentKey = getKeyForParentId(
+          const pKey = getKeyForParentId(
             getDirectParentId(itemData.get('path')),
           );
-          queryClient.setQueryData(parentKey, context.originalParent);
+          queryClient.setQueryData(pKey, context.originalParent);
         }
       });
       notifier?.({ type: moveItemsRoutine.FAILURE, payload: { error } });

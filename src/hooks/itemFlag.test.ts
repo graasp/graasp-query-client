@@ -1,5 +1,6 @@
-import Cookies from 'js-cookie';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import nock from 'nock';
+import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import { GET_FLAGS_ROUTE } from '../api/routes';

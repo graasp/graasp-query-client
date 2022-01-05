@@ -25,7 +25,9 @@ export const configureWsChatHooks = (
   useItemChatUpdates: (chatId: UUID | null) => {
     useEffect(() => {
       if (!chatId) {
-        return;
+        return () => {
+          // do nothing
+        };
       }
 
       const channel: Channel = { name: chatId, topic: TOPICS.CHAT_ITEM };
@@ -33,9 +35,8 @@ export const configureWsChatHooks = (
       const handler = (event: ChatEvent) => {
         if (event.kind === KINDS.ITEM) {
           const chatKey = buildItemChatKey(chatId);
-          const current: Record<Chat> | undefined = queryClient.getQueryData(
-            chatKey,
-          );
+          const current: Record<Chat> | undefined =
+            queryClient.getQueryData(chatKey);
 
           if (current) {
             switch (event.op) {
@@ -47,11 +48,12 @@ export const configureWsChatHooks = (
                 queryClient.setQueryData(chatKey, mutation);
                 break;
               }
+              default:
+                break;
             }
           }
         }
       };
-
       websocketClient.subscribe(channel, handler);
 
       return function cleanup() {

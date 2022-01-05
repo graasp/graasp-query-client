@@ -38,9 +38,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: ({ id }) => Api.deleteItemMembership({ id }, queryConfig),
     onMutate: ({ itemId, id }) => {
       const membershipsKey = buildItemMembershipsKey(itemId);
-      const memberships = queryClient.getQueryData<List<Membership>>(
-        membershipsKey,
-      );
+      const memberships =
+        queryClient.getQueryData<List<Membership>>(membershipsKey);
 
       queryClient.setQueryData(
         membershipsKey,

@@ -59,6 +59,15 @@ export interface ClientSubscribeOnly extends Message {
 }
 
 /**
+ * Client message type is union type of all client message subtypes
+ */
+export type ClientMessage =
+  | ClientDisconnect
+  | ClientSubscribe
+  | ClientUnsubscribe
+  | ClientSubscribeOnly;
+
+/**
  * Message sent by server as a response to a {@link ClientMessage}
  */
 export interface ServerResponse extends Message {
@@ -86,15 +95,6 @@ export interface ServerUpdate extends Message {
   channel: string;
   body: unknown;
 }
-
-/**
- * Client message type is union type of all client message subtypes
- */
-export type ClientMessage =
-  | ClientDisconnect
-  | ClientSubscribe
-  | ClientUnsubscribe
-  | ClientSubscribeOnly;
 
 /**
  * Server message type is union type of all server message subtypes

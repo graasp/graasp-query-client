@@ -37,10 +37,9 @@ export const configureWsMembershipHooks = (
 
         const handler = (event: MembershipEvent) => {
           if (event.kind === KINDS.ITEM) {
-            const current = queryClient.getQueryData<List<Membership>>(
-              itemMembershipsKey,
-            );
-            const membership = event.membership;
+            const current =
+              queryClient.getQueryData<List<Membership>>(itemMembershipsKey);
+            const { membership } = event;
 
             if (current && membership.itemId === itemId) {
               let mutation;

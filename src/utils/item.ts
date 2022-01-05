@@ -1,8 +1,8 @@
 /** Utils functions
  * todo: use utils from a dedicated repo */
 
-import type { UUID } from '../types';
 import crypto from 'crypto';
+import type { UUID } from '../types';
 
 // eslint-disable-next-line no-useless-escape
 export const transformIdForPath = (id: UUID) => id.replace(/\-/g, '_');

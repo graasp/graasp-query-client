@@ -201,8 +201,10 @@ export const buildGetItemsInCategoryRoute = (ids: UUID[]) =>
   )}`;
 export const buildPostItemCategoryRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/categories`;
-export const buildDeleteItemCategoryRoute = (args: { itemId: UUID, itemCategoryId: UUID }) =>
-  `${ITEMS_ROUTE}/${args.itemId}/categories/${args.itemCategoryId}`;
+export const buildDeleteItemCategoryRoute = (args: {
+  itemId: UUID;
+  itemCategoryId: UUID;
+}) => `${ITEMS_ROUTE}/${args.itemId}/categories/${args.itemCategoryId}`;
 export const buildGetApiAccessTokenRoute = (id: UUID) =>
   `${APPS_ROUTE}/${id}/api-access-token`;
 export const buildGetPublicApiAccessTokenRoute = (id: UUID) =>

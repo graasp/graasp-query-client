@@ -252,7 +252,7 @@ describe('Ws Item Hooks', () => {
       // check own items key does not contain deleted item
       const children = queryClient
         .getQueryData<List<Item>>(OWN_ITEMS_KEY)
-        ?.toJS();
+        ?.toJS() as Item[];
       expect(children?.find(({ id }) => id === itemId)).toBeFalsy();
     });
 
@@ -347,7 +347,7 @@ describe('Ws Item Hooks', () => {
       // check own items key does not contain deleted item
       const shared = queryClient
         .getQueryData<List<Item>>(SHARED_ITEMS_KEY)
-        ?.toJS();
+        ?.toJS() as Item[];
       expect(shared?.find(({ id }) => id === itemId)).toBeFalsy();
     });
 

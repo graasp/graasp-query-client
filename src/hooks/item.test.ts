@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
@@ -403,7 +404,7 @@ describe('Items Hooks', () => {
 
   describe('useItem', () => {
     const response = ITEMS[0];
-    const id = response.id;
+    const { id } = response;
     const route = `/${buildGetItemRoute(id)}`;
     const hook = () => hooks.useItem(id);
     const key = buildItemKey(id);
@@ -614,7 +615,7 @@ describe('Items Hooks', () => {
 
   describe('useItemLogin', () => {
     const response = ITEMS[0];
-    const id = response.id;
+    const { id } = response;
     const route = `/${buildGetItemLoginRoute(id)}`;
     const hook = () => hooks.useItemLogin(id);
     const key = buildItemLoginKey(id);
@@ -666,7 +667,7 @@ describe('Items Hooks', () => {
 
   describe('useFileContent', () => {
     const response = FILE_RESPONSE;
-    const id = ITEMS[0].id;
+    const { id } = ITEMS[0];
     const route = `/${buildDownloadFilesRoute(id)}`;
     const hook = () => hooks.useFileContent(id);
     const key = buildFileContentKey(id);
@@ -799,7 +800,7 @@ describe('Items Hooks', () => {
 
   describe('usePublicItemsWithTag', () => {
     const response = ITEMS;
-    const id = TAGS[0].id;
+    const { id } = TAGS[0];
     const route = `/${buildGetPublicItemsWithTag({ tagId: id })}`;
     const hook = () => hooks.usePublicItemsWithTag(id);
     const key = buildPublicItemsWithTagKey(id);

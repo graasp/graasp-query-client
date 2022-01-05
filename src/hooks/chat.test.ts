@@ -1,6 +1,8 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
 import { List, Map } from 'immutable';
+import Cookies from 'js-cookie';
 import { buildGetItemChatRoute } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
 import {
@@ -10,7 +12,6 @@ import {
 } from '../../test/constants';
 import { buildItemChatKey } from '../config/keys';
 import type { ChatMessage } from '../types';
-import Cookies from 'js-cookie';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

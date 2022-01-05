@@ -1,7 +1,9 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { List } from 'immutable';
 import { act } from 'react-test-renderer';
+import Cookies from 'js-cookie';
 import {
   ITEMS,
   ITEM_TAGS,
@@ -14,7 +16,6 @@ import { REQUEST_METHODS } from '../api/utils';
 import { buildItemTagsKey, MUTATION_KEYS } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
 import { ItemTag } from '../types';
-import Cookies from 'js-cookie';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({

@@ -8,10 +8,7 @@ const configureAxios = () => {
   return axios;
 };
 
-export const verifyAuthentication = (
-  request: () => Promise<AxiosResponse>,
-  returnValue?: any,
-) => {
+export function verifyAuthentication<R>(request: () => R, returnValue?: R) {
   if (!isUserAuthenticated()) {
     if (returnValue) {
       return returnValue;
@@ -21,7 +18,7 @@ export const verifyAuthentication = (
   }
 
   return request();
-};
+}
 
 const returnFallbackDataOrThrow = (error: Error, fallbackData: unknown) => {
   if (fallbackData) {
