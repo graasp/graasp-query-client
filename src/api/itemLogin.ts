@@ -28,11 +28,10 @@ export const postItemLoginSignIn = async (
   );
 
 export const getItemLogin = async (id: UUID, { API_HOST }: QueryClientConfig) =>
-  verifyAuthentication(() =>
-    axios
-      .get(`${API_HOST}/${buildGetItemLoginRoute(id)}`)
-      .then(({ data }) => data),
-  );
+  axios
+    .get(`${API_HOST}/${buildGetItemLoginRoute(id)}`)
+    .then(({ data }) => data)
+
 
 export const putItemLoginSchema = async (
   { itemId, loginSchema }: { itemId: UUID; loginSchema: string },
