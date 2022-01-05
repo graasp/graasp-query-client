@@ -2,7 +2,7 @@ import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { List } from 'immutable';
-import { buildGetItemTagsRoute, GET_TAGS_ROUTE } from '../api/routes';
+import { buildGetItemsTagsRoute, buildGetItemTagsRoute, GET_TAGS_ROUTE } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
 import { ITEMS, TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { buildItemTagsKey, TAGS_KEY } from '../config/keys';
@@ -95,5 +95,47 @@ describe('Item Tags Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
     });
+  });
+
+  describe('useItemsTags', () => {
+    const itemsIds = ITEMS.map(({ id }) => id);
+    const route = `/${buildGetItemsTagsRoute(itemsIds)}`;
+    const keys = itemsIds.map(itemId => buildItemTagsKey(itemId));
+
+    const hook = () => hooks.useItemsTags(itemsIds);
+
+    it(`Receive tags of given items`, async () => {
+      const response = itemsIds.map(() => TAGS);
+
+      const endpoints = [{ route, response }];
+      const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
+
+      expect((data as List<List<typeof TAGS[0]>>).toJS()).toEqual(response);
+
+      // verify cache keys
+      keys.forEach(key => expect(queryClient.getQueryData(key)).toEqual(List(TAGS)));
+
+      expect(isSuccess).toBeTruthy();
+    });
+    
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      keys.forEach(key => expect(queryClient.getQueryData(key)).toBeFalsy());
+    });    
   });
 });

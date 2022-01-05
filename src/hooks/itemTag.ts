@@ -1,6 +1,6 @@
 import { QueryClient, useQuery } from 'react-query';
 import { List } from 'immutable';
-import { QueryClientConfig, UndefinedArgument, UUID } from '../types';
+import { ItemTag, QueryClientConfig, UndefinedArgument, UUID } from '../types';
 import * as Api from '../api';
 import { buildItemTagsKey, buildManyItemTagsKey, TAGS_KEY } from '../config/keys';
 
@@ -42,11 +42,11 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
         return Api.getItemsTags(ids, queryConfig).then((data) => List(data));
       },
       onSuccess: async (tags) => {
-        // save memberships in their own key
+        // save tags in their own key
         ids?.forEach(async (id, idx) => {
           queryClient.setQueryData(
             buildItemTagsKey(id),
-            List(tags[idx]),
+            List(tags.get(idx) as ItemTag[]),
           );
         });
       },
