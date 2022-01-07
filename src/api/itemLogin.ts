@@ -17,21 +17,18 @@ export const postItemLoginSignIn = async (
   }: { itemId: UUID; username: string; memberId: UUID; password: string },
   { API_HOST }: QueryClientConfig,
 ) =>
-  verifyAuthentication(() =>
-    axios
-      .post(`${API_HOST}/${buildPostItemLoginSignInRoute(itemId)}`, {
-        username: username?.trim(),
-        memberId: memberId?.trim(),
-        password,
-      })
-      .then(({ data }) => data),
-  );
+  axios
+    .post(`${API_HOST}/${buildPostItemLoginSignInRoute(itemId)}`, {
+      username: username?.trim(),
+      memberId: memberId?.trim(),
+      password,
+    })
+    .then(({ data }) => data);
 
 export const getItemLogin = async (id: UUID, { API_HOST }: QueryClientConfig) =>
   axios
     .get(`${API_HOST}/${buildGetItemLoginRoute(id)}`)
-    .then(({ data }) => data)
-
+    .then(({ data }) => data);
 
 export const putItemLoginSchema = async (
   { itemId, loginSchema }: { itemId: UUID; loginSchema: string },

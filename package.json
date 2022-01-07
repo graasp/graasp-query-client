@@ -83,7 +83,6 @@
     "test:ci": "yarn && cd example && yarn && cd .. && yarn test",
     "deploy": "gh-pages -d example/build",
     "release": "standard-version",
-    "commit-msg": "commitlint --edit $1",
     "pre-commit": "pretty-quick --staged",
     "post-commit": "git status"
   },
