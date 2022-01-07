@@ -50,7 +50,7 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
           );
         });
       },
-      enabled: Boolean(ids),
+      enabled: Boolean(ids && ids.length),
       ...defaultOptions,
     });  
 
