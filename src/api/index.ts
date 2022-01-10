@@ -8,3 +8,4 @@ export * from './itemLogin';
 export * from './itemFlag';
 export * from './chat';
 export * from './category';
+export * from './search';

@@ -265,3 +265,10 @@ export const ITEM_CATEGORIES = [
     categoryId: 'category-id2',
   },
 ];
+
+export enum Ranges {
+  All = 'all',
+  Tag = 'tag',
+  Title = 'title',
+  Author = 'author'
+}

@@ -210,6 +210,9 @@ export const buildGetApiAccessTokenRoute = (id: UUID) =>
 export const buildGetPublicApiAccessTokenRoute = (id: UUID) =>
   `${PUBLIC_PREFIX}/${buildGetApiAccessTokenRoute(id)}`;
 
+export const buildGetItemsByKeywordRoute = (range: string, keywords: string) =>
+  `${ITEMS_ROUTE}/search/${range}/${keywords}`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   ITEMS_ROUTE,
@@ -265,6 +268,7 @@ export const API_ROUTES = {
   buildGetCategoryRoute,
   buildGetItemCategoriesRoute,
   buildGetItemsInCategoryRoute,
+  buildGetItemsByKeywordRoute,
   buildPostItemCategoryRoute,
   buildDeleteItemCategoryRoute,
   buildUploadItemThumbnailRoute,
