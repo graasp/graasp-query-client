@@ -1,11 +1,11 @@
 import React from 'react';
-import { renderHook, WaitFor } from '@testing-library/react-hooks';
-import { QueryClientConfig } from '../src/types';
-import { API_HOST } from './constants';
+import { renderHook } from '@testing-library/react-hooks';
+import { Notifier, QueryClientConfig } from '../src/types';
+import { API_HOST, WS_HOST } from './constants';
 import configureQueryClient from '../src/queryClient';
 import { Channel } from '../src/ws/ws-client';
 
-export type Handler = { channel: Channel; handler: Function };
+export type Handler = { channel: Channel; handler: (event: unknown) => void };
 
 const MockedWebsocket = (handlers: Handler[]) => ({
   subscribe: jest.fn((channel, handler) => {
@@ -17,10 +17,18 @@ const MockedWebsocket = (handlers: Handler[]) => ({
 
 export const setUpWsTest = (args?: {
   enableWebsocket?: boolean;
-  notifier?: (payload: any) => void;
+  notifier?: Notifier;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   configureWsHooks: Function;
 }) => {
-  const { notifier = () => {}, configureWsHooks = () => {} } = args ?? {};
+  const {
+    notifier = () => {
+      // do nothing
+    },
+    configureWsHooks = () => {
+      // do nothing
+    },
+  } = args ?? {};
   const queryConfig: QueryClientConfig = {
     API_HOST,
     retry: 0,
@@ -30,14 +38,11 @@ export const setUpWsTest = (args?: {
     SHOW_NOTIFICATIONS: false,
     notifier,
     enableWebsocket: true,
-    WS_HOST: 'ws host',
+    WS_HOST,
   };
 
-  const {
-    queryClient,
-    QueryClientProvider,
-    useMutation,
-  } = configureQueryClient(queryConfig);
+  const { queryClient, QueryClientProvider, useMutation } =
+    configureQueryClient(queryConfig);
 
   const handlers: Handler[] = [];
   const websocketClient = MockedWebsocket(handlers);
@@ -52,14 +57,14 @@ export const setUpWsTest = (args?: {
   return { hooks, wrapper, queryClient, useMutation, handlers };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const mockWsHook = async ({ hook, wrapper, enabled }: any) => {
   // wait for rendering hook
   const {
     result,
-    waitFor,
   }: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     result: any;
-    waitFor: WaitFor;
   } = renderHook(hook, { wrapper });
 
   // this hook is disabled, it will never fetch
@@ -67,13 +72,14 @@ export const mockWsHook = async ({ hook, wrapper, enabled }: any) => {
     return result.current;
   }
 
-  await waitFor(() => result.current);
-
   // return hook data
   return result.current;
 };
 
-export const getHandlerByChannel = (handlers: Handler[], channel: Channel) =>
+export const getHandlerByChannel = (
+  handlers: Handler[],
+  channel: Channel,
+): Handler | undefined =>
   handlers.find(
     ({ channel: thisChannel }) =>
       channel.name === thisChannel.name && channel.topic === thisChannel.topic,

@@ -105,6 +105,7 @@ export const editItem = async (
 
 export const getChildren = async (
   id: UUID,
+  // eslint-disable-next-line default-param-last
   ordered = true,
   { API_HOST }: QueryClientConfig,
 ) =>
@@ -196,7 +197,7 @@ export const copyItems = async (
 export const getSharedItems = async ({ API_HOST }: QueryClientConfig) =>
   verifyAuthentication(() =>
     axios
-      .get(`${API_HOST}/${SHARE_ITEM_WITH_ROUTE}`, {})
+      .get<Item[]>(`${API_HOST}/${SHARE_ITEM_WITH_ROUTE}`, {})
       .then(({ data }) => data),
   );
 
@@ -218,7 +219,7 @@ export const getFileContent = async (
 export const getRecycledItems = async ({ API_HOST }: QueryClientConfig) =>
   verifyAuthentication(() =>
     axios
-      .get(`${API_HOST}/${GET_RECYCLED_ITEMS_ROUTE}`)
+      .get<Item[]>(`${API_HOST}/${GET_RECYCLED_ITEMS_ROUTE}`)
       .then(({ data }) => data),
   );
 

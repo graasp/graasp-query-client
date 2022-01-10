@@ -1,4 +1,4 @@
-export type Notifier = (e: any) => void;
+export type Notifier = (e: unknown) => void;
 
 export type QueryClientConfig = {
   API_HOST: string;
@@ -25,7 +25,7 @@ export type Item = {
   path: string;
   type: string;
   description: string;
-  extra: {};
+  extra: unknown;
 };
 
 export type MemberExtra = {
@@ -80,6 +80,7 @@ export class UndefinedArgument extends Error {
     super();
     this.message = 'UnexpectedInput';
     this.name = 'UnexpectedInput';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.stack = (<any>new Error()).stack;
   }
 }

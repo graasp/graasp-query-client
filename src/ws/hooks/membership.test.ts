@@ -85,7 +85,7 @@ describe('Ws Membership Hooks', () => {
 
       const membershipsData = queryClient
         .getQueryData<List<Membership>>(membershipsKey)
-        ?.toJS();
+        ?.toJS() as Membership[];
       expect(
         membershipsData?.find(({ id }) => id === memberships.get(0)?.id),
       ).toBeFalsy();

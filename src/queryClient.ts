@@ -17,8 +17,6 @@ import configureMutations from './mutations';
 import type { QueryClientConfig } from './types';
 import { configureWebsocketClient } from './ws';
 
-export type Notifier = (e: any) => any;
-
 // Query client retry function decides when and how many times a request should be retried
 const retry = (failureCount: number, error: Error) => {
   const response = (error as AxiosError)?.response;

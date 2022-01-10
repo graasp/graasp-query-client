@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
 import nock from 'nock';
 import Cookies from 'js-cookie';
@@ -215,7 +216,10 @@ describe('Items Mutations', () => {
       const parentKey = getKeyForParentId(parentItem.id);
       const editedItem = ITEMS[3];
       const editedItemKey = buildItemKey(editedItem.id);
-      const payload = { id: editedItem.id, description: 'a new description' };
+      const editPayload = {
+        id: editedItem.id,
+        description: 'a new description',
+      };
       queryClient.setQueryData(editedItemKey, Map(editedItem));
       queryClient.setQueryData(parentKey, List([ITEMS[1]]));
 
@@ -237,7 +241,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(payload);
+        await mockedMutation.mutate(editPayload);
         await waitForMutation();
       });
 
@@ -802,9 +806,9 @@ describe('Items Mutations', () => {
       const route = `/${buildRecycleItemRoute(itemId)}`;
 
       // set data in cache
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, Map(item));
+      ITEMS.forEach((i) => {
+        const itemKey = buildItemKey(i.id);
+        queryClient.setQueryData(itemKey, Map(i));
       });
       queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
 
@@ -853,9 +857,9 @@ describe('Items Mutations', () => {
       const itemId = item.id;
       const route = `/${buildRecycleItemRoute(itemId)}`;
 
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, Map(item));
+      ITEMS.forEach((i) => {
+        const itemKey = buildItemKey(i.id);
+        queryClient.setQueryData(itemKey, Map(i));
       });
       const childrenKey = getKeyForParentId(null);
       queryClient.setQueryData(childrenKey, List(ITEMS));
@@ -909,9 +913,9 @@ describe('Items Mutations', () => {
       const route = `/${buildDeleteItemRoute(itemId)}`;
 
       // set data in cache
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, Map(item));
+      ITEMS.forEach((i) => {
+        const itemKey = buildItemKey(i.id);
+        queryClient.setQueryData(itemKey, Map(i));
       });
       queryClient.setQueryData(RECYCLED_ITEMS_KEY, List(ITEMS));
 
@@ -958,9 +962,9 @@ describe('Items Mutations', () => {
       const route = `/${buildDeleteItemRoute(itemId)}`;
 
       // set data in cache
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, Map(item));
+      ITEMS.forEach((i) => {
+        const itemKey = buildItemKey(i.id);
+        queryClient.setQueryData(itemKey, Map(i));
       });
       const childrenKey = RECYCLED_ITEMS_KEY;
       queryClient.setQueryData(childrenKey, List(ITEMS));
@@ -1008,9 +1012,9 @@ describe('Items Mutations', () => {
       const itemId = item.id;
       const route = `/${buildDeleteItemRoute(itemId)}`;
 
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, Map(item));
+      ITEMS.forEach((i) => {
+        const itemKey = buildItemKey(i.id);
+        queryClient.setQueryData(itemKey, Map(i));
       });
       const childrenKey = RECYCLED_ITEMS_KEY;
       queryClient.setQueryData(childrenKey, List(ITEMS));
@@ -1398,9 +1402,9 @@ describe('Items Mutations', () => {
       const route = `/${buildShareItemWithRoute(itemId)}`;
 
       // set data in cache
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, Map(item));
+      ITEMS.forEach((i) => {
+        const itemKey = buildItemKey(i.id);
+        queryClient.setQueryData(itemKey, Map(i));
       });
       queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
       queryClient.setQueryData(
@@ -1445,9 +1449,9 @@ describe('Items Mutations', () => {
       const route = `/${buildShareItemWithRoute(itemId)}`;
 
       // set data in cache
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, Map(item));
+      ITEMS.forEach((i) => {
+        const itemKey = buildItemKey(i.id);
+        queryClient.setQueryData(itemKey, Map(i));
       });
       queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
       queryClient.setQueryData(
@@ -1614,10 +1618,8 @@ describe('Items Mutations', () => {
 
       // check original parent is invalidated
       for (const item of items) {
-        const childrenKey = getKeyForParentId(getDirectParentId(item.path));
-        expect(
-          queryClient.getQueryState(childrenKey)?.isInvalidated,
-        ).toBeTruthy();
+        const cKey = getKeyForParentId(getDirectParentId(item.path));
+        expect(queryClient.getQueryState(cKey)?.isInvalidated).toBeTruthy();
       }
     });
 
@@ -1679,7 +1681,7 @@ describe('Items Mutations', () => {
   describe(MUTATION_KEYS.UPLOAD_ITEM_THUMBNAIL, () => {
     const mutation = () => useMutation(MUTATION_KEYS.UPLOAD_ITEM_THUMBNAIL);
     const item = ITEMS[0];
-    const id = item.id;
+    const { id } = item;
 
     it('Upload thumbnail', async () => {
       const route = `/${buildUploadItemThumbnailRoute(id)}`;

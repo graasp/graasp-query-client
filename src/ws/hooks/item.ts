@@ -35,7 +35,9 @@ export const configureWsItemHooks = (
   useItemUpdates: (itemId?: UUID | null) => {
     useEffect(() => {
       if (!itemId) {
-        return;
+        return () => {
+          // do nothing
+        };
       }
 
       const channel: Channel = { name: itemId, topic: TOPICS.ITEM };
@@ -43,10 +45,9 @@ export const configureWsItemHooks = (
 
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.SELF) {
-          const current: Record<Item> | undefined = queryClient.getQueryData(
-            itemKey,
-          );
-          const item = event.item;
+          const current: Record<Item> | undefined =
+            queryClient.getQueryData(itemKey);
+          const { item } = event;
 
           if (current?.get('id') === item.id) {
             switch (event.op) {
@@ -90,10 +91,9 @@ export const configureWsItemHooks = (
 
         const handler = (event: ItemEvent) => {
           if (event.kind === KINDS.SELF) {
-            const current: Record<Item> | undefined = queryClient.getQueryData(
-              itemKey,
-            );
-            const item = event.item;
+            const current: Record<Item> | undefined =
+              queryClient.getQueryData(itemKey);
+            const { item } = event;
 
             if (current?.get('id') === item.id) {
               switch (event.op) {
@@ -134,7 +134,9 @@ export const configureWsItemHooks = (
   useChildrenUpdates: (parentId?: UUID | null) => {
     useEffect(() => {
       if (!parentId) {
-        return;
+        return () => {
+          // do nothing
+        };
       }
 
       const channel: Channel = { name: parentId, topic: TOPICS.ITEM };
@@ -142,12 +144,11 @@ export const configureWsItemHooks = (
 
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.CHILD) {
-          const current = queryClient.getQueryData<List<Item>>(
-            parentChildrenKey,
-          );
+          const current =
+            queryClient.getQueryData<List<Item>>(parentChildrenKey);
 
           if (current) {
-            const item = event.item;
+            const { item } = event;
             let mutation;
 
             switch (event.op) {
@@ -196,7 +197,9 @@ export const configureWsItemHooks = (
   useOwnItemsUpdates: (userId?: UUID | null) => {
     useEffect(() => {
       if (!userId) {
-        return;
+        return () => {
+          // do nothing
+        };
       }
 
       const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
@@ -206,7 +209,7 @@ export const configureWsItemHooks = (
           const current = queryClient.getQueryData<List<Item>>(OWN_ITEMS_KEY);
 
           if (current) {
-            const item = event.item;
+            const { item } = event;
             let mutation;
 
             switch (event.op) {
@@ -255,19 +258,20 @@ export const configureWsItemHooks = (
   useSharedItemsUpdates: (userId?: UUID | null) => {
     useEffect(() => {
       if (!userId) {
-        return;
+        return () => {
+          // do nothing
+        };
       }
 
       const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
 
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.SHARED) {
-          const current: List<Item> | undefined = queryClient.getQueryData(
-            SHARED_ITEMS_KEY,
-          );
+          const current: List<Item> | undefined =
+            queryClient.getQueryData(SHARED_ITEMS_KEY);
 
           if (current) {
-            const item = event.item;
+            const { item } = event;
             let mutation;
 
             switch (event.op) {
@@ -293,6 +297,8 @@ export const configureWsItemHooks = (
 
                 break;
               }
+              default:
+                break;
             }
           }
         }

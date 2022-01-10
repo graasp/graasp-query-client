@@ -1,7 +1,8 @@
+/* eslint-disable import/no-extraneous-dependencies */
+import nock from 'nock';
 import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
 import { Record, List } from 'immutable';
-import nock from 'nock';
 import {
   buildDownloadAvatarRoute,
   buildGetMember,
@@ -148,7 +149,7 @@ describe('Member Hooks', () => {
       const endpoints = [
         {
           route: `/${buildGetMembersRoute(emptyIds)}`,
-          response: response,
+          response,
         },
       ];
       const hook = () => hooks.useMembers(emptyIds);

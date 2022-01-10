@@ -1,7 +1,9 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
 import { act } from '@testing-library/react-hooks';
 import { Map, Record } from 'immutable';
 import nock from 'nock';
+import Cookies from 'js-cookie';
 import {
   buildPatchMember,
   buildUploadAvatarRoute,
@@ -23,7 +25,6 @@ import { Member } from '../types';
 import { REQUEST_METHODS } from '../api/utils';
 import { THUMBNAIL_SIZES } from '../config/constants';
 import { uploadAvatarRoutine } from '../routines';
-import Cookies from 'js-cookie';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -158,7 +159,7 @@ describe('Member Mutations', () => {
   describe(MUTATION_KEYS.UPLOAD_AVATAR, () => {
     const mutation = () => useMutation(MUTATION_KEYS.UPLOAD_AVATAR);
     const member = MEMBER_RESPONSE;
-    const id = member.id;
+    const { id } = member;
 
     it('Upload avatar', async () => {
       const route = `/${buildUploadAvatarRoute(id)}`;
