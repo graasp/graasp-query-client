@@ -211,7 +211,7 @@ export const buildGetPublicApiAccessTokenRoute = (id: UUID) =>
   `${PUBLIC_PREFIX}/${buildGetApiAccessTokenRoute(id)}`;
 
 export const buildGetItemsByKeywordRoute = (range: string, keywords: string) =>
-  `${ITEMS_ROUTE}/search/${range}/${keywords}`;
+  `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/search/${range}/${keywords}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,
