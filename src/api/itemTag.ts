@@ -1,5 +1,6 @@
 import {
   buildDeleteItemTagRoute,
+  buildGetItemsTagsRoute,
   buildGetItemTagsRoute,
   buildPostItemTagRoute,
   GET_TAGS_ROUTE,
@@ -18,6 +19,12 @@ export const getItemTags = async (id: UUID, { API_HOST }: QueryClientConfig) =>
   verifyAuthentication(() =>
     axios
       .get(`${API_HOST}/${buildGetItemTagsRoute(id)}`)
+      .then(({ data }) => data),
+  );
+export const getItemsTags = async (ids: UUID[], { API_HOST }: QueryClientConfig) =>
+  verifyAuthentication(() =>
+    axios
+      .get(`${API_HOST}/${buildGetItemsTagsRoute(ids)}`)
       .then(({ data }) => data),
   );
 

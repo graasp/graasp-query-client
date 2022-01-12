@@ -137,6 +137,11 @@ export const buildSignInPath = (to: string) => {
 };
 export const SIGN_OUT_ROUTE = 'logout';
 export const buildGetItemTagsRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/tags`;
+export const buildGetItemsTagsRoute = (ids: UUID[]) =>
+`${ITEMS_ROUTE}/tags?${qs.stringify(
+  { id: ids },
+  { arrayFormat: 'repeat' },
+)}`;
 export const buildPostItemTagRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/tags`;
 export const buildPutItemLoginSchema = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema`;
@@ -149,7 +154,7 @@ export const buildDeleteItemTagRoute = ({
 }) => `${ITEMS_ROUTE}/${id}/tags/${tagId}`;
 export const buildPostItemLoginSignInRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login`;
-export const GET_TAGS_ROUTE = `${ITEMS_ROUTE}/tags`;
+export const GET_TAGS_ROUTE = `${ITEMS_ROUTE}/tags/list`;
 export const buildGetItemLoginRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema`;
 export const buildEditItemMembershipRoute = (id: UUID) =>

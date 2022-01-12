@@ -25,7 +25,7 @@ export default (
       memberHooks.useCurrentMember,
       websocketClient,
     ),
-    ...configureItemTagHooks(queryConfig),
+    ...configureItemTagHooks(queryConfig, queryClient),
     ...configureItemFlagHooks(queryConfig),
     ...configureCategoryHooks(queryConfig),
     ...configureKeywordSearchHooks(queryConfig),
