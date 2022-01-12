@@ -19,6 +19,10 @@ export type QueryClientConfig = {
 
 export type UUID = string;
 
+export type ItemSettings = {
+  hasThumbnail?: boolean
+}
+
 export type Item = {
   id: UUID;
   name: string;
@@ -26,6 +30,7 @@ export type Item = {
   type: string;
   description: string;
   extra: unknown;
+  settings?: ItemSettings;
 };
 
 export type MemberExtra = {

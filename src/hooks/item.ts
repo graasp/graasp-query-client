@@ -378,8 +378,12 @@ export default (
     }: {
       id?: UUID;
       size?: string;
-    }) =>
-      useQuery({
+    }) => {
+      let shouldFetch = true
+      if (id) {
+        shouldFetch = queryClient.getQueryData<Record<Item>>(buildItemKey(id))?.get('settings')?.hasThumbnail ?? true
+      }
+      return useQuery({
         queryKey: buildItemThumbnailKey({ id, size }),
         queryFn: async () => {
           if (!id) {
@@ -388,7 +392,8 @@ export default (
           return Api.downloadItemThumbnail({ id, size }, queryConfig);
         },
         ...defaultOptions,
-        enabled: Boolean(id),
-      }),
+        enabled: Boolean(id) && shouldFetch,
+      })
+    }
   };
 };
