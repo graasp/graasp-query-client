@@ -926,6 +926,28 @@ describe('Items Hooks', () => {
         expect(queryClient.getQueryData(key)).toBeFalsy();
       });
 
+      it.only(`Does not fetch if item has no thumbnail`, async () => {
+        const itemWithoutThumbnail = { ...item, settings: { hasThumbnail: false } }
+        queryClient.setQueryData(buildItemKey(itemWithoutThumbnail.id), Map(itemWithoutThumbnail));
+        const endpoints = [
+          {
+            route,
+            response,
+          },
+        ];
+        const { data, isFetched } = await mockHook({
+          endpoints,
+          hook: () => hooks.useItemThumbnail({ id: itemWithoutThumbnail.id }),
+          wrapper,
+          enabled: false,
+        });
+
+        expect(data).toBeFalsy();
+        expect(isFetched).toBeFalsy();
+        // verify cache keys
+        expect(queryClient.getQueryData(key)).toBeFalsy();
+      });
+
       it(`Unauthorized`, async () => {
         const endpoints = [
           {
