@@ -121,10 +121,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
 
   queryClient.setMutationDefaults(EDIT_ITEM, {
-    mutationFn: (item) => Api.editItem(item.id, item, queryConfig),
+    mutationFn: async (item) => ({
+      item: await Api.editItem(item.id, item, queryConfig),
+      groupId: item.groupId,
+      groupRoot: item.groupRoot
+    }),
     // newItem contains only changed values
-    onMutate: async ({ newItem,groupId,groupRoot
-}) => {
+    onMutate: async (newItem) => {
+      console.log(newItem)
       const itemKey = buildItemKey(newItem.id);
 
       // invalidate key
@@ -145,7 +149,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             // todo: remove toJS when moving to List<Map<Item>>
             return old.set(idx, newFullItem.toJS());
           },
-          groupId,groupRoot
+          groupId: newItem.groupId,
+          groupRoot: newItem.groupRoot
         }),
         item: await (async () => {
           queryClient.setQueryData(itemKey, newFullItem);
@@ -168,14 +173,17 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.setQueryData(itemKey, context.item);
       notifier?.({ type: editItemRoutine.FAILURE, payload: { error } });
     },
-    onSettled: (newItem, _error, _variables, context) => {
+    onSettled: async (newItem, _error, _variables, context) => {
       const { item: prevItem } = context;
+
       const parentKey = getKeyForParentId(
         getDirectParentId(prevItem.get('path')),
       );
-      queryClient.invalidateQueries(parentKey);
+      const key = newItem.groupRoot ? buildGroupItemsOwnKey(newItem.groupId) : parentKey;
+      queryClient.invalidateQueries(key);
 
-      const itemKey = buildItemKey(newItem.id);
+
+      const itemKey = buildItemKey(newItem.item.id);
       queryClient.invalidateQueries(itemKey);
     },
   });
@@ -292,11 +300,16 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
 
   queryClient.setMutationDefaults(COPY_ITEM, {
-    mutationFn: (payload) =>
-      Api.copyItem(payload, queryConfig).then((newItem) => ({
-        to: payload.to,
-        ...newItem,
-      })),
+    mutationFn: async (payload) =>
+      ({
+        item: await Api.copyItem(payload, queryConfig).then((newItem) => ({
+          to: payload.to,
+          ...newItem,
+        })),
+        groupId: payload.groupId,
+        groupRoot: payload.groupRoot
+      })
+      ,
     // cannot mutate because it needs the id
     onSuccess: () => {
       notifier?.({ type: copyItemRoutine.SUCCESS });
@@ -305,14 +318,21 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: copyItemRoutine.FAILURE, payload: { error } });
     },
     onSettled: (newItem) => {
-      const parentKey = getKeyForParentId(newItem?.to);
-      queryClient.invalidateQueries(parentKey);
+      const key = newItem.groupRoot ? buildGroupItemsOwnKey(newItem.groupId) : getKeyForParentId(newItem?.item.to);
+      queryClient.invalidateQueries(key);
     },
   });
 
   queryClient.setMutationDefaults(MOVE_ITEM, {
-    mutationFn: (payload) =>
-      Api.moveItem(payload, queryConfig).then(() => payload),
+    mutationFn: async (payload) =>
+      ({
+        item: await Api.moveItem(payload, queryConfig).then(() => ({
+          to: payload.to,
+          ...payload,
+        })),
+        groupId: payload.groupId,
+        groupRoot: payload.groupRoot
+      }),
     onMutate: async ({ id: itemId, to,groupId,
                        groupRoot }) => {
       const itemKey = buildItemKey(itemId);
@@ -372,14 +392,18 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: moveItemRoutine.FAILURE, payload: { error } });
     },
     // Always refetch after error or success:
-    onSettled: ({ id, to }) => {
-      const parentKey = getKeyForParentId(to);
-      queryClient.invalidateQueries(parentKey);
+    onSettled: (newItem) => {
 
-      const itemKey = buildItemKey(id);
+      const itemKey = buildItemKey(newItem?.item.id);
       queryClient.invalidateQueries(itemKey);
 
-      const itemData = queryClient.getQueryData(id) as Record<Item>;
+
+      const key = newItem.groupRoot ? buildGroupItemsOwnKey(newItem.groupId) : getKeyForParentId(newItem?.item.id);
+      queryClient.invalidateQueries(key);
+
+      console.log(newItem,itemKey,key)
+
+      const itemData = queryClient.getQueryData(newItem?.item.id) as Record<Item>;
       if (itemData) {
         const parentKey = getKeyForParentId(
           getDirectParentId(itemData.get('path')),
