@@ -927,8 +927,14 @@ describe('Items Hooks', () => {
       });
 
       it.only(`Does not fetch if item has no thumbnail`, async () => {
-        const itemWithoutThumbnail = { ...item, settings: { hasThumbnail: false } }
-        queryClient.setQueryData(buildItemKey(itemWithoutThumbnail.id), Map(itemWithoutThumbnail));
+        const itemWithoutThumbnail = {
+          ...item,
+          settings: { hasThumbnail: false },
+        };
+        queryClient.setQueryData(
+          buildItemKey(itemWithoutThumbnail.id),
+          Map(itemWithoutThumbnail),
+        );
         const endpoints = [
           {
             route,

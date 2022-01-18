@@ -20,8 +20,8 @@ export type QueryClientConfig = {
 export type UUID = string;
 
 export type ItemSettings = {
-  hasThumbnail?: boolean
-}
+  hasThumbnail?: boolean;
+};
 
 export type Item = {
   id: UUID;
@@ -34,9 +34,7 @@ export type Item = {
 };
 
 export type MemberExtra = {
-  recycleBin?: {
-    itemId: string;
-  };
+  hasAvatar?: boolean;
 };
 
 export type Member = {

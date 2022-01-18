@@ -285,4 +285,5 @@ export const API_ROUTES = {
   buildImportZipRoute,
   buildGetApiAccessTokenRoute,
   buildGetPublicApiAccessTokenRoute,
+  buildPublicDownloadFilesRoute
 };

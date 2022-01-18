@@ -659,7 +659,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         const key = buildItemThumbnailKey({ id, size });
         queryClient.invalidateQueries(key);
       });
-      queryClient.invalidateQueries(buildItemKey(id))
+      queryClient.invalidateQueries(buildItemKey(id));
     },
   });
 

@@ -1,4 +1,4 @@
-import { QueryClient, useQuery } from 'react-query';
+import { isError, QueryClient, useQuery } from 'react-query';
 import { List } from 'immutable';
 import { ItemTag, QueryClientConfig, UndefinedArgument, UUID } from '../types';
 import * as Api from '../api';
@@ -44,15 +44,18 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
       onSuccess: async (tags) => {
         // save tags in their own key
         ids?.forEach(async (id, idx) => {
-          queryClient.setQueryData(
-            buildItemTagsKey(id),
-            List(tags.get(idx) as ItemTag[]),
-          );
+          const itemTags = tags.get(idx)
+          if (!isError(itemTags)) {
+            queryClient.setQueryData(
+              buildItemTagsKey(id),
+              List(itemTags as ItemTag[]),
+            );
+          }
         });
       },
       enabled: Boolean(ids && ids.length),
       ...defaultOptions,
-    });  
+    });
 
   return { useTags, useItemTags, useItemsTags };
 };

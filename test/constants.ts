@@ -270,5 +270,5 @@ export enum Ranges {
   All = 'all',
   Tag = 'tag',
   Title = 'title',
-  Author = 'author'
+  Author = 'author',
 }
