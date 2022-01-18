@@ -926,7 +926,7 @@ describe('Items Hooks', () => {
         expect(queryClient.getQueryData(key)).toBeFalsy();
       });
 
-      it.only(`Does not fetch if item has no thumbnail`, async () => {
+      it(`Does not fetch if item has no thumbnail`, async () => {
         const itemWithoutThumbnail = {
           ...item,
           settings: { hasThumbnail: false },

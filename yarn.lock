@@ -1827,6 +1827,7 @@ __metadata:
     "@types/react": 17.0.38
     "@types/react-dom": 17.0.11
     "@types/react-query": 1.2.9
+    "@types/uuid": 8.3.4
     "@typescript-eslint/eslint-plugin": 5.9.0
     "@typescript-eslint/parser": 5.9.0
     axios: 0.24.0
@@ -3348,6 +3349,13 @@ __metadata:
   dependencies:
     source-map: ^0.6.1
   checksum: def36fd2c698a33d8f67f5e21aab926eb9bda2d7951eab544941e1feb1231f020ff1c210d840dcc0fc9f07b5d22ef8b566887ddec9753b8b9f7223cceaa70993
+  languageName: node
+  linkType: hard
+
+"@types/uuid@npm:8.3.4":
+  version: 8.3.4
+  resolution: "@types/uuid@npm:8.3.4"
+  checksum: 6f11f3ff70f30210edaa8071422d405e9c1d4e53abbe50fdce365150d3c698fe7bbff65c1e71ae080cbfb8fded860dbb5e174da96fdbbdfcaa3fb3daa474d20f
   languageName: node
   linkType: hard
 

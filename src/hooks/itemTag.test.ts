@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
+import { v4 } from 'uuid'
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { List } from 'immutable';
@@ -118,7 +119,25 @@ describe('Item Tags Hooks', () => {
 
       expect(isSuccess).toBeTruthy();
     });
-    
+
+    it(`Receive tags and save only for non-error tags`, async () => {
+      const response = [...itemsIds.map(() => TAGS), { statusCode: StatusCodes.FORBIDDEN }];
+      const idWithError = v4()
+      const routeWithError = `/${buildGetItemsTagsRoute([...itemsIds, idWithError])}`;
+      const hookWithError = () => hooks.useItemsTags([...itemsIds, idWithError]);
+
+      const endpoints = [{ route: routeWithError, response }];
+      const { data, isSuccess } = await mockHook({ endpoints, hook: hookWithError, wrapper });
+
+      expect((data as List<List<typeof TAGS[0]>>).toJS()).toEqual(response);
+
+      // verify cache keys
+      keys.forEach(key => expect(queryClient.getQueryData(key)).toEqual(List(TAGS)));
+      expect(queryClient.getQueryData(buildItemTagsKey(idWithError))).toBeFalsy()
+
+      expect(isSuccess).toBeTruthy();
+    });
+
     it(`Unauthorized`, async () => {
       const endpoints = [
         {
@@ -137,6 +156,6 @@ describe('Item Tags Hooks', () => {
       expect(isError).toBeTruthy();
       // verify cache keys
       keys.forEach(key => expect(queryClient.getQueryData(key)).toBeFalsy());
-    });    
+    });
   });
 });

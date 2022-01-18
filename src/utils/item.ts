@@ -2,7 +2,7 @@
  * todo: use utils from a dedicated repo */
 
 import crypto from 'crypto';
-import type { UUID } from '../types';
+import type { UUID, GraaspError } from '../types';
 
 // eslint-disable-next-line no-useless-escape
 export const transformIdForPath = (id: UUID) => id.replace(/\-/g, '_');
@@ -49,8 +49,13 @@ export const getDirectParentId = (path: string) => {
 export const hashItemsIds = (ids?: UUID[]) =>
   ids
     ? crypto
-        .createHash('sha1')
-        .update([...ids].sort().join(''))
-        .digest('hex')
-        .toString()
+      .createHash('sha1')
+      .update([...ids].sort().join(''))
+      .digest('hex')
+      .toString()
     : undefined;
+
+export const isError = (error: unknown) => {
+  const errorObject = error as GraaspError
+  return errorObject?.statusCode
+}
