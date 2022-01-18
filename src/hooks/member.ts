@@ -1,5 +1,5 @@
 import { QueryClient, useQuery } from 'react-query';
-import { Map, List } from 'immutable';
+import { Map, List, Record } from 'immutable';
 import * as Api from '../api';
 import {
   buildAvatarKey,
@@ -61,8 +61,15 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   }: {
     id?: UUID;
     size?: string;
-  }) =>
-    useQuery({
+  }) => {
+    let shouldFetch = true;
+    if (id) {
+      shouldFetch =
+        queryClient
+          .getQueryData<Record<Member>>(buildMemberKey(id))
+          ?.get('extra')?.hasAvatar ?? true;
+    }
+    return useQuery({
       queryKey: buildAvatarKey({ id, size }),
       queryFn: () => {
         if (!id) {
@@ -73,8 +80,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         );
       },
       ...defaultOptions,
-      enabled: Boolean(id),
+      enabled: Boolean(id) && shouldFetch,
     });
+  };
 
   return { useCurrentMember, useMember, useMembers, useAvatar };
 };

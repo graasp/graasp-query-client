@@ -19,7 +19,7 @@ describe('Keyword Search Hook', () => {
 
   describe('useKeywordSearch', () => {
     const range = Ranges.All;
-    const keywords = 'cat&dog'
+    const keywords = 'cat&dog';
     const route = `/${buildGetItemsByKeywordRoute(range, keywords)}`;
     const key = buildSearchByKeywordKey(range, keywords);
 

@@ -16,7 +16,10 @@ export default (queryConfig: QueryClientConfig) => {
   const useKeywordSearch = (range: string, keywords: string) =>
     useQuery({
       queryKey: buildSearchByKeywordKey(range, keywords),
-      queryFn: () => Api.getItemsByKeywords(range, keywords, queryConfig).then((data) => List(data)),
+      queryFn: () =>
+        Api.getItemsByKeywords(range, keywords, queryConfig).then((data) =>
+          List(data),
+        ),
       ...defaultOptions,
       enabled: Boolean(range) && Boolean(keywords),
     });

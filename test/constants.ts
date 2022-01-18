@@ -68,9 +68,6 @@ export const MEMBER_RESPONSE: Member = {
   name: 'username',
   email: 'username@graasp.org',
   extra: {
-    recycleBin: {
-      itemId: 'recycleBinId',
-    },
   },
 };
 
@@ -270,5 +267,5 @@ export enum Ranges {
   All = 'all',
   Tag = 'tag',
   Title = 'title',
-  Author = 'author'
+  Author = 'author',
 }

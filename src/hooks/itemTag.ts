@@ -3,6 +3,8 @@ import { List } from 'immutable';
 import { ItemTag, QueryClientConfig, UndefinedArgument, UUID } from '../types';
 import * as Api from '../api';
 import { buildItemTagsKey, buildManyItemTagsKey, TAGS_KEY } from '../config/keys';
+import { isError } from '../utils/item'
+
 
 export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
   const { retry, cacheTime, staleTime } = queryConfig;
@@ -44,15 +46,18 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
       onSuccess: async (tags) => {
         // save tags in their own key
         ids?.forEach(async (id, idx) => {
-          queryClient.setQueryData(
-            buildItemTagsKey(id),
-            List(tags.get(idx) as ItemTag[]),
-          );
+          const itemTags = tags.get(idx)
+          if (!isError(itemTags)) {
+            queryClient.setQueryData(
+              buildItemTagsKey(id),
+              List(itemTags as ItemTag[]),
+            );
+          }
         });
       },
       enabled: Boolean(ids && ids.length),
       ...defaultOptions,
-    });  
+    });
 
   return { useTags, useItemTags, useItemsTags };
 };

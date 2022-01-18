@@ -73,7 +73,7 @@ export const buildSearchByKeywordKey = (range: string, keywords: string) => [
   'keywordSearch',
   range,
   keywords,
-]
+];
 
 export const buildPublicItemsWithTagKey = (id?: UUID) => [
   ITEMS_KEY,
