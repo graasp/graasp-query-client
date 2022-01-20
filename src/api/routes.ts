@@ -138,10 +138,10 @@ export const buildSignInPath = (to: string) => {
 export const SIGN_OUT_ROUTE = 'logout';
 export const buildGetItemTagsRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/tags`;
 export const buildGetItemsTagsRoute = (ids: UUID[]) =>
-`${ITEMS_ROUTE}/tags?${qs.stringify(
-  { id: ids },
-  { arrayFormat: 'repeat' },
-)}`;
+  `${ITEMS_ROUTE}/tags?${qs.stringify(
+    { id: ids },
+    { arrayFormat: 'repeat' },
+  )}`;
 export const buildPostItemTagRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/tags`;
 export const buildPutItemLoginSchema = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema`;
@@ -285,5 +285,6 @@ export const API_ROUTES = {
   buildImportZipRoute,
   buildGetApiAccessTokenRoute,
   buildGetPublicApiAccessTokenRoute,
-  buildPublicDownloadFilesRoute
+  buildPublicDownloadFilesRoute,
+  buildGetPublicItemMembershipsForItemsRoute
 };

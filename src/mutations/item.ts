@@ -631,7 +631,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: uploadFileRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_data, _error, { id }) => {
-      const parentKey = buildItemChildrenKey(id);
+      const parentKey = getKeyForParentId(id);
       queryClient.invalidateQueries(parentKey);
     },
   });
