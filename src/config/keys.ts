@@ -126,4 +126,5 @@ export const MUTATION_KEYS = {
   DELETE_ITEM_CATEGORY: 'deleteItemCategory',
   UPLOAD_ITEM_THUMBNAIL: 'uploadItemThumbnail',
   UPLOAD_AVATAR: 'uploadAvatar',
+  IMPORT_ZIP: 'importZip',
 };

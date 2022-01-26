@@ -596,9 +596,18 @@ describe('Items Hooks', () => {
     it(`Merge private and public data if result with correct data and errors`, async () => {
       const hook = () => hooks.useItemMemberships(ids);
       const publicRoute = `/${buildGetPublicItemMembershipsForItemsRoute(ids)}`;
-      const publicResponse = [{ statusCode: StatusCodes.FORBIDDEN }, ITEM_MEMBERSHIPS_RESPONSE];
-      const privateResponse = [ITEM_MEMBERSHIPS_RESPONSE, { statusCode: StatusCodes.FORBIDDEN }];
-      const endpoints = [{ route, response: privateResponse }, { route: publicRoute, response: publicResponse }];
+      const publicResponse = [
+        { statusCode: StatusCodes.FORBIDDEN },
+        ITEM_MEMBERSHIPS_RESPONSE,
+      ];
+      const privateResponse = [
+        ITEM_MEMBERSHIPS_RESPONSE,
+        { statusCode: StatusCodes.FORBIDDEN },
+      ];
+      const endpoints = [
+        { route, response: privateResponse },
+        { route: publicRoute, response: publicResponse },
+      ];
       const { data } = await mockHook({
         endpoints,
         hook,
