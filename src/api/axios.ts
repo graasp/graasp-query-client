@@ -28,6 +28,29 @@ const returnFallbackDataOrThrow = (error: Error, fallbackData: unknown) => {
   throw error;
 };
 
+const fallbackForArray = async (
+  data: unknown,
+  publicRequest: () => Promise<AxiosResponse>,
+) => {
+  // the array contains an error
+  if (
+    Array.isArray(data) &&
+    data.some((d) =>
+      FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(d?.statusCode),
+    )
+  ) {
+    const publicCall = await publicRequest();
+    const { data: publicData } = publicCall;
+
+    // merge private and public valid data
+    const finalData = data.map((d, idx) =>
+      d?.statusCode ? publicData[idx] : d,
+    );
+    return finalData;
+  }
+  return data;
+};
+
 /**
  * Automatically send request depending on whether member is authenticated
  * The function fallback to public depending on status code or authentication
@@ -49,7 +72,7 @@ export const fallbackToPublic = (
   }
 
   return request()
-    .then(({ data }) => data)
+    .then(({ data }) => fallbackForArray(data, publicRequest))
     .catch((error) => {
       if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(error.response.status)) {
         return publicRequest()

@@ -11,6 +11,7 @@ import {
   buildGetItemMembershipsForItemsRoute,
   buildGetItemRoute,
   buildGetItemsRoute,
+  buildGetPublicItemMembershipsForItemsRoute,
   buildGetPublicItemRoute,
   buildGetPublicItemsWithTag,
   buildPublicDownloadFilesRoute,
@@ -589,6 +590,33 @@ describe('Items Hooks', () => {
       expect(data).toBeFalsy();
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+
+    // this tests fallbackForArray
+    it(`Merge private and public data if result with correct data and errors`, async () => {
+      const hook = () => hooks.useItemMemberships(ids);
+      const publicRoute = `/${buildGetPublicItemMembershipsForItemsRoute(ids)}`;
+      const publicResponse = [
+        { statusCode: StatusCodes.FORBIDDEN },
+        ITEM_MEMBERSHIPS_RESPONSE,
+      ];
+      const privateResponse = [
+        ITEM_MEMBERSHIPS_RESPONSE,
+        { statusCode: StatusCodes.FORBIDDEN },
+      ];
+      const endpoints = [
+        { route, response: privateResponse },
+        { route: publicRoute, response: publicResponse },
+      ];
+      const { data } = await mockHook({
+        endpoints,
+        hook,
+        wrapper,
+      });
+
+      expect((data as List<Membership[]>).toJS()).toEqual(response);
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toEqual(List(response));
     });
 
     it(`Unauthorized`, async () => {

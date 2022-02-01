@@ -47,7 +47,11 @@ import {
   getDirectParentId,
   transformIdForPath,
 } from '../utils/item';
-import { uploadFileRoutine, uploadItemThumbnailRoutine } from '../routines';
+import {
+  deleteItemsRoutine,
+  uploadFileRoutine,
+  uploadItemThumbnailRoutine,
+} from '../routines';
 import { THUMBNAIL_SIZES } from '../config/constants';
 
 const mockedNotifier = jest.fn();
@@ -1240,7 +1244,7 @@ describe('Items Mutations', () => {
       });
       queryClient.setQueryData(RECYCLED_ITEMS_KEY, List(ITEMS));
 
-      const response = OK_RESPONSE;
+      const response = [OK_RESPONSE];
 
       const endpoints = [
         {
@@ -1295,7 +1299,7 @@ describe('Items Mutations', () => {
       const childrenKey = RECYCLED_ITEMS_KEY;
       queryClient.setQueryData(childrenKey, List(ITEMS));
 
-      const response = OK_RESPONSE;
+      const response = [OK_RESPONSE];
 
       const endpoints = [
         {
@@ -1316,7 +1320,7 @@ describe('Items Mutations', () => {
         await waitForMutation();
       });
 
-      // verify item is still available
+      // verify items are not available
       // in real cases, the path should be different
       for (const itemId of itemIds) {
         const itemKey = buildItemKey(itemId);
@@ -1334,6 +1338,57 @@ describe('Items Mutations', () => {
       expect(
         queryClient.getQueryState(childrenKey)?.isInvalidated,
       ).toBeTruthy();
+    });
+
+    it('Errors trigger error notification', async () => {
+      const items = [ITEMS[3], ITEMS[4]];
+      const itemIds = items.map(({ id }) => id);
+      const route = `/${buildDeleteItemsRoute(itemIds)}`;
+
+      // set data in cache
+      ITEMS.forEach((item) => {
+        const itemKey = buildItemKey(item.id);
+        queryClient.setQueryData(itemKey, Map(item));
+      });
+      const childrenKey = RECYCLED_ITEMS_KEY;
+      queryClient.setQueryData(childrenKey, List(ITEMS));
+
+      const response = [
+        OK_RESPONSE,
+        {
+          code: 'GERR011',
+          data: items[1].id,
+          message: 'Too many descendants',
+          name: 'GERR011',
+          origin: 'core',
+          statusCode: 403,
+        },
+      ];
+
+      const endpoints = [
+        {
+          response,
+          method: REQUEST_METHODS.DELETE,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate(itemIds);
+        await waitForMutation();
+      });
+
+      // check notification trigger
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: deleteItemsRoutine.FAILURE,
+        payload: expect.anything(),
+      });
     });
 
     it('Unauthorized to delete an item', async () => {

@@ -4,7 +4,11 @@ import { v4 } from 'uuid'
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { List } from 'immutable';
-import { buildGetItemsTagsRoute, buildGetItemTagsRoute, GET_TAGS_ROUTE } from '../api/routes';
+import {
+  buildGetItemsTagsRoute,
+  buildGetItemTagsRoute,
+  GET_TAGS_ROUTE,
+} from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
 import { ITEMS, TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { buildItemTagsKey, TAGS_KEY } from '../config/keys';
@@ -102,7 +106,7 @@ describe('Item Tags Hooks', () => {
   describe('useItemsTags', () => {
     const itemsIds = ITEMS.map(({ id }) => id);
     const route = `/${buildGetItemsTagsRoute(itemsIds)}`;
-    const keys = itemsIds.map(itemId => buildItemTagsKey(itemId));
+    const keys = itemsIds.map((itemId) => buildItemTagsKey(itemId));
 
     const hook = () => hooks.useItemsTags(itemsIds);
 
@@ -115,7 +119,9 @@ describe('Item Tags Hooks', () => {
       expect((data as List<List<typeof TAGS[0]>>).toJS()).toEqual(response);
 
       // verify cache keys
-      keys.forEach(key => expect(queryClient.getQueryData(key)).toEqual(List(TAGS)));
+      keys.forEach((key) =>
+        expect(queryClient.getQueryData(key)).toEqual(List(TAGS)),
+      );
 
       expect(isSuccess).toBeTruthy();
     });

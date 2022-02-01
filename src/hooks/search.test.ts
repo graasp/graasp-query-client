@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';

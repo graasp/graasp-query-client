@@ -23,9 +23,9 @@ export const buildPostItemRoute = (parentId?: UUID) => {
 };
 export const buildDeleteItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/delete`;
 export const buildDeleteItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}/delete?${qs.stringify(
+  `${ITEMS_ROUTE}/delete${qs.stringify(
     { id: ids },
-    { arrayFormat: 'repeat' },
+    { arrayFormat: 'repeat', addQueryPrefix: true },
   )}`;
 export const buildGetChildrenRoute = (id: UUID, ordered: boolean) =>
   `${ITEMS_ROUTE}/${id}/children${qs.stringify(
@@ -138,10 +138,7 @@ export const buildSignInPath = (to: string) => {
 export const SIGN_OUT_ROUTE = 'logout';
 export const buildGetItemTagsRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/tags`;
 export const buildGetItemsTagsRoute = (ids: UUID[]) =>
-`${ITEMS_ROUTE}/tags?${qs.stringify(
-  { id: ids },
-  { arrayFormat: 'repeat' },
-)}`;
+  `${ITEMS_ROUTE}/tags?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildPostItemTagRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/tags`;
 export const buildPutItemLoginSchema = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema`;
@@ -168,9 +165,9 @@ export const buildPostItemFlagRoute = (id: UUID) =>
 export const buildRecycleItemRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/recycle`;
 export const buildRecycleItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}/recycle?${qs.stringify(
+  `${ITEMS_ROUTE}/recycle${qs.stringify(
     { id: ids },
-    { arrayFormat: 'repeat' },
+    { arrayFormat: 'repeat', addQueryPrefix: true },
   )}`;
 export const buildGetPublicItemsWithTag = (options: { tagId: UUID }) =>
   `${PUBLIC_PREFIX}/${ITEMS_ROUTE}?${qs.stringify(options)}`;
@@ -182,9 +179,9 @@ export const buildGetPublicMembersRoute = (ids: UUID[]) =>
 
 export const buildGetPublicMember = (id: UUID) => `p/${MEMBERS_ROUTE}/${id}`;
 export const buildRestoreItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}/restore?${qs.stringify(
+  `${ITEMS_ROUTE}/restore${qs.stringify(
     { id: ids },
-    { arrayFormat: 'repeat' },
+    { arrayFormat: 'repeat', addQueryPrefix: true },
   )}`;
 
 export const GET_CATEGORY_TYPES_ROUTE = `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/category-types`;
@@ -285,5 +282,6 @@ export const API_ROUTES = {
   buildImportZipRoute,
   buildGetApiAccessTokenRoute,
   buildGetPublicApiAccessTokenRoute,
-  buildPublicDownloadFilesRoute
+  buildPublicDownloadFilesRoute,
+  buildGetPublicItemMembershipsForItemsRoute
 };

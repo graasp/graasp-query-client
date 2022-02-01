@@ -21,7 +21,10 @@ export const getItemTags = async (id: UUID, { API_HOST }: QueryClientConfig) =>
       .get(`${API_HOST}/${buildGetItemTagsRoute(id)}`)
       .then(({ data }) => data),
   );
-export const getItemsTags = async (ids: UUID[], { API_HOST }: QueryClientConfig) =>
+export const getItemsTags = async (
+  ids: UUID[],
+  { API_HOST }: QueryClientConfig,
+) =>
   verifyAuthentication(() =>
     axios
       .get(`${API_HOST}/${buildGetItemsTagsRoute(ids)}`)

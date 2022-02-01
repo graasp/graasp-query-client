@@ -15,6 +15,7 @@ import {
   recycleItemsRoutine,
   restoreItemsRoutine,
   uploadItemThumbnailRoutine,
+  importZipRoutine,
 } from '../routines';
 import {
   buildItemChildrenKey,
@@ -28,7 +29,7 @@ import {
   buildItemThumbnailKey,
 } from '../config/keys';
 import { buildPath, getDirectParentId } from '../utils/item';
-import type { Item, QueryClientConfig, UUID } from '../types';
+import type { GraaspError, Item, QueryClientConfig, UUID } from '../types';
 import { THUMBNAIL_SIZES } from '../config/constants';
 
 const {
@@ -47,6 +48,7 @@ const {
   RESTORE_ITEMS,
   UPLOAD_ITEM_THUMBNAIL,
   COPY_PUBLIC_ITEM,
+  IMPORT_ZIP,
 } = MUTATION_KEYS;
 
 interface Value {
@@ -329,7 +331,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(DELETE_ITEMS, {
     mutationFn: (itemIds) =>
-      Api.deleteItems(itemIds, queryConfig).then(() => itemIds),
+      Api.deleteItems(itemIds, queryConfig).then((data) => List(data)),
 
     onMutate: async (itemIds: UUID[]) => {
       // get path from first item
@@ -349,8 +351,18 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       return previousItems;
     },
-    onSuccess: () => {
-      notifier?.({ type: deleteItemRoutine.SUCCESS });
+    onSuccess: (result) => {
+      const errors = result.filter(
+        (r: Item | GraaspError) => (r as GraaspError).statusCode,
+      );
+      if (!errors.isEmpty()) {
+        // todo: revert deleted items
+        return notifier?.({
+          type: deleteItemsRoutine.FAILURE,
+          payload: { error: errors.first() },
+        });
+      }
+      return notifier?.({ type: deleteItemsRoutine.SUCCESS });
     },
     onError: (error, itemIds: UUID[], context) => {
       const itemPath = context[itemIds[0]]?.get('path');
@@ -631,7 +643,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: uploadFileRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_data, _error, { id }) => {
-      const parentKey = buildItemChildrenKey(id);
+      const parentKey = getKeyForParentId(id);
       queryClient.invalidateQueries(parentKey);
     },
   });
@@ -660,6 +672,24 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         queryClient.invalidateQueries(key);
       });
       queryClient.invalidateQueries(buildItemKey(id));
+    },
+  });
+
+  queryClient.setMutationDefaults(IMPORT_ZIP, {
+    mutationFn: async ({ error }) => {
+      if (error) {
+        throw new Error(JSON.stringify(error));
+      }
+    },
+    onSuccess: () => {
+      notifier?.({ type: importZipRoutine.SUCCESS });
+    },
+    onError: (_error, { error }) => {
+      notifier?.({ type: importZipRoutine.FAILURE, payload: { error } });
+    },
+    onSettled: (_data, _error, { id }) => {
+      const parentKey = getKeyForParentId(id);
+      queryClient.invalidateQueries(parentKey);
     },
   });
 
