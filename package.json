@@ -80,7 +80,7 @@
     "hooks:install": "husky install",
     "predeploy": "cd example && yarn install && yarn run build",
     "test:watch": "jest --watchAll",
-    "test": "jest src --silent",
+    "test": "jest src/ --silent",
     "test:ci": "yarn && cd example && yarn && cd .. && yarn test",
     "deploy": "gh-pages -d example/build",
     "release": "standard-version",

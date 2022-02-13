@@ -96,6 +96,13 @@ export const buildAvatarKey = ({
   size?: string;
 }) => [MEMBERS_KEY, id, 'avatars', size];
 
+export const buildGetLikedItemsKey = (id: UUID) => [
+  MEMBERS_KEY,
+  id,
+  'likedItems',
+];
+export const buildGetLikeCountKey = (id: UUID) => [ITEMS_KEY, id, 'likeCount'];
+
 export const MUTATION_KEYS = {
   POST_ITEM: 'postItem',
   EDIT_ITEM: 'editItem',
@@ -127,4 +134,7 @@ export const MUTATION_KEYS = {
   UPLOAD_ITEM_THUMBNAIL: 'uploadItemThumbnail',
   UPLOAD_AVATAR: 'uploadAvatar',
   IMPORT_ZIP: 'importZip',
+  EXPORT_ZIP: 'downloadItem',
+  POST_ITEM_LIKE: 'postItemLike',
+  DELETE_ITEM_LIKE: 'deleteItemLike',
 };

@@ -9,3 +9,5 @@ export * from './itemFlag';
 export * from './chat';
 export * from './category';
 export * from './search';
+export * from './itemDownload';
+export * from './itemLike';
