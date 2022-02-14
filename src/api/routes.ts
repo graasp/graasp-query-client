@@ -283,5 +283,5 @@ export const API_ROUTES = {
   buildGetApiAccessTokenRoute,
   buildGetPublicApiAccessTokenRoute,
   buildPublicDownloadFilesRoute,
-  buildGetPublicItemMembershipsForItemsRoute
+  buildGetPublicItemMembershipsForItemsRoute,
 };

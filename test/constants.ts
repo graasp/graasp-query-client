@@ -67,8 +67,7 @@ export const MEMBER_RESPONSE: Member = {
   id: '42',
   name: 'username',
   email: 'username@graasp.org',
-  extra: {
-  },
+  extra: {},
 };
 
 const recycleBinItemId = 'recycleBinId';
