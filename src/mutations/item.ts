@@ -31,6 +31,7 @@ import {
 import { buildPath, getDirectParentId } from '../utils/item';
 import type { GraaspError, Item, QueryClientConfig, UUID } from '../types';
 import { THUMBNAIL_SIZES } from '../config/constants';
+import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
 
 const {
   POST_ITEM,
@@ -237,7 +238,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(RECYCLE_ITEMS, {
     mutationFn: (itemIds) =>
-      Api.recycleItems(itemIds, queryConfig).then(() => itemIds),
+      Api.recycleItems(itemIds, queryConfig).then((data) =>
+        throwIfArrayContainsErrorOrReturn(data),
+      ),
 
     onMutate: async (itemIds: UUID[]) => {
       // get path from first item
@@ -289,8 +292,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
 
   queryClient.setMutationDefaults(DELETE_ITEM, {
-    mutationFn: ([itemId]) =>
-      Api.deleteItem(itemId, queryConfig).then(() => itemId),
+    mutationFn: ([itemId]) => Api.deleteItem(itemId, queryConfig),
 
     onMutate: async ([itemId]) => {
       const key = RECYCLED_ITEMS_KEY;
@@ -331,7 +333,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(DELETE_ITEMS, {
     mutationFn: (itemIds) =>
-      Api.deleteItems(itemIds, queryConfig).then((data) => List(data)),
+      Api.deleteItems(itemIds, queryConfig).then((data) => {
+        throwIfArrayContainsErrorOrReturn(data);
+        return List(data);
+      }),
 
     onMutate: async (itemIds: UUID[]) => {
       // get path from first item
@@ -431,10 +436,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(COPY_ITEMS, {
     mutationFn: (payload) =>
-      Api.copyItems(payload, queryConfig).then((newItems) => ({
-        to: payload.to,
-        ...newItems,
-      })),
+      Api.copyItems(payload, queryConfig).then((newItems) => {
+        const items = throwIfArrayContainsErrorOrReturn(newItems);
+        return {
+          to: payload.to,
+          ...items,
+        };
+      }),
     // cannot mutate because it needs the id
     onSuccess: () => {
       notifier?.({ type: copyItemsRoutine.SUCCESS });
@@ -524,7 +532,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(MOVE_ITEMS, {
     mutationFn: (payload) =>
-      Api.moveItems(payload, queryConfig).then(() => payload),
+      Api.moveItems(payload, queryConfig).then((data) =>
+        throwIfArrayContainsErrorOrReturn(data),
+      ),
     onMutate: async ({ id: itemIds, to }) => {
       const itemsData = itemIds.map((id: UUID) => {
         const itemKey = buildItemKey(id);
@@ -695,7 +705,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(RESTORE_ITEMS, {
     mutationFn: (itemIds) =>
-      Api.restoreItems(itemIds, queryConfig).then(() => true),
+      Api.restoreItems(itemIds, queryConfig).then((data) => {
+        throwIfArrayContainsErrorOrReturn(data);
+      }),
 
     onMutate: async (itemIds) => {
       const key = RECYCLED_ITEMS_KEY;

@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes';
 import {
   Item,
   ItemLogin,
@@ -11,7 +12,12 @@ import {
 
 export const WS_HOST = 'ws://localhost:3000';
 export const API_HOST = 'http://localhost:3000';
-export const UNAUTHORIZED_RESPONSE = { some: 'error' };
+export const UNAUTHORIZED_RESPONSE = {
+  name: 'unauthorized',
+  code: 'ERRCODE',
+  message: 'unauthorized error message',
+  statusCode: StatusCodes.UNAUTHORIZED,
+};
 export const ITEMS: Item[] = [
   {
     id: '42',

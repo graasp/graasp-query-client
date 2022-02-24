@@ -1,10 +1,25 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { isUserAuthenticated } from './utils';
 import { FALLBACK_TO_PUBLIC_FOR_STATUS_CODES } from '../config/constants';
 import { UserIsSignedOut } from '../config/errors';
+import { isObject } from '../utils/util';
 
 const configureAxios = () => {
   axios.defaults.withCredentials = true;
+  // // eslint-disable-next-line arrow-body-style
+  // axios.interceptors.response.use((response) => {
+  //   // Any status code that lie within the range of 2xx cause this function to trigger
+  //   // Do something with response data
+  //   return response
+  //   // eslint-disable-next-line arrow-body-style
+  // }, (error) => {
+  //   // Any status codes that falls outside the range of 2xx cause this function to trigger
+  //   // Do something with response error
+
+  //   // return graasp error
+  //   console.log(error, error?.response)
+  //   return error?.response?.data
+  // })
   return axios;
 };
 
@@ -82,6 +97,21 @@ export const fallbackToPublic = (
 
       return returnFallbackDataOrThrow(error, fallbackData);
     });
+};
+
+// this function is used to purposely trigger an error for react-query
+// especially when the request returns positively with an array of errors (ie: copy many items)
+export const throwIfArrayContainsErrorOrReturn = (array: any[]) => {
+  const errors = array?.filter((value) => isObject(value) && value.statusCode);
+  if (errors.length) {
+    // suppose all errors are the same
+    // build axios error from error data received
+    const error = {
+      response: { data: errors[0] },
+    } as AxiosError;
+    throw error;
+  }
+  return array;
 };
 
 export default configureAxios;
