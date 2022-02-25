@@ -1,6 +1,7 @@
 import { QueryClient } from 'react-query';
 import { Map, Record } from 'immutable';
 import Cookies from 'js-cookie';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import * as Api from '../api';
 import {
   editMemberRoutine,
@@ -14,6 +15,7 @@ import {
 } from '../config/keys';
 import { Member, QueryClientConfig } from '../types';
 import { COOKIE_SESSION_NAME, THUMBNAIL_SIZES } from '../config/constants';
+import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -21,7 +23,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   queryClient.setMutationDefaults(MUTATION_KEYS.SIGN_OUT, {
     mutationFn: () => Api.signOut(queryConfig),
     onSuccess: () => {
-      notifier?.({ type: signOutRoutine.SUCCESS });
+      notifier?.({
+        type: signOutRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
+      });
       queryClient.resetQueries();
 
       // remove cookies from browser when the logout is confirmed
@@ -60,7 +65,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return { previousMember };
     },
     onSuccess: () => {
-      notifier?.({ type: editMemberRoutine.SUCCESS });
+      notifier?.({
+        type: editMemberRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.EDIT_MEMBER },
+      });
     },
     // If the mutation fails, use the context returned from onMutate to roll back
     onError: (error, _, context) => {
@@ -80,11 +88,15 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
    * @param {error} [error] error occured during the file uploading
    */
   queryClient.setMutationDefaults(MUTATION_KEYS.UPLOAD_AVATAR, {
-    mutationFn: async ({ error } = {}) => {
+    mutationFn: async ({ error, data } = {}) => {
+      throwIfArrayContainsErrorOrReturn(data);
       if (error) throw new Error(JSON.stringify(error));
     },
     onSuccess: () => {
-      notifier?.({ type: uploadAvatarRoutine.SUCCESS });
+      notifier?.({
+        type: uploadAvatarRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPLOAD_AVATAR },
+      });
     },
     onError: (_error, { error }) => {
       notifier?.({ type: uploadAvatarRoutine.FAILURE, payload: { error } });

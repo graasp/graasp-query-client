@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
 import nock from 'nock';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import Cookies from 'js-cookie';
 import { List, Map, Record } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
@@ -1756,8 +1757,8 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.FILE_UPLOAD, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.FILE_UPLOAD);
+  describe(MUTATION_KEYS.UPLOAD_FILES, () => {
+    const mutation = () => useMutation(MUTATION_KEYS.UPLOAD_FILES);
     const { id } = ITEMS[0];
 
     it('Upload one item', async () => {
@@ -1776,7 +1777,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id });
+        await mockedMutation.mutate({ data: [id], id });
         await waitForMutation();
       });
 
@@ -1787,6 +1788,7 @@ describe('Items Mutations', () => {
       // check notification trigger
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: uploadFileRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
       });
     });
 
@@ -2030,7 +2032,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id });
+        await mockedMutation.mutate({ id, data: [id] });
         await waitForMutation();
       });
 
@@ -2043,6 +2045,7 @@ describe('Items Mutations', () => {
       }
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: uploadItemThumbnailRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPLOAD_ITEM_THUMBNAIL },
       });
     });
 

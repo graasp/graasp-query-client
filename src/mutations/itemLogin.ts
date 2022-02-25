@@ -1,4 +1,5 @@
 import { QueryClient } from 'react-query';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import * as Api from '../api';
 import { putItemLoginRoutine, postItemLoginRoutine } from '../routines';
 import { MUTATION_KEYS, buildItemLoginKey } from '../config/keys';
@@ -23,7 +24,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   queryClient.setMutationDefaults(PUT_ITEM_LOGIN, {
     mutationFn: (payload) => Api.putItemLoginSchema(payload, queryConfig),
     onSuccess: () => {
-      notifier?.({ type: putItemLoginRoutine.SUCCESS });
+      notifier?.({
+        type: putItemLoginRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.PUT_ITEM_LOGIN },
+      });
     },
     onError: (error) => {
       notifier?.({ type: putItemLoginRoutine.FAILURE, payload: { error } });

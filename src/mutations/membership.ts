@@ -1,5 +1,6 @@
 import { QueryClient } from 'react-query';
 import { List } from 'immutable';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import * as Api from '../api';
 import {
   deleteItemMembershipRoutine,
@@ -20,7 +21,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: ({ id, permission }: { id: UUID; permission: string }) =>
       Api.editItemMembership({ id, permission }, queryConfig),
     onSuccess: () => {
-      notifier?.({ type: editItemMembershipRoutine.SUCCESS });
+      notifier?.({
+        type: editItemMembershipRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.EDIT_ITEM_MEMBERSHIP },
+      });
     },
     onError: (error) => {
       notifier?.({
@@ -49,7 +53,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return { memberships };
     },
     onSuccess: () => {
-      notifier?.({ type: deleteItemMembershipRoutine.SUCCESS });
+      notifier?.({
+        type: deleteItemMembershipRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_MEMBERSHIP },
+      });
     },
     onError: (error, { itemId }, context) => {
       const membershipsKey = buildItemMembershipsKey(itemId);

@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { act } from 'react-test-renderer';
 import { List } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { REQUEST_METHODS } from '../api/utils';
 import { buildItemCategoriesKey, MUTATION_KEYS } from '../config/keys';
@@ -65,6 +66,7 @@ describe('Item Category Mutations', () => {
       expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: postItemCategoryRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.POST_ITEM_CATEGORY },
       });
     });
     it('Unauthorized to post item category', async () => {

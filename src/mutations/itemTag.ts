@@ -1,5 +1,6 @@
 import { QueryClient } from 'react-query';
 import { List } from 'immutable';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { buildItemTagsKey, MUTATION_KEYS } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
 import * as Api from '../api';
@@ -12,7 +13,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: (payload) =>
       Api.postItemTag(payload, queryConfig).then(() => payload),
     onSuccess: () => {
-      notifier?.({ type: postItemTagRoutine.SUCCESS });
+      notifier?.({
+        type: postItemTagRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.POST_ITEM_TAG },
+      });
     },
     onError: (error) => {
       notifier?.({ type: postItemTagRoutine.FAILURE, payload: { error } });
@@ -42,7 +46,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return { itemTags: prevValue };
     },
     onSuccess: () => {
-      notifier?.({ type: deleteItemTagRoutine.SUCCESS });
+      notifier?.({
+        type: deleteItemTagRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_TAG },
+      });
     },
     onError: (error, { id }, context) => {
       const itemKey = buildItemTagsKey(id);

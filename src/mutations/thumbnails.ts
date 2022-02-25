@@ -1,8 +1,9 @@
 import { QueryClient } from 'react-query';
-import * as Api from '../api';
-import { editItemMembershipRoutine } from '../routines';
-import { buildItemMembershipsKey, MUTATION_KEYS } from '../config/keys';
-import { QueryClientConfig, UUID } from '../types';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
+import { buildItemKey, MUTATION_KEYS } from '../config/keys';
+import { QueryClientConfig } from '../types';
+import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
+import { uploadItemThumbnailRoutine } from '../routines';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -13,20 +14,26 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
    * @param {PERMISSION_LEVELS} permission permission level to apply
    */
   queryClient.setMutationDefaults(MUTATION_KEYS.UPLOAD_ITEM_THUMBNAIL, {
-    mutationFn: ({ id }: { id: UUID }) =>
-      Api.editItemMembership({ id, permission }, queryConfig),
-    onSuccess: () => {
-      notifier?.({ type: editItemMembershipRoutine.SUCCESS });
+    mutationFn: async ({ error, data }) => {
+      throwIfArrayContainsErrorOrReturn(data);
+      if (error) throw new Error(JSON.stringify(error));
     },
-    onError: (error) => {
+    onSuccess: () => {
       notifier?.({
-        type: editItemMembershipRoutine.FAILURE,
-        payload: { error },
+        type: uploadItemThumbnailRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPLOAD_ITEM_THUMBNAIL },
       });
     },
-    // Always refetch after error or success:
-    onSettled: (_data, _error, { itemId }) => {
-      queryClient.invalidateQueries(buildItemMembershipsKey(itemId));
+    onError: (axiosError, { error }) => {
+      notifier?.({
+        type: uploadItemThumbnailRoutine.FAILURE,
+        payload: { error: error ?? axiosError },
+      });
+    },
+    onSettled: (_data, _error, { id }) => {
+      // invalidate item to update extra.hasThumbnail
+      const key = buildItemKey(id);
+      queryClient.invalidateQueries(key);
     },
   });
 };

@@ -1,3 +1,4 @@
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { QueryClient } from 'react-query';
 import { buildItemFlagsKey, MUTATION_KEYS } from '../config/keys';
 import { postItemFlagRoutine } from '../routines';
@@ -10,7 +11,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_FLAG, {
     mutationFn: (payload) => Api.postItemFlag(payload, queryConfig),
     onSuccess: () => {
-      notifier?.({ type: postItemFlagRoutine.SUCCESS });
+      notifier?.({
+        type: postItemFlagRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.POST_ITEM_FLAG },
+      });
     },
     onError: (error) => {
       notifier?.({ type: postItemFlagRoutine.FAILURE, payload: { error } });

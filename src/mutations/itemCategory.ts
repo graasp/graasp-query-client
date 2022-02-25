@@ -1,3 +1,4 @@
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { QueryClient } from 'react-query';
 import * as Api from '../api';
 import { buildItemCategoriesKey, MUTATION_KEYS } from '../config/keys';
@@ -14,7 +15,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: (payload) =>
       Api.postItemCategory(payload, queryConfig).then(() => payload),
     onSuccess: () => {
-      notifier?.({ type: postItemCategoryRoutine.SUCCESS });
+      notifier?.({
+        type: postItemCategoryRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.POST_ITEM_CATEGORY },
+      });
     },
     onError: (error) => {
       notifier?.({ type: postItemCategoryRoutine.FAILURE, payload: { error } });
@@ -27,7 +31,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_ITEM_CATEGORY, {
     mutationFn: (payload) => Api.deleteItemCategory(payload, queryConfig),
     onSuccess: () => {
-      notifier?.({ type: deleteItemCategoryRoutine.SUCCESS });
+      notifier?.({
+        type: deleteItemCategoryRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_CATEGORY },
+      });
     },
     onError: (error) => {
       notifier?.({

@@ -6,20 +6,6 @@ import { isObject } from '../utils/util';
 
 const configureAxios = () => {
   axios.defaults.withCredentials = true;
-  // // eslint-disable-next-line arrow-body-style
-  // axios.interceptors.response.use((response) => {
-  //   // Any status code that lie within the range of 2xx cause this function to trigger
-  //   // Do something with response data
-  //   return response
-  //   // eslint-disable-next-line arrow-body-style
-  // }, (error) => {
-  //   // Any status codes that falls outside the range of 2xx cause this function to trigger
-  //   // Do something with response error
-
-  //   // return graasp error
-  //   console.log(error, error?.response)
-  //   return error?.response?.data
-  // })
   return axios;
 };
 
@@ -104,7 +90,7 @@ export const fallbackToPublic = (
 export const throwIfArrayContainsErrorOrReturn = (array: any[]) => {
   const errors = array?.filter((value) => isObject(value) && value.statusCode);
   if (errors.length) {
-    // suppose all errors are the same
+    // assume all errors are the same
     // build axios error from error data received
     const error = {
       response: { data: errors[0] },

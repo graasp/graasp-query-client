@@ -38,7 +38,7 @@ const {
   POST_ITEM,
   DELETE_ITEM,
   EDIT_ITEM,
-  FILE_UPLOAD,
+  UPLOAD_FILES,
   SHARE_ITEM,
   MOVE_ITEM,
   MOVE_ITEMS,
@@ -271,7 +271,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return previousItems;
     },
     onSuccess: () => {
-      notifier?.({ type: recycleItemsRoutine.SUCCESS });
+      notifier?.({
+        type: recycleItemsRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.RECYCLE_ITEMS },
+      });
     },
     onError: (error, itemIds: UUID[], context) => {
       const itemKey = buildItemKey(itemIds[0]);
@@ -318,7 +321,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return previousItems;
     },
     onSuccess: () => {
-      notifier?.({ type: deleteItemRoutine.SUCCESS });
+      notifier?.({
+        type: deleteItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.DELETE_ITEM },
+      });
     },
     onError: (error, [itemId], context) => {
       const itemData = context.item;
@@ -377,7 +383,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           payload: { error: errors.first() },
         });
       }
-      return notifier?.({ type: deleteItemsRoutine.SUCCESS });
+      return notifier?.({
+        type: deleteItemsRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.DELETE_ITEMS },
+      });
     },
     onError: (error, itemIds: UUID[], context) => {
       const itemPath = context[itemIds[0]]?.get('path');
@@ -414,8 +423,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ...newItem,
       })),
     // cannot mutate because it needs the id
-    onSuccess: (data) => {
-      notifier?.({ type: copyItemRoutine.SUCCESS, payload: data });
+    onSuccess: () => {
+      notifier?.({
+        type: copyItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.COPY_ITEM },
+      });
     },
     onError: (error) => {
       notifier?.({ type: copyItemRoutine.FAILURE, payload: { error } });
@@ -432,8 +444,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         to: payload.to,
         ...newItem,
       })),
-    onSuccess: (data) => {
-      notifier?.({ type: copyItemRoutine.SUCCESS, payload: data });
+    onSuccess: () => {
+      notifier?.({
+        type: copyItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.COPY_ITEM },
+      });
     },
     onError: (error) => {
       notifier?.({ type: copyItemRoutine.FAILURE, payload: { error } });
@@ -455,7 +470,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       }),
     // cannot mutate because it needs the id
     onSuccess: () => {
-      notifier?.({ type: copyItemsRoutine.SUCCESS });
+      notifier?.({
+        type: copyItemsRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.COPY_ITEMS },
+      });
     },
     onError: (error) => {
       notifier?.({ type: copyItemsRoutine.FAILURE, payload: { error } });
@@ -507,7 +525,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return context;
     },
     onSuccess: () => {
-      notifier?.({ type: moveItemRoutine.SUCCESS });
+      notifier?.({
+        type: moveItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.MOVE_ITEM },
+      });
     },
     // If the mutation fails, use the context returned from onMutate to roll back
     onError: (error, { id, to }, context) => {
@@ -592,7 +613,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return context;
     },
     onSuccess: () => {
-      notifier?.({ type: moveItemsRoutine.SUCCESS });
+      notifier?.({
+        type: moveItemsRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.MOVE_ITEMS },
+      });
     },
     // If the mutation fails, use the context returned from onMutate to roll back
     onError: (error, { id: itemIds, to }, context) => {
@@ -633,7 +657,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   queryClient.setMutationDefaults(SHARE_ITEM, {
     mutationFn: (payload) => Api.shareItemWith(payload, queryConfig),
     onSuccess: () => {
-      notifier?.({ type: shareItemRoutine.SUCCESS });
+      notifier?.({
+        type: shareItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.SHARE_ITEM },
+      });
     },
     onError: (error) => {
       notifier?.({ type: shareItemRoutine.FAILURE, payload: { error } });
@@ -652,15 +679,22 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
    * @param {UUID} id parent item id wher the file is uploaded in
    * @param {error} [error] error occured during the file uploading
    */
-  queryClient.setMutationDefaults(FILE_UPLOAD, {
-    mutationFn: async ({ error }) => {
+  queryClient.setMutationDefaults(UPLOAD_FILES, {
+    mutationFn: async ({ error, data }) => {
+      throwIfArrayContainsErrorOrReturn(data);
       if (error) throw new Error(JSON.stringify(error));
     },
     onSuccess: () => {
-      notifier?.({ type: uploadFileRoutine.SUCCESS });
+      notifier?.({
+        type: uploadFileRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
+      });
     },
-    onError: (_error, { error }) => {
-      notifier?.({ type: uploadFileRoutine.FAILURE, payload: { error } });
+    onError: (axiosError, { error }) => {
+      notifier?.({
+        type: uploadFileRoutine.FAILURE,
+        payload: { error: error ?? axiosError },
+      });
     },
     onSettled: (_data, _error, { id }) => {
       const parentKey = getKeyForParentId(id);
@@ -678,7 +712,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       if (error) throw new Error(JSON.stringify(error));
     },
     onSuccess: () => {
-      notifier?.({ type: uploadItemThumbnailRoutine.SUCCESS });
+      notifier?.({
+        type: uploadItemThumbnailRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPLOAD_ITEM_THUMBNAIL },
+      });
     },
     onError: (_error, { error }) => {
       notifier?.({
@@ -742,7 +779,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           queryClient.invalidateQueries(key);
         }
       }
-      notifier?.({ type: restoreItemsRoutine.SUCCESS });
+      notifier?.({
+        type: restoreItemsRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.RESTORE_ITEMS },
+      });
     },
     onError: (error, _itemId, context) => {
       queryClient.setQueryData(RECYCLED_ITEMS_KEY, context);
