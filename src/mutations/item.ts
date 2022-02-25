@@ -1,5 +1,6 @@
 import { List, Record, Map } from 'immutable';
 import { QueryClient } from 'react-query';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import * as Api from '../api';
 import {
   copyItemRoutine,
@@ -111,7 +112,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: async (item) => Api.postItem(item, queryConfig),
     // we cannot optimistically add an item because we need its id
     onSuccess: () => {
-      notifier?.({ type: createItemRoutine.SUCCESS });
+      notifier?.({
+        type: createItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
+      });
     },
     onError: (error) => {
       notifier?.({ type: createItemRoutine.FAILURE, payload: { error } });
@@ -161,7 +165,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return previousItems;
     },
     onSuccess: () => {
-      notifier?.({ type: editItemRoutine.SUCCESS });
+      notifier?.({
+        type: editItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.EDIT_ITEM },
+      });
     },
     onError: (error, newItem, context) => {
       const { item: prevItem } = context;
@@ -208,7 +215,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return previousItems;
     },
     onSuccess: () => {
-      notifier?.({ type: recycleItemsRoutine.SUCCESS });
+      notifier?.({
+        type: recycleItemsRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.RECYCLE_ITEM },
+      });
     },
     onError: (error, _itemId, context) => {
       const itemData = context.item;
@@ -692,7 +702,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       }
     },
     onSuccess: () => {
-      notifier?.({ type: importZipRoutine.SUCCESS });
+      notifier?.({
+        type: importZipRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.IMPORT_ZIP },
+      });
     },
     onError: (_error, { error }) => {
       notifier?.({ type: importZipRoutine.FAILURE, payload: { error } });
