@@ -15,7 +15,7 @@ const { wrapper, queryClient, useMutation } = setUpTest({
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
-describe('Download Item', () => {
+describe('Export Zip', () => {
   afterEach(() => {
     queryClient.clear();
     nock.cleanAll();
@@ -26,7 +26,7 @@ describe('Download Item', () => {
     const route = `/${buildDownloadItemRoute(itemId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.EXPORT_ZIP);
 
-    it('download item', async () => {
+    it('export zip', async () => {
       const endpoints = [
         {
           response: { id: 'id', content: 'content' },

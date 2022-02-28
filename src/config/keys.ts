@@ -134,7 +134,8 @@ export const MUTATION_KEYS = {
   UPLOAD_ITEM_THUMBNAIL: 'uploadItemThumbnail',
   UPLOAD_AVATAR: 'uploadAvatar',
   IMPORT_ZIP: 'importZip',
-  EXPORT_ZIP: 'downloadItem',
+  EXPORT_ZIP: 'exportZip',
   POST_ITEM_LIKE: 'postItemLike',
   DELETE_ITEM_LIKE: 'deleteItemLike',
+  UPDATE_FAVORITE_ITEMS: 'updateFavoriteItems',
 };

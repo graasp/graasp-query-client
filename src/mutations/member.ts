@@ -12,7 +12,7 @@ import {
   CURRENT_MEMBER_KEY,
   MUTATION_KEYS,
 } from '../config/keys';
-import { Member, QueryClientConfig } from '../types';
+import { Member, QueryClientConfig, UUID } from '../types';
 import { COOKIE_SESSION_NAME, THUMBNAIL_SIZES } from '../config/constants';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
@@ -94,6 +94,51 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         const key = buildAvatarKey({ id, size });
         queryClient.invalidateQueries(key);
       });
+    },
+  });
+
+  // mutation to update favorite items of given member
+  queryClient.setMutationDefaults(MUTATION_KEYS.UPDATE_FAVORITE_ITEMS, {
+    mutationFn: (payload) => {
+      const {memberId, itemId, extra, action} = payload;
+      if (action === 'add') {
+        extra.favoriteItems = extra.favoriteItems? extra.favoriteItems.concat([itemId]) : [itemId]
+      }
+      if (action === 'remove') {
+        extra.favoriteItems = extra.favoriteItems?.filter((id: UUID) => id !== itemId)
+      }
+      return Api.editMember({id: memberId, extra}, queryConfig).then((member) => Map(member));
+    },
+    onMutate: async ({ member }) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
+
+      // Snapshot the previous value
+      const previousMember = queryClient.getQueryData(
+        CURRENT_MEMBER_KEY,
+      ) as Record<Member>;
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(
+        CURRENT_MEMBER_KEY,
+        previousMember.merge(member),
+      );
+
+      // Return a context object with the snapshotted value
+      return { previousMember };
+    },
+    onSuccess: () => {
+      notifier?.({ type: editMemberRoutine.SUCCESS });
+    },
+    // If the mutation fails, use the context returned from onMutate to roll back
+    onError: (error, _, context) => {
+      notifier?.({ type: editMemberRoutine.FAILURE, payload: { error } });
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, context.previousMember);
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      // invalidate all queries
+      queryClient.invalidateQueries(CURRENT_MEMBER_KEY);
     },
   });
 };
