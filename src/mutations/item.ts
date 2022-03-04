@@ -1,5 +1,6 @@
 import { List, Record, Map } from 'immutable';
 import { QueryClient } from 'react-query';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import * as Api from '../api';
 import {
   copyItemRoutine,
@@ -31,12 +32,13 @@ import {
 import { buildPath, getDirectParentId } from '../utils/item';
 import type { GraaspError, Item, QueryClientConfig, UUID } from '../types';
 import { THUMBNAIL_SIZES } from '../config/constants';
+import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
 
 const {
   POST_ITEM,
   DELETE_ITEM,
   EDIT_ITEM,
-  FILE_UPLOAD,
+  UPLOAD_FILES,
   SHARE_ITEM,
   MOVE_ITEM,
   MOVE_ITEMS,
@@ -110,7 +112,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: async (item) => Api.postItem(item, queryConfig),
     // we cannot optimistically add an item because we need its id
     onSuccess: () => {
-      notifier?.({ type: createItemRoutine.SUCCESS });
+      notifier?.({
+        type: createItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
+      });
     },
     onError: (error) => {
       notifier?.({ type: createItemRoutine.FAILURE, payload: { error } });
@@ -160,7 +165,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return previousItems;
     },
     onSuccess: () => {
-      notifier?.({ type: editItemRoutine.SUCCESS });
+      notifier?.({
+        type: editItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.EDIT_ITEM },
+      });
     },
     onError: (error, newItem, context) => {
       const { item: prevItem } = context;
@@ -207,7 +215,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return previousItems;
     },
     onSuccess: () => {
-      notifier?.({ type: recycleItemsRoutine.SUCCESS });
+      notifier?.({
+        type: recycleItemsRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.RECYCLE_ITEM },
+      });
     },
     onError: (error, _itemId, context) => {
       const itemData = context.item;
@@ -237,7 +248,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(RECYCLE_ITEMS, {
     mutationFn: (itemIds) =>
-      Api.recycleItems(itemIds, queryConfig).then(() => itemIds),
+      Api.recycleItems(itemIds, queryConfig).then((data) =>
+        throwIfArrayContainsErrorOrReturn(data),
+      ),
 
     onMutate: async (itemIds: UUID[]) => {
       // get path from first item
@@ -258,7 +271,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return previousItems;
     },
     onSuccess: () => {
-      notifier?.({ type: recycleItemsRoutine.SUCCESS });
+      notifier?.({
+        type: recycleItemsRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.RECYCLE_ITEMS },
+      });
     },
     onError: (error, itemIds: UUID[], context) => {
       const itemKey = buildItemKey(itemIds[0]);
@@ -289,8 +305,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
 
   queryClient.setMutationDefaults(DELETE_ITEM, {
-    mutationFn: ([itemId]) =>
-      Api.deleteItem(itemId, queryConfig).then(() => itemId),
+    mutationFn: ([itemId]) => Api.deleteItem(itemId, queryConfig),
 
     onMutate: async ([itemId]) => {
       const key = RECYCLED_ITEMS_KEY;
@@ -306,7 +321,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return previousItems;
     },
     onSuccess: () => {
-      notifier?.({ type: deleteItemRoutine.SUCCESS });
+      notifier?.({
+        type: deleteItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.DELETE_ITEM },
+      });
     },
     onError: (error, [itemId], context) => {
       const itemData = context.item;
@@ -331,7 +349,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(DELETE_ITEMS, {
     mutationFn: (itemIds) =>
-      Api.deleteItems(itemIds, queryConfig).then((data) => List(data)),
+      Api.deleteItems(itemIds, queryConfig).then((data) => {
+        throwIfArrayContainsErrorOrReturn(data);
+        return List(data);
+      }),
 
     onMutate: async (itemIds: UUID[]) => {
       // get path from first item
@@ -362,7 +383,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           payload: { error: errors.first() },
         });
       }
-      return notifier?.({ type: deleteItemsRoutine.SUCCESS });
+      return notifier?.({
+        type: deleteItemsRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.DELETE_ITEMS },
+      });
     },
     onError: (error, itemIds: UUID[], context) => {
       const itemPath = context[itemIds[0]]?.get('path');
@@ -399,8 +423,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ...newItem,
       })),
     // cannot mutate because it needs the id
-    onSuccess: (data) => {
-      notifier?.({ type: copyItemRoutine.SUCCESS, payload: data });
+    onSuccess: () => {
+      notifier?.({
+        type: copyItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.COPY_ITEM },
+      });
     },
     onError: (error) => {
       notifier?.({ type: copyItemRoutine.FAILURE, payload: { error } });
@@ -417,8 +444,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         to: payload.to,
         ...newItem,
       })),
-    onSuccess: (data) => {
-      notifier?.({ type: copyItemRoutine.SUCCESS, payload: data });
+    onSuccess: () => {
+      notifier?.({
+        type: copyItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.COPY_ITEM },
+      });
     },
     onError: (error) => {
       notifier?.({ type: copyItemRoutine.FAILURE, payload: { error } });
@@ -431,13 +461,19 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(COPY_ITEMS, {
     mutationFn: (payload) =>
-      Api.copyItems(payload, queryConfig).then((newItems) => ({
-        to: payload.to,
-        ...newItems,
-      })),
+      Api.copyItems(payload, queryConfig).then((newItems) => {
+        const items = throwIfArrayContainsErrorOrReturn(newItems);
+        return {
+          to: payload.to,
+          ...items,
+        };
+      }),
     // cannot mutate because it needs the id
     onSuccess: () => {
-      notifier?.({ type: copyItemsRoutine.SUCCESS });
+      notifier?.({
+        type: copyItemsRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.COPY_ITEMS },
+      });
     },
     onError: (error) => {
       notifier?.({ type: copyItemsRoutine.FAILURE, payload: { error } });
@@ -489,7 +525,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return context;
     },
     onSuccess: () => {
-      notifier?.({ type: moveItemRoutine.SUCCESS });
+      notifier?.({
+        type: moveItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.MOVE_ITEM },
+      });
     },
     // If the mutation fails, use the context returned from onMutate to roll back
     onError: (error, { id, to }, context) => {
@@ -524,7 +563,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(MOVE_ITEMS, {
     mutationFn: (payload) =>
-      Api.moveItems(payload, queryConfig).then(() => payload),
+      Api.moveItems(payload, queryConfig).then((data) =>
+        throwIfArrayContainsErrorOrReturn(data),
+      ),
     onMutate: async ({ id: itemIds, to }) => {
       const itemsData = itemIds.map((id: UUID) => {
         const itemKey = buildItemKey(id);
@@ -572,7 +613,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return context;
     },
     onSuccess: () => {
-      notifier?.({ type: moveItemsRoutine.SUCCESS });
+      notifier?.({
+        type: moveItemsRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.MOVE_ITEMS },
+      });
     },
     // If the mutation fails, use the context returned from onMutate to roll back
     onError: (error, { id: itemIds, to }, context) => {
@@ -613,7 +657,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   queryClient.setMutationDefaults(SHARE_ITEM, {
     mutationFn: (payload) => Api.shareItemWith(payload, queryConfig),
     onSuccess: () => {
-      notifier?.({ type: shareItemRoutine.SUCCESS });
+      notifier?.({
+        type: shareItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.SHARE_ITEM },
+      });
     },
     onError: (error) => {
       notifier?.({ type: shareItemRoutine.FAILURE, payload: { error } });
@@ -632,15 +679,22 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
    * @param {UUID} id parent item id wher the file is uploaded in
    * @param {error} [error] error occured during the file uploading
    */
-  queryClient.setMutationDefaults(FILE_UPLOAD, {
-    mutationFn: async ({ error }) => {
+  queryClient.setMutationDefaults(UPLOAD_FILES, {
+    mutationFn: async ({ error, data }) => {
+      throwIfArrayContainsErrorOrReturn(data);
       if (error) throw new Error(JSON.stringify(error));
     },
     onSuccess: () => {
-      notifier?.({ type: uploadFileRoutine.SUCCESS });
+      notifier?.({
+        type: uploadFileRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
+      });
     },
-    onError: (_error, { error }) => {
-      notifier?.({ type: uploadFileRoutine.FAILURE, payload: { error } });
+    onError: (axiosError, { error }) => {
+      notifier?.({
+        type: uploadFileRoutine.FAILURE,
+        payload: { error: error ?? axiosError },
+      });
     },
     onSettled: (_data, _error, { id }) => {
       const parentKey = getKeyForParentId(id);
@@ -658,7 +712,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       if (error) throw new Error(JSON.stringify(error));
     },
     onSuccess: () => {
-      notifier?.({ type: uploadItemThumbnailRoutine.SUCCESS });
+      notifier?.({
+        type: uploadItemThumbnailRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPLOAD_ITEM_THUMBNAIL },
+      });
     },
     onError: (_error, { error }) => {
       notifier?.({
@@ -682,7 +739,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       }
     },
     onSuccess: () => {
-      notifier?.({ type: importZipRoutine.SUCCESS });
+      notifier?.({
+        type: importZipRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.IMPORT_ZIP },
+      });
     },
     onError: (_error, { error }) => {
       notifier?.({ type: importZipRoutine.FAILURE, payload: { error } });
@@ -695,7 +755,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(RESTORE_ITEMS, {
     mutationFn: (itemIds) =>
-      Api.restoreItems(itemIds, queryConfig).then(() => true),
+      Api.restoreItems(itemIds, queryConfig).then((data) => {
+        throwIfArrayContainsErrorOrReturn(data);
+      }),
 
     onMutate: async (itemIds) => {
       const key = RECYCLED_ITEMS_KEY;
@@ -717,7 +779,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           queryClient.invalidateQueries(key);
         }
       }
-      notifier?.({ type: restoreItemsRoutine.SUCCESS });
+      notifier?.({
+        type: restoreItemsRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.RESTORE_ITEMS },
+      });
     },
     onError: (error, _itemId, context) => {
       queryClient.setQueryData(RECYCLED_ITEMS_KEY, context);

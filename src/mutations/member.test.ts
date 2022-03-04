@@ -4,6 +4,7 @@ import { act } from '@testing-library/react-hooks';
 import { Map, Record } from 'immutable';
 import nock from 'nock';
 import Cookies from 'js-cookie';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import {
   buildPatchMember,
   buildUploadAvatarRoute,
@@ -187,7 +188,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id });
+        await mockedMutation.mutate({ id, data: [id] });
         await waitForMutation();
       });
 
@@ -200,6 +201,7 @@ describe('Member Mutations', () => {
       }
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: uploadAvatarRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPLOAD_AVATAR },
       });
     });
 

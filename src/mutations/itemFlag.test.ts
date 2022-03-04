@@ -1,4 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
@@ -57,6 +58,7 @@ describe('Item Flag Mutations', () => {
       expect(queryClient.getQueryState(flagKey)?.isInvalidated).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: postItemFlagRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.POST_ITEM_FLAG },
       });
     });
 

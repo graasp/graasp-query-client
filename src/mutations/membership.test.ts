@@ -4,6 +4,7 @@ import { List } from 'immutable';
 import { act } from 'react-test-renderer';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import {
   ITEMS,
   ITEM_MEMBERSHIPS_RESPONSE,
@@ -77,6 +78,7 @@ describe('Membership Mutations', () => {
       ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: editItemMembershipRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.EDIT_ITEM_MEMBERSHIP },
       });
     });
 
@@ -148,6 +150,7 @@ describe('Membership Mutations', () => {
       ).toEqual(memberships.filter(({ id }) => id !== membershipId));
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: deleteItemMembershipRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_MEMBERSHIP },
       });
     });
 

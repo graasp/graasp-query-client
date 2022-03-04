@@ -1597,6 +1597,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.12.0":
+  version: 7.17.2
+  resolution: "@babel/runtime@npm:7.17.2"
+  dependencies:
+    regenerator-runtime: ^0.13.4
+  checksum: a48702d271ecc59c09c397856407afa29ff980ab537b3da58eeee1aeaa0f545402d340a1680c9af58aec94dfdcbccfb6abb211991b74686a86d03d3f6956cacd
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.10.4, @babel/template@npm:^7.16.7, @babel/template@npm:^7.3.3":
   version: 7.16.7
   resolution: "@babel/template@npm:7.16.7"
@@ -1935,6 +1944,7 @@ __metadata:
     "@babel/preset-typescript": 7.16.7
     "@commitlint/cli": 16.0.1
     "@commitlint/config-conventional": 16.0.0
+    "@graasp/translations": "github:graasp/graasp-translations.git"
     "@testing-library/jest-dom": 5.16.1
     "@testing-library/react": 12.1.2
     "@testing-library/react-hooks": 7.0.2
@@ -1981,6 +1991,15 @@ __metadata:
     react: ^17.0.0
   languageName: unknown
   linkType: soft
+
+"@graasp/translations@github:graasp/graasp-translations.git":
+  version: 0.1.0
+  resolution: "@graasp/translations@https://github.com/graasp/graasp-translations.git#commit=452c17c0b4b5a5e216b8d647a9f821071b179213"
+  dependencies:
+    i18next: 21.6.11
+  checksum: b375f4ea5982845d74e354003017a872dc21c012da42c58f05d3ef4e086335788e9335a0c59c4954a6f489e0f89d97b17e10916e653eb6edf6f78f18fa89e878
+  languageName: node
+  linkType: hard
 
 "@hapi/address@npm:2.x.x":
   version: 2.1.4
@@ -9786,6 +9805,15 @@ __metadata:
   version: 1.0.4
   resolution: "hyphenate-style-name@npm:1.0.4"
   checksum: 4f5bf4b055089754924babebaa23c17845937bcca6aee95d5d015f8fa1e6814279002bd6a9e541e3fac2cd02519fc76305396727066c57c8e21a7e73e7a12137
+  languageName: node
+  linkType: hard
+
+"i18next@npm:21.6.11":
+  version: 21.6.11
+  resolution: "i18next@npm:21.6.11"
+  dependencies:
+    "@babel/runtime": ^7.12.0
+  checksum: 42716a7519d6066a8c9400639ab80fba0b568ae02205b1155ec9c4e627704bb2181dd182ff5eb0c91f6c67c8038ddd0754214e1932de5699d488c21ffd617c5e
   languageName: node
   linkType: hard
 

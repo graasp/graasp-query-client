@@ -107,7 +107,7 @@ export const MUTATION_KEYS = {
   MOVE_ITEM: 'moveItem',
   MOVE_ITEMS: 'moveItems',
   SHARE_ITEM: 'shareItem',
-  FILE_UPLOAD: 'fileUpload',
+  UPLOAD_FILES: 'uploadFiles',
   SIGN_OUT: 'signOut',
   POST_ITEM_LOGIN: 'postItemLoginSignIn',
   buildItemMembershipsKey: (id: UUID) => [ITEMS_KEY, id, 'memberships'],

@@ -2,6 +2,7 @@
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { List } from 'immutable';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { act } from 'react-test-renderer';
 import Cookies from 'js-cookie';
 import {
@@ -69,6 +70,7 @@ describe('Item Tag Mutations', () => {
       expect(queryClient.getQueryState(itemTagKey)?.isInvalidated).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: postItemTagRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.POST_ITEM_TAG },
       });
     });
 
@@ -146,6 +148,7 @@ describe('Item Tag Mutations', () => {
       );
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: deleteItemTagRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_TAG },
       });
     });
 

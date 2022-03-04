@@ -11,6 +11,7 @@
   "source": "src/index.ts",
   "types": "dist/src/index.d.ts",
   "dependencies": {
+    "@graasp/translations": "github:graasp/graasp-translations.git",
     "axios": "0.24.0",
     "http-status-codes": "2.2.0",
     "immutable": "4.0.0",

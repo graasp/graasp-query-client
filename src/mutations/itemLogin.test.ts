@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import Cookies from 'js-cookie';
 import { Map } from 'immutable';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { act } from 'react-test-renderer';
 import {
   ITEMS,
@@ -151,6 +152,7 @@ describe('Item Login Mutations', () => {
       ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: putItemLoginRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.PUT_ITEM_LOGIN },
       });
     });
 
