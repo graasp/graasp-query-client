@@ -24,7 +24,7 @@ import {
 import { Member } from '../types';
 import { REQUEST_METHODS } from '../api/utils';
 import { THUMBNAIL_SIZES } from '../config/constants';
-import { uploadAvatarRoutine } from '../routines';
+import { addFavoriteItemRoutine, uploadAvatarRoutine } from '../routines';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -244,6 +244,141 @@ describe('Member Mutations', () => {
         type: uploadAvatarRoutine.FAILURE,
         payload: { error: StatusCodes.UNAUTHORIZED },
       });
+    });
+  });
+
+  describe(MUTATION_KEYS.ADD_FAVORITE_ITEM, () => {
+    const id = 'member-id';
+    const itemId = 'item-id';
+    const extra = {
+      favoriteItems: [],
+    }
+    const route = `/${buildPatchMember(id)}`;
+    const mutation = () => useMutation(MUTATION_KEYS.ADD_FAVORITE_ITEM);
+
+    it(`Successfully add favorite item`, async () => {
+      const response = { ...MEMBER_RESPONSE, extra: { favoriteItems: ['item-id'] } };
+      // set random data in cache
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, Map(MEMBER_RESPONSE));
+      const endpoints = [
+        {
+          response,
+          method: REQUEST_METHODS.PATCH,
+          route,
+        },
+      ];
+      const mockedMutation = await mockMutation({
+        mutation,
+        wrapper,
+        endpoints,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ memberId: id, itemId, extra });
+        await waitForMutation();
+      });
+
+      expect(queryClient.getQueryState(CURRENT_MEMBER_KEY)?.isInvalidated).toBeTruthy();
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: addFavoriteItemRoutine.SUCCESS,
+      });
+    });
+
+    it(`Unauthorized`, async () => {
+      // set random data in cache
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, Map(MEMBER_RESPONSE));
+      const endpoints = [
+        {
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+          method: REQUEST_METHODS.PATCH,
+          route,
+        },
+      ];
+      const mockedMutation = await mockMutation({
+        mutation,
+        wrapper,
+        endpoints,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ memberId: id, itemId, extra });
+        await waitForMutation();
+      });
+
+      // verify cache keys
+      const oldData = queryClient.getQueryData(
+        CURRENT_MEMBER_KEY,
+      ) as Record<Member>;
+      expect(oldData.toJS()).toEqual(MEMBER_RESPONSE);
+    });
+  });
+
+  describe(MUTATION_KEYS.DELETE_FAVORITE_ITEM, () => {
+    const id = 'member-id';
+    const route = `/${buildPatchMember(id)}`;
+    const itemId = 'item-id';
+    const extra = {
+      favoriteItems: ['item-id', 'item-id2'],
+    }
+    const mutation = () => useMutation(MUTATION_KEYS.DELETE_FAVORITE_ITEM);
+
+    it(`Successfully delete favorite item`, async () => {
+      const response = { ...MEMBER_RESPONSE, extra: {favoriteItems: ['item-id2']} };
+      // set random data in cache
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, Map(MEMBER_RESPONSE));
+      const endpoints = [
+        {
+          response,
+          method: REQUEST_METHODS.PATCH,
+          route,
+        },
+      ];
+      const mockedMutation = await mockMutation({
+        mutation,
+        wrapper,
+        endpoints,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ memberId: id, itemId, extra });
+        await waitForMutation();
+      });
+
+      // verify cache keys
+      const newData = queryClient.getQueryData(
+        CURRENT_MEMBER_KEY,
+      ) as Record<Member>;
+      expect(newData.toJS()).toEqual(response);
+    });
+
+    it(`Unauthorized`, async () => {
+      // set random data in cache
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, Map(MEMBER_RESPONSE));
+      const endpoints = [
+        {
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+          method: REQUEST_METHODS.PATCH,
+          route,
+        },
+      ];
+      const mockedMutation = await mockMutation({
+        mutation,
+        wrapper,
+        endpoints,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ memberId: id, itemId, extra });
+        await waitForMutation();
+      });
+
+      // verify cache keys
+      const oldData = queryClient.getQueryData(
+        CURRENT_MEMBER_KEY,
+      ) as Record<Member>;
+      expect(oldData.toJS()).toEqual(MEMBER_RESPONSE);
     });
   });
 });

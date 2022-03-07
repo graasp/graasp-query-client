@@ -137,5 +137,6 @@ export const MUTATION_KEYS = {
   EXPORT_ZIP: 'exportZip',
   POST_ITEM_LIKE: 'postItemLike',
   DELETE_ITEM_LIKE: 'deleteItemLike',
-  UPDATE_FAVORITE_ITEMS: 'updateFavoriteItems',
+  ADD_FAVORITE_ITEM: 'addFavoriteItem',
+  DELETE_FAVORITE_ITEM: 'deleteFavoriteItem'
 };
