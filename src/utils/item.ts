@@ -46,13 +46,8 @@ export const getDirectParentId = (path: string) => {
   return ids[parentIdx];
 };
 
-export const hashItemsIds = (ids?: UUID[]) => {
-  const hashedIds = ids
-    ? CryptoJS.SHA1([...ids].sort().join("")).toString()
-    : undefined;
-  console.log('queryclient', ids, hashedIds)
-  return hashedIds
-}
+export const hashItemsIds = (ids?: UUID[]) => ids ? CryptoJS.SHA1([...ids].sort().join("")).toString() : undefined;
+
 export const isError = (error: unknown) => {
   const errorObject = error as GraaspError;
   return errorObject?.statusCode;
