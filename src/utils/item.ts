@@ -1,7 +1,7 @@
 /** Utils functions
  * todo: use utils from a dedicated repo */
 
-import crypto from 'crypto';
+import CryptoJS from 'crypto-js';
 import type { UUID, GraaspError } from '../types';
 
 // eslint-disable-next-line no-useless-escape
@@ -48,11 +48,7 @@ export const getDirectParentId = (path: string) => {
 
 export const hashItemsIds = (ids?: UUID[]) =>
   ids
-    ? crypto
-        .createHash('sha1')
-        .update([...ids].sort().join(''))
-        .digest('hex')
-        .toString()
+    ? CryptoJS.SHA1([...ids].sort().join(""))
     : undefined;
 
 export const isError = (error: unknown) => {
