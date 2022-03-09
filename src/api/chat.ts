@@ -1,9 +1,10 @@
-import { PartialChatMessage, QueryClientConfig, UUID } from '../types';
+import { PartialChatMessage, PartialNewChatMessage, QueryClientConfig, UUID } from '../types';
 import configureAxios, {
   fallbackToPublic,
   verifyAuthentication,
 } from './axios';
 import {
+  buildDeleteItemChatMessageRoute,
   buildGetItemChatRoute,
   buildGetPublicItemChatRoute,
   buildPostItemChatMessageRoute,
@@ -18,7 +19,7 @@ export const getItemChat = async (id: UUID, { API_HOST }: QueryClientConfig) =>
   );
 
 export const postItemChatMessage = async (
-  { chatId, body }: PartialChatMessage,
+  { chatId, body }: PartialNewChatMessage,
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
@@ -26,5 +27,15 @@ export const postItemChatMessage = async (
       .post(`${API_HOST}/${buildPostItemChatMessageRoute(chatId)}`, {
         body,
       })
+      .then(({ data }) => data),
+  );
+
+export const deleteItemChatMessage = async (
+  { chatId, messageId }: PartialChatMessage,
+  { API_HOST }: QueryClientConfig,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .post(`${API_HOST}/${buildDeleteItemChatMessageRoute(chatId, messageId)}`)
       .then(({ data }) => data),
   );

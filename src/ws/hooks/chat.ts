@@ -37,7 +37,7 @@ export const configureWsChatHooks = (
           const chatKey = buildItemChatKey(chatId);
           const current: Record<Chat> | undefined =
             queryClient.getQueryData(chatKey);
-          console.log(current, event)
+
           if (current) {
             switch (event.op) {
               case OPS.PUBLISH: {
@@ -51,7 +51,6 @@ export const configureWsChatHooks = (
               case OPS.DELETE: {
                 const mutation = current.update('messages', (messages) => messages.filter(m => m.id !== event.message.id));
                 queryClient.setQueryData(chatKey, mutation);
-                console.log(mutation)
                 break;
               }
               default:
