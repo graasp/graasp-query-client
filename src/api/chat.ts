@@ -36,6 +36,6 @@ export const deleteItemChatMessage = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .post(`${API_HOST}/${buildDeleteItemChatMessageRoute(chatId, messageId)}`)
+      .delete(`${API_HOST}/${buildDeleteItemChatMessageRoute(chatId, messageId)}`)
       .then(({ data }) => data),
   );
