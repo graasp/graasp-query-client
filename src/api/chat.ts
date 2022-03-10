@@ -32,12 +32,14 @@ export const postItemChatMessage = async (
   );
 
 export const patchItemChatMessage = async (
-  { chatId, messageId }: PartialChatMessage,
+  { chatId, messageId, body }: PartialChatMessage,
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
     axios
-      .patch(`${API_HOST}/${buildPatchItemChatMessageRoute(chatId, messageId)}`)
+      .patch(`${API_HOST}/${buildPatchItemChatMessageRoute(chatId, messageId)}`, {
+        body,
+      })
       .then(({ data }) => data),
   );
 
