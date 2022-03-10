@@ -4,3 +4,7 @@ import createRoutine from './utils';
 export const postItemChatMessageRoutine = createRoutine(
   'POST_ITEM_CHAT_MESSAGE',
 );
+
+export const deleteItemChatMessageRoutine = createRoutine(
+  'DELETE_ITEM_CHAT_MESSAGE',
+);
