@@ -274,3 +274,20 @@ export enum Ranges {
   Title = 'title',
   Author = 'author',
 }
+
+export const ITEM_LIKES = [
+  {
+    id: 'id1',
+    itemId: 'item-id',
+    memberId: 'member-id',
+    createdAt: 'timestamp',
+  },
+  {
+    id: 'id2',
+    itemId: 'item-id2',
+    memberId: 'member-id',
+    createdAt: 'timestamp',
+  },
+]
+
+export const LIKE_COUNT = 100;

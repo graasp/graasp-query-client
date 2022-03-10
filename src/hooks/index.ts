@@ -9,6 +9,7 @@ import configureMemberHooks from './member';
 import configureAppsHooks from './apps';
 import configureCategoryHooks from './category';
 import configureKeywordSearchHooks from './search';
+import configureItemLikeHooks from './itemLike';
 
 export default (
   queryClient: QueryClient,
@@ -29,6 +30,7 @@ export default (
     ...configureItemFlagHooks(queryConfig),
     ...configureCategoryHooks(queryConfig),
     ...configureKeywordSearchHooks(queryConfig),
+    ...configureItemLikeHooks(queryConfig),
     ...configureAppsHooks(queryConfig),
     ...memberHooks,
   };

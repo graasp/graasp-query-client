@@ -48,6 +48,8 @@ export const buildCopyPublicItemRoute = (id: UUID) =>
 export const buildCopyItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/copy?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildEditItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
+export const buildDownloadItemRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/zip-export/${id}`;
 export const buildShareItemWithRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
 export const buildGetItemMembershipsForItemsRoute = (ids: UUID[]) =>
@@ -217,6 +219,14 @@ export const buildGetPublicApiAccessTokenRoute = (id: UUID) =>
 export const buildGetItemsByKeywordRoute = (range: string, keywords: string) =>
   `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/search/${range}/${keywords}`;
 
+export const buildGetLikedItemsRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/likes`;
+export const buildGetLikeCountRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/like-count`;
+export const buildPostItemLikeRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/like`;
+export const buildDeleteItemLikeRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/likes/${id}`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   ITEMS_ROUTE,
@@ -254,6 +264,7 @@ export const API_ROUTES = {
   buildCopyItemRoute,
   buildCopyPublicItemRoute,
   buildCopyItemsRoute,
+  buildDownloadItemRoute,
   buildPatchMember,
   buildPostItemFlagRoute,
   buildEditItemMembershipRoute,
@@ -287,4 +298,8 @@ export const API_ROUTES = {
   buildGetPublicApiAccessTokenRoute,
   buildPublicDownloadFilesRoute,
   buildGetPublicItemMembershipsForItemsRoute,
+  buildGetLikedItemsRoute,
+  buildGetLikeCountRoute,
+  buildPostItemLikeRoute,
+  buildDeleteItemLikeRoute,
 };
