@@ -291,3 +291,54 @@ export const ITEM_LIKES = [
 ]
 
 export const LIKE_COUNT = 100;
+
+export const STATUS_LIST = [
+  {
+    id: 'id',
+    name: 'status-1',
+  },
+  {
+    id: 'id-2',
+    name: 'status-2',
+  },
+];
+
+export const ITEM_VALIDATION_STATUS = [
+  {
+    validationStatusId: 'pending-id',
+    reviewStatusId: 'pending-id',
+    validationResult: 'result1',
+    reviewResult: 'result2',
+    validationUpdatedAt: 'ts',
+    reviewUpdatedAt: 'ts',
+  },
+  {
+    validationStatusId: 'failure-id',
+    reviewStatusId: 'accept-id',
+    validationResult: 'result',
+    reviewResult: 'result',
+    validationUpdatedAt: 'ts',
+    reviewUpdatedAt: 'ts',
+  }
+];
+
+export const FULL_VALIDATION_RECORDS = [
+  {
+    id: 'id-1',
+    itemId: 'item-id-1',
+    reviewStatusId: 'status-id-1',
+    validationStatusId: 'status-id-2',
+    validationResult: '',
+    process: 'process-1',
+    createdAt: 'ts',
+  },
+  {
+    id: 'id-2',
+    itemId: 'item-id-1',
+    reviewStatusId: 'status-id-1',
+    validationStatusId: 'status-id-2',
+    validationResult: '',
+    process: 'process-2',
+    createdAt: 'ts',
+  }
+]
