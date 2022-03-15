@@ -69,6 +69,11 @@ export const ITEMS: Item[] = [
   },
 ];
 
+export const MESSAGE_IDS = [
+  '12345',
+  '78945',
+]
+
 export const MEMBER_RESPONSE: Member = {
   id: '42',
   name: 'username',
@@ -189,7 +194,7 @@ export const APPS = [
 
 export const buildChatMessages = (id: UUID) => [
   { chatId: id, body: 'some text', creator: 'somememberid' },
-  { chatId: id, body: 'someother text', creator: 'someothermemberid' },
+  { chatId: id, body: 'some other text', creator: 'someothermemberid' },
 ];
 
 export const FLAGS = [
