@@ -6,10 +6,10 @@ import { List } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { REQUEST_METHODS } from '../api/utils';
-import { buildValidationStatusKey, MUTATION_KEYS, VALIDATION_REVIEW_KEY } from '../config/keys';
+import { buildItemValidationAndReviewsKey, ITEM_VALIDATION_REVIEWS_KEY, MUTATION_KEYS } from '../config/keys';
 import {
-  buildPostValidationRoute,
-  buildUpdateValidationReviewRoute,
+  buildPostItemValidationRoute,
+  buildUpdateItemValidationReviewRoute,
 } from '../api/routes';
 import {
   postItemValidationRoutine,
@@ -32,9 +32,9 @@ describe('Item Validation Mutations', () => {
 
   describe(MUTATION_KEYS.POST_VALIDATION, () => {
     const itemId = 'item-id';
-    const route = `/${buildPostValidationRoute(itemId)}`;
+    const route = `/${buildPostItemValidationRoute(itemId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.POST_VALIDATION);
-    const key = buildValidationStatusKey(itemId);
+    const key = buildItemValidationAndReviewsKey(itemId);
 
     it('Post validation', async () => {
       queryClient.setQueryData(key, List([ITEM_VALIDATION_STATUS]));
@@ -100,10 +100,10 @@ describe('Item Validation Mutations', () => {
     const itemId = 'item-id';
     const status = 'accepted';
     const reason = '';
-    const route = `/${buildUpdateValidationReviewRoute(id)}`;
+    const route = `/${buildUpdateItemValidationReviewRoute(id)}`;
     const mutation = () => useMutation(MUTATION_KEYS.UPDATE_VALIDATION_REVIEW);
-    const statusKey = buildValidationStatusKey(itemId);
-    const reviewsKey = VALIDATION_REVIEW_KEY;
+    const statusKey = buildItemValidationAndReviewsKey(itemId);
+    const reviewsKey = ITEM_VALIDATION_REVIEWS_KEY;
 
     it('Update validation review record', async () => {
       queryClient.setQueryData(statusKey, ITEM_VALIDATION_STATUS);

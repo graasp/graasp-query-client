@@ -1,18 +1,18 @@
 import { QueryClient } from 'react-query';
 import * as Api from '../api';
-import { buildGetLikeCountKey, buildGetLikedItemsKey, MUTATION_KEYS } from '../config/keys';
 import {
-  deleteItemLikeRoutine,
-  postItemLikeRoutine,
-} from '../routines';
+  buildGetLikeCountKey,
+  buildGetLikedItemsKey,
+  MUTATION_KEYS,
+} from '../config/keys';
+import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_LIKE, {
-    mutationFn: ({ itemId }) =>
-      Api.postItemLike(itemId, queryConfig),
+    mutationFn: ({ itemId }) => Api.postItemLike(itemId, queryConfig),
     onSuccess: () => {
       notifier?.({ type: postItemLikeRoutine.SUCCESS });
     },

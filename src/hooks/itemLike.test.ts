@@ -5,7 +5,12 @@ import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import { buildGetLikeCountRoute, buildGetLikedItemsRoute } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
-import { ITEMS, LIKE_COUNT, ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import {
+  ITEMS,
+  LIKE_COUNT,
+  ITEM_LIKES,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants';
 import { buildGetLikeCountKey, buildGetLikedItemsKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
@@ -18,7 +23,7 @@ describe('Item Like Hooks', () => {
   });
 
   describe('useLikedItems', () => {
-    const memberId = 'member-id'; 
+    const memberId = 'member-id';
     const route = `/${buildGetLikedItemsRoute(memberId)}`;
     const key = buildGetLikedItemsKey(memberId);
 
@@ -57,7 +62,7 @@ describe('Item Like Hooks', () => {
   });
 
   describe('useLikeCount', () => {
-    const itemId = ITEMS[0].id; 
+    const itemId = ITEMS[0].id;
     const route = `/${buildGetLikeCountRoute(itemId)}`;
     const key = buildGetLikeCountKey(itemId);
 

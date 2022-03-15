@@ -2,7 +2,7 @@ import { useQuery } from 'react-query';
 import { List } from 'immutable';
 import { QueryClientConfig, UUID } from '../types';
 import * as Api from '../api';
-import { ALL_STATUS_KEY, buildValidationStatusKey, VALIDATION_REVIEW_KEY } from '../config/keys';
+import { buildItemValidationAndReviewsKey, ITEM_VALIDATION_REVIEWS_KEY, ITEM_VALIDATION_REVIEW_STATUSES_KEY, ITEM_VALIDATION_STATUSES_KEY } from '../config/keys';
 
 export default (queryConfig: QueryClientConfig) => {
   const { retry, cacheTime, staleTime } = queryConfig;
@@ -15,25 +15,33 @@ export default (queryConfig: QueryClientConfig) => {
   // get all entry in validation-review
   const useValidationReview = () =>
     useQuery({
-      queryKey: VALIDATION_REVIEW_KEY,
+      queryKey: ITEM_VALIDATION_REVIEWS_KEY,
       queryFn: () =>
-        Api.getValidationReview(queryConfig).then((data) => List(data)),
+        Api.getItemValidationReviews(queryConfig).then((data) => List(data)),
       ...defaultOptions,
     });
 
-  // get all status
-  const useAllStatus = () =>
+  // get all statuses
+  const useItemValidationStatuses = () =>
     useQuery({
-      queryKey: ALL_STATUS_KEY,
+      queryKey: ITEM_VALIDATION_STATUSES_KEY,
       queryFn: () =>
-        Api.getStatus(queryConfig).then((data) => List(data)),
+        Api.getItemValidationStatuses(queryConfig).then((data) => List(data)),
       ...defaultOptions,
     });
 
-  // get validation status of given item
-  const useValidationStatus = (itemId: UUID) =>
+    const useItemValidationReviewStatuses = () =>
     useQuery({
-      queryKey: buildValidationStatusKey(itemId),
+      queryKey: ITEM_VALIDATION_REVIEW_STATUSES_KEY,
+      queryFn: () =>
+        Api.getItemValidationReviewStatuses(queryConfig).then((data) => List(data)),
+      ...defaultOptions,
+    });
+
+  // get validation joined with review records of given item
+  const useItemValidationAndReviews = (itemId: UUID) =>
+    useQuery({
+      queryKey: buildItemValidationAndReviewsKey(itemId),
       queryFn: () =>
         Api.getValidationStatus(queryConfig, itemId).then((data) => List(data)),
       ...defaultOptions,
@@ -42,7 +50,8 @@ export default (queryConfig: QueryClientConfig) => {
 
   return {
     useValidationReview,
-    useAllStatus,
-    useValidationStatus,
+    useItemValidationStatuses,
+    useItemValidationReviewStatuses,
+    useItemValidationAndReviews,
   };
 };
