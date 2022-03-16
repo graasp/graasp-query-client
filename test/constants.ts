@@ -234,6 +234,7 @@ export const ITEM_TAGS = [
 export const ITEM_CHAT = {
   messages: [
     {
+      id: MESSAGE_IDS[0],
       creator: MEMBER_RESPONSE.id,
       content: 'text',
     },
