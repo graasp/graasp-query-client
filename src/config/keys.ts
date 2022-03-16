@@ -136,6 +136,7 @@ export const MUTATION_KEYS = {
   EDIT_ITEM_MEMBERSHIP: 'editItemMembership',
   DELETE_ITEM_MEMBERSHIP: 'deleteItemMembership',
   POST_ITEM_CHAT_MESSAGE: 'postChatMessage',
+  PATCH_ITEM_CHAT_MESSAGE: 'patchChatMessage',
   DELETE_ITEM_CHAT_MESSAGE: 'deleteChatMessage',
   RECYCLE_ITEM: 'recycleItem',
   RECYCLE_ITEMS: 'recycleItems',
