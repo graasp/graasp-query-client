@@ -64,6 +64,8 @@ export const buildGetPublicItemChatRoute = (id: UUID) =>
   `${PUBLIC_PREFIX}/${buildGetItemChatRoute(id)}`;
 export const buildPostItemChatMessageRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/chat`;
+export const buildPatchItemChatMessageRoute = (chatId: UUID, messageId: UUID) =>
+  `${ITEMS_ROUTE}/${chatId}/chat/${messageId}`;
 export const buildDeleteItemChatMessageRoute = (chatId: UUID, messageId: UUID) =>
   `${ITEMS_ROUTE}/${chatId}/chat/${messageId}`;
 
@@ -273,6 +275,7 @@ export const API_ROUTES = {
   buildGetPublicChildrenRoute,
   buildGetItemChatRoute,
   buildPostItemChatMessageRoute,
+  buildPatchItemChatMessageRoute,
   buildDeleteItemChatMessageRoute,
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
