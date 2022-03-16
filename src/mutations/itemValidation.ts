@@ -15,7 +15,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   // payload: itemId
-  queryClient.setMutationDefaults(MUTATION_KEYS.POST_VALIDATION, {
+  queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_VALIDATION, {
     mutationFn: (payload) =>
       Api.postItemValidation(payload, queryConfig).then(() => payload),
     onSuccess: () => {
@@ -35,7 +35,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
 
   // payload: id (entry id), itemId, status, reason
-  queryClient.setMutationDefaults(MUTATION_KEYS.UPDATE_VALIDATION_REVIEW, {
+  queryClient.setMutationDefaults(MUTATION_KEYS.UPDATE_ITEM_VALIDATION_REVIEW, {
     mutationFn: (payload) =>
       Api.updateItemValidationReview(payload, queryConfig),
     onSuccess: () => {

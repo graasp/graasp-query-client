@@ -141,6 +141,7 @@ export type GraaspError = {
   data?: unknown;
 };
 
+// a combined record from item-validation, item-validation-review, item-validation-process
 export type FullValidationRecord = {
   id: string;
   itemId: string;

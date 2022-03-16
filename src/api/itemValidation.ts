@@ -15,7 +15,7 @@ export const getItemValidationStatuses = async ({ API_HOST }: QueryClientConfig)
   export const getItemValidationReviewStatuses = async ({ API_HOST }: QueryClientConfig) =>
   axios.get(`${API_HOST}/${GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE}`).then(({ data }) => data);
 
-export const getValidationStatus = async (
+export const getItemValidationAndReviews = async (
   { API_HOST }: QueryClientConfig,
   itemId: UUID,
 ) =>

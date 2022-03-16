@@ -30,13 +30,13 @@ describe('Item Validation Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_VALIDATION, () => {
+  describe(MUTATION_KEYS.POST_ITEM_VALIDATION, () => {
     const itemId = 'item-id';
     const route = `/${buildPostItemValidationRoute(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.POST_VALIDATION);
+    const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_VALIDATION);
     const key = buildItemValidationAndReviewsKey(itemId);
 
-    it('Post validation', async () => {
+    it('Post item validation', async () => {
       queryClient.setQueryData(key, List([ITEM_VALIDATION_STATUS]));
 
       const endpoints = [
@@ -65,7 +65,7 @@ describe('Item Validation Mutations', () => {
         type: postItemValidationRoutine.SUCCESS,
       });
     });
-    it('Unauthorized to post item category', async () => {
+    it('Unauthorized to post item validation', async () => {
       queryClient.setQueryData(key, List([ITEM_VALIDATION_STATUS]));
       const endpoints = [
         {
@@ -95,17 +95,17 @@ describe('Item Validation Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.UPDATE_VALIDATION_REVIEW, () => {
+  describe(MUTATION_KEYS.UPDATE_ITEM_VALIDATION_REVIEW, () => {
     const id = 'id1';
     const itemId = 'item-id';
     const status = 'accepted';
     const reason = '';
     const route = `/${buildUpdateItemValidationReviewRoute(id)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.UPDATE_VALIDATION_REVIEW);
+    const mutation = () => useMutation(MUTATION_KEYS.UPDATE_ITEM_VALIDATION_REVIEW);
     const statusKey = buildItemValidationAndReviewsKey(itemId);
     const reviewsKey = ITEM_VALIDATION_REVIEWS_KEY;
 
-    it('Update validation review record', async () => {
+    it('Update item validation review record', async () => {
       queryClient.setQueryData(statusKey, ITEM_VALIDATION_STATUS);
       queryClient.setQueryData(reviewsKey, FULL_VALIDATION_RECORDS);
 
@@ -143,7 +143,7 @@ describe('Item Validation Mutations', () => {
       );
     });
 
-    it('Unauthorized to update validation review', async () => {
+    it('Unauthorized to update item validation review', async () => {
       queryClient.setQueryData(statusKey, ITEM_VALIDATION_STATUS);
       queryClient.setQueryData(reviewsKey, FULL_VALIDATION_RECORDS);
 

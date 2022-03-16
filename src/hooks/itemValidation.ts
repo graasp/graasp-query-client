@@ -43,7 +43,7 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildItemValidationAndReviewsKey(itemId),
       queryFn: () =>
-        Api.getValidationStatus(queryConfig, itemId).then((data) => List(data)),
+        Api.getItemValidationAndReviews(queryConfig, itemId).then((data) => List(data)),
       ...defaultOptions,
       enabled: Boolean(itemId),
     });

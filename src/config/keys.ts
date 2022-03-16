@@ -150,6 +150,6 @@ export const MUTATION_KEYS = {
   DELETE_ITEM_LIKE: 'deleteItemLike',
   ADD_FAVORITE_ITEM: 'addFavoriteItem',
   DELETE_FAVORITE_ITEM: 'deleteFavoriteItem',
-  POST_VALIDATION: 'postItemValidation',
-  UPDATE_VALIDATION_REVIEW: 'updateItemValidationReview',
+  POST_ITEM_VALIDATION: 'postItemValidation',
+  UPDATE_ITEM_VALIDATION_REVIEW: 'updateItemValidationReview',
 };
