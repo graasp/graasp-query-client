@@ -120,7 +120,7 @@ export type PartialChatMessage = {
 };
 
 export type ChatMessage = {
-  id: string,
+  id: string;
   chatId: string;
   creator: string;
   createdAt: string;
@@ -139,4 +139,29 @@ export type GraaspError = {
   statusCode?: number;
   message: string;
   data?: unknown;
+};
+
+// a combined record from item-validation, item-validation-review, item-validation-process
+export type FullValidationRecord = {
+  id: string;
+  itemId: string;
+  reviewStatusId: string;
+  validationStatusId: string;
+  validationResult: string;
+  process: string;
+  createdAt: string;
+};
+
+export type ItemValidationAndReview = {
+  validationStatusId: string;
+  reviewStatusId: string;
+  validationResult: string;
+  reviewResult: string;
+  validationUpdatedAt: string;
+  reviewUpdatedAt: string;
+};
+
+export type Status = {
+  id: string;
+  name: string;
 };

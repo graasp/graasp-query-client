@@ -103,6 +103,16 @@ export const buildGetLikedItemsKey = (id: UUID) => [
 ];
 export const buildGetLikeCountKey = (id: UUID) => [ITEMS_KEY, id, 'likeCount'];
 
+export const ITEM_VALIDATION_REVIEWS_KEY = 'itemValidationReviews';
+export const ITEM_VALIDATION_STATUSES_KEY = 'itemValidationStatuses';
+export const ITEM_VALIDATION_REVIEW_STATUSES_KEY =
+  'itemValidationReviewStatuses';
+export const buildItemValidationAndReviewsKey = (id: UUID) => [
+  ITEMS_KEY,
+  id,
+  'itemValidationAndReviews',
+];
+
 export const MUTATION_KEYS = {
   POST_ITEM: 'postItem',
   EDIT_ITEM: 'editItem',
@@ -140,5 +150,7 @@ export const MUTATION_KEYS = {
   POST_ITEM_LIKE: 'postItemLike',
   DELETE_ITEM_LIKE: 'deleteItemLike',
   ADD_FAVORITE_ITEM: 'addFavoriteItem',
-  DELETE_FAVORITE_ITEM: 'deleteFavoriteItem'
+  DELETE_FAVORITE_ITEM: 'deleteFavoriteItem',
+  POST_ITEM_VALIDATION: 'postItemValidation',
+  UPDATE_ITEM_VALIDATION_REVIEW: 'updateItemValidationReview',
 };

@@ -254,12 +254,15 @@ describe('Member Mutations', () => {
     const itemId = 'item-id';
     const extra = {
       favoriteItems: [],
-    }
+    };
     const route = `/${buildPatchMember(id)}`;
     const mutation = () => useMutation(MUTATION_KEYS.ADD_FAVORITE_ITEM);
 
     it(`Successfully add favorite item`, async () => {
-      const response = { ...MEMBER_RESPONSE, extra: { favoriteItems: ['item-id'] } };
+      const response = {
+        ...MEMBER_RESPONSE,
+        extra: { favoriteItems: ['item-id'] },
+      };
       // set random data in cache
       queryClient.setQueryData(CURRENT_MEMBER_KEY, Map(MEMBER_RESPONSE));
       const endpoints = [
@@ -280,7 +283,9 @@ describe('Member Mutations', () => {
         await waitForMutation();
       });
 
-      expect(queryClient.getQueryState(CURRENT_MEMBER_KEY)?.isInvalidated).toBeTruthy();
+      expect(
+        queryClient.getQueryState(CURRENT_MEMBER_KEY)?.isInvalidated,
+      ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: addFavoriteItemRoutine.SUCCESS,
       });
@@ -322,11 +327,14 @@ describe('Member Mutations', () => {
     const itemId = 'item-id';
     const extra = {
       favoriteItems: ['item-id', 'item-id2'],
-    }
+    };
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_FAVORITE_ITEM);
 
     it(`Successfully delete favorite item`, async () => {
-      const response = { ...MEMBER_RESPONSE, extra: {favoriteItems: ['item-id2']} };
+      const response = {
+        ...MEMBER_RESPONSE,
+        extra: { favoriteItems: ['item-id2'] },
+      };
       // set random data in cache
       queryClient.setQueryData(CURRENT_MEMBER_KEY, Map(MEMBER_RESPONSE));
       const endpoints = [

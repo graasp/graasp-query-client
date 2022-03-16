@@ -8,8 +8,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   queryClient.setMutationDefaults(MUTATION_KEYS.EXPORT_ZIP, {
-    mutationFn: (id) =>
-      Api.downloadItem(id, queryConfig).then((data) => data),
+    mutationFn: (id) => Api.downloadItem(id, queryConfig).then((data) => data),
     onSuccess: () => {
       notifier?.({ type: downloadItemRoutine.SUCCESS });
     },

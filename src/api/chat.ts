@@ -1,4 +1,9 @@
-import { PartialChatMessage, PartialNewChatMessage, QueryClientConfig, UUID } from '../types';
+import {
+  PartialChatMessage,
+  PartialNewChatMessage,
+  QueryClientConfig,
+  UUID,
+} from '../types';
 import configureAxios, {
   fallbackToPublic,
   verifyAuthentication,
@@ -49,6 +54,8 @@ export const deleteItemChatMessage = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .delete(`${API_HOST}/${buildDeleteItemChatMessageRoute(chatId, messageId)}`)
+      .delete(
+        `${API_HOST}/${buildDeleteItemChatMessageRoute(chatId, messageId)}`,
+      )
       .then(({ data }) => data),
   );

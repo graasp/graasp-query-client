@@ -8,3 +8,4 @@ export * from './chat';
 export * from './itemCategory';
 export * from './itemDownload';
 export * from './itemLike';
+export * from './itemValidation';

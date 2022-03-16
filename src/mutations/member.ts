@@ -114,9 +114,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   // mutation to update favorite items of given member
   queryClient.setMutationDefaults(MUTATION_KEYS.ADD_FAVORITE_ITEM, {
     mutationFn: (payload) => {
-      const {memberId, itemId, extra} = payload;
-      extra.favoriteItems = extra.favoriteItems? extra.favoriteItems.concat([itemId]) : [itemId]
-      return Api.editMember({id: memberId, extra}, queryConfig).then((member) => Map(member));
+      const { memberId, itemId, extra } = payload;
+      extra.favoriteItems = extra.favoriteItems
+        ? extra.favoriteItems.concat([itemId])
+        : [itemId];
+      return Api.editMember({ id: memberId, extra }, queryConfig).then(
+        (member) => Map(member),
+      );
     },
     onMutate: async (payload) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
@@ -129,7 +133,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       // Optimistically update to the new value
       const { itemId, extra } = payload;
-      extra.favoriteItems = extra.favoriteItems? extra.favoriteItems.concat([itemId]) : [itemId];
+      extra.favoriteItems = extra.favoriteItems
+        ? extra.favoriteItems.concat([itemId])
+        : [itemId];
       const member = { extra };
 
       queryClient.setQueryData(
@@ -157,9 +163,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_FAVORITE_ITEM, {
     mutationFn: (payload) => {
-      const {memberId, itemId, extra} = payload;
-      extra.favoriteItems = extra.favoriteItems?.filter((id: UUID) => id !== itemId);
-      return Api.editMember({id: memberId, extra}, queryConfig).then((member) => Map(member));
+      const { memberId, itemId, extra } = payload;
+      extra.favoriteItems = extra.favoriteItems?.filter(
+        (id: UUID) => id !== itemId,
+      );
+      return Api.editMember({ id: memberId, extra }, queryConfig).then(
+        (member) => Map(member),
+      );
     },
     onMutate: async (payload) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
@@ -172,7 +182,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       // Optimistically update to the new value
       const { itemId, extra } = payload;
-      extra.favoriteItems = extra.favoriteItems?.filter((id: UUID) => id !== itemId);
+      extra.favoriteItems = extra.favoriteItems?.filter(
+        (id: UUID) => id !== itemId,
+      );
       const member = { extra };
 
       queryClient.setQueryData(
@@ -188,7 +200,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     // If the mutation fails, use the context returned from onMutate to roll back
     onError: (error, _, context) => {
-      notifier?.({ type: deleteFavoriteItemRoutine.FAILURE, payload: { error } });
+      notifier?.({
+        type: deleteFavoriteItemRoutine.FAILURE,
+        payload: { error },
+      });
       queryClient.setQueryData(CURRENT_MEMBER_KEY, context.previousMember);
     },
     // Always refetch after error or success:

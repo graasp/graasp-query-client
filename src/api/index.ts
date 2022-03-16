@@ -11,3 +11,4 @@ export * from './category';
 export * from './search';
 export * from './itemDownload';
 export * from './itemLike';
+export * from './itemValidation';

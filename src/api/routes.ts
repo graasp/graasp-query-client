@@ -229,6 +229,17 @@ export const buildPostItemLikeRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/like`;
 export const buildDeleteItemLikeRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/likes/${id}`;
 
+export const VALIDATION_ROUTE = 'validations';
+export const buildGetItemValidationAndReviewsRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/status/${id}`;
+export const GET_ITEM_VALIDATION_REVIEWS_ROUTE = `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/reviews`;
+export const GET_ITEM_VALIDATION_STATUSES_ROUTE = `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/statuses`;
+export const GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE = `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/review/statuses`;
+export const buildPostItemValidationRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/${id}`;
+export const buildUpdateItemValidationReviewRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/${id}/review`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   ITEMS_ROUTE,
@@ -240,6 +251,9 @@ export const API_ROUTES = {
   GET_TAGS_ROUTE,
   GET_FLAGS_ROUTE,
   GET_CATEGORY_TYPES_ROUTE,
+  VALIDATION_ROUTE,
+  GET_ITEM_VALIDATION_REVIEWS_ROUTE,
+  GET_ITEM_VALIDATION_STATUSES_ROUTE,
   buildAppListRoute,
   buildGetMember,
   buildGetMembersRoute,
@@ -305,4 +319,6 @@ export const API_ROUTES = {
   buildGetLikeCountRoute,
   buildPostItemLikeRoute,
   buildDeleteItemLikeRoute,
+  buildPostItemValidationRoute,
+  buildUpdateItemValidationReviewRoute,
 };

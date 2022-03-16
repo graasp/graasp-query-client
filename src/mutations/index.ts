@@ -10,6 +10,7 @@ import itemCategoryMutations from './itemCategory';
 import { QueryClientConfig } from '../types';
 import itemDownloadMutations from './itemDownload';
 import itemLikeMutations from './itemLike';
+import itemValidationMutations from './itemValidation';
 
 const configureMutations = (
   queryClient: QueryClient,
@@ -25,6 +26,7 @@ const configureMutations = (
   itemCategoryMutations(queryClient, queryConfig);
   itemDownloadMutations(queryClient, queryConfig);
   itemLikeMutations(queryClient, queryConfig);
+  itemValidationMutations(queryClient, queryConfig);
 };
 
 export default configureMutations;

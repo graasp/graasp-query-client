@@ -4,11 +4,23 @@ import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
-import { ITEMS, ITEM_LIKES, LIKE_COUNT, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import {
+  ITEMS,
+  ITEM_LIKES,
+  LIKE_COUNT,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { buildDeleteItemLikeRoute, buildPostItemLikeRoute } from '../api/routes';
+import {
+  buildDeleteItemLikeRoute,
+  buildPostItemLikeRoute,
+} from '../api/routes';
 import { REQUEST_METHODS } from '../api/utils';
-import { buildGetLikeCountKey, buildGetLikedItemsKey, MUTATION_KEYS } from '../config/keys';
+import {
+  buildGetLikeCountKey,
+  buildGetLikedItemsKey,
+  MUTATION_KEYS,
+} from '../config/keys';
 import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -56,8 +68,12 @@ describe('Item Like Mutations', () => {
         await waitForMutation();
       });
 
-      expect(queryClient.getQueryState(likedItemsKey)?.isInvalidated).toBeTruthy();
-      expect(queryClient.getQueryState(likeCountKey)?.isInvalidated).toBeTruthy();
+      expect(
+        queryClient.getQueryState(likedItemsKey)?.isInvalidated,
+      ).toBeTruthy();
+      expect(
+        queryClient.getQueryState(likeCountKey)?.isInvalidated,
+      ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: postItemLikeRoutine.SUCCESS,
       });
@@ -126,8 +142,12 @@ describe('Item Like Mutations', () => {
         await waitForMutation();
       });
 
-      expect(queryClient.getQueryState(likedItemsKey)?.isInvalidated).toBeTruthy();
-      expect(queryClient.getQueryState(likeCountKey)?.isInvalidated).toBeTruthy();
+      expect(
+        queryClient.getQueryState(likedItemsKey)?.isInvalidated,
+      ).toBeTruthy();
+      expect(
+        queryClient.getQueryState(likeCountKey)?.isInvalidated,
+      ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: deleteItemLikeRoutine.SUCCESS,
       });

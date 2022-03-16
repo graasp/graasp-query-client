@@ -58,7 +58,9 @@ export const configureWsChatHooks = (
                 break;
               }
               case OPS.DELETE: {
-                const mutation = current.update('messages', (messages) => messages.filter(m => m.id !== event.message.id));
+                const mutation = current.update('messages', (messages) =>
+                  messages.filter((m) => m.id !== event.message.id),
+                );
                 queryClient.setQueryData(chatKey, mutation);
                 break;
               }
