@@ -42,9 +42,12 @@ export const patchItemChatMessage = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .patch(`${API_HOST}/${buildPatchItemChatMessageRoute(chatId, messageId)}`, {
-        body,
-      })
+      .patch(
+        `${API_HOST}/${buildPatchItemChatMessageRoute(chatId, messageId)}`,
+        {
+          body,
+        },
+      )
       .then(({ data }) => data),
   );
 

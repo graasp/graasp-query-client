@@ -1,10 +1,18 @@
 import { QueryClient } from 'react-query';
 import * as Api from '../api';
 import { buildItemChatKey, MUTATION_KEYS } from '../config/keys';
-import { deleteItemChatMessageRoutine, patchItemChatMessageRoutine, postItemChatMessageRoutine } from '../routines';
+import {
+  deleteItemChatMessageRoutine,
+  patchItemChatMessageRoutine,
+  postItemChatMessageRoutine,
+} from '../routines';
 import { QueryClientConfig } from '../types';
 
-const { POST_ITEM_CHAT_MESSAGE, PATCH_ITEM_CHAT_MESSAGE, DELETE_ITEM_CHAT_MESSAGE } = MUTATION_KEYS;
+const {
+  POST_ITEM_CHAT_MESSAGE,
+  PATCH_ITEM_CHAT_MESSAGE,
+  DELETE_ITEM_CHAT_MESSAGE,
+} = MUTATION_KEYS;
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   queryClient.setMutationDefaults(POST_ITEM_CHAT_MESSAGE, {

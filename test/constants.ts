@@ -69,10 +69,7 @@ export const ITEMS: Item[] = [
   },
 ];
 
-export const MESSAGE_IDS = [
-  '12345',
-  '78945',
-]
+export const MESSAGE_IDS = ['12345', '78945'];
 
 export const MEMBER_RESPONSE: Member = {
   id: '42',
@@ -294,7 +291,7 @@ export const ITEM_LIKES = [
     memberId: 'member-id',
     createdAt: 'timestamp',
   },
-]
+];
 
 export const LIKE_COUNT = 100;
 
@@ -325,7 +322,7 @@ export const ITEM_VALIDATION_STATUS = [
     reviewResult: 'result',
     validationUpdatedAt: 'ts',
     reviewUpdatedAt: 'ts',
-  }
+  },
 ];
 
 export const FULL_VALIDATION_RECORDS = [
@@ -346,5 +343,5 @@ export const FULL_VALIDATION_RECORDS = [
     validationResult: '',
     process: 'process-2',
     createdAt: 'ts',
-  }
-]
+  },
+];
