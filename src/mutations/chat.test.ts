@@ -6,18 +6,23 @@ import { StatusCodes } from 'http-status-codes';
 import {
   buildDeleteItemChatMessageRoute,
   buildPatchItemChatMessageRoute,
-  buildPostItemChatMessageRoute
+  buildPostItemChatMessageRoute,
 } from '../api/routes';
 import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
 import {
   ITEMS,
   ITEM_CHAT,
   OK_RESPONSE,
-  UNAUTHORIZED_RESPONSE, MESSAGE_IDS,
+  UNAUTHORIZED_RESPONSE,
+  MESSAGE_IDS,
 } from '../../test/constants';
 import { buildItemChatKey, MUTATION_KEYS } from '../config/keys';
 import { REQUEST_METHODS } from '../api/utils';
-import { deleteItemChatMessageRoutine, patchItemChatMessageRoutine, postItemChatMessageRoutine } from '../routines';
+import {
+  deleteItemChatMessageRoutine,
+  patchItemChatMessageRoutine,
+  postItemChatMessageRoutine,
+} from '../routines';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -115,7 +120,11 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ chatId, messageId, body: 'Updated message' });
+          await mockedMutation.mutate({
+            chatId,
+            messageId,
+            body: 'Updated message',
+          });
           await waitForMutation();
         });
 
@@ -142,7 +151,11 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ chatId, messageId, body: 'Updated message' });
+          await mockedMutation.mutate({
+            chatId,
+            messageId,
+            body: 'Updated message',
+          });
           await waitForMutation();
         });
 
@@ -158,7 +171,8 @@ describe('Chat Mutations', () => {
 
     describe(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE, () => {
       const route = `/${buildDeleteItemChatMessageRoute(itemId, messageId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE);
+      const mutation = () =>
+        useMutation(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE);
 
       it(`Delete item chat message`, async () => {
         const endpoints = [

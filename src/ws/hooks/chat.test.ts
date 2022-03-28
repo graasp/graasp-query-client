@@ -45,7 +45,10 @@ describe('Ws Chat Hooks', () => {
     });
 
     it(`Receive chat messages edit update`, async () => {
-      const updatedMessage = { id: MESSAGE_IDS[0], body: 'new message content' }
+      const updatedMessage = {
+        id: MESSAGE_IDS[0],
+        body: 'new message content',
+      };
       queryClient.setQueryData(chatKey, Map(ITEM_CHAT));
       await mockWsHook({ hook, wrapper });
 

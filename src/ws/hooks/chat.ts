@@ -50,9 +50,12 @@ export const configureWsChatHooks = (
               }
               case OPS.UPDATE: {
                 const mutation = current.update('messages', (messages) => {
-                  const index = messages.findIndex(m => m.id === event.message.id);
-                  messages[index] = event.message
-                  return messages
+                  const index = messages.findIndex(
+                    (m) => m.id === event.message.id,
+                  );
+                  // eslint-disable-next-line no-param-reassign
+                  messages[index] = event.message;
+                  return messages;
                 });
                 queryClient.setQueryData(chatKey, mutation);
                 break;
