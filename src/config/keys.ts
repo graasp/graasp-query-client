@@ -113,6 +113,10 @@ export const buildItemValidationAndReviewsKey = (id: UUID) => [
   'itemValidationAndReviews',
 ];
 
+export const HOOK_KEYS = {
+  buildItemValidationAndReviewsKey,
+}
+
 export const MUTATION_KEYS = {
   POST_ITEM: 'postItem',
   EDIT_ITEM: 'editItem',
