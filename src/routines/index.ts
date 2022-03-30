@@ -6,6 +6,6 @@ export * from './itemLogin';
 export * from './itemFlag';
 export * from './chat';
 export * from './itemCategory';
-export * from './itemDownload';
+export * from './itemExport';
 export * from './itemLike';
 export * from './itemValidation';
