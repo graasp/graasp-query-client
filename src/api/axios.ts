@@ -86,7 +86,9 @@ export const fallbackToPublic = (
   return request()
     .then(({ data }) => fallbackForArray(data, publicRequest))
     .catch((error) => {
-      if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(error.response.status)) {
+      if (
+        FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(error.response?.status)
+      ) {
         return publicRequest()
           .then(({ data }) => data)
           .catch((e) => returnFallbackDataOrThrow(e, options?.fallbackData));
