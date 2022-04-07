@@ -247,6 +247,13 @@ export const buildPostItemValidationRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/${id}`;
 export const buildUpdateItemValidationReviewRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/${id}/review`;
+export const buildGetActions = (
+  itemId: UUID,
+  options: { requestedSampleSize: number; view: string },
+) =>
+  `analytics/${ITEMS_ROUTE}/${itemId}${qs.stringify(options, {
+    addQueryPrefix: true,
+  })}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,
@@ -331,4 +338,5 @@ export const API_ROUTES = {
   buildDeleteItemLikeRoute,
   buildPostItemValidationRoute,
   buildUpdateItemValidationReviewRoute,
+  buildGetActions,
 };

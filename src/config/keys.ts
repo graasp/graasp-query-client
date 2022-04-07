@@ -118,6 +118,16 @@ export const buildItemValidationGroupsKey = (id: UUID) => [
   'itemValidationGroups',
 ];
 
+export const buildActionsKey = (args: {
+  itemId: UUID;
+  view: string;
+  requestedSampleSize: number;
+}) => [
+  'actions',
+  args.itemId,
+  { view: args.view, size: args.requestedSampleSize },
+];
+
 export const DATA_KEYS = {
   APPS_KEY,
   ITEMS_KEY,
