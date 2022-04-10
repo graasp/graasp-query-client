@@ -2,7 +2,7 @@ import { QueryClientConfig, UUID } from '../types';
 import configureAxios, {
   verifyAuthentication,
 } from './axios';
-import { buildGetItemValidationAndReviewsRoute, buildPostItemValidationRoute, buildUpdateItemValidationReviewRoute, GET_ITEM_VALIDATION_REVIEWS_ROUTE, GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE, GET_ITEM_VALIDATION_STATUSES_ROUTE } from './routes';
+import { buildGetItemValidationAndReviewRoute, buildGetItemValidationGroupsRoute, buildPostItemValidationRoute, buildUpdateItemValidationReviewRoute, GET_ITEM_VALIDATION_REVIEWS_ROUTE, GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE, GET_ITEM_VALIDATION_STATUSES_ROUTE } from './routes';
 
 const axios = configureAxios();
 
@@ -15,15 +15,25 @@ export const getItemValidationStatuses = async ({ API_HOST }: QueryClientConfig)
   export const getItemValidationReviewStatuses = async ({ API_HOST }: QueryClientConfig) =>
   axios.get(`${API_HOST}/${GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE}`).then(({ data }) => data);
 
-export const getItemValidationAndReviews = async (
+export const getItemValidationAndReview = async (
   { API_HOST }: QueryClientConfig,
   itemId: UUID,
 ) =>
 verifyAuthentication(() =>
   axios
-    .get(`${API_HOST}/${buildGetItemValidationAndReviewsRoute(itemId)}`)
+    .get(`${API_HOST}/${buildGetItemValidationAndReviewRoute(itemId)}`)
     .then(({ data }) => data),
   );
+
+export const getItemValidationGroups = async (
+    { API_HOST }: QueryClientConfig,
+    iVId: UUID,
+  ) =>
+  verifyAuthentication(() =>
+    axios
+      .get(`${API_HOST}/${buildGetItemValidationGroupsRoute(iVId)}`)
+      .then(({ data }) => data),
+    );
 
 export const postItemValidation = async (
   { itemId }: { itemId: UUID },

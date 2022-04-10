@@ -230,8 +230,10 @@ export const buildDeleteItemLikeRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/likes/${id}`;
 
 export const VALIDATION_ROUTE = 'validations';
-export const buildGetItemValidationAndReviewsRoute = (id: UUID) =>
+export const buildGetItemValidationAndReviewRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/status/${id}`;
+export const buildGetItemValidationGroupsRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/groups/${id}`;
 export const GET_ITEM_VALIDATION_REVIEWS_ROUTE = `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/reviews`;
 export const GET_ITEM_VALIDATION_STATUSES_ROUTE = `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/statuses`;
 export const GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE = `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/review/statuses`;

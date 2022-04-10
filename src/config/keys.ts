@@ -107,10 +107,15 @@ export const ITEM_VALIDATION_REVIEWS_KEY = 'itemValidationReviews';
 export const ITEM_VALIDATION_STATUSES_KEY = 'itemValidationStatuses';
 export const ITEM_VALIDATION_REVIEW_STATUSES_KEY =
   'itemValidationReviewStatuses';
-export const buildItemValidationAndReviewsKey = (id: UUID) => [
+export const buildItemValidationAndReviewKey = (id: UUID) => [
   ITEMS_KEY,
   id,
-  'itemValidationAndReviews',
+  'itemValidationAndReview',
+];
+export const buildItemValidationGroupsKey = (id: UUID) => [
+  ITEMS_KEY,
+  id,
+  'itemValidationGroups',
 ];
 
 export const DATA_KEYS = {
@@ -156,7 +161,7 @@ export const DATA_KEYS = {
   ITEM_VALIDATION_REVIEWS_KEY,
   ITEM_VALIDATION_STATUSES_KEY,
   ITEM_VALIDATION_REVIEW_STATUSES_KEY,
-  buildItemValidationAndReviewsKey,
+  buildItemValidationAndReviewsKey: buildItemValidationAndReviewKey,
 }
 
 export const MUTATION_KEYS = {
