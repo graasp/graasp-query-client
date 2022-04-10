@@ -9,6 +9,6 @@ export * from './itemFlag';
 export * from './chat';
 export * from './category';
 export * from './search';
-export * from './itemDownload';
+export * from './itemExport';
 export * from './itemLike';
 export * from './itemValidation';

@@ -12,6 +12,7 @@ import {
   buildDeleteItemChatMessageRoute,
   buildGetItemChatRoute,
   buildGetPublicItemChatRoute,
+  buildPatchItemChatMessageRoute,
   buildPostItemChatMessageRoute,
 } from './routes';
 
@@ -32,6 +33,21 @@ export const postItemChatMessage = async (
       .post(`${API_HOST}/${buildPostItemChatMessageRoute(chatId)}`, {
         body,
       })
+      .then(({ data }) => data),
+  );
+
+export const patchItemChatMessage = async (
+  { chatId, messageId, body }: PartialChatMessage,
+  { API_HOST }: QueryClientConfig,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .patch(
+        `${API_HOST}/${buildPatchItemChatMessageRoute(chatId, messageId)}`,
+        {
+          body,
+        },
+      )
       .then(({ data }) => data),
   );
 
