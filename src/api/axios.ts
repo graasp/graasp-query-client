@@ -52,6 +52,10 @@ const fallbackForArray = async (
   return data;
 };
 
+export type FallbackToPublicOptions = {
+  public?: boolean;
+  fallbackData?: unknown;
+};
 /**
  * Automatically send request depending on whether member is authenticated
  * The function fallback to public depending on status code or authentication
@@ -62,26 +66,35 @@ const fallbackForArray = async (
 export const fallbackToPublic = (
   request: () => Promise<AxiosResponse>,
   publicRequest: () => Promise<AxiosResponse>,
-  fallbackData?: unknown,
+  options?: FallbackToPublicOptions,
 ) => {
-  const isAuthenticated = isUserAuthenticated();
+  let isAuthenticated;
+
+  // if the call should be public, override isAuthenticated
+  if (options?.public) {
+    isAuthenticated = false;
+  } else {
+    isAuthenticated = isUserAuthenticated();
+  }
 
   if (!isAuthenticated) {
     return publicRequest()
       .then(({ data }) => data)
-      .catch((e) => returnFallbackDataOrThrow(e, fallbackData));
+      .catch((e) => returnFallbackDataOrThrow(e, options?.fallbackData));
   }
 
   return request()
     .then(({ data }) => fallbackForArray(data, publicRequest))
     .catch((error) => {
-      if (FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(error.response.status)) {
+      if (
+        FALLBACK_TO_PUBLIC_FOR_STATUS_CODES.includes(error.response?.status)
+      ) {
         return publicRequest()
           .then(({ data }) => data)
-          .catch((e) => returnFallbackDataOrThrow(e, fallbackData));
+          .catch((e) => returnFallbackDataOrThrow(e, options?.fallbackData));
       }
 
-      return returnFallbackDataOrThrow(error, fallbackData);
+      return returnFallbackDataOrThrow(error, options?.fallbackData);
     });
 };
 

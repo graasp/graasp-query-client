@@ -70,6 +70,8 @@ export const ITEMS: Item[] = [
   },
 ];
 
+export const MESSAGE_IDS = ['12345', '78945'];
+
 export const MEMBER_RESPONSE: Member = {
   id: '42',
   name: 'username',
@@ -190,7 +192,7 @@ export const APPS = [
 
 export const buildChatMessages = (id: UUID) => [
   { chatId: id, body: 'some text', creator: 'somememberid' },
-  { chatId: id, body: 'someother text', creator: 'someothermemberid' },
+  { chatId: id, body: 'some other text', creator: 'someothermemberid' },
 ];
 
 export const FLAGS = [
@@ -230,6 +232,7 @@ export const ITEM_TAGS = [
 export const ITEM_CHAT = {
   messages: [
     {
+      id: MESSAGE_IDS[0],
       creator: MEMBER_RESPONSE.id,
       content: 'text',
     },
@@ -289,7 +292,7 @@ export const ITEM_LIKES = [
     memberId: 'member-id',
     createdAt: 'timestamp',
   },
-]
+];
 
 export const LIKE_COUNT = 100;
 
@@ -353,4 +356,4 @@ export const ITEM_VALIDATION_GROUPS = [
     updatedAt: 'ts',
     createdAt: ''
   }
-]
+];
