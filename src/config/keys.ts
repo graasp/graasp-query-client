@@ -161,7 +161,8 @@ export const DATA_KEYS = {
   ITEM_VALIDATION_REVIEWS_KEY,
   ITEM_VALIDATION_STATUSES_KEY,
   ITEM_VALIDATION_REVIEW_STATUSES_KEY,
-  buildItemValidationAndReviewsKey: buildItemValidationAndReviewKey,
+  buildItemValidationAndReviewKey,
+  buildItemValidationGroupsKey,
 };
 
 export const MUTATION_KEYS = {
