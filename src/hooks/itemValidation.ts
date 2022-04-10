@@ -2,7 +2,13 @@ import { useQuery } from 'react-query';
 import { List } from 'immutable';
 import { QueryClientConfig, UUID } from '../types';
 import * as Api from '../api';
-import { buildItemValidationAndReviewKey, buildItemValidationGroupsKey, ITEM_VALIDATION_REVIEWS_KEY, ITEM_VALIDATION_REVIEW_STATUSES_KEY, ITEM_VALIDATION_STATUSES_KEY } from '../config/keys';
+import {
+  buildItemValidationAndReviewKey,
+  buildItemValidationGroupsKey,
+  ITEM_VALIDATION_REVIEWS_KEY,
+  ITEM_VALIDATION_REVIEW_STATUSES_KEY,
+  ITEM_VALIDATION_STATUSES_KEY,
+} from '../config/keys';
 
 export default (queryConfig: QueryClientConfig) => {
   const { retry, cacheTime, staleTime } = queryConfig;
@@ -30,11 +36,13 @@ export default (queryConfig: QueryClientConfig) => {
       ...defaultOptions,
     });
 
-    const useItemValidationReviewStatuses = () =>
+  const useItemValidationReviewStatuses = () =>
     useQuery({
       queryKey: ITEM_VALIDATION_REVIEW_STATUSES_KEY,
       queryFn: () =>
-        Api.getItemValidationReviewStatuses(queryConfig).then((data) => List(data)),
+        Api.getItemValidationReviewStatuses(queryConfig).then((data) =>
+          List(data),
+        ),
       ...defaultOptions,
     });
 
@@ -43,7 +51,9 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildItemValidationAndReviewKey(itemId),
       queryFn: () =>
-        Api.getItemValidationAndReview(queryConfig, itemId).then((data) => data),
+        Api.getItemValidationAndReview(queryConfig, itemId).then(
+          (data) => data,
+        ),
       ...defaultOptions,
       enabled: Boolean(itemId),
     });
@@ -52,7 +62,9 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildItemValidationGroupsKey(iVId),
       queryFn: () =>
-        Api.getItemValidationGroups(queryConfig, iVId).then((data) => List(data)),
+        Api.getItemValidationGroups(queryConfig, iVId).then((data) =>
+          List(data),
+        ),
       ...defaultOptions,
       enabled: Boolean(iVId),
     });
@@ -62,6 +74,6 @@ export default (queryConfig: QueryClientConfig) => {
     useItemValidationStatuses,
     useItemValidationReviewStatuses,
     useItemValidationAndReview,
-    useItemValidationGroups
+    useItemValidationGroups,
   };
 };

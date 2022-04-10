@@ -162,7 +162,7 @@ export const DATA_KEYS = {
   ITEM_VALIDATION_STATUSES_KEY,
   ITEM_VALIDATION_REVIEW_STATUSES_KEY,
   buildItemValidationAndReviewsKey: buildItemValidationAndReviewKey,
-}
+};
 
 export const MUTATION_KEYS = {
   POST_ITEM: 'postItem',

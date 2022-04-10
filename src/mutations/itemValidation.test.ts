@@ -6,7 +6,11 @@ import { List } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { REQUEST_METHODS } from '../api/utils';
-import { buildItemValidationAndReviewKey, ITEM_VALIDATION_REVIEWS_KEY, MUTATION_KEYS } from '../config/keys';
+import {
+  buildItemValidationAndReviewKey,
+  ITEM_VALIDATION_REVIEWS_KEY,
+  MUTATION_KEYS,
+} from '../config/keys';
 import {
   buildPostItemValidationRoute,
   buildUpdateItemValidationReviewRoute,
@@ -15,7 +19,11 @@ import {
   postItemValidationRoutine,
   updateItemValidationReviewRoutine,
 } from '../routines';
-import { FULL_VALIDATION_RECORDS, ITEM_VALIDATION_STATUS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import {
+  FULL_VALIDATION_RECORDS,
+  ITEM_VALIDATION_STATUS,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
@@ -101,7 +109,8 @@ describe('Item Validation Mutations', () => {
     const status = 'accepted';
     const reason = '';
     const route = `/${buildUpdateItemValidationReviewRoute(id)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.UPDATE_ITEM_VALIDATION_REVIEW);
+    const mutation = () =>
+      useMutation(MUTATION_KEYS.UPDATE_ITEM_VALIDATION_REVIEW);
     const statusKey = buildItemValidationAndReviewKey(itemId);
     const reviewsKey = ITEM_VALIDATION_REVIEWS_KEY;
 
@@ -163,11 +172,11 @@ describe('Item Validation Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({           
+        await mockedMutation.mutate({
           id,
           itemId,
           status,
-          reason 
+          reason,
         });
         await waitForMutation();
       });

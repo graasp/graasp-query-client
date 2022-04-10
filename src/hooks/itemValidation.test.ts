@@ -5,10 +5,19 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { mockHook, setUpTest } from '../../test/utils';
 import {
-  buildGetItemValidationAndReviewRoute, buildGetItemValidationGroupsRoute, GET_ITEM_VALIDATION_REVIEWS_ROUTE, GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE, GET_ITEM_VALIDATION_STATUSES_ROUTE,
-
+  buildGetItemValidationAndReviewRoute,
+  buildGetItemValidationGroupsRoute,
+  GET_ITEM_VALIDATION_REVIEWS_ROUTE,
+  GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE,
+  GET_ITEM_VALIDATION_STATUSES_ROUTE,
 } from '../api/routes';
-import { buildItemValidationAndReviewKey, buildItemValidationGroupsKey, ITEM_VALIDATION_REVIEWS_KEY, ITEM_VALIDATION_REVIEW_STATUSES_KEY, ITEM_VALIDATION_STATUSES_KEY } from '../config/keys';
+import {
+  buildItemValidationAndReviewKey,
+  buildItemValidationGroupsKey,
+  ITEM_VALIDATION_REVIEWS_KEY,
+  ITEM_VALIDATION_REVIEW_STATUSES_KEY,
+  ITEM_VALIDATION_STATUSES_KEY,
+} from '../config/keys';
 import {
   FULL_VALIDATION_RECORDS,
   ITEM_VALIDATION_GROUPS,
@@ -16,7 +25,12 @@ import {
   STATUS_LIST,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
-import { FullValidationRecord, ItemValidationAndReview, ItemValidationGroup, Status } from '../types';
+import {
+  FullValidationRecord,
+  ItemValidationAndReview,
+  ItemValidationGroup,
+  Status,
+} from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -81,7 +95,7 @@ describe('Item Validation Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(List(response));
     });
-    
+
     it(`Unauthorized`, async () => {
       const endpoints = [
         {
@@ -119,7 +133,7 @@ describe('Item Validation Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(List(response));
     });
-    
+
     it(`Unauthorized`, async () => {
       const endpoints = [
         {
