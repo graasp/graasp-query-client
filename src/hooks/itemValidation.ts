@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 import { QueryClientConfig, UUID } from '../types';
 import * as Api from '../api';
 import {
@@ -52,7 +52,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: buildItemValidationAndReviewKey(itemId),
       queryFn: () =>
         Api.getItemValidationAndReview(queryConfig, itemId).then(
-          (data) => data,
+          (data) => Map(data),
         ),
       ...defaultOptions,
       enabled: Boolean(itemId),

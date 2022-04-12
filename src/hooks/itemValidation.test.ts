@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { mockHook, setUpTest } from '../../test/utils';
@@ -167,10 +167,10 @@ describe('Item Validation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as ItemValidationAndReview).toEqual(response);
+      expect(data as ItemValidationAndReview).toEqual(Map(response));
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(response);
+      expect(queryClient.getQueryData(key)).toEqual(Map(response));
     });
     it(`Unauthorized`, async () => {
       const endpoints = [
