@@ -184,6 +184,7 @@ export const MUTATION_KEYS = {
   POST_ITEM_CHAT_MESSAGE: 'postChatMessage',
   PATCH_ITEM_CHAT_MESSAGE: 'patchChatMessage',
   DELETE_ITEM_CHAT_MESSAGE: 'deleteChatMessage',
+  DELETE_ALL_ITEM_CHAT_MESSAGES: 'deleteAllChatMessages',
   RECYCLE_ITEM: 'recycleItem',
   RECYCLE_ITEMS: 'recycleItems',
   RESTORE_ITEMS: 'restoreItems',

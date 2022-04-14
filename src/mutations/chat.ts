@@ -2,6 +2,7 @@ import { QueryClient } from 'react-query';
 import * as Api from '../api';
 import { buildItemChatKey, MUTATION_KEYS } from '../config/keys';
 import {
+  clearItemChatRoutine,
   deleteItemChatMessageRoutine,
   patchItemChatMessageRoutine,
   postItemChatMessageRoutine,
@@ -12,6 +13,7 @@ const {
   POST_ITEM_CHAT_MESSAGE,
   PATCH_ITEM_CHAT_MESSAGE,
   DELETE_ITEM_CHAT_MESSAGE,
+  DELETE_ALL_ITEM_CHAT_MESSAGES,
 } = MUTATION_KEYS;
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
@@ -58,6 +60,23 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
     onSettled: (_data, _error, { chatId }) => {
+      // invalidate keys only if websockets are disabled
+      // otherwise the cache is updated automatically
+      if (!queryConfig.enableWebsocket) {
+        queryClient.invalidateQueries(buildItemChatKey(chatId));
+      }
+    },
+  });
+
+  queryClient.setMutationDefaults(DELETE_ALL_ITEM_CHAT_MESSAGES, {
+    mutationFn: (chatId) => Api.clearItemChat(chatId, queryConfig),
+    onError: (error) => {
+      queryConfig.notifier?.({
+        type: clearItemChatRoutine.FAILURE,
+        payload: { error },
+      });
+    },
+    onSettled: (_data, _error, chatId) => {
       // invalidate keys only if websockets are disabled
       // otherwise the cache is updated automatically
       if (!queryConfig.enableWebsocket) {

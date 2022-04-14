@@ -12,3 +12,7 @@ export const patchItemChatMessageRoutine = createRoutine(
 export const deleteItemChatMessageRoutine = createRoutine(
   'DELETE_ITEM_CHAT_MESSAGE',
 );
+
+export const clearItemChatRoutine = createRoutine(
+  'CLEAR_ITEM_CHAT',
+);

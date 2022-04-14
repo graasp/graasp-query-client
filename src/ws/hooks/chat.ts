@@ -67,6 +67,11 @@ export const configureWsChatHooks = (
                 queryClient.setQueryData(chatKey, mutation);
                 break;
               }
+              case OPS.CLEAR: {
+                const mutation = current.update('messages', () => []);
+                queryClient.setQueryData(chatKey, mutation);
+                break;
+              }
               default:
                 break;
             }
