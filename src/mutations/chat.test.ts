@@ -231,11 +231,11 @@ describe('Chat Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.DELETE_ALL_ITEM_CHAT_MESSAGES, () => {
+    describe(MUTATION_KEYS.CLEAR_ITEM_CHAT, () => {
       const route = `/${buildClearItemChatRoute(itemId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.DELETE_ALL_ITEM_CHAT_MESSAGES);
+      const mutation = () => useMutation(MUTATION_KEYS.CLEAR_ITEM_CHAT);
 
-      it(`Delete all item chat messages`, async () => {
+      it(`Clear chat`, async () => {
         const endpoints = [
           { route, response: OK_RESPONSE, method: REQUEST_METHODS.DELETE },
         ];
@@ -379,10 +379,10 @@ describe('Chat Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.DELETE_ALL_ITEM_CHAT_MESSAGES, () => {
+    describe(MUTATION_KEYS.CLEAR_ITEM_CHAT, () => {
       const route = `/${buildClearItemChatRoute(itemId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.DELETE_ALL_ITEM_CHAT_MESSAGES);
-      it(`Delete all item chat`, async () => {
+      const mutation = () => useMutation(MUTATION_KEYS.CLEAR_ITEM_CHAT);
+      it(`Clear chat`, async () => {
         const endpoints = [
           { route, response: OK_RESPONSE, method: REQUEST_METHODS.DELETE },
         ];

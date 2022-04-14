@@ -13,7 +13,7 @@ const {
   POST_ITEM_CHAT_MESSAGE,
   PATCH_ITEM_CHAT_MESSAGE,
   DELETE_ITEM_CHAT_MESSAGE,
-  DELETE_ALL_ITEM_CHAT_MESSAGES,
+  CLEAR_ITEM_CHAT,
 } = MUTATION_KEYS;
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
@@ -68,7 +68,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  queryClient.setMutationDefaults(DELETE_ALL_ITEM_CHAT_MESSAGES, {
+  queryClient.setMutationDefaults(CLEAR_ITEM_CHAT, {
     mutationFn: (chatId) => Api.clearItemChat(chatId, queryConfig),
     onError: (error) => {
       queryConfig.notifier?.({
