@@ -4,6 +4,7 @@ import nock from 'nock';
 import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
 import {
+  buildClearItemChatRoute,
   buildDeleteItemChatMessageRoute,
   buildPatchItemChatMessageRoute,
   buildPostItemChatMessageRoute,
@@ -19,6 +20,7 @@ import {
 import { buildItemChatKey, MUTATION_KEYS } from '../config/keys';
 import { REQUEST_METHODS } from '../api/utils';
 import {
+  clearItemChatRoutine,
   deleteItemChatMessageRoutine,
   patchItemChatMessageRoutine,
   postItemChatMessageRoutine,
@@ -228,6 +230,65 @@ describe('Chat Mutations', () => {
         );
       });
     });
+
+    describe(MUTATION_KEYS.CLEAR_ITEM_CHAT, () => {
+      const route = `/${buildClearItemChatRoute(itemId)}`;
+      const mutation = () => useMutation(MUTATION_KEYS.CLEAR_ITEM_CHAT);
+
+      it(`Clear chat`, async () => {
+        const endpoints = [
+          { route, response: OK_RESPONSE, method: REQUEST_METHODS.DELETE },
+        ];
+        // set random data in cache
+        queryClient.setQueryData(chatKey, ITEM_CHAT);
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate(chatId);
+          await waitForMutation();
+        });
+
+        // verify cache keys
+        expect(queryClient.getQueryState(chatKey)?.isInvalidated).toBeTruthy();
+      });
+
+      it(`Unauthorized`, async () => {
+        const endpoints = [
+          {
+            route,
+            response: UNAUTHORIZED_RESPONSE,
+            method: REQUEST_METHODS.DELETE,
+            statusCode: StatusCodes.UNAUTHORIZED,
+          },
+        ];
+        // set random data in cache
+        queryClient.setQueryData(chatKey, ITEM_CHAT);
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate(chatId);
+          await waitForMutation();
+        });
+
+        // verify cache keys
+        expect(queryClient.getQueryState(chatKey)?.isInvalidated).toBeTruthy();
+        expect(mockedNotifier).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: clearItemChatRoutine.FAILURE,
+          }),
+        );
+      });
+    });
   });
 
   describe('enableWebsockets = true', () => {
@@ -258,6 +319,84 @@ describe('Chat Mutations', () => {
 
         await act(async () => {
           await mockedMutation.mutate({ chatId, body: 'new message' });
+          await waitForMutation();
+        });
+
+        // verify cache keys
+        expect(queryClient.getQueryState(chatKey)?.isInvalidated).toBeFalsy();
+      });
+    });
+
+    describe(MUTATION_KEYS.PATCH_ITEM_CHAT_MESSAGE, () => {
+      const route = `/${buildPatchItemChatMessageRoute(itemId, messageId)}`;
+      const mutation = () => useMutation(MUTATION_KEYS.PATCH_ITEM_CHAT_MESSAGE);
+      it(`Patch item chat message`, async () => {
+        const endpoints = [
+          { route, response: OK_RESPONSE, method: REQUEST_METHODS.PATCH },
+        ];
+        // set random data in cache
+        queryClient.setQueryData(chatKey, ITEM_CHAT);
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate({ chatId, body: 'new message content' });
+          await waitForMutation();
+        });
+
+        // verify cache keys
+        expect(queryClient.getQueryState(chatKey)?.isInvalidated).toBeFalsy();
+      });
+    });
+
+    describe(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE, () => {
+      const route = `/${buildDeleteItemChatMessageRoute(itemId, messageId)}`;
+      const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE);
+      it(`Delete item chat message`, async () => {
+        const endpoints = [
+          { route, response: OK_RESPONSE, method: REQUEST_METHODS.DELETE },
+        ];
+        // set random data in cache
+        queryClient.setQueryData(chatKey, ITEM_CHAT);
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate({ chatId, body: 'message to remove' });
+          await waitForMutation();
+        });
+
+        // verify cache keys
+        expect(queryClient.getQueryState(chatKey)?.isInvalidated).toBeFalsy();
+      });
+    });
+
+    describe(MUTATION_KEYS.CLEAR_ITEM_CHAT, () => {
+      const route = `/${buildClearItemChatRoute(itemId)}`;
+      const mutation = () => useMutation(MUTATION_KEYS.CLEAR_ITEM_CHAT);
+      it(`Clear chat`, async () => {
+        const endpoints = [
+          { route, response: OK_RESPONSE, method: REQUEST_METHODS.DELETE },
+        ];
+        // set random data in cache
+        queryClient.setQueryData(chatKey, ITEM_CHAT);
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate(itemId);
           await waitForMutation();
         });
 

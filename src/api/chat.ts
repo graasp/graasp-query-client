@@ -9,6 +9,7 @@ import configureAxios, {
   verifyAuthentication,
 } from './axios';
 import {
+  buildClearItemChatRoute,
   buildDeleteItemChatMessageRoute,
   buildGetItemChatRoute,
   buildGetPublicItemChatRoute,
@@ -60,5 +61,13 @@ export const deleteItemChatMessage = async (
       .delete(
         `${API_HOST}/${buildDeleteItemChatMessageRoute(chatId, messageId)}`,
       )
+      .then(({ data }) => data),
+  );
+
+export const clearItemChat = async (id: UUID, { API_HOST }: QueryClientConfig,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .delete(`${API_HOST}/${buildClearItemChatRoute(id)}`)
       .then(({ data }) => data),
   );

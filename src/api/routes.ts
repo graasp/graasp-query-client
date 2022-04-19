@@ -72,6 +72,8 @@ export const buildDeleteItemChatMessageRoute = (
   chatId: UUID,
   messageId: UUID,
 ) => `${ITEMS_ROUTE}/${chatId}/chat/${messageId}`;
+export const buildClearItemChatRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/chat`;
 
 export const buildGetMemberBy = (email: string) =>
   `${MEMBERS_ROUTE}/search?email=${email.toLowerCase()}`;
@@ -296,6 +298,7 @@ export const API_ROUTES = {
   buildPostItemChatMessageRoute,
   buildPatchItemChatMessageRoute,
   buildDeleteItemChatMessageRoute,
+  buildClearItemChatRoute,
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
   buildGetPublicItemsWithTag,

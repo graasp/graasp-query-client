@@ -38,6 +38,7 @@ export const OPS = {
   PUBLISH: 'publish',
   UPDATE: 'update',
   DELETE: 'delete',
+  CLEAR: 'clear',
   CREATE: 'create',
 };
 
