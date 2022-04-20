@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import {
   Item,
   ItemLogin,
+  ItemValidationAndReview,
   ITEM_LOGIN_SCHEMAS,
   ITEM_TYPES,
   Member,
@@ -306,24 +307,12 @@ export const STATUS_LIST = [
   },
 ];
 
-export const ITEM_VALIDATION_STATUS = [
-  {
-    validationStatusId: 'pending-id',
-    reviewStatusId: 'pending-id',
-    validationResult: 'result1',
-    reviewResult: 'result2',
-    validationUpdatedAt: 'ts',
-    reviewUpdatedAt: 'ts',
-  },
-  {
-    validationStatusId: 'failure-id',
-    reviewStatusId: 'accept-id',
-    validationResult: 'result',
-    reviewResult: 'result',
-    validationUpdatedAt: 'ts',
-    reviewUpdatedAt: 'ts',
-  },
-];
+export const ITEM_VALIDATION_STATUS: ItemValidationAndReview = {
+  itemValidationId: 'iv-id-1',
+  reviewStatusId: 'accepted',
+  reviewReason: '',
+  createdAt: 'ts'
+};
 
 export const FULL_VALIDATION_RECORDS = [
   {
@@ -343,5 +332,28 @@ export const FULL_VALIDATION_RECORDS = [
     validationResult: '',
     process: 'process-2',
     createdAt: 'ts',
+  }
+];
+
+export const ITEM_VALIDATION_GROUPS = [
+  {
+    id: 'id-1',
+    itemId: 'item-id-1',
+    itemValidationId: 'iv-id',
+    processId: 'ivp-id-1',
+    statusId: 'success-id',
+    result: '',
+    updatedAt: 'ts',
+    createdAt: ''
   },
+  {
+    id: 'id-2',
+    itemId: 'item-id-1',
+    itemValidationId: 'iv-id',
+    processId: 'ivp-id-2',
+    statusId: 'success-id',
+    result: '',
+    updatedAt: 'ts',
+    createdAt: ''
+  }
 ];

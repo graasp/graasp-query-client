@@ -1,9 +1,10 @@
 import { useQuery } from 'react-query';
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 import { QueryClientConfig, UUID } from '../types';
 import * as Api from '../api';
 import {
-  buildItemValidationAndReviewsKey,
+  buildItemValidationAndReviewKey,
+  buildItemValidationGroupsKey,
   ITEM_VALIDATION_REVIEWS_KEY,
   ITEM_VALIDATION_REVIEW_STATUSES_KEY,
   ITEM_VALIDATION_STATUSES_KEY,
@@ -45,22 +46,34 @@ export default (queryConfig: QueryClientConfig) => {
       ...defaultOptions,
     });
 
-  // get validation joined with review records of given item
-  const useItemValidationAndReviews = (itemId: UUID) =>
+  // get last validation joined with review records of given item
+  const useItemValidationAndReview = (itemId: UUID) =>
     useQuery({
-      queryKey: buildItemValidationAndReviewsKey(itemId),
+      queryKey: buildItemValidationAndReviewKey(itemId),
       queryFn: () =>
-        Api.getItemValidationAndReviews(queryConfig, itemId).then((data) =>
-          List(data),
+        Api.getItemValidationAndReview(queryConfig, itemId).then(
+          (data) => Map(data),
         ),
       ...defaultOptions,
       enabled: Boolean(itemId),
+    });
+
+  const useItemValidationGroups = (iVId: UUID) =>
+    useQuery({
+      queryKey: buildItemValidationGroupsKey(iVId),
+      queryFn: () =>
+        Api.getItemValidationGroups(queryConfig, iVId).then((data) =>
+          List(data),
+        ),
+      ...defaultOptions,
+      enabled: Boolean(iVId),
     });
 
   return {
     useValidationReview,
     useItemValidationStatuses,
     useItemValidationReviewStatuses,
-    useItemValidationAndReviews,
+    useItemValidationAndReview,
+    useItemValidationGroups,
   };
 };

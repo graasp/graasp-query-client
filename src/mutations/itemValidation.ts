@@ -1,7 +1,7 @@
 import { QueryClient } from 'react-query';
 import * as Api from '../api';
 import {
-  buildItemValidationAndReviewsKey,
+  buildItemValidationAndReviewKey,
   ITEM_VALIDATION_REVIEWS_KEY,
   MUTATION_KEYS,
 } from '../config/keys';
@@ -30,7 +30,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
     onSettled: (_data, _error, { itemId }) => {
-      queryClient.invalidateQueries(buildItemValidationAndReviewsKey(itemId));
+      queryClient.invalidateQueries(buildItemValidationAndReviewKey(itemId));
     },
   });
 
@@ -50,7 +50,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
     onSettled: (_data, _error, { itemId }) => {
-      queryClient.invalidateQueries(buildItemValidationAndReviewsKey(itemId));
+      queryClient.invalidateQueries(buildItemValidationAndReviewKey(itemId));
       queryClient.invalidateQueries(ITEM_VALIDATION_REVIEWS_KEY);
     },
   });

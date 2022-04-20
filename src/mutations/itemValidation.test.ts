@@ -7,7 +7,7 @@ import { StatusCodes } from 'http-status-codes';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { REQUEST_METHODS } from '../api/utils';
 import {
-  buildItemValidationAndReviewsKey,
+  buildItemValidationAndReviewKey,
   ITEM_VALIDATION_REVIEWS_KEY,
   MUTATION_KEYS,
 } from '../config/keys';
@@ -42,7 +42,7 @@ describe('Item Validation Mutations', () => {
     const itemId = 'item-id';
     const route = `/${buildPostItemValidationRoute(itemId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_VALIDATION);
-    const key = buildItemValidationAndReviewsKey(itemId);
+    const key = buildItemValidationAndReviewKey(itemId);
 
     it('Post item validation', async () => {
       queryClient.setQueryData(key, List([ITEM_VALIDATION_STATUS]));
@@ -111,7 +111,7 @@ describe('Item Validation Mutations', () => {
     const route = `/${buildUpdateItemValidationReviewRoute(id)}`;
     const mutation = () =>
       useMutation(MUTATION_KEYS.UPDATE_ITEM_VALIDATION_REVIEW);
-    const statusKey = buildItemValidationAndReviewsKey(itemId);
+    const statusKey = buildItemValidationAndReviewKey(itemId);
     const reviewsKey = ITEM_VALIDATION_REVIEWS_KEY;
 
     it('Update item validation review record', async () => {
