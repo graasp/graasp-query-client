@@ -254,6 +254,8 @@ export const buildGetActions = (
   `analytics/${ITEMS_ROUTE}/${itemId}${qs.stringify(options, {
     addQueryPrefix: true,
   })}`;
+export const buildExportActions = (itemId: UUID) =>
+  `analytics/${ITEMS_ROUTE}/${itemId}/export`;
 
 export const API_ROUTES = {
   APPS_ROUTE,
@@ -339,4 +341,5 @@ export const API_ROUTES = {
   buildPostItemValidationRoute,
   buildUpdateItemValidationReviewRoute,
   buildGetActions,
+  buildExportActions,
 };
