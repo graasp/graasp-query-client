@@ -251,7 +251,10 @@ export const buildGetActions = (
   itemId: UUID,
   options: { requestedSampleSize: number; view: string },
 ) =>
-  `analytics/${ITEMS_ROUTE}/${itemId}${qs.stringify(options, {
+  `analytics/${ITEMS_ROUTE}/${itemId}${qs.stringify({
+    requestedSampleSize: options.requestedSampleSize,
+    view: options.view
+  }, {
     addQueryPrefix: true,
   })}`;
 export const buildExportActions = (itemId: UUID) =>

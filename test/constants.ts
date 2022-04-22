@@ -357,3 +357,11 @@ export const ITEM_VALIDATION_GROUPS = [
     createdAt: ''
   }
 ];
+
+export const ACTIONS_DATA = {
+  actions: [{
+    id: 'action-id',
+    itemId: 'item-id',
+    memberId: 'member-id'
+  }]
+}
