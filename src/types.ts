@@ -174,3 +174,8 @@ export type Status = {
   id: string;
   name: string;
 };
+
+export interface Action {
+  id: string;
+  name: string;
+}

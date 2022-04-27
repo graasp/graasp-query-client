@@ -118,6 +118,16 @@ export const buildItemValidationGroupsKey = (id: UUID) => [
   'itemValidationGroups',
 ];
 
+export const buildActionsKey = (args: {
+  itemId: UUID;
+  view: string;
+  requestedSampleSize: number;
+}) => [
+    'actions',
+    args.itemId,
+    { view: args.view, size: args.requestedSampleSize },
+  ];
+
 export const DATA_KEYS = {
   APPS_KEY,
   ITEMS_KEY,
@@ -179,7 +189,6 @@ export const MUTATION_KEYS = {
   UPLOAD_FILES: 'uploadFiles',
   SIGN_OUT: 'signOut',
   POST_ITEM_LOGIN: 'postItemLoginSignIn',
-  buildItemMembershipsKey: (id: UUID) => [ITEMS_KEY, id, 'memberships'],
   DELETE_ITEM_TAG: 'deleteItemTag',
   POST_ITEM_TAG: 'postItemTags',
   PUT_ITEM_LOGIN: 'putItemLogin',
@@ -206,4 +215,5 @@ export const MUTATION_KEYS = {
   DELETE_FAVORITE_ITEM: 'deleteFavoriteItem',
   POST_ITEM_VALIDATION: 'postItemValidation',
   UPDATE_ITEM_VALIDATION_REVIEW: 'updateItemValidationReview',
+  EXPORT_ACTIONS: 'exportActions',
 };

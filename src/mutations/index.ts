@@ -11,6 +11,7 @@ import { QueryClientConfig } from '../types';
 import itemExportMutations from './itemExport';
 import itemLikeMutations from './itemLike';
 import itemValidationMutations from './itemValidation';
+import actionMutations from './action';
 
 const configureMutations = (
   queryClient: QueryClient,
@@ -27,6 +28,7 @@ const configureMutations = (
   itemExportMutations(queryClient, queryConfig);
   itemLikeMutations(queryClient, queryConfig);
   itemValidationMutations(queryClient, queryConfig);
+  actionMutations(queryClient, queryConfig)
 };
 
 export default configureMutations;
