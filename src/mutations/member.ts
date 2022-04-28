@@ -113,14 +113,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   // mutation to update favorite items of given member
   queryClient.setMutationDefaults(MUTATION_KEYS.ADD_FAVORITE_ITEM, {
-    mutationFn: (payload) => {
-      const { memberId, itemId, extra } = payload;
-      extra.favoriteItems = extra.favoriteItems
-        ? extra.favoriteItems.concat([itemId])
-        : [itemId];
-      return Api.editMember({ id: memberId, extra }, queryConfig).then(
-        (member) => Map(member),
-      );
+    mutationFn: async (payload) => {
+      const {memberId, itemId, extra} = payload;
+      extra.favoriteItems = extra.favoriteItems? extra.favoriteItems.concat([itemId]) : [itemId];
+      console.log(extra);
+      return Api.editMember({id: memberId, extra}, queryConfig).then((member) => Map(member));
     },
     onMutate: async (payload) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
@@ -162,14 +159,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
 
   queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_FAVORITE_ITEM, {
-    mutationFn: (payload) => {
-      const { memberId, itemId, extra } = payload;
-      extra.favoriteItems = extra.favoriteItems?.filter(
-        (id: UUID) => id !== itemId,
-      );
-      return Api.editMember({ id: memberId, extra }, queryConfig).then(
-        (member) => Map(member),
-      );
+    mutationFn: async (payload) => {
+      const {memberId, itemId, extra} = payload;
+      extra.favoriteItems = extra.favoriteItems?.filter((id: UUID) => id !== itemId);
+      return Api.editMember({id: memberId, extra}, queryConfig).then((member) => Map(member));
     },
     onMutate: async (payload) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
