@@ -12,14 +12,12 @@ import {
   buildDeleteItemRoute,
   buildDeleteItemsRoute,
   buildEditItemRoute,
-  buildGetMemberBy,
   buildMoveItemRoute,
   buildMoveItemsRoute,
   buildPostItemRoute,
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
-  buildShareItemWithRoute,
   buildUploadItemThumbnailRoute,
 } from '../api/routes';
 import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
@@ -28,21 +26,18 @@ import {
   OK_RESPONSE,
   ITEMS,
   UNAUTHORIZED_RESPONSE,
-  MEMBER_RESPONSE,
-  ITEM_MEMBERSHIPS_RESPONSE,
   THUMBNAIL_BLOB_RESPONSE,
 } from '../../test/constants';
 import {
   buildItemChildrenKey,
   buildItemKey,
-  buildItemMembershipsKey,
   buildItemThumbnailKey,
   getKeyForParentId,
   MUTATION_KEYS,
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_KEY,
 } from '../config/keys';
-import { GraaspError, Item, ITEM_TYPES, PERMISSION_LEVELS } from '../types';
+import { GraaspError, Item, ITEM_TYPES } from '../types';
 import {
   buildPath,
   getDirectParentId,
@@ -1655,105 +1650,6 @@ describe('Items Mutations', () => {
       expect(
         queryClient.getQueryState(childrenKey)?.isInvalidated,
       ).toBeTruthy();
-    });
-  });
-
-  describe(MUTATION_KEYS.SHARE_ITEM, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.SHARE_ITEM);
-    const { email } = MEMBER_RESPONSE;
-    const permission = PERMISSION_LEVELS.READ;
-
-    it('Share one item', async () => {
-      const item = ITEMS[0];
-      const itemId = item.id;
-      const route = `/${buildShareItemWithRoute(itemId)}`;
-
-      // set data in cache
-      ITEMS.forEach((i) => {
-        const itemKey = buildItemKey(i.id);
-        queryClient.setQueryData(itemKey, Map(i));
-      });
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
-      queryClient.setQueryData(
-        buildItemMembershipsKey(itemId),
-        ITEM_MEMBERSHIPS_RESPONSE,
-      );
-
-      const response = OK_RESPONSE;
-
-      const endpoints = [
-        {
-          response: [MEMBER_RESPONSE],
-          method: REQUEST_METHODS.GET,
-          route: `/${buildGetMemberBy(email)}`,
-        },
-        {
-          response,
-          method: REQUEST_METHODS.POST,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({ id: itemId, email, permission });
-        await waitForMutation();
-      });
-
-      // check memberships invalidation
-      const data = queryClient.getQueryState(buildItemMembershipsKey(itemId));
-      expect(data?.isInvalidated).toBeTruthy();
-    });
-
-    it('Unauthorized to share an item', async () => {
-      const item = ITEMS[0];
-      const itemId = item.id;
-      const route = `/${buildShareItemWithRoute(itemId)}`;
-
-      // set data in cache
-      ITEMS.forEach((i) => {
-        const itemKey = buildItemKey(i.id);
-        queryClient.setQueryData(itemKey, Map(i));
-      });
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
-      queryClient.setQueryData(
-        buildItemMembershipsKey(itemId),
-        ITEM_MEMBERSHIPS_RESPONSE,
-      );
-
-      const endpoints = [
-        {
-          response: [MEMBER_RESPONSE],
-          method: REQUEST_METHODS.GET,
-          route: `/${buildGetMemberBy(email)}`,
-        },
-        {
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({ id: itemId, email, permission });
-        await waitForMutation();
-      });
-
-      // check memberships invalidation
-      const data = queryClient.getQueryState(buildItemMembershipsKey(itemId));
-      expect(data?.isInvalidated).toBeTruthy();
     });
   });
 

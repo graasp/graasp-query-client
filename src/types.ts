@@ -179,3 +179,10 @@ export interface Action {
   id: string;
   name: string;
 }
+
+export type Invitation = {
+  id: UUID;
+  email: string;
+  permission: string;
+  name?: string;
+};

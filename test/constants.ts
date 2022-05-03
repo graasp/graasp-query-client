@@ -311,7 +311,7 @@ export const ITEM_VALIDATION_STATUS: ItemValidationAndReview = {
   itemValidationId: 'iv-id-1',
   reviewStatusId: 'accepted',
   reviewReason: '',
-  createdAt: 'ts'
+  createdAt: 'ts',
 };
 
 export const FULL_VALIDATION_RECORDS = [
@@ -332,7 +332,7 @@ export const FULL_VALIDATION_RECORDS = [
     validationResult: '',
     process: 'process-2',
     createdAt: 'ts',
-  }
+  },
 ];
 
 export const ITEM_VALIDATION_GROUPS = [
@@ -344,7 +344,7 @@ export const ITEM_VALIDATION_GROUPS = [
     statusId: 'success-id',
     result: '',
     updatedAt: 'ts',
-    createdAt: ''
+    createdAt: '',
   },
   {
     id: 'id-2',
@@ -354,14 +354,32 @@ export const ITEM_VALIDATION_GROUPS = [
     statusId: 'success-id',
     result: '',
     updatedAt: 'ts',
-    createdAt: ''
-  }
+    createdAt: '',
+  },
 ];
 
 export const ACTIONS_DATA = {
-  actions: [{
-    id: 'action-id',
-    itemId: 'item-id',
-    memberId: 'member-id'
-  }]
-}
+  actions: [
+    {
+      id: 'action-id',
+      itemId: 'item-id',
+      memberId: 'member-id',
+    },
+  ],
+};
+
+export const buildInvitation = ({
+  itemPath,
+  email,
+  name,
+}: {
+  itemPath: UUID;
+  email?: string;
+  name?: string;
+}) => ({
+  id: 'id',
+  name: name ?? 'member-name',
+  email: email ?? 'email',
+  creator: 'creator-id',
+  itemPath,
+});

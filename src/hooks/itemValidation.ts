@@ -51,8 +51,8 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildItemValidationAndReviewKey(itemId),
       queryFn: () =>
-        Api.getItemValidationAndReview(queryConfig, itemId).then(
-          (data) => Map(data),
+        Api.getItemValidationAndReview(queryConfig, itemId).then((data) =>
+          Map(data),
         ),
       ...defaultOptions,
       enabled: Boolean(itemId),

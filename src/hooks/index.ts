@@ -12,6 +12,7 @@ import configureKeywordSearchHooks from './search';
 import configureItemLikeHooks from './itemLike';
 import configureItemValidationHooks from './itemValidation';
 import configureActionHooks from './action';
+import configureInvitationHooks from './invitation';
 
 export default (
   queryClient: QueryClient,
@@ -36,6 +37,7 @@ export default (
     ...configureItemValidationHooks(queryConfig),
     ...configureAppsHooks(queryConfig),
     ...configureActionHooks(queryConfig),
+    ...configureInvitationHooks(queryConfig),
     ...memberHooks,
   };
 };

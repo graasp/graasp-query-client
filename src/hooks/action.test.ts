@@ -4,7 +4,11 @@ import { Map } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { mockHook, setUpTest } from '../../test/utils';
-import { ACTIONS_DATA, ITEMS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import {
+  ACTIONS_DATA,
+  ITEMS,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants';
 import { buildGetActions } from '../api/routes';
 import { buildActionsKey } from '../config/keys';
 
@@ -19,8 +23,11 @@ describe('Action Hooks', () => {
   });
 
   describe('useActions', () => {
-    const args = { itemId, view: 'builder', requestedSampleSize: 5 }
-    const route = `/${buildGetActions(itemId, { view: args.view, requestedSampleSize: args.requestedSampleSize })}`;
+    const args = { itemId, view: 'builder', requestedSampleSize: 5 };
+    const route = `/${buildGetActions(itemId, {
+      view: args.view,
+      requestedSampleSize: args.requestedSampleSize,
+    })}`;
     const key = buildActionsKey(args);
 
     const response = ACTIONS_DATA;
@@ -30,7 +37,9 @@ describe('Action Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as Map<string, unknown>).get('actions')).toEqual(response.actions);
+      expect((data as Map<string, unknown>).get('actions')).toEqual(
+        response.actions,
+      );
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(Map(response));

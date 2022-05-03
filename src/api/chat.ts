@@ -64,7 +64,9 @@ export const deleteItemChatMessage = async (
       .then(({ data }) => data),
   );
 
-export const clearItemChat = async (id: UUID, { API_HOST }: QueryClientConfig,
+export const clearItemChat = async (
+  id: UUID,
+  { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
     axios

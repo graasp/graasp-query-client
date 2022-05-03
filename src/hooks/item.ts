@@ -18,6 +18,7 @@ import {
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
 } from '../config/keys';
+import { getOwnItemsRoutine } from '../routines';
 import {
   Item,
   Member,
@@ -72,7 +73,7 @@ export default (
           });
         },
         onError: (error) => {
-          notifier?.({ type: 'ERROR', payload: { error } });
+          notifier?.({ type: getOwnItemsRoutine.FAILURE, payload: { error } });
         },
         ...defaultOptions,
       });

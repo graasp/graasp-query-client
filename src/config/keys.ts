@@ -123,10 +123,17 @@ export const buildActionsKey = (args: {
   view: string;
   requestedSampleSize: number;
 }) => [
-    'actions',
-    args.itemId,
-    { view: args.view, size: args.requestedSampleSize },
-  ];
+  'actions',
+  args.itemId,
+  { view: args.view, size: args.requestedSampleSize },
+];
+
+export const buildInvitationKey = (id: UUID) => ['invitations', id];
+export const buildItemInvitationsKey = (id?: UUID) => [
+  ITEMS_KEY,
+  id,
+  'invitations',
+];
 
 export const DATA_KEYS = {
   APPS_KEY,
@@ -173,6 +180,8 @@ export const DATA_KEYS = {
   ITEM_VALIDATION_REVIEW_STATUSES_KEY,
   buildItemValidationAndReviewKey,
   buildItemValidationGroupsKey,
+  buildInvitationKey,
+  buildItemInvitationsKey,
 };
 
 export const MUTATION_KEYS = {
@@ -185,7 +194,6 @@ export const MUTATION_KEYS = {
   COPY_ITEMS: 'copyItems',
   MOVE_ITEM: 'moveItem',
   MOVE_ITEMS: 'moveItems',
-  SHARE_ITEM: 'shareItem',
   UPLOAD_FILES: 'uploadFiles',
   SIGN_OUT: 'signOut',
   POST_ITEM_LOGIN: 'postItemLoginSignIn',
@@ -194,6 +202,7 @@ export const MUTATION_KEYS = {
   PUT_ITEM_LOGIN: 'putItemLogin',
   EDIT_MEMBER: 'editMember',
   POST_ITEM_FLAG: 'postItemFlag',
+  POST_ITEM_MEMBERSHIP: 'postItemMembership',
   EDIT_ITEM_MEMBERSHIP: 'editItemMembership',
   DELETE_ITEM_MEMBERSHIP: 'deleteItemMembership',
   POST_ITEM_CHAT_MESSAGE: 'postChatMessage',
@@ -216,4 +225,8 @@ export const MUTATION_KEYS = {
   POST_ITEM_VALIDATION: 'postItemValidation',
   UPDATE_ITEM_VALIDATION_REVIEW: 'updateItemValidationReview',
   EXPORT_ACTIONS: 'exportActions',
+  POST_INVITATIONS: 'postInvitations',
+  PATCH_INVITATION: 'patchInvitation',
+  DELETE_INVITATION: 'deleteInvitation',
+  RESEND_INVITATION: 'resendInvitation',
 };

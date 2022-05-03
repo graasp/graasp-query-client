@@ -21,7 +21,10 @@ export default (queryConfig: QueryClientConfig) => {
       },
       options?: { enabled?: boolean },
     ) => {
-      const enabledValue = (options?.enabled ?? true) && Boolean(args.itemId) && Boolean(args.requestedSampleSize);
+      const enabledValue =
+        (options?.enabled ?? true) &&
+        Boolean(args.itemId) &&
+        Boolean(args.requestedSampleSize);
       return useQuery({
         queryKey: buildActionsKey(args),
         queryFn: () =>

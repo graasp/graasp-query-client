@@ -7,8 +7,9 @@ export const ITEMS_ROUTE = 'items';
 export const ITEM_MEMBERSHIPS_ROUTE = 'item-memberships';
 export const MEMBERS_ROUTE = `members`;
 export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
+export const INVITATIONS_ROUTE = `invitations`;
 export const GET_RECYCLED_ITEMS_ROUTE = `${ITEMS_ROUTE}/recycled`;
-export const SHARE_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
+export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
 const PUBLIC_PREFIX = `p`;
 
@@ -52,8 +53,9 @@ export const buildExportItemRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/zip-export/${id}`;
 export const buildExportPublicItemRoute = (id: UUID) =>
   `${PUBLIC_PREFIX}/${buildExportItemRoute(id)}`;
-export const buildShareItemWithRoute = (id: UUID) =>
+export const buildPostItemMembershipRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
+export const buildInviteRoute = (id: UUID) => `invite/${id}`;
 export const buildGetItemMembershipsForItemsRoute = (ids: UUID[]) =>
   `item-memberships${qs.stringify(
     { itemId: ids },
@@ -61,6 +63,8 @@ export const buildGetItemMembershipsForItemsRoute = (ids: UUID[]) =>
   )}`;
 export const buildGetPublicItemMembershipsForItemsRoute = (ids: UUID[]) =>
   `${PUBLIC_PREFIX}/${buildGetItemMembershipsForItemsRoute(ids)}`;
+export const buildGetItemInvitationsForItemRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/invitations`;
 export const buildGetItemChatRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/chat`;
 export const buildGetPublicItemChatRoute = (id: UUID) =>
   `${PUBLIC_PREFIX}/${buildGetItemChatRoute(id)}`;
@@ -251,19 +255,32 @@ export const buildGetActions = (
   itemId: UUID,
   options: { requestedSampleSize: number; view: string },
 ) =>
-  `analytics/${ITEMS_ROUTE}/${itemId}${qs.stringify({
-    requestedSampleSize: options.requestedSampleSize,
-    view: options.view
-  }, {
-    addQueryPrefix: true,
-  })}`;
+  `analytics/${ITEMS_ROUTE}/${itemId}${qs.stringify(
+    {
+      requestedSampleSize: options.requestedSampleSize,
+      view: options.view,
+    },
+    {
+      addQueryPrefix: true,
+    },
+  )}`;
 export const buildExportActions = (itemId: UUID) =>
   `analytics/${ITEMS_ROUTE}/${itemId}/export`;
+export const buildGetInvitationRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${INVITATIONS_ROUTE}/${id}`;
+export const buildPatchInvitationRoute = (args: { itemId: UUID; id: UUID }) =>
+  `${ITEMS_ROUTE}/${args.itemId}/${INVITATIONS_ROUTE}/${args.id}`;
+export const buildDeleteInvitationRoute = (args: { itemId: UUID; id: UUID }) =>
+  `${ITEMS_ROUTE}/${args.itemId}/${INVITATIONS_ROUTE}/${args.id}`;
+export const buildPostInvitationsRoute = (itemId: UUID) =>
+  `${ITEMS_ROUTE}/${itemId}/invite`;
+export const buildResendInvitationRoute = (args: { itemId: UUID; id: UUID }) =>
+  `${ITEMS_ROUTE}/${args.itemId}/${INVITATIONS_ROUTE}/${args.id}/send`;
 
 export const API_ROUTES = {
   APPS_ROUTE,
   ITEMS_ROUTE,
-  SHARE_ITEM_WITH_ROUTE,
+  SHARED_ITEM_WITH_ROUTE,
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_ROUTE,
   SIGN_OUT_ROUTE,
@@ -279,7 +296,7 @@ export const API_ROUTES = {
   buildGetMembersRoute,
   buildUploadFilesRoute,
   buildDownloadFilesRoute,
-  buildShareItemWithRoute,
+  buildPostItemMembershipRoute,
   buildSignInPath,
   buildPostItemLoginSignInRoute,
   buildGetItemMembershipsForItemsRoute,
@@ -345,4 +362,10 @@ export const API_ROUTES = {
   buildUpdateItemValidationReviewRoute,
   buildGetActions,
   buildExportActions,
+  buildGetInvitationRoute,
+  buildPatchInvitationRoute,
+  buildDeleteInvitationRoute,
+  buildResendInvitationRoute,
+  buildPostInvitationsRoute,
+  buildGetItemInvitationsForItemRoute
 };
