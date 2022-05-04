@@ -115,7 +115,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   queryClient.setMutationDefaults(MUTATION_KEYS.ADD_FAVORITE_ITEM, {
     mutationFn: async (payload) => {
       const {memberId, itemId, extra: prevExtra} = payload;
+      console.log(prevExtra);
       const newFavoriteItems = prevExtra.favoriteItems? prevExtra.favoriteItems.concat([itemId]) : [itemId];
+      console.log(newFavoriteItems);
       return Api.editMember({id: memberId, extra: {...prevExtra, favoriteItems: newFavoriteItems}}, queryConfig).then((member) => Map(member));
     },
     onMutate: async (payload) => {
