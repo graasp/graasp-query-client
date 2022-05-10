@@ -131,7 +131,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       const { itemId, extra } = payload;
       const newFavoriteItems = extra.favoriteItems ? extra.favoriteItems.concat([itemId]) : [itemId];
 
-      const member = {...extra, favoriteItems: newFavoriteItems};
+      const member = {extra: {...extra, favoriteItems: newFavoriteItems}};
 
       queryClient.setQueryData(
         CURRENT_MEMBER_KEY,
