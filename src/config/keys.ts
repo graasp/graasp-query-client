@@ -123,10 +123,10 @@ export const buildActionsKey = (args: {
   view: string;
   requestedSampleSize: number;
 }) => [
-  'actions',
-  args.itemId,
-  { view: args.view, size: args.requestedSampleSize },
-];
+    'actions',
+    args.itemId,
+    { view: args.view, size: args.requestedSampleSize },
+  ];
 
 export const buildInvitationKey = (id: UUID) => ['invitations', id];
 export const buildItemInvitationsKey = (id?: UUID) => [
@@ -196,6 +196,9 @@ export const MUTATION_KEYS = {
   MOVE_ITEMS: 'moveItems',
   UPLOAD_FILES: 'uploadFiles',
   SIGN_OUT: 'signOut',
+  SIGN_IN: 'signIn',
+  SIGN_IN_WITH_PASSWORD: 'signInWithPassword',
+  SIGN_UP: 'signUp',
   POST_ITEM_LOGIN: 'postItemLoginSignIn',
   DELETE_ITEM_TAG: 'deleteItemTag',
   POST_ITEM_TAG: 'postItemTags',

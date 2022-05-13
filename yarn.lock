@@ -1966,7 +1966,7 @@ __metadata:
     "@babel/preset-typescript": 7.16.7
     "@commitlint/cli": 16.2.4
     "@commitlint/config-conventional": 16.2.4
-    "@graasp/translations": "github:graasp/graasp-translations.git"
+    "@graasp/translations": "github:graasp/graasp-translations.git#9/graaspAuth"
     "@testing-library/jest-dom": 5.16.4
     "@testing-library/react": 12.1.4
     "@testing-library/react-hooks": 7.0.2
@@ -2016,12 +2016,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/translations@github:graasp/graasp-translations.git":
+"@graasp/translations@github:graasp/graasp-translations.git#9/graaspAuth":
   version: 0.1.0
-  resolution: "@graasp/translations@https://github.com/graasp/graasp-translations.git#commit=315ee917719c683e24149811eab2d562c98b40ce"
+  resolution: "@graasp/translations@https://github.com/graasp/graasp-translations.git#commit=fe4cca5d2b9fd1c131f81fc10d20350d1efcb4f7"
   dependencies:
     i18next: 21.6.11
-  checksum: 295bf84b1bfbdecff0de476b94da8a0ff5e480ad9c5ba542ee198558e53817a6c1e43eb0af8dc8d2a1c72c14b7f3e8748415ed75d37cce3b16b50950c42e76f1
+  checksum: 288bd6d9264cadf95bb0a889cf28194b07e9fba71f5c832036b8ab0fd9bca10cecd015414baa448ea6d64958c04728cfa3bfac92d250c814c815d2886585882f
   languageName: node
   linkType: hard
 
