@@ -1,12 +1,12 @@
+import { FAILURE_MESSAGES } from '@graasp/translations';
 import { getMemberBy } from './member';
 import {
-  buildShareItemWithRoute,
+  buildPostItemMembershipRoute,
   buildEditItemMembershipRoute,
   buildDeleteItemMembershipRoute,
   buildGetItemMembershipsForItemsRoute,
   buildGetPublicItemMembershipsForItemsRoute,
 } from './routes';
-import { MEMBER_NOT_FOUND_ERROR } from '../config/errors';
 import { Permission, QueryClientConfig, UUID } from '../types';
 import configureAxios, {
   fallbackToPublic,
@@ -37,13 +37,14 @@ export const shareItemWith = async (
 ) => {
   const { API_HOST } = config;
   const member = await getMemberBy({ email }, config);
-  if (!member) {
-    throw new Error(MEMBER_NOT_FOUND_ERROR);
+
+  if (!member || member?.length < 1) {
+    throw new Error(FAILURE_MESSAGES.MEMBER_NOT_FOUND);
   }
 
   return verifyAuthentication(() =>
     axios
-      .post(`${API_HOST}/${buildShareItemWithRoute(id)}`, {
+      .post(`${API_HOST}/${buildPostItemMembershipRoute(id)}`, {
         memberId: member[0].id,
         permission,
       })

@@ -355,7 +355,8 @@ describe('Chat Mutations', () => {
 
     describe(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE, () => {
       const route = `/${buildDeleteItemChatMessageRoute(itemId, messageId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE);
+      const mutation = () =>
+        useMutation(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE);
       it(`Delete item chat message`, async () => {
         const endpoints = [
           { route, response: OK_RESPONSE, method: REQUEST_METHODS.DELETE },

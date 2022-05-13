@@ -17,7 +17,7 @@ import {
   buildPublicDownloadFilesRoute,
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_ROUTE,
-  SHARE_ITEM_WITH_ROUTE,
+  SHARED_ITEM_WITH_ROUTE,
 } from '../api/routes';
 import { Endpoint, mockHook, setUpTest } from '../../test/utils';
 import {
@@ -368,7 +368,7 @@ describe('Items Hooks', () => {
   });
 
   describe('useSharedItems', () => {
-    const route = `/${SHARE_ITEM_WITH_ROUTE}`;
+    const route = `/${SHARED_ITEM_WITH_ROUTE}`;
     const response = ITEMS;
     const hook = () => hooks.useSharedItems();
     it(`Receive shared items`, async () => {

@@ -114,9 +114,17 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   // mutation to update favorite items of given member
   queryClient.setMutationDefaults(MUTATION_KEYS.ADD_FAVORITE_ITEM, {
     mutationFn: (payload) => {
-      const {memberId, itemId, extra: prevExtra} = payload;
-      const newFavoriteItems = prevExtra.favoriteItems? prevExtra.favoriteItems.concat([itemId]) : [itemId];
-      return Api.editMember({id: memberId, extra: {...prevExtra, favoriteItems: newFavoriteItems}}, queryConfig).then((member) => Map(member));
+      const { memberId, itemId, extra: prevExtra } = payload;
+      const newFavoriteItems = prevExtra.favoriteItems
+        ? prevExtra.favoriteItems.concat([itemId])
+        : [itemId];
+      return Api.editMember(
+        {
+          id: memberId,
+          extra: { ...prevExtra, favoriteItems: newFavoriteItems },
+        },
+        queryConfig,
+      ).then((member) => Map(member));
     },
     onMutate: async (payload) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
@@ -129,9 +137,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       // Optimistically update to the new value
       const { itemId, extra } = payload;
-      const newFavoriteItems = extra.favoriteItems ? extra.favoriteItems.concat([itemId]) : [itemId];
+      const newFavoriteItems = extra.favoriteItems
+        ? extra.favoriteItems.concat([itemId])
+        : [itemId];
 
-      const member = {extra: {...extra, favoriteItems: newFavoriteItems}};
+      const member = { extra: { ...extra, favoriteItems: newFavoriteItems } };
 
       queryClient.setQueryData(
         CURRENT_MEMBER_KEY,
@@ -158,9 +168,17 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_FAVORITE_ITEM, {
     mutationFn: (payload) => {
-      const {memberId, itemId, extra: prevExtra} = payload;
-      const newFavoriteItems = prevExtra.favoriteItems?.filter((id: UUID) => id !== itemId);
-      return Api.editMember({id: memberId, extra: {...prevExtra, favoriteItems: newFavoriteItems}}, queryConfig).then((member) => Map(member));
+      const { memberId, itemId, extra: prevExtra } = payload;
+      const newFavoriteItems = prevExtra.favoriteItems?.filter(
+        (id: UUID) => id !== itemId,
+      );
+      return Api.editMember(
+        {
+          id: memberId,
+          extra: { ...prevExtra, favoriteItems: newFavoriteItems },
+        },
+        queryConfig,
+      ).then((member) => Map(member));
     },
     onMutate: async (payload) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)

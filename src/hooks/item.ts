@@ -7,17 +7,16 @@ import {
   buildItemChildrenKey,
   buildItemKey,
   buildItemLoginKey,
-  buildItemMembershipsKey,
   buildItemParentsKey,
   buildItemsChildrenKey,
   buildItemsKey,
-  buildManyItemMembershipsKey,
   buildPublicItemsWithTagKey,
   buildItemThumbnailKey,
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
 } from '../config/keys';
+import { getOwnItemsRoutine } from '../routines';
 import {
   Item,
   Member,
@@ -25,7 +24,7 @@ import {
   UndefinedArgument,
   UUID,
 } from '../types';
-import { configureWsItemHooks, configureWsMembershipHooks } from '../ws';
+import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
 export default (
@@ -45,10 +44,6 @@ export default (
   const itemWsHooks =
     enableWebsocket && websocketClient // required to type-check non-null
       ? configureWsItemHooks(queryClient, websocketClient)
-      : undefined;
-  const membershipWsHooks =
-    enableWebsocket && websocketClient // required to type-check non-null
-      ? configureWsMembershipHooks(queryClient, websocketClient)
       : undefined;
 
   return {
@@ -72,7 +67,7 @@ export default (
           });
         },
         onError: (error) => {
-          notifier?.({ type: 'ERROR', payload: { error } });
+          notifier?.({ type: getOwnItemsRoutine.FAILURE, payload: { error } });
         },
         ...defaultOptions,
       });
@@ -263,36 +258,6 @@ export default (
           });
         },
         enabled: ids && Boolean(ids.length) && ids.every((id) => Boolean(id)),
-        ...defaultOptions,
-      });
-    },
-
-    useItemMemberships: (ids?: UUID[], options?: { getUpdates?: boolean }) => {
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
-
-      membershipWsHooks?.useItemMembershipsUpdates(getUpdates ? ids : null);
-
-      return useQuery({
-        queryKey: buildManyItemMembershipsKey(ids),
-        queryFn: () => {
-          if (!ids) {
-            throw new UndefinedArgument();
-          }
-
-          return Api.getMembershipsForItems(ids, queryConfig).then((data) =>
-            List(data),
-          );
-        },
-        onSuccess: async (memberships) => {
-          // save memberships in their own key
-          ids?.forEach(async (id, idx) => {
-            queryClient.setQueryData(
-              buildItemMembershipsKey(id),
-              List(memberships[idx]),
-            );
-          });
-        },
-        enabled: Boolean(ids?.length) && ids?.every((id) => Boolean(id)),
         ...defaultOptions,
       });
     },

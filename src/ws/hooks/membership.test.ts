@@ -22,13 +22,13 @@ describe('Ws Membership Hooks', () => {
     queryClient.clear();
   });
 
-  describe('useItemMembershipsUpdates', () => {
+  describe('useItemsMembershipsUpdates', () => {
     const itemId = ITEMS[0].id;
     const membershipsKey = buildItemMembershipsKey(itemId);
     const newMembership = ITEM_MEMBERSHIPS_RESPONSE[0];
     const memberships = List([ITEM_MEMBERSHIPS_RESPONSE[1]]);
     const channel = { name: itemId, topic: TOPICS.MEMBERSHIPS_ITEM };
-    const hook = () => hooks.useItemMembershipsUpdates([itemId]);
+    const hook = () => hooks.useItemsMembershipsUpdates([itemId]);
 
     it(`Receive create membership update`, async () => {
       queryClient.setQueryData(membershipsKey, memberships);

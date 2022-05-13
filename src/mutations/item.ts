@@ -11,7 +11,6 @@ import {
   editItemRoutine,
   moveItemRoutine,
   moveItemsRoutine,
-  shareItemRoutine,
   uploadFileRoutine,
   recycleItemsRoutine,
   restoreItemsRoutine,
@@ -24,9 +23,7 @@ import {
   getKeyForParentId,
   MUTATION_KEYS,
   OWN_ITEMS_KEY,
-  buildItemMembershipsKey,
   RECYCLED_ITEMS_KEY,
-  buildManyItemMembershipsKey,
   buildItemThumbnailKey,
 } from '../config/keys';
 import { buildPath, getDirectParentId } from '../utils/item';
@@ -39,7 +36,6 @@ const {
   DELETE_ITEM,
   EDIT_ITEM,
   UPLOAD_FILES,
-  SHARE_ITEM,
   MOVE_ITEM,
   MOVE_ITEMS,
   COPY_ITEM,
@@ -651,26 +647,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         const itemKey = buildItemKey(id);
         queryClient.invalidateQueries(itemKey);
       });
-    },
-  });
-
-  queryClient.setMutationDefaults(SHARE_ITEM, {
-    mutationFn: (payload) => Api.shareItemWith(payload, queryConfig),
-    onSuccess: () => {
-      notifier?.({
-        type: shareItemRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.SHARE_ITEM },
-      });
-    },
-    onError: (error) => {
-      notifier?.({ type: shareItemRoutine.FAILURE, payload: { error } });
-    },
-    onSettled: (_data, _error, { id }) => {
-      // invalidate memberships
-      // todo: invalidate all pack of memberships containing the given id
-      // this won't trigger too many errors as long as the stale time is low
-      queryClient.invalidateQueries(buildManyItemMembershipsKey([id]));
-      queryClient.invalidateQueries(buildItemMembershipsKey(id));
     },
   });
 

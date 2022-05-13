@@ -5,12 +5,40 @@ import * as Api from '../api';
 import {
   deleteItemMembershipRoutine,
   editItemMembershipRoutine,
+  postItemMembershipRoutine,
 } from '../routines';
-import { buildItemMembershipsKey, MUTATION_KEYS } from '../config/keys';
+import {
+  buildItemMembershipsKey,
+  buildManyItemMembershipsKey,
+  MUTATION_KEYS,
+} from '../config/keys';
 import { Membership, QueryClientConfig, UUID } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
+
+  queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_MEMBERSHIP, {
+    mutationFn: (payload) => Api.shareItemWith(payload, queryConfig),
+    onSuccess: () => {
+      notifier?.({
+        type: postItemMembershipRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.SHARE_ITEM },
+      });
+    },
+    onError: (error) => {
+      notifier?.({
+        type: postItemMembershipRoutine.FAILURE,
+        payload: { error },
+      });
+    },
+    onSettled: (_data, _error, { id }) => {
+      // invalidate memberships
+      // todo: invalidate all pack of memberships containing the given id
+      // this won't trigger too many errors as long as the stale time is low
+      queryClient.invalidateQueries(buildManyItemMembershipsKey([id]));
+      queryClient.invalidateQueries(buildItemMembershipsKey(id));
+    },
+  });
 
   /**
    * @param {UUID} id membership id to edit

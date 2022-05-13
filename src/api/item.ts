@@ -23,7 +23,7 @@ import {
   buildRestoreItemsRoute,
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_ROUTE,
-  SHARE_ITEM_WITH_ROUTE,
+  SHARED_ITEM_WITH_ROUTE,
 } from './routes';
 import { getParentsIdsFromPath } from '../utils/item';
 import { ExtendedItem, Item, QueryClientConfig, UUID } from '../types';
@@ -197,7 +197,7 @@ export const copyItems = async (
 export const getSharedItems = async ({ API_HOST }: QueryClientConfig) =>
   verifyAuthentication(() =>
     axios
-      .get<Item[]>(`${API_HOST}/${SHARE_ITEM_WITH_ROUTE}`, {})
+      .get<Item[]>(`${API_HOST}/${SHARED_ITEM_WITH_ROUTE}`, {})
       .then(({ data }) => data),
   );
 

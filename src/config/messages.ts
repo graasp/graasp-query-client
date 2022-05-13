@@ -11,7 +11,8 @@ export const DELETE_ITEMS_ERROR_MESSAGE =
 export const MOVE_ITEM_ERROR_MESSAGE = 'There was an error moving the item.';
 export const COPY_ITEM_ERROR_MESSAGE = 'There was an error copying the item.';
 export const EDIT_ITEM_ERROR_MESSAGE = 'There was an error editing the item.';
-export const SHARE_ITEM_ERROR_MESSAGE = 'There was an error sharing the item.';
+export const POST_ITEM_MEMBERSHIP_ERROR_MESSAGE =
+  'There was an error sharing the item.';
 export const UPLOAD_FILES_ERROR_MESSAGE =
   'There was an error uploading the file(s).';
 export const CREATE_ITEM_SUCCESS_MESSAGE = 'The item was successfully created.';
@@ -22,7 +23,7 @@ export const COPY_ITEM_SUCCESS_MESSAGE =
   'The item(s) were successfully copied.';
 export const EDIT_ITEM_SUCCESS_MESSAGE =
   'The item(s) were successfully edited.';
-export const SHARE_ITEM_SUCCESS_MESSAGE =
+export const POST_ITEM_MEMBERSHIP_SUCCESS_MESSAGE =
   'The item(s) were successfully shared.';
 export const UPLOAD_FILES_SUCCESS_MESSAGE =
   'The file(s) were successfully uploaded.';

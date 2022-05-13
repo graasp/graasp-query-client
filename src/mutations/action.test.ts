@@ -54,7 +54,6 @@ describe('Action Mutations', () => {
           type: exportActionsRoutine.SUCCESS,
         }),
       );
-
     });
 
     it(`Unauthorized`, async () => {

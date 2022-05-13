@@ -12,6 +12,7 @@ import itemExportMutations from './itemExport';
 import itemLikeMutations from './itemLike';
 import itemValidationMutations from './itemValidation';
 import actionMutations from './action';
+import invitationMutations from './invitation';
 
 const configureMutations = (
   queryClient: QueryClient,
@@ -28,7 +29,8 @@ const configureMutations = (
   itemExportMutations(queryClient, queryConfig);
   itemLikeMutations(queryClient, queryConfig);
   itemValidationMutations(queryClient, queryConfig);
-  actionMutations(queryClient, queryConfig)
+  actionMutations(queryClient, queryConfig);
+  invitationMutations(queryClient, queryConfig);
 };
 
 export default configureMutations;
