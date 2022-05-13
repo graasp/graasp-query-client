@@ -13,6 +13,7 @@ import configureItemLikeHooks from './itemLike';
 import configureItemValidationHooks from './itemValidation';
 import configureActionHooks from './action';
 import configureInvitationHooks from './invitation';
+import configureMembershipHooks from './membership';
 
 export default (
   queryClient: QueryClient,
@@ -23,6 +24,7 @@ export default (
 
   return {
     ...configureChatHooks(queryClient, queryConfig, websocketClient),
+    ...configureMembershipHooks(queryClient, queryConfig, websocketClient),
     ...configureItemHooks(
       queryClient,
       queryConfig,

@@ -20,9 +20,9 @@ export const configureWsMembershipHooks = (
 ) => ({
   /**
    * React hooks to subscribe to membership updates for a given item ID
-   * @param itemId The ID of the item of which to observe memberships updates
+   * @param itemIds The IDs of the items of which to observe memberships updates
    */
-  useItemMembershipsUpdates: (itemIds?: UUID[] | null) => {
+  useItemsMembershipsUpdates: (itemIds?: UUID[] | null) => {
     useEffect(() => {
       if (!itemIds?.length) {
         return;
@@ -65,7 +65,7 @@ export const configureWsMembershipHooks = (
                 }
                 default:
                   console.error(
-                    'unhandled event for useItemMembershipsUpdates',
+                    'unhandled event for useItemsMembershipsUpdates',
                   );
                   break;
               }

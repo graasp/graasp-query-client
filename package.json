@@ -83,7 +83,7 @@
     "hooks:uninstall": "husky uninstall",
     "hooks:install": "husky install",
     "predeploy": "cd example && yarn install && yarn run build",
-    "test": "jest  --silent",
+    "test": "jest --silent",
     "test:watch": "yarn test --watchAll",
     "test:ci": "yarn && cd example && yarn && cd .. && yarn test",
     "deploy": "gh-pages -d example/build",

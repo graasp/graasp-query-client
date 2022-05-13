@@ -367,5 +367,5 @@ export const API_ROUTES = {
   buildDeleteInvitationRoute,
   buildResendInvitationRoute,
   buildPostInvitationsRoute,
-  buildGetItemInvitationsForItemRoute
+  buildGetItemInvitationsForItemRoute,
 };
