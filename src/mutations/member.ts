@@ -6,6 +6,7 @@ import * as Api from '../api';
 import {
   addFavoriteItemRoutine,
   deleteFavoriteItemRoutine,
+  deleteMemberRoutine,
   editMemberRoutine,
   signOutRoutine,
   uploadAvatarRoutine,
@@ -41,6 +42,28 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     // If the mutation fails, use the context returned from onMutate to roll back
     onError: (error, _args, _context) => {
       notifier?.({ type: signOutRoutine.FAILURE, payload: { error } });
+    },
+  });
+
+  queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_MEMBER, {
+    mutationFn: (payload) => Api.deleteMember(payload, queryConfig).then(() => Api.signOut(queryConfig)),
+    onSuccess: () => {
+      notifier?.({
+        type: deleteMemberRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
+      });
+      queryClient.resetQueries();
+
+      // remove cookies from browser when the logout is confirmed
+      Cookies.remove(COOKIE_SESSION_NAME);
+
+      // Update when the server confirmed the logout, instead optimistically updating the member
+      // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, undefined);
+    },
+    // If the mutation fails, use the context returned from onMutate to roll back
+    onError: (error, _args, _context) => {
+      notifier?.({ type: deleteMemberRoutine.FAILURE, payload: { error } });
     },
   });
 

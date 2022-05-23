@@ -10,6 +10,7 @@ import {
   buildUploadAvatarRoute,
   buildDownloadAvatarRoute,
   buildDownloadPublicAvatarRoute,
+  buildDeleteMemberRoute,
 } from './routes';
 import { MemberExtra, QueryClientConfig, UUID } from '../types';
 import { DEFAULT_THUMBNAIL_SIZES, SIGNED_OUT_USER } from '../config/constants';
@@ -77,6 +78,14 @@ export const editMember = async (
         extra: payload.extra,
       })
       .then(({ data }) => data),
+  );
+
+export const deleteMember = async (
+  { id }: { id: UUID },
+  { API_HOST }: QueryClientConfig,
+) =>
+  verifyAuthentication(() =>
+    axios.delete(`${API_HOST}/${buildDeleteMemberRoute(id)}`).then(({ data }) => data),
   );
 
 export const uploadAvatar = async (
