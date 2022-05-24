@@ -22,7 +22,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         type: signInRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.SIGN_IN },
       });
-      queryClient.resetQueries();
     },
     onError: (error) => {
       notifier?.({ type: signInRoutine.FAILURE, payload: { error } });
@@ -31,13 +30,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(MUTATION_KEYS.SIGN_IN_WITH_PASSWORD, {
     mutationFn: (payload) => Api.signInWithPassword(payload, queryConfig),
-    onSuccess: ({ resource }) => {
+    onSuccess: () => {
       notifier?.({
         type: signInWithPasswordRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.SIGN_IN_WITH_PASSWORD },
       });
       queryClient.resetQueries();
-      window.location.href = resource;
     },
     onError: (error) => {
       notifier?.({
