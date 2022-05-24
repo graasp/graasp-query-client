@@ -30,7 +30,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
 
   queryClient.setMutationDefaults(MUTATION_KEYS.SIGN_IN_WITH_PASSWORD, {
-    mutationFn: (payload) => Api.signInPassword(payload, queryConfig),
+    mutationFn: (payload) => Api.signInWithPassword(payload, queryConfig),
     onSuccess: ({ resource }) => {
       notifier?.({
         type: signInWithPasswordRoutine.SUCCESS,

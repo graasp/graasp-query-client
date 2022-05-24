@@ -19,10 +19,17 @@ export const signIn = async (
   { API_HOST }: QueryClientConfig,
 ) => axios.post(`${API_HOST}/${SIGN_IN_ROUTE}`, payload);
 
-export const signInPassword = async (
+export const signInWithPassword = async (
   payload: { email: string; password: string },
   { API_HOST }: QueryClientConfig,
-) => axios.post(`${API_HOST}/${SIGN_IN_WITH_PASSWORD_ROUTE}`, payload);
+) =>
+  axios({
+    method: 'post',
+    url: `${API_HOST}/${SIGN_IN_WITH_PASSWORD_ROUTE}`,
+    data: payload,
+    // Resolve only if the status code is less than 500
+    validateStatus: (status) => status < 400,
+  });
 
 export const signUp = async (
   payload: { name: string; email: string },
