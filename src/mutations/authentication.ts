@@ -31,12 +31,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(MUTATION_KEYS.SIGN_IN_WITH_PASSWORD, {
     mutationFn: (payload) => Api.signInPassword(payload, queryConfig),
-    onSuccess: () => {
+    onSuccess: ({ resource }) => {
       notifier?.({
         type: signInWithPasswordRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.SIGN_IN_WITH_PASSWORD },
       });
       queryClient.resetQueries();
+      window.location.href = resource;
     },
     onError: (error) => {
       notifier?.({
