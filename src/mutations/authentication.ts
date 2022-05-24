@@ -8,12 +8,9 @@ import {
   signInWithPasswordRoutine,
   signUpRoutine,
 } from '../routines';
-import {
-  CURRENT_MEMBER_KEY,
-  MUTATION_KEYS,
-} from '../config/keys';
-import { QueryClientConfig, } from '../types';
-import { COOKIE_SESSION_NAME, } from '../config/constants';
+import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
+import { QueryClientConfig } from '../types';
+import { COOKIE_SESSION_NAME } from '../config/constants';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

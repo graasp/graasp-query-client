@@ -147,10 +147,9 @@ export const buildPublicDownloadFilesRoute = (id: UUID) =>
   `${PUBLIC_PREFIX}/${buildDownloadFilesRoute(id)}`;
 
 export const GET_CURRENT_MEMBER_ROUTE = `${MEMBERS_ROUTE}/current`;
-export const buildSignInPath = (to: string) => {
-  const queryString = qs.stringify({ to }, { addQueryPrefix: true });
-  return `signin${queryString}`;
-};
+export const SIGN_IN_ROUTE = `login`;
+export const SIGN_IN_WITH_PASSWORD_ROUTE = `login-password`;
+export const SIGN_UP_ROUTE = `register`;
 export const SIGN_OUT_ROUTE = 'logout';
 export const buildGetItemTagsRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/tags`;
 export const buildGetItemsTagsRoute = (ids: UUID[]) =>
@@ -297,7 +296,9 @@ export const API_ROUTES = {
   buildUploadFilesRoute,
   buildDownloadFilesRoute,
   buildPostItemMembershipRoute,
-  buildSignInPath,
+  SIGN_IN_ROUTE,
+  SIGN_IN_WITH_PASSWORD_ROUTE,
+  SIGN_UP_ROUTE,
   buildPostItemLoginSignInRoute,
   buildGetItemMembershipsForItemsRoute,
   buildMoveItemRoute,
