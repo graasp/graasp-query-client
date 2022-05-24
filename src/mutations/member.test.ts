@@ -6,6 +6,8 @@ import nock from 'nock';
 import Cookies from 'js-cookie';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 import {
+  buildDeleteMemberRoute,
+  // buildDeleteMemberRoute,
   buildPatchMember,
   buildUploadAvatarRoute,
   SIGN_OUT_ROUTE,
@@ -72,6 +74,70 @@ describe('Member Mutations', () => {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
           route,
+        },
+      ];
+      const mockedMutation = await mockMutation({
+        mutation,
+        endpoints,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate(null);
+        await waitForMutation();
+      });
+
+      // verify cache keys
+      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqual(
+        MEMBER_RESPONSE,
+      );
+    });
+  });
+
+
+  describe(MUTATION_KEYS.DELETE_MEMBER, () => {
+    const memberId = 'member-id';
+
+    const mutation = () => useMutation(MUTATION_KEYS.DELETE_MEMBER);
+
+    it(`Successfully delete member`, async () => {
+      const endpoints = [
+        { 
+          route: `/${buildDeleteMemberRoute(memberId)}`, 
+          response: OK_RESPONSE 
+        }, 
+        { 
+          route: `/${SIGN_OUT_ROUTE}`,
+          response: OK_RESPONSE 
+        }
+      ];
+      // set random data in cache
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate(null);
+        await waitForMutation();
+      });
+
+      // verify cache keys
+      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqual(undefined);
+    });
+
+    it(`Unauthorized`, async () => {
+      // set random data in cache
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+      const endpoints = [
+        {
+          method: REQUEST_METHODS.GET,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+          route: `/${buildDeleteMemberRoute(memberId)}`,
         },
       ];
       const mockedMutation = await mockMutation({

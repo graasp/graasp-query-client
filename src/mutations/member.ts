@@ -46,7 +46,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
 
   queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_MEMBER, {
-    mutationFn: (payload) => Api.deleteMember(payload, queryConfig).then(() => Api.signOut(queryConfig)),
+    mutationFn: (_payload) => /* Api.deleteMember(payload, queryConfig).then(() => */ Api.signOut(queryConfig),
     onSuccess: () => {
       notifier?.({
         type: deleteMemberRoutine.SUCCESS,
