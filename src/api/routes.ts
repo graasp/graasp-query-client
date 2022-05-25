@@ -295,6 +295,7 @@ export const API_ROUTES = {
   buildAppListRoute,
   buildGetMember,
   buildGetMembersRoute,
+  buildDeleteMemberRoute,
   buildUploadFilesRoute,
   buildDownloadFilesRoute,
   buildPostItemMembershipRoute,
