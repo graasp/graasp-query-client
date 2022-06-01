@@ -22,6 +22,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         type: signInRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.SIGN_IN },
       });
+      queryClient.resetQueries();
     },
     onError: (error) => {
       notifier?.({ type: signInRoutine.FAILURE, payload: { error } });
