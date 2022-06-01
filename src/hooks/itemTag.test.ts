@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
-import { v4 } from 'uuid';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { List } from 'immutable';
@@ -131,7 +130,7 @@ describe('Item Tags Hooks', () => {
         ...itemsIds.map(() => TAGS),
         { statusCode: StatusCodes.FORBIDDEN },
       ];
-      const idWithError = v4();
+      const idWithError = 'some-id';
       const routeWithError = `/${buildGetItemsTagsRoute([
         ...itemsIds,
         idWithError,

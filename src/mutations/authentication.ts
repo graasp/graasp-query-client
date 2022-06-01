@@ -1,17 +1,21 @@
 import { QueryClient } from 'react-query';
-import Cookies from 'js-cookie';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
-import { saveUrlForRedirection } from '@graasp/utils';
+import {
+  removeSession,
+  getStoredSessions,
+  setCurrentSession,
+  saveUrlForRedirection,
+} from '@graasp/utils';
 import * as Api from '../api';
 import {
   signOutRoutine,
   signInRoutine,
   signInWithPasswordRoutine,
   signUpRoutine,
+  switchMemberRoutine,
 } from '../routines';
 import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
-import { QueryClientConfig } from '../types';
-import { COOKIE_SESSION_NAME } from '../config/constants';
+import { QueryClientConfig, UUID } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -61,19 +65,19 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
 
   queryClient.setMutationDefaults(MUTATION_KEYS.SIGN_OUT, {
-    mutationFn: () => Api.signOut(queryConfig),
-    onSuccess: () => {
-      // save current page for further redirection
-      saveUrlForRedirection(window.location.href);
-
+    mutationFn: (_currentUserId: UUID) => Api.signOut(queryConfig),
+    onSuccess: (_res, currentUserId) => {
       notifier?.({
         type: signOutRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
       });
       queryClient.resetQueries();
 
-      // remove cookies from browser when the logout is confirmed
-      Cookies.remove(COOKIE_SESSION_NAME);
+      // save current page for further redirection
+      saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
+      // remove cookie and stored session from browser when the logout is confirmed
+      setCurrentSession(null, queryConfig.DOMAIN);
+      removeSession(currentUserId, queryConfig.DOMAIN);
 
       // Update when the server confirmed the logout, instead optimistically updating the member
       // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
@@ -81,6 +85,29 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onError: (error) => {
       notifier?.({ type: signOutRoutine.FAILURE, payload: { error } });
+    },
+  });
+
+  queryClient.setMutationDefaults(MUTATION_KEYS.SWITCH_MEMBER, {
+    mutationFn: async (args: { memberId: string; domain: string }) => {
+      // get token from stored sessions given memberId
+      const sessions = getStoredSessions();
+      const session = sessions?.find(
+        ({ id: thisId }) => args.memberId === thisId,
+      );
+      if (!session) {
+        throw new Error('Session is invalid');
+      }
+      setCurrentSession(session.token, args.domain);
+      return args.memberId;
+    },
+    onSuccess: () => {
+      notifier?.({ type: switchMemberRoutine.SUCCESS });
+      // reset queries to take into account the new token
+      queryClient.resetQueries();
+    },
+    onError: (error) => {
+      notifier?.({ type: switchMemberRoutine.FAILURE, payload: { error } });
     },
   });
 };
