@@ -1,6 +1,7 @@
 import { QueryClient } from 'react-query';
 import Cookies from 'js-cookie';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
+import { saveUrlForRedirection } from '@graasp/utils';
 import * as Api from '../api';
 import {
   signOutRoutine,
@@ -62,6 +63,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   queryClient.setMutationDefaults(MUTATION_KEYS.SIGN_OUT, {
     mutationFn: () => Api.signOut(queryConfig),
     onSuccess: () => {
+      // save current page for further redirection
+      saveUrlForRedirection(window.location.href);
+
       notifier?.({
         type: signOutRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
