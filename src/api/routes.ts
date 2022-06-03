@@ -95,6 +95,11 @@ export const buildImportZipRoute = (parentId: UUID) =>
     { parentId },
     { addQueryPrefix: true },
   )}`;
+export const buildImportH5PRoute = (parentId: UUID) =>
+  `${ITEMS_ROUTE}/h5p-import${qs.stringify(
+    { parentId },
+    { addQueryPrefix: true },
+  )}`;
 export const buildDownloadFilesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/download`;
 export const buildUploadAvatarRoute = (id: UUID) =>
@@ -350,6 +355,7 @@ export const API_ROUTES = {
   buildDownloadAvatarRoute,
   buildDownloadPublicAvatarRoute,
   buildImportZipRoute,
+  buildImportH5PRoute,
   buildGetApiAccessTokenRoute,
   buildGetPublicApiAccessTokenRoute,
   buildPublicDownloadFilesRoute,

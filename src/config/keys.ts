@@ -218,6 +218,7 @@ export const MUTATION_KEYS = {
   UPLOAD_AVATAR: 'uploadAvatar',
   IMPORT_ZIP: 'importZip',
   EXPORT_ZIP: 'exportZip',
+  IMPORT_H5P: 'importH5P',
   POST_ITEM_LIKE: 'postItemLike',
   DELETE_ITEM_LIKE: 'deleteItemLike',
   ADD_FAVORITE_ITEM: 'addFavoriteItem',

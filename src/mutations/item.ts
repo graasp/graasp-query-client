@@ -16,6 +16,7 @@ import {
   restoreItemsRoutine,
   uploadItemThumbnailRoutine,
   importZipRoutine,
+  importH5PRoutine,
 } from '../routines';
 import {
   buildItemChildrenKey,
@@ -47,6 +48,7 @@ const {
   UPLOAD_ITEM_THUMBNAIL,
   COPY_PUBLIC_ITEM,
   IMPORT_ZIP,
+  IMPORT_H5P,
 } = MUTATION_KEYS;
 
 interface Value {
@@ -722,6 +724,27 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onError: (_error, { error }) => {
       notifier?.({ type: importZipRoutine.FAILURE, payload: { error } });
+    },
+    onSettled: (_data, _error, { id }) => {
+      const parentKey = getKeyForParentId(id);
+      queryClient.invalidateQueries(parentKey);
+    },
+  });
+
+  queryClient.setMutationDefaults(IMPORT_H5P, {
+    mutationFn: async ({ error }) => {
+      if (error) {
+        throw new Error(JSON.stringify(error));
+      }
+    },
+    onSuccess: () => {
+      notifier?.({
+        type: importH5PRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.IMPORT_H5P },
+      });
+    },
+    onError: (_error, { error }) => {
+      notifier?.({ type: importH5PRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_data, _error, { id }) => {
       const parentKey = getKeyForParentId(id);
