@@ -7,7 +7,6 @@ import Cookies from 'js-cookie';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 import {
   buildDeleteMemberRoute,
-  // buildDeleteMemberRoute,
   buildPatchMember,
   buildUploadAvatarRoute,
   SIGN_OUT_ROUTE,
@@ -94,7 +93,6 @@ describe('Member Mutations', () => {
     });
   });
 
-
   describe(MUTATION_KEYS.DELETE_MEMBER, () => {
     const memberId = 'member-id';
 
@@ -102,14 +100,14 @@ describe('Member Mutations', () => {
 
     it(`Successfully delete member`, async () => {
       const endpoints = [
-        { 
-          route: `/${buildDeleteMemberRoute(memberId)}`, 
-          response: OK_RESPONSE 
-        }, 
-        { 
+        {
+          route: `/${buildDeleteMemberRoute(memberId)}`,
+          response: OK_RESPONSE,
+        },
+        {
           route: `/${SIGN_OUT_ROUTE}`,
-          response: OK_RESPONSE 
-        }
+          response: OK_RESPONSE,
+        },
       ];
       // set random data in cache
       queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);

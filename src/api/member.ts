@@ -85,7 +85,9 @@ export const deleteMember = async (
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
-    axios.delete(`${API_HOST}/${buildDeleteMemberRoute(id)}`).then(({ data }) => data),
+    axios
+      .delete(`${API_HOST}/${buildDeleteMemberRoute(id)}`)
+      .then(({ data }) => data),
   );
 
 export const uploadAvatar = async (

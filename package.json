@@ -11,7 +11,7 @@
   "source": "src/index.ts",
   "types": "dist/src/index.d.ts",
   "dependencies": {
-    "@graasp/translations": "github:graasp/graasp-translations.git",
+    "@graasp/translations": "github:graasp/graasp-translations.git#11/deleteMember",
     "axios": "0.27.2",
     "crypto-js": "4.1.1",
     "http-status-codes": "2.2.0",
