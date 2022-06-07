@@ -46,8 +46,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
 
   queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_MEMBER, {
-    mutationFn: (payload) =>
-      Api.deleteMember(payload, queryConfig).then(() =>
+    mutationFn: (payload) => Api.deleteMember(payload, queryConfig).then(() =>
         Api.signOut(queryConfig),
       ),
     onSuccess: () => {
@@ -55,6 +54,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         type: deleteMemberRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.DELETE_MEMBER },
       });
+
       queryClient.resetQueries();
 
       // remove cookies from browser when the logout is confirmed

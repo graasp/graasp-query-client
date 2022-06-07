@@ -102,6 +102,7 @@ describe('Member Mutations', () => {
       const endpoints = [
         {
           route: `/${buildDeleteMemberRoute(memberId)}`,
+          method: REQUEST_METHODS.DELETE,
           response: OK_RESPONSE,
         },
         {
@@ -119,8 +120,8 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(null);
-        await waitForMutation();
+        await mockedMutation.mutate({ id: memberId });
+        await waitForMutation(2000);
       });
 
       // verify cache keys
@@ -128,6 +129,7 @@ describe('Member Mutations', () => {
     });
 
     it(`Unauthorized`, async () => {
+
       // set random data in cache
       queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const endpoints = [
@@ -145,7 +147,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(null);
+        await mockedMutation.mutate({ id: memberId });
         await waitForMutation();
       });
 
