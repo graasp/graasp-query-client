@@ -85,6 +85,7 @@ export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildGetMembersRoute = (ids: UUID[]) =>
   `${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
+export const buildDeleteMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildUploadFilesRoute = (parentId: UUID) =>
   `${ITEMS_ROUTE}/upload${qs.stringify(
     { id: parentId },
@@ -293,6 +294,7 @@ export const API_ROUTES = {
   buildAppListRoute,
   buildGetMember,
   buildGetMembersRoute,
+  buildDeleteMemberRoute,
   buildUploadFilesRoute,
   buildDownloadFilesRoute,
   buildPostItemMembershipRoute,

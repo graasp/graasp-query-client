@@ -204,6 +204,7 @@ export const MUTATION_KEYS = {
   POST_ITEM_TAG: 'postItemTags',
   PUT_ITEM_LOGIN: 'putItemLogin',
   EDIT_MEMBER: 'editMember',
+  DELETE_MEMBER: 'deleteMember',
   POST_ITEM_FLAG: 'postItemFlag',
   POST_ITEM_MEMBERSHIP: 'postItemMembership',
   EDIT_ITEM_MEMBERSHIP: 'editItemMembership',
