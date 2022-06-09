@@ -1,4 +1,6 @@
+import axios from 'axios';
 import { QueryClientConfig } from '../types';
+import { verifyAuthentication } from './axios';
 import {
   buildChangePlanRoute,
   buildSetDefaultCardRoute,
@@ -8,68 +10,51 @@ import {
   GET_OWN_PLAN_ROUTE,
   GET_PLANS_ROUTE,
 } from './routes';
-import { DEFAULT_GET, DEFAULT_PATCH, DEFAULT_POST, failOnError } from './utils';
 
-export const getPlans = async ({ API_HOST }: QueryClientConfig) => {
-  const res = await fetch(`${API_HOST}/${GET_PLANS_ROUTE}`, DEFAULT_GET).then(
-    failOnError,
+export const getPlans = async ({ API_HOST }: QueryClientConfig) =>
+  verifyAuthentication(() =>
+    axios.get(`${API_HOST}/${GET_PLANS_ROUTE}`).then(({ data }) => data),
   );
 
-  return res.json();
-};
-
-export const getOwnPlan = async ({ API_HOST }: QueryClientConfig) => {
-  const res = await fetch(
-    `${API_HOST}/${GET_OWN_PLAN_ROUTE}`,
-    DEFAULT_GET,
-  ).then(failOnError);
-  return res.json();
-};
+export const getOwnPlan = async ({ API_HOST }: QueryClientConfig) =>
+  verifyAuthentication(() =>
+    axios.get(`${API_HOST}/${GET_OWN_PLAN_ROUTE}`).then(({ data }) => data),
+  );
 
 // payload: planId
 export const changePlan = async (
   { planId }: { planId: string },
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(`${API_HOST}/${buildChangePlanRoute(planId)}`, {
-    ...DEFAULT_PATCH,
-    headers: {},
-  }).then(failOnError);
-
-  return res.json();
-};
-
-export const getCards = async ({ API_HOST }: QueryClientConfig) => {
-  const res = await fetch(`${API_HOST}/${GET_CARDS_ROUTE}`, DEFAULT_GET).then(
-    failOnError,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .patch(`${API_HOST}/${buildChangePlanRoute(planId)}`)
+      .then(({ data }) => data),
   );
-  return res.json();
-};
+
+export const getCards = async ({ API_HOST }: QueryClientConfig) =>
+  verifyAuthentication(() =>
+    axios.get(`${API_HOST}/${GET_CARDS_ROUTE}`).then(({ data }) => data),
+  );
 
 export const setDefaultCard = async (
   { cardId }: { cardId: string },
   { API_HOST }: QueryClientConfig,
-) => {
-  const res = await fetch(`${API_HOST}/${buildSetDefaultCardRoute(cardId)}`, {
-    ...DEFAULT_PATCH,
-    headers: {},
-  }).then(failOnError);
+) =>
+  verifyAuthentication(() =>
+    axios
+      .patch(`${API_HOST}/${buildSetDefaultCardRoute(cardId)}`)
+      .then(({ data }) => data),
+  );
 
-  return res.json();
-};
+export const createSetupIntent = async ({ API_HOST }: QueryClientConfig) =>
+  verifyAuthentication(() =>
+    axios
+      .post(`${API_HOST}/${CREATE_SETUP_INTENT_ROUTE}`)
+      .then(({ data }) => data),
+  );
 
-export const createSetupIntent = async ({ API_HOST }: QueryClientConfig) => {
-  const res = await fetch(`${API_HOST}/${CREATE_SETUP_INTENT_ROUTE}`, {
-    ...DEFAULT_POST,
-    headers: {},
-  }).then(failOnError);
-  return res.json();
-};
-
-export const getCurrentCustomer = async ({ API_HOST }: QueryClientConfig) => {
-  const res = await fetch(
-    `${API_HOST}/${GET_CURRENT_CUSTOMER}`,
-    DEFAULT_GET,
-  ).then(failOnError);
-  return res.json();
-};
+export const getCurrentCustomer = async ({ API_HOST }: QueryClientConfig) =>
+  verifyAuthentication(() =>
+    axios.get(`${API_HOST}/${GET_CURRENT_CUSTOMER}`).then(({ data }) => data),
+  );
