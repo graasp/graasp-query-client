@@ -11,7 +11,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
    * @param notification {boolean} send out email notification
    */
   queryClient.setMutationDefaults(MUTATION_KEYS.PUBLISH_ITEM, {
-    mutationFn: ({ id, notification }) => Api.publishItem(id, notification, queryConfig ),
+    mutationFn: ({ id, notification }) =>
+      Api.publishItem(id, notification, queryConfig),
     onSuccess: () => {
       notifier?.({ type: publishItemRoutine.SUCCESS });
     },

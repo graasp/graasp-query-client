@@ -129,7 +129,6 @@ describe('Member Mutations', () => {
     });
 
     it(`Unauthorized`, async () => {
-
       // set random data in cache
       queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const endpoints = [

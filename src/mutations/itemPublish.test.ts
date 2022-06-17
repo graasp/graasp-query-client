@@ -6,9 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { REQUEST_METHODS } from '../api/utils';
 import { buildItemTagsKey, MUTATION_KEYS } from '../config/keys';
-import {
-  buildItemPublishRoute,
-} from '../api/routes';
+import { buildItemPublishRoute } from '../api/routes';
 import { publishItemRoutine } from '../routines';
 import { ITEMS, ITEM_TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 
@@ -90,7 +88,7 @@ describe('Publish Item', () => {
         await waitForMutation();
       });
 
-     // expect(queryClient.getQueryState(itemTagKey)?.isInvalidated).toBeTruthy();
+      // expect(queryClient.getQueryState(itemTagKey)?.isInvalidated).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: publishItemRoutine.FAILURE,

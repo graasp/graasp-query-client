@@ -14,4 +14,4 @@ export const publishItem = async (
     axios
       .get(`${API_HOST}/${buildItemPublishRoute(id, notification)}`)
       .then(({ data }) => data),
-    );
+  );
