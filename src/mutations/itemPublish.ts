@@ -12,7 +12,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
    */
   queryClient.setMutationDefaults(MUTATION_KEYS.PUBLISH_ITEM, {
     mutationFn: ({ id, notification }) =>
-      Api.publishItem(id, notification, queryConfig),
+      Api.publishItem(id, queryConfig, notification),
     onSuccess: () => {
       notifier?.({ type: publishItemRoutine.SUCCESS });
     },

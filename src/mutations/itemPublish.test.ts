@@ -27,11 +27,44 @@ describe('Publish Item', () => {
     const item = ITEMS[0];
     const itemId = item.id;
     const notification = true;
-    const route = `/${buildItemPublishRoute(itemId, notification)}`;
     const mutation = () => useMutation(MUTATION_KEYS.PUBLISH_ITEM);
     const itemTagKey = buildItemTagsKey(itemId);
 
-    it('Publish Item', async () => {
+    it('Publish Item with notification', async () => {
+      const route = `/${buildItemPublishRoute(itemId, notification)}`;
+      queryClient.setQueryData(itemTagKey, ITEM_TAGS);
+
+      const endpoints = [
+        {
+          response: { item },
+          method: REQUEST_METHODS.GET,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({
+          id: itemId,
+          notification,
+        });
+        await waitForMutation();
+      });
+
+      expect(route.includes('notification'));
+      expect(queryClient.getQueryState(itemTagKey)?.isInvalidated).toBeTruthy();
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: publishItemRoutine.SUCCESS,
+      });
+    });
+
+    it('Publish Item without notification', async () => {
+      const route = `/${buildItemPublishRoute(itemId)}`;
       queryClient.setQueryData(itemTagKey, ITEM_TAGS);
 
       const endpoints = [
@@ -63,6 +96,7 @@ describe('Publish Item', () => {
     });
 
     it('Unauthorized to publish item', async () => {
+      const route = `/${buildItemPublishRoute(itemId, notification)}`;
       queryClient.setQueryData(itemTagKey, ITEM_TAGS);
 
       const endpoints = [
@@ -88,7 +122,7 @@ describe('Publish Item', () => {
         await waitForMutation();
       });
 
-      // expect(queryClient.getQueryState(itemTagKey)?.isInvalidated).toBeTruthy();
+      expect(queryClient.getQueryState(itemTagKey)?.isInvalidated).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: publishItemRoutine.FAILURE,
