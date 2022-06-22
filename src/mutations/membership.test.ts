@@ -16,7 +16,7 @@ import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
   buildDeleteItemMembershipRoute,
   buildEditItemMembershipRoute,
-  buildGetMemberBy,
+  buildGetMembersBy,
   buildPostItemMembershipRoute,
 } from '../api/routes';
 import { REQUEST_METHODS } from '../api/utils';
@@ -76,7 +76,7 @@ describe('Membership Mutations', () => {
         {
           response: [MEMBER_RESPONSE],
           method: REQUEST_METHODS.GET,
-          route: `/${buildGetMemberBy(email)}`,
+          route: `/${buildGetMembersBy([email])}`,
         },
         {
           response,
@@ -119,7 +119,7 @@ describe('Membership Mutations', () => {
         {
           response: [MEMBER_RESPONSE],
           method: REQUEST_METHODS.GET,
-          route: `/${buildGetMemberBy(email)}`,
+          route: `/${buildGetMembersBy([email])}`,
         },
         {
           response: UNAUTHORIZED_RESPONSE,

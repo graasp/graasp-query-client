@@ -12,7 +12,7 @@
   "types": "dist/src/index.d.ts",
   "dependencies": {
     "@graasp/translations": "github:graasp/graasp-translations.git",
-    "@graasp/utils": "github:graasp/graasp-utils.git",
+    "@graasp/utils": "github:graasp/graasp-utils.git#13/pseudonymized",
     "axios": "0.27.2",
     "crypto-js": "4.1.1",
     "http-status-codes": "2.2.0",
@@ -86,7 +86,7 @@
     "hooks:uninstall": "husky uninstall",
     "hooks:install": "husky install",
     "predeploy": "cd example && yarn install && yarn run build",
-    "test": "jest --silent",
+    "test": "jest src/hooks/itemFlag.test.ts",
     "test:watch": "yarn test --watchAll",
     "test:ci": "yarn && cd example && yarn && cd .. && yarn test",
     "deploy": "gh-pages -d example/build",

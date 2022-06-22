@@ -25,10 +25,11 @@ export const setUpTest = (args?: Args) => {
   const queryConfig: QueryClientConfig = {
     API_HOST,
     DOMAIN,
-    retry: 0,
-    cacheTime: 0,
-    staleTime: 0,
-    S3_FILES_HOST: API_HOST,
+    defaultQueryOptions: {
+      retry: 0,
+      cacheTime: 0,
+      staleTime: 0,
+    },
     SHOW_NOTIFICATIONS: false,
     notifier,
     enableWebsocket,

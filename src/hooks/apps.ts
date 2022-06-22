@@ -5,19 +5,14 @@ import { APPS_KEY } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
-  const { retry, cacheTime, staleTime } = queryConfig;
-  const defaultOptions = {
-    retry,
-    cacheTime,
-    staleTime,
-  };
+  const { defaultQueryOptions } = queryConfig;
 
   return {
     useApps: () =>
       useQuery({
         queryKey: APPS_KEY,
         queryFn: () => Api.getApps(queryConfig).then((data) => List(data)),
-        ...defaultOptions,
+        ...defaultQueryOptions,
       }),
   };
 };

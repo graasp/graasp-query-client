@@ -5,19 +5,13 @@ import * as Api from '../api';
 import { ITEM_FLAGS_KEY } from '../config/keys';
 
 export default (queryConfig: QueryClientConfig) => {
-  const { retry, cacheTime, staleTime } = queryConfig;
-  const defaultOptions = {
-    retry,
-    cacheTime,
-    staleTime,
-  };
-
+  const { defaultQueryOptions } = queryConfig;
   // get flag types
   const useFlags = () =>
     useQuery({
       queryKey: ITEM_FLAGS_KEY,
       queryFn: () => Api.getFlags(queryConfig).then((data) => List(data)),
-      ...defaultOptions,
+      ...defaultQueryOptions,
     });
 
   return { useFlags };

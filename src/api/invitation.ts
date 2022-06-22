@@ -1,4 +1,4 @@
-import { Invitation, QueryClientConfig, UUID } from '../types';
+import { Invitation, NewInvitation, QueryClientConfig, UUID } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
   buildDeleteInvitationRoute,
@@ -21,7 +21,7 @@ export const getInvitation = async (
     .then(({ data }) => data);
 
 export const postInvitations = async (
-  { itemId, invitations }: { itemId: UUID; invitations: Invitation[] },
+  { itemId, invitations }: { itemId: UUID; invitations: NewInvitation[] },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
