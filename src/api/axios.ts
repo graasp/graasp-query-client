@@ -6,6 +6,7 @@ import { isObject } from '../utils/util';
 
 const configureAxios = () => {
   axios.defaults.withCredentials = true;
+
   return axios;
 };
 
