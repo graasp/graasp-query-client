@@ -3,6 +3,7 @@ import * as Api from '../api';
 import { MUTATION_KEYS, buildItemTagsKey } from '../config/keys';
 import { publishItemRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
+import { convertFalseToUndefined } from '../utils/util';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -12,7 +13,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
    */
   queryClient.setMutationDefaults(MUTATION_KEYS.PUBLISH_ITEM, {
     mutationFn: ({ id, notification }) =>
-      Api.publishItem(id, queryConfig, notification),
+      Api.publishItem(id, queryConfig, convertFalseToUndefined(notification)),
     onSuccess: () => {
       notifier?.({ type: publishItemRoutine.SUCCESS });
     },
