@@ -21,7 +21,7 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: PLANS_KEY,
       queryFn: () =>
-        Api.getPlan({ planId }, queryConfig).then((data) => List(data)),
+        Api.getPlan({ planId }, queryConfig).then((data) => Map(data)),
       ...defaultOptions,
     });
 
