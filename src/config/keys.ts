@@ -233,5 +233,6 @@ export const MUTATION_KEYS = {
   PATCH_INVITATION: 'patchInvitation',
   DELETE_INVITATION: 'deleteInvitation',
   RESEND_INVITATION: 'resendInvitation',
+  PUBLISH_ITEM: 'publishItem',
   SWITCH_MEMBER: 'switchMember',
 };
