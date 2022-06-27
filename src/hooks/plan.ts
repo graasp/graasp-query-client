@@ -17,6 +17,14 @@ export default (queryConfig: QueryClientConfig) => {
     staleTime,
   };
 
+  const usePlan = ({ planId }: { planId: string }) =>
+    useQuery({
+      queryKey: PLANS_KEY,
+      queryFn: () =>
+        Api.getPlan({ planId }, queryConfig).then((data) => List(data)),
+      ...defaultOptions,
+    });
+
   const usePlans = () =>
     useQuery({
       queryKey: PLANS_KEY,
@@ -46,5 +54,5 @@ export default (queryConfig: QueryClientConfig) => {
       ...defaultOptions,
     });
 
-  return { usePlans, useOwnPlan, useCards, useCurrentCustomer };
+  return { usePlan, usePlans, useOwnPlan, useCards, useCurrentCustomer };
 };

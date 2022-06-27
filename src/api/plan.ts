@@ -3,6 +3,7 @@ import { QueryClientConfig } from '../types';
 import { verifyAuthentication } from './axios';
 import {
   buildChangePlanRoute,
+  buildGetPlanRoute,
   buildSetDefaultCardRoute,
   CREATE_SETUP_INTENT_ROUTE,
   GET_CARDS_ROUTE,
@@ -10,6 +11,16 @@ import {
   GET_OWN_PLAN_ROUTE,
   GET_PLANS_ROUTE,
 } from './routes';
+
+export const getPlan = async (
+  { planId }: { planId: string },
+  { API_HOST }: QueryClientConfig,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .get(`${API_HOST}/${buildGetPlanRoute(planId)}`)
+      .then(({ data }) => data),
+  );
 
 export const getPlans = async ({ API_HOST }: QueryClientConfig) =>
   verifyAuthentication(() =>
