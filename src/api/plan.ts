@@ -34,12 +34,12 @@ export const getOwnPlan = async ({ API_HOST }: QueryClientConfig) =>
 
 // payload: planId
 export const changePlan = async (
-  { planId }: { planId: string },
+  { planId, cardId }: { planId: string, cardId?:string },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
     axios
-      .patch(`${API_HOST}/${buildChangePlanRoute(planId)}`)
+      .patch(`${API_HOST}/${buildChangePlanRoute(planId)}`, { cardId })
       .then(({ data }) => data),
   );
 
