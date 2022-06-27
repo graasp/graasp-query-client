@@ -234,4 +234,5 @@ export const MUTATION_KEYS = {
   DELETE_INVITATION: 'deleteInvitation',
   RESEND_INVITATION: 'resendInvitation',
   PUBLISH_ITEM: 'publishItem',
+  SWITCH_MEMBER: 'switchMember',
 };

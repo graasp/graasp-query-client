@@ -13,6 +13,7 @@ import {
 
 export const WS_HOST = 'ws://localhost:3000';
 export const API_HOST = 'http://localhost:3000';
+export const DOMAIN = 'domain';
 export const UNAUTHORIZED_RESPONSE = {
   name: 'unauthorized',
   code: 'ERRCODE',
