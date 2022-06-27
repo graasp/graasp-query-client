@@ -3,6 +3,7 @@ import { Map, List } from 'immutable';
 import { QueryClientConfig } from '../types';
 import * as Api from '../api';
 import {
+  buildPlanKey,
   CARDS_KEY,
   CURRENT_CUSTOMER_KEY,
   OWN_PLAN_KEY,
@@ -19,7 +20,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const usePlan = ({ planId }: { planId: string }) =>
     useQuery({
-      queryKey: PLANS_KEY,
+      queryKey: buildPlanKey(planId),
       queryFn: () =>
         Api.getPlan({ planId }, queryConfig).then((data) => Map(data)),
       ...defaultOptions,
