@@ -16,6 +16,7 @@ import {
 } from '../routines';
 import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
 import { QueryClientConfig, UUID } from '../types';
+import { isServer } from '../utils/util';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -74,7 +75,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.resetQueries();
 
       // cookie operations only if window is defined (operation happens in the frontend)
-      if (window) {
+      if (!isServer() && queryConfig.DOMAIN) {
         // save current page for further redirection
         saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
         // remove cookie and stored session from browser when the logout is confirmed

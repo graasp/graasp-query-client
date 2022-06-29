@@ -5,7 +5,7 @@ export type QueryClientConfig = {
   S3_FILES_HOST: string;
   SHOW_NOTIFICATIONS: boolean;
   WS_HOST: string;
-  DOMAIN: string;
+  DOMAIN?: string;
   enableWebsocket: boolean;
   notifier?: Notifier;
   staleTime: number;
