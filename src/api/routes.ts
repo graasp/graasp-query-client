@@ -277,7 +277,11 @@ export const buildPostInvitationsRoute = (itemId: UUID) =>
 export const buildResendInvitationRoute = (args: { itemId: UUID; id: UUID }) =>
   `${ITEMS_ROUTE}/${args.itemId}/${INVITATIONS_ROUTE}/${args.id}/send`;
 
-export const buildItemPublishRoute = (itemId: UUID, notification?: boolean) => `${ITEMS_ROUTE}/${itemId}/publish${qs.stringify({ notification }, { addQueryPrefix: true })}`;
+export const buildItemPublishRoute = (itemId: UUID, notification?: boolean) =>
+  `${ITEMS_ROUTE}/${itemId}/publish${qs.stringify(
+    { notification },
+    { addQueryPrefix: true },
+  )}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,

@@ -57,7 +57,7 @@ export default (config: Partial<QueryClientConfig>) => {
       process.env.REACT_APP_SHOW_NOTIFICATIONS === 'true' ||
       false,
     keepPreviousData: config?.keepPreviousData || false,
-    DOMAIN: config.DOMAIN ?? window.location.hostname,
+    DOMAIN: config.DOMAIN ?? window?.location?.hostname,
   };
 
   // define config for query client

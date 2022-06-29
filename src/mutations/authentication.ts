@@ -73,12 +73,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
       queryClient.resetQueries();
 
-      // save current page for further redirection
-      saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
-      // remove cookie and stored session from browser when the logout is confirmed
-      setCurrentSession(null, queryConfig.DOMAIN);
-      removeSession(currentUserId, queryConfig.DOMAIN);
-
+      // cookie operations only if window is defined (operation happens in the frontend)
+      if (window) {
+        // save current page for further redirection
+        saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
+        // remove cookie and stored session from browser when the logout is confirmed
+        setCurrentSession(null, queryConfig.DOMAIN);
+        removeSession(currentUserId, queryConfig.DOMAIN);
+      }
       // Update when the server confirmed the logout, instead optimistically updating the member
       // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
       queryClient.setQueryData(CURRENT_MEMBER_KEY, undefined);
