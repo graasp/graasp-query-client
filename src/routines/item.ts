@@ -17,3 +17,4 @@ export const uploadItemThumbnailRoutine = createRoutine(
   'UPLOAD_ITEM_THUMBNAIL',
 );
 export const importZipRoutine = createRoutine('IMPORT_ZIP');
+export const importH5PRoutine = createRoutine('IMPORT_H5P');
