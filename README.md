@@ -1,6 +1,6 @@
 # Graasp Query Client
 
-React Query package to consume Graasp API.
+React Query package to consume the Graasp API.
 
 ## Installation
 
@@ -39,7 +39,7 @@ Run `yarn` to install this package's dependencies
 
 ## Testing
 
-Run the following to install the package in your project
+Execute the following to run the tests in your project
 
 ```cmd
 yarn test
