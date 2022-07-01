@@ -15,6 +15,7 @@ import {
 import configureHooks from './hooks';
 import configureMutations from './mutations';
 import type { QueryClientConfig } from './types';
+import { getHostname } from './utils/util';
 import { configureWebsocketClient } from './ws';
 
 // Query client retry function decides when and how many times a request should be retried
@@ -57,6 +58,7 @@ export default (config: Partial<QueryClientConfig>) => {
       process.env.REACT_APP_SHOW_NOTIFICATIONS === 'true' ||
       false,
     keepPreviousData: config?.keepPreviousData || false,
+    DOMAIN: config.DOMAIN ?? getHostname(),
   };
 
   // define config for query client

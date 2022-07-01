@@ -85,6 +85,7 @@ export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildGetMembersRoute = (ids: UUID[]) =>
   `${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
+export const buildDeleteMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildUploadFilesRoute = (parentId: UUID) =>
   `${ITEMS_ROUTE}/upload${qs.stringify(
     { id: parentId },
@@ -152,10 +153,9 @@ export const buildPublicDownloadFilesRoute = (id: UUID) =>
   `${PUBLIC_PREFIX}/${buildDownloadFilesRoute(id)}`;
 
 export const GET_CURRENT_MEMBER_ROUTE = `${MEMBERS_ROUTE}/current`;
-export const buildSignInPath = (to: string) => {
-  const queryString = qs.stringify({ to }, { addQueryPrefix: true });
-  return `signin${queryString}`;
-};
+export const SIGN_IN_ROUTE = `login`;
+export const SIGN_IN_WITH_PASSWORD_ROUTE = `login-password`;
+export const SIGN_UP_ROUTE = `register`;
 export const SIGN_OUT_ROUTE = 'logout';
 export const buildGetItemTagsRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/tags`;
 export const buildGetItemsTagsRoute = (ids: UUID[]) =>
@@ -282,6 +282,12 @@ export const buildPostInvitationsRoute = (itemId: UUID) =>
 export const buildResendInvitationRoute = (args: { itemId: UUID; id: UUID }) =>
   `${ITEMS_ROUTE}/${args.itemId}/${INVITATIONS_ROUTE}/${args.id}/send`;
 
+export const buildItemPublishRoute = (itemId: UUID, notification?: boolean) =>
+  `${ITEMS_ROUTE}/${itemId}/publish${qs.stringify(
+    { notification },
+    { addQueryPrefix: true },
+  )}`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   ITEMS_ROUTE,
@@ -299,10 +305,13 @@ export const API_ROUTES = {
   buildAppListRoute,
   buildGetMember,
   buildGetMembersRoute,
+  buildDeleteMemberRoute,
   buildUploadFilesRoute,
   buildDownloadFilesRoute,
   buildPostItemMembershipRoute,
-  buildSignInPath,
+  SIGN_IN_ROUTE,
+  SIGN_IN_WITH_PASSWORD_ROUTE,
+  SIGN_UP_ROUTE,
   buildPostItemLoginSignInRoute,
   buildGetItemMembershipsForItemsRoute,
   buildMoveItemRoute,
@@ -374,4 +383,5 @@ export const API_ROUTES = {
   buildResendInvitationRoute,
   buildPostInvitationsRoute,
   buildGetItemInvitationsForItemRoute,
+  buildItemPublishRoute,
 };

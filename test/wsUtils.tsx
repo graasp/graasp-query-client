@@ -1,7 +1,7 @@
 import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { Notifier, QueryClientConfig } from '../src/types';
-import { API_HOST, WS_HOST } from './constants';
+import { API_HOST, WS_HOST, DOMAIN } from './constants';
 import configureQueryClient from '../src/queryClient';
 import { Channel } from '../src/ws/ws-client';
 
@@ -31,6 +31,7 @@ export const setUpWsTest = (args?: {
   } = args ?? {};
   const queryConfig: QueryClientConfig = {
     API_HOST,
+    DOMAIN,
     retry: 0,
     cacheTime: 0,
     staleTime: 0,
