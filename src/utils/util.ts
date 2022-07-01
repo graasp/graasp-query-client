@@ -3,3 +3,13 @@ export const isObject = (value: unknown) =>
 
 export const convertFalseToUndefined = (notification?: boolean) =>
   notification ? true : undefined;
+
+export const isServer = () =>
+  !(typeof window !== 'undefined' && window.document);
+
+export const getHostname = () => {
+  if (isServer()) {
+    return undefined;
+  }
+  return window?.location?.hostname;
+};

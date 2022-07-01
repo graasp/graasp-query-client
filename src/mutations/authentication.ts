@@ -16,6 +16,7 @@ import {
 } from '../routines';
 import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
 import { QueryClientConfig, UUID } from '../types';
+import { isServer } from '../utils/util';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -73,12 +74,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
       queryClient.resetQueries();
 
-      // save current page for further redirection
-      saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
-      // remove cookie and stored session from browser when the logout is confirmed
-      setCurrentSession(null, queryConfig.DOMAIN);
-      removeSession(currentUserId, queryConfig.DOMAIN);
-
+      // cookie operations only if window is defined (operation happens in the frontend)
+      if (!isServer() && queryConfig.DOMAIN) {
+        // save current page for further redirection
+        saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
+        // remove cookie and stored session from browser when the logout is confirmed
+        setCurrentSession(null, queryConfig.DOMAIN);
+        removeSession(currentUserId, queryConfig.DOMAIN);
+      }
       // Update when the server confirmed the logout, instead optimistically updating the member
       // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
       queryClient.setQueryData(CURRENT_MEMBER_KEY, undefined);
