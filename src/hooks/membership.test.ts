@@ -37,7 +37,7 @@ describe('Membership Hooks', () => {
     it(`Receive one item's memberships`, async () => {
       const hook = () => hooks.useItemMemberships(id);
       const endpoints = [{ route, response }];
-      const { data, error } = await mockHook({ endpoints, hook, wrapper });
+      const { data } = await mockHook({ endpoints, hook, wrapper });
 
       expect((data as List<Membership>).toJS()).toEqual(response[0]);
       // verify cache keys

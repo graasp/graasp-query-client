@@ -124,6 +124,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         email: string;
       })[];
 
+      // no data with email: the column doesn't exist, or all empty
+      // return custom failure
+      if (!dataWithEmail.length) {
+        throw new Error('No data or column email detected');
+      }
+
       // check email has an associated account
       // assume will receive only one member per mail
       const accounts = (
@@ -134,33 +140,44 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       ).flat();
 
       // split between invitations and memberships
-      const dataWithMemberId = dataWithEmail.map((d, idx) => ({
+      const dataWithMemberId = dataWithEmail.map((d) => ({
         ...d,
-        memberId: accounts[idx]?.id,
+        memberId: accounts.find(({ email }) => email === d.email)?.id,
       }));
       const [newMemberships, invitations] = partition(dataWithMemberId, (d) =>
         Boolean(d.memberId),
       );
 
-      // create a membership
-      const membershipsResult = await Api.postManyItemMemberships(
-        {
-          memberships: newMemberships,
-          itemId,
-        },
-        queryConfig,
-      );
+      // create memberships
+      let membershipsResult: (Membership | Error)[] = [];
+      if (newMemberships.length) {
+        try {
+          membershipsResult = await Api.postManyItemMemberships(
+            {
+              memberships: newMemberships,
+              itemId,
+            },
+            queryConfig,
+          );
+        } catch (e) {
+          membershipsResult = [e as Error];
+        }
+      }
 
       // create invitations
-      let invitationsResult = [];
+      let invitationsResult: (Invitation | Error)[] = [];
       if (invitations.length) {
-        invitationsResult = await Api.postInvitations(
-          {
-            itemId,
-            invitations,
-          },
-          queryConfig,
-        );
+        try {
+          invitationsResult = await Api.postInvitations(
+            {
+              itemId,
+              invitations,
+            },
+            queryConfig,
+          );
+        } catch (e) {
+          invitationsResult = [e as Error];
+        }
       }
 
       const [mFailure, mSuccess] = partition(membershipsResult, (d) =>

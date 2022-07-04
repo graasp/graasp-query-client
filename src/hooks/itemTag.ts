@@ -8,6 +8,7 @@ import {
   buildManyItemTagsKey,
   TAGS_KEY,
 } from '../config/keys';
+import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
 
 export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
   const { defaultQueryOptions } = queryConfig;
@@ -17,6 +18,7 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
       queryKey: TAGS_KEY,
       queryFn: () => Api.getTags(queryConfig).then((data) => List(data)),
       ...defaultQueryOptions,
+      cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
 
   const useItemTags = (id?: UUID) =>

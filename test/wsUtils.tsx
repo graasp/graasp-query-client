@@ -33,7 +33,6 @@ export const setUpWsTest = (args?: {
     API_HOST,
     DOMAIN,
     defaultQueryOptions: { retry: 0, cacheTime: 0, staleTime: 0 },
-    S3_FILES_HOST: API_HOST,
     SHOW_NOTIFICATIONS: false,
     notifier,
     enableWebsocket: true,

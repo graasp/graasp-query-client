@@ -9,6 +9,7 @@ import {
   buildItemCategoriesKey,
   buildItemsByCategoriesKey,
 } from '../config/keys';
+import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -20,6 +21,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryFn: () =>
         Api.getCategoryTypes(queryConfig).then((data) => List(data)),
       ...defaultQueryOptions,
+      cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
 
   // get categories
@@ -29,6 +31,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryFn: () =>
         Api.getCategories(queryConfig, typeIds).then((data) => List(data)),
       ...defaultQueryOptions,
+      cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
 
   const useCategory = (categoryId: UUID) =>
@@ -37,6 +40,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryFn: () =>
         Api.getCategory(categoryId, queryConfig).then((data) => data),
       ...defaultQueryOptions,
+      cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
 
   const useItemCategories = (itemId: UUID) =>

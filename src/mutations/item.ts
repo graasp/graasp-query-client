@@ -461,10 +461,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: (payload) =>
       Api.copyItems(payload, queryConfig).then((newItems) => {
         const items = throwIfArrayContainsErrorOrReturn(newItems);
-        return {
-          to: payload.to,
-          ...items,
-        };
+        return items;
       }),
     // cannot mutate because it needs the id
     onSuccess: () => {
