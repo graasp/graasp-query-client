@@ -13,6 +13,7 @@ import {
 import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
 import {
   buildInvitation,
+  buildMockInvitations,
   ITEMS,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
@@ -32,10 +33,7 @@ jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 const item = ITEMS[0];
 const itemId = item.id;
 
-const defaultInvitations = [
-  buildInvitation({ itemPath: itemId, email: 'a' }),
-  buildInvitation({ itemPath: itemId, email: 'b' }),
-];
+const defaultInvitations = buildMockInvitations(itemId);
 
 describe('Invitations Mutations', () => {
   const mockedNotifier = jest.fn();

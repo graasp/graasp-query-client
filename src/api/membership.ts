@@ -54,7 +54,7 @@ export const postItemMembership = async (
   const { API_HOST } = config;
   const member = await getMembersBy({ emails: [email] }, config);
 
-  if (!member || member?.length < 1) {
+  if (!member || member?.length < 1 || member[0].length < 1) {
     throw new Error(FAILURE_MESSAGES.MEMBER_NOT_FOUND);
   }
 

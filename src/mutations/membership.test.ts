@@ -6,8 +6,10 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 import {
+  buildMockInvitations,
   ITEMS,
   ITEM_MEMBERSHIPS_RESPONSE,
+  MEMBERS_RESPONSE,
   MEMBER_RESPONSE,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
@@ -17,10 +19,13 @@ import {
   buildDeleteItemMembershipRoute,
   buildEditItemMembershipRoute,
   buildGetMembersBy,
+  buildPostInvitationsRoute,
   buildPostItemMembershipRoute,
+  buildPostManyItemMembershipsRoute,
 } from '../api/routes';
 import { REQUEST_METHODS } from '../api/utils';
 import {
+  buildItemInvitationsKey,
   buildItemKey,
   buildItemMembershipsKey,
   MUTATION_KEYS,
@@ -29,6 +34,7 @@ import {
 import {
   deleteItemMembershipRoutine,
   editItemMembershipRoutine,
+  shareItemRoutine,
 } from '../routines';
 import { Membership, PERMISSION_LEVELS } from '../types';
 
@@ -43,6 +49,7 @@ describe('Membership Mutations', () => {
   afterEach(() => {
     queryClient.clear();
     nock.cleanAll();
+    jest.clearAllMocks();
   });
 
   const item = ITEMS[0];
@@ -56,7 +63,7 @@ describe('Membership Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_MEMBERSHIP);
     const { email } = MEMBER_RESPONSE;
 
-    it('Share one item', async () => {
+    it('Create one membership', async () => {
       const route = `/${buildPostItemMembershipRoute(itemId)}`;
 
       // set data in cache
@@ -74,7 +81,7 @@ describe('Membership Mutations', () => {
 
       const endpoints = [
         {
-          response: [MEMBER_RESPONSE],
+          response: [MEMBERS_RESPONSE],
           method: REQUEST_METHODS.GET,
           route: `/${buildGetMembersBy([email])}`,
         },
@@ -101,7 +108,7 @@ describe('Membership Mutations', () => {
       expect(data?.isInvalidated).toBeTruthy();
     });
 
-    it('Unauthorized to share an item', async () => {
+    it('Unauthorized to create an item membership', async () => {
       const route = `/${buildPostItemMembershipRoute(itemId)}`;
 
       // set data in cache
@@ -117,7 +124,7 @@ describe('Membership Mutations', () => {
 
       const endpoints = [
         {
-          response: [MEMBER_RESPONSE],
+          response: [MEMBERS_RESPONSE],
           method: REQUEST_METHODS.GET,
           route: `/${buildGetMembersBy([email])}`,
         },
@@ -291,6 +298,308 @@ describe('Membership Mutations', () => {
           type: deleteItemMembershipRoutine.FAILURE,
         }),
       );
+    });
+  });
+
+  describe(MUTATION_KEYS.SHARE_ITEM, () => {
+    const initialInvitations = buildMockInvitations(itemId);
+    const mutation = () => useMutation(MUTATION_KEYS.SHARE_ITEM);
+    const emails = ['anna@email.com', 'bob@email.com', 'cedric@email.com'];
+
+    it('Successfully share item with all emails', async () => {
+      // set data in cache
+      ITEMS.forEach((i) => {
+        const itemKey = buildItemKey(i.id);
+        queryClient.setQueryData(itemKey, Map(i));
+      });
+      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(
+        buildItemMembershipsKey(itemId),
+        ITEM_MEMBERSHIPS_RESPONSE,
+      );
+      queryClient.setQueryData(
+        buildItemInvitationsKey(itemId),
+        initialInvitations,
+      );
+
+      const endpoints = [
+        {
+          response: [MEMBERS_RESPONSE],
+          method: REQUEST_METHODS.GET,
+          route: `/${buildGetMembersBy(emails)}`,
+        },
+        {
+          response: ITEM_MEMBERSHIPS_RESPONSE,
+          method: REQUEST_METHODS.POST,
+          route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
+        },
+        {
+          response: initialInvitations,
+          method: REQUEST_METHODS.POST,
+          route: `/${buildPostInvitationsRoute(itemId)}`,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      const invitations = emails.map((email) => ({ email, permission }));
+      await act(async () => {
+        await mockedMutation.mutate({ itemId, data: invitations });
+        await waitForMutation();
+      });
+
+      // check invalidations
+      const mem = queryClient.getQueryState(buildItemMembershipsKey(itemId));
+      expect(mem?.isInvalidated).toBeTruthy();
+      const inv = queryClient.getQueryState(buildItemInvitationsKey(itemId));
+      expect(inv?.isInvalidated).toBeTruthy();
+
+      // check notification trigger
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: shareItemRoutine.SUCCESS,
+        payload: expect.anything(),
+      });
+    });
+
+    it('Mixed return values for sharing item with many emails', async () => {
+      // set data in cache
+      ITEMS.forEach((i) => {
+        const itemKey = buildItemKey(i.id);
+        queryClient.setQueryData(itemKey, Map(i));
+      });
+      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(
+        buildItemMembershipsKey(itemId),
+        ITEM_MEMBERSHIPS_RESPONSE,
+      );
+      queryClient.setQueryData(
+        buildItemInvitationsKey(itemId),
+        initialInvitations,
+      );
+
+      const endpoints = [
+        {
+          response: [[{ email: emails[0], id: emails[0] }]],
+          method: REQUEST_METHODS.GET,
+          route: `/${buildGetMembersBy(emails)}`,
+        },
+        {
+          response: [...ITEM_MEMBERSHIPS_RESPONSE, UNAUTHORIZED_RESPONSE],
+          method: REQUEST_METHODS.POST,
+          route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
+        },
+        {
+          response: [...initialInvitations, UNAUTHORIZED_RESPONSE],
+          method: REQUEST_METHODS.POST,
+          route: `/${buildPostInvitationsRoute(itemId)}`,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      const invitations = emails.map((email) => ({ email, permission }));
+      await act(async () => {
+        await mockedMutation.mutate({ itemId, data: invitations });
+        await waitForMutation();
+      });
+
+      // check invalidations
+      const mem = queryClient.getQueryState(buildItemMembershipsKey(itemId));
+      expect(mem?.isInvalidated).toBeTruthy();
+      const inv = queryClient.getQueryState(buildItemInvitationsKey(itemId));
+      expect(inv?.isInvalidated).toBeTruthy();
+
+      // check notification trigger
+      const param = mockedNotifier.mock.calls[0][0];
+      expect(param).toMatchObject({
+        type: shareItemRoutine.SUCCESS,
+        payload: {
+          success: expect.anything(),
+          failure: [UNAUTHORIZED_RESPONSE, UNAUTHORIZED_RESPONSE],
+        },
+      });
+    });
+
+    it('Unauthorized to search members', async () => {
+      // set data in cache
+      ITEMS.forEach((i) => {
+        const itemKey = buildItemKey(i.id);
+        queryClient.setQueryData(itemKey, Map(i));
+      });
+      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(
+        buildItemMembershipsKey(itemId),
+        ITEM_MEMBERSHIPS_RESPONSE,
+      );
+      queryClient.setQueryData(
+        buildItemInvitationsKey(itemId),
+        initialInvitations,
+      );
+
+      const endpoints = [
+        {
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+          method: REQUEST_METHODS.GET,
+          route: `/${buildGetMembersBy(emails)}`,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      const invitations = emails.map((email) => ({ email, permission }));
+      await act(async () => {
+        await mockedMutation.mutate({ itemId, data: invitations });
+        await waitForMutation();
+      });
+
+      // check invalidations
+      const mem = queryClient.getQueryState(buildItemMembershipsKey(itemId));
+      expect(mem?.isInvalidated).toBeTruthy();
+      const inv = queryClient.getQueryState(buildItemInvitationsKey(itemId));
+      expect(inv?.isInvalidated).toBeTruthy();
+
+      // check notification trigger
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: shareItemRoutine.FAILURE,
+        payload: expect.anything(),
+      });
+    });
+
+    it('Unauthorized to post memberships', async () => {
+      // set data in cache
+      ITEMS.forEach((i) => {
+        const itemKey = buildItemKey(i.id);
+        queryClient.setQueryData(itemKey, Map(i));
+      });
+      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(
+        buildItemMembershipsKey(itemId),
+        ITEM_MEMBERSHIPS_RESPONSE,
+      );
+      queryClient.setQueryData(
+        buildItemInvitationsKey(itemId),
+        initialInvitations,
+      );
+
+      const endpoints = [
+        {
+          response: [[{ email: emails[0], id: emails[0] }]],
+          method: REQUEST_METHODS.GET,
+          route: `/${buildGetMembersBy(emails)}`,
+        },
+        {
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+          method: REQUEST_METHODS.POST,
+          route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
+        },
+        {
+          response: initialInvitations,
+          method: REQUEST_METHODS.POST,
+          route: `/${buildPostInvitationsRoute(itemId)}`,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      const invitations = emails.map((email) => ({ email, permission }));
+      await act(async () => {
+        await mockedMutation.mutate({ itemId, data: invitations });
+        await waitForMutation();
+      });
+
+      // check invalidations
+      const mem = queryClient.getQueryState(buildItemMembershipsKey(itemId));
+      expect(mem?.isInvalidated).toBeTruthy();
+      const inv = queryClient.getQueryState(buildItemInvitationsKey(itemId));
+      expect(inv?.isInvalidated).toBeTruthy();
+
+      // check notification trigger
+      const param = mockedNotifier.mock.calls[0][0];
+      expect(param).toMatchObject({
+        type: shareItemRoutine.SUCCESS,
+        payload: expect.anything(),
+      });
+      expect(param.payload.failure).toHaveLength(1);
+    });
+
+    it('Unauthorized to post invitations', async () => {
+      // set data in cache
+      ITEMS.forEach((i) => {
+        const itemKey = buildItemKey(i.id);
+        queryClient.setQueryData(itemKey, Map(i));
+      });
+      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(
+        buildItemMembershipsKey(itemId),
+        ITEM_MEMBERSHIPS_RESPONSE,
+      );
+      queryClient.setQueryData(
+        buildItemInvitationsKey(itemId),
+        initialInvitations,
+      );
+
+      const endpoints = [
+        {
+          response: [[{ email: emails[0], id: emails[0] }]],
+          method: REQUEST_METHODS.GET,
+          route: `/${buildGetMembersBy(emails)}`,
+        },
+        {
+          response: ITEM_MEMBERSHIPS_RESPONSE,
+          method: REQUEST_METHODS.POST,
+          route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
+        },
+        {
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+          method: REQUEST_METHODS.POST,
+          route: `/${buildPostInvitationsRoute(itemId)}`,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      const invitations = emails.map((email) => ({ email, permission }));
+      await act(async () => {
+        await mockedMutation.mutate({ itemId, data: invitations });
+        await waitForMutation();
+      });
+
+      // check invalidations
+      const mem = queryClient.getQueryState(buildItemMembershipsKey(itemId));
+      expect(mem?.isInvalidated).toBeTruthy();
+      const inv = queryClient.getQueryState(buildItemInvitationsKey(itemId));
+      expect(inv?.isInvalidated).toBeTruthy();
+
+      // check notification trigger
+      const param = mockedNotifier.mock.calls[0][0];
+      expect(param).toMatchObject({
+        type: shareItemRoutine.SUCCESS,
+        payload: expect.anything(),
+      });
+      expect(param.payload.failure).toHaveLength(1);
     });
   });
 });

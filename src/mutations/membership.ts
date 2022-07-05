@@ -187,7 +187,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         isError(d),
       );
 
-      return {
+      const context = {
         success: [...mSuccess, ...iSuccess],
         failure: [
           // create error shape from input
@@ -201,6 +201,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           ...iFailure,
         ],
       };
+      return context;
     },
     onSuccess: (results) => {
       notifier?.({

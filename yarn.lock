@@ -2106,11 +2106,11 @@ __metadata:
 
 "@graasp/utils@github:graasp/graasp-utils.git#13/pseudonymized":
   version: 0.1.0
-  resolution: "@graasp/utils@https://github.com/graasp/graasp-utils.git#commit=350bfe39e8ce7540780195b7f4a83781c3457bf2"
+  resolution: "@graasp/utils@https://github.com/graasp/graasp-utils.git#commit=cb909f120ca5e32968e985b2f3a85674a65e8a24"
   dependencies:
     js-cookie: 3.0.1
     qs: 6.10.3
-  checksum: 6f488949ac39b37fc0d69b3e6df90366e22b753b5415d619729e0390d5d5d8862e88ffa7339ec3b217b9c716ea0530cd53cf9a2d4bb1c663580bcf3786ce5683
+  checksum: d6558ef72834eb65fa873d7a51e1e554437721377e7c487171c38b002b925dc04621abf99fa1ea4b29cc8c0c7842929e7cc1065af2e0514ad0bee3fe32bfc351
   languageName: node
   linkType: hard
 
