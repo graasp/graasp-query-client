@@ -187,3 +187,7 @@ export type Invitation = {
   permission: string;
   name?: string;
 };
+
+export type Password = {
+  password: string;
+};

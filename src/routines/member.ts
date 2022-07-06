@@ -1,6 +1,7 @@
 import createRoutine from './utils';
 
 export const editMemberRoutine = createRoutine('EDIT_MEMBER');
+export const updatePasswordRoutine = createRoutine('UPDATE_PASSWORD');
 export const deleteMemberRoutine = createRoutine('DELETE_MEMBER');
 export const uploadAvatarRoutine = createRoutine('UPLOAD_AVATAR');
 export const addFavoriteItemRoutine = createRoutine('ADD_FAVORITE_ITEM');
