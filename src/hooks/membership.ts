@@ -5,7 +5,12 @@ import {
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
 } from '../config/keys';
-import { QueryClientConfig, UndefinedArgument, UUID } from '../types';
+import {
+  Membership,
+  QueryClientConfig,
+  UndefinedArgument,
+  UUID,
+} from '../types';
 import { configureWsMembershipHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
@@ -69,7 +74,7 @@ export default (
           ids?.forEach(async (id, idx) => {
             queryClient.setQueryData(
               buildItemMembershipsKey(id),
-              List(memberships[idx]),
+              List(memberships.get(idx) as Membership[]),
             );
           });
         },
