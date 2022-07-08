@@ -106,7 +106,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   // this mutation handles sharing an item to multiple emails
   // it will invite if the mail doesn't exist in the db
-  // it will create a membership if an account exist
+  // it will create a membership if an account exists
   queryClient.setMutationDefaults(MUTATION_KEYS.SHARE_ITEM, {
     mutationFn: async ({
       data,
@@ -127,7 +127,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       // no data with email: the column doesn't exist, or all empty
       // return custom failure
       if (!dataWithEmail.length) {
-        throw new Error('No data or column email detected');
+        throw new Error('No data or no column email detected');
       }
 
       // check email has an associated account
