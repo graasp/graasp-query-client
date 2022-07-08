@@ -5,7 +5,12 @@ import {
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
 } from '../config/keys';
-import { QueryClientConfig, UndefinedArgument, UUID } from '../types';
+import {
+  Membership,
+  QueryClientConfig,
+  UndefinedArgument,
+  UUID,
+} from '../types';
 import { configureWsMembershipHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
@@ -14,12 +19,7 @@ export default (
   queryConfig: QueryClientConfig,
   websocketClient?: WebsocketClient,
 ) => {
-  const { retry, cacheTime, staleTime, enableWebsocket } = queryConfig;
-  const defaultOptions = {
-    retry,
-    cacheTime,
-    staleTime,
-  };
+  const { enableWebsocket, defaultQueryOptions } = queryConfig;
 
   const membershipWsHooks =
     enableWebsocket && websocketClient // required to type-check non-null
@@ -27,7 +27,33 @@ export default (
       : undefined;
 
   return {
-    useItemMemberships: (ids?: UUID[], options?: { getUpdates?: boolean }) => {
+    useItemMemberships: (id?: UUID, options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
+      membershipWsHooks?.useItemsMembershipsUpdates(
+        getUpdates && id ? [id] : null,
+      );
+
+      return useQuery({
+        queryKey: buildItemMembershipsKey(id),
+        queryFn: () => {
+          if (!id) {
+            throw new UndefinedArgument();
+          }
+
+          return Api.getMembershipsForItems([id], queryConfig).then((data) =>
+            List(data[0]),
+          );
+        },
+        enabled: Boolean(id),
+        ...defaultQueryOptions,
+      });
+    },
+
+    useManyItemMemberships: (
+      ids?: UUID[],
+      options?: { getUpdates?: boolean },
+    ) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       membershipWsHooks?.useItemsMembershipsUpdates(getUpdates ? ids : null);
@@ -48,12 +74,12 @@ export default (
           ids?.forEach(async (id, idx) => {
             queryClient.setQueryData(
               buildItemMembershipsKey(id),
-              List(memberships[idx]),
+              List(memberships.get(idx) as Membership[]),
             );
           });
         },
         enabled: Boolean(ids?.length) && ids?.every((id) => Boolean(id)),
-        ...defaultOptions,
+        ...defaultQueryOptions,
       });
     },
   };

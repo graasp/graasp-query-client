@@ -2,7 +2,7 @@
  * todo: use utils from a dedicated repo */
 
 import CryptoJS from 'crypto-js';
-import type { UUID, GraaspError } from '../types';
+import type { UUID } from '../types';
 
 // eslint-disable-next-line no-useless-escape
 export const transformIdForPath = (id: UUID) => id.replace(/\-/g, '_');
@@ -48,8 +48,3 @@ export const getDirectParentId = (path: string) => {
 
 export const hashItemsIds = (ids?: UUID[]) =>
   ids ? CryptoJS.SHA1([...ids].sort().join()).toString() : undefined;
-
-export const isError = (error: unknown) => {
-  const errorObject = error as GraaspError;
-  return errorObject?.statusCode;
-};

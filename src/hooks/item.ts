@@ -33,13 +33,7 @@ export default (
   useCurrentMember: () => UseQueryResult,
   websocketClient?: WebsocketClient,
 ) => {
-  const { retry, cacheTime, staleTime, enableWebsocket, notifier } =
-    queryConfig;
-  const defaultOptions = {
-    retry,
-    cacheTime,
-    staleTime,
-  };
+  const { enableWebsocket, notifier, defaultQueryOptions } = queryConfig;
 
   const itemWsHooks =
     enableWebsocket && websocketClient // required to type-check non-null
@@ -69,7 +63,7 @@ export default (
         onError: (error) => {
           notifier?.({ type: getOwnItemsRoutine.FAILURE, payload: { error } });
         },
-        ...defaultOptions,
+        ...defaultQueryOptions,
       });
     },
 
@@ -107,7 +101,7 @@ export default (
             });
           }
         },
-        ...defaultOptions,
+        ...defaultQueryOptions,
         enabled: Boolean(id) && enabled,
         placeholderData: options?.placeholderData,
       });
@@ -152,7 +146,7 @@ export default (
             });
           }
         },
-        ...defaultOptions,
+        ...defaultQueryOptions,
         enabled: Boolean(ids) && enabled,
         placeholderData: options?.placeholderData,
       });
@@ -180,7 +174,7 @@ export default (
             });
           }
         },
-        ...defaultOptions,
+        ...defaultQueryOptions,
         enabled: enabled && Boolean(id),
       }),
 
@@ -203,7 +197,7 @@ export default (
             queryClient.setQueryData(buildItemKey(id), Map(item));
           });
         },
-        ...defaultOptions,
+        ...defaultQueryOptions,
       });
     },
 
@@ -228,7 +222,7 @@ export default (
           return Api.getItem(id, queryConfig).then((data) => Map(data));
         },
         enabled: Boolean(id),
-        ...defaultOptions,
+        ...defaultQueryOptions,
         placeholderData: options?.placeholderData
           ? Map(options?.placeholderData)
           : undefined,
@@ -258,7 +252,7 @@ export default (
           });
         },
         enabled: ids && Boolean(ids.length) && ids.every((id) => Boolean(id)),
-        ...defaultOptions,
+        ...defaultQueryOptions,
       });
     },
 
@@ -272,7 +266,7 @@ export default (
           return Api.getItemLogin(id, queryConfig).then((data) => Map(data));
         },
         enabled: Boolean(id),
-        ...defaultOptions,
+        ...defaultQueryOptions,
       }),
 
     useFileContent: (
@@ -288,7 +282,7 @@ export default (
           return Api.getFileContent({ id }, queryConfig).then((data) => data);
         },
         enabled: Boolean(id) && enabled,
-        ...defaultOptions,
+        ...defaultQueryOptions,
       }),
 
     useRecycledItems: () =>
@@ -304,7 +298,7 @@ export default (
             queryClient.setQueryData(buildItemKey(id), Map(item));
           });
         },
-        ...defaultOptions,
+        ...defaultQueryOptions,
       }),
 
     usePublicItemsWithTag: (
@@ -331,7 +325,7 @@ export default (
             queryClient.setQueryData(buildItemKey(id), Map(item));
           });
         },
-        ...defaultOptions,
+        ...defaultQueryOptions,
         placeholderData,
         enabled: Boolean(tagId),
       });
@@ -359,7 +353,7 @@ export default (
           }
           return Api.downloadItemThumbnail({ id, size }, queryConfig);
         },
-        ...defaultOptions,
+        ...defaultQueryOptions,
         enabled: Boolean(id) && shouldFetch,
       });
     },
