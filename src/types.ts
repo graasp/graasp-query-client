@@ -188,6 +188,4 @@ export type Invitation = {
   name?: string;
 };
 
-export type Password = {
-  password: string;
-};
+export type Password = string;

@@ -88,32 +88,17 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  // suppose you can only edit yourself
+  /**  mutation to update member password. suppose only you can edit yourself
+   * @param {Password} password new password that user wants to set
+   * @param {Password} currentPassword current password already stored
+   */
   queryClient.setMutationDefaults(MUTATION_KEYS.UPDATE_PASSWORD, {
     mutationFn: (payload) =>
       Api.updatePassword(payload, queryConfig).then((member) => Map(member)),
-    onMutate: async ({ member }) => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
-
-      // Snapshot the previous value
-      const previousMember = queryClient.getQueryData(
-        CURRENT_MEMBER_KEY,
-      ) as Record<Member>;
-
-      // Optimistically update to the new value
-      queryClient.setQueryData(
-        CURRENT_MEMBER_KEY,
-        previousMember.merge(member),
-      );
-
-      // Return a context object with the snapshotted value
-      return { previousMember };
-    },
     onSuccess: () => {
       notifier?.({
         type: editMemberRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.EDIT_MEMBER },
+        payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
       });
     },
     // If the mutation fails, use the context returned from onMutate to roll back

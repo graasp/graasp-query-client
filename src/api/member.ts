@@ -11,6 +11,7 @@ import {
   buildDownloadAvatarRoute,
   buildDownloadPublicAvatarRoute,
   buildDeleteMemberRoute,
+  buildUpdateMemberPassword,
 } from './routes';
 import { MemberExtra, Password, QueryClientConfig, UUID } from '../types';
 import { DEFAULT_THUMBNAIL_SIZES, SIGNED_OUT_USER } from '../config/constants';
@@ -96,7 +97,7 @@ export const updatePassword = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .patch(`${API_HOST}/${buildPatchMember(payload.id)}`, {
+      .patch(`${API_HOST}/${buildUpdateMemberPassword(payload.id)}`, {
         password: payload.password,
         currentPassword: payload.currentPassword
       })
