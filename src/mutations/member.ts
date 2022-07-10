@@ -101,11 +101,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
       });
     },
-    // If the mutation fails, use the context returned from onMutate to roll back
-    onError: (error, _, context) => {
-      notifier?.({ type: editMemberRoutine.FAILURE, payload: { error } });
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, context.previousMember);
-    },
     // Always refetch after error or success:
     onSettled: () => {
       // invalidate all queries
