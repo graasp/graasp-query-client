@@ -92,14 +92,14 @@ export const deleteMember = async (
   );
 
 export const updatePassword = async (
-  payload: { id: UUID; password: Password, currentPassword: Password },
+  payload: { password: Password; currentPassword: Password },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
     axios
-      .patch(`${API_HOST}/${buildUpdateMemberPassword(payload.id)}`, {
+      .patch(`${API_HOST}/${buildUpdateMemberPassword()}`, {
         password: payload.password,
-        currentPassword: payload.currentPassword
+        currentPassword: payload.currentPassword,
       })
       .then(({ data }) => data),
   );

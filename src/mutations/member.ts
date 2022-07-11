@@ -88,26 +88,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
 
-  /**  mutation to update member password. suppose only you can edit yourself
-   * @param {Password} password new password that user wants to set
-   * @param {Password} currentPassword current password already stored
-   */
-  queryClient.setMutationDefaults(MUTATION_KEYS.UPDATE_PASSWORD, {
-    mutationFn: (payload) =>
-      Api.updatePassword(payload, queryConfig).then((member) => Map(member)),
-    onSuccess: () => {
-      notifier?.({
-        type: editMemberRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
-      });
-    },
-    // Always refetch after error or success:
-    onSettled: () => {
-      // invalidate all queries
-      queryClient.invalidateQueries(CURRENT_MEMBER_KEY);
-    },
-  });
-
   // this mutation is used for its callback and invalidate the keys
   /**
    * @param {UUID} id parent item id wher the file is uploaded in
