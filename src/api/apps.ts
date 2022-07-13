@@ -11,16 +11,20 @@ import configureAxios, {
 
 const axios = configureAxios();
 
-export const getApps = async ({ API_HOST }: QueryClientConfig) =>
+export const getApps = async ({API_HOST}: QueryClientConfig) =>
   verifyAuthentication(() =>
-    axios.get(`${API_HOST}/${buildAppListRoute}`).then(({ data }) => data),
+    axios.get(`${API_HOST}/${buildAppListRoute}`).then(({data}) => data),
   );
 
 export const requestApiAccessToken = async (
   args: { id: UUID; app: string; origin: string },
-  { API_HOST }: QueryClientConfig,
-) => {
-  const { id, app, origin } = args;
+  {API_HOST}: QueryClientConfig,
+): Promise<{ token: string }> => {
+  const {
+    id,
+    app,
+    origin,
+  } = args;
   return fallbackToPublic(
     () =>
       axios.post(`${API_HOST}/${buildGetApiAccessTokenRoute(id)}`, {
