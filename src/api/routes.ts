@@ -278,6 +278,8 @@ export const buildResendInvitationRoute = (args: { itemId: UUID; id: UUID }) =>
 
 export const GET_PLANS_ROUTE = `${MEMBERS_ROUTE}/plans`;
 export const GET_OWN_PLAN_ROUTE = `${MEMBERS_ROUTE}/plans/own`;
+export const buildGetPlanRoute = (planId: string) =>
+  `${MEMBERS_ROUTE}/plans/${planId}`;
 export const buildChangePlanRoute = (planId: string) =>
   `${MEMBERS_ROUTE}/plans/${planId}`;
 export const GET_CARDS_ROUTE = `${MEMBERS_ROUTE}/cards`;
@@ -379,4 +381,5 @@ export const API_ROUTES = {
   buildResendInvitationRoute,
   buildPostInvitationsRoute,
   buildGetItemInvitationsForItemRoute,
+  buildGetPlanRoute,
 };

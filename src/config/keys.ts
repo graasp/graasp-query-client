@@ -137,8 +137,9 @@ export const buildItemInvitationsKey = (id?: UUID) => [
 
 export const PLANS_KEY = 'plans';
 export const OWN_PLAN_KEY = 'ownPlan';
+export const CARDS_KEY = ['subscription', 'cards'];
+export const buildPlanKey = (id: string) => [MEMBERS_KEY, id, 'plans'];
 export const buildPlansKey = (id: string) => [MEMBERS_KEY, id, 'plans'];
-export const CARDS_KEY = ['subscription','cards'];
 export const CURRENT_CUSTOMER_KEY = 'currentCustomer';
 
 export const DATA_KEYS = {
@@ -189,6 +190,7 @@ export const DATA_KEYS = {
   buildInvitationKey,
   buildItemInvitationsKey,
   CARDS_KEY,
+  buildPlanKey,
 };
 
 export const MUTATION_KEYS = {
