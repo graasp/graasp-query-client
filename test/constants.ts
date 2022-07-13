@@ -117,9 +117,7 @@ export const GET_RECYCLED_ITEMS_FIXTURES = {
     },
   ],
   member: {
-    id: '42',
-    name: 'username',
-    email: 'username@graasp.org',
+    ...MEMBER_RESPONSE,
     extra: {
       recycleBin: {
         itemId: recycleBinItemId,
@@ -384,3 +382,8 @@ export const buildInvitation = ({
   creator: 'creator-id',
   itemPath,
 });
+
+export const buildMockInvitations = (itemId: string) => [
+  buildInvitation({ itemPath: itemId, email: 'a' }),
+  buildInvitation({ itemPath: itemId, email: 'b' }),
+];

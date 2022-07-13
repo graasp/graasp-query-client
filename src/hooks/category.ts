@@ -9,14 +9,10 @@ import {
   buildItemCategoriesKey,
   buildItemsByCategoriesKey,
 } from '../config/keys';
+import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
 
 export default (queryConfig: QueryClientConfig) => {
-  const { retry, cacheTime, staleTime } = queryConfig;
-  const defaultOptions = {
-    retry,
-    cacheTime,
-    staleTime,
-  };
+  const { defaultQueryOptions } = queryConfig;
 
   // get category types
   const useCategoryTypes = () =>
@@ -24,7 +20,8 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: CATEGORY_TYPES_KEY,
       queryFn: () =>
         Api.getCategoryTypes(queryConfig).then((data) => List(data)),
-      ...defaultOptions,
+      ...defaultQueryOptions,
+      cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
 
   // get categories
@@ -33,7 +30,8 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: buildCategoriesKey(typeIds),
       queryFn: () =>
         Api.getCategories(queryConfig, typeIds).then((data) => List(data)),
-      ...defaultOptions,
+      ...defaultQueryOptions,
+      cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
 
   const useCategory = (categoryId: UUID) =>
@@ -41,7 +39,8 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: buildCategoryKey(categoryId),
       queryFn: () =>
         Api.getCategory(categoryId, queryConfig).then((data) => data),
-      ...defaultOptions,
+      ...defaultQueryOptions,
+      cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
 
   const useItemCategories = (itemId: UUID) =>
@@ -49,7 +48,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: buildItemCategoriesKey(itemId),
       queryFn: () =>
         Api.getItemCategories(itemId, queryConfig).then((data) => List(data)),
-      ...defaultOptions,
+      ...defaultQueryOptions,
       enabled: Boolean(itemId),
     });
 
@@ -60,7 +59,7 @@ export default (queryConfig: QueryClientConfig) => {
         Api.buildGetItemsForCategoriesRoute(categoryIds, queryConfig).then(
           (data) => List(data),
         ),
-      ...defaultOptions,
+      ...defaultQueryOptions,
       enabled: Boolean(categoryIds),
     });
 

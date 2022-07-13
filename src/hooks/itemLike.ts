@@ -5,19 +5,14 @@ import * as Api from '../api';
 import { buildGetLikeCountKey, buildGetLikedItemsKey } from '../config/keys';
 
 export default (queryConfig: QueryClientConfig) => {
-  const { retry, cacheTime, staleTime } = queryConfig;
-  const defaultOptions = {
-    retry,
-    cacheTime,
-    staleTime,
-  };
+  const { defaultQueryOptions } = queryConfig;
 
   const useLikedItems = (memberId: UUID) =>
     useQuery({
       queryKey: buildGetLikedItemsKey(memberId),
       queryFn: () =>
         Api.getLikedItems(memberId, queryConfig).then((data) => List(data)),
-      ...defaultOptions,
+      ...defaultQueryOptions,
       enabled: Boolean(memberId),
     });
 
@@ -25,7 +20,7 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildGetLikeCountKey(itemId),
       queryFn: () => Api.getLikeCount(itemId, queryConfig).then((data) => data),
-      ...defaultOptions,
+      ...defaultQueryOptions,
       enabled: Boolean(itemId),
     });
 

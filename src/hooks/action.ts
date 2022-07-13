@@ -5,12 +5,7 @@ import { buildActionsKey } from '../config/keys';
 import { QueryClientConfig, UUID } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
-  const { retry, cacheTime, staleTime } = queryConfig;
-  const defaultOptions = {
-    retry,
-    cacheTime,
-    staleTime,
-  };
+  const { defaultQueryOptions } = queryConfig;
 
   return {
     useActions: (
@@ -29,7 +24,7 @@ export default (queryConfig: QueryClientConfig) => {
         queryKey: buildActionsKey(args),
         queryFn: () =>
           Api.getActions(args, queryConfig).then((data) => Map(data)),
-        ...defaultOptions,
+        ...defaultQueryOptions,
         enabled: enabledValue,
       });
     },

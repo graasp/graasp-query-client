@@ -55,6 +55,8 @@ export const buildExportPublicItemRoute = (id: UUID) =>
   `${PUBLIC_PREFIX}/${buildExportItemRoute(id)}`;
 export const buildPostItemMembershipRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
+export const buildPostManyItemMembershipsRoute = (id: UUID) =>
+  `item-memberships/${id}`;
 export const buildInviteRoute = (id: UUID) => `invite/${id}`;
 export const buildGetItemMembershipsForItemsRoute = (ids: UUID[]) =>
   `item-memberships${qs.stringify(
@@ -79,8 +81,11 @@ export const buildDeleteItemChatMessageRoute = (
 export const buildClearItemChatRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/chat`;
 
-export const buildGetMemberBy = (email: string) =>
-  `${MEMBERS_ROUTE}/search?email=${email.toLowerCase()}`;
+export const buildGetMembersBy = (emails: string[]) =>
+  `${MEMBERS_ROUTE}/search${qs.stringify(
+    { email: emails.map((e) => e.toLowerCase()) },
+    { arrayFormat: 'repeat', addQueryPrefix: true },
+  )}`;
 export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildGetMembersRoute = (ids: UUID[]) =>
   `${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
@@ -327,7 +332,7 @@ export const API_ROUTES = {
   buildGetItemLoginRoute,
   buildGetItemRoute,
   buildGetItemTagsRoute,
-  buildGetMemberBy,
+  buildGetMembersBy,
   buildDeleteItemTagRoute,
   buildDeleteItemRoute,
   buildDeleteItemsRoute,
@@ -387,4 +392,5 @@ export const API_ROUTES = {
   buildPostInvitationsRoute,
   buildGetItemInvitationsForItemRoute,
   buildItemPublishRoute,
+  buildPostManyItemMembershipsRoute,
 };

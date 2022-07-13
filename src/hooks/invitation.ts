@@ -6,19 +6,14 @@ import { buildInvitationKey, buildItemInvitationsKey } from '../config/keys';
 import { getInvitationRoutine } from '../routines';
 
 export default (queryConfig: QueryClientConfig) => {
-  const { retry, cacheTime, staleTime, notifier } = queryConfig;
-  const defaultOptions = {
-    retry,
-    cacheTime,
-    staleTime,
-  };
+  const { notifier, defaultQueryOptions } = queryConfig;
 
   const useInvitation = (id: UUID) =>
     useQuery({
       queryKey: buildInvitationKey(id),
       queryFn: () =>
         Api.getInvitation(queryConfig, id).then((data) => Map(data)),
-      ...defaultOptions,
+      ...defaultQueryOptions,
       enabled: Boolean(id),
       onError: (error) => {
         notifier?.({ type: getInvitationRoutine.FAILURE, payload: { error } });
@@ -38,7 +33,7 @@ export default (queryConfig: QueryClientConfig) => {
         );
       },
       enabled: Boolean(id),
-      ...defaultOptions,
+      ...defaultQueryOptions,
     });
 
   return { useInvitation, useItemInvitations };

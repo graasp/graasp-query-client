@@ -49,15 +49,10 @@ export default (config: Partial<QueryClientConfig>) => {
       config?.API_HOST ||
       process.env.REACT_APP_API_HOST ||
       'http://localhost:3000',
-    S3_FILES_HOST:
-      config?.S3_FILES_HOST ||
-      process.env.REACT_APP_S3_FILES_HOST ||
-      'localhost',
     SHOW_NOTIFICATIONS:
       config?.SHOW_NOTIFICATIONS ||
       process.env.REACT_APP_SHOW_NOTIFICATIONS === 'true' ||
       false,
-    keepPreviousData: config?.keepPreviousData || false,
     DOMAIN: config.DOMAIN ?? getHostname(),
   };
 
@@ -72,21 +67,20 @@ export default (config: Partial<QueryClientConfig>) => {
     // whether websocket support should be enabled
     enableWebsocket: config?.enableWebsocket || false,
     notifier: config?.notifier,
-    // time until data in cache considered stale if cache not invalidated
-    staleTime: config?.staleTime || STALE_TIME_MILLISECONDS,
-    // time before cache labeled as inactive to be garbage collected
-    cacheTime: config?.cacheTime || CACHE_TIME_MILLISECONDS,
-    retry,
+    // default hooks & mutation config
+    defaultQueryOptions: {
+      retry,
+      staleTime: STALE_TIME_MILLISECONDS,
+      cacheTime: CACHE_TIME_MILLISECONDS,
+      keepPreviousData: false,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      ...config?.defaultQueryOptions,
+    },
   };
 
   // create queryclient with given config
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: config?.refetchOnWindowFocus || false,
-      },
-    },
-  });
+  const queryClient = new QueryClient();
 
   // set up mutations given config
   // mutations are attached to queryClient

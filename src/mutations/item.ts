@@ -442,10 +442,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         to: payload.to,
         ...newItem,
       })),
-    onSuccess: () => {
+    onSuccess: (newItem, {to}) => {
       notifier?.({
         type: copyItemRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.COPY_ITEM },
+        payload: { 
+          message: SUCCESS_MESSAGES.COPY_ITEM,
+          newItem,
+          parentId: to,
+        },
       });
     },
     onError: (error) => {
@@ -461,10 +465,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: (payload) =>
       Api.copyItems(payload, queryConfig).then((newItems) => {
         const items = throwIfArrayContainsErrorOrReturn(newItems);
-        return {
-          to: payload.to,
-          ...items,
-        };
+        return items;
       }),
     // cannot mutate because it needs the id
     onSuccess: () => {

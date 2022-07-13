@@ -11,19 +11,14 @@ import { Member, QueryClientConfig, UndefinedArgument, UUID } from '../types';
 import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
-  const { retry, cacheTime, staleTime } = queryConfig;
-  const defaultOptions = {
-    retry,
-    cacheTime,
-    staleTime,
-  };
+  const { defaultQueryOptions } = queryConfig;
 
   const useCurrentMember = () =>
     useQuery({
       queryKey: CURRENT_MEMBER_KEY,
       queryFn: () =>
         Api.getCurrentMember(queryConfig).then((data) => Map(data)),
-      ...defaultOptions,
+      ...defaultQueryOptions,
     });
 
   const useMember = (id?: UUID) =>
@@ -36,7 +31,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         return Api.getMember({ id }, queryConfig).then((data) => Map(data));
       },
       enabled: Boolean(id),
-      ...defaultOptions,
+      ...defaultQueryOptions,
     });
 
   const useMembers = (ids: UUID[]) =>
@@ -52,7 +47,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           queryClient.setQueryData(buildMemberKey(id), Map(member));
         });
       },
-      ...defaultOptions,
+      ...defaultQueryOptions,
     });
 
   const useAvatar = ({
@@ -79,7 +74,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           (data) => data,
         );
       },
-      ...defaultOptions,
+      ...defaultQueryOptions,
       enabled: Boolean(id) && shouldFetch,
     });
   };

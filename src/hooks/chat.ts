@@ -11,12 +11,7 @@ export default (
   queryConfig: QueryClientConfig,
   websocketClient?: WebsocketClient,
 ) => {
-  const { retry, cacheTime, staleTime, enableWebsocket } = queryConfig;
-  const defaultOptions = {
-    retry,
-    cacheTime,
-    staleTime,
-  };
+  const { enableWebsocket, defaultQueryOptions } = queryConfig;
 
   const wsHooks =
     enableWebsocket && websocketClient
@@ -33,7 +28,7 @@ export default (
         queryKey: buildItemChatKey(itemId),
         queryFn: () =>
           Api.getItemChat(itemId, queryConfig).then((data) => Map(data)),
-        ...defaultOptions,
+        ...defaultQueryOptions,
         enabled: Boolean(itemId),
       });
     },
