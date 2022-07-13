@@ -1,5 +1,4 @@
 import { QueryClient } from 'react-query';
-import { Map } from 'immutable';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 import {
   removeSession,
@@ -60,7 +59,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
    */
   queryClient.setMutationDefaults(MUTATION_KEYS.UPDATE_PASSWORD, {
     mutationFn: (payload) =>
-      Api.updatePassword(payload, queryConfig).then((member) => Map(member)),
+      Api.updatePassword(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
         type: updatePasswordRoutine.SUCCESS,
@@ -69,11 +68,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onError: (error) => {
       notifier?.({ type: updatePasswordRoutine.FAILURE, payload: { error } });
-    },
-    // Always refetch after error or success:
-    onSettled: () => {
-      // invalidate all queries
-      queryClient.invalidateQueries(CURRENT_MEMBER_KEY);
     },
   });
 
