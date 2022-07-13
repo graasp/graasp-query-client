@@ -442,10 +442,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         to: payload.to,
         ...newItem,
       })),
-    onSuccess: () => {
+    onSuccess: (newItem, {to}) => {
       notifier?.({
         type: copyItemRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.COPY_ITEM },
+        payload: { 
+          message: SUCCESS_MESSAGES.COPY_ITEM,
+          newItem,
+          parentId: to,
+        },
       });
     },
     onError: (error) => {
