@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { QueryClientConfig } from '../types';
-import { verifyAuthentication } from './axios';
+import configureAxios, { verifyAuthentication } from './axios';
 import {
   buildChangePlanRoute,
   buildSetDefaultCardRoute,
@@ -10,6 +9,8 @@ import {
   GET_OWN_PLAN_ROUTE,
   GET_PLANS_ROUTE,
 } from './routes';
+
+const axios = configureAxios();
 
 export const getPlans = async ({ API_HOST }: QueryClientConfig) =>
   verifyAuthentication(() =>
@@ -27,9 +28,7 @@ export const changePlan = async (
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
-    axios
-      .patch(`${API_HOST}/${buildChangePlanRoute(planId)}`)
-      .then(({ data }) => data),
+    axios.patch(`${API_HOST}/${buildChangePlanRoute(planId)}`).then(({ data }) => data),
   );
 
 export const getCards = async ({ API_HOST }: QueryClientConfig) =>
@@ -42,16 +41,12 @@ export const setDefaultCard = async (
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
-    axios
-      .patch(`${API_HOST}/${buildSetDefaultCardRoute(cardId)}`)
-      .then(({ data }) => data),
+    axios.patch(`${API_HOST}/${buildSetDefaultCardRoute(cardId)}`).then(({ data }) => data),
   );
 
 export const createSetupIntent = async ({ API_HOST }: QueryClientConfig) =>
   verifyAuthentication(() =>
-    axios
-      .post(`${API_HOST}/${CREATE_SETUP_INTENT_ROUTE}`)
-      .then(({ data }) => data),
+    axios.post(`${API_HOST}/${CREATE_SETUP_INTENT_ROUTE}`).then(({ data }) => data),
   );
 
 export const getCurrentCustomer = async ({ API_HOST }: QueryClientConfig) =>

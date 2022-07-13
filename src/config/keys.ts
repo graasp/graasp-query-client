@@ -135,6 +135,12 @@ export const buildItemInvitationsKey = (id?: UUID) => [
   'invitations',
 ];
 
+export const PLANS_KEY = 'plans';
+export const OWN_PLAN_KEY = 'ownPlan';
+export const buildPlansKey = (id: string) => [MEMBERS_KEY, id, 'plans'];
+export const CARDS_KEY = ['subscription','cards'];
+export const CURRENT_CUSTOMER_KEY = 'currentCustomer';
+
 export const DATA_KEYS = {
   APPS_KEY,
   ITEMS_KEY,
@@ -182,12 +188,8 @@ export const DATA_KEYS = {
   buildItemValidationGroupsKey,
   buildInvitationKey,
   buildItemInvitationsKey,
+  CARDS_KEY,
 };
-export const PLANS_KEY = 'plans';
-export const OWN_PLAN_KEY = 'ownPlan';
-export const buildPlansKey = (id: string) => [MEMBERS_KEY, id, 'plans'];
-export const CARDS_KEY = 'cards';
-export const CURRENT_CUSTOMER_KEY = 'currentCustomer';
 
 export const MUTATION_KEYS = {
   POST_ITEM: 'postItem',
