@@ -17,6 +17,7 @@ import {
 import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
 import { QueryClientConfig, UUID } from '../types';
 import { isServer } from '../utils/util';
+import { updatePasswordRoutine } from '../routines/authentication';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -49,6 +50,24 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         type: signInWithPasswordRoutine.FAILURE,
         payload: { error },
       });
+    },
+  });
+
+  /**  mutation to update member password. suppose only you can edit yourself
+   * @param {Password} password new password that user wants to set
+   * @param {Password} currentPassword current password already stored
+   */
+  queryClient.setMutationDefaults(MUTATION_KEYS.UPDATE_PASSWORD, {
+    mutationFn: (payload) =>
+      Api.updatePassword(payload, queryConfig),
+    onSuccess: () => {
+      notifier?.({
+        type: updatePasswordRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
+      });
+    },
+    onError: (error) => {
+      notifier?.({ type: updatePasswordRoutine.FAILURE, payload: { error } });
     },
   });
 

@@ -11,8 +11,9 @@ import {
   buildDownloadAvatarRoute,
   buildDownloadPublicAvatarRoute,
   buildDeleteMemberRoute,
+  buildUpdateMemberPasswordRoute,
 } from './routes';
-import { Member, MemberExtra, QueryClientConfig, UUID } from '../types';
+import { Member, MemberExtra, Password, QueryClientConfig, UUID } from '../types';
 import { DEFAULT_THUMBNAIL_SIZES, SIGNED_OUT_USER } from '../config/constants';
 import configureAxios, {
   fallbackToPublic,
@@ -87,6 +88,19 @@ export const deleteMember = async (
   verifyAuthentication(() =>
     axios
       .delete(`${API_HOST}/${buildDeleteMemberRoute(id)}`)
+      .then(({ data }) => data),
+  );
+
+export const updatePassword = async (
+  payload: { password: Password; currentPassword: Password },
+  { API_HOST }: QueryClientConfig,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .patch(`${API_HOST}/${buildUpdateMemberPasswordRoute()}`, {
+        password: payload.password,
+        currentPassword: payload.currentPassword,
+      })
       .then(({ data }) => data),
   );
 

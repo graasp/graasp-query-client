@@ -236,5 +236,6 @@ export const MUTATION_KEYS = {
   RESEND_INVITATION: 'resendInvitation',
   PUBLISH_ITEM: 'publishItem',
   SWITCH_MEMBER: 'switchMember',
+  UPDATE_PASSWORD: 'updatePassword',
   SHARE_ITEM: 'shareItem',
 };

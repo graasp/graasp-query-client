@@ -192,5 +192,6 @@ export type Invitation = {
   name?: string;
 };
 
+export type Password = string;
 export type NewInvitation = Pick<Invitation, 'email' & 'permission'> &
   Partial<Invitation>;
