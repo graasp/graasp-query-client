@@ -6,6 +6,7 @@ import * as utils from '@graasp/utils';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { StatusCodes } from 'http-status-codes';
 import {
+  buildUpdateMemberPasswordRoute,
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
@@ -25,6 +26,7 @@ import {
   signOutRoutine,
   signUpRoutine,
   switchMemberRoutine,
+  updatePasswordRoutine,
 } from '../routines';
 
 jest.mock('@graasp/utils');
@@ -161,6 +163,71 @@ describe('Authentication Mutations', () => {
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: signInWithPasswordRoutine.FAILURE,
+        }),
+      );
+    });
+  });
+
+  describe(MUTATION_KEYS.UPDATE_PASSWORD, () => {
+    const route = `/${buildUpdateMemberPasswordRoute()}`;
+    const mutation = () => useMutation(MUTATION_KEYS.UPDATE_PASSWORD);
+    const password = 'ASDasd123';
+    const currentPassword = 'ASDasd123';
+    const name = 'myName'
+    const id = 'myId'
+
+
+    it(`Update password`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: { email, id, name },
+          statusCode: StatusCodes.OK,
+          method: REQUEST_METHODS.PATCH,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ currentPassword, password });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: updatePasswordRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
+      });
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          method: REQUEST_METHODS.PATCH,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ password });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: updatePasswordRoutine.FAILURE,
         }),
       );
     });
