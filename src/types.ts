@@ -146,17 +146,17 @@ export enum PERMISSION_LEVELS {
   ADMIN = 'admin',
 }
 
-export type MessageBody = { message: string; mentions?: string[] };
+export type MessageBodyType = { message: string; mentions?: string[] };
 
 export type PartialNewChatMessage = {
   chatId: string;
-  body: MessageBody;
+  body: MessageBodyType;
 };
 
 export type PartialChatMessage = {
   chatId: string;
   messageId: string;
-  body?: MessageBody;
+  body?: MessageBodyType;
 };
 
 export type ChatMessage = {
