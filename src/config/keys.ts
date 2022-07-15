@@ -1,3 +1,4 @@
+import { SUBSCRIPTION_KEY } from '../api/routes';
 import type { UUID } from '../types';
 import { hashItemsIds } from '../utils/item';
 import { DEFAULT_THUMBNAIL_SIZES } from './constants';
@@ -135,22 +136,22 @@ export const buildItemInvitationsKey = (id?: UUID) => [
   'invitations',
 ];
 
-export const PLANS_KEY = ['subscription', 'plans'];
-export const OWN_PLAN_KEY = ['subscription', 'ownPlan'];
-export const CARDS_KEY = ['subscription', 'cards'];
+export const PLANS_KEY = [SUBSCRIPTION_KEY, 'plans'];
+export const OWN_PLAN_KEY = [SUBSCRIPTION_KEY, 'ownPlan'];
+export const CARDS_KEY = [SUBSCRIPTION_KEY, 'cards'];
 export const buildPlanKey = (id: string) => [
   MEMBERS_KEY,
-  'subscription',
+  SUBSCRIPTION_KEY,
   id,
   'plans',
 ];
 export const buildPlansKey = (id: string) => [
   MEMBERS_KEY,
-  'subscription',
+  SUBSCRIPTION_KEY,
   id,
   'plans',
 ];
-export const CURRENT_CUSTOMER_KEY = ['subscription', 'currentCustomer'];
+export const CURRENT_CUSTOMER_KEY = [SUBSCRIPTION_KEY, 'currentCustomer'];
 
 export const DATA_KEYS = {
   APPS_KEY,
