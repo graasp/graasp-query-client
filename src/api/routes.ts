@@ -6,6 +6,7 @@ export const APPS_ROUTE = 'app-items';
 export const ITEMS_ROUTE = 'items';
 export const ITEM_MEMBERSHIPS_ROUTE = 'item-memberships';
 export const MEMBERS_ROUTE = `members`;
+export const SUBSCRIPTION_ROUTE = 'subscription';
 export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const INVITATIONS_ROUTE = `invitations`;
 export const GET_RECYCLED_ITEMS_ROUTE = `${ITEMS_ROUTE}/recycled`;
@@ -276,17 +277,17 @@ export const buildPostInvitationsRoute = (itemId: UUID) =>
 export const buildResendInvitationRoute = (args: { itemId: UUID; id: UUID }) =>
   `${ITEMS_ROUTE}/${args.itemId}/${INVITATIONS_ROUTE}/${args.id}/send`;
 
-export const GET_PLANS_ROUTE = `${MEMBERS_ROUTE}/plans`;
-export const GET_OWN_PLAN_ROUTE = `${MEMBERS_ROUTE}/plans/own`;
+export const GET_PLANS_ROUTE = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/plans`;
+export const GET_OWN_PLAN_ROUTE = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/plans/own`;
 export const buildGetPlanRoute = (planId: string) =>
-  `${MEMBERS_ROUTE}/plans/${planId}`;
+  `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/plans/${planId}`;
 export const buildChangePlanRoute = (planId: string) =>
-  `${MEMBERS_ROUTE}/plans/${planId}`;
-export const GET_CARDS_ROUTE = `${MEMBERS_ROUTE}/cards`;
+  `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/plans/${planId}`;
+export const GET_CARDS_ROUTE = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/cards`;
 export const buildSetDefaultCardRoute = (cardId: string) =>
-  `${MEMBERS_ROUTE}/cards/${cardId}/default`;
-export const CREATE_SETUP_INTENT_ROUTE = `${MEMBERS_ROUTE}/setup-intent`;
-export const GET_CURRENT_CUSTOMER = `${MEMBERS_ROUTE}/customer/current`;
+  `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/cards/${cardId}/default`;
+export const CREATE_SETUP_INTENT_ROUTE = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/setup-intent`;
+export const GET_CURRENT_CUSTOMER = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/customer/current`;
 
 export const API_ROUTES = {
   APPS_ROUTE,

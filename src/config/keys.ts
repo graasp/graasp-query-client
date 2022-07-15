@@ -135,12 +135,22 @@ export const buildItemInvitationsKey = (id?: UUID) => [
   'invitations',
 ];
 
-export const PLANS_KEY = 'plans';
-export const OWN_PLAN_KEY = 'ownPlan';
+export const PLANS_KEY = ['subscription', 'plans'];
+export const OWN_PLAN_KEY = ['subscription', 'ownPlan'];
 export const CARDS_KEY = ['subscription', 'cards'];
-export const buildPlanKey = (id: string) => [MEMBERS_KEY, id, 'plans'];
-export const buildPlansKey = (id: string) => [MEMBERS_KEY, id, 'plans'];
-export const CURRENT_CUSTOMER_KEY = 'currentCustomer';
+export const buildPlanKey = (id: string) => [
+  MEMBERS_KEY,
+  'subscription',
+  id,
+  'plans',
+];
+export const buildPlansKey = (id: string) => [
+  MEMBERS_KEY,
+  'subscription',
+  id,
+  'plans',
+];
+export const CURRENT_CUSTOMER_KEY = ['subscription', 'currentCustomer'];
 
 export const DATA_KEYS = {
   APPS_KEY,
@@ -241,7 +251,7 @@ export const MUTATION_KEYS = {
   PATCH_INVITATION: 'patchInvitation',
   DELETE_INVITATION: 'deleteInvitation',
   RESEND_INVITATION: 'resendInvitation',
-  CHANGE_PLAN: 'changePlan',
-  CREATE_SETUP_INTENT: 'createSetupIntent',
-  SET_DEFAULT_CARD: 'setDefaultCard',
+  CHANGE_PLAN: 'subscriptionChangePlan',
+  CREATE_SETUP_INTENT: 'subscriptionCreateSetupIntent',
+  SET_DEFAULT_CARD: 'subscriptionSetDefaultCard',
 };
