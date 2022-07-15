@@ -12,4 +12,5 @@ export * from './itemValidation';
 export * from './action';
 export * from './invitation';
 export * from './authentication';
+export * from './plan';
 export * from './itemPublish';

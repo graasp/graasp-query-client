@@ -1,3 +1,4 @@
+import { SUBSCRIPTION_KEY } from '../api/routes';
 import type { UUID } from '../types';
 import { hashItemsIds } from '../utils/item';
 import { DEFAULT_THUMBNAIL_SIZES } from './constants';
@@ -135,6 +136,23 @@ export const buildItemInvitationsKey = (id?: UUID) => [
   'invitations',
 ];
 
+export const PLANS_KEY = [SUBSCRIPTION_KEY, 'plans'];
+export const OWN_PLAN_KEY = [SUBSCRIPTION_KEY, 'ownPlan'];
+export const CARDS_KEY = [SUBSCRIPTION_KEY, 'cards'];
+export const buildPlanKey = (id: string) => [
+  MEMBERS_KEY,
+  SUBSCRIPTION_KEY,
+  id,
+  'plans',
+];
+export const buildPlansKey = (id: string) => [
+  MEMBERS_KEY,
+  SUBSCRIPTION_KEY,
+  id,
+  'plans',
+];
+export const CURRENT_CUSTOMER_KEY = [SUBSCRIPTION_KEY, 'currentCustomer'];
+
 export const DATA_KEYS = {
   APPS_KEY,
   ITEMS_KEY,
@@ -182,6 +200,8 @@ export const DATA_KEYS = {
   buildItemValidationGroupsKey,
   buildInvitationKey,
   buildItemInvitationsKey,
+  CARDS_KEY,
+  buildPlanKey,
 };
 
 export const MUTATION_KEYS = {
@@ -234,6 +254,9 @@ export const MUTATION_KEYS = {
   PATCH_INVITATION: 'patchInvitation',
   DELETE_INVITATION: 'deleteInvitation',
   RESEND_INVITATION: 'resendInvitation',
+  CHANGE_PLAN: 'subscriptionChangePlan',
+  CREATE_SETUP_INTENT: 'subscriptionCreateSetupIntent',
+  SET_DEFAULT_CARD: 'subscriptionSetDefaultCard',
   PUBLISH_ITEM: 'publishItem',
   SWITCH_MEMBER: 'switchMember',
   UPDATE_PASSWORD: 'updatePassword',

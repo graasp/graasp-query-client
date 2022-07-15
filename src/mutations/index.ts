@@ -7,6 +7,7 @@ import itemLoginMutations from './itemLogin';
 import itemMembershipMutations from './membership';
 import chatMutations from './chat';
 import itemCategoryMutations from './itemCategory';
+import subscriptionMutations from './plan';
 import { QueryClientConfig } from '../types';
 import itemExportMutations from './itemExport';
 import itemLikeMutations from './itemLike';
@@ -34,6 +35,7 @@ const configureMutations = (
   actionMutations(queryClient, queryConfig);
   invitationMutations(queryClient, queryConfig);
   authenticationMutations(queryClient, queryConfig);
+  subscriptionMutations(queryClient, queryConfig);
   itemPublishMutations(queryClient, queryConfig);
 };
 
