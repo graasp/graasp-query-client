@@ -11,12 +11,7 @@ import {
 } from '../config/keys';
 
 export default (queryConfig: QueryClientConfig) => {
-  const { retry, cacheTime, staleTime } = queryConfig;
-  const defaultOptions = {
-    retry,
-    cacheTime,
-    staleTime,
-  };
+  const { defaultQueryOptions: defaultOptions } = queryConfig;
 
   const usePlan = ({ planId }: { planId: string }) =>
     useQuery({
