@@ -56,6 +56,8 @@ export const buildExportPublicItemRoute = (id: UUID) =>
   `${PUBLIC_PREFIX}/${buildExportItemRoute(id)}`;
 export const buildPostItemMembershipRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
+export const buildPostManyItemMembershipsRoute = (id: UUID) =>
+  `item-memberships/${id}`;
 export const buildInviteRoute = (id: UUID) => `invite/${id}`;
 export const buildGetItemMembershipsForItemsRoute = (ids: UUID[]) =>
   `item-memberships${qs.stringify(
@@ -80,12 +82,18 @@ export const buildDeleteItemChatMessageRoute = (
 export const buildClearItemChatRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/chat`;
 
-export const buildGetMemberBy = (email: string) =>
-  `${MEMBERS_ROUTE}/search?email=${email.toLowerCase()}`;
+export const buildGetMembersBy = (emails: string[]) =>
+  `${MEMBERS_ROUTE}/search${qs.stringify(
+    { email: emails.map((e) => e.toLowerCase()) },
+    { arrayFormat: 'repeat', addQueryPrefix: true },
+  )}`;
 export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildGetMembersRoute = (ids: UUID[]) =>
   `${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
+export const buildDeleteMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
+export const buildUpdateMemberPasswordRoute = () =>
+  `${MEMBERS_ROUTE}/update-password`;
 export const buildUploadFilesRoute = (parentId: UUID) =>
   `${ITEMS_ROUTE}/upload${qs.stringify(
     { id: parentId },
@@ -93,6 +101,11 @@ export const buildUploadFilesRoute = (parentId: UUID) =>
   )}`;
 export const buildImportZipRoute = (parentId: UUID) =>
   `${ITEMS_ROUTE}/zip-import${qs.stringify(
+    { parentId },
+    { addQueryPrefix: true },
+  )}`;
+export const buildImportH5PRoute = (parentId: UUID) =>
+  `${ITEMS_ROUTE}/h5p-import${qs.stringify(
     { parentId },
     { addQueryPrefix: true },
   )}`;
@@ -288,6 +301,11 @@ export const buildSetDefaultCardRoute = (cardId: string) =>
   `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/cards/${cardId}/default`;
 export const CREATE_SETUP_INTENT_ROUTE = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/setup-intent`;
 export const GET_CURRENT_CUSTOMER = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/customer/current`;
+export const buildItemPublishRoute = (itemId: UUID, notification?: boolean) =>
+  `${ITEMS_ROUTE}/${itemId}/publish${qs.stringify(
+    { notification },
+    { addQueryPrefix: true },
+  )}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,
@@ -306,6 +324,8 @@ export const API_ROUTES = {
   buildAppListRoute,
   buildGetMember,
   buildGetMembersRoute,
+  buildDeleteMemberRoute,
+  buildUpdateMemberPasswordRoute,
   buildUploadFilesRoute,
   buildDownloadFilesRoute,
   buildPostItemMembershipRoute,
@@ -324,7 +344,7 @@ export const API_ROUTES = {
   buildGetItemLoginRoute,
   buildGetItemRoute,
   buildGetItemTagsRoute,
-  buildGetMemberBy,
+  buildGetMembersBy,
   buildDeleteItemTagRoute,
   buildDeleteItemRoute,
   buildDeleteItemsRoute,
@@ -364,6 +384,7 @@ export const API_ROUTES = {
   buildDownloadAvatarRoute,
   buildDownloadPublicAvatarRoute,
   buildImportZipRoute,
+  buildImportH5PRoute,
   buildGetApiAccessTokenRoute,
   buildGetPublicApiAccessTokenRoute,
   buildPublicDownloadFilesRoute,
@@ -383,4 +404,6 @@ export const API_ROUTES = {
   buildPostInvitationsRoute,
   buildGetItemInvitationsForItemRoute,
   buildGetPlanRoute,
+  buildItemPublishRoute,
+  buildPostManyItemMembershipsRoute,
 };

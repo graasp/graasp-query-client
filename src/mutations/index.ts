@@ -15,6 +15,7 @@ import itemValidationMutations from './itemValidation';
 import actionMutations from './action';
 import invitationMutations from './invitation';
 import authenticationMutations from './authentication';
+import itemPublishMutations from './itemPublish';
 
 const configureMutations = (
   queryClient: QueryClient,
@@ -35,6 +36,7 @@ const configureMutations = (
   invitationMutations(queryClient, queryConfig);
   authenticationMutations(queryClient, queryConfig);
   subscriptionMutations(queryClient, queryConfig);
+  itemPublishMutations(queryClient, queryConfig);
 };
 
 export default configureMutations;

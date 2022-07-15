@@ -1,13 +1,14 @@
 import { FAILURE_MESSAGES } from '@graasp/translations';
-import { getMemberBy } from './member';
+import { getMembersBy } from './member';
 import {
   buildPostItemMembershipRoute,
   buildEditItemMembershipRoute,
   buildDeleteItemMembershipRoute,
   buildGetItemMembershipsForItemsRoute,
   buildGetPublicItemMembershipsForItemsRoute,
+  buildPostManyItemMembershipsRoute,
 } from './routes';
-import { Permission, QueryClientConfig, UUID } from '../types';
+import { Membership, Permission, QueryClientConfig, UUID } from '../types';
 import configureAxios, {
   fallbackToPublic,
   verifyAuthentication,
@@ -27,7 +28,22 @@ export const getMembershipsForItems = async (
       ),
   );
 
-export const shareItemWith = async (
+export const postManyItemMemberships = async (
+  { memberships, itemId }: { itemId: UUID; memberships: Partial<Membership>[] },
+  config: QueryClientConfig,
+): Promise<(Membership | Error)[]> => {
+  const { API_HOST } = config;
+
+  return verifyAuthentication(() =>
+    axios
+      .post(`${API_HOST}/${buildPostManyItemMembershipsRoute(itemId)}`, {
+        memberships,
+      })
+      .then(({ data }) => data),
+  );
+};
+
+export const postItemMembership = async (
   {
     id,
     email,
@@ -36,16 +52,17 @@ export const shareItemWith = async (
   config: QueryClientConfig,
 ) => {
   const { API_HOST } = config;
-  const member = await getMemberBy({ email }, config);
+  const member = await getMembersBy({ emails: [email] }, config);
 
-  if (!member || member?.length < 1) {
+  if (!member || member?.length < 1 || member[0].length < 1) {
     throw new Error(FAILURE_MESSAGES.MEMBER_NOT_FOUND);
   }
 
   return verifyAuthentication(() =>
     axios
       .post(`${API_HOST}/${buildPostItemMembershipRoute(id)}`, {
-        memberId: member[0].id,
+        // assume will receive only one member
+        memberId: member[0][0].id,
         permission,
       })
       .then(({ data }) => data),

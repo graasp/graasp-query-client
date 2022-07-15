@@ -8,10 +8,8 @@ import {
   buildDownloadItemThumbnailRoute,
   buildGetChildrenRoute,
   buildGetItemLoginRoute,
-  buildGetItemMembershipsForItemsRoute,
   buildGetItemRoute,
   buildGetItemsRoute,
-  buildGetPublicItemMembershipsForItemsRoute,
   buildGetPublicItemRoute,
   buildGetPublicItemsWithTag,
   buildPublicDownloadFilesRoute,
@@ -23,7 +21,6 @@ import { Endpoint, mockHook, setUpTest } from '../../test/utils';
 import {
   FILE_RESPONSE,
   ITEMS,
-  ITEM_MEMBERSHIPS_RESPONSE,
   TAGS,
   THUMBNAIL_BLOB_RESPONSE,
   UNAUTHORIZED_RESPONSE,
@@ -36,14 +33,13 @@ import {
   buildItemParentsKey,
   buildItemsChildrenKey,
   buildItemsKey,
-  buildManyItemMembershipsKey,
   buildPublicItemsWithTagKey,
   buildItemThumbnailKey,
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
 } from '../config/keys';
-import type { Item, ItemLogin, Membership } from '../types';
+import type { Item, ItemLogin } from '../types';
 import { THUMBNAIL_SIZES } from '../config/constants';
 
 const { hooks, wrapper, queryClient } = setUpTest();
@@ -543,101 +539,6 @@ describe('Items Hooks', () => {
       expect(isError).toBeTruthy();
       // verify cache keys
       expect(queryClient.getQueryData(buildItemsKey(ids))).toBeFalsy();
-    });
-  });
-
-  describe('useItemMemberships', () => {
-    const ids = [ITEMS[0].id, ITEMS[1].id];
-    const response = [ITEM_MEMBERSHIPS_RESPONSE, ITEM_MEMBERSHIPS_RESPONSE];
-    const route = `/${buildGetItemMembershipsForItemsRoute(ids)}`;
-    const key = buildManyItemMembershipsKey(ids);
-
-    it(`Receive one item memberships`, async () => {
-      const id = [ITEMS[0].id];
-      const oneRoute = `/${buildGetItemMembershipsForItemsRoute(id)}`;
-      const oneResponse = [ITEM_MEMBERSHIPS_RESPONSE];
-      const oneKey = buildManyItemMembershipsKey(id);
-      const hook = () => hooks.useItemMemberships(id);
-      const endpoints = [{ route: oneRoute, response: oneResponse }];
-      const { data } = await mockHook({ endpoints, hook, wrapper });
-
-      expect((data as List<Membership[]>).toJS()).toEqual(oneResponse);
-      // verify cache keys
-      expect(queryClient.getQueryData(oneKey)).toEqual(List(oneResponse));
-    });
-
-    it(`Receive multiple item memberships`, async () => {
-      const hook = () => hooks.useItemMemberships(ids);
-      const endpoints = [{ route, response }];
-      const { data } = await mockHook({ endpoints, hook, wrapper });
-
-      expect((data as List<Membership[]>).toJS()).toEqual(response);
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
-    });
-
-    it(`Undefined ids does not fetch`, async () => {
-      const hook = () => hooks.useItemMemberships(undefined);
-      const endpoints = [{ route, response }];
-      const { data, isFetched } = await mockHook({
-        endpoints,
-        hook,
-        wrapper,
-        enabled: false,
-      });
-
-      expect(isFetched).toBeFalsy();
-      expect(data).toBeFalsy();
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeFalsy();
-    });
-
-    // this tests fallbackForArray
-    it(`Merge private and public data if result with correct data and errors`, async () => {
-      const hook = () => hooks.useItemMemberships(ids);
-      const publicRoute = `/${buildGetPublicItemMembershipsForItemsRoute(ids)}`;
-      const publicResponse = [
-        { statusCode: StatusCodes.FORBIDDEN },
-        ITEM_MEMBERSHIPS_RESPONSE,
-      ];
-      const privateResponse = [
-        ITEM_MEMBERSHIPS_RESPONSE,
-        { statusCode: StatusCodes.FORBIDDEN },
-      ];
-      const endpoints = [
-        { route, response: privateResponse },
-        { route: publicRoute, response: publicResponse },
-      ];
-      const { data } = await mockHook({
-        endpoints,
-        hook,
-        wrapper,
-      });
-
-      expect((data as List<Membership[]>).toJS()).toEqual(response);
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
-    });
-
-    it(`Unauthorized`, async () => {
-      const hook = () => hooks.useItemMemberships(ids);
-      const endpoints = [
-        {
-          route,
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-        },
-      ];
-      const { data, isError } = await mockHook({
-        hook,
-        endpoints,
-        wrapper,
-      });
-
-      expect(isError).toBeTruthy();
-      expect(data).toBeFalsy();
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeFalsy();
     });
   });
 

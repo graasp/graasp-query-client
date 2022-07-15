@@ -11,12 +11,7 @@ import {
 } from '../config/keys';
 
 export default (queryConfig: QueryClientConfig) => {
-  const { retry, cacheTime, staleTime } = queryConfig;
-  const defaultOptions = {
-    retry,
-    cacheTime,
-    staleTime,
-  };
+  const { defaultQueryOptions } = queryConfig;
 
   // get all entry in validation-review
   const useValidationReview = () =>
@@ -24,7 +19,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: ITEM_VALIDATION_REVIEWS_KEY,
       queryFn: () =>
         Api.getItemValidationReviews(queryConfig).then((data) => List(data)),
-      ...defaultOptions,
+      ...defaultQueryOptions,
     });
 
   // get all statuses
@@ -33,7 +28,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: ITEM_VALIDATION_STATUSES_KEY,
       queryFn: () =>
         Api.getItemValidationStatuses(queryConfig).then((data) => List(data)),
-      ...defaultOptions,
+      ...defaultQueryOptions,
     });
 
   const useItemValidationReviewStatuses = () =>
@@ -43,7 +38,7 @@ export default (queryConfig: QueryClientConfig) => {
         Api.getItemValidationReviewStatuses(queryConfig).then((data) =>
           List(data),
         ),
-      ...defaultOptions,
+      ...defaultQueryOptions,
     });
 
   // get last validation joined with review records of given item
@@ -54,7 +49,7 @@ export default (queryConfig: QueryClientConfig) => {
         Api.getItemValidationAndReview(queryConfig, itemId).then((data) =>
           Map(data),
         ),
-      ...defaultOptions,
+      ...defaultQueryOptions,
       enabled: Boolean(itemId),
     });
 
@@ -65,7 +60,7 @@ export default (queryConfig: QueryClientConfig) => {
         Api.getItemValidationGroups(queryConfig, iVId).then((data) =>
           List(data),
         ),
-      ...defaultOptions,
+      ...defaultQueryOptions,
       enabled: Boolean(iVId),
     });
 

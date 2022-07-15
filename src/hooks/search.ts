@@ -5,12 +5,7 @@ import * as Api from '../api';
 import { buildSearchByKeywordKey } from '../config/keys';
 
 export default (queryConfig: QueryClientConfig) => {
-  const { retry, cacheTime, staleTime } = queryConfig;
-  const defaultOptions = {
-    retry,
-    cacheTime,
-    staleTime,
-  };
+  const { defaultQueryOptions } = queryConfig;
 
   // get search results
   const useKeywordSearch = (range: string, keywords: string) =>
@@ -20,7 +15,7 @@ export default (queryConfig: QueryClientConfig) => {
         Api.getItemsByKeywords(range, keywords, queryConfig).then((data) =>
           List(data),
         ),
-      ...defaultOptions,
+      ...defaultQueryOptions,
       enabled: Boolean(range) && Boolean(keywords),
     });
 

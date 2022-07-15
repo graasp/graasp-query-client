@@ -1,10 +1,12 @@
 import { QueryClient } from 'react-query';
 import { Map, Record } from 'immutable';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
+import Cookies from 'js-cookie';
 import * as Api from '../api';
 import {
   addFavoriteItemRoutine,
   deleteFavoriteItemRoutine,
+  deleteMemberRoutine,
   editMemberRoutine,
   uploadAvatarRoutine,
 } from '../routines';
@@ -14,11 +16,37 @@ import {
   MUTATION_KEYS,
 } from '../config/keys';
 import { Member, QueryClientConfig, UUID } from '../types';
-import { THUMBNAIL_SIZES } from '../config/constants';
+import { COOKIE_SESSION_NAME, THUMBNAIL_SIZES } from '../config/constants';
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
+
+  queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_MEMBER, {
+    mutationFn: (payload) =>
+      Api.deleteMember(payload, queryConfig).then(() =>
+        Api.signOut(queryConfig),
+      ),
+    onSuccess: () => {
+      notifier?.({
+        type: deleteMemberRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.DELETE_MEMBER },
+      });
+
+      queryClient.resetQueries();
+
+      // remove cookies from browser when the logout is confirmed
+      Cookies.remove(COOKIE_SESSION_NAME);
+
+      // Update when the server confirmed the logout, instead optimistically updating the member
+      // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, undefined);
+    },
+    // If the mutation fails, use the context returned from onMutate to roll back
+    onError: (error, _args, _context) => {
+      notifier?.({ type: deleteMemberRoutine.FAILURE, payload: { error } });
+    },
+  });
 
   // suppose you can only edit yourself
   queryClient.setMutationDefaults(MUTATION_KEYS.EDIT_MEMBER, {

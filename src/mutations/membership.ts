@@ -1,24 +1,28 @@
 import { QueryClient } from 'react-query';
 import { List } from 'immutable';
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
+import { partition, isError } from '@graasp/utils';
 import * as Api from '../api';
 import {
   deleteItemMembershipRoutine,
   editItemMembershipRoutine,
   postItemMembershipRoutine,
+  shareItemRoutine,
 } from '../routines';
 import {
+  buildItemInvitationsKey,
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
   MUTATION_KEYS,
 } from '../config/keys';
-import { Membership, QueryClientConfig, UUID } from '../types';
+import { Invitation, Membership, QueryClientConfig, UUID } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_MEMBERSHIP, {
-    mutationFn: (payload) => Api.shareItemWith(payload, queryConfig),
+    mutationFn: (payload) => Api.postItemMembership(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
         type: postItemMembershipRoutine.SUCCESS,
@@ -97,6 +101,123 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     // Always refetch after error or success:
     onSettled: (_data, _error, { itemId }) => {
       queryClient.invalidateQueries(buildItemMembershipsKey(itemId));
+    },
+  });
+
+  // this mutation handles sharing an item to multiple emails
+  // it will invite if the mail doesn't exist in the db
+  // it will create a membership if an account exists
+  queryClient.setMutationDefaults(MUTATION_KEYS.SHARE_ITEM, {
+    mutationFn: async ({
+      data,
+      itemId,
+    }: {
+      data: Partial<Invitation>[];
+      itemId: UUID;
+    }) => {
+      // validate has email, name and permission are optional
+      // force type with email
+      const [withEmail, withoutEmail] = partition(data, (d) =>
+        Boolean(d.email),
+      );
+      const dataWithEmail = withEmail as (Partial<Invitation> & {
+        email: string;
+      })[];
+
+      // no data with email: the column doesn't exist, or all empty
+      // return custom failure
+      if (!dataWithEmail.length) {
+        throw new Error('No data or no column email detected');
+      }
+
+      // check email has an associated account
+      // assume will receive only one member per mail
+      const accounts = (
+        await Api.getMembersBy(
+          { emails: dataWithEmail.map(({ email }) => email) },
+          queryConfig,
+        )
+      ).flat();
+
+      // split between invitations and memberships
+      const dataWithMemberId = dataWithEmail.map((d) => ({
+        ...d,
+        memberId: accounts.find(({ email }) => email === d.email)?.id,
+      }));
+      const [newMemberships, invitations] = partition(dataWithMemberId, (d) =>
+        Boolean(d.memberId),
+      );
+
+      // create memberships
+      let membershipsResult: (Membership | Error)[] = [];
+      if (newMemberships.length) {
+        try {
+          membershipsResult = await Api.postManyItemMemberships(
+            {
+              memberships: newMemberships,
+              itemId,
+            },
+            queryConfig,
+          );
+        } catch (e) {
+          membershipsResult = [e as Error];
+        }
+      }
+
+      // create invitations
+      let invitationsResult: (Invitation | Error)[] = [];
+      if (invitations.length) {
+        try {
+          invitationsResult = await Api.postInvitations(
+            {
+              itemId,
+              invitations,
+            },
+            queryConfig,
+          );
+        } catch (e) {
+          invitationsResult = [e as Error];
+        }
+      }
+
+      const [mFailure, mSuccess] = partition(membershipsResult, (d) =>
+        isError(d),
+      );
+      const [iFailure, iSuccess] = partition(invitationsResult, (d) =>
+        isError(d),
+      );
+
+      const context = {
+        success: [...mSuccess, ...iSuccess],
+        failure: [
+          // create error shape from input
+          // todo: use error constructor
+          ...withoutEmail.map((d) => ({
+            statusCode: StatusCodes.BAD_REQUEST,
+            message: ReasonPhrases.BAD_REQUEST,
+            data: d,
+          })),
+          ...mFailure,
+          ...iFailure,
+        ],
+      };
+      return context;
+    },
+    onSuccess: (results) => {
+      notifier?.({
+        type: shareItemRoutine.SUCCESS,
+        payload: results,
+      });
+    },
+    onError: (error) => {
+      notifier?.({
+        type: shareItemRoutine.FAILURE,
+        payload: { error },
+      });
+    },
+    onSettled: (_data, _error, { itemId }) => {
+      queryClient.invalidateQueries(buildItemMembershipsKey(itemId));
+      queryClient.invalidateQueries(buildItemInvitationsKey(itemId));
     },
   });
 };

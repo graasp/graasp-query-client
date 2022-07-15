@@ -13,6 +13,7 @@ import {
 
 export const WS_HOST = 'ws://localhost:3000';
 export const API_HOST = 'http://localhost:3000';
+export const DOMAIN = 'domain';
 export const UNAUTHORIZED_RESPONSE = {
   name: 'unauthorized',
   code: 'ERRCODE',
@@ -116,9 +117,7 @@ export const GET_RECYCLED_ITEMS_FIXTURES = {
     },
   ],
   member: {
-    id: '42',
-    name: 'username',
-    email: 'username@graasp.org',
+    ...MEMBER_RESPONSE,
     extra: {
       recycleBin: {
         itemId: recycleBinItemId,
@@ -383,3 +382,8 @@ export const buildInvitation = ({
   creator: 'creator-id',
   itemPath,
 });
+
+export const buildMockInvitations = (itemId: string) => [
+  buildInvitation({ itemPath: itemId, email: 'a' }),
+  buildInvitation({ itemPath: itemId, email: 'b' }),
+];

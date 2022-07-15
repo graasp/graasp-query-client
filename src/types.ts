@@ -2,16 +2,21 @@ export type Notifier = (e: unknown) => void;
 
 export type QueryClientConfig = {
   API_HOST: string;
-  S3_FILES_HOST: string;
   SHOW_NOTIFICATIONS: boolean;
   WS_HOST: string;
+  DOMAIN?: string;
   enableWebsocket: boolean;
   notifier?: Notifier;
-  staleTime: number;
-  cacheTime: number;
-  retry: number | boolean | ((failureCount: number, error: Error) => boolean);
-  refetchOnWindowFocus?: boolean;
-  keepPreviousData?: boolean;
+  defaultQueryOptions: {
+    // time until data in cache considered stale if cache not invalidated
+    staleTime: number;
+    // time before cache labeled as inactive to be garbage collected
+    cacheTime: number;
+    retry: number | boolean | ((failureCount: number, error: Error) => boolean);
+    refetchOnWindowFocus?: boolean;
+    keepPreviousData?: boolean;
+    refetchOnMount?: boolean;
+  };
 };
 
 // Graasp Core Types
@@ -186,3 +191,7 @@ export type Invitation = {
   permission: string;
   name?: string;
 };
+
+export type Password = string;
+export type NewInvitation = Pick<Invitation, 'email' & 'permission'> &
+  Partial<Invitation>;

@@ -9,7 +9,7 @@ import { StatusCodes } from 'http-status-codes';
 import { QueryObserverBaseResult, MutationObserverResult } from 'react-query';
 import configureHooks from '../src/hooks';
 import { Notifier, QueryClientConfig } from '../src/types';
-import { API_HOST, WS_HOST } from './constants';
+import { API_HOST, WS_HOST, DOMAIN } from './constants';
 import configureQueryClient from '../src/queryClient';
 import { REQUEST_METHODS } from '../src/api/utils';
 
@@ -24,10 +24,12 @@ export const setUpTest = (args?: Args) => {
   } = args ?? {};
   const queryConfig: QueryClientConfig = {
     API_HOST,
-    retry: 0,
-    cacheTime: 0,
-    staleTime: 0,
-    S3_FILES_HOST: API_HOST,
+    DOMAIN,
+    defaultQueryOptions: {
+      retry: 0,
+      cacheTime: 0,
+      staleTime: 0,
+    },
     SHOW_NOTIFICATIONS: false,
     notifier,
     enableWebsocket,
@@ -57,7 +59,7 @@ export type Endpoint = {
 };
 
 interface MockArguments {
-  endpoints: Endpoint[];
+  endpoints?: Endpoint[];
   wrapper: (args: { children: React.ReactNode }) => JSX.Element;
 }
 
@@ -90,8 +92,9 @@ export const mockHook = async ({
   wrapper,
   enabled,
 }: MockHookArguments) => {
-  mockEndpoints(endpoints);
-
+  if (endpoints) {
+    mockEndpoints(endpoints);
+  }
   // wait for rendering hook
   const {
     result,
@@ -117,7 +120,9 @@ export const mockMutation = async ({
   wrapper,
   endpoints,
 }: MockMutationArguments) => {
-  mockEndpoints(endpoints);
+  if (endpoints) {
+    mockEndpoints(endpoints);
+  }
 
   // wait for rendering hook
   const {

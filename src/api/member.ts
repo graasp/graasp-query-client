@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import {
-  buildGetMemberBy,
+  buildGetMembersBy,
   buildGetMember,
   GET_CURRENT_MEMBER_ROUTE,
   buildPatchMember,
@@ -10,8 +10,10 @@ import {
   buildUploadAvatarRoute,
   buildDownloadAvatarRoute,
   buildDownloadPublicAvatarRoute,
+  buildDeleteMemberRoute,
+  buildUpdateMemberPasswordRoute,
 } from './routes';
-import { MemberExtra, QueryClientConfig, UUID } from '../types';
+import { Member, MemberExtra, Password, QueryClientConfig, UUID } from '../types';
 import { DEFAULT_THUMBNAIL_SIZES, SIGNED_OUT_USER } from '../config/constants';
 import configureAxios, {
   fallbackToPublic,
@@ -20,13 +22,13 @@ import configureAxios, {
 
 const axios = configureAxios();
 
-export const getMemberBy = async (
-  { email }: { email: string },
+export const getMembersBy = async (
+  { emails }: { emails: string[] },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<Member[][]> =>
   verifyAuthentication(() =>
     axios
-      .get(`${API_HOST}/${buildGetMemberBy(email)}`)
+      .get(`${API_HOST}/${buildGetMembersBy(emails)}`)
       .then(({ data }) => data),
   );
 
@@ -75,6 +77,29 @@ export const editMember = async (
     axios
       .patch(`${API_HOST}/${buildPatchMember(payload.id)}`, {
         extra: payload.extra,
+      })
+      .then(({ data }) => data),
+  );
+
+export const deleteMember = async (
+  { id }: { id: UUID },
+  { API_HOST }: QueryClientConfig,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .delete(`${API_HOST}/${buildDeleteMemberRoute(id)}`)
+      .then(({ data }) => data),
+  );
+
+export const updatePassword = async (
+  payload: { password: Password; currentPassword: Password },
+  { API_HOST }: QueryClientConfig,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .patch(`${API_HOST}/${buildUpdateMemberPasswordRoute()}`, {
+        password: payload.password,
+        currentPassword: payload.currentPassword,
       })
       .then(({ data }) => data),
   );

@@ -16,6 +16,7 @@ import {
   restoreItemsRoutine,
   uploadItemThumbnailRoutine,
   importZipRoutine,
+  importH5PRoutine,
 } from '../routines';
 import {
   buildItemChildrenKey,
@@ -47,6 +48,7 @@ const {
   UPLOAD_ITEM_THUMBNAIL,
   COPY_PUBLIC_ITEM,
   IMPORT_ZIP,
+  IMPORT_H5P,
 } = MUTATION_KEYS;
 
 interface Value {
@@ -440,10 +442,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         to: payload.to,
         ...newItem,
       })),
-    onSuccess: () => {
+    onSuccess: (newItem, {to}) => {
       notifier?.({
         type: copyItemRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.COPY_ITEM },
+        payload: { 
+          message: SUCCESS_MESSAGES.COPY_ITEM,
+          newItem,
+          parentId: to,
+        },
       });
     },
     onError: (error) => {
@@ -459,10 +465,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: (payload) =>
       Api.copyItems(payload, queryConfig).then((newItems) => {
         const items = throwIfArrayContainsErrorOrReturn(newItems);
-        return {
-          to: payload.to,
-          ...items,
-        };
+        return items;
       }),
     // cannot mutate because it needs the id
     onSuccess: () => {
@@ -722,6 +725,27 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onError: (_error, { error }) => {
       notifier?.({ type: importZipRoutine.FAILURE, payload: { error } });
+    },
+    onSettled: (_data, _error, { id }) => {
+      const parentKey = getKeyForParentId(id);
+      queryClient.invalidateQueries(parentKey);
+    },
+  });
+
+  queryClient.setMutationDefaults(IMPORT_H5P, {
+    mutationFn: async ({ error }) => {
+      if (error) {
+        throw new Error(JSON.stringify(error));
+      }
+    },
+    onSuccess: () => {
+      notifier?.({
+        type: importH5PRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.IMPORT_H5P },
+      });
+    },
+    onError: (_error, { error }) => {
+      notifier?.({ type: importH5PRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_data, _error, { id }) => {
       const parentKey = getKeyForParentId(id);

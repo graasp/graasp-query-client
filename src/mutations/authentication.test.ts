@@ -2,16 +2,22 @@
 import { act } from '@testing-library/react-hooks';
 import nock from 'nock';
 import Cookies from 'js-cookie';
+import * as utils from '@graasp/utils';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { StatusCodes } from 'http-status-codes';
 import {
+  buildUpdateMemberPasswordRoute,
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
   SIGN_UP_ROUTE,
 } from '../api/routes';
 import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
-import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import {
+  DOMAIN,
+  OK_RESPONSE,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants';
 import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
 import { REQUEST_METHODS } from '../api/utils';
 import {
@@ -19,7 +25,11 @@ import {
   signInWithPasswordRoutine,
   signOutRoutine,
   signUpRoutine,
+  switchMemberRoutine,
+  updatePasswordRoutine,
 } from '../routines';
+
+jest.mock('@graasp/utils');
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -158,6 +168,71 @@ describe('Authentication Mutations', () => {
     });
   });
 
+  describe(MUTATION_KEYS.UPDATE_PASSWORD, () => {
+    const route = `/${buildUpdateMemberPasswordRoute()}`;
+    const mutation = () => useMutation(MUTATION_KEYS.UPDATE_PASSWORD);
+    const password = 'ASDasd123';
+    const currentPassword = 'ASDasd123';
+    const name = 'myName'
+    const id = 'myId'
+
+
+    it(`Update password`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: { email, id, name },
+          statusCode: StatusCodes.OK,
+          method: REQUEST_METHODS.PATCH,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ currentPassword, password });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: updatePasswordRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
+      });
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          method: REQUEST_METHODS.PATCH,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ password });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: updatePasswordRoutine.FAILURE,
+        }),
+      );
+    });
+  });
+
   describe(MUTATION_KEYS.SIGN_UP, () => {
     const route = `/${SIGN_UP_ROUTE}`;
     const mutation = () => useMutation(MUTATION_KEYS.SIGN_UP);
@@ -217,6 +292,7 @@ describe('Authentication Mutations', () => {
   describe(MUTATION_KEYS.SIGN_OUT, () => {
     const route = `/${SIGN_OUT_ROUTE}`;
     const mutation = () => useMutation(MUTATION_KEYS.SIGN_OUT);
+    const userId = 'userId';
 
     it(`Sign out`, async () => {
       // set random data in cache
@@ -233,7 +309,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({});
+        await mockedMutation.mutate(userId);
         await waitForMutation();
       });
 
@@ -243,6 +319,11 @@ describe('Authentication Mutations', () => {
         type: signOutRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
       });
+
+      // cookie management
+      expect(utils.saveUrlForRedirection).toHaveBeenCalled();
+      expect(utils.setCurrentSession).toHaveBeenCalledWith(null, DOMAIN);
+      expect(utils.removeSession).toHaveBeenCalledWith(userId, DOMAIN);
     });
 
     it(`Unauthorized`, async () => {
@@ -271,6 +352,64 @@ describe('Authentication Mutations', () => {
           type: signOutRoutine.FAILURE,
         }),
       );
+    });
+  });
+
+  describe(MUTATION_KEYS.SWITCH_MEMBER, () => {
+    const mutation = () => useMutation(MUTATION_KEYS.SWITCH_MEMBER);
+    const MOCK_SESSIONS = [{ id: 'id1', token: 'token1' }];
+
+    it(`Switch Member`, async () => {
+      const mockedMutation = await mockMutation({
+        mutation,
+        wrapper,
+      });
+
+      (utils.getStoredSessions as jest.Mock).mockReturnValue(MOCK_SESSIONS);
+
+      await act(async () => {
+        await mockedMutation.mutate({
+          memberId: MOCK_SESSIONS[0].id,
+          domain: DOMAIN,
+        });
+        await waitForMutation();
+      });
+
+      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: switchMemberRoutine.SUCCESS,
+      });
+
+      // cookie management
+      expect(utils.getStoredSessions).toHaveBeenCalled();
+      expect(utils.setCurrentSession).toHaveBeenCalledWith(
+        MOCK_SESSIONS[0].token,
+        DOMAIN,
+      );
+    });
+    it(`Throw if session does not exist`, async () => {
+      const mockedMutation = await mockMutation({
+        mutation,
+        wrapper,
+      });
+
+      (utils.getStoredSessions as jest.Mock).mockReturnValue([]);
+
+      await act(async () => {
+        await mockedMutation.mutate({
+          memberId: MOCK_SESSIONS[0].id,
+          domain: DOMAIN,
+        });
+        await waitForMutation();
+      });
+
+      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: switchMemberRoutine.FAILURE,
+        payload: expect.anything(),
+      });
     });
   });
 });
