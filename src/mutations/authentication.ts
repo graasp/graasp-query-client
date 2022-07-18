@@ -13,11 +13,11 @@ import {
   signInWithPasswordRoutine,
   signUpRoutine,
   switchMemberRoutine,
+  updatePasswordRoutine,
 } from '../routines';
 import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
 import { QueryClientConfig, UUID } from '../types';
 import { isServer } from '../utils/util';
-import { updatePasswordRoutine } from '../routines/authentication';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -32,7 +32,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.resetQueries();
     },
     onError: (error) => {
-      notifier?.({ type: signInRoutine.FAILURE, payload: { error } });
+      notifier?.({
+        type: signInRoutine.FAILURE,
+        payload: { error },
+      });
     },
   });
 
@@ -58,8 +61,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
    * @param {Password} currentPassword current password already stored
    */
   queryClient.setMutationDefaults(MUTATION_KEYS.UPDATE_PASSWORD, {
-    mutationFn: (payload) =>
-      Api.updatePassword(payload, queryConfig),
+    mutationFn: (payload) => Api.updatePassword(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
         type: updatePasswordRoutine.SUCCESS,
@@ -67,7 +69,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
     onError: (error) => {
-      notifier?.({ type: updatePasswordRoutine.FAILURE, payload: { error } });
+      notifier?.({
+        type: updatePasswordRoutine.FAILURE,
+        payload: { error },
+      });
     },
   });
 
@@ -80,7 +85,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
     onError: (error) => {
-      notifier?.({ type: signUpRoutine.FAILURE, payload: { error } });
+      notifier?.({
+        type: signUpRoutine.FAILURE,
+        payload: { error },
+      });
     },
   });
 
@@ -106,7 +114,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.setQueryData(CURRENT_MEMBER_KEY, undefined);
     },
     onError: (error) => {
-      notifier?.({ type: signOutRoutine.FAILURE, payload: { error } });
+      notifier?.({
+        type: signOutRoutine.FAILURE,
+        payload: { error },
+      });
     },
   });
 
@@ -129,7 +140,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.resetQueries();
     },
     onError: (error) => {
-      notifier?.({ type: switchMemberRoutine.FAILURE, payload: { error } });
+      notifier?.({
+        type: switchMemberRoutine.FAILURE,
+        payload: { error },
+      });
     },
   });
 };

@@ -5,6 +5,7 @@ export * from './itemTag';
 export * from './itemLogin';
 export * from './itemFlag';
 export * from './chat';
+export * from './mentions';
 export * from './itemCategory';
 export * from './itemExport';
 export * from './itemLike';

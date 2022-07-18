@@ -43,6 +43,7 @@ export const OPS = {
 };
 
 export const TOPICS = {
+  MENTIONS: 'mentions',
   CHAT_ITEM: 'chat/item',
   ITEM: 'item',
   ITEM_MEMBER: 'item/member',

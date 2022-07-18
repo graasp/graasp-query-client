@@ -1,3 +1,5 @@
+import { Record } from 'immutable';
+
 export type Notifier = (e: unknown) => void;
 
 export type QueryClientConfig = {
@@ -112,6 +114,31 @@ export enum PERMISSION_LEVELS {
   WRITE = 'write',
   ADMIN = 'admin',
 }
+
+export type ChatMention = {
+  id: string;
+  messageId: string;
+  memberId: string;
+  creator: string;
+  createdAt: string;
+  updatedAt: string;
+  status: string;
+};
+
+export type PartialChatMention = {
+  id: string;
+  status: string;
+};
+
+export type MemberMentions = {
+  memberId: string;
+  mentions: ChatMention[];
+};
+
+export const MemberMentionsRecord = Record<MemberMentions>({
+  memberId: '',
+  mentions: [],
+});
 
 export type MessageBodyType = { message: string; mentions?: string[] };
 
