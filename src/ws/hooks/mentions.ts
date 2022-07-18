@@ -38,7 +38,7 @@ export const configureWsChatMentionsHooks = (
         const mentionKey = buildMentionKey(memberId);
         const current: Record<MemberMentions> | undefined =
           queryClient.getQueryData(mentionKey);
-
+        console.log('received:', event);
         if (current) {
           switch (event.op) {
             case OPS.PUBLISH: {
