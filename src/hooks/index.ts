@@ -2,6 +2,7 @@ import { QueryClient } from 'react-query';
 import { QueryClientConfig } from '../types';
 import { WebsocketClient } from '../ws/ws-client';
 import configureChatHooks from './chat';
+import configureMentionsHooks from './mentions';
 import configureItemHooks from './item';
 import configureItemFlagHooks from './itemFlag';
 import configureItemTagHooks from './itemTag';
@@ -25,6 +26,12 @@ export default (
 
   return {
     ...configureChatHooks(queryClient, queryConfig, websocketClient),
+    ...configureMentionsHooks(
+      queryClient,
+      queryConfig,
+      memberHooks.useCurrentMember,
+      websocketClient,
+    ),
     ...configureMembershipHooks(queryClient, queryConfig, websocketClient),
     ...configureItemHooks(
       queryClient,
