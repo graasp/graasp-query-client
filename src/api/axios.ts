@@ -99,10 +99,13 @@ export const fallbackToPublic = (
     });
 };
 
+// todo: get from graasp utils
+export const isGraaspError = (value: any) => isObject(value) && value.statusCode
+
 // this function is used to purposely trigger an error for react-query
 // especially when the request returns positively with an array of errors (ie: copy many items)
 export const throwIfArrayContainsErrorOrReturn = (array: any[]) => {
-  const errors = array?.filter((value) => isObject(value) && value.statusCode);
+  const errors = array?.filter((value) => isGraaspError(value));
   if (errors.length) {
     // assume all errors are the same
     // build axios error from error data received
@@ -114,4 +117,6 @@ export const throwIfArrayContainsErrorOrReturn = (array: any[]) => {
   return array;
 };
 
+
 export default configureAxios;
+
