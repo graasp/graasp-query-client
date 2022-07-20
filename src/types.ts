@@ -148,6 +148,8 @@ export enum PERMISSION_LEVELS {
 
 export type ChatMention = {
   id: string;
+  itemPath: string;
+  message: string;
   messageId: string;
   memberId: string;
   creator: string;
