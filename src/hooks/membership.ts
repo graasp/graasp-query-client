@@ -1,6 +1,7 @@
 import { List } from 'immutable';
 import { QueryClient, useQuery } from 'react-query';
 import * as Api from '../api';
+import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
 import {
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
@@ -66,6 +67,8 @@ export default (
           }
 
           return Api.getMembershipsForItems(ids, queryConfig).then((data) =>
+            throwIfArrayContainsErrorOrReturn(data),
+          ).then((data) =>
             List(data),
           );
         },

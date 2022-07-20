@@ -8,6 +8,7 @@ import {
   dehydrate,
 } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { isGraaspError } from './api/axios';
 import {
   CACHE_TIME_MILLISECONDS,
   STALE_TIME_MILLISECONDS,
@@ -19,7 +20,7 @@ import { getHostname } from './utils/util';
 import { configureWebsocketClient } from './ws';
 
 // Query client retry function decides when and how many times a request should be retried
-const retry = (failureCount: number, error: Error) => {
+export const retry = (failureCount: number, error: Error) => {
   const response = (error as AxiosError)?.response;
   const codes = [
     StatusCodes.UNAUTHORIZED,
@@ -34,6 +35,14 @@ const retry = (failureCount: number, error: Error) => {
     // the user is probably not signed in
     if (codes.includes(response.status)) {
       return false;
+    }
+
+    // do not retry if array contains error 
+    // throwIfArrayContainsErrorOrReturn returns only one error
+    // some mutation/hook throw if array contains errors
+    // we do not need to retry: the endpoint was successfully done
+    if (isGraaspError(response?.data)) {
+      return false
     }
 
     return failureCount < 3;

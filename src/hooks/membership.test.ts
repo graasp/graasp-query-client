@@ -17,7 +17,7 @@ import {
   buildManyItemMembershipsKey,
   buildItemMembershipsKey,
 } from '../config/keys';
-import type { Membership } from '../types';
+import type { Membership, GraaspError } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -153,6 +153,25 @@ describe('Membership Hooks', () => {
 
       expect(isFetched).toBeFalsy();
       expect(data).toBeFalsy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+
+    it(`Throws if contains errors`, async () => {
+      const hook = () => hooks.useManyItemMemberships(ids);
+      // todo use build graasp error sdk
+      const graaspError: Partial<GraaspError> = { statusCode: StatusCodes.BAD_REQUEST }
+      const responseWithError = [graaspError]
+      const endpoints = [{ route, response: responseWithError }];
+      const { data, isFetched, isError } = await mockHook({
+        endpoints,
+        hook,
+        wrapper,
+      });
+
+      expect(isFetched).toBeTruthy();
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy()
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
     });
