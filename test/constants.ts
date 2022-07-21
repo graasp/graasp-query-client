@@ -190,8 +190,41 @@ export const APPS = [
 ];
 
 export const buildChatMessages = (id: UUID) => [
-  { chatId: id, body: 'some text', creator: 'somememberid' },
-  { chatId: id, body: 'some other text', creator: 'someothermemberid' },
+  {
+    chatId: id,
+    body: 'some text',
+    creator: 'somememberid',
+  },
+  {
+    chatId: id,
+    body: 'some other text',
+    creator: 'someothermemberid',
+  },
+];
+
+export const buildChatMentions = (id: UUID) => [
+  {
+    id: 'someid',
+    itemPath: 'somepath',
+    message: 'somemessage here',
+    messageId: 'anotherid',
+    createdAt: 'somedate',
+    updatedAt: 'somedate',
+    memberId: id,
+    status: 'unread',
+    creator: 'somememberid',
+  },
+  {
+    id: 'someotherid',
+    itemPath: 'somepath',
+    message: 'a message here',
+    messageId: 'anewid',
+    createdAt: 'somedate',
+    updatedAt: 'somedate',
+    memberId: id,
+    status: 'read',
+    creator: 'someothermemberid',
+  },
 ];
 
 export const FLAGS = [
@@ -384,6 +417,12 @@ export const buildInvitation = ({
 });
 
 export const buildMockInvitations = (itemId: string) => [
-  buildInvitation({ itemPath: itemId, email: 'a' }),
-  buildInvitation({ itemPath: itemId, email: 'b' }),
+  buildInvitation({
+    itemPath: itemId,
+    email: 'a',
+  }),
+  buildInvitation({
+    itemPath: itemId,
+    email: 'b',
+  }),
 ];
