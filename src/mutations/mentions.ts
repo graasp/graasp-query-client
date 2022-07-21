@@ -47,7 +47,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
 
   queryClient.setMutationDefaults(CLEAR_MENTIONS, {
-    mutationFn: (mentionId) => Api.clearItemChat(mentionId, queryConfig),
+    mutationFn: () => Api.clearMentions(queryConfig),
     onError: (error) => {
       queryConfig.notifier?.({
         type: clearMentionsRoutine.FAILURE,
