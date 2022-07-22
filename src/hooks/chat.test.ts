@@ -68,4 +68,49 @@ describe('Chat Hooks', () => {
       expect(queryClient.getQueryData(key)).toBeFalsy();
     });
   });
+
+  describe('useItemChat with arguments', () => {
+    const itemId = ITEMS[0].id;
+    const route = `/${buildGetItemChatRoute(itemId)}`;
+    const key = buildItemChatKey(itemId);
+
+    it(`getUpdates = true`, async () => {
+      const hook = () => hooks.useItemChat(itemId, { getUpdates: true });
+      const response = {
+        id: itemId,
+        messages: buildChatMessages(itemId),
+      };
+      const endpoints = [{route, response}];
+      const { data } = await mockHook({endpoints, hook, wrapper});
+
+      expect(data as ItemChatRecord).toEqualImmutable(response);
+
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+    });
+
+    it(`getUpdates = false`, async () => {
+      const hook = () => hooks.useItemChat(itemId, { getUpdates: false });
+      const response = {
+        id: itemId,
+        messages: buildChatMessages(itemId),
+      };
+      const endpoints = [
+        {
+          route,
+          response,
+        },
+      ];
+      const { data } = await mockHook({
+        endpoints,
+        hook,
+        wrapper,
+      });
+
+      expect(data as ItemChatRecord).toEqualImmutable(response);
+
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+    });
+  });
 });
