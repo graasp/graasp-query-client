@@ -19,6 +19,37 @@ describe('Ws Chat Hooks', () => {
     queryClient.clear();
   });
 
+  describe('useItemChatUpdates incorrect use', () => {
+    const chatId = '';
+    const incorrectHook = () => hooks.useItemChatUpdates(chatId);
+    const chatKey = buildItemChatKey(chatId);
+    const channel = {
+      name: chatId,
+      topic: TOPICS.CHAT_ITEM,
+    };
+
+    it('Does nothing', async () => {
+      queryClient.setQueryData(chatKey, ITEM_CHAT);
+      await mockWsHook({
+        hook: incorrectHook,
+        wrapper,
+      });
+
+      const chatEvent = {
+        kind: KINDS.ITEM,
+        op: OPS.PUBLISH,
+        message: 'new Message',
+      };
+
+      getHandlerByChannel(handlers, channel)?.handler(chatEvent);
+
+      // expect no change
+      expect(
+        queryClient.getQueryData<RecordOf<Chat>>(chatKey)?.messages.toJS(),
+      ).toContainEqual(ITEM_CHAT.messages);
+    });
+  });
+
   describe('useItemChatUpdates', () => {
     const itemId = ITEMS.first()!.id;
     const chatId = itemId;
@@ -83,6 +114,25 @@ describe('Ws Chat Hooks', () => {
       ).not.toContainEqual(ITEM_CHAT.messages.first()!.toJS());
     });
 
+    it(`Receive chat messages clear update`, async () => {
+      queryClient.setQueryData(chatKey, ITEM_CHAT);
+      await mockWsHook({
+        hook,
+        wrapper,
+      });
+
+      const chatEvent = {
+        kind: KINDS.ITEM,
+        op: OPS.CLEAR,
+      };
+
+      getHandlerByChannel(handlers, channel)?.handler(chatEvent);
+
+      expect(
+        queryClient.getQueryData<RecordOf<Chat>>(chatKey)?.messages.toJS(),
+      ).toEqual([]);
+    });
+
     it(`Does not update chat messages with wrong chat event`, async () => {
       queryClient.setQueryData(chatKey, ITEM_CHAT);
       await mockWsHook({ hook, wrapper });
@@ -90,6 +140,28 @@ describe('Ws Chat Hooks', () => {
       const chatEvent = {
         kind: 'false kind',
         op: OPS.PUBLISH,
+        message: newMessage,
+      };
+
+      getHandlerByChannel(handlers, channel)?.handler(chatEvent);
+
+      expect(
+        queryClient
+          .getQueryData<RecordOf<Chat>>(chatKey)
+          ?.messages.find(({ body }) => body === newMessage.body),
+      ).toBeFalsy();
+    });
+
+    it(`Does not update chat messages with wrong OP event`, async () => {
+      queryClient.setQueryData(chatKey, ITEM_CHAT);
+      await mockWsHook({
+        hook,
+        wrapper,
+      });
+
+      const chatEvent = {
+        kind: KINDS.ITEM,
+        op: 'unset OP',
         message: newMessage,
       };
 
