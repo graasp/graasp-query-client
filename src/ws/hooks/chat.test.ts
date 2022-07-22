@@ -19,17 +19,54 @@ describe('Ws Chat Hooks', () => {
     queryClient.clear();
   });
 
+  describe('useItemChatUpdates incorrect use', () => {
+    const chatId = '';
+    const incorrectHook = () => hooks.useItemChatUpdates(chatId);
+    const chatKey = buildItemChatKey(chatId);
+    const channel = {
+      name: chatId,
+      topic: TOPICS.CHAT_ITEM,
+    };
+
+    it('Does nothing', async () => {
+      queryClient.setQueryData(chatKey, Map(ITEM_CHAT));
+      await mockWsHook({
+        hook: incorrectHook,
+        wrapper,
+      });
+
+      const chatEvent = {
+        kind: KINDS.ITEM,
+        op: OPS.PUBLISH,
+        message: 'new Message',
+      };
+
+      getHandlerByChannel(handlers, channel)?.handler(chatEvent);
+
+      // expect no change
+      expect(
+        queryClient.getQueryData<Record<Chat>>(chatKey)?.get('messages'),
+      ).toEqual(ITEM_CHAT.messages);
+    });
+  });
+
   describe('useItemChatUpdates', () => {
     const itemId = ITEMS[0].id;
     const chatId = itemId;
     const chatKey = buildItemChatKey(chatId);
     const newMessage = { body: 'new content message' };
-    const channel = { name: chatId, topic: TOPICS.CHAT_ITEM };
+    const channel = {
+      name: chatId,
+      topic: TOPICS.CHAT_ITEM,
+    };
     const hook = () => hooks.useItemChatUpdates(itemId);
 
     it(`Receive chat messages update`, async () => {
       queryClient.setQueryData(chatKey, Map(ITEM_CHAT));
-      await mockWsHook({ hook, wrapper });
+      await mockWsHook({
+        hook,
+        wrapper,
+      });
 
       const chatEvent = {
         kind: KINDS.ITEM,
@@ -50,7 +87,10 @@ describe('Ws Chat Hooks', () => {
         body: 'new message content',
       };
       queryClient.setQueryData(chatKey, Map(ITEM_CHAT));
-      await mockWsHook({ hook, wrapper });
+      await mockWsHook({
+        hook,
+        wrapper,
+      });
 
       const chatEvent = {
         kind: KINDS.ITEM,
@@ -68,7 +108,10 @@ describe('Ws Chat Hooks', () => {
     it(`Receive chat messages delete update`, async () => {
       const deletedMessage = { id: MESSAGE_IDS[0] };
       queryClient.setQueryData(chatKey, Map(ITEM_CHAT));
-      await mockWsHook({ hook, wrapper });
+      await mockWsHook({
+        hook,
+        wrapper,
+      });
 
       const chatEvent = {
         kind: KINDS.ITEM,
@@ -83,13 +126,58 @@ describe('Ws Chat Hooks', () => {
       ).not.toContainEqual(ITEM_CHAT.messages[0]);
     });
 
+    it(`Receive chat messages clear update`, async () => {
+      queryClient.setQueryData(chatKey, Map(ITEM_CHAT));
+      await mockWsHook({
+        hook,
+        wrapper,
+      });
+
+      const chatEvent = {
+        kind: KINDS.ITEM,
+        op: OPS.CLEAR,
+      };
+
+      getHandlerByChannel(handlers, channel)?.handler(chatEvent);
+
+      expect(
+        queryClient.getQueryData<Record<Chat>>(chatKey)?.get('messages'),
+      ).toEqual([]);
+    });
+
     it(`Does not update chat messages with wrong chat event`, async () => {
       queryClient.setQueryData(chatKey, Map(ITEM_CHAT));
-      await mockWsHook({ hook, wrapper });
+      await mockWsHook({
+        hook,
+        wrapper,
+      });
 
       const chatEvent = {
         kind: 'false kind',
         op: OPS.PUBLISH,
+        message: newMessage,
+      };
+
+      getHandlerByChannel(handlers, channel)?.handler(chatEvent);
+
+      expect(
+        queryClient
+          .getQueryData<Record<Chat>>(chatKey)
+          ?.get('messages')
+          .find(({ body }) => body === newMessage.body),
+      ).toBeFalsy();
+    });
+
+    it(`Does not update chat messages with wrong OP event`, async () => {
+      queryClient.setQueryData(chatKey, Map(ITEM_CHAT));
+      await mockWsHook({
+        hook,
+        wrapper,
+      });
+
+      const chatEvent = {
+        kind: KINDS.ITEM,
+        op: 'unset OP',
         message: newMessage,
       };
 

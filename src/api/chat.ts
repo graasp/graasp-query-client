@@ -1,4 +1,5 @@
 import {
+  ChatMessage,
   PartialChatMessage,
   PartialNewChatMessage,
   QueryClientConfig,
@@ -29,39 +30,42 @@ export const postItemChatMessage = async (
   { chatId, body }: PartialNewChatMessage,
   { API_HOST }: QueryClientConfig,
 ) =>
-  verifyAuthentication(() =>
-    axios
-      .post(`${API_HOST}/${buildPostItemChatMessageRoute(chatId)}`, {
-        body,
-      })
-      .then(({ data }) => data),
+  verifyAuthentication(
+    (): Promise<ChatMessage> =>
+      axios
+        .post(`${API_HOST}/${buildPostItemChatMessageRoute(chatId)}`, {
+          body,
+        })
+        .then(({ data }) => data),
   );
 
 export const patchItemChatMessage = async (
   { chatId, messageId, body }: PartialChatMessage,
   { API_HOST }: QueryClientConfig,
 ) =>
-  verifyAuthentication(() =>
-    axios
-      .patch(
-        `${API_HOST}/${buildPatchItemChatMessageRoute(chatId, messageId)}`,
-        {
-          body,
-        },
-      )
-      .then(({ data }) => data),
+  verifyAuthentication(
+    (): Promise<ChatMessage> =>
+      axios
+        .patch(
+          `${API_HOST}/${buildPatchItemChatMessageRoute(chatId, messageId)}`,
+          {
+            body,
+          },
+        )
+        .then(({ data }) => data),
   );
 
 export const deleteItemChatMessage = async (
   { chatId, messageId }: PartialChatMessage,
   { API_HOST }: QueryClientConfig,
 ) =>
-  verifyAuthentication(() =>
-    axios
-      .delete(
-        `${API_HOST}/${buildDeleteItemChatMessageRoute(chatId, messageId)}`,
-      )
-      .then(({ data }) => data),
+  verifyAuthentication(
+    (): Promise<ChatMessage> =>
+      axios
+        .delete(
+          `${API_HOST}/${buildDeleteItemChatMessageRoute(chatId, messageId)}`,
+        )
+        .then(({ data }) => data),
   );
 
 export const clearItemChat = async (

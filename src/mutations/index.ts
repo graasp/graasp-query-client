@@ -6,6 +6,7 @@ import flagsMutations from './itemFlag';
 import itemLoginMutations from './itemLogin';
 import itemMembershipMutations from './membership';
 import chatMutations from './chat';
+import mentionMutations from './mentions';
 import itemCategoryMutations from './itemCategory';
 import subscriptionMutations from './plan';
 import { QueryClientConfig } from '../types';
@@ -28,6 +29,7 @@ const configureMutations = (
   flagsMutations(queryClient, queryConfig);
   itemLoginMutations(queryClient, queryConfig);
   chatMutations(queryClient, queryConfig);
+  mentionMutations(queryClient, queryConfig);
   itemCategoryMutations(queryClient, queryConfig);
   itemExportMutations(queryClient, queryConfig);
   itemLikeMutations(queryClient, queryConfig);

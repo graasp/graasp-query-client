@@ -9,7 +9,10 @@ import {
   Membership,
   PERMISSION_LEVELS,
   UUID,
+  ChatMention,
 } from '../src/types';
+import { REQUEST_METHODS } from '../src/api/utils';
+import { v4 } from 'uuid';
 
 export const WS_HOST = 'ws://localhost:3000';
 export const API_HOST = 'http://localhost:3000';
@@ -79,6 +82,8 @@ export const MEMBER_RESPONSE: Member = {
   email: 'username@graasp.org',
   extra: {},
 };
+
+export const MENTION_IDS = ['12345', '78945'];
 
 const recycleBinItemId = 'recycleBinId';
 export const GET_RECYCLED_ITEMS_FIXTURES = {
@@ -170,6 +175,24 @@ export const S3_FILE_BLOB_RESPONSE = BlobMock;
 export const THUMBNAIL_BLOB_RESPONSE = BlobMock;
 export const AVATAR_BLOB_RESPONSE = BlobMock;
 
+export const buildMentionResponse = (
+  mention: ChatMention,
+  method: REQUEST_METHODS,
+  status?: string,
+): ChatMention => {
+  switch (method) {
+    case REQUEST_METHODS.PATCH:
+      return {
+        ...mention,
+        status: status || mention.status,
+      };
+    case REQUEST_METHODS.DELETE:
+      return mention;
+    default:
+      return mention;
+  }
+};
+
 export const APPS = [
   {
     name: 'Code App',
@@ -190,9 +213,42 @@ export const APPS = [
 ];
 
 export const buildChatMessages = (id: UUID) => [
-  { chatId: id, body: 'some text', creator: 'somememberid' },
-  { chatId: id, body: 'some other text', creator: 'someothermemberid' },
+  {
+    chatId: id,
+    body: 'some text',
+    creator: 'somememberid',
+  },
+  {
+    chatId: id,
+    body: 'some other text',
+    creator: 'someothermemberid',
+  },
 ];
+
+export const buildChatMention = ({
+  id = v4(),
+  memberId,
+  status = 'unread',
+}: {
+  id?: UUID;
+  memberId: UUID;
+  status?: string;
+}) => ({
+  id,
+  itemPath: 'somepath',
+  message: 'somemessage here',
+  messageId: 'anotherid',
+  createdAt: 'somedate',
+  updatedAt: 'somedate',
+  memberId,
+  status,
+  creator: 'somememberid',
+});
+
+export const buildMemberMentions = (memberId: string) => ({
+  memberId,
+  mentions: [buildChatMention({ memberId }), buildChatMention({ memberId })],
+});
 
 export const FLAGS = [
   {
@@ -384,6 +440,12 @@ export const buildInvitation = ({
 });
 
 export const buildMockInvitations = (itemId: string) => [
-  buildInvitation({ itemPath: itemId, email: 'a' }),
-  buildInvitation({ itemPath: itemId, email: 'b' }),
+  buildInvitation({
+    itemPath: itemId,
+    email: 'a',
+  }),
+  buildInvitation({
+    itemPath: itemId,
+    email: 'b',
+  }),
 ];
