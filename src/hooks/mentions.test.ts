@@ -7,7 +7,7 @@ import {
   GET_CURRENT_MEMBER_ROUTE,
 } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
-import { buildChatMentions, MEMBER_RESPONSE } from '../../test/constants';
+import { buildMemberMentions, MEMBER_RESPONSE } from '../../test/constants';
 import { buildMentionKey } from '../config/keys';
 import type { MemberMentions } from '../types';
 import { MemberMentionsRecord } from '../types';
@@ -31,10 +31,7 @@ describe('Chat Mention Hooks', () => {
     const hook = () => hooks.useMentions();
 
     it(`Receive member mentions`, async () => {
-      const response = {
-        memberId: memberId,
-        mentions: buildChatMentions(memberId),
-      };
+      const response = buildMemberMentions(memberId);
       const endpoints = [
         {
           route: currentMemberRoute,

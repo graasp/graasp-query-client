@@ -26,7 +26,7 @@ export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, id, 'parents'];
 export const CHATS_KEY = 'chats';
 export const buildItemChatKey = (id: UUID) => [CHATS_KEY, id];
 export const MENTIONS_KEY = 'mentions';
-export const buildMentionKey = (id: UUID) => [MENTIONS_KEY, id];
+export const buildMentionKey = (memberId: UUID) => [MENTIONS_KEY, memberId];
 
 export const getKeyForParentId = (parentId: UUID | null) =>
   parentId ? buildItemChildrenKey(parentId) : OWN_ITEMS_KEY;

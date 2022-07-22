@@ -1,11 +1,5 @@
 import configureAxios, { verifyAuthentication } from './axios';
-import {
-  ChatMention,
-  MemberMentions,
-  PartialChatMention,
-  QueryClientConfig,
-  UUID,
-} from '../types';
+import { ChatMention, MemberMentions, QueryClientConfig, UUID } from '../types';
 import {
   buildClearMentionsRoute,
   buildDeleteMentionRoute,
@@ -24,7 +18,7 @@ export const getMemberMentions = async ({ API_HOST }: QueryClientConfig) =>
   );
 
 export const patchMemberMentionsStatus = async (
-  { id: mentionId, status }: PartialChatMention,
+  { id: mentionId, status }: { id: UUID; status: string },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(
@@ -37,7 +31,7 @@ export const patchMemberMentionsStatus = async (
   );
 
 export const deleteMention = async (
-  mentionId: UUID,
+  { mentionId }: { mentionId: UUID },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(

@@ -55,6 +55,8 @@ import {
   UUID,
   ChatMentionRecord,
 } from '../src/types';
+import { REQUEST_METHODS } from '../src/api/utils';
+import { v4 } from 'uuid';
 
 export const WS_HOST = 'ws://localhost:3000';
 export const API_HOST = 'http://localhost:3000';
@@ -160,6 +162,8 @@ const defaultMemberValues: Member = {
 const createMockMember: Record.Factory<Member> = Record(defaultMemberValues);
 
 export const MEMBER_RESPONSE: MemberRecord = createMockMember();
+
+export const MENTION_IDS = ['12345', '78945'];
 
 const recycleBinItemId = 'recycleBinId';
 export const GET_RECYCLED_ITEMS_FIXTURES = {
@@ -273,6 +277,24 @@ export const S3_FILE_BLOB_RESPONSE = BlobMock;
 export const THUMBNAIL_BLOB_RESPONSE = BlobMock;
 export const AVATAR_BLOB_RESPONSE = BlobMock;
 
+export const buildMentionResponse = (
+  mention: ChatMention,
+  method: REQUEST_METHODS,
+  status?: string,
+): ChatMention => {
+  switch (method) {
+    case REQUEST_METHODS.PATCH:
+      return {
+        ...mention,
+        status: status || mention.status,
+      };
+    case REQUEST_METHODS.DELETE:
+      return mention;
+    default:
+      return mention;
+  }
+};
+
 const defaultAppExtraValues: any = { image: 'http://codeapp.com/logo.png' };
 const createAppExtra: Record.Factory<any> = Record(defaultAppExtraValues);
 
@@ -326,7 +348,15 @@ export const buildChatMessages = (id: UUID) => {
   return CHAT_MESSAGES;
 };
 
-export const buildChatMentions = (id: UUID) => {
+export const buildChatMention = ({
+  id = v4(),
+  memberId,
+  status = 'unread',
+}: {
+  id?: UUID;
+  memberId: UUID;
+  status?: string;
+}) => {
   const defaultChatMentionValues: ChatMention = {
     id: 'someid',
     itemPath: 'somepath',
@@ -334,7 +364,7 @@ export const buildChatMentions = (id: UUID) => {
     messageId: 'anotherid',
     createdAt: 'somedate',
     updatedAt: 'somedate',
-    memberId: id,
+    memberId: 'amemberid',
     status: 'unread',
     creator: 'somememberid',
   };
@@ -342,26 +372,24 @@ export const buildChatMentions = (id: UUID) => {
     defaultChatMentionValues,
   );
 
-  const CHAT_MENTION_1: ChatMentionRecord = createMockChatMention({
-    id: 'someotherid',
-    message: 'somemessage here',
-    messageId: 'a id',
-    status: 'unread',
-    creator: 'somememberid',
+  const CHAT_MENTION: ChatMentionRecord = createMockChatMention({
+    id,
+    memberId,
+    status,
   });
-  const CHAT_MENTION_2: ChatMentionRecord = createMockChatMention({
-    id: 'someid',
-    message: 'a message here',
-    messageId: 'anotherid',
-    status: 'read',
-    creator: 'someothermemberid',
-  });
-  const CHAT_MENTIONS: List<ChatMentionRecord> = List([
-    CHAT_MENTION_1,
-    CHAT_MENTION_2,
-  ]);
-  return CHAT_MENTIONS;
+  return CHAT_MENTION;
 };
+
+
+export const buildMemberMentions = (memberId: string) => {
+  const CHAT_MENTION_1: ChatMentionRecord = buildChatMention({ memberId });
+  const CHAT_MENTION_2: ChatMentionRecord = buildChatMention({ memberId });
+  return {
+    memberId,
+    mentions: List([ CHAT_MENTION_1, CHAT_MENTION_2]),
+  };
+}
+
 
 const defaultFlagsValues: Flag = {
   id: 'flag-1-id',

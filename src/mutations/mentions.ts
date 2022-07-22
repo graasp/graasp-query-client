@@ -2,9 +2,9 @@ import { QueryClient } from 'react-query';
 import * as Api from '../api';
 import { buildMentionKey, MUTATION_KEYS } from '../config/keys';
 import {
-  patchMentionRoutine,
-  deleteMentionRoutine,
   clearMentionsRoutine,
+  deleteMentionRoutine,
+  patchMentionRoutine,
 } from '../routines';
 import { QueryClientConfig } from '../types';
 
@@ -12,8 +12,8 @@ const { PATCH_MENTION, DELETE_MENTION, CLEAR_MENTIONS } = MUTATION_KEYS;
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   queryClient.setMutationDefaults(PATCH_MENTION, {
-    mutationFn: (partialMention) =>
-      Api.patchMemberMentionsStatus(partialMention, queryConfig),
+    mutationFn: (args: { id: string; memberId: string; status: string }) =>
+      Api.patchMemberMentionsStatus(args, queryConfig),
     onError: (error) => {
       queryConfig.notifier?.({
         type: patchMentionRoutine.FAILURE,
@@ -21,6 +21,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
     onSettled: (_data, _error, { memberId }) => {
+      console.log(memberId);
       // invalidate keys only if websockets are disabled
       // otherwise the cache is updated automatically
       if (!queryConfig.enableWebsocket) {
@@ -54,11 +55,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         payload: { error },
       });
     },
-    onSettled: (_data, _error, mentionId) => {
+    onSettled: (_data, _error, { memberId }) => {
       // invalidate keys only if websockets are disabled
       // otherwise the cache is updated automatically
       if (!queryConfig.enableWebsocket) {
-        queryClient.invalidateQueries(buildMentionKey(mentionId));
+        queryClient.invalidateQueries(buildMentionKey(memberId));
       }
     },
   });
