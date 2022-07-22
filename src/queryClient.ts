@@ -18,6 +18,7 @@ import type { QueryClientConfig } from './types';
 import { getHostname } from './utils/util';
 import { configureWebsocketClient } from './ws';
 
+/* istanbul ignore next */
 // Query client retry function decides when and how many times a request should be retried
 const retry = (failureCount: number, error: Error) => {
   const response = (error as AxiosError)?.response;
