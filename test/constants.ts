@@ -1,4 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
+import { List, Record, RecordOf } from 'immutable';
+
 import {
   Item,
   ItemLogin,
@@ -20,56 +22,84 @@ export const UNAUTHORIZED_RESPONSE = {
   message: 'unauthorized error message',
   statusCode: StatusCodes.UNAUTHORIZED,
 };
-export const ITEMS: Item[] = [
-  {
-    id: '42',
-    name: 'item1',
-    path: '42',
-    type: ITEM_TYPES.FOLDER,
-    description: '',
-    extra: {},
-  },
-  {
-    id: '5243',
-    name: 'item2',
-    path: '5243',
-    type: ITEM_TYPES.FOLDER,
-    description: '',
-    extra: {},
-  },
-  {
-    id: '5896',
-    name: 'item3',
-    path: '5896',
-    type: ITEM_TYPES.FOLDER,
-    description: '',
-    extra: {},
-  },
-  {
-    id: 'dddd',
-    name: 'item4',
-    path: '5896.dddd',
-    type: ITEM_TYPES.FOLDER,
-    description: '',
-    extra: {},
-  },
-  {
-    id: 'eeee',
-    name: 'item5',
-    path: '5896.eeee',
-    type: ITEM_TYPES.FOLDER,
-    description: '',
-    extra: {},
-  },
-  {
-    id: 'gggg',
-    name: 'item5',
-    path: '5896.gggg',
-    type: ITEM_TYPES.FOLDER,
-    description: '',
-    extra: {},
-  },
-];
+
+const defaultItemValues: Item = {
+  id: '42',
+  name: 'item1',
+  path: '42',
+  type: ITEM_TYPES.FOLDER,
+  description: '',
+  extra: Record({}),
+};
+const makeItem: Record.Factory<Item> = Record(defaultItemValues);
+
+const defaultItemExtraValues: any = {};
+const makeItemExtra: Record.Factory<any> = Record(defaultItemExtraValues);
+
+const extra: RecordOf<any> = makeItemExtra({});
+
+const item1: RecordOf<Item> = makeItem({
+  id: '42',
+  name: 'item1',
+  path: '42',
+  type: ITEM_TYPES.FOLDER,
+  description: '',
+  extra: extra,
+});
+
+const item2: RecordOf<Item> = makeItem({
+  id: '5243',
+  name: 'item2',
+  path: '5243',
+  type: ITEM_TYPES.FOLDER,
+  description: '',
+  extra: extra,
+});
+
+const item3: RecordOf<Item> = makeItem({
+  id: '5896',
+  name: 'item3',
+  path: '5896',
+  type: ITEM_TYPES.FOLDER,
+  description: '',
+  extra: extra,
+});
+
+const item4: RecordOf<Item> = makeItem({
+  id: 'dddd',
+  name: 'item4',
+  path: '5896.dddd',
+  type: ITEM_TYPES.FOLDER,
+  description: '',
+  extra: extra,
+});
+
+const item5: RecordOf<Item> = makeItem({
+  id: 'eeee',
+  name: 'item5',
+  path: '5896.eeee',
+  type: ITEM_TYPES.FOLDER,
+  description: '',
+  extra: extra,
+});
+
+const item6: RecordOf<Item> = makeItem({
+  id: 'gggg',
+  name: 'item5',
+  path: '5896.gggg',
+  type: ITEM_TYPES.FOLDER,
+  description: '',
+  extra: extra,
+});
+
+export const ITEMS: List<RecordOf<Item>> = List([
+  item1,
+  item2,
+  item3,
+  item4,
+  item5,
+  item6,
+]);
 
 export const MESSAGE_IDS = ['12345', '78945'];
 
@@ -142,13 +172,13 @@ export const ITEM_MEMBERSHIPS_RESPONSE: Membership[] = [
   {
     id: 'membership-id',
     memberId: 'member-id',
-    itemId: ITEMS[0].id,
+    itemId: ITEMS.toArray()[0].id,
     permission: PERMISSION_LEVELS.READ,
   },
   {
     id: 'membership-id1',
     memberId: 'member-id1',
-    itemId: ITEMS[0].id,
+    itemId: ITEMS.toArray()[0].id,
     permission: PERMISSION_LEVELS.ADMIN,
   },
 ];

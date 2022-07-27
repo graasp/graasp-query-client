@@ -1,5 +1,4 @@
 import { useQuery } from 'react-query';
-import { List, Map } from 'immutable';
 import { QueryClientConfig, UUID } from '../types';
 import * as Api from '../api';
 import {
@@ -9,6 +8,7 @@ import {
   ITEM_VALIDATION_REVIEW_STATUSES_KEY,
   ITEM_VALIDATION_STATUSES_KEY,
 } from '../config/keys';
+import { convertJs } from '../utils/util';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -18,7 +18,9 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: ITEM_VALIDATION_REVIEWS_KEY,
       queryFn: () =>
-        Api.getItemValidationReviews(queryConfig).then((data) => List(data)),
+        Api.getItemValidationReviews(queryConfig).then((data) =>
+          convertJs(data),
+        ),
       ...defaultQueryOptions,
     });
 
@@ -27,7 +29,9 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: ITEM_VALIDATION_STATUSES_KEY,
       queryFn: () =>
-        Api.getItemValidationStatuses(queryConfig).then((data) => List(data)),
+        Api.getItemValidationStatuses(queryConfig).then((data) =>
+          convertJs(data),
+        ),
       ...defaultQueryOptions,
     });
 
@@ -36,7 +40,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: ITEM_VALIDATION_REVIEW_STATUSES_KEY,
       queryFn: () =>
         Api.getItemValidationReviewStatuses(queryConfig).then((data) =>
-          List(data),
+          convertJs(data),
         ),
       ...defaultQueryOptions,
     });
@@ -47,7 +51,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: buildItemValidationAndReviewKey(itemId),
       queryFn: () =>
         Api.getItemValidationAndReview(queryConfig, itemId).then((data) =>
-          Map(data),
+          convertJs(data),
         ),
       ...defaultQueryOptions,
       enabled: Boolean(itemId),
@@ -58,7 +62,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: buildItemValidationGroupsKey(iVId),
       queryFn: () =>
         Api.getItemValidationGroups(queryConfig, iVId).then((data) =>
-          List(data),
+          convertJs(data),
         ),
       ...defaultQueryOptions,
       enabled: Boolean(iVId),

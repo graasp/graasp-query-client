@@ -1,9 +1,9 @@
 import { useQuery } from 'react-query';
-import { Map, List } from 'immutable';
 import { QueryClientConfig, UndefinedArgument, UUID } from '../types';
 import * as Api from '../api';
 import { buildInvitationKey, buildItemInvitationsKey } from '../config/keys';
 import { getInvitationRoutine } from '../routines';
+import { convertJs } from '../utils/util';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier, defaultQueryOptions } = queryConfig;
@@ -12,7 +12,7 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildInvitationKey(id),
       queryFn: () =>
-        Api.getInvitation(queryConfig, id).then((data) => Map(data)),
+        Api.getInvitation(queryConfig, id).then((data) => convertJs(data)),
       ...defaultQueryOptions,
       enabled: Boolean(id),
       onError: (error) => {
@@ -29,7 +29,7 @@ export default (queryConfig: QueryClientConfig) => {
         }
 
         return Api.getInvitationsForItem(id, queryConfig).then((data) =>
-          List(data),
+          convertJs(data),
         );
       },
       enabled: Boolean(id),

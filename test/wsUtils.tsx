@@ -4,6 +4,7 @@ import { Notifier, QueryClientConfig } from '../src/types';
 import { API_HOST, WS_HOST, DOMAIN } from './constants';
 import configureQueryClient from '../src/queryClient';
 import { Channel } from '../src/ws/ws-client';
+import { isDataEqual } from '../src/utils/util';
 
 export type Handler = { channel: Channel; handler: (event: unknown) => void };
 
@@ -32,7 +33,12 @@ export const setUpWsTest = (args?: {
   const queryConfig: QueryClientConfig = {
     API_HOST,
     DOMAIN,
-    defaultQueryOptions: { retry: 0, cacheTime: 0, staleTime: 0 },
+    defaultQueryOptions: {
+      retry: 0,
+      cacheTime: 0,
+      staleTime: 0,
+      isDataEqual: (oldData, newData) => isDataEqual(oldData, newData),
+    },
     SHOW_NOTIFICATIONS: false,
     notifier,
     enableWebsocket: true,

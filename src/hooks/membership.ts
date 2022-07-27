@@ -1,4 +1,4 @@
-import { List } from 'immutable';
+import { List, RecordOf } from 'immutable';
 import { QueryClient, useQuery } from 'react-query';
 import * as Api from '../api';
 import {
@@ -11,6 +11,7 @@ import {
   UndefinedArgument,
   UUID,
 } from '../types';
+import { convertJs } from '../utils/util';
 import { configureWsMembershipHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
@@ -42,7 +43,7 @@ export default (
           }
 
           return Api.getMembershipsForItems([id], queryConfig).then((data) =>
-            List(data[0]),
+            convertJs(data[0]),
           );
         },
         enabled: Boolean(id),
@@ -50,6 +51,7 @@ export default (
       });
     },
 
+    //REVISAR TEMA DEL ARRAY - ARRAY DE ARRAYS
     useManyItemMemberships: (
       ids?: UUID[],
       options?: { getUpdates?: boolean },
@@ -66,15 +68,15 @@ export default (
           }
 
           return Api.getMembershipsForItems(ids, queryConfig).then((data) =>
-            List(data),
+            convertJs(data),
           );
         },
-        onSuccess: async (memberships) => {
+        onSuccess: async (memberships: List<RecordOf<Membership>[]>) => {
           // save memberships in their own key
           ids?.forEach(async (id, idx) => {
             queryClient.setQueryData(
               buildItemMembershipsKey(id),
-              List(memberships.get(idx) as Membership[]),
+              memberships.get(idx) as RecordOf<Membership>[],
             );
           });
         },

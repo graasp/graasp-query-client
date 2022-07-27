@@ -1,5 +1,5 @@
 import { QueryClient, useQuery } from 'react-query';
-import { List } from 'immutable';
+import { List, RecordOf } from 'immutable';
 import { isError } from '@graasp/utils';
 import { ItemTag, QueryClientConfig, UndefinedArgument, UUID } from '../types';
 import * as Api from '../api';
@@ -9,6 +9,8 @@ import {
   TAGS_KEY,
 } from '../config/keys';
 import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
+import { convertJs } from '../utils/util';
+//import { TaggedTemplateExpression } from '@babel/types';
 
 export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
   const { defaultQueryOptions } = queryConfig;
@@ -16,7 +18,7 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
   const useTags = () =>
     useQuery({
       queryKey: TAGS_KEY,
-      queryFn: () => Api.getTags(queryConfig).then((data) => List(data)),
+      queryFn: () => Api.getTags(queryConfig).then((data) => convertJs(data)),
       ...defaultQueryOptions,
       cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
@@ -28,7 +30,7 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
         if (!id) {
           throw new UndefinedArgument();
         }
-        return Api.getItemTags(id, queryConfig).then((data) => List(data));
+        return Api.getItemTags(id, queryConfig).then((data) => convertJs(data));
       },
       enabled: Boolean(id),
       ...defaultQueryOptions,
@@ -41,16 +43,18 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
         if (!ids) {
           throw new UndefinedArgument();
         }
-        return Api.getItemsTags(ids, queryConfig).then((data) => List(data));
+        return Api.getItemsTags(ids, queryConfig).then((data) =>
+          convertJs(data),
+        );
       },
-      onSuccess: async (tags) => {
+      onSuccess: async (tags: List<RecordOf<ItemTag>[]>) => {
         // save tags in their own key
         ids?.forEach(async (id, idx) => {
           const itemTags = tags.get(idx);
           if (!isError(itemTags)) {
             queryClient.setQueryData(
               buildItemTagsKey(id),
-              List(itemTags as ItemTag[]),
+              itemTags as RecordOf<ItemTag>[],
             );
           }
         });

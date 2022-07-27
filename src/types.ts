@@ -1,3 +1,5 @@
+import { RecordOf, List } from 'immutable';
+
 export type Notifier = (e: unknown) => void;
 
 export type QueryClientConfig = {
@@ -16,6 +18,15 @@ export type QueryClientConfig = {
     refetchOnWindowFocus?: boolean;
     keepPreviousData?: boolean;
     refetchOnMount?: boolean;
+    notifyOnChangeProps?: any;
+    isDataEqual: (
+      oldData:
+        | RecordOf<any>
+        | List<RecordOf<any>>
+        | List<RecordOf<any>>[]
+        | undefined,
+      newData: RecordOf<any> | List<RecordOf<any>> | List<RecordOf<any>>[],
+    ) => boolean;
   };
 };
 

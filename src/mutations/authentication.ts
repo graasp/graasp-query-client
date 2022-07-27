@@ -58,8 +58,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
    * @param {Password} currentPassword current password already stored
    */
   queryClient.setMutationDefaults(MUTATION_KEYS.UPDATE_PASSWORD, {
-    mutationFn: (payload) =>
-      Api.updatePassword(payload, queryConfig),
+    mutationFn: (payload) => Api.updatePassword(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
         type: updatePasswordRoutine.SUCCESS,

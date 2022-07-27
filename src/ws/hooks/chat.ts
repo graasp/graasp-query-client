@@ -1,4 +1,4 @@
-import { Record } from 'immutable';
+import { RecordOf } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 import { buildItemChatKey } from '../../config/keys';
@@ -10,7 +10,7 @@ import { Channel, WebsocketClient } from '../ws-client';
 interface ChatEvent {
   kind: string;
   op: string;
-  message: ChatMessage;
+  message: RecordOf<ChatMessage>;
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -35,7 +35,7 @@ export const configureWsChatHooks = (
       const handler = (event: ChatEvent) => {
         if (event.kind === KINDS.ITEM) {
           const chatKey = buildItemChatKey(chatId);
-          const current: Record<Chat> | undefined =
+          const current: RecordOf<Chat> | undefined =
             queryClient.getQueryData(chatKey);
 
           if (current) {

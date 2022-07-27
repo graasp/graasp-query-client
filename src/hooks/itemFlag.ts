@@ -1,9 +1,9 @@
 import { useQuery } from 'react-query';
-import { List } from 'immutable';
 import { QueryClientConfig } from '../types';
 import * as Api from '../api';
 import { ITEM_FLAGS_KEY } from '../config/keys';
 import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
+import { convertJs } from '../utils/util';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -11,7 +11,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useFlags = () =>
     useQuery({
       queryKey: ITEM_FLAGS_KEY,
-      queryFn: () => Api.getFlags(queryConfig).then((data) => List(data)),
+      queryFn: () => Api.getFlags(queryConfig).then((data) => convertJs(data)),
       ...defaultQueryOptions,
       cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });

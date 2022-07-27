@@ -1,8 +1,8 @@
 import { useQuery } from 'react-query';
-import { List } from 'immutable';
 import { QueryClientConfig } from '../types';
 import * as Api from '../api';
 import { buildSearchByKeywordKey } from '../config/keys';
+import { convertJs } from '../utils/util';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -13,7 +13,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: buildSearchByKeywordKey(range, keywords),
       queryFn: () =>
         Api.getItemsByKeywords(range, keywords, queryConfig).then((data) =>
-          List(data),
+          convertJs(data),
         ),
       ...defaultQueryOptions,
       enabled: Boolean(range) && Boolean(keywords),
