@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
-import { List, RecordOf } from 'immutable';
+import { List } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { mockHook, setUpTest } from '../../test/utils';
