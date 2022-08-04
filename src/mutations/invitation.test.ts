@@ -153,7 +153,10 @@ describe('Invitations Mutations', () => {
 
     it('Notify if one error exists in returned value post invitation', async () => {
       const newInvitation = buildInvitation({ itemPath: itemId, email: 'c' });
-      const newInvitationRecord = buildInvitationRecord({ itemPath: itemId, email: 'c' });
+      const newInvitationRecord = buildInvitationRecord({
+        itemPath: itemId,
+        email: 'c',
+      });
 
       // set data in cache
       queryClient.setQueryData(key, defaultInvitations);
@@ -274,7 +277,9 @@ describe('Invitations Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_INVITATION);
     const key = buildItemInvitationsKey(itemId);
     const invitationToDelete = buildInvitation({ itemPath: 'itemPath' });
-    const invitationToDeleteRecord = buildInvitationRecord({ itemPath: 'itemPath' });
+    const invitationToDeleteRecord = buildInvitationRecord({
+      itemPath: 'itemPath',
+    });
     const route = `/${buildDeleteInvitationRoute({
       itemId,
       id: invitationToDelete.id,
@@ -282,10 +287,10 @@ describe('Invitations Mutations', () => {
 
     it('Delete one invitation successfully', async () => {
       // set data in cache
-      queryClient.setQueryData(key, List([
-        ...defaultInvitations,
-        invitationToDeleteRecord,
-      ]));
+      queryClient.setQueryData(
+        key,
+        List([...defaultInvitations, invitationToDeleteRecord]),
+      );
 
       const response = OK_RESPONSE;
 

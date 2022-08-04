@@ -11,7 +11,9 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildGetLikedItemsKey(memberId),
       queryFn: () =>
-        Api.getLikedItems(memberId, queryConfig).then((data) => convertJs(data)),
+        Api.getLikedItems(memberId, queryConfig).then((data) =>
+          convertJs(data),
+        ),
       ...defaultQueryOptions,
       enabled: Boolean(memberId),
     });

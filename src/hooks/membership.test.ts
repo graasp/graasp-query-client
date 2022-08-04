@@ -39,7 +39,7 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<MembershipRecord>)).toEqualImmutable(response[0]);
+      expect(data as List<MembershipRecord>).toEqualImmutable(response[0]);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response[0]);
     });
@@ -84,7 +84,7 @@ describe('Membership Hooks', () => {
         wrapper,
       });
 
-      expect((data as List<MembershipRecord>)).toEqualImmutable(response[0]);
+      expect(data as List<MembershipRecord>).toEqualImmutable(response[0]);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response[0]);
     });
@@ -113,7 +113,10 @@ describe('Membership Hooks', () => {
 
   describe('useManyItemMemberships', () => {
     const ids = [ITEMS.first()!.id, ITEMS.get(1)!.id];
-    const response = List([ITEM_MEMBERSHIPS_RESPONSE, ITEM_MEMBERSHIPS_RESPONSE]);
+    const response = List([
+      ITEM_MEMBERSHIPS_RESPONSE,
+      ITEM_MEMBERSHIPS_RESPONSE,
+    ]);
     const route = `/${buildGetItemMembershipsForItemsRoute(ids)}`;
     const key = buildManyItemMembershipsKey(ids);
 
@@ -126,7 +129,9 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route: oneRoute, response: oneResponse }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<List<MembershipRecord>>)).toEqualImmutable(oneResponse);
+      expect(data as List<List<MembershipRecord>>).toEqualImmutable(
+        oneResponse,
+      );
       // verify cache keys
       expect(queryClient.getQueryData(oneKey)).toEqualImmutable(oneResponse);
     });
@@ -136,7 +141,7 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<List<MembershipRecord>>)).toEqualImmutable(response);
+      expect(data as List<List<MembershipRecord>>).toEqualImmutable(response);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
@@ -179,7 +184,7 @@ describe('Membership Hooks', () => {
         wrapper,
       });
 
-      expect((data as List<List<MembershipRecord>>)).toEqualImmutable(response);
+      expect(data as List<List<MembershipRecord>>).toEqualImmutable(response);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });

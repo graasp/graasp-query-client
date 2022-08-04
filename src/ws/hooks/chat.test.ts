@@ -98,8 +98,7 @@ describe('Ws Chat Hooks', () => {
       expect(
         queryClient
           .getQueryData<RecordOf<Chat>>(chatKey)
-          ?.messages
-          .find(({ body }) => body === newMessage.body),
+          ?.messages.find(({ body }) => body === newMessage.body),
       ).toBeFalsy();
     });
   });

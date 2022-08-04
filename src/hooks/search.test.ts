@@ -31,7 +31,7 @@ describe('Keyword Search Hook', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<ItemRecord>)).toEqualImmutable(response);
+      expect(data as List<ItemRecord>).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);

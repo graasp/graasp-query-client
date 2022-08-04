@@ -24,7 +24,11 @@ import {
   ITEM_CATEGORIES,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
-import { CategoryRecord, CategoryTypeRecord, ItemCategoryRecord } from '../types';
+import {
+  CategoryRecord,
+  CategoryTypeRecord,
+  ItemCategoryRecord,
+} from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -53,7 +57,7 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<CategoryTypeRecord>)).toEqualImmutable(response);
+      expect(data as List<CategoryTypeRecord>).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -91,7 +95,7 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<CategoryRecord>)).toEqualImmutable(response);
+      expect(data as List<CategoryRecord>).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -167,11 +171,11 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<ItemCategoryRecord>)).toEqualImmutable(response);
+      expect(data as List<ItemCategoryRecord>).toEqualImmutable(response);
 
       // verify cache keys
       expect(
-        (queryClient.getQueryData(key) as List<ItemCategoryRecord>),
+        queryClient.getQueryData(key) as List<ItemCategoryRecord>,
       ).toEqualImmutable(response);
     });
 
@@ -205,19 +209,20 @@ describe('Category Hooks', () => {
 
     it(`Receive items in categories`, async () => {
       const defaultItemIdValues: ItemId = { itemId: 'id1' };
-      const createMockItemId: Record.Factory<ItemId> = Record(defaultItemIdValues);
+      const createMockItemId: Record.Factory<ItemId> =
+        Record(defaultItemIdValues);
       const ITEM_ID_1: ItemIdRecord = createMockItemId();
       const ITEM_ID_2: ItemIdRecord = createMockItemId({ itemId: 'id2' });
-      const response = List([ ITEM_ID_1, ITEM_ID_2 ]);
+      const response = List([ITEM_ID_1, ITEM_ID_2]);
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<ItemIdRecord>)).toEqualImmutable(response);
+      expect(data as List<ItemIdRecord>).toEqualImmutable(response);
 
       // verify cache keys
-      expect((queryClient.getQueryData(key) as List<ItemIdRecord>)).toEqualImmutable(
-        response,
-      );
+      expect(
+        queryClient.getQueryData(key) as List<ItemIdRecord>,
+      ).toEqualImmutable(response);
     });
     it(`Unauthorized`, async () => {
       const endpoints = [

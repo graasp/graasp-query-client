@@ -16,7 +16,13 @@ import {
   buildManyItemMembershipsKey,
   MUTATION_KEYS,
 } from '../config/keys';
-import { Invitation, Membership, MembershipRecord, QueryClientConfig, UUID } from '../types';
+import {
+  Invitation,
+  Membership,
+  MembershipRecord,
+  QueryClientConfig,
+  UUID,
+} from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

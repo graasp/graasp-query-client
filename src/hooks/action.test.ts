@@ -37,9 +37,7 @@ describe('Action Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as RecordOf<any>).toEqualImmutable(
-        response,
-      );
+      expect(data as RecordOf<any>).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);

@@ -143,7 +143,7 @@ describe('Item Tag Mutations', () => {
 
       const data = queryClient.getQueryState(itemTagKey);
       expect(data?.isInvalidated).toBeTruthy();
-      expect((data?.data as List<ItemTagRecord>)).toEqualImmutable(
+      expect(data?.data as List<ItemTagRecord>).toEqualImmutable(
         ITEM_TAGS.filter(({ id }) => id !== tagId),
       );
       expect(mockedNotifier).toHaveBeenCalledWith({
@@ -177,7 +177,7 @@ describe('Item Tag Mutations', () => {
 
       const data = queryClient.getQueryState(itemTagKey);
       expect(data?.isInvalidated).toBeTruthy();
-      expect((data?.data as List<ItemTagRecord>)).toEqualImmutable(ITEM_TAGS);
+      expect(data?.data as List<ItemTagRecord>).toEqualImmutable(ITEM_TAGS);
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: deleteItemTagRoutine.FAILURE,

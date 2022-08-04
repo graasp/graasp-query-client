@@ -34,7 +34,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       await queryClient.cancelQueries(itemTagKey);
 
       // Snapshot the previous value
-      const prevValue = queryClient.getQueryData<List<ItemTagRecord>>(itemTagKey);
+      const prevValue =
+        queryClient.getQueryData<List<ItemTagRecord>>(itemTagKey);
 
       // remove tag from list
       if (prevValue) {

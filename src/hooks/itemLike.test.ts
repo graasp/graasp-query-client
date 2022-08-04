@@ -75,7 +75,7 @@ describe('Item Like Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as typeof LIKE_COUNT)).toEqual(response);
+      expect(data as typeof LIKE_COUNT).toEqual(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(response);

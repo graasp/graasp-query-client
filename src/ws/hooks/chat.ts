@@ -39,16 +39,15 @@ export const configureWsChatHooks = (
           const chatKey = buildItemChatKey(chatId);
           const current: RecordOf<Chat> | undefined =
             queryClient.getQueryData(chatKey);
-          
+
           const message: ChatMessageRecord = convertJs(event.message);
 
           if (current) {
             switch (event.op) {
               case OPS.PUBLISH: {
-                const mutation = current.update('messages', (messages) => List([
-                  ...messages,
-                  message,
-                ]));
+                const mutation = current.update('messages', (messages) =>
+                  List([...messages, message]),
+                );
                 queryClient.setQueryData(chatKey, mutation);
                 break;
               }

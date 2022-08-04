@@ -277,9 +277,9 @@ describe('Items Mutations', () => {
       });
 
       // item key should not be changed and should be invalidated
-      expect(
-        (queryClient.getQueryData(itemKey) as ItemRecord),
-      ).toEqualImmutable(item);
+      expect(queryClient.getQueryData(itemKey) as ItemRecord).toEqualImmutable(
+        item,
+      );
       expect(queryClient.getQueryState(itemKey)?.isInvalidated).toBeTruthy();
     });
   });
@@ -327,9 +327,9 @@ describe('Items Mutations', () => {
 
       // original item path have not changed
       const itemKey = buildItemKey(copiedId);
-      expect(
-        queryClient.getQueryData<ItemRecord>(itemKey)?.path,
-      ).toEqual(copied.path);
+      expect(queryClient.getQueryData<ItemRecord>(itemKey)?.path).toEqual(
+        copied.path,
+      );
 
       // Check new parent is correctly invalidated
       expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
@@ -369,9 +369,9 @@ describe('Items Mutations', () => {
 
       // original item path have not changed
       const itemKey = buildItemKey(copiedId);
-      expect(
-        queryClient.getQueryData<ItemRecord>(itemKey)?.path,
-      ).toEqual(copied.path);
+      expect(queryClient.getQueryData<ItemRecord>(itemKey)?.path).toEqual(
+        copied.path,
+      );
 
       // Check new parent is correctly invalidated
       expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
@@ -421,9 +421,9 @@ describe('Items Mutations', () => {
 
       // original item path have not changed
       const itemKey = buildItemKey(copiedId);
-      expect(
-        queryClient.getQueryData<ItemRecord>(itemKey)?.path,
-      ).toEqual(copied.path);
+      expect(queryClient.getQueryData<ItemRecord>(itemKey)?.path).toEqual(
+        copied.path,
+      );
 
       // Check new parent is correctly invalidated
       expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
@@ -463,9 +463,9 @@ describe('Items Mutations', () => {
 
       // original item path have not changed
       const itemKey = buildItemKey(copiedId);
-      expect(
-        queryClient.getQueryData<ItemRecord>(itemKey)?.path,
-      ).toEqual(copied.path);
+      expect(queryClient.getQueryData<ItemRecord>(itemKey)?.path).toEqual(
+        copied.path,
+      );
 
       // Check new parent is correctly invalidated
       expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
@@ -519,9 +519,7 @@ describe('Items Mutations', () => {
       // original copied items path have not changed
       copied.forEach((item) => {
         const itemKey = buildItemKey(item.id);
-        const path = queryClient
-          .getQueryData<ItemRecord>(itemKey)
-          ?.path;
+        const path = queryClient.getQueryData<ItemRecord>(itemKey)?.path;
         expect(path).toEqual(item.path);
       });
 
@@ -565,9 +563,7 @@ describe('Items Mutations', () => {
       // original copied items path have not changed
       copied.forEach((item) => {
         const itemKey = buildItemKey(item.id);
-        const path = queryClient
-          .getQueryData<ItemRecord>(itemKey)
-          ?.path;
+        const path = queryClient.getQueryData<ItemRecord>(itemKey)?.path;
         expect(path).toEqual(item.path);
       });
 
@@ -618,7 +614,9 @@ describe('Items Mutations', () => {
       // verify cache keys
       const itemKey = buildItemKey(moved);
       const data = queryClient.getQueryData<ItemRecord>(itemKey);
-      expect(data?.path).toEqual(`${ITEMS.first()!.path}.${ITEMS.get(1)!.path}`);
+      expect(data?.path).toEqual(
+        `${ITEMS.first()!.path}.${ITEMS.get(1)!.path}`,
+      );
 
       // Check new parent is correctly invalidated
       const toItemKey = getKeyForParentId(to);
@@ -665,9 +663,9 @@ describe('Items Mutations', () => {
 
       // verify cache keys
       const itemKey = buildItemKey(moved);
-      expect(
-        queryClient.getQueryData<ItemRecord>(itemKey)?.path,
-      ).toEqual(ITEMS.get(1)!.path);
+      expect(queryClient.getQueryData<ItemRecord>(itemKey)?.path).toEqual(
+        ITEMS.get(1)!.path,
+      );
 
       // Check new parent is correctly invalidated
       const toItemKey = getKeyForParentId(to);
@@ -726,9 +724,7 @@ describe('Items Mutations', () => {
       // Check new path are corrects
       moved.forEach((item) => {
         const itemKey = buildItemKey(item.id);
-        const path = queryClient
-          .getQueryData<ItemRecord>(itemKey)
-          ?.path;
+        const path = queryClient.getQueryData<ItemRecord>(itemKey)?.path;
         expect(path).toEqual(`${to.path}.${transformIdForPath(item.id)}`);
       });
 
@@ -779,9 +775,7 @@ describe('Items Mutations', () => {
       // items path have not changed
       moved.forEach((item) => {
         const itemKey = buildItemKey(item.id);
-        const path = queryClient
-          .getQueryData<ItemRecord>(itemKey)
-          ?.path;
+        const path = queryClient.getQueryData<ItemRecord>(itemKey)?.path;
         expect(path).toEqual(item.path);
       });
 
@@ -831,9 +825,7 @@ describe('Items Mutations', () => {
       // items path have not changed
       moved.forEach((item) => {
         const itemKey = buildItemKey(item.id);
-        const path = queryClient
-          .getQueryData<ItemRecord>(itemKey)
-          ?.path;
+        const path = queryClient.getQueryData<ItemRecord>(itemKey)?.path;
         expect(path).toEqual(item.path);
       });
 

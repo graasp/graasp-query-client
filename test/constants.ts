@@ -126,7 +126,9 @@ export const ITEMS: List<ItemRecord> = List([
 export const MESSAGE_IDS = ['12345', '78945'];
 
 const defaultMemberExtraValues: MemberExtra = {};
-const createMemberExtra: Record.Factory<MemberExtra> = Record(defaultMemberExtraValues);
+const createMemberExtra: Record.Factory<MemberExtra> = Record(
+  defaultMemberExtraValues,
+);
 const extraMember: MemberExtraRecord = createMemberExtra({});
 
 const defaultMemberValues: Member = {
@@ -199,14 +201,15 @@ export const MEMBERS_RESPONSE: List<MemberRecord> = List([
 
 export const OK_RESPONSE = {};
 
-
 const defaultMembershipValues: Membership = {
   id: 'membership-id',
   memberId: 'member-id',
   itemId: ITEMS.toArray()[0].id,
   permission: PERMISSION_LEVELS.READ,
 };
-const createMockMembership: Record.Factory<Membership> = Record(defaultMembershipValues);
+const createMockMembership: Record.Factory<Membership> = Record(
+  defaultMembershipValues,
+);
 
 const MEMBERSHIP_1: MembershipRecord = createMockMembership({
   id: 'membership-id',
@@ -230,9 +233,12 @@ export const ITEM_MEMBERSHIPS_RESPONSE: List<MembershipRecord> = List([
 const defaultItemLoginResponseValues: ItemLogin = {
   loginSchema: ITEM_LOGIN_SCHEMAS.USERNAME,
 };
-const createMockItemLoginResponse: Record.Factory<ItemLogin> = Record(defaultItemLoginResponseValues);
+const createMockItemLoginResponse: Record.Factory<ItemLogin> = Record(
+  defaultItemLoginResponseValues,
+);
 
-export const ITEM_LOGIN_RESPONSE: ItemLoginRecord = createMockItemLoginResponse();
+export const ITEM_LOGIN_RESPONSE: ItemLoginRecord =
+  createMockItemLoginResponse();
 
 const BlobMock = {
   blob: () => 'blob',
@@ -272,10 +278,7 @@ const APP_2: RecordOf<any> = createMockApps({
   extra: createAppExtra({ image: 'http://fileapp.com/logo.png' }),
 });
 
-export const APPS: List<RecordOf<any>> = List([
-  APP_1,
-  APP_2,
-]);
+export const APPS: List<RecordOf<any>> = List([APP_1, APP_2]);
 
 export const buildChatMessages = (id: UUID) => {
   const defaultChatMessageValues: any = {
@@ -283,7 +286,9 @@ export const buildChatMessages = (id: UUID) => {
     body: 'some text',
     creator: 'somememberid',
   };
-  const createMockChatMessage: Record.Factory<any> = Record(defaultChatMessageValues);
+  const createMockChatMessage: Record.Factory<any> = Record(
+    defaultChatMessageValues,
+  );
   const CHAT_MESSAGE_1: RecordOf<any> = createMockChatMessage({
     chatId: id,
     body: 'some text',
@@ -317,10 +322,7 @@ const FLAG_2: FlagRecord = createMockFlags({
   name: 'flag-2',
 });
 
-export const FLAGS: List<FlagRecord> = List([
-  FLAG_1,
-  FLAG_2,
-]);
+export const FLAGS: List<FlagRecord> = List([FLAG_1, FLAG_2]);
 
 const defaultTagsValues: any = {
   id: 'item-login-tag-id',
@@ -338,10 +340,7 @@ const TAG_2: RecordOf<any> = createMockTags({
   name: 'item-public',
 });
 
-export const TAGS: List<RecordOf<any>> = List([
-  TAG_1,
-  TAG_2,
-]);
+export const TAGS: List<RecordOf<any>> = List([TAG_1, TAG_2]);
 
 const defaultItemTagsValues: any = {
   id: 'tag-id',
@@ -362,17 +361,16 @@ const ITEM_TAG_2: RecordOf<any> = createMockItemTags({
   tagId: 'tag-id1',
 });
 
-export const ITEM_TAGS: List<RecordOf<any>> = List([
-  ITEM_TAG_1,
-  ITEM_TAG_2,
-]);
+export const ITEM_TAGS: List<RecordOf<any>> = List([ITEM_TAG_1, ITEM_TAG_2]);
 
 const defaultMessageItemChatValues: any = {
   id: MESSAGE_IDS[0],
   creator: MEMBER_RESPONSE.id,
   content: 'text',
 };
-const createMockMessageItemChat: Record.Factory<any> = Record(defaultMessageItemChatValues);
+const createMockMessageItemChat: Record.Factory<any> = Record(
+  defaultMessageItemChatValues,
+);
 
 const MESSAGE_ITEM_CHAT_1: RecordOf<any> = createMockMessageItemChat({
   id: MESSAGE_IDS[0],
@@ -398,23 +396,25 @@ const defaultCategoryTypeValues: CategoryType = {
   id: 'type-id',
   name: 'type-name',
 };
-const createMockCategoryType: Record.Factory<CategoryType> = Record(defaultCategoryTypeValues);
+const createMockCategoryType: Record.Factory<CategoryType> = Record(
+  defaultCategoryTypeValues,
+);
 
 const CATEGORY_TYPE_1: CategoryTypeRecord = createMockCategoryType({
   id: 'type-id',
   name: 'type-name',
 });
 
-export const CATEGORY_TYPES: List<CategoryTypeRecord> = List([
-  CATEGORY_TYPE_1,
-]);
+export const CATEGORY_TYPES: List<CategoryTypeRecord> = List([CATEGORY_TYPE_1]);
 
 const defaultCategoryValues: Category = {
   id: 'category-id1',
   name: 'category-name1',
   type: 'type-id1',
 };
-const createMockCategory: Record.Factory<Category> = Record(defaultCategoryValues);
+const createMockCategory: Record.Factory<Category> = Record(
+  defaultCategoryValues,
+);
 
 const CATEGORY_1: CategoryRecord = createMockCategory({
   id: 'category-id1',
@@ -428,17 +428,16 @@ const CATEGORY_2: CategoryRecord = createMockCategory({
   type: 'type-id2',
 });
 
-export const CATEGORIES: List<CategoryRecord> = List([
-  CATEGORY_1,
-  CATEGORY_2,
-]);
+export const CATEGORIES: List<CategoryRecord> = List([CATEGORY_1, CATEGORY_2]);
 
 const defaultItemCategoryValues: ItemCategory = {
   id: 'id1',
   itemId: 'item-id',
   categoryId: 'category-id1',
 };
-const createMockItemCategory: Record.Factory<ItemCategory> = Record(defaultItemCategoryValues);
+const createMockItemCategory: Record.Factory<ItemCategory> = Record(
+  defaultItemCategoryValues,
+);
 
 const ITEM_CATEGORY_1: ItemCategoryRecord = createMockItemCategory({
   id: 'id1',
@@ -470,7 +469,9 @@ const defaultItemLikesValues: ItemLike = {
   memberId: 'member-id',
   createdAt: 'timestamp',
 };
-const createMockItemLike: Record.Factory<ItemLike> = Record(defaultItemLikesValues);
+const createMockItemLike: Record.Factory<ItemLike> = Record(
+  defaultItemLikesValues,
+);
 
 const ITEM_LIKE_1: ItemLikeRecord = createMockItemLike({
   id: 'id1',
@@ -509,10 +510,7 @@ const STATUS_2: StatusRecord = createMockStatus({
   name: 'status-2',
 });
 
-export const STATUS_LIST: List<StatusRecord> = List([
-  STATUS_1,
-  STATUS_2,
-]);
+export const STATUS_LIST: List<StatusRecord> = List([STATUS_1, STATUS_2]);
 
 const defaultItemValidationStatusValues: ItemValidationAndReview = {
   itemValidationId: 'iv-id-1',
@@ -520,14 +518,16 @@ const defaultItemValidationStatusValues: ItemValidationAndReview = {
   reviewReason: '',
   createdAt: 'ts',
 };
-const createMockItemValidationSatus: Record.Factory<ItemValidationAndReview> = Record(defaultItemValidationStatusValues);
+const createMockItemValidationSatus: Record.Factory<ItemValidationAndReview> =
+  Record(defaultItemValidationStatusValues);
 
-export const ITEM_VALIDATION_STATUS: ItemValidationAndReviewRecord = createMockItemValidationSatus({
-  itemValidationId: 'iv-id-1',
-  reviewStatusId: 'accepted',
-  reviewReason: '',
-  createdAt: 'ts',
-});
+export const ITEM_VALIDATION_STATUS: ItemValidationAndReviewRecord =
+  createMockItemValidationSatus({
+    itemValidationId: 'iv-id-1',
+    reviewStatusId: 'accepted',
+    reviewReason: '',
+    createdAt: 'ts',
+  });
 
 const defaultFullValidationValues: FullValidationRecord = {
   id: 'id-1',
@@ -538,27 +538,31 @@ const defaultFullValidationValues: FullValidationRecord = {
   process: 'process-1',
   createdAt: 'ts',
 };
-const createMockFullValidation: Record.Factory<FullValidationRecord> = Record(defaultFullValidationValues);
+const createMockFullValidation: Record.Factory<FullValidationRecord> = Record(
+  defaultFullValidationValues,
+);
 
-const FULL_VALIDATION_RECORDS_1: FullValidationRecordRecord = createMockFullValidation({
-  id: 'id-1',
-  itemId: 'item-id-1',
-  reviewStatusId: 'status-id-1',
-  validationStatusId: 'status-id-2',
-  validationResult: '',
-  process: 'process-1',
-  createdAt: 'ts',
-});
+const FULL_VALIDATION_RECORDS_1: FullValidationRecordRecord =
+  createMockFullValidation({
+    id: 'id-1',
+    itemId: 'item-id-1',
+    reviewStatusId: 'status-id-1',
+    validationStatusId: 'status-id-2',
+    validationResult: '',
+    process: 'process-1',
+    createdAt: 'ts',
+  });
 
-const FULL_VALIDATION_RECORDS_2: FullValidationRecordRecord = createMockFullValidation({
-  id: 'id-2',
-  itemId: 'item-id-1',
-  reviewStatusId: 'status-id-1',
-  validationStatusId: 'status-id-2',
-  validationResult: '',
-  process: 'process-2',
-  createdAt: 'ts',
-});
+const FULL_VALIDATION_RECORDS_2: FullValidationRecordRecord =
+  createMockFullValidation({
+    id: 'id-2',
+    itemId: 'item-id-1',
+    reviewStatusId: 'status-id-1',
+    validationStatusId: 'status-id-2',
+    validationResult: '',
+    process: 'process-2',
+    createdAt: 'ts',
+  });
 
 export const FULL_VALIDATION_RECORDS: List<FullValidationRecordRecord> = List([
   FULL_VALIDATION_RECORDS_1,
@@ -575,29 +579,32 @@ const defaultItemValidationGroupValues: ItemValidationGroup = {
   updatedAt: 'ts',
   createdAt: '',
 };
-const createMockItemValidationGroup: Record.Factory<ItemValidationGroup> = Record(defaultItemValidationGroupValues);
+const createMockItemValidationGroup: Record.Factory<ItemValidationGroup> =
+  Record(defaultItemValidationGroupValues);
 
-const ITEM_VALIDATION_GROUP_1: ItemValidationGroupRecord = createMockItemValidationGroup({
-  id: 'id-1',
-  itemId: 'item-id-1',
-  itemValidationId: 'iv-id',
-  processId: 'ivp-id-1',
-  statusId: 'success-id',
-  result: '',
-  updatedAt: 'ts',
-  createdAt: '',
-});
+const ITEM_VALIDATION_GROUP_1: ItemValidationGroupRecord =
+  createMockItemValidationGroup({
+    id: 'id-1',
+    itemId: 'item-id-1',
+    itemValidationId: 'iv-id',
+    processId: 'ivp-id-1',
+    statusId: 'success-id',
+    result: '',
+    updatedAt: 'ts',
+    createdAt: '',
+  });
 
-const ITEM_VALIDATION_GROUP_2: ItemValidationGroupRecord = createMockItemValidationGroup({
-  id: 'id-2',
-  itemId: 'item-id-1',
-  itemValidationId: 'iv-id',
-  processId: 'ivp-id-2',
-  statusId: 'success-id',
-  result: '',
-  updatedAt: 'ts',
-  createdAt: '',
-});
+const ITEM_VALIDATION_GROUP_2: ItemValidationGroupRecord =
+  createMockItemValidationGroup({
+    id: 'id-2',
+    itemId: 'item-id-1',
+    itemValidationId: 'iv-id',
+    processId: 'ivp-id-2',
+    statusId: 'success-id',
+    result: '',
+    updatedAt: 'ts',
+    createdAt: '',
+  });
 
 export const ITEM_VALIDATION_GROUPS: List<ItemValidationGroupRecord> = List([
   ITEM_VALIDATION_GROUP_1,
@@ -617,15 +624,15 @@ const ACTION_1: RecordOf<any> = createMockAction({
   memberId: 'member-id',
 });
 
-export const ACTIONS_LIST: List<RecordOf<any>> = List([
-  ACTION_1,
-]);
+export const ACTIONS_LIST: List<RecordOf<any>> = List([ACTION_1]);
 
 const defaultActionDataValues: any = {
   actions: ACTIONS_LIST,
 };
 
-const createMockActionData: Record.Factory<any> = Record(defaultActionDataValues);
+const createMockActionData: Record.Factory<any> = Record(
+  defaultActionDataValues,
+);
 
 export const ACTIONS_DATA: RecordOf<any> = createMockActionData({
   actions: ACTIONS_LIST,
@@ -663,12 +670,15 @@ export const buildInvitationRecord = ({
     creator: 'creator-id',
     itemPath,
   };
-  const createMockInvitation: Record.Factory<any> = Record(defaultInvitationValues);
+  const createMockInvitation: Record.Factory<any> = Record(
+    defaultInvitationValues,
+  );
   const invitation: RecordOf<any> = createMockInvitation();
   return invitation;
 };
 
-export const buildMockInvitations = (itemId: string) => List([
-  buildInvitationRecord({ itemPath: itemId, email: 'a' }),
-  buildInvitationRecord({ itemPath: itemId, email: 'b' }),
-]);
+export const buildMockInvitations = (itemId: string) =>
+  List([
+    buildInvitationRecord({ itemPath: itemId, email: 'a' }),
+    buildInvitationRecord({ itemPath: itemId, email: 'b' }),
+  ]);

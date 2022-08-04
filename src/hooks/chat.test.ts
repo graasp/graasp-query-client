@@ -31,13 +31,18 @@ describe('Chat Hooks', () => {
     const hook = () => hooks.useItemChat(itemId);
 
     it(`Receive chat messages`, async () => {
-      const defaultItemChatMessageValues = { id: itemId, messages: buildChatMessages(itemId) };
-      const createMockItemChatMessage: Record.Factory<any> = Record(defaultItemChatMessageValues);
+      const defaultItemChatMessageValues = {
+        id: itemId,
+        messages: buildChatMessages(itemId),
+      };
+      const createMockItemChatMessage: Record.Factory<any> = Record(
+        defaultItemChatMessageValues,
+      );
       const response: RecordOf<any> = createMockItemChatMessage();
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as ItemChatRecord)).toEqualImmutable(response);
+      expect(data as ItemChatRecord).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);

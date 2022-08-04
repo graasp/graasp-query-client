@@ -7,7 +7,12 @@ import {
   buildMembersKey,
   CURRENT_MEMBER_KEY,
 } from '../config/keys';
-import { MemberRecord, QueryClientConfig, UndefinedArgument, UUID } from '../types';
+import {
+  MemberRecord,
+  QueryClientConfig,
+  UndefinedArgument,
+  UUID,
+} from '../types';
 import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
 import { convertJs } from '../utils/util';
 

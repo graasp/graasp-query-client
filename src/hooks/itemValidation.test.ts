@@ -53,7 +53,9 @@ describe('Item Validation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<FullValidationRecordRecord>)).toEqualImmutable(response);
+      expect(data as List<FullValidationRecordRecord>).toEqualImmutable(
+        response,
+      );
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -90,7 +92,7 @@ describe('Item Validation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<StatusRecord>)).toEqualImmutable(response);
+      expect(data as List<StatusRecord>).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -128,7 +130,7 @@ describe('Item Validation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<StatusRecord>)).toEqualImmutable(response);
+      expect(data as List<StatusRecord>).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -204,7 +206,9 @@ describe('Item Validation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<ItemValidationGroupRecord>)).toEqualImmutable(response);
+      expect(data as List<ItemValidationGroupRecord>).toEqualImmutable(
+        response,
+      );
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);

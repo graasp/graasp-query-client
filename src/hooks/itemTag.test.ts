@@ -34,7 +34,7 @@ describe('Item Tags Hooks', () => {
       const endpoints = [{ route, response }];
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<ItemTagRecord>)).toEqualImmutable(response);
+      expect(data as List<ItemTagRecord>).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -74,7 +74,7 @@ describe('Item Tags Hooks', () => {
       const endpoints = [{ route, response }];
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<typeof TAGS>)).toEqualImmutable(response);
+      expect(data as List<typeof TAGS>).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -115,7 +115,7 @@ describe('Item Tags Hooks', () => {
       const endpoints = [{ route, response }];
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<List<typeof TAGS>>)).toEqualImmutable(response);
+      expect(data as List<List<typeof TAGS>>).toEqualImmutable(response);
 
       // verify cache keys
       keys.forEach((key) =>
@@ -128,11 +128,10 @@ describe('Item Tags Hooks', () => {
     it(`Receive tags and save only for non-error tags`, async () => {
       const defaultStatusCode = { statusCode: StatusCodes.FORBIDDEN };
       const createMockStatusCode = Record(defaultStatusCode);
-      const STATUS_CODE = createMockStatusCode({ statusCode: StatusCodes.FORBIDDEN });
-      const response = List([
-        ...itemsIds.map(() => TAGS),
-        STATUS_CODE,
-      ]);
+      const STATUS_CODE = createMockStatusCode({
+        statusCode: StatusCodes.FORBIDDEN,
+      });
+      const response = List([...itemsIds.map(() => TAGS), STATUS_CODE]);
       const idWithError = 'some-id';
       const routeWithError = `/${buildGetItemsTagsRoute([
         ...itemsIds,
@@ -148,7 +147,7 @@ describe('Item Tags Hooks', () => {
         wrapper,
       });
 
-      expect((data as List<typeof TAGS>)).toEqualImmutable(response);
+      expect(data as List<typeof TAGS>).toEqualImmutable(response);
 
       // verify cache keys
       keys.forEach((key) =>

@@ -39,7 +39,7 @@ describe('Invitation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as InvitationRecord)).toEqualImmutable(response);
+      expect(data as InvitationRecord).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -99,7 +99,7 @@ describe('Invitation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<InvitationRecord>)).toEqualImmutable(response);
+      expect(data as List<InvitationRecord>).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);

@@ -45,13 +45,20 @@ describe('Ws Membership Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       expect(
-        queryClient.getQueryData<List<MembershipRecord>>(membershipsKey)?.toJS(),
+        queryClient
+          .getQueryData<List<MembershipRecord>>(membershipsKey)
+          ?.toJS(),
       ).toContainEqual(newMembership);
     });
 
     it(`Receive update membership update`, async () => {
-      queryClient.setQueryData(membershipsKey, memberships.push(newMembershipRecord));
-      const updatedMembership = (newMembershipRecord.update('permission', () => PERMISSION_LEVELS.WRITE)).toJS();
+      queryClient.setQueryData(
+        membershipsKey,
+        memberships.push(newMembershipRecord),
+      );
+      const updatedMembership = newMembershipRecord
+        .update('permission', () => PERMISSION_LEVELS.WRITE)
+        .toJS();
       await mockWsHook({ hook, wrapper });
 
       const chatEvent = {

@@ -46,9 +46,7 @@ export default (
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       const { data: currentMember } = useCurrentMember();
-      itemWsHooks?.useOwnItemsUpdates(
-        getUpdates ? currentMember?.id : null,
-      );
+      itemWsHooks?.useOwnItemsUpdates(getUpdates ? currentMember?.id : null);
 
       return useQuery({
         queryKey: OWN_ITEMS_KEY,
@@ -130,7 +128,7 @@ export default (
                 convertJs(data),
               ),
             ),
-          ).then(items => {
+          ).then((items) => {
             return List(items);
           });
         },
@@ -187,9 +185,7 @@ export default (
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       const { data: currentMember } = useCurrentMember();
-      itemWsHooks?.useSharedItemsUpdates(
-        getUpdates ? currentMember?.id : null,
-      );
+      itemWsHooks?.useSharedItemsUpdates(getUpdates ? currentMember?.id : null);
 
       return useQuery({
         queryKey: SHARED_ITEMS_KEY,
@@ -214,7 +210,6 @@ export default (
       },
     ) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
-      console.log("useItem se pasa")
       itemWsHooks?.useItemUpdates(getUpdates ? id : null);
 
       return useQuery({
@@ -224,9 +219,7 @@ export default (
             throw new UndefinedArgument();
           }
           return Api.getItem(id, queryConfig).then((data) => {
-            console.log("dataEnHook")
-            console.log(convertJs(data))
-            return convertJs(data)
+            return convertJs(data);
           });
         },
         enabled: Boolean(id),
@@ -246,15 +239,17 @@ export default (
       return useQuery({
         queryKey: buildItemsKey(ids),
         queryFn: (): Promise<List<ItemRecord>> => {
-          if(!ids) {
-            throw new UndefinedArgument()
+          if (!ids) {
+            throw new UndefinedArgument();
           }
-          if(ids.length === 1) {
+          if (ids.length === 1) {
             return Api.getItem(ids[0], queryConfig).then((data) =>
               convertJs([data]),
-            )
+            );
           } else {
-            return Api.getItems(ids, queryConfig).then((data) => convertJs(data))
+            return Api.getItems(ids, queryConfig).then((data) =>
+              convertJs(data),
+            );
           }
         },
         onSuccess: async (items: List<ItemRecord>) => {

@@ -145,7 +145,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ? extra.favoriteItems.concat([itemId])
         : [itemId];
 
-      const member = convertJs({ extra: { ...extra, favoriteItems: newFavoriteItems } });
+      const member = convertJs({
+        extra: { ...extra, favoriteItems: newFavoriteItems },
+      });
 
       queryClient.setQueryData(
         CURRENT_MEMBER_KEY,

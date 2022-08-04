@@ -1,7 +1,12 @@
 import { QueryClient, useQuery } from 'react-query';
 import { List } from 'immutable';
 import { isError } from '@graasp/utils';
-import { ItemTagRecord, QueryClientConfig, UndefinedArgument, UUID } from '../types';
+import {
+  ItemTagRecord,
+  QueryClientConfig,
+  UndefinedArgument,
+  UUID,
+} from '../types';
 import * as Api from '../api';
 import {
   buildItemTagsKey,
@@ -17,7 +22,8 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
   const useTags = () =>
     useQuery({
       queryKey: TAGS_KEY,
-      queryFn: (): Promise<List<ItemTagRecord>> => Api.getTags(queryConfig).then((data) => convertJs(data)),
+      queryFn: (): Promise<List<ItemTagRecord>> =>
+        Api.getTags(queryConfig).then((data) => convertJs(data)),
       ...defaultQueryOptions,
       cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });

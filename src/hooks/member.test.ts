@@ -44,9 +44,11 @@ describe('Member Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as MemberRecord)).toEqualImmutable(response);
+      expect(data as MemberRecord).toEqualImmutable(response);
       // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqualImmutable(data);
+      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqualImmutable(
+        data,
+      );
     });
 
     it(`Unauthorized`, async () => {
@@ -67,7 +69,9 @@ describe('Member Hooks', () => {
       expect((data as MemberRecord).toJS()).toEqual(SIGNED_OUT_USER);
       expect(isSuccess).toBeTruthy();
       // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqualImmutable(data);
+      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqualImmutable(
+        data,
+      );
     });
   });
 
@@ -89,9 +93,11 @@ describe('Member Hooks', () => {
         endpoints,
       });
 
-      expect((data as MemberRecord)).toEqualImmutable(response);
+      expect(data as MemberRecord).toEqualImmutable(response);
       // verify cache keys
-      expect(queryClient.getQueryData(buildMemberKey(id))).toEqualImmutable(data);
+      expect(queryClient.getQueryData(buildMemberKey(id))).toEqualImmutable(
+        data,
+      );
     });
 
     it(`Unauthorized`, async () => {
@@ -134,9 +140,11 @@ describe('Member Hooks', () => {
         endpoints,
       });
 
-      expect((data as MemberRecord)).toEqualImmutable(response);
+      expect(data as MemberRecord).toEqualImmutable(response);
       // verify cache keys
-      expect(queryClient.getQueryData(buildMemberKey(id))).toEqualImmutable(data);
+      expect(queryClient.getQueryData(buildMemberKey(id))).toEqualImmutable(
+        data,
+      );
     });
   });
 
@@ -184,13 +192,14 @@ describe('Member Hooks', () => {
       const members = data as List<MemberRecord>;
       expect(members).toEqualImmutable(List(oneMemberResponse));
       // verify cache keys
-      expect(queryClient.getQueryData(buildMembersKey(oneMemberIds))).toEqualImmutable(
-        data,
-      );
       expect(
-        queryClient
-          .getQueryData<MemberRecord>(buildMemberKey(oneMemberIds[0])),
-      ).toEqualImmutable(members.find(({ id: thisId }) => thisId === oneMemberIds[0]));
+        queryClient.getQueryData(buildMembersKey(oneMemberIds)),
+      ).toEqualImmutable(data);
+      expect(
+        queryClient.getQueryData<MemberRecord>(buildMemberKey(oneMemberIds[0])),
+      ).toEqualImmutable(
+        members.find(({ id: thisId }) => thisId === oneMemberIds[0]),
+      );
     });
 
     it(`Receive two members`, async () => {
@@ -210,7 +219,9 @@ describe('Member Hooks', () => {
       const members = data as List<MemberRecord>;
       expect(members).toEqualImmutable(response);
       // verify cache keys
-      expect(queryClient.getQueryData(buildMembersKey(ids))).toEqualImmutable(data);
+      expect(queryClient.getQueryData(buildMembersKey(ids))).toEqualImmutable(
+        data,
+      );
       for (const id of ids) {
         expect(
           queryClient.getQueryData<MemberRecord>(buildMemberKey(id)),
@@ -266,7 +277,9 @@ describe('Member Hooks', () => {
       const members = data as List<MemberRecord>;
       expect(members).toEqualImmutable(response);
       // verify cache keys
-      expect(queryClient.getQueryData(buildMembersKey(ids))).toEqualImmutable(data);
+      expect(queryClient.getQueryData(buildMembersKey(ids))).toEqualImmutable(
+        data,
+      );
       for (const id of ids) {
         expect(
           queryClient.getQueryData<MemberRecord>(buildMemberKey(id)),

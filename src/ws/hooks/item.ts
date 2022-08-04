@@ -94,7 +94,7 @@ export const configureWsItemHooks = (
           if (event.kind === KINDS.SELF) {
             const current: ItemRecord | undefined =
               queryClient.getQueryData(itemKey);
-              const item: ItemRecord = convertJs(event.item);
+            const item: ItemRecord = convertJs(event.item);
 
             if (current?.id === item.id) {
               switch (event.op) {

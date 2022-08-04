@@ -60,7 +60,7 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as ItemRecord)).toEqualImmutable(response);
+      expect(data as ItemRecord).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(OWN_ITEMS_KEY)).toEqualImmutable(
@@ -109,7 +109,7 @@ describe('Items Hooks', () => {
         wrapper,
       });
 
-      expect((data as ItemRecord)).toEqualImmutable(response);
+      expect(data as ItemRecord).toEqualImmutable(response);
       expect(isSuccess).toBeTruthy();
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -169,7 +169,7 @@ describe('Items Hooks', () => {
       });
 
       expect(isSuccess).toBeTruthy();
-      expect((data as ItemRecord)).toEqualImmutable(response);
+      expect(data as ItemRecord).toEqualImmutable(response);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
       for (const item of response) {
@@ -223,9 +223,9 @@ describe('Items Hooks', () => {
       }
 
       // verify cache keys
-      for (const item of queryClient.getQueryData(key) as List<List<
-        ItemRecord
-      >>) {
+      for (const item of queryClient.getQueryData(key) as List<
+        List<ItemRecord>
+      >) {
         expect(item).toEqualImmutable(response);
       }
       for (const item of response) {
@@ -275,7 +275,7 @@ describe('Items Hooks', () => {
       }
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as ItemRecord)).toEqualImmutable(response);
+      expect(data as ItemRecord).toEqualImmutable(response);
       // verify cache keys
       expect(
         queryClient.getQueryData(buildItemParentsKey(childItem.id)),
@@ -377,7 +377,7 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as ItemRecord)).toEqualImmutable(response);
+      expect(data as ItemRecord).toEqualImmutable(response);
       // verify cache keys
       expect(queryClient.getQueryData(SHARED_ITEMS_KEY)).toEqualImmutable(
         response,
@@ -416,7 +416,7 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as ItemRecord)).toEqualImmutable(response);
+      expect(data as ItemRecord).toEqualImmutable(response);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
@@ -480,7 +480,7 @@ describe('Items Hooks', () => {
       });
 
       expect(isSuccess).toBeTruthy();
-      expect((data as ItemRecord)).toEqualImmutable(response);
+      expect(data as ItemRecord).toEqualImmutable(response);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
@@ -496,13 +496,13 @@ describe('Items Hooks', () => {
       const hook = () => hooks.useItems([id]);
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<ItemRecord>)).toEqualImmutable(List([response]));
+      expect(data as List<ItemRecord>).toEqualImmutable(List([response]));
       // verify cache keys
       const item = queryClient.getQueryData(buildItemKey(id)) as ItemRecord;
       expect(item).toEqualImmutable(response);
-      const items = queryClient.getQueryData(buildItemsKey([id])) as List<
-        ItemRecord
-      >;
+      const items = queryClient.getQueryData(
+        buildItemsKey([id]),
+      ) as List<ItemRecord>;
       expect(items).toEqualImmutable(List([response]));
     });
 
@@ -514,7 +514,7 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as ItemRecord)).toEqualImmutable(response);
+      expect(data as ItemRecord).toEqualImmutable(response);
       // verify cache keys
       expect(queryClient.getQueryData(buildItemsKey(ids))).toEqualImmutable(
         data,
@@ -565,7 +565,7 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as ItemLoginRecord)).toEqualImmutable(response);
+      expect(data as ItemLoginRecord).toEqualImmutable(response);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
@@ -707,7 +707,7 @@ describe('Items Hooks', () => {
       const response = ITEMS;
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect((data as ItemRecord)).toEqualImmutable(response);
+      expect(data as ItemRecord).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(recycleBinKey)).toEqualImmutable(
@@ -752,7 +752,7 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<ItemRecord>)).toEqualImmutable(response);
+      expect(data as List<ItemRecord>).toEqualImmutable(response);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });

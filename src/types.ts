@@ -166,8 +166,8 @@ export type ChatMessage = {
 export type ChatMessageRecord = RecordOf<ChatMessage>;
 
 export type ItemChat = {
-  id: string,
-  messages: List<ChatMessageRecord>,
+  id: string;
+  messages: List<ChatMessageRecord>;
 };
 
 export type ItemChatRecord = RecordOf<ItemChat>;
@@ -249,17 +249,17 @@ export type NewInvitation = Pick<Invitation, 'email' & 'permission'> &
   Partial<Invitation>;
 
 export type Flag = {
-  id: UUID,
-  name: string,
+  id: UUID;
+  name: string;
 };
 
 export type FlagRecord = RecordOf<Flag>;
 
 export type ItemLike = {
-  id: UUID,
-  itemId: UUID,
-  memberId: string,
-  createdAt: string,
+  id: UUID;
+  itemId: UUID;
+  memberId: string;
+  createdAt: string;
 };
 
 export type ItemLikeRecord = RecordOf<ItemLike>;
