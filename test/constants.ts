@@ -2,14 +2,24 @@ import { StatusCodes } from 'http-status-codes';
 import { List, Record, RecordOf } from 'immutable';
 
 import {
+  Action,
+  ActionData,
+  ActionDataRecord,
+  ActionRecord,
+  App,
+  AppRecord,
   Category,
   CategoryRecord,
   CategoryType,
   CategoryTypeRecord,
+  ChatMessage,
+  ChatMessageRecord,
   Flag,
   FlagRecord,
   FullValidationRecord,
   FullValidationRecordRecord,
+  Invitation,
+  InvitationRecord,
   Item,
   ItemCategory,
   ItemCategoryRecord,
@@ -18,6 +28,8 @@ import {
   ItemLogin,
   ItemLoginRecord,
   ItemRecord,
+  ItemTag,
+  ItemTagRecord,
   ItemValidationAndReview,
   ItemValidationAndReviewRecord,
   ItemValidationGroup,
@@ -30,9 +42,15 @@ import {
   MemberRecord,
   Membership,
   MembershipRecord,
+  MessageItemChat,
+  MessageItemChatList,
+  MessageItemChatListRecord,
+  MessageItemChatRecord,
   PERMISSION_LEVELS,
   Status,
   StatusRecord,
+  Tag,
+  TagRecord,
   UUID,
 } from '../src/types';
 
@@ -256,50 +274,50 @@ export const AVATAR_BLOB_RESPONSE = BlobMock;
 const defaultAppExtraValues: any = { image: 'http://codeapp.com/logo.png' };
 const createAppExtra: Record.Factory<any> = Record(defaultAppExtraValues);
 
-const defaultAppValues: any = {
+const defaultAppValues: App = {
   name: 'Code App',
   url: 'http://codeapp.com',
   description: 'description',
   extra: createAppExtra({ image: 'http://codeapp.com/logo.png' }),
 };
-const createMockApps: Record.Factory<any> = Record(defaultAppValues);
+const createMockApps: Record.Factory<App> = Record(defaultAppValues);
 
-const APP_1: RecordOf<any> = createMockApps({
+const APP_1: AppRecord = createMockApps({
   name: 'Code App',
   url: 'http://codeapp.com',
   description: 'description',
   extra: createAppExtra({ image: 'http://codeapp.com/logo.png' }),
 });
 
-const APP_2: RecordOf<any> = createMockApps({
+const APP_2: AppRecord = createMockApps({
   name: 'File App',
   description: 'description',
   url: 'http://fileapp.com',
   extra: createAppExtra({ image: 'http://fileapp.com/logo.png' }),
 });
 
-export const APPS: List<RecordOf<any>> = List([APP_1, APP_2]);
+export const APPS: List<AppRecord> = List([APP_1, APP_2]);
 
 export const buildChatMessages = (id: UUID) => {
-  const defaultChatMessageValues: any = {
+  const defaultChatMessageValues: ChatMessage = {
     chatId: id,
     body: 'some text',
     creator: 'somememberid',
   };
-  const createMockChatMessage: Record.Factory<any> = Record(
+  const createMockChatMessage: Record.Factory<ChatMessage> = Record(
     defaultChatMessageValues,
   );
-  const CHAT_MESSAGE_1: RecordOf<any> = createMockChatMessage({
+  const CHAT_MESSAGE_1: ChatMessageRecord = createMockChatMessage({
     chatId: id,
     body: 'some text',
     creator: 'somememberid',
   });
-  const CHAT_MESSAGE_2: RecordOf<any> = createMockChatMessage({
+  const CHAT_MESSAGE_2: ChatMessageRecord = createMockChatMessage({
     chatId: id,
     body: 'some other text',
     creator: 'someothermemberid',
   });
-  const CHAT_MESSAGES: List<RecordOf<any>> = List([
+  const CHAT_MESSAGES: List<ChatMessageRecord> = List([
     CHAT_MESSAGE_1,
     CHAT_MESSAGE_2,
   ]);
@@ -324,71 +342,71 @@ const FLAG_2: FlagRecord = createMockFlags({
 
 export const FLAGS: List<FlagRecord> = List([FLAG_1, FLAG_2]);
 
-const defaultTagsValues: any = {
+const defaultTagsValues: Tag = {
   id: 'item-login-tag-id',
   name: 'item-login',
 };
-const createMockTags: Record.Factory<any> = Record(defaultTagsValues);
+const createMockTags: Record.Factory<Tag> = Record(defaultTagsValues);
 
-const TAG_1: RecordOf<any> = createMockTags({
+const TAG_1: TagRecord = createMockTags({
   id: 'item-login-tag-id',
   name: 'item-login',
 });
 
-const TAG_2: RecordOf<any> = createMockTags({
+const TAG_2: TagRecord = createMockTags({
   id: 'item-public-tag-id',
   name: 'item-public',
 });
 
-export const TAGS: List<RecordOf<any>> = List([TAG_1, TAG_2]);
+export const TAGS: List<TagRecord> = List([TAG_1, TAG_2]);
 
-const defaultItemTagsValues: any = {
+const defaultItemTagsValues: ItemTag = {
   id: 'tag-id',
   path: 'somepath',
   tagId: 'tag-id',
 };
-const createMockItemTags: Record.Factory<any> = Record(defaultItemTagsValues);
+const createMockItemTags: Record.Factory<ItemTag> = Record(defaultItemTagsValues);
 
-const ITEM_TAG_1: RecordOf<any> = createMockItemTags({
+const ITEM_TAG_1: ItemTagRecord = createMockItemTags({
   id: 'tag-id',
   path: 'somepath',
   tagId: 'tag-id',
 });
 
-const ITEM_TAG_2: RecordOf<any> = createMockItemTags({
+const ITEM_TAG_2: ItemTagRecord = createMockItemTags({
   id: 'tag-id1',
   path: 'somepath1',
   tagId: 'tag-id1',
 });
 
-export const ITEM_TAGS: List<RecordOf<any>> = List([ITEM_TAG_1, ITEM_TAG_2]);
+export const ITEM_TAGS: List<ItemTagRecord> = List([ITEM_TAG_1, ITEM_TAG_2]);
 
-const defaultMessageItemChatValues: any = {
+const defaultMessageItemChatValues: MessageItemChat = {
   id: MESSAGE_IDS[0],
   creator: MEMBER_RESPONSE.id,
   content: 'text',
 };
-const createMockMessageItemChat: Record.Factory<any> = Record(
+const createMockMessageItemChat: Record.Factory<MessageItemChat> = Record(
   defaultMessageItemChatValues,
 );
 
-const MESSAGE_ITEM_CHAT_1: RecordOf<any> = createMockMessageItemChat({
+const MESSAGE_ITEM_CHAT_1: MessageItemChatRecord = createMockMessageItemChat({
   id: MESSAGE_IDS[0],
   creator: MEMBER_RESPONSE.id,
   content: 'text',
 });
 
-export const MESSAGE_ITEM_CHAT_LIST: List<RecordOf<any>> = List([
+export const MESSAGE_ITEM_CHAT_LIST: List<MessageItemChatRecord> = List([
   MESSAGE_ITEM_CHAT_1,
 ]);
 
-const defaultItemChatValues: any = {
+const defaultItemChatValues: MessageItemChatList = {
   messages: MESSAGE_ITEM_CHAT_LIST,
 };
 
-const createMockItemChat: Record.Factory<any> = Record(defaultItemChatValues);
+const createMockItemChat: Record.Factory<MessageItemChatList> = Record(defaultItemChatValues);
 
-export const ITEM_CHAT: RecordOf<any> = createMockItemChat({
+export const ITEM_CHAT: MessageItemChatListRecord = createMockItemChat({
   messages: MESSAGE_ITEM_CHAT_LIST,
 });
 
@@ -611,30 +629,30 @@ export const ITEM_VALIDATION_GROUPS: List<ItemValidationGroupRecord> = List([
   ITEM_VALIDATION_GROUP_2,
 ]);
 
-const defaultActionValues: any = {
+const defaultActionValues: Action = {
   id: 'action-id',
   itemId: 'item-id',
   memberId: 'member-id',
 };
-const createMockAction: Record.Factory<any> = Record(defaultActionValues);
+const createMockAction: Record.Factory<Action> = Record(defaultActionValues);
 
-const ACTION_1: RecordOf<any> = createMockAction({
+const ACTION_1: ActionRecord = createMockAction({
   id: 'action-id',
   itemId: 'item-id',
   memberId: 'member-id',
 });
 
-export const ACTIONS_LIST: List<RecordOf<any>> = List([ACTION_1]);
+export const ACTIONS_LIST: List<ActionRecord> = List([ACTION_1]);
 
-const defaultActionDataValues: any = {
+const defaultActionDataValues: ActionData = {
   actions: ACTIONS_LIST,
 };
 
-const createMockActionData: Record.Factory<any> = Record(
+const createMockActionData: Record.Factory<ActionData> = Record(
   defaultActionDataValues,
 );
 
-export const ACTIONS_DATA: RecordOf<any> = createMockActionData({
+export const ACTIONS_DATA: ActionDataRecord = createMockActionData({
   actions: ACTIONS_LIST,
 });
 
@@ -663,17 +681,17 @@ export const buildInvitationRecord = ({
   email?: string;
   name?: string;
 }) => {
-  const defaultInvitationValues: any = {
+  const defaultInvitationValues: Invitation = {
     id: 'id',
     name: name ?? 'member-name',
     email: email ?? 'email',
     creator: 'creator-id',
     itemPath,
   };
-  const createMockInvitation: Record.Factory<any> = Record(
+  const createMockInvitation: Record.Factory<Invitation> = Record(
     defaultInvitationValues,
   );
-  const invitation: RecordOf<any> = createMockInvitation();
+  const invitation: InvitationRecord = createMockInvitation();
   return invitation;
 };
 

@@ -85,6 +85,8 @@ export type Permission = string;
 
 export type ItemTag = {
   id: UUID;
+  path: string;
+  tagId: UUID;
 };
 
 export type ItemTagRecord = RecordOf<ItemTag>;
@@ -156,17 +158,17 @@ export type PartialChatMessage = {
 };
 
 export type ChatMessage = {
-  id: string;
+  id?: string;
   chatId: string;
   creator: string;
-  createdAt: string;
+  createdAt?: string;
   body: string;
 };
 
 export type ChatMessageRecord = RecordOf<ChatMessage>;
 
 export type ItemChat = {
-  id: string;
+  id?: string;
   messages: List<ChatMessageRecord>;
 };
 
@@ -230,16 +232,26 @@ export type StatusRecord = RecordOf<Status>;
 
 export interface Action {
   id: string;
-  name: string;
-}
+  name?: string;
+  itemId: UUID;
+  memberId: UUID;
+};
 
 export type ActionRecord = RecordOf<Action>;
+
+export interface ActionData {
+  actions: List<Action>;
+};
+
+export type ActionDataRecord = RecordOf<ActionData>;
 
 export type Invitation = {
   id: UUID;
   email: string;
-  permission: string;
+  permission?: string;
   name?: string;
+  creator: UUID;
+  itemPath: string;
 };
 
 export type InvitationRecord = RecordOf<Invitation>;
@@ -263,3 +275,33 @@ export type ItemLike = {
 };
 
 export type ItemLikeRecord = RecordOf<ItemLike>;
+
+export type App = {
+  name: string;
+  url: string;
+  description: string;
+  extra: any;
+};
+
+export type AppRecord = RecordOf<App>;
+
+export type Tag = {
+  id: UUID;
+  name: string;
+};
+
+export type TagRecord = RecordOf<Tag>;
+
+export type MessageItemChat = {
+  id: UUID,
+  creator: UUID,
+  content: string,
+};
+
+export type MessageItemChatRecord = RecordOf<MessageItemChat>;
+
+export type MessageItemChatList = {
+  messages: List<MessageItemChatRecord>;
+};
+
+export type MessageItemChatListRecord = RecordOf<MessageItemChatList>;

@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
-import { RecordOf } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { mockHook, setUpTest } from '../../test/utils';
@@ -11,6 +10,7 @@ import {
 } from '../../test/constants';
 import { buildGetActions } from '../api/routes';
 import { buildActionsKey } from '../config/keys';
+import { ActionDataRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 const itemId = ITEMS.first()!.id;
@@ -37,7 +37,7 @@ describe('Action Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as RecordOf<any>).toEqualImmutable(response);
+      expect(data as ActionDataRecord).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);

@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
-import { Record, RecordOf } from 'immutable';
+import { Record } from 'immutable';
 import Cookies from 'js-cookie';
 import { buildGetItemChatRoute } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
@@ -11,7 +11,7 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
 import { buildItemChatKey } from '../config/keys';
-import type { ItemChatRecord } from '../types';
+import type { ItemChat, ItemChatRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -31,14 +31,14 @@ describe('Chat Hooks', () => {
     const hook = () => hooks.useItemChat(itemId);
 
     it(`Receive chat messages`, async () => {
-      const defaultItemChatMessageValues = {
+      const defaultItemChatMessageValues: ItemChat = {
         id: itemId,
         messages: buildChatMessages(itemId),
       };
-      const createMockItemChatMessage: Record.Factory<any> = Record(
+      const createMockItemChatMessage: Record.Factory<ItemChat> = Record(
         defaultItemChatMessageValues,
       );
-      const response: RecordOf<any> = createMockItemChatMessage();
+      const response: ItemChatRecord = createMockItemChatMessage();
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
