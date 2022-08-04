@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
@@ -36,7 +35,7 @@ describe('Item Like Mutations', () => {
   });
 
   describe(MUTATION_KEYS.POST_ITEM_LIKE, () => {
-    const itemId = ITEMS[0].id;
+    const itemId = ITEMS.first()!.id;
     const memberId = 'member-id';
     const likedItemsKey = buildGetLikedItemsKey(memberId);
     const likeCountKey = buildGetLikeCountKey(itemId);
@@ -44,10 +43,10 @@ describe('Item Like Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_LIKE);
 
     it('Post item like', async () => {
-      queryClient.setQueryData(likedItemsKey, List(ITEM_LIKES));
+      queryClient.setQueryData(likedItemsKey, ITEM_LIKES);
       queryClient.setQueryData(likeCountKey, LIKE_COUNT);
 
-      const response = ITEM_LIKES[1];
+      const response = ITEM_LIKES.get(1)!;
 
       const endpoints = [
         {
@@ -109,7 +108,7 @@ describe('Item Like Mutations', () => {
   });
 
   describe(MUTATION_KEYS.DELETE_ITEM_LIKE, () => {
-    const itemId = ITEMS[0].id;
+    const itemId = ITEMS.first()!.id;
     const memberId = 'member-id';
     const entryId = 'id';
     const likedItemsKey = buildGetLikedItemsKey(memberId);
@@ -118,10 +117,10 @@ describe('Item Like Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_LIKE);
 
     it('Delete item like', async () => {
-      queryClient.setQueryData(likedItemsKey, List(ITEM_LIKES));
+      queryClient.setQueryData(likedItemsKey, ITEM_LIKES);
       queryClient.setQueryData(likeCountKey, LIKE_COUNT);
 
-      const response = ITEM_LIKES[1];
+      const response = ITEM_LIKES.get(1)!;
 
       const endpoints = [
         {

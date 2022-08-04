@@ -1,4 +1,4 @@
-import { List, RecordOf } from 'immutable';
+import { List } from 'immutable';
 import { QueryClient, useQuery } from 'react-query';
 import * as Api from '../api';
 import {
@@ -6,7 +6,7 @@ import {
   buildManyItemMembershipsKey,
 } from '../config/keys';
 import {
-  Membership,
+  MembershipRecord,
   QueryClientConfig,
   UndefinedArgument,
   UUID,
@@ -37,7 +37,7 @@ export default (
 
       return useQuery({
         queryKey: buildItemMembershipsKey(id),
-        queryFn: () => {
+        queryFn: (): Promise<List<MembershipRecord>> => {
           if (!id) {
             throw new UndefinedArgument();
           }
@@ -51,7 +51,6 @@ export default (
       });
     },
 
-    //REVISAR TEMA DEL ARRAY - ARRAY DE ARRAYS
     useManyItemMemberships: (
       ids?: UUID[],
       options?: { getUpdates?: boolean },
@@ -62,7 +61,7 @@ export default (
 
       return useQuery({
         queryKey: buildManyItemMembershipsKey(ids),
-        queryFn: () => {
+        queryFn: (): Promise<List<List<MembershipRecord>>> => {
           if (!ids) {
             throw new UndefinedArgument();
           }
@@ -71,12 +70,12 @@ export default (
             convertJs(data),
           );
         },
-        onSuccess: async (memberships: List<RecordOf<Membership>[]>) => {
+        onSuccess: async (memberships: List<List<MembershipRecord>>) => {
           // save memberships in their own key
           ids?.forEach(async (id, idx) => {
             queryClient.setQueryData(
               buildItemMembershipsKey(id),
-              memberships.get(idx) as RecordOf<Membership>[],
+              memberships.get(idx) as List<MembershipRecord>,
             );
           });
         },

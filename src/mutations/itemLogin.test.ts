@@ -2,7 +2,6 @@
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import Cookies from 'js-cookie';
-import { Map } from 'immutable';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { act } from 'react-test-renderer';
 import {
@@ -39,7 +38,7 @@ describe('Item Login Mutations', () => {
 
   const { name: username, id: memberId } = MEMBER_RESPONSE;
   const password = 'password';
-  const itemId = ITEMS[0].id;
+  const itemId = ITEMS.first()!.id;
   describe(MUTATION_KEYS.POST_ITEM_LOGIN, () => {
     const route = `/${buildPostItemLoginSignInRoute(itemId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_LOGIN);
@@ -125,7 +124,7 @@ describe('Item Login Mutations', () => {
     const newLoginSchema = ITEM_LOGIN_SCHEMAS.USERNAME_AND_PASSWORD;
 
     it('Put item login', async () => {
-      queryClient.setQueryData(itemLoginKey, Map(loginSchema));
+      queryClient.setQueryData(itemLoginKey, loginSchema);
 
       const endpoints = [
         {
@@ -157,7 +156,7 @@ describe('Item Login Mutations', () => {
     });
 
     it('Unauthorized to put item login', async () => {
-      queryClient.setQueryData(itemLoginKey, Map(loginSchema));
+      queryClient.setQueryData(itemLoginKey, loginSchema);
 
       const endpoints = [
         {

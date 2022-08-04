@@ -1,5 +1,4 @@
 import { QueryClient } from 'react-query';
-import { Map, Record } from 'immutable';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 import Cookies from 'js-cookie';
 import * as Api from '../api';
@@ -15,9 +14,10 @@ import {
   CURRENT_MEMBER_KEY,
   MUTATION_KEYS,
 } from '../config/keys';
-import { Member, QueryClientConfig, UUID } from '../types';
+import { MemberRecord, QueryClientConfig, UUID } from '../types';
 import { COOKIE_SESSION_NAME, THUMBNAIL_SIZES } from '../config/constants';
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
+import { convertJs } from '../utils/util';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -51,7 +51,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   // suppose you can only edit yourself
   queryClient.setMutationDefaults(MUTATION_KEYS.EDIT_MEMBER, {
     mutationFn: (payload) =>
-      Api.editMember(payload, queryConfig).then((member) => Map(member)),
+      Api.editMember(payload, queryConfig).then((member) => convertJs(member)),
     onMutate: async ({ member }) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
@@ -59,7 +59,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       // Snapshot the previous value
       const previousMember = queryClient.getQueryData(
         CURRENT_MEMBER_KEY,
-      ) as Record<Member>;
+      ) as MemberRecord;
 
       // Optimistically update to the new value
       queryClient.setQueryData(
@@ -128,7 +128,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           extra: { ...prevExtra, favoriteItems: newFavoriteItems },
         },
         queryConfig,
-      ).then((member) => Map(member));
+      ).then((member) => convertJs(member));
     },
     onMutate: async (payload) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
@@ -137,7 +137,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       // Snapshot the previous value
       const previousMember = queryClient.getQueryData(
         CURRENT_MEMBER_KEY,
-      ) as Record<Member>;
+      ) as MemberRecord;
 
       // Optimistically update to the new value
       const { itemId, extra } = payload;
@@ -145,7 +145,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ? extra.favoriteItems.concat([itemId])
         : [itemId];
 
-      const member = { extra: { ...extra, favoriteItems: newFavoriteItems } };
+      const member = convertJs({ extra: { ...extra, favoriteItems: newFavoriteItems } });
 
       queryClient.setQueryData(
         CURRENT_MEMBER_KEY,
@@ -182,7 +182,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           extra: { ...prevExtra, favoriteItems: newFavoriteItems },
         },
         queryConfig,
-      ).then((member) => Map(member));
+      ).then((member) => convertJs(member));
     },
     onMutate: async (payload) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
@@ -191,14 +191,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       // Snapshot the previous value
       const previousMember = queryClient.getQueryData(
         CURRENT_MEMBER_KEY,
-      ) as Record<Member>;
+      ) as MemberRecord;
 
       // Optimistically update to the new value
       const { itemId, extra } = payload;
       extra.favoriteItems = extra.favoriteItems?.filter(
         (id: UUID) => id !== itemId,
       );
-      const member = { extra };
+      const member = convertJs({ extra });
 
       queryClient.setQueryData(
         CURRENT_MEMBER_KEY,

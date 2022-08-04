@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
-import { List, Map } from 'immutable';
+import { Record, RecordOf } from 'immutable';
 import Cookies from 'js-cookie';
 import { buildGetItemChatRoute } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
@@ -11,7 +11,7 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
 import { buildItemChatKey } from '../config/keys';
-import type { ChatMessage } from '../types';
+import type { ItemChatRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -24,21 +24,23 @@ describe('Chat Hooks', () => {
   });
 
   describe('useItemChat', () => {
-    const itemId = ITEMS[0].id;
+    const itemId = ITEMS.first()!.id;
     const route = `/${buildGetItemChatRoute(itemId)}`;
     const key = buildItemChatKey(itemId);
 
     const hook = () => hooks.useItemChat(itemId);
 
     it(`Receive chat messages`, async () => {
-      const response = { id: itemId, messages: buildChatMessages(itemId) };
+      const defaultItemChatMessageValues = { id: itemId, messages: buildChatMessages(itemId) };
+      const createMockItemChatMessage: Record.Factory<any> = Record(defaultItemChatMessageValues);
+      const response: RecordOf<any> = createMockItemChatMessage();
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<ChatMessage>).toJS()).toEqual(response);
+      expect((data as ItemChatRecord)).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(Map(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {

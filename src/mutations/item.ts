@@ -1,4 +1,4 @@
-import { List, Record, Map } from 'immutable';
+import { List, Record } from 'immutable';
 import { QueryClient } from 'react-query';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 import * as Api from '../api';
@@ -28,9 +28,10 @@ import {
   buildItemThumbnailKey,
 } from '../config/keys';
 import { buildPath, getDirectParentId } from '../utils/item';
-import type { GraaspError, Item, QueryClientConfig, UUID } from '../types';
+import type { GraaspError, Item, ItemRecord, QueryClientConfig, UUID } from '../types';
 import { THUMBNAIL_SIZES } from '../config/constants';
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
+import { convertJs } from '../utils/util';
 
 const {
   POST_ITEM,
@@ -128,50 +129,60 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: (item) => Api.editItem(item.id, item, queryConfig),
     // newItem contains only changed values
     onMutate: async (newItem: Partial<Item>) => {
-      const trimmed = Map({
+      const trimmed: ItemRecord = convertJs({
         ...newItem,
         name: newItem.name?.trim(),
       });
-
+      console.log("trimmed")
+      console.log(trimmed)
       const itemKey = buildItemKey(newItem.id);
 
       // invalidate key
       await queryClient.cancelQueries(itemKey);
 
       // build full item with new values
-      const prevItem = queryClient.getQueryData(itemKey) as Record<Item>;
+      const prevItem = queryClient.getQueryData(itemKey) as ItemRecord;
+      console.log("prevItem")
+      console.log(prevItem)
       const newFullItem = prevItem ? prevItem.merge(trimmed) : prevItem;
+      console.log("newFullItem")
+      console.log(newFullItem)
       queryClient.setQueryData(itemKey, newFullItem);
+      console.log(queryClient.getQueryData(itemKey))
 
       const previousItems = {
         ...(Boolean(prevItem) && {
           parent: await mutateParentChildren({
-            childPath: prevItem.get('path'),
-            value: (old: List<Item>) => {
+            childPath: prevItem.path,
+            value: (old: List<ItemRecord>) => {
               if (!old || old.isEmpty()) {
                 return old;
               }
               const idx = old.findIndex(({ id }) => id === newItem.id);
               // todo: remove toJS when moving to List<Map<Item>>
-              return old.set(idx, newFullItem.toJS() as Item);
+              return old.set(idx, newFullItem);
             },
           }),
           item: prevItem,
         }),
       };
-
+      console.log(queryClient.getQueryData(itemKey))
+      console.log("previousItems")
+      console.log(previousItems)
       return previousItems;
     },
     onSuccess: () => {
+      console.log("onSuc")
       notifier?.({
         type: editItemRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.EDIT_ITEM },
       });
     },
     onError: (error, newItem, context) => {
+      console.log("onErr")
       const { item: prevItem } = context;
       const parentKey = getKeyForParentId(
-        getDirectParentId(prevItem.get('path')),
+        getDirectParentId(prevItem.path),
       );
       queryClient.setQueryData(parentKey, context.parent);
       const itemKey = buildItemKey(newItem.id);
@@ -179,15 +190,21 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: editItemRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_newItem, _error, { id }, context) => {
+      console.log("onSet")
+      console.log(context)
+      const itemKey2 = buildItemKey(id);
+      console.log(queryClient.getQueryData(itemKey2))
       const { item: prevItem } = context;
       if (prevItem) {
         const parentKey = getKeyForParentId(
-          getDirectParentId(prevItem.get('path')),
+          getDirectParentId(prevItem.path),
         );
+        console.log(parentKey)
         queryClient.invalidateQueries(parentKey);
       }
 
       const itemKey = buildItemKey(id);
+      console.log(itemKey)
       queryClient.invalidateQueries(itemKey);
     },
   });
@@ -197,13 +214,16 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       Api.recycleItem(itemId, queryConfig).then(() => itemId),
 
     onMutate: async (itemId) => {
+      console.log("recycleItem")
       const itemKey = buildItemKey(itemId);
-      const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
+      const itemData = queryClient.getQueryData(itemKey) as ItemRecord;
+      console.log("Rec")
+      console.log(itemData)
       const previousItems = {
         ...(Boolean(itemData) && {
           children: await mutateParentChildren({
-            childPath: itemData.get('path'),
-            value: (children: List<Item>) =>
+            childPath: itemData.path,
+            value: (children: List<ItemRecord>) =>
               children.filter((child) => child.id !== itemId),
           }),
           // item itself still exists but the path is different
@@ -223,7 +243,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       if (itemData) {
         const childrenKey = getKeyForParentId(
-          getDirectParentId(itemData.get('path')),
+          getDirectParentId(itemData.path),
         );
         queryClient.setQueryData(childrenKey, context.children);
       }
@@ -237,7 +257,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         queryClient.invalidateQueries(itemKey);
 
         const childrenKey = getKeyForParentId(
-          getDirectParentId(itemData.get('path')),
+          getDirectParentId(itemData.path),
         );
         queryClient.invalidateQueries(childrenKey);
       }
@@ -251,21 +271,24 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       ),
 
     onMutate: async (itemIds: UUID[]) => {
+      console.log("recycleItems")
       // get path from first item
       const itemKey = buildItemKey(itemIds[0]);
-      const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
-      const itemPath = itemData?.get('path');
-
+      const itemData = queryClient.getQueryData(itemKey) as ItemRecord;
+      const itemPath = itemData?.path;
+      console.log(itemData)
+      console.log(itemPath)
       const previousItems = {
         ...(Boolean(itemPath) && {
           parent: await mutateParentChildren({
             childPath: itemPath,
-            value: (old: List<Item>) =>
+            value: (old: List<ItemRecord>) =>
               old.filter(({ id }) => !itemIds.includes(id)),
           }),
         }),
       };
       // items themselves still exist but the path is different
+      console.log(previousItems)
       return previousItems;
     },
     onSuccess: () => {
@@ -276,8 +299,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onError: (error, itemIds: UUID[], context) => {
       const itemKey = buildItemKey(itemIds[0]);
-      const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
-      const itemPath = itemData?.get('path');
+      const itemData = queryClient.getQueryData(itemKey) as ItemRecord;
+      const itemPath = itemData?.path;
 
       if (itemPath) {
         const childrenKey = getKeyForParentId(getDirectParentId(itemPath));
@@ -287,8 +310,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onSettled: (_data, _error, itemIds: UUID[], _variables) => {
       const itemKey = buildItemKey(itemIds[0]);
-      const itemData = queryClient.getQueryData(itemKey) as Record<Item>;
-      const itemPath = itemData?.get('path');
+      const itemData = queryClient.getQueryData(itemKey) as ItemRecord;
+      const itemPath = itemData?.path;
 
       itemIds.forEach((id) => {
         const iKey = buildItemKey(id);
@@ -306,8 +329,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: ([itemId]) => Api.deleteItem(itemId, queryConfig),
 
     onMutate: async ([itemId]) => {
+      console.log("deleteItem")
       const key = RECYCLED_ITEMS_KEY;
-      const data = queryClient.getQueryData(key) as List<Item>;
+      const data = queryClient.getQueryData(key) as List<ItemRecord>;
       queryClient.setQueryData(
         key,
         data?.filter(({ id }) => id !== itemId),
@@ -353,9 +377,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       }),
 
     onMutate: async (itemIds: UUID[]) => {
+      console.log("deleteItems")
       // get path from first item
       const itemKey = RECYCLED_ITEMS_KEY;
-      const items = queryClient.getQueryData(itemKey) as List<Item>;
+      const items = queryClient.getQueryData(itemKey) as List<ItemRecord>;
       queryClient.setQueryData(
         RECYCLED_ITEMS_KEY,
         items?.filter(({ id }) => !itemIds.includes(id)),
@@ -367,7 +392,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       itemIds.forEach(async (id) => {
         previousItems[id] = await mutateItem({ id, value: null });
       });
-
+console.log(previousItems)
       return previousItems;
     },
     onSuccess: (result) => {
@@ -387,7 +412,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
     onError: (error, itemIds: UUID[], context) => {
-      const itemPath = context[itemIds[0]]?.get('path');
+      const itemPath = context[itemIds[0]]?.path;
 
       if (itemPath) {
         queryClient.setQueryData(RECYCLED_ITEMS_KEY, context.parent);
@@ -401,7 +426,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: deleteItemsRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_data, _error, itemIds: UUID[], context) => {
-      const itemPath = context[itemIds[0]]?.get('path');
+      console.log(context)
+      const itemPath = context[itemIds[0]]?.path;
 
       itemIds.forEach((id) => {
         const itemKey = buildItemKey(id);
@@ -488,8 +514,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       Api.moveItem(payload, queryConfig).then(() => payload),
     onMutate: async ({ id: itemId, to }) => {
       const itemKey = buildItemKey(itemId);
-      const itemData = queryClient.getQueryData<Record<Item>>(itemKey);
-      const toData = queryClient.getQueryData<Record<Item>>(buildItemKey(to));
+      const itemData = queryClient.getQueryData<ItemRecord>(itemKey);
+      const toData = queryClient.getQueryData<ItemRecord>(buildItemKey(to));
 
       const context: {
         targetParent?: unknown;
@@ -499,7 +525,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       if (itemData?.has('path') && toData?.has('path')) {
         const newPath = buildPath({
-          prefix: toData.get('path'),
+          prefix: toData.path,
           ids: [itemId],
         });
 
@@ -511,14 +537,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         // add item to target item children
         context.targetParent = await mutateParentChildren({
           id: to,
-          value: (old: List<Item>) => old?.push(updatedItem?.toJS() as Item),
+          value: (old: List<Item>) => old?.push((updatedItem?.toJS()) as Item),
         });
 
         // remove item from current parent children
-        const oldPath = itemData.get('path');
+        const oldPath = itemData.path;
         context.originalParent = await mutateParentChildren({
           childPath: oldPath,
-          value: (old: List<Item>) => old?.filter(({ id }) => id !== itemId),
+          value: (old: List<ItemRecord>) => old?.filter(({ id }) => id !== itemId),
         });
       }
       return context;
@@ -539,7 +565,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       const itemData = context.item;
       if (itemData) {
-        const pKey = getKeyForParentId(getDirectParentId(itemData.get('path')));
+        const pKey = getKeyForParentId(getDirectParentId(itemData.path));
         queryClient.setQueryData(pKey, context.originalParent);
       }
       notifier?.({ type: moveItemRoutine.FAILURE, payload: { error } });
@@ -568,7 +594,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onMutate: async ({ id: itemIds, to }) => {
       const itemsData = itemIds.map((id: UUID) => {
         const itemKey = buildItemKey(id);
-        const itemData = queryClient.getQueryData<Record<Item>>(itemKey);
+        const itemData = queryClient.getQueryData<ItemRecord>(itemKey);
         return itemData?.toJS();
       });
 
@@ -591,9 +617,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         }),
       };
 
-      const toData = queryClient.getQueryData<Record<Item>>(buildItemKey(to));
+      const toData = queryClient.getQueryData<ItemRecord>(buildItemKey(to));
       if (toData?.has('path')) {
-        const toDataPath = toData.get('path');
+        const toDataPath = toData.path;
         // update item's path
         itemIds.forEach(async (id: UUID) => {
           context[id] = await mutateItem({
@@ -628,7 +654,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         const itemData = context[id];
         if (itemData) {
           const pKey = getKeyForParentId(
-            getDirectParentId(itemData.get('path')),
+            getDirectParentId(itemData.path),
           );
           queryClient.setQueryData(pKey, context.originalParent);
         }

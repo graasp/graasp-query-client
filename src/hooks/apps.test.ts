@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
-import { List } from 'immutable';
+import { List, RecordOf } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { buildAppListRoute } from '../api/routes';
@@ -28,10 +28,10 @@ describe('Apps Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<unknown>).toJS()).toEqual(response);
+      expect((data as List<RecordOf<any>>)).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {

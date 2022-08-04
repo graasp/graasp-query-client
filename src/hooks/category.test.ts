@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
-import { List } from 'immutable';
+import { List, Record, RecordOf } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { mockHook, setUpTest } from '../../test/utils';
@@ -24,13 +24,15 @@ import {
   ITEM_CATEGORIES,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
-import { Category, CategoryType, ItemCategory } from '../types';
+import { CategoryRecord, CategoryTypeRecord, ItemCategoryRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
 type ItemId = {
   itemId: string;
 };
+
+type ItemIdRecord = RecordOf<ItemId>;
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -51,10 +53,10 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<CategoryType>).toJS()).toEqual(response);
+      expect((data as List<CategoryTypeRecord>)).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
     it(`Unauthorized`, async () => {
       const endpoints = [
@@ -89,10 +91,10 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<Category>).toJS()).toEqual(response);
+      expect((data as List<CategoryRecord>)).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
     it(`Unauthorized`, async () => {
       const endpoints = [
@@ -123,14 +125,14 @@ describe('Category Hooks', () => {
     const hook = () => hooks.useCategory(categoryId);
 
     it(`Receive category info`, async () => {
-      const response = CATEGORIES[0];
+      const response = CATEGORIES.first()!;
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as Category).toEqual(response);
+      expect(data as CategoryRecord).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(response);
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
     it(`Unauthorized`, async () => {
       const endpoints = [
@@ -165,12 +167,12 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<ItemCategory>).toJS()).toEqual(response);
+      expect((data as List<ItemCategoryRecord>)).toEqualImmutable(response);
 
       // verify cache keys
       expect(
-        (queryClient.getQueryData(key) as List<ItemCategory>).toJS(),
-      ).toEqual(response);
+        (queryClient.getQueryData(key) as List<ItemCategoryRecord>),
+      ).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {
@@ -202,14 +204,18 @@ describe('Category Hooks', () => {
     const hook = () => hooks.useItemsInCategories(categoryIds);
 
     it(`Receive items in categories`, async () => {
-      const response = [{ itemId: 'id1' }, { itemId: 'id2' }];
+      const defaultItemIdValues: ItemId = { itemId: 'id1' };
+      const createMockItemId: Record.Factory<ItemId> = Record(defaultItemIdValues);
+      const ITEM_ID_1: ItemIdRecord = createMockItemId();
+      const ITEM_ID_2: ItemIdRecord = createMockItemId({ itemId: 'id2' });
+      const response = List([ ITEM_ID_1, ITEM_ID_2 ]);
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<ItemId>).toJS()).toEqual(response);
+      expect((data as List<ItemIdRecord>)).toEqualImmutable(response);
 
       // verify cache keys
-      expect((queryClient.getQueryData(key) as List<ItemId>)?.toJS()).toEqual(
+      expect((queryClient.getQueryData(key) as List<ItemIdRecord>)).toEqualImmutable(
         response,
       );
     });

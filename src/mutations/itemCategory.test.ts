@@ -2,7 +2,6 @@
 import nock from 'nock';
 import Cookies from 'js-cookie';
 import { act } from 'react-test-renderer';
-import { List } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
@@ -39,7 +38,7 @@ describe('Item Category Mutations', () => {
     const key = buildItemCategoriesKey(itemId);
 
     it('Post item category', async () => {
-      queryClient.setQueryData(key, List([ITEM_CATEGORIES]));
+      queryClient.setQueryData(key, ITEM_CATEGORIES);
 
       const endpoints = [
         {
@@ -70,7 +69,7 @@ describe('Item Category Mutations', () => {
       });
     });
     it('Unauthorized to post item category', async () => {
-      queryClient.setQueryData(key, List([ITEM_CATEGORIES]));
+      queryClient.setQueryData(key, ITEM_CATEGORIES);
       const endpoints = [
         {
           response: UNAUTHORIZED_RESPONSE,
@@ -111,7 +110,7 @@ describe('Item Category Mutations', () => {
     const key = buildItemCategoriesKey(itemId);
 
     it('Delete item category', async () => {
-      queryClient.setQueryData(key, List([ITEM_CATEGORIES]));
+      queryClient.setQueryData(key, ITEM_CATEGORIES);
 
       const endpoints = [
         {
@@ -143,7 +142,7 @@ describe('Item Category Mutations', () => {
       );
     });
     it('Unauthorized to delete item category', async () => {
-      queryClient.setQueryData(key, List([ITEM_CATEGORIES]));
+      queryClient.setQueryData(key, ITEM_CATEGORIES);
       const endpoints = [
         {
           response: UNAUTHORIZED_RESPONSE,

@@ -37,7 +37,7 @@ export const setUpWsTest = (args?: {
       retry: 0,
       cacheTime: 0,
       staleTime: 0,
-      isDataEqual: (oldData, newData) => isDataEqual(oldData, newData),
+      isDataEqual: isDataEqual,
     },
     SHOW_NOTIFICATIONS: false,
     notifier,

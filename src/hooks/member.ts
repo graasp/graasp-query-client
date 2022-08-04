@@ -1,5 +1,5 @@
 import { QueryClient, useQuery } from 'react-query';
-import { List, RecordOf } from 'immutable';
+import { List } from 'immutable';
 import * as Api from '../api';
 import {
   buildAvatarKey,
@@ -7,7 +7,7 @@ import {
   buildMembersKey,
   CURRENT_MEMBER_KEY,
 } from '../config/keys';
-import { Member, QueryClientConfig, UndefinedArgument, UUID } from '../types';
+import { MemberRecord, QueryClientConfig, UndefinedArgument, UUID } from '../types';
 import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
 import { convertJs } from '../utils/util';
 
@@ -17,7 +17,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const useCurrentMember = () =>
     useQuery({
       queryKey: CURRENT_MEMBER_KEY,
-      queryFn: () =>
+      queryFn: (): Promise<MemberRecord> =>
         Api.getCurrentMember(queryConfig).then((data) => convertJs(data)),
       ...defaultQueryOptions,
     });
@@ -25,7 +25,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const useMember = (id?: UUID) =>
     useQuery({
       queryKey: buildMemberKey(id),
-      queryFn: () => {
+      queryFn: (): Promise<MemberRecord> => {
         if (!id) {
           throw new UndefinedArgument();
         }
@@ -40,10 +40,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const useMembers = (ids: UUID[]) =>
     useQuery({
       queryKey: buildMembersKey(ids),
-      queryFn: () =>
+      queryFn: (): Promise<List<MemberRecord>> =>
         Api.getMembers({ ids }, queryConfig).then((data) => convertJs(data)),
       enabled: Boolean(ids?.length),
-      onSuccess: async (members: List<RecordOf<Member>>) => {
+      onSuccess: async (members: List<MemberRecord>) => {
         // save members in their own key
         members?.forEach(async (member) => {
           const { id } = member;
@@ -63,7 +63,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     let shouldFetch = true;
     if (id) {
       shouldFetch =
-        queryClient.getQueryData<RecordOf<Member>>(buildMemberKey(id))?.extra
+        queryClient.getQueryData<MemberRecord>(buildMemberKey(id))?.extra
           ?.hasAvatar ?? true;
     }
     return useQuery({

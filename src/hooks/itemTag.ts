@@ -1,7 +1,7 @@
 import { QueryClient, useQuery } from 'react-query';
-import { List, RecordOf } from 'immutable';
+import { List } from 'immutable';
 import { isError } from '@graasp/utils';
-import { ItemTag, QueryClientConfig, UndefinedArgument, UUID } from '../types';
+import { ItemTagRecord, QueryClientConfig, UndefinedArgument, UUID } from '../types';
 import * as Api from '../api';
 import {
   buildItemTagsKey,
@@ -10,7 +10,6 @@ import {
 } from '../config/keys';
 import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
 import { convertJs } from '../utils/util';
-//import { TaggedTemplateExpression } from '@babel/types';
 
 export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
   const { defaultQueryOptions } = queryConfig;
@@ -18,7 +17,7 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
   const useTags = () =>
     useQuery({
       queryKey: TAGS_KEY,
-      queryFn: () => Api.getTags(queryConfig).then((data) => convertJs(data)),
+      queryFn: (): Promise<List<ItemTagRecord>> => Api.getTags(queryConfig).then((data) => convertJs(data)),
       ...defaultQueryOptions,
       cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
@@ -26,7 +25,7 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
   const useItemTags = (id?: UUID) =>
     useQuery({
       queryKey: buildItemTagsKey(id),
-      queryFn: () => {
+      queryFn: (): Promise<List<ItemTagRecord>> => {
         if (!id) {
           throw new UndefinedArgument();
         }
@@ -39,7 +38,7 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
   const useItemsTags = (ids: UUID[]) =>
     useQuery({
       queryKey: buildManyItemTagsKey(ids),
-      queryFn: () => {
+      queryFn: (): Promise<List<List<ItemTagRecord>>> => {
         if (!ids) {
           throw new UndefinedArgument();
         }
@@ -47,14 +46,14 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
           convertJs(data),
         );
       },
-      onSuccess: async (tags: List<RecordOf<ItemTag>[]>) => {
+      onSuccess: async (tags: List<List<ItemTagRecord>>) => {
         // save tags in their own key
         ids?.forEach(async (id, idx) => {
           const itemTags = tags.get(idx);
           if (!isError(itemTags)) {
             queryClient.setQueryData(
               buildItemTagsKey(id),
-              itemTags as RecordOf<ItemTag>[],
+              itemTags as List<ItemTagRecord>,
             );
           }
         });

@@ -24,7 +24,7 @@ describe('Publish Item', () => {
   });
 
   describe(MUTATION_KEYS.PUBLISH_ITEM, () => {
-    const item = ITEMS[0];
+    const item = ITEMS.first()!;
     const itemId = item.id;
     const notification = true;
     const mutation = () => useMutation(MUTATION_KEYS.PUBLISH_ITEM);

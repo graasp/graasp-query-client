@@ -2,7 +2,7 @@
 import nock from 'nock';
 import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
+//import { List } from 'immutable';
 import { buildGetLikeCountRoute, buildGetLikedItemsRoute } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
 import {
@@ -12,6 +12,8 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
 import { buildGetLikeCountKey, buildGetLikedItemsKey } from '../config/keys';
+import { List } from 'immutable';
+import { ItemLikeRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -34,10 +36,10 @@ describe('Item Like Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<typeof ITEM_LIKES[0]>).toJS()).toEqual(response);
+      expect(data as List<ItemLikeRecord>).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {
@@ -62,7 +64,7 @@ describe('Item Like Hooks', () => {
   });
 
   describe('useLikeCount', () => {
-    const itemId = ITEMS[0].id;
+    const itemId = ITEMS.first()!.id;
     const route = `/${buildGetLikeCountRoute(itemId)}`;
     const key = buildGetLikeCountKey(itemId);
 
@@ -73,7 +75,7 @@ describe('Item Like Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as typeof LIKE_COUNT).toEqual(response);
+      expect((data as typeof LIKE_COUNT)).toEqual(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(response);

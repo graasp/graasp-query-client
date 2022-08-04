@@ -23,9 +23,9 @@ export type QueryClientConfig = {
       oldData:
         | RecordOf<any>
         | List<RecordOf<any>>
-        | List<RecordOf<any>>[]
+        | List<List<RecordOf<any>>>
         | undefined,
-      newData: RecordOf<any> | List<RecordOf<any>> | List<RecordOf<any>>[],
+      newData: RecordOf<any> | List<RecordOf<any>> | List<List<RecordOf<any>>>,
     ) => boolean;
   };
 };
@@ -39,6 +39,8 @@ export type ItemSettings = {
   hasThumbnail?: boolean;
 };
 
+export type ItemSettingsRecord = RecordOf<ItemSettings>;
+
 export type Item = {
   id: UUID;
   name: string;
@@ -46,19 +48,25 @@ export type Item = {
   type: string;
   description: string;
   extra: unknown;
-  settings?: ItemSettings;
+  settings?: ItemSettingsRecord;
 };
+
+export type ItemRecord = RecordOf<Item>;
 
 export type MemberExtra = {
   hasAvatar?: boolean;
 };
 
+export type MemberExtraRecord = RecordOf<MemberExtra>;
+
 export type Member = {
   id: UUID;
   name: string;
   email: string;
-  extra: MemberExtra;
+  extra: MemberExtraRecord;
 };
+
+export type MemberRecord = RecordOf<Member>;
 
 export type Membership = {
   id: UUID;
@@ -66,6 +74,8 @@ export type Membership = {
   itemId: string;
   permission: string;
 };
+
+export type MembershipRecord = RecordOf<Membership>;
 
 export type ExtendedItem = Item & {
   parentId: UUID;
@@ -77,10 +87,14 @@ export type ItemTag = {
   id: UUID;
 };
 
+export type ItemTagRecord = RecordOf<ItemTag>;
+
 export type CategoryType = {
   id: UUID;
   name: string;
 };
+
+export type CategoryTypeRecord = RecordOf<CategoryType>;
 
 export type Category = {
   id: UUID;
@@ -88,11 +102,15 @@ export type Category = {
   type: UUID;
 };
 
+export type CategoryRecord = RecordOf<Category>;
+
 export type ItemCategory = {
   id: UUID;
   itemId: UUID;
   categoryId: UUID;
 };
+
+export type ItemCategoryRecord = RecordOf<ItemCategory>;
 
 export class UndefinedArgument extends Error {
   constructor() {
@@ -112,6 +130,8 @@ export enum ITEM_LOGIN_SCHEMAS {
 export type ItemLogin = {
   loginSchema: ITEM_LOGIN_SCHEMAS;
 };
+
+export type ItemLoginRecord = RecordOf<ItemLogin>;
 
 // todo: use types from graasp types
 export enum ITEM_TYPES {
@@ -143,9 +163,18 @@ export type ChatMessage = {
   body: string;
 };
 
+export type ChatMessageRecord = RecordOf<ChatMessage>;
+
+export type ItemChat = {
+  id: string,
+  messages: List<ChatMessageRecord>,
+};
+
+export type ItemChatRecord = RecordOf<ItemChat>;
+
 export interface Chat {
   id: string;
-  messages: Array<ChatMessage>;
+  messages: List<ChatMessageRecord>;
 }
 
 // todo: get from graasp types
@@ -168,12 +197,16 @@ export type FullValidationRecord = {
   createdAt: string;
 };
 
+export type FullValidationRecordRecord = RecordOf<FullValidationRecord>;
+
 export type ItemValidationAndReview = {
   itemValidationId: string;
   reviewStatusId: string;
   reviewReason: string;
   createdAt: string;
 };
+
+export type ItemValidationAndReviewRecord = RecordOf<ItemValidationAndReview>;
 
 export type ItemValidationGroup = {
   id: string;
@@ -186,15 +219,21 @@ export type ItemValidationGroup = {
   createdAt: string;
 };
 
+export type ItemValidationGroupRecord = RecordOf<ItemValidationGroup>;
+
 export type Status = {
   id: string;
   name: string;
 };
 
+export type StatusRecord = RecordOf<Status>;
+
 export interface Action {
   id: string;
   name: string;
 }
+
+export type ActionRecord = RecordOf<Action>;
 
 export type Invitation = {
   id: UUID;
@@ -203,6 +242,24 @@ export type Invitation = {
   name?: string;
 };
 
+export type InvitationRecord = RecordOf<Invitation>;
+
 export type Password = string;
 export type NewInvitation = Pick<Invitation, 'email' & 'permission'> &
   Partial<Invitation>;
+
+export type Flag = {
+  id: UUID,
+  name: string,
+};
+
+export type FlagRecord = RecordOf<Flag>;
+
+export type ItemLike = {
+  id: UUID,
+  itemId: UUID,
+  memberId: string,
+  createdAt: string,
+};
+
+export type ItemLikeRecord = RecordOf<ItemLike>;

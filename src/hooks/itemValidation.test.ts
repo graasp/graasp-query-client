@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
-import { List, Map } from 'immutable';
+import { List, RecordOf } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { mockHook, setUpTest } from '../../test/utils';
@@ -26,10 +26,10 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
 import {
-  FullValidationRecord,
-  ItemValidationAndReview,
-  ItemValidationGroup,
-  Status,
+  FullValidationRecordRecord,
+  ItemValidationAndReviewRecord,
+  ItemValidationGroupRecord,
+  StatusRecord,
 } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
@@ -53,10 +53,10 @@ describe('Item Validation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<FullValidationRecord>).toJS()).toEqual(response);
+      expect((data as List<FullValidationRecordRecord>)).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
     it(`Unauthorized`, async () => {
       const endpoints = [
@@ -90,10 +90,10 @@ describe('Item Validation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<Status>).toJS()).toEqual(response);
+      expect((data as List<StatusRecord>)).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {
@@ -128,10 +128,10 @@ describe('Item Validation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<Status>).toJS()).toEqual(response);
+      expect((data as List<StatusRecord>)).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {
@@ -167,10 +167,10 @@ describe('Item Validation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as ItemValidationAndReview).toEqual(Map(response));
+      expect(data as ItemValidationAndReviewRecord).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(Map(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
     it(`Unauthorized`, async () => {
       const endpoints = [
@@ -204,10 +204,10 @@ describe('Item Validation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<ItemValidationGroup>).toJS()).toEqual(response);
+      expect((data as List<ItemValidationGroupRecord>)).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
     it(`Unauthorized`, async () => {
       const endpoints = [

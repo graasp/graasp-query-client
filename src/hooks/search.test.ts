@@ -7,7 +7,7 @@ import { buildGetItemsByKeywordRoute } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
 import { ITEMS, Ranges, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { buildSearchByKeywordKey } from '../config/keys';
-import { Item } from '../types';
+import { ItemRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -31,10 +31,10 @@ describe('Keyword Search Hook', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<Item>).toJS()).toEqual(response);
+      expect((data as List<ItemRecord>)).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {

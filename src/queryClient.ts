@@ -77,7 +77,7 @@ export default (config: Partial<QueryClientConfig>) => {
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       notifyOnChangeProps: 'tracked',
-      isDataEqual: (oldData, newData) => isDataEqual(oldData, newData),
+      isDataEqual: isDataEqual,
       ...config?.defaultQueryOptions,
     },
   };

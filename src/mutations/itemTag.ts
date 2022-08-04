@@ -4,7 +4,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { buildItemTagsKey, MUTATION_KEYS } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
 import * as Api from '../api';
-import { ItemTag, QueryClientConfig } from '../types';
+import { ItemTagRecord, QueryClientConfig } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -34,7 +34,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       await queryClient.cancelQueries(itemTagKey);
 
       // Snapshot the previous value
-      const prevValue = queryClient.getQueryData<List<ItemTag>>(itemTagKey);
+      const prevValue = queryClient.getQueryData<List<ItemTagRecord>>(itemTagKey);
 
       // remove tag from list
       if (prevValue) {

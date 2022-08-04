@@ -38,7 +38,7 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildCategoryKey(categoryId),
       queryFn: () =>
-        Api.getCategory(categoryId, queryConfig).then((data) => data),
+        Api.getCategory(categoryId, queryConfig).then((data) => convertJs(data)),
       ...defaultQueryOptions,
       cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });

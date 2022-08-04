@@ -2,11 +2,12 @@
 import nock from 'nock';
 import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
 import { GET_FLAGS_ROUTE } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
 import { FLAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { ITEM_FLAGS_KEY } from '../config/keys';
+import { List } from 'immutable';
+import { FlagRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -28,10 +29,10 @@ describe('Item Flag Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<typeof FLAGS[0]>).toJS()).toEqual(response);
+      expect(data as List<FlagRecord>).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {

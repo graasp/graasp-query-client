@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
-import { Map } from 'immutable';
+import { RecordOf } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import { mockHook, setUpTest } from '../../test/utils';
@@ -13,7 +13,7 @@ import { buildGetActions } from '../api/routes';
 import { buildActionsKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-const itemId = ITEMS[0].id;
+const itemId = ITEMS.first()!.id;
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 describe('Action Hooks', () => {
@@ -37,12 +37,12 @@ describe('Action Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as Map<string, unknown>).get('actions')).toEqual(
-        response.actions,
+      expect(data as RecordOf<any>).toEqualImmutable(
+        response,
       );
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(Map(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
     it(`Sample size = 0 does not fetch`, async () => {

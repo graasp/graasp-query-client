@@ -1,4 +1,4 @@
-import { List, RecordOf } from 'immutable';
+import { List } from 'immutable';
 import { QueryClient, useQuery, UseQueryResult } from 'react-query';
 import * as Api from '../api';
 import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
@@ -18,8 +18,8 @@ import {
 } from '../config/keys';
 import { getOwnItemsRoutine } from '../routines';
 import {
-  Item,
-  Member,
+  ItemRecord,
+  MemberRecord,
   QueryClientConfig,
   UndefinedArgument,
   UUID,
@@ -27,12 +27,11 @@ import {
 import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 import { convertJs } from '../utils/util';
-import { isDataEqual } from '../utils/util';
 
 export default (
   queryClient: QueryClient,
   queryConfig: QueryClientConfig,
-  useCurrentMember: () => UseQueryResult,
+  useCurrentMember: () => UseQueryResult<MemberRecord, Error>,
   websocketClient?: WebsocketClient,
 ) => {
   const { enableWebsocket, notifier, defaultQueryOptions } = queryConfig;
@@ -48,14 +47,14 @@ export default (
 
       const { data: currentMember } = useCurrentMember();
       itemWsHooks?.useOwnItemsUpdates(
-        getUpdates ? (currentMember as RecordOf<Member>)?.id : null,
+        getUpdates ? currentMember?.id : null,
       );
 
       return useQuery({
         queryKey: OWN_ITEMS_KEY,
-        queryFn: () =>
+        queryFn: (): Promise<List<ItemRecord>> =>
           Api.getOwnItems(queryConfig).then((data) => convertJs(data)),
-        onSuccess: async (items: List<RecordOf<Item>>) => {
+        onSuccess: async (items: List<ItemRecord>) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
           items?.forEach(async (item) => {
@@ -76,9 +75,9 @@ export default (
         enabled?: boolean;
         ordered?: boolean;
         getUpdates?: boolean;
-        placeholderData?: List<RecordOf<Item>>;
+        placeholderData?: List<ItemRecord>;
       },
-    ): UseQueryResult<List<RecordOf<Item>>> => {
+    ): UseQueryResult<List<ItemRecord>> => {
       const enabled = options?.enabled ?? true;
       const ordered = options?.ordered ?? true;
       const getUpdates = options?.getUpdates ?? enableWebsocket;
@@ -87,7 +86,7 @@ export default (
 
       return useQuery({
         queryKey: buildItemChildrenKey(id),
-        queryFn: () => {
+        queryFn: (): Promise<List<ItemRecord>> => {
           if (!id) {
             throw new UndefinedArgument();
           }
@@ -95,7 +94,7 @@ export default (
             convertJs(data),
           );
         },
-        onSuccess: async (items: List<RecordOf<Item>>) => {
+        onSuccess: async (items: List<ItemRecord>) => {
           if (items?.size) {
             // save items in their own key
             items.forEach(async (item) => {
@@ -116,27 +115,30 @@ export default (
         enabled?: boolean;
         ordered?: boolean;
         getUpdates?: boolean;
-        placeholderData?: List<RecordOf<Item>>[];
+        placeholderData?: List<List<ItemRecord>>;
       },
-    ): UseQueryResult<List<RecordOf<Item>>[]> => {
+    ): UseQueryResult<List<List<ItemRecord>>> => {
       const enabled = options?.enabled ?? true;
       const ordered = options?.ordered ?? true;
 
       return useQuery({
         queryKey: buildItemsChildrenKey(ids),
-        queryFn: () =>
-          Promise.all(
+        queryFn: (): Promise<List<List<ItemRecord>>> => {
+          return Promise.all(
             ids.map((id) =>
               Api.getChildren(id, ordered, queryConfig).then((data) =>
                 convertJs(data),
               ),
             ),
-          ),
-        onSuccess: async (items: List<RecordOf<Item>>[]) => {
+          ).then(items => {
+            return List(items);
+          });
+        },
+        onSuccess: async (items: List<List<ItemRecord>>) => {
           /* Because the query function loops over the ids, this returns an array 
           of immutable list of items, each list correspond to an item and contains 
           their children */
-          if (items.length) {
+          if (items.size) {
             // For each item, get the list of its childrens
             items.forEach((item) => {
               // If the item has children, save them in query client
@@ -166,9 +168,9 @@ export default (
     }) =>
       useQuery({
         queryKey: buildItemParentsKey(id),
-        queryFn: () =>
+        queryFn: (): Promise<List<ItemRecord>> =>
           Api.getParents({ path }, queryConfig).then((data) => convertJs(data)),
-        onSuccess: async (items: List<RecordOf<Item>>) => {
+        onSuccess: async (items: List<ItemRecord>) => {
           if (items?.size) {
             // save items in their own key
             items.forEach(async (item) => {
@@ -186,14 +188,14 @@ export default (
 
       const { data: currentMember } = useCurrentMember();
       itemWsHooks?.useSharedItemsUpdates(
-        getUpdates ? (currentMember as RecordOf<Member>)?.id : null,
+        getUpdates ? currentMember?.id : null,
       );
 
       return useQuery({
         queryKey: SHARED_ITEMS_KEY,
-        queryFn: () =>
+        queryFn: (): Promise<List<ItemRecord>> =>
           Api.getSharedItems(queryConfig).then((data) => convertJs(data)),
-        onSuccess: async (items: List<RecordOf<Item>>) => {
+        onSuccess: async (items: List<ItemRecord>) => {
           // save items in their own key
           items.forEach(async (item) => {
             const { id } = item;
@@ -206,23 +208,26 @@ export default (
 
     useItem: (
       id?: UUID,
-      // todo: directly provide a Map<Item>
       options?: {
         getUpdates?: boolean;
-        placeholderData?: RecordOf<Item>;
+        placeholderData?: ItemRecord;
       },
     ) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
-
+      console.log("useItem se pasa")
       itemWsHooks?.useItemUpdates(getUpdates ? id : null);
 
       return useQuery({
         queryKey: buildItemKey(id),
-        queryFn: () => {
+        queryFn: (): Promise<ItemRecord> => {
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getItem(id, queryConfig).then((data) => convertJs(data));
+          return Api.getItem(id, queryConfig).then((data) => {
+            console.log("dataEnHook")
+            console.log(convertJs(data))
+            return convertJs(data)
+          });
         },
         enabled: Boolean(id),
         ...defaultQueryOptions,
@@ -240,16 +245,19 @@ export default (
 
       return useQuery({
         queryKey: buildItemsKey(ids),
-        queryFn: () =>
-          // eslint-disable-next-line no-nested-ternary
-          ids
-            ? ids.length === 1
-              ? Api.getItem(ids[0], queryConfig).then((data) =>
-                  convertJs([data]),
-                )
-              : Api.getItems(ids, queryConfig).then((data) => convertJs(data))
-            : undefined,
-        onSuccess: async (items: List<RecordOf<Item>>) => {
+        queryFn: (): Promise<List<ItemRecord>> => {
+          if(!ids) {
+            throw new UndefinedArgument()
+          }
+          if(ids.length === 1) {
+            return Api.getItem(ids[0], queryConfig).then((data) =>
+              convertJs([data]),
+            )
+          } else {
+            return Api.getItems(ids, queryConfig).then((data) => convertJs(data))
+          }
+        },
+        onSuccess: async (items: List<ItemRecord>) => {
           // save items in their own key
           items?.forEach(async (item) => {
             const { id } = item;
@@ -257,14 +265,7 @@ export default (
           });
         },
         enabled: ids && Boolean(ids.length) && ids.every((id) => Boolean(id)),
-        retry: false,
-        staleTime: 0,
-        cacheTime: 1000 * 60 * 5,
-        keepPreviousData: false,
-        refetchOnMount: false,
-        refetchOnWindowFocus: false,
-        notifyOnChangeProps: 'tracked',
-        isDataEqual: (oldData, newData) => isDataEqual(oldData, newData),
+        ...defaultQueryOptions,
       });
     },
 
@@ -302,9 +303,9 @@ export default (
     useRecycledItems: () =>
       useQuery({
         queryKey: RECYCLED_ITEMS_KEY,
-        queryFn: () =>
+        queryFn: (): Promise<List<ItemRecord>> =>
           Api.getRecycledItems(queryConfig).then((data) => convertJs(data)),
-        onSuccess: async (items: List<RecordOf<Item>>) => {
+        onSuccess: async (items: List<ItemRecord>) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
           items?.forEach(async (item) => {
@@ -317,12 +318,12 @@ export default (
 
     usePublicItemsWithTag: (
       tagId?: UUID,
-      options?: { placeholderData?: List<RecordOf<Item>> },
+      options?: { placeholderData?: List<ItemRecord> },
     ) => {
       const placeholderData = options?.placeholderData;
       return useQuery({
         queryKey: buildPublicItemsWithTagKey(tagId),
-        queryFn: () => {
+        queryFn: (): Promise<List<ItemRecord>> => {
           if (!tagId) {
             throw new UndefinedArgument();
           }
@@ -331,7 +332,7 @@ export default (
             (data) => convertJs(data),
           );
         },
-        onSuccess: async (items: List<RecordOf<Item>>) => {
+        onSuccess: async (items: List<ItemRecord>) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
           items?.forEach(async (item) => {
@@ -355,7 +356,7 @@ export default (
       let shouldFetch = true;
       if (id) {
         shouldFetch =
-          queryClient.getQueryData<RecordOf<Item>>(buildItemKey(id))?.settings
+          queryClient.getQueryData<ItemRecord>(buildItemKey(id))?.settings
             ?.hasThumbnail ?? true;
       }
       return useQuery({

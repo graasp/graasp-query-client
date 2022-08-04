@@ -16,7 +16,7 @@ import {
   buildManyItemMembershipsKey,
   MUTATION_KEYS,
 } from '../config/keys';
-import { Invitation, Membership, QueryClientConfig, UUID } from '../types';
+import { Invitation, Membership, MembershipRecord, QueryClientConfig, UUID } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -75,7 +75,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onMutate: ({ itemId, id }) => {
       const membershipsKey = buildItemMembershipsKey(itemId);
       const memberships =
-        queryClient.getQueryData<List<Membership>>(membershipsKey);
+        queryClient.getQueryData<List<MembershipRecord>>(membershipsKey);
 
       queryClient.setQueryData(
         membershipsKey,

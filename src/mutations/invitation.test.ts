@@ -13,6 +13,7 @@ import {
 import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
 import {
   buildInvitation,
+  buildInvitationRecord,
   buildMockInvitations,
   ITEMS,
   OK_RESPONSE,
@@ -26,11 +27,11 @@ import {
   postInvitationsRoutine,
   resendInvitationRoutine,
 } from '../routines';
-import { Invitation } from '../types';
+import { InvitationRecord } from '../types';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
-const item = ITEMS[0];
+const item = ITEMS.first()!;
 const itemId = item.id;
 
 const defaultInvitations = buildMockInvitations(itemId);
@@ -152,13 +153,14 @@ describe('Invitations Mutations', () => {
 
     it('Notify if one error exists in returned value post invitation', async () => {
       const newInvitation = buildInvitation({ itemPath: itemId, email: 'c' });
+      const newInvitationRecord = buildInvitationRecord({ itemPath: itemId, email: 'c' });
 
       // set data in cache
       queryClient.setQueryData(key, defaultInvitations);
 
       const endpoints = [
         {
-          response: [newInvitation, UNAUTHORIZED_RESPONSE],
+          response: [newInvitationRecord, UNAUTHORIZED_RESPONSE],
           method: REQUEST_METHODS.POST,
           route,
         },
@@ -272,6 +274,7 @@ describe('Invitations Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_INVITATION);
     const key = buildItemInvitationsKey(itemId);
     const invitationToDelete = buildInvitation({ itemPath: 'itemPath' });
+    const invitationToDeleteRecord = buildInvitationRecord({ itemPath: 'itemPath' });
     const route = `/${buildDeleteInvitationRoute({
       itemId,
       id: invitationToDelete.id,
@@ -279,10 +282,10 @@ describe('Invitations Mutations', () => {
 
     it('Delete one invitation successfully', async () => {
       // set data in cache
-      queryClient.setQueryData(key, [
+      queryClient.setQueryData(key, List([
         ...defaultInvitations,
-        invitationToDelete,
-      ]);
+        invitationToDeleteRecord,
+      ]));
 
       const response = OK_RESPONSE;
 
@@ -308,7 +311,7 @@ describe('Invitations Mutations', () => {
       // check memberships invalidation
       const state = queryClient.getQueryState(key);
       expect(state?.isInvalidated).toBeTruthy();
-      const data = queryClient.getQueryData<List<Invitation>>(key);
+      const data = queryClient.getQueryData<List<InvitationRecord>>(key);
       expect(data).toBeTruthy();
       expect(data?.find(({ id }) => id === invitationToDelete.id)).toBeFalsy();
       expect(mockedNotifier).toHaveBeenCalledWith({
@@ -320,7 +323,7 @@ describe('Invitations Mutations', () => {
       // set data in cache
       queryClient.setQueryData(key, [
         ...defaultInvitations,
-        invitationToDelete,
+        invitationToDeleteRecord,
       ]);
 
       const endpoints = [
@@ -346,7 +349,7 @@ describe('Invitations Mutations', () => {
       // check memberships invalidation
       const state = queryClient.getQueryState(key);
       expect(state?.isInvalidated).toBeTruthy();
-      const data = queryClient.getQueryData<List<Invitation>>(key);
+      const data = queryClient.getQueryData<List<InvitationRecord>>(key);
       expect(data).toBeTruthy();
       expect(data?.find(({ id }) => id === invitationToDelete.id)).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith(

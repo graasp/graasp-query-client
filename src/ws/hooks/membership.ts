@@ -1,8 +1,9 @@
-import { List, RecordOf } from 'immutable';
+import { List } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 import { buildItemMembershipsKey } from '../../config/keys';
-import { Membership, UUID } from '../../types';
+import { Membership, MembershipRecord, UUID } from '../../types';
+import { convertJs } from '../../utils/util';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 
@@ -10,7 +11,7 @@ import { Channel, WebsocketClient } from '../ws-client';
 interface MembershipEvent {
   kind: string;
   op: string;
-  membership: RecordOf<Membership>;
+  membership: Membership;
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -38,10 +39,10 @@ export const configureWsMembershipHooks = (
         const handler = (event: MembershipEvent) => {
           if (event.kind === KINDS.ITEM) {
             const current =
-              queryClient.getQueryData<List<RecordOf<Membership>>>(
+              queryClient.getQueryData<List<MembershipRecord>>(
                 itemMembershipsKey,
               );
-            const { membership } = event;
+            const membership: MembershipRecord = convertJs(event.membership);
 
             if (current && membership.itemId === itemId) {
               let mutation;

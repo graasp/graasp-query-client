@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
-import { List, Map } from 'immutable';
+import { List } from 'immutable';
 import { act } from 'react-test-renderer';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
@@ -36,7 +36,7 @@ import {
   editItemMembershipRoutine,
   shareItemRoutine,
 } from '../routines';
-import { Membership, PERMISSION_LEVELS } from '../types';
+import { MembershipRecord, PERMISSION_LEVELS } from '../types';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
@@ -52,11 +52,11 @@ describe('Membership Mutations', () => {
     jest.clearAllMocks();
   });
 
-  const item = ITEMS[0];
+  const item = ITEMS.first()!;
   const itemId = item.id;
   const memberships = ITEM_MEMBERSHIPS_RESPONSE;
   const membershipsKey = buildItemMembershipsKey(itemId);
-  const membershipId = memberships[0].id;
+  const membershipId = memberships.first()!.id;
   const permission = PERMISSION_LEVELS.READ;
 
   describe(MUTATION_KEYS.POST_ITEM_MEMBERSHIP, () => {
@@ -69,9 +69,9 @@ describe('Membership Mutations', () => {
       // set data in cache
       ITEMS.forEach((i) => {
         const itemKey = buildItemKey(i.id);
-        queryClient.setQueryData(itemKey, Map(i));
+        queryClient.setQueryData(itemKey, i);
       });
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -114,9 +114,9 @@ describe('Membership Mutations', () => {
       // set data in cache
       ITEMS.forEach((i) => {
         const itemKey = buildItemKey(i.id);
-        queryClient.setQueryData(itemKey, Map(i));
+        queryClient.setQueryData(itemKey, i);
       });
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -158,7 +158,7 @@ describe('Membership Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.EDIT_ITEM_MEMBERSHIP);
 
     it('Edit item membership', async () => {
-      queryClient.setQueryData(membershipsKey, List(memberships));
+      queryClient.setQueryData(membershipsKey, memberships);
 
       const endpoints = [
         {
@@ -193,7 +193,7 @@ describe('Membership Mutations', () => {
     });
 
     it('Unauthorized to edit item membership', async () => {
-      queryClient.setQueryData(membershipsKey, List(ITEM_MEMBERSHIPS_RESPONSE));
+      queryClient.setQueryData(membershipsKey, ITEM_MEMBERSHIPS_RESPONSE);
 
       const endpoints = [
         {
@@ -231,7 +231,7 @@ describe('Membership Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_MEMBERSHIP);
 
     it('Delete item membership', async () => {
-      queryClient.setQueryData(membershipsKey, List(ITEM_MEMBERSHIPS_RESPONSE));
+      queryClient.setQueryData(membershipsKey, ITEM_MEMBERSHIPS_RESPONSE);
 
       const endpoints = [
         {
@@ -256,8 +256,8 @@ describe('Membership Mutations', () => {
         queryClient.getQueryState(membershipsKey)?.isInvalidated,
       ).toBeTruthy();
       expect(
-        queryClient.getQueryData<List<Membership>>(membershipsKey)?.toJS(),
-      ).toEqual(memberships.filter(({ id }) => id !== membershipId));
+        queryClient.getQueryData<List<MembershipRecord>>(membershipsKey),
+      ).toEqualImmutable(memberships.filter(({ id }) => id !== membershipId));
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: deleteItemMembershipRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_MEMBERSHIP },
@@ -265,7 +265,7 @@ describe('Membership Mutations', () => {
     });
 
     it('Unauthorized to delete item membership', async () => {
-      queryClient.setQueryData(membershipsKey, List(ITEM_MEMBERSHIPS_RESPONSE));
+      queryClient.setQueryData(membershipsKey, ITEM_MEMBERSHIPS_RESPONSE);
 
       const endpoints = [
         {
@@ -291,8 +291,8 @@ describe('Membership Mutations', () => {
         queryClient.getQueryState(membershipsKey)?.isInvalidated,
       ).toBeTruthy();
       expect(
-        queryClient.getQueryData<List<Membership>>(membershipsKey)?.toJS(),
-      ).toEqual(memberships);
+        queryClient.getQueryData<List<MembershipRecord>>(membershipsKey),
+      ).toEqualImmutable(memberships);
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: deleteItemMembershipRoutine.FAILURE,
@@ -310,9 +310,9 @@ describe('Membership Mutations', () => {
       // set data in cache
       ITEMS.forEach((i) => {
         const itemKey = buildItemKey(i.id);
-        queryClient.setQueryData(itemKey, Map(i));
+        queryClient.setQueryData(itemKey, i);
       });
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -369,9 +369,9 @@ describe('Membership Mutations', () => {
       // set data in cache
       ITEMS.forEach((i) => {
         const itemKey = buildItemKey(i.id);
-        queryClient.setQueryData(itemKey, Map(i));
+        queryClient.setQueryData(itemKey, i);
       });
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -432,9 +432,9 @@ describe('Membership Mutations', () => {
       // set data in cache
       ITEMS.forEach((i) => {
         const itemKey = buildItemKey(i.id);
-        queryClient.setQueryData(itemKey, Map(i));
+        queryClient.setQueryData(itemKey, i);
       });
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -482,9 +482,9 @@ describe('Membership Mutations', () => {
       // set data in cache
       ITEMS.forEach((i) => {
         const itemKey = buildItemKey(i.id);
-        queryClient.setQueryData(itemKey, Map(i));
+        queryClient.setQueryData(itemKey, i);
       });
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -544,9 +544,9 @@ describe('Membership Mutations', () => {
       // set data in cache
       ITEMS.forEach((i) => {
         const itemKey = buildItemKey(i.id);
-        queryClient.setQueryData(itemKey, Map(i));
+        queryClient.setQueryData(itemKey, i);
       });
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,
