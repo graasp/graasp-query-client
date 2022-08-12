@@ -49,13 +49,21 @@ const UnauthenticatedError = new Response(
   { errors: ['User is not authenticated !!!'] },
 );
 
+const NotFoundError = new Response(
+  StatusCodes.NOT_FOUND,
+  { some: 'header' },
+  { errors: ['element not found'] },
+);
+
 export const buildDatabase = ({
   currentMember = DEFAULT_MEMBER,
   items = [],
+  invitations = [],
   members,
 }: Partial<Database> = {}) => ({
   currentMember,
   items,
+  invitations,
   members: members ?? [currentMember],
 });
 
@@ -65,13 +73,13 @@ export const mockServer = ({
   database = buildDatabase(),
   externalUrls = [],
 }: // errors = {},
-{
-  currentMember?: Member;
-  urlPrefix?: string;
-  database?: Database;
-  externalUrls?: string[];
-  errors?: any;
-} = {}) => {
+  {
+    currentMember?: Member;
+    urlPrefix?: string;
+    database?: Database;
+    externalUrls?: string[];
+    errors?: any;
+  } = {}) => {
   const checkIsAuthenticated = () => Boolean(currentMember?.id);
   const { members, invitations } = database;
   // mocked errors
@@ -82,9 +90,21 @@ export const mockServer = ({
     // environment
     urlPrefix,
     models: {
+      item: Model,
       member: Model,
+      invitation: Model,
     },
     factories: {
+      item: Factory.extend<Item>({
+        id: () => v4(),
+        extra: () => ({}),
+        description: () => '',
+        path: () => 'path',
+        type: () => 'folder',
+        name: (idx: number) => `member-${idx}`,
+        createdAt: Date.now().toLocaleString(),
+        updatedAt: Date.now().toLocaleString(),
+      }),
       member: Factory.extend<Member>({
         id: () => v4(),
         extra: () => ({}),
@@ -96,7 +116,7 @@ export const mockServer = ({
       invitation: Factory.extend<Invitation>({
         id: () => v4(),
         permission: () => 'read',
-        email: (idx: number) => `member-email-${idx}`,
+        email: (idx: number) => `invitation-email-${idx}`,
         createdAt: Date.now().toLocaleString(),
       }),
     },
@@ -120,7 +140,13 @@ export const mockServer = ({
         const {
           params: { id },
         } = request;
-        return schema.find('invitation', id);
+
+        const invitation = schema.find('invitation', id)
+        if (!invitation) {
+          return NotFoundError
+        }
+
+        return invitation
       });
 
       // auth

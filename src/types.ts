@@ -36,6 +36,8 @@ export type Item = {
   description: string;
   extra: unknown;
   settings?: ItemSettings;
+  createdAt: string
+  updatedAt: string
 };
 
 export type MemberExtra = {
