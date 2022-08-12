@@ -38,8 +38,5 @@ export const isDataEqual = (
     | undefined,
   newData: RecordOf<any> | List<RecordOf<any>> | List<List<RecordOf<any>>>,
 ): boolean => {
-  if (is(oldData, newData)) {
-    return true;
-  }
-  return false;
+  return is(oldData, newData);
 };

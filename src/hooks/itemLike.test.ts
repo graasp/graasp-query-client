@@ -2,7 +2,6 @@
 import nock from 'nock';
 import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
-//import { List } from 'immutable';
 import { buildGetLikeCountRoute, buildGetLikedItemsRoute } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
 import {

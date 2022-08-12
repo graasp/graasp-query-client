@@ -1,7 +1,6 @@
 import { List, RecordOf } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
-//import { MESSAGE_IDS } from '../../../test/constants';
 import { buildItemChatKey } from '../../config/keys';
 import { Chat, ChatMessage, ChatMessageRecord, UUID } from '../../types';
 import { convertJs } from '../../utils/util';
