@@ -218,7 +218,7 @@ export const mockServer = ({
         return member;
       });
 
-      this.get(`/${buildGetPublicMembersRoute([])}`, (schema, request) => {
+      this.get(`/${buildGetPublicMembersRoute()}`, (schema, request) => {
         let { id: memberIds } = qs.parse(request.url.split('?')[1]);
         if (typeof memberIds === 'string') {
           memberIds = [memberIds];
@@ -227,7 +227,7 @@ export const mockServer = ({
         return schema.all('member').filter(({ id }) => ids.includes(id));
       });
 
-      this.get(`/${buildGetMembersRoute([])}`, (schema, request) => {
+      this.get(`/${buildGetMembersRoute()}`, (schema, request) => {
         if (!checkIsAuthenticated()) {
           return UnauthenticatedError;
         }
