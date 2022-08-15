@@ -13,6 +13,7 @@ import {
   buildGetInvitationRoute,
   buildGetMember,
   buildGetMembersRoute,
+  buildGetPublicMember,
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_UP_ROUTE,
@@ -73,13 +74,13 @@ export const mockServer = ({
   database = buildDatabase(),
   externalUrls = [],
 }: // errors = {},
-  {
-    currentMember?: Member;
-    urlPrefix?: string;
-    database?: Database;
-    externalUrls?: string[];
-    errors?: any;
-  } = {}) => {
+{
+  currentMember?: Member;
+  urlPrefix?: string;
+  database?: Database;
+  externalUrls?: string[];
+  errors?: any;
+} = {}) => {
   const checkIsAuthenticated = () => Boolean(currentMember?.id);
   const { members, invitations } = database;
   // mocked errors
@@ -90,9 +91,9 @@ export const mockServer = ({
     // environment
     urlPrefix,
     models: {
+      invitation: Model,
       item: Model,
       member: Model,
-      invitation: Model,
     },
     factories: {
       item: Factory.extend<Item>({
@@ -141,12 +142,12 @@ export const mockServer = ({
           params: { id },
         } = request;
 
-        const invitation = schema.find('invitation', id)
+        const invitation = schema.find('invitation', id);
         if (!invitation) {
-          return NotFoundError
+          return NotFoundError;
         }
 
-        return invitation
+        return invitation;
       });
 
       // auth
@@ -197,7 +198,27 @@ export const mockServer = ({
         const {
           params: { id },
         } = request;
-        return schema.find('member', id);
+        const member = schema.find('member', id);
+
+        if (!member) {
+          return new Response(StatusCodes.NOT_FOUND);
+        }
+        return member;
+      });
+
+      this.get(`/${buildGetPublicMember(':id')}`, (schema, request) => {
+        if (!checkIsAuthenticated()) {
+          return UnauthenticatedError;
+        }
+
+        const {
+          params: { id },
+        } = request;
+        const member = schema.find('member', id);
+        if (!member) {
+          return new Response(StatusCodes.NOT_FOUND);
+        }
+        return member;
       });
 
       this.get(`/${buildGetMembersRoute([])}`, (schema, request) => {
