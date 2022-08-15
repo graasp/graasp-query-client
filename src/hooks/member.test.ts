@@ -124,7 +124,7 @@ describe('Member Hooks', () => {
           statusCode: StatusCodes.UNAUTHORIZED,
         },
         {
-          route: `/${buildGetPublicMember(id)}`,
+          route: `/${buildGetPublicMemberRoute(id)}`,
           response,
         },
       ];

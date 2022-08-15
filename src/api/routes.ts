@@ -207,7 +207,8 @@ export const buildGetPublicMembersRoute = (ids: UUID[]) =>
     { arrayFormat: 'repeat' },
   )}`;
 
-export const buildGetPublicMember = (id: UUID) => `p/${MEMBERS_ROUTE}/${id}`;
+export const buildGetPublicMemberRoute = (id: UUID) =>
+  `p/${MEMBERS_ROUTE}/${id}`;
 export const buildRestoreItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/restore${qs.stringify(
     { id: ids },

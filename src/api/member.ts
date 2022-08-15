@@ -44,7 +44,7 @@ export const getMember = async (
 ) =>
   fallbackToPublic(
     () => axios.get(`${API_HOST}/${buildGetMember(id)}`),
-    () => axios.get(`${API_HOST}/${buildGetPublicMember(id)}`),
+    () => axios.get(`${API_HOST}/${buildGetPublicMemberRoute(id)}`),
   );
 
 export const getMembers = (

@@ -13,7 +13,8 @@ import {
   buildGetInvitationRoute,
   buildGetMember,
   buildGetMembersRoute,
-  buildGetPublicMember,
+  buildGetPublicMemberRoute,
+  buildGetPublicMembersRoute,
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_UP_ROUTE,
@@ -206,7 +207,7 @@ export const mockServer = ({
         return member;
       });
 
-      this.get(`/${buildGetPublicMember(':id')}`, (schema, request) => {
+      this.get(`/${buildGetPublicMemberRoute(':id')}`, (schema, request) => {
         if (!checkIsAuthenticated()) {
           return UnauthenticatedError;
         }
@@ -219,6 +220,19 @@ export const mockServer = ({
           return new Response(StatusCodes.NOT_FOUND);
         }
         return member;
+      });
+
+      this.get(`/${buildGetPublicMembersRoute([])}`, (schema, request) => {
+        if (!checkIsAuthenticated()) {
+          return UnauthenticatedError;
+        }
+
+        let { id: memberIds } = qs.parse(request.url.split('?')[1]);
+        if (typeof memberIds === 'string') {
+          memberIds = [memberIds];
+        }
+        const ids = memberIds as string[];
+        return schema.all('member').filter(({ id }) => ids.includes(id));
       });
 
       this.get(`/${buildGetMembersRoute([])}`, (schema, request) => {
