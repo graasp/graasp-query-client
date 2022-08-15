@@ -369,7 +369,7 @@ export const API_ROUTES = {
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
   buildGetPublicItemsWithTag,
-  buildGetPublicMember,
+  buildGetPublicMemberRoute,
   buildGetPublicMembersRoute,
   buildRestoreItemsRoute,
   buildGetCategoriesRoute,

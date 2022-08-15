@@ -6,7 +6,7 @@ import {
   buildPatchMember,
   buildGetMembersRoute,
   buildGetPublicMembersRoute,
-  buildGetPublicMember,
+  buildGetPublicMemberRoute,
   buildUploadAvatarRoute,
   buildDownloadAvatarRoute,
   buildDownloadPublicAvatarRoute,
