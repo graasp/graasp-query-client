@@ -7,7 +7,7 @@ export const ITEMS_ROUTE = 'items';
 export const ITEM_MEMBERSHIPS_ROUTE = 'item-memberships';
 export const MEMBERS_ROUTE = `members`;
 export const SUBSCRIPTION_ROUTE = 'subscriptions';
-export const SUBSCRIPTION_KEY = 'subscriptions'
+export const SUBSCRIPTION_KEY = 'subscriptions';
 export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const INVITATIONS_ROUTE = `invitations`;
 export const GET_RECYCLED_ITEMS_ROUTE = `${ITEMS_ROUTE}/recycled`;
@@ -89,8 +89,8 @@ export const buildGetMembersBy = (emails: string[]) =>
     { arrayFormat: 'repeat', addQueryPrefix: true },
   )}`;
 export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
-export const buildGetMembersRoute = (ids: UUID[]) =>
-  `${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
+export const buildGetMembersRoute = (ids?: UUID[]) =>
+  `${MEMBERS_ROUTE}${qs.stringify({ id: ids }, { arrayFormat: 'repeat', addQueryPrefix: true })}`;
 export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildDeleteMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildUpdateMemberPasswordRoute = () =>
@@ -201,13 +201,14 @@ export const buildRecycleItemsRoute = (ids: UUID[]) =>
   )}`;
 export const buildGetPublicItemsWithTag = (options: { tagId: UUID }) =>
   `${PUBLIC_PREFIX}/${ITEMS_ROUTE}?${qs.stringify(options)}`;
-export const buildGetPublicMembersRoute = (ids: UUID[]) =>
-  `${PUBLIC_PREFIX}/${MEMBERS_ROUTE}?${qs.stringify(
+export const buildGetPublicMembersRoute = (ids?: UUID[]) =>
+  `${PUBLIC_PREFIX}/${MEMBERS_ROUTE}${qs.stringify(
     { id: ids },
-    { arrayFormat: 'repeat' },
+    { arrayFormat: 'repeat', addQueryPrefix: true },
   )}`;
 
-export const buildGetPublicMember = (id: UUID) => `p/${MEMBERS_ROUTE}/${id}`;
+export const buildGetPublicMemberRoute = (id: UUID) =>
+  `p/${MEMBERS_ROUTE}/${id}`;
 export const buildRestoreItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/restore${qs.stringify(
     { id: ids },
@@ -368,7 +369,7 @@ export const API_ROUTES = {
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
   buildGetPublicItemsWithTag,
-  buildGetPublicMember,
+  buildGetPublicMemberRoute,
   buildGetPublicMembersRoute,
   buildRestoreItemsRoute,
   buildGetCategoriesRoute,

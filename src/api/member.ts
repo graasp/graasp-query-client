@@ -6,14 +6,20 @@ import {
   buildPatchMember,
   buildGetMembersRoute,
   buildGetPublicMembersRoute,
-  buildGetPublicMember,
+  buildGetPublicMemberRoute,
   buildUploadAvatarRoute,
   buildDownloadAvatarRoute,
   buildDownloadPublicAvatarRoute,
   buildDeleteMemberRoute,
   buildUpdateMemberPasswordRoute,
 } from './routes';
-import { Member, MemberExtra, Password, QueryClientConfig, UUID } from '../types';
+import {
+  Member,
+  MemberExtra,
+  Password,
+  QueryClientConfig,
+  UUID,
+} from '../types';
 import { DEFAULT_THUMBNAIL_SIZES, SIGNED_OUT_USER } from '../config/constants';
 import configureAxios, {
   fallbackToPublic,
@@ -38,7 +44,7 @@ export const getMember = async (
 ) =>
   fallbackToPublic(
     () => axios.get(`${API_HOST}/${buildGetMember(id)}`),
-    () => axios.get(`${API_HOST}/${buildGetPublicMember(id)}`),
+    () => axios.get(`${API_HOST}/${buildGetPublicMemberRoute(id)}`),
   );
 
 export const getMembers = (

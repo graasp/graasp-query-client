@@ -36,10 +36,13 @@ export type Item = {
   description: string;
   extra: unknown;
   settings?: ItemSettings;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type MemberExtra = {
   hasAvatar?: boolean;
+  password?: string;
 };
 
 export type Member = {
@@ -47,6 +50,8 @@ export type Member = {
   name: string;
   email: string;
   extra: MemberExtra;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Membership = {
@@ -190,6 +195,7 @@ export type Invitation = {
   email: string;
   permission: string;
   name?: string;
+  createdAt: string;
 };
 
 export type Password = string;
