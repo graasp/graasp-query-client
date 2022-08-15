@@ -90,7 +90,7 @@ export const buildGetMembersBy = (emails: string[]) =>
   )}`;
 export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildGetMembersRoute = (ids: UUID[]) =>
-  `${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
+  `${MEMBERS_ROUTE}${qs.stringify({ id: ids }, { arrayFormat: 'repeat', addQueryPrefix: true })}`;
 export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildDeleteMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildUpdateMemberPasswordRoute = () =>
@@ -202,9 +202,9 @@ export const buildRecycleItemsRoute = (ids: UUID[]) =>
 export const buildGetPublicItemsWithTag = (options: { tagId: UUID }) =>
   `${PUBLIC_PREFIX}/${ITEMS_ROUTE}?${qs.stringify(options)}`;
 export const buildGetPublicMembersRoute = (ids: UUID[]) =>
-  `${PUBLIC_PREFIX}/${MEMBERS_ROUTE}?${qs.stringify(
+  `${PUBLIC_PREFIX}/${MEMBERS_ROUTE}${qs.stringify(
     { id: ids },
-    { arrayFormat: 'repeat' },
+    { arrayFormat: 'repeat', addQueryPrefix: true },
   )}`;
 
 export const buildGetPublicMemberRoute = (id: UUID) =>

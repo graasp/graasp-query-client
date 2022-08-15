@@ -75,13 +75,13 @@ export const mockServer = ({
   database = buildDatabase(),
   externalUrls = [],
 }: // errors = {},
-{
-  currentMember?: Member;
-  urlPrefix?: string;
-  database?: Database;
-  externalUrls?: string[];
-  errors?: any;
-} = {}) => {
+  {
+    currentMember?: Member;
+    urlPrefix?: string;
+    database?: Database;
+    externalUrls?: string[];
+    errors?: any;
+  } = {}) => {
   const checkIsAuthenticated = () => Boolean(currentMember?.id);
   const { members, invitations } = database;
   // mocked errors
