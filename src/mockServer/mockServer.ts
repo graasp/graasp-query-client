@@ -171,7 +171,7 @@ export const mockServer = ({
           return new Response(StatusCodes.NO_CONTENT);
         }
 
-        return UnauthenticatedError;
+        return new Response(StatusCodes.BAD_REQUEST);
       });
 
       this.post(`/${SIGN_UP_ROUTE}`, () => {
