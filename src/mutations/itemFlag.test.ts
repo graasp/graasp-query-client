@@ -1,7 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
@@ -25,14 +24,14 @@ describe('Item Flag Mutations', () => {
   });
 
   describe(MUTATION_KEYS.POST_ITEM_FLAG, () => {
-    const flagId = FLAGS[0].id;
-    const itemId = ITEMS[0].id;
+    const flagId = FLAGS.first()!.id;
+    const itemId = ITEMS.first()!.id;
     const flagKey = buildItemFlagsKey(itemId);
     const route = `/${buildPostItemFlagRoute(itemId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_FLAG);
 
     it('Post item flag', async () => {
-      queryClient.setQueryData(flagKey, List(FLAGS));
+      queryClient.setQueryData(flagKey, FLAGS);
 
       const response = {};
 
@@ -63,7 +62,7 @@ describe('Item Flag Mutations', () => {
     });
 
     it('Unauthorized to post item flag', async () => {
-      queryClient.setQueryData(flagKey, List(FLAGS));
+      queryClient.setQueryData(flagKey, FLAGS);
       const endpoints = [
         {
           response: UNAUTHORIZED_RESPONSE,

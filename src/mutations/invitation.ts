@@ -14,7 +14,7 @@ import {
   postInvitationsRoutine,
   resendInvitationRoutine,
 } from '../routines';
-import { Invitation, QueryClientConfig } from '../types';
+import { InvitationRecord, QueryClientConfig } from '../types';
 
 const {
   POST_INVITATIONS,
@@ -91,7 +91,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onMutate: async ({ id, itemId }) => {
       const key = buildItemInvitationsKey(itemId);
 
-      const prevValue = queryClient.getQueryData<List<Invitation>>(key);
+      const prevValue = queryClient.getQueryData<List<InvitationRecord>>(key);
 
       // remove invitation from list
       if (prevValue) {

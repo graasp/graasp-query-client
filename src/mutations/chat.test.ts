@@ -29,7 +29,7 @@ import {
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Chat Mutations', () => {
-  const itemId = ITEMS[0].id;
+  const itemId = ITEMS.first()!.id;
   const chatId = itemId;
   const chatKey = buildItemChatKey(itemId);
   const messageId = MESSAGE_IDS[0];

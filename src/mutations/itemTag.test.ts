@@ -16,7 +16,7 @@ import { buildDeleteItemTagRoute, buildPostItemTagRoute } from '../api/routes';
 import { REQUEST_METHODS } from '../api/utils';
 import { buildItemTagsKey, MUTATION_KEYS } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
-import { ItemTag } from '../types';
+import { ItemTagRecord } from '../types';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
@@ -32,9 +32,9 @@ describe('Item Tag Mutations', () => {
   });
 
   describe(MUTATION_KEYS.POST_ITEM_TAG, () => {
-    const item = ITEMS[0];
+    const item = ITEMS.first()!;
     const itemId = item.id;
-    const tagId = ITEM_TAGS[0].id;
+    const tagId = ITEM_TAGS.first()!.id;
     const creator = MEMBER_RESPONSE.id;
     const route = `/${buildPostItemTagRoute(itemId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_TAG);
@@ -112,15 +112,15 @@ describe('Item Tag Mutations', () => {
   });
 
   describe(MUTATION_KEYS.DELETE_ITEM_TAG, () => {
-    const item = ITEMS[0];
+    const item = ITEMS.first()!;
     const itemId = item.id;
-    const tagId = ITEM_TAGS[0].id;
+    const tagId = ITEM_TAGS.first()!.id;
     const route = `/${buildDeleteItemTagRoute({ id: itemId, tagId })}`;
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_TAG);
     const itemTagKey = buildItemTagsKey(itemId);
 
     it('Delete item tag', async () => {
-      queryClient.setQueryData(itemTagKey, List(ITEM_TAGS));
+      queryClient.setQueryData(itemTagKey, ITEM_TAGS);
 
       const endpoints = [
         {
@@ -143,7 +143,7 @@ describe('Item Tag Mutations', () => {
 
       const data = queryClient.getQueryState(itemTagKey);
       expect(data?.isInvalidated).toBeTruthy();
-      expect((data?.data as List<ItemTag>)?.toJS()).toEqual(
+      expect(data?.data as List<ItemTagRecord>).toEqualImmutable(
         ITEM_TAGS.filter(({ id }) => id !== tagId),
       );
       expect(mockedNotifier).toHaveBeenCalledWith({
@@ -153,7 +153,7 @@ describe('Item Tag Mutations', () => {
     });
 
     it('Unauthorized to delete item tag', async () => {
-      queryClient.setQueryData(itemTagKey, List(ITEM_TAGS));
+      queryClient.setQueryData(itemTagKey, ITEM_TAGS);
 
       const endpoints = [
         {
@@ -177,7 +177,7 @@ describe('Item Tag Mutations', () => {
 
       const data = queryClient.getQueryState(itemTagKey);
       expect(data?.isInvalidated).toBeTruthy();
-      expect((data?.data as List<ItemTag>)?.toJS()).toEqual(ITEM_TAGS);
+      expect(data?.data as List<ItemTagRecord>).toEqualImmutable(ITEM_TAGS);
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: deleteItemTagRoutine.FAILURE,

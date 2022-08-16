@@ -1,5 +1,5 @@
 import { QueryClient, useQuery } from 'react-query';
-import { Map, List, Record } from 'immutable';
+import { List } from 'immutable';
 import * as Api from '../api';
 import {
   buildAvatarKey,
@@ -7,8 +7,14 @@ import {
   buildMembersKey,
   CURRENT_MEMBER_KEY,
 } from '../config/keys';
-import { Member, QueryClientConfig, UndefinedArgument, UUID } from '../types';
+import {
+  MemberRecord,
+  QueryClientConfig,
+  UndefinedArgument,
+  UUID,
+} from '../types';
 import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
+import { convertJs } from '../utils/util';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -16,19 +22,21 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const useCurrentMember = () =>
     useQuery({
       queryKey: CURRENT_MEMBER_KEY,
-      queryFn: () =>
-        Api.getCurrentMember(queryConfig).then((data) => Map(data)),
+      queryFn: (): Promise<MemberRecord> =>
+        Api.getCurrentMember(queryConfig).then((data) => convertJs(data)),
       ...defaultQueryOptions,
     });
 
   const useMember = (id?: UUID) =>
     useQuery({
       queryKey: buildMemberKey(id),
-      queryFn: () => {
+      queryFn: (): Promise<MemberRecord> => {
         if (!id) {
           throw new UndefinedArgument();
         }
-        return Api.getMember({ id }, queryConfig).then((data) => Map(data));
+        return Api.getMember({ id }, queryConfig).then((data) =>
+          convertJs(data),
+        );
       },
       enabled: Boolean(id),
       ...defaultQueryOptions,
@@ -37,14 +45,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const useMembers = (ids: UUID[]) =>
     useQuery({
       queryKey: buildMembersKey(ids),
-      queryFn: () =>
-        Api.getMembers({ ids }, queryConfig).then((data) => List(data)),
+      queryFn: (): Promise<List<MemberRecord>> =>
+        Api.getMembers({ ids }, queryConfig).then((data) => convertJs(data)),
       enabled: Boolean(ids?.length),
-      onSuccess: async (members: List<Member>) => {
+      onSuccess: async (members: List<MemberRecord>) => {
         // save members in their own key
         members?.forEach(async (member) => {
           const { id } = member;
-          queryClient.setQueryData(buildMemberKey(id), Map(member));
+          queryClient.setQueryData(buildMemberKey(id), member);
         });
       },
       ...defaultQueryOptions,
@@ -60,9 +68,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     let shouldFetch = true;
     if (id) {
       shouldFetch =
-        queryClient
-          .getQueryData<Record<Member>>(buildMemberKey(id))
-          ?.get('extra')?.hasAvatar ?? true;
+        queryClient.getQueryData<MemberRecord>(buildMemberKey(id))?.extra
+          ?.hasAvatar ?? true;
     }
     return useQuery({
       queryKey: buildAvatarKey({ id, size }),

@@ -2,7 +2,7 @@
 import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
-import { List } from 'immutable';
+import { List, Record } from 'immutable';
 import {
   buildGetItemsTagsRoute,
   buildGetItemTagsRoute,
@@ -11,7 +11,7 @@ import {
 import { mockHook, setUpTest } from '../../test/utils';
 import { ITEMS, TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { buildItemTagsKey, TAGS_KEY } from '../config/keys';
-import { ItemTag } from '../types';
+import { ItemTagRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -34,10 +34,10 @@ describe('Item Tags Hooks', () => {
       const endpoints = [{ route, response }];
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<ItemTag>).toJS()).toEqual(response);
+      expect(data as List<ItemTagRecord>).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
       expect(isSuccess).toBeTruthy();
     });
 
@@ -63,7 +63,7 @@ describe('Item Tags Hooks', () => {
   });
 
   describe('useItemTags', () => {
-    const itemId = ITEMS[0].id;
+    const itemId = ITEMS.first()!.id;
     const route = `/${buildGetItemTagsRoute(itemId)}`;
     const key = buildItemTagsKey(itemId);
 
@@ -74,10 +74,10 @@ describe('Item Tags Hooks', () => {
       const endpoints = [{ route, response }];
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<typeof TAGS[0]>).toJS()).toEqual(response);
+      expect(data as List<typeof TAGS>).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
       expect(isSuccess).toBeTruthy();
     });
 
@@ -103,33 +103,35 @@ describe('Item Tags Hooks', () => {
   });
 
   describe('useItemsTags', () => {
-    const itemsIds = ITEMS.map(({ id }) => id);
+    const itemsIds = ITEMS.map(({ id }) => id).toArray();
     const route = `/${buildGetItemsTagsRoute(itemsIds)}`;
     const keys = itemsIds.map((itemId) => buildItemTagsKey(itemId));
 
     const hook = () => hooks.useItemsTags(itemsIds);
 
     it(`Receive tags of given items`, async () => {
-      const response = itemsIds.map(() => TAGS);
+      const response = List(itemsIds.map(() => TAGS));
 
       const endpoints = [{ route, response }];
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<List<typeof TAGS[0]>>).toJS()).toEqual(response);
+      expect(data as List<List<typeof TAGS>>).toEqualImmutable(response);
 
       // verify cache keys
       keys.forEach((key) =>
-        expect(queryClient.getQueryData(key)).toEqual(List(TAGS)),
+        expect(queryClient.getQueryData(key)).toEqualImmutable(TAGS),
       );
 
       expect(isSuccess).toBeTruthy();
     });
 
     it(`Receive tags and save only for non-error tags`, async () => {
-      const response = [
-        ...itemsIds.map(() => TAGS),
-        { statusCode: StatusCodes.FORBIDDEN },
-      ];
+      const defaultStatusCode = { statusCode: StatusCodes.FORBIDDEN };
+      const createMockStatusCode = Record(defaultStatusCode);
+      const STATUS_CODE = createMockStatusCode({
+        statusCode: StatusCodes.FORBIDDEN,
+      });
+      const response = List([...itemsIds.map(() => TAGS), STATUS_CODE]);
       const idWithError = 'some-id';
       const routeWithError = `/${buildGetItemsTagsRoute([
         ...itemsIds,
@@ -145,11 +147,11 @@ describe('Item Tags Hooks', () => {
         wrapper,
       });
 
-      expect((data as List<List<typeof TAGS[0]>>).toJS()).toEqual(response);
+      expect(data as List<typeof TAGS>).toEqualImmutable(response);
 
       // verify cache keys
       keys.forEach((key) =>
-        expect(queryClient.getQueryData(key)).toEqual(List(TAGS)),
+        expect(queryClient.getQueryData(key)).toEqualImmutable(TAGS),
       );
       expect(
         queryClient.getQueryData(buildItemTagsKey(idWithError)),

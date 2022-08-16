@@ -2,7 +2,8 @@ import { List } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 import { buildItemMembershipsKey } from '../../config/keys';
-import { Membership, UUID } from '../../types';
+import { Membership, MembershipRecord, UUID } from '../../types';
+import { convertJs } from '../../utils/util';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 
@@ -38,8 +39,10 @@ export const configureWsMembershipHooks = (
         const handler = (event: MembershipEvent) => {
           if (event.kind === KINDS.ITEM) {
             const current =
-              queryClient.getQueryData<List<Membership>>(itemMembershipsKey);
-            const { membership } = event;
+              queryClient.getQueryData<List<MembershipRecord>>(
+                itemMembershipsKey,
+              );
+            const membership: MembershipRecord = convertJs(event.membership);
 
             if (current && membership.itemId === itemId) {
               let mutation;

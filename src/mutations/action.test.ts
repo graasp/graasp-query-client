@@ -17,7 +17,7 @@ import { exportActionsRoutine } from '../routines';
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Action Mutations', () => {
-  const itemId = ITEMS[0].id;
+  const itemId = ITEMS.first()!.id;
 
   const mockedNotifier = jest.fn();
   const { wrapper, queryClient, useMutation } = setUpTest({

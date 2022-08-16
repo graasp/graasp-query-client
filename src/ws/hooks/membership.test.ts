@@ -9,7 +9,7 @@ import { ITEMS, ITEM_MEMBERSHIPS_RESPONSE } from '../../../test/constants';
 import { buildItemMembershipsKey } from '../../config/keys';
 import { configureWsMembershipHooks } from './membership';
 import { KINDS, OPS, TOPICS } from '../constants';
-import { Membership, PERMISSION_LEVELS } from '../../types';
+import { Membership, MembershipRecord, PERMISSION_LEVELS } from '../../types';
 
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsMembershipHooks,
@@ -23,10 +23,11 @@ describe('Ws Membership Hooks', () => {
   });
 
   describe('useItemsMembershipsUpdates', () => {
-    const itemId = ITEMS[0].id;
+    const itemId = ITEMS.first()!.id;
     const membershipsKey = buildItemMembershipsKey(itemId);
-    const newMembership = ITEM_MEMBERSHIPS_RESPONSE[0];
-    const memberships = List([ITEM_MEMBERSHIPS_RESPONSE[1]]);
+    const newMembershipRecord = ITEM_MEMBERSHIPS_RESPONSE.first()!;
+    const newMembership = ITEM_MEMBERSHIPS_RESPONSE.first()!.toJS();
+    const memberships = List([ITEM_MEMBERSHIPS_RESPONSE.get(1)]);
     const channel = { name: itemId, topic: TOPICS.MEMBERSHIPS_ITEM };
     const hook = () => hooks.useItemsMembershipsUpdates([itemId]);
 
@@ -44,16 +45,20 @@ describe('Ws Membership Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       expect(
-        queryClient.getQueryData<List<Membership>>(membershipsKey)?.toJS(),
+        queryClient
+          .getQueryData<List<MembershipRecord>>(membershipsKey)
+          ?.toJS(),
       ).toContainEqual(newMembership);
     });
 
     it(`Receive update membership update`, async () => {
-      queryClient.setQueryData(membershipsKey, memberships.push(newMembership));
-      const updatedMembership = {
-        ...newMembership,
-        permission: PERMISSION_LEVELS.WRITE,
-      };
+      queryClient.setQueryData(
+        membershipsKey,
+        memberships.push(newMembershipRecord),
+      );
+      const updatedMembership = newMembershipRecord
+        .update('permission', () => PERMISSION_LEVELS.WRITE)
+        .toJS();
       await mockWsHook({ hook, wrapper });
 
       const chatEvent = {
@@ -65,26 +70,26 @@ describe('Ws Membership Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       const membershipsData = queryClient
-        .getQueryData<List<Membership>>(membershipsKey)
+        .getQueryData<List<MembershipRecord>>(membershipsKey)
         ?.toJS();
       expect(membershipsData).toContainEqual(updatedMembership);
       expect(membershipsData?.length).toBe(memberships.size + 1);
     });
 
     it(`Receive delete membership update`, async () => {
-      queryClient.setQueryData(membershipsKey, List(ITEM_MEMBERSHIPS_RESPONSE));
+      queryClient.setQueryData(membershipsKey, ITEM_MEMBERSHIPS_RESPONSE);
       await mockWsHook({ hook, wrapper });
 
       const chatEvent = {
         kind: KINDS.ITEM,
         op: OPS.DELETE,
-        membership: memberships.get(0),
+        membership: memberships.get(0)?.toJS(),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       const membershipsData = queryClient
-        .getQueryData<List<Membership>>(membershipsKey)
+        .getQueryData<List<MembershipRecord>>(membershipsKey)
         ?.toJS() as Membership[];
       expect(
         membershipsData?.find(({ id }) => id === memberships.get(0)?.id),
@@ -105,7 +110,7 @@ describe('Ws Membership Hooks', () => {
 
       expect(
         queryClient
-          .getQueryData<List<Membership>>(membershipsKey)
+          .getQueryData<List<MembershipRecord>>(membershipsKey)
           ?.equals(memberships),
       ).toBeTruthy();
     });

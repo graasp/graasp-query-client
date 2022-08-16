@@ -1,10 +1,10 @@
-import { Map } from 'immutable';
 import { QueryClient, useQuery } from 'react-query';
 import * as Api from '../api';
 import { buildItemChatKey } from '../config/keys';
 import { QueryClientConfig, UUID } from '../types';
 import { configureWsChatHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
+import { convertJs } from '../utils/util';
 
 export default (
   queryClient: QueryClient,
@@ -27,7 +27,7 @@ export default (
       return useQuery({
         queryKey: buildItemChatKey(itemId),
         queryFn: () =>
-          Api.getItemChat(itemId, queryConfig).then((data) => Map(data)),
+          Api.getItemChat(itemId, queryConfig).then((data) => convertJs(data)),
         ...defaultQueryOptions,
         enabled: Boolean(itemId),
       });

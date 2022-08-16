@@ -173,9 +173,8 @@ describe('Authentication Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.UPDATE_PASSWORD);
     const password = 'ASDasd123';
     const currentPassword = 'ASDasd123';
-    const name = 'myName'
-    const id = 'myId'
-
+    const name = 'myName';
+    const id = 'myId';
 
     it(`Update password`, async () => {
       const endpoints = [

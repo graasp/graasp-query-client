@@ -1,8 +1,8 @@
-import { Map } from 'immutable';
 import { useQuery } from 'react-query';
 import * as Api from '../api';
 import { buildActionsKey } from '../config/keys';
 import { QueryClientConfig, UUID } from '../types';
+import { convertJs } from '../utils/util';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -23,7 +23,7 @@ export default (queryConfig: QueryClientConfig) => {
       return useQuery({
         queryKey: buildActionsKey(args),
         queryFn: () =>
-          Api.getActions(args, queryConfig).then((data) => Map(data)),
+          Api.getActions(args, queryConfig).then((data) => convertJs(data)),
         ...defaultQueryOptions,
         enabled: enabledValue,
       });

@@ -6,11 +6,12 @@ import {
   buildManyItemMembershipsKey,
 } from '../config/keys';
 import {
-  Membership,
+  MembershipRecord,
   QueryClientConfig,
   UndefinedArgument,
   UUID,
 } from '../types';
+import { convertJs } from '../utils/util';
 import { configureWsMembershipHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
@@ -36,13 +37,13 @@ export default (
 
       return useQuery({
         queryKey: buildItemMembershipsKey(id),
-        queryFn: () => {
+        queryFn: (): Promise<List<MembershipRecord>> => {
           if (!id) {
             throw new UndefinedArgument();
           }
 
           return Api.getMembershipsForItems([id], queryConfig).then((data) =>
-            List(data[0]),
+            convertJs(data[0]),
           );
         },
         enabled: Boolean(id),
@@ -60,21 +61,21 @@ export default (
 
       return useQuery({
         queryKey: buildManyItemMembershipsKey(ids),
-        queryFn: () => {
+        queryFn: (): Promise<List<List<MembershipRecord>>> => {
           if (!ids) {
             throw new UndefinedArgument();
           }
 
           return Api.getMembershipsForItems(ids, queryConfig).then((data) =>
-            List(data),
+            convertJs(data),
           );
         },
-        onSuccess: async (memberships) => {
+        onSuccess: async (memberships: List<List<MembershipRecord>>) => {
           // save memberships in their own key
           ids?.forEach(async (id, idx) => {
             queryClient.setQueryData(
               buildItemMembershipsKey(id),
-              List(memberships.get(idx) as Membership[]),
+              memberships.get(idx) as List<MembershipRecord>,
             );
           });
         },

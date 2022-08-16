@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
 import { act } from '@testing-library/react-hooks';
-import { Map, Record } from 'immutable';
+import { List, Record } from 'immutable';
 import nock from 'nock';
 import Cookies from 'js-cookie';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
@@ -23,7 +23,7 @@ import {
   CURRENT_MEMBER_KEY,
   MUTATION_KEYS,
 } from '../config/keys';
-import { Member } from '../types';
+import { MemberRecord } from '../types';
 import { REQUEST_METHODS } from '../api/utils';
 import { THUMBNAIL_SIZES } from '../config/constants';
 import { addFavoriteItemRoutine, uploadAvatarRoutine } from '../routines';
@@ -87,7 +87,7 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqual(
+      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqualImmutable(
         MEMBER_RESPONSE,
       );
     });
@@ -151,7 +151,7 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqual(
+      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqualImmutable(
         MEMBER_RESPONSE,
       );
     });
@@ -164,9 +164,10 @@ describe('Member Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.EDIT_MEMBER);
 
     it(`Successfully edit member id = ${id}`, async () => {
-      const response = { ...MEMBER_RESPONSE, ...newMember };
+      const response = MEMBER_RESPONSE.set('name', newMember.name);
+
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, Map(MEMBER_RESPONSE));
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const endpoints = [
         {
           response,
@@ -188,13 +189,13 @@ describe('Member Mutations', () => {
       // verify cache keys
       const newData = queryClient.getQueryData(
         CURRENT_MEMBER_KEY,
-      ) as Record<Member>;
-      expect(newData.toJS()).toEqual(response);
+      ) as MemberRecord;
+      expect(newData).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, Map(MEMBER_RESPONSE));
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const endpoints = [
         {
           response: UNAUTHORIZED_RESPONSE,
@@ -217,8 +218,8 @@ describe('Member Mutations', () => {
       // verify cache keys
       const oldData = queryClient.getQueryData(
         CURRENT_MEMBER_KEY,
-      ) as Record<Member>;
-      expect(oldData.toJS()).toEqual(MEMBER_RESPONSE);
+      ) as MemberRecord;
+      expect(oldData).toEqualImmutable(MEMBER_RESPONSE);
     });
   });
 
@@ -324,12 +325,10 @@ describe('Member Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.ADD_FAVORITE_ITEM);
 
     it(`Successfully add favorite item`, async () => {
-      const response = {
-        ...MEMBER_RESPONSE,
-        extra: { favoriteItems: ['item-id'] },
-      };
+      const createMemberExtra = Record({ favoriteItems: List(['item-id']) });
+      const response = MEMBER_RESPONSE.set('extra', createMemberExtra() as any);
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, Map(MEMBER_RESPONSE));
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const endpoints = [
         {
           response,
@@ -354,11 +353,17 @@ describe('Member Mutations', () => {
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: addFavoriteItemRoutine.SUCCESS,
       });
+
+      // verify cache keys
+      const newData = queryClient.getQueryData(
+        CURRENT_MEMBER_KEY,
+      ) as MemberRecord;
+      expect(newData).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, Map(MEMBER_RESPONSE));
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const endpoints = [
         {
           response: UNAUTHORIZED_RESPONSE,
@@ -381,8 +386,8 @@ describe('Member Mutations', () => {
       // verify cache keys
       const oldData = queryClient.getQueryData(
         CURRENT_MEMBER_KEY,
-      ) as Record<Member>;
-      expect(oldData.toJS()).toEqual(MEMBER_RESPONSE);
+      ) as MemberRecord;
+      expect(oldData).toEqualImmutable(MEMBER_RESPONSE);
     });
   });
 
@@ -396,12 +401,10 @@ describe('Member Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_FAVORITE_ITEM);
 
     it(`Successfully delete favorite item`, async () => {
-      const response = {
-        ...MEMBER_RESPONSE,
-        extra: { favoriteItems: ['item-id2'] },
-      };
+      const createMemberExtra = Record({ favoriteItems: List(['item-id2']) });
+      const response = MEMBER_RESPONSE.set('extra', createMemberExtra() as any);
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, Map(MEMBER_RESPONSE));
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const endpoints = [
         {
           response,
@@ -423,13 +426,13 @@ describe('Member Mutations', () => {
       // verify cache keys
       const newData = queryClient.getQueryData(
         CURRENT_MEMBER_KEY,
-      ) as Record<Member>;
-      expect(newData.toJS()).toEqual(response);
+      ) as MemberRecord;
+      expect(newData).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, Map(MEMBER_RESPONSE));
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const endpoints = [
         {
           response: UNAUTHORIZED_RESPONSE,
@@ -452,8 +455,8 @@ describe('Member Mutations', () => {
       // verify cache keys
       const oldData = queryClient.getQueryData(
         CURRENT_MEMBER_KEY,
-      ) as Record<Member>;
-      expect(oldData.toJS()).toEqual(MEMBER_RESPONSE);
+      ) as MemberRecord;
+      expect(oldData).toEqualImmutable(MEMBER_RESPONSE);
     });
   });
 });

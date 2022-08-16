@@ -1,4 +1,3 @@
-import { List } from 'immutable';
 import {
   buildDeleteItemLikeRoute,
   buildGetLikeCountRoute,
@@ -17,7 +16,7 @@ export const getLikedItems = async (
   verifyAuthentication(() =>
     axios
       .get(`${API_HOST}/${buildGetLikedItemsRoute(memberId)}`)
-      .then(({ data }) => List(data)),
+      .then(({ data }) => data),
   );
 
 // TODO: make a public one

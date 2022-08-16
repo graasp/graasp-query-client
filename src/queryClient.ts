@@ -17,6 +17,7 @@ import configureMutations from './mutations';
 import type { QueryClientConfig } from './types';
 import { getHostname } from './utils/util';
 import { configureWebsocketClient } from './ws';
+import { isDataEqual } from './utils/util';
 
 // Query client retry function decides when and how many times a request should be retried
 const retry = (failureCount: number, error: Error) => {
@@ -75,6 +76,8 @@ export default (config: Partial<QueryClientConfig>) => {
       keepPreviousData: false,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
+      notifyOnChangeProps: 'tracked',
+      isDataEqual: isDataEqual,
       ...config?.defaultQueryOptions,
     },
   };

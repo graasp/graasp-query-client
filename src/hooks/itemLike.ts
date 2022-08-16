@@ -1,8 +1,8 @@
 import { useQuery } from 'react-query';
-import { List } from 'immutable';
 import { QueryClientConfig, UUID } from '../types';
 import * as Api from '../api';
 import { buildGetLikeCountKey, buildGetLikedItemsKey } from '../config/keys';
+import { convertJs } from '../utils/util';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -11,7 +11,9 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildGetLikedItemsKey(memberId),
       queryFn: () =>
-        Api.getLikedItems(memberId, queryConfig).then((data) => List(data)),
+        Api.getLikedItems(memberId, queryConfig).then((data) =>
+          convertJs(data),
+        ),
       ...defaultQueryOptions,
       enabled: Boolean(memberId),
     });

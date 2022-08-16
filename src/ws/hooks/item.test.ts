@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { Map, Record, List } from 'immutable';
+import { List } from 'immutable';
 import {
   getHandlerByChannel,
   mockWsHook,
@@ -12,7 +12,7 @@ import {
   OWN_ITEMS_KEY,
   SHARED_ITEMS_KEY,
 } from '../../config/keys';
-import { Item } from '../../types';
+import { Item, ItemRecord } from '../../types';
 import { configureWsItemHooks } from './item';
 import { KINDS, OPS, TOPICS } from '../constants';
 
@@ -28,15 +28,16 @@ describe('Ws Item Hooks', () => {
   });
 
   describe('useItemUpdates', () => {
-    const item = ITEMS[0];
-    const itemId = item.id;
+    const item = ITEMS.first()!;
+    const itemId = item?.id;
     const itemKey = buildItemKey(itemId);
     const channel = { name: itemId, topic: TOPICS.ITEM };
-    const newItem = { ...item, description: 'new description' };
+    const newItemRecord = item.update('description', () => 'new description');
+    const newItem = item.update('description', () => 'new description').toJS();
     const hook = () => hooks.useItemUpdates(itemId);
 
     it(`Receive update item update`, async () => {
-      queryClient.setQueryData(itemKey, Map(item));
+      queryClient.setQueryData(itemKey, item);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -47,13 +48,13 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(queryClient.getQueryData<Record<Item>>(itemKey)?.toJS()).toEqual(
-        newItem,
+      expect(queryClient.getQueryData<ItemRecord>(itemKey)).toEqualImmutable(
+        newItemRecord,
       );
     });
 
     it(`Receive delete item update`, async () => {
-      queryClient.setQueryData(itemKey, Map(item));
+      queryClient.setQueryData(itemKey, item);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -64,13 +65,11 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(
-        queryClient.getQueryData<Record<Item>>(itemKey)?.toJS(),
-      ).toBeFalsy();
+      expect(queryClient.getQueryData<ItemRecord>(itemKey)?.toJS()).toBeFalsy();
     });
 
     it(`Does not update on other events`, async () => {
-      queryClient.setQueryData(itemKey, Map(item));
+      queryClient.setQueryData(itemKey, item);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -81,7 +80,7 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(queryClient.getQueryData<Record<Item>>(itemKey)?.toJS()).toEqual(
+      expect(queryClient.getQueryData<ItemRecord>(itemKey)).toEqualImmutable(
         item,
       );
     });
@@ -89,16 +88,17 @@ describe('Ws Item Hooks', () => {
 
   describe('useChildrenUpdates', () => {
     // we need to use a different id for the channel to avoid handlers collision
-    const parent = ITEMS[1];
+    const parent = ITEMS.get(1)!;
     const parentId = parent.id;
     const childrenKey = buildItemChildrenKey(parentId);
     const channel = { name: parentId, topic: TOPICS.ITEM };
-    const targetItem = ITEMS[2];
-    const targetItemKey = buildItemKey(targetItem.id);
+    const targetItemRecord = ITEMS.get(2)!;
+    const targetItem = ITEMS.get(2)!.toJS();
+    const targetItemKey = buildItemKey(targetItemRecord.id);
     const hook = () => hooks.useChildrenUpdates(parentId);
 
     it(`Receive create child`, async () => {
-      queryClient.setQueryData(childrenKey, List([ITEMS[3]]));
+      queryClient.setQueryData(childrenKey, List([ITEMS.get(3)!]));
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -111,18 +111,24 @@ describe('Ws Item Hooks', () => {
 
       // check children key contains new item
       expect(
-        queryClient.getQueryData<List<Item>>(childrenKey)?.toJS(),
+        queryClient.getQueryData<List<ItemRecord>>(childrenKey)?.toJS(),
       ).toContainEqual(targetItem);
       // check new item key
       expect(
-        queryClient.getQueryData<Record<Item>>(targetItemKey)?.toJS(),
-      ).toEqual(targetItem);
+        queryClient.getQueryData<ItemRecord>(targetItemKey),
+      ).toEqualImmutable(targetItemRecord);
     });
 
     it(`Receive update child`, async () => {
-      const updatedItem = { ...targetItem, description: 'new description' };
-      queryClient.setQueryData(targetItemKey, Map(targetItem));
-      queryClient.setQueryData(childrenKey, List(ITEMS));
+      const updatedItemRecord = targetItemRecord.update(
+        'description',
+        () => 'new description',
+      );
+      const updatedItem = targetItemRecord
+        .update('description', () => 'new description')
+        .toJS();
+      queryClient.setQueryData(targetItemKey, targetItemRecord);
+      queryClient.setQueryData(childrenKey, ITEMS);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -135,17 +141,19 @@ describe('Ws Item Hooks', () => {
 
       // check new item key content
       expect(
-        queryClient.getQueryData<Record<Item>>(targetItemKey)?.toJS(),
-      ).toEqual(updatedItem);
+        queryClient.getQueryData<ItemRecord>(targetItemKey),
+      ).toEqualImmutable(updatedItemRecord);
       // check children key contains newly item
-      const own = queryClient.getQueryData<List<Item>>(childrenKey)?.toJS();
+      const own = queryClient
+        .getQueryData<List<ItemRecord>>(childrenKey)
+        ?.toJS();
       expect(own).toContainEqual(updatedItem);
-      expect(own?.length).toBe(ITEMS.length);
+      expect(own?.length).toBe(ITEMS.size);
     });
 
     it(`Receive delete item update`, async () => {
-      queryClient.setQueryData(targetItemKey, Map(targetItem));
-      queryClient.setQueryData(childrenKey, List(ITEMS));
+      queryClient.setQueryData(targetItemKey, targetItemRecord);
+      queryClient.setQueryData(childrenKey, ITEMS);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -158,13 +166,13 @@ describe('Ws Item Hooks', () => {
 
       expect(
         queryClient
-          .getQueryData<List<Item>>(childrenKey)
+          .getQueryData<List<ItemRecord>>(childrenKey)
           ?.find(({ id }) => id === targetItem.id),
       ).toBeFalsy();
     });
 
     it(`Does not update on other events`, async () => {
-      queryClient.setQueryData(childrenKey, List(ITEMS));
+      queryClient.setQueryData(childrenKey, ITEMS);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -176,20 +184,21 @@ describe('Ws Item Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       expect(
-        queryClient.getQueryData<Record<Item>>(childrenKey)?.toJS(),
-      ).toEqual(ITEMS);
+        queryClient.getQueryData<ItemRecord>(childrenKey),
+      ).toEqualImmutable(ITEMS);
     });
   });
 
   describe('useOwnItemsUpdates', () => {
-    const item = ITEMS[0];
-    const itemId = item.id;
+    const itemRecord = ITEMS.first()!;
+    const item = ITEMS.first()!.toJS();
+    const itemId = itemRecord.id;
     const itemKey = buildItemKey(itemId);
     const channel = { name: itemId, topic: TOPICS.ITEM_MEMBER };
     const hook = () => hooks.useOwnItemsUpdates(itemId);
 
     it(`Receive create child`, async () => {
-      queryClient.setQueryData(OWN_ITEMS_KEY, List([ITEMS[2]]));
+      queryClient.setQueryData(OWN_ITEMS_KEY, List([ITEMS.get(2)!]));
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -202,18 +211,24 @@ describe('Ws Item Hooks', () => {
 
       // check own items key contains new item
       expect(
-        queryClient.getQueryData<List<Item>>(OWN_ITEMS_KEY)?.toJS(),
+        queryClient.getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY)?.toJS(),
       ).toContainEqual(item);
       // check new item key
-      expect(queryClient.getQueryData<Record<Item>>(itemKey)?.toJS()).toEqual(
-        item,
+      expect(queryClient.getQueryData<ItemRecord>(itemKey)).toEqualImmutable(
+        itemRecord,
       );
     });
 
     it(`Receive update child`, async () => {
-      const updatedItem = { ...item, description: 'new description' };
-      queryClient.setQueryData(itemKey, Map(item));
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      const updatedItemRecord = itemRecord.update(
+        'description',
+        () => 'new description',
+      );
+      const updatedItem = itemRecord
+        .update('description', () => 'new description')
+        .toJS();
+      queryClient.setQueryData(itemKey, item);
+      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -225,20 +240,20 @@ describe('Ws Item Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check new item key content
-      expect(queryClient.getQueryData<Record<Item>>(itemKey)?.toJS()).toEqual(
-        updatedItem,
+      expect(queryClient.getQueryData<ItemRecord>(itemKey)).toEqualImmutable(
+        updatedItemRecord,
       );
       // check children key contains newly item
       const children = queryClient
-        .getQueryData<List<Item>>(OWN_ITEMS_KEY)
+        .getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY)
         ?.toJS();
       expect(children).toContainEqual(updatedItem);
-      expect(children?.length).toBe(ITEMS.length);
+      expect(children?.length).toBe(ITEMS.size);
     });
 
     it(`Receive delete item update`, async () => {
-      queryClient.setQueryData(itemKey, Map(item));
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(itemKey, itemRecord);
+      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -251,14 +266,14 @@ describe('Ws Item Hooks', () => {
 
       // check own items key does not contain deleted item
       const children = queryClient
-        .getQueryData<List<Item>>(OWN_ITEMS_KEY)
+        .getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY)
         ?.toJS() as Item[];
       expect(children?.find(({ id }) => id === itemId)).toBeFalsy();
     });
 
     it(`Does not update on other events`, async () => {
-      queryClient.setQueryData(itemKey, Map(item));
-      queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(itemKey, itemRecord);
+      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -270,21 +285,22 @@ describe('Ws Item Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       expect(
-        queryClient.getQueryData<List<Item>>(OWN_ITEMS_KEY)?.toJS(),
-      ).toEqual(ITEMS);
+        queryClient.getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY),
+      ).toEqualImmutable(ITEMS);
     });
   });
 
   describe('useSharedItemsUpdates', () => {
     // we need to use a different id to avoid handler collision
-    const item = ITEMS[1];
-    const itemId = item.id;
+    const itemRecord = ITEMS.get(1)!;
+    const item = ITEMS.get(1)!.toJS();
+    const itemId = itemRecord.id;
     const itemKey = buildItemKey(itemId);
     const channel = { name: itemId, topic: TOPICS.ITEM_MEMBER };
     const hook = () => hooks.useSharedItemsUpdates(itemId);
 
     it(`Receive create child`, async () => {
-      queryClient.setQueryData(SHARED_ITEMS_KEY, List([ITEMS[2]]));
+      queryClient.setQueryData(SHARED_ITEMS_KEY, List([ITEMS.get(2)!]));
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -297,18 +313,24 @@ describe('Ws Item Hooks', () => {
 
       // check own items key contains new item
       expect(
-        queryClient.getQueryData<List<Item>>(SHARED_ITEMS_KEY)?.toJS(),
+        queryClient.getQueryData<List<ItemRecord>>(SHARED_ITEMS_KEY)?.toJS(),
       ).toContainEqual(item);
       // check new item key
-      expect(queryClient.getQueryData<Record<Item>>(itemKey)?.toJS()).toEqual(
-        item,
+      expect(queryClient.getQueryData<ItemRecord>(itemKey)).toEqualImmutable(
+        itemRecord,
       );
     });
 
     it(`Receive update child`, async () => {
-      const updatedItem = { ...item, description: 'new description' };
-      queryClient.setQueryData(itemKey, Map(item));
-      queryClient.setQueryData(SHARED_ITEMS_KEY, List(ITEMS));
+      const updatedItemRecord = itemRecord.update(
+        'description',
+        () => 'new description',
+      );
+      const updatedItem = itemRecord
+        .update('description', () => 'new description')
+        .toJS();
+      queryClient.setQueryData(itemKey, itemRecord);
+      queryClient.setQueryData(SHARED_ITEMS_KEY, ITEMS);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -320,20 +342,20 @@ describe('Ws Item Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check new item key content
-      expect(queryClient.getQueryData<Record<Item>>(itemKey)?.toJS()).toEqual(
-        updatedItem,
+      expect(queryClient.getQueryData<ItemRecord>(itemKey)).toEqualImmutable(
+        updatedItemRecord,
       );
       // check children key contains newly item
       const shared = queryClient
-        .getQueryData<List<Item>>(SHARED_ITEMS_KEY)
+        .getQueryData<List<ItemRecord>>(SHARED_ITEMS_KEY)
         ?.toJS();
       expect(shared).toContainEqual(updatedItem);
-      expect(shared?.length).toBe(ITEMS.length);
+      expect(shared?.length).toBe(ITEMS.size);
     });
 
     it(`Receive delete item update`, async () => {
-      queryClient.setQueryData(itemKey, Map(item));
-      queryClient.setQueryData(SHARED_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(itemKey, itemRecord);
+      queryClient.setQueryData(SHARED_ITEMS_KEY, ITEMS);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -346,14 +368,14 @@ describe('Ws Item Hooks', () => {
 
       // check own items key does not contain deleted item
       const shared = queryClient
-        .getQueryData<List<Item>>(SHARED_ITEMS_KEY)
+        .getQueryData<List<ItemRecord>>(SHARED_ITEMS_KEY)
         ?.toJS() as Item[];
       expect(shared?.find(({ id }) => id === itemId)).toBeFalsy();
     });
 
     it(`Does not update on other events`, async () => {
-      queryClient.setQueryData(itemKey, Map(item));
-      queryClient.setQueryData(SHARED_ITEMS_KEY, List(ITEMS));
+      queryClient.setQueryData(itemKey, itemRecord);
+      queryClient.setQueryData(SHARED_ITEMS_KEY, ITEMS);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -365,8 +387,8 @@ describe('Ws Item Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       expect(
-        queryClient.getQueryData<List<Item>>(SHARED_ITEMS_KEY)?.toJS(),
-      ).toEqual(ITEMS);
+        queryClient.getQueryData<List<ItemRecord>>(SHARED_ITEMS_KEY),
+      ).toEqualImmutable(ITEMS);
     });
   });
 });

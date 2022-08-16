@@ -7,6 +7,7 @@ import { buildAppListRoute } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
 import { APPS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { APPS_KEY } from '../config/keys';
+import { AppRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -28,10 +29,10 @@ describe('Apps Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<unknown>).toJS()).toEqual(response);
+      expect(data as List<AppRecord>).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {

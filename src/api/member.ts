@@ -13,7 +13,13 @@ import {
   buildDeleteMemberRoute,
   buildUpdateMemberPasswordRoute,
 } from './routes';
-import { Member, MemberExtra, Password, QueryClientConfig, UUID } from '../types';
+import {
+  Member,
+  MemberExtra,
+  Password,
+  QueryClientConfig,
+  UUID,
+} from '../types';
 import { DEFAULT_THUMBNAIL_SIZES, SIGNED_OUT_USER } from '../config/constants';
 import configureAxios, {
   fallbackToPublic,

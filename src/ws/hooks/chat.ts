@@ -1,8 +1,9 @@
-import { Record } from 'immutable';
+import { List, RecordOf } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 import { buildItemChatKey } from '../../config/keys';
-import { Chat, ChatMessage, UUID } from '../../types';
+import { Chat, ChatMessage, ChatMessageRecord, UUID } from '../../types';
+import { convertJs } from '../../utils/util';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 
@@ -35,16 +36,17 @@ export const configureWsChatHooks = (
       const handler = (event: ChatEvent) => {
         if (event.kind === KINDS.ITEM) {
           const chatKey = buildItemChatKey(chatId);
-          const current: Record<Chat> | undefined =
+          const current: RecordOf<Chat> | undefined =
             queryClient.getQueryData(chatKey);
+
+          const message: ChatMessageRecord = convertJs(event.message);
 
           if (current) {
             switch (event.op) {
               case OPS.PUBLISH: {
-                const mutation = current.update('messages', (messages) => [
-                  ...messages,
-                  event.message,
-                ]);
+                const mutation = current.update('messages', (messages) =>
+                  List([...messages, message]),
+                );
                 queryClient.setQueryData(chatKey, mutation);
                 break;
               }
@@ -53,22 +55,20 @@ export const configureWsChatHooks = (
                   const index = messages.findIndex(
                     (m) => m.id === event.message.id,
                   );
-                  // eslint-disable-next-line no-param-reassign
-                  messages[index] = event.message;
-                  return messages;
+                  return messages.setIn([index], message);
                 });
                 queryClient.setQueryData(chatKey, mutation);
                 break;
               }
               case OPS.DELETE: {
                 const mutation = current.update('messages', (messages) =>
-                  messages.filter((m) => m.id !== event.message.id),
+                  messages.filter((m) => m.id !== message.id),
                 );
                 queryClient.setQueryData(chatKey, mutation);
                 break;
               }
               case OPS.CLEAR: {
-                const mutation = current.update('messages', () => []);
+                const mutation = current.update('messages', () => List([]));
                 queryClient.setQueryData(chatKey, mutation);
                 break;
               }

@@ -17,7 +17,7 @@ import {
   buildManyItemMembershipsKey,
   buildItemMembershipsKey,
 } from '../config/keys';
-import type { Membership } from '../types';
+import type { MembershipRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -29,7 +29,7 @@ describe('Membership Hooks', () => {
   });
 
   describe('useItemMemberships', () => {
-    const { id } = ITEMS[0];
+    const { id } = ITEMS.first()!;
     const response = [ITEM_MEMBERSHIPS_RESPONSE];
     const route = `/${buildGetItemMembershipsForItemsRoute([id])}`;
     const key = buildItemMembershipsKey(id);
@@ -39,9 +39,9 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<Membership>).toJS()).toEqual(response[0]);
+      expect(data as List<MembershipRecord>).toEqualImmutable(response[0]);
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response[0]));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response[0]);
     });
 
     it(`Undefined ids does not fetch`, async () => {
@@ -84,9 +84,9 @@ describe('Membership Hooks', () => {
         wrapper,
       });
 
-      expect((data as List<Membership>).toJS()).toEqual(response[0]);
+      expect(data as List<MembershipRecord>).toEqualImmutable(response[0]);
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response[0]));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response[0]);
     });
 
     it(`Unauthorized`, async () => {
@@ -112,23 +112,28 @@ describe('Membership Hooks', () => {
   });
 
   describe('useManyItemMemberships', () => {
-    const ids = [ITEMS[0].id, ITEMS[1].id];
-    const response = [ITEM_MEMBERSHIPS_RESPONSE, ITEM_MEMBERSHIPS_RESPONSE];
+    const ids = [ITEMS.first()!.id, ITEMS.get(1)!.id];
+    const response = List([
+      ITEM_MEMBERSHIPS_RESPONSE,
+      ITEM_MEMBERSHIPS_RESPONSE,
+    ]);
     const route = `/${buildGetItemMembershipsForItemsRoute(ids)}`;
     const key = buildManyItemMembershipsKey(ids);
 
     it(`Receive one item memberships`, async () => {
-      const id = [ITEMS[0].id];
+      const id = [ITEMS.first()!.id];
       const oneRoute = `/${buildGetItemMembershipsForItemsRoute(id)}`;
-      const oneResponse = [ITEM_MEMBERSHIPS_RESPONSE];
+      const oneResponse = List([ITEM_MEMBERSHIPS_RESPONSE]);
       const oneKey = buildManyItemMembershipsKey(id);
       const hook = () => hooks.useManyItemMemberships(id);
       const endpoints = [{ route: oneRoute, response: oneResponse }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<Membership[]>).toJS()).toEqual(oneResponse);
+      expect(data as List<List<MembershipRecord>>).toEqualImmutable(
+        oneResponse,
+      );
       // verify cache keys
-      expect(queryClient.getQueryData(oneKey)).toEqual(List(oneResponse));
+      expect(queryClient.getQueryData(oneKey)).toEqualImmutable(oneResponse);
     });
 
     it(`Receive multiple item memberships`, async () => {
@@ -136,9 +141,9 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as List<Membership[]>).toJS()).toEqual(response);
+      expect(data as List<List<MembershipRecord>>).toEqualImmutable(response);
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
     it(`Undefined ids does not fetch`, async () => {
@@ -179,9 +184,9 @@ describe('Membership Hooks', () => {
         wrapper,
       });
 
-      expect((data as List<Membership[]>).toJS()).toEqual(response);
+      expect(data as List<List<MembershipRecord>>).toEqualImmutable(response);
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(List(response));
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {

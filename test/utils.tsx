@@ -12,6 +12,7 @@ import { Notifier, QueryClientConfig } from '../src/types';
 import { API_HOST, WS_HOST, DOMAIN } from './constants';
 import configureQueryClient from '../src/queryClient';
 import { REQUEST_METHODS } from '../src/api/utils';
+import { isDataEqual } from '../src/utils/util';
 
 type Args = { enableWebsocket?: boolean; notifier?: Notifier };
 
@@ -29,6 +30,7 @@ export const setUpTest = (args?: Args) => {
       retry: 0,
       cacheTime: 0,
       staleTime: 0,
+      isDataEqual: isDataEqual,
     },
     SHOW_NOTIFICATIONS: false,
     notifier,
