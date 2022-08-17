@@ -1,10 +1,16 @@
-import { Record } from 'immutable';
+import { List, Record } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
-import { ChatMention, MemberMentions, UUID } from '../../types';
+import {
+  ChatMention,
+  ChatMentionRecord,
+  MemberMentions,
+  UUID,
+} from '../../types';
 import { OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 import { buildMentionKey } from '../../config/keys';
+import { convertJs } from '../../utils/util';
 
 // todo: use graasp-types?
 interface MentionEvent {
@@ -39,13 +45,14 @@ export const configureWsChatMentionsHooks = (
         const current: Record<MemberMentions> | undefined =
           queryClient.getQueryData(mentionKey);
 
+        const mention: ChatMentionRecord = convertJs(event.mention);
+
         if (current) {
           switch (event.op) {
             case OPS.PUBLISH: {
-              const mutation = current.update('mentions', (mentions) => [
-                ...mentions,
-                event.mention,
-              ]);
+              const mutation = current.update('mentions', (mentions) =>
+                List([...mentions, mention]),
+              );
               queryClient.setQueryData(mentionKey, mutation);
               break;
             }
@@ -54,9 +61,7 @@ export const configureWsChatMentionsHooks = (
                 const index = mentions.findIndex(
                   (m) => m.id === event.mention.id,
                 );
-                // eslint-disable-next-line no-param-reassign
-                mentions[index] = event.mention;
-                return mentions;
+                return mentions.setIn([index], mention);
               });
               queryClient.setQueryData(mentionKey, mutation);
               break;
@@ -69,7 +74,7 @@ export const configureWsChatMentionsHooks = (
               break;
             }
             case OPS.CLEAR: {
-              const mutation = current.update('mentions', () => []);
+              const mutation = current.update('mentions', () => List([]));
               queryClient.setQueryData(mentionKey, mutation);
               break;
             }

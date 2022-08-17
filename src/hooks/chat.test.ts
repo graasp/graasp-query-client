@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
-import { Record } from 'immutable';
+import { Record, RecordOf } from 'immutable';
 import Cookies from 'js-cookie';
 import { buildGetItemChatRoute } from '../api/routes';
 import { mockHook, setUpTest } from '../../test/utils';
@@ -39,8 +39,17 @@ describe('Chat Hooks', () => {
         defaultItemChatMessageValues,
       );
       const response: ItemChatRecord = createMockItemChatMessage();
-      const endpoints = [{ route, response }];
-      const { data } = await mockHook({ endpoints, hook, wrapper });
+      const endpoints = [
+        {
+          route,
+          response,
+        },
+      ];
+      const { data } = await mockHook({
+        endpoints,
+        hook,
+        wrapper,
+      });
 
       expect(data as ItemChatRecord).toEqualImmutable(response);
 
@@ -70,18 +79,31 @@ describe('Chat Hooks', () => {
   });
 
   describe('useItemChat with arguments', () => {
-    const itemId = ITEMS[0].id;
+    const itemId = ITEMS.first()!.id;
     const route = `/${buildGetItemChatRoute(itemId)}`;
     const key = buildItemChatKey(itemId);
 
     it(`getUpdates = true`, async () => {
       const hook = () => hooks.useItemChat(itemId, { getUpdates: true });
-      const response = {
+      const defaultItemChatMessageValues = {
         id: itemId,
         messages: buildChatMessages(itemId),
       };
-      const endpoints = [{route, response}];
-      const { data } = await mockHook({endpoints, hook, wrapper});
+      const createMockItemChatMessage: Record.Factory<any> = Record(
+        defaultItemChatMessageValues,
+      );
+      const response: RecordOf<any> = createMockItemChatMessage();
+      const endpoints = [
+        {
+          route,
+          response,
+        },
+      ];
+      const { data } = await mockHook({
+        endpoints,
+        hook,
+        wrapper,
+      });
 
       expect(data as ItemChatRecord).toEqualImmutable(response);
 
@@ -91,10 +113,14 @@ describe('Chat Hooks', () => {
 
     it(`getUpdates = false`, async () => {
       const hook = () => hooks.useItemChat(itemId, { getUpdates: false });
-      const response = {
+      const defaultItemChatMessageValues = {
         id: itemId,
         messages: buildChatMessages(itemId),
       };
+      const createMockItemChatMessage: Record.Factory<any> = Record(
+        defaultItemChatMessageValues,
+      );
+      const response: RecordOf<any> = createMockItemChatMessage();
       const endpoints = [
         {
           route,

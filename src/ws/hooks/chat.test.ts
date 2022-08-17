@@ -46,7 +46,7 @@ describe('Ws Chat Hooks', () => {
       // expect no change
       expect(
         queryClient.getQueryData<RecordOf<Chat>>(chatKey)?.messages.toJS(),
-      ).toContainEqual(ITEM_CHAT.messages);
+      ).toEqual(ITEM_CHAT.messages.toJS());
     });
   });
 
@@ -55,12 +55,18 @@ describe('Ws Chat Hooks', () => {
     const chatId = itemId;
     const chatKey = buildItemChatKey(chatId);
     const newMessage = { body: 'new content message' };
-    const channel = { name: chatId, topic: TOPICS.CHAT_ITEM };
+    const channel = {
+      name: chatId,
+      topic: TOPICS.CHAT_ITEM,
+    };
     const hook = () => hooks.useItemChatUpdates(itemId);
 
     it(`Receive chat messages update`, async () => {
       queryClient.setQueryData(chatKey, ITEM_CHAT);
-      await mockWsHook({ hook, wrapper });
+      await mockWsHook({
+        hook,
+        wrapper,
+      });
 
       const chatEvent = {
         kind: KINDS.ITEM,
@@ -81,7 +87,10 @@ describe('Ws Chat Hooks', () => {
         body: 'new message content',
       };
       queryClient.setQueryData(chatKey, ITEM_CHAT);
-      await mockWsHook({ hook, wrapper });
+      await mockWsHook({
+        hook,
+        wrapper,
+      });
 
       const chatEvent = {
         kind: KINDS.ITEM,
@@ -99,7 +108,10 @@ describe('Ws Chat Hooks', () => {
     it(`Receive chat messages delete update`, async () => {
       const deletedMessage = { id: MESSAGE_IDS[0] };
       queryClient.setQueryData(chatKey, ITEM_CHAT);
-      await mockWsHook({ hook, wrapper });
+      await mockWsHook({
+        hook,
+        wrapper,
+      });
 
       const chatEvent = {
         kind: KINDS.ITEM,
@@ -135,7 +147,10 @@ describe('Ws Chat Hooks', () => {
 
     it(`Does not update chat messages with wrong chat event`, async () => {
       queryClient.setQueryData(chatKey, ITEM_CHAT);
-      await mockWsHook({ hook, wrapper });
+      await mockWsHook({
+        hook,
+        wrapper,
+      });
 
       const chatEvent = {
         kind: 'false kind',

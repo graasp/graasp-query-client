@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import nock from 'nock';
-import { RecordOf } from 'immutable';
 import Cookies from 'js-cookie';
 import {
   buildGetMemberMentionsRoute,
@@ -9,8 +8,7 @@ import {
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildMemberMentions, MEMBER_RESPONSE } from '../../test/constants';
 import { buildMentionKey } from '../config/keys';
-import type { MemberMentions } from '../types';
-import { MemberMentionsRecord } from '../types';
+import type { MemberMentionsRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -48,12 +46,10 @@ describe('Chat Mention Hooks', () => {
         wrapper,
       });
 
-      expect((data as RecordOf<MemberMentions>).toJS()).toEqual(response);
+      expect(data as MemberMentionsRecord).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(
-        MemberMentionsRecord(response),
-      );
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
   });
 });

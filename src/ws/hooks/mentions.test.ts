@@ -1,4 +1,4 @@
-import { Map, Record } from 'immutable';
+import { List } from 'immutable';
 import {
   getHandlerByChannel,
   mockWsHook,
@@ -11,7 +11,7 @@ import {
 } from '../../../test/constants';
 import { buildItemChatKey, buildMentionKey } from '../../config/keys';
 import { OPS, TOPICS } from '../constants';
-import { MemberMentions } from '../../types';
+import { MemberMentionsRecord } from '../../types';
 import { configureWsChatMentionsHooks } from './mentions';
 
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
@@ -34,7 +34,7 @@ describe('Ws Mention Hooks', () => {
     const MENTIONS_QUERY_DATA = buildMemberMentions(memberId);
 
     it('Does nothing', async () => {
-      queryClient.setQueryData(mentionKey, Map(MENTIONS_QUERY_DATA));
+      queryClient.setQueryData(mentionKey, MENTIONS_QUERY_DATA);
       await mockWsHook({
         hook: incorrectHook,
         wrapper,
@@ -42,17 +42,15 @@ describe('Ws Mention Hooks', () => {
       const newMention = buildChatMention({ memberId });
       const mentionEvent = {
         op: OPS.PUBLISH,
-        mention: newMention,
+        mention: newMention.toJS(),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(mentionEvent);
 
       // expect no change
       expect(
-        queryClient
-          .getQueryData<Record<MemberMentions>>(mentionKey)
-          ?.get('mentions'),
-      ).toEqual(MENTIONS_QUERY_DATA.mentions);
+        queryClient.getQueryData<MemberMentionsRecord>(mentionKey)?.mentions,
+      ).toEqualImmutable(MENTIONS_QUERY_DATA.mentions);
     });
   });
 
@@ -68,7 +66,7 @@ describe('Ws Mention Hooks', () => {
     const hook = () => hooks.useMentionsUpdates(memberId);
 
     it(`Receive mention update`, async () => {
-      queryClient.setQueryData(mentionKey, Map(MENTIONS_QUERY_DATA));
+      queryClient.setQueryData(mentionKey, MENTIONS_QUERY_DATA);
       await mockWsHook({
         hook,
         wrapper,
@@ -77,24 +75,24 @@ describe('Ws Mention Hooks', () => {
       const newMention = buildChatMention({ memberId });
       const mentionEvent = {
         op: OPS.PUBLISH,
-        mention: newMention,
+        mention: newMention.toJS(),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(mentionEvent);
 
       expect(
         queryClient
-          .getQueryData<Record<MemberMentions>>(mentionKey)
-          ?.get('mentions'),
-      ).toContainEqual(newMention);
+          .getQueryData<MemberMentionsRecord>(mentionKey)
+          ?.mentions.find(({ id }) => id === newMention.id),
+      ).toEqualImmutable(newMention);
     });
 
     it(`Receive mention edit update`, async () => {
       const updatedMention = {
-        ...MENTIONS_QUERY_DATA.mentions[0],
+        ...MENTIONS_QUERY_DATA.mentions.first()!.toJS(),
         status: 'read',
       };
-      queryClient.setQueryData(mentionKey, Map(MENTIONS_QUERY_DATA));
+      queryClient.setQueryData(mentionKey, MENTIONS_QUERY_DATA);
       await mockWsHook({
         hook,
         wrapper,
@@ -109,14 +107,14 @@ describe('Ws Mention Hooks', () => {
 
       expect(
         queryClient
-          .getQueryData<Record<MemberMentions>>(mentionKey)
-          ?.get('mentions'),
+          .getQueryData<MemberMentionsRecord>(mentionKey)
+          ?.mentions.toJS(),
       ).toContainEqual(updatedMention);
     });
 
     it(`Receive mention delete update`, async () => {
-      const deletedMention = MENTIONS_QUERY_DATA.mentions[0];
-      queryClient.setQueryData(mentionKey, Map(MENTIONS_QUERY_DATA));
+      const deletedMention = MENTIONS_QUERY_DATA.mentions.first()!;
+      queryClient.setQueryData(mentionKey, MENTIONS_QUERY_DATA);
       await mockWsHook({
         hook,
         wrapper,
@@ -124,20 +122,22 @@ describe('Ws Mention Hooks', () => {
 
       const mentionEvent = {
         op: OPS.DELETE,
-        mention: deletedMention,
+        mention: deletedMention.toJS(),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(mentionEvent);
 
       expect(
-        queryClient
-          .getQueryData<Record<MemberMentions>>(mentionKey)
-          ?.get('mentions'),
-      ).not.toContainEqual(deletedMention);
+        queryClient.getQueryData<MemberMentionsRecord>(mentionKey)?.mentions,
+      ).toEqualImmutable(
+        MENTIONS_QUERY_DATA.mentions.filter(
+          ({ id }) => id !== deletedMention.id,
+        ),
+      );
     });
 
     it(`Receive member mentions clear update`, async () => {
-      queryClient.setQueryData(mentionKey, Map(MENTIONS_QUERY_DATA));
+      queryClient.setQueryData(mentionKey, MENTIONS_QUERY_DATA);
       await mockWsHook({
         hook,
         wrapper,
@@ -150,14 +150,12 @@ describe('Ws Mention Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(mentionEvent);
 
       expect(
-        queryClient
-          .getQueryData<Record<MemberMentions>>(mentionKey)
-          ?.get('mentions'),
-      ).toEqual([]);
+        queryClient.getQueryData<MemberMentionsRecord>(mentionKey)?.mentions,
+      ).toEqual(List([]));
     });
 
     it(`Does not update mentions with wrong OP event`, async () => {
-      queryClient.setQueryData(mentionKey, Map(MENTIONS_QUERY_DATA));
+      queryClient.setQueryData(mentionKey, MENTIONS_QUERY_DATA);
       await mockWsHook({
         hook,
         wrapper,
@@ -165,16 +163,15 @@ describe('Ws Mention Hooks', () => {
       const newMention = buildChatMention({ memberId });
       const mentionEvent = {
         op: 'unset op',
-        mention: newMention,
+        mention: newMention.toJS(),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(mentionEvent);
 
       expect(
         queryClient
-          .getQueryData<Record<MemberMentions>>(chatKey)
-          ?.get('mentions')
-          .find(({ id }) => id === newMention.id),
+          .getQueryData<MemberMentionsRecord>(chatKey)
+          ?.mentions.find(({ id }) => id === newMention.id),
       ).toBeFalsy();
     });
   });

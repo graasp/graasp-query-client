@@ -54,6 +54,8 @@ import {
   TagRecord,
   UUID,
   ChatMentionRecord,
+  MemberMentions,
+  MemberMentionsRecord,
 } from '../src/types';
 import { REQUEST_METHODS } from '../src/api/utils';
 import { v4 } from 'uuid';
@@ -380,16 +382,23 @@ export const buildChatMention = ({
   return CHAT_MENTION;
 };
 
-
 export const buildMemberMentions = (memberId: string) => {
   const CHAT_MENTION_1: ChatMentionRecord = buildChatMention({ memberId });
   const CHAT_MENTION_2: ChatMentionRecord = buildChatMention({ memberId });
-  return {
-    memberId,
-    mentions: List([ CHAT_MENTION_1, CHAT_MENTION_2]),
+  const defaultMemberMentionsValues: MemberMentions = {
+    memberId: '',
+    mentions: List([]),
   };
-}
 
+  const createMockMemberMentions: Record.Factory<MemberMentions> = Record(
+    defaultMemberMentionsValues,
+  );
+  const MEMBER_MENTIONS: MemberMentionsRecord = createMockMemberMentions({
+    memberId,
+    mentions: List([CHAT_MENTION_1, CHAT_MENTION_2]),
+  });
+  return MEMBER_MENTIONS;
+};
 
 const defaultFlagsValues: Flag = {
   id: 'flag-1-id',

@@ -1,4 +1,4 @@
-import { Record, RecordOf, List } from 'immutable';
+import { RecordOf, List } from 'immutable';
 
 export type Notifier = (e: unknown) => void;
 
@@ -167,13 +167,10 @@ export type PartialChatMention = {
 
 export type MemberMentions = {
   memberId: string;
-  mentions: ChatMention[];
+  mentions: List<ChatMentionRecord>;
 };
 
-export const MemberMentionsRecord = Record<MemberMentions>({
-  memberId: '',
-  mentions: [],
-});
+export type MemberMentionsRecord = RecordOf<MemberMentions>;
 
 export type MessageBodyType = { message: string; mentions?: string[] };
 
