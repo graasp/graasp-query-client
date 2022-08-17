@@ -12,6 +12,7 @@ import {
   CategoryRecord,
   CategoryType,
   CategoryTypeRecord,
+  ChatMention,
   ChatMessage,
   ChatMessageRecord,
   Flag,
@@ -52,6 +53,7 @@ import {
   Tag,
   TagRecord,
   UUID,
+  ChatMentionRecord,
 } from '../src/types';
 
 export const WS_HOST = 'ws://localhost:3000';
@@ -324,6 +326,43 @@ export const buildChatMessages = (id: UUID) => {
   return CHAT_MESSAGES;
 };
 
+export const buildChatMentions = (id: UUID) => {
+  const defaultChatMentionValues: ChatMention = {
+    id: 'someid',
+    itemPath: 'somepath',
+    message: 'somemessage here',
+    messageId: 'anotherid',
+    createdAt: 'somedate',
+    updatedAt: 'somedate',
+    memberId: id,
+    status: 'unread',
+    creator: 'somememberid',
+  };
+  const createMockChatMention: Record.Factory<ChatMention> = Record(
+    defaultChatMentionValues,
+  );
+
+  const CHAT_MENTION_1: ChatMentionRecord = createMockChatMention({
+    id: 'someotherid',
+    message: 'somemessage here',
+    messageId: 'a id',
+    status: 'unread',
+    creator: 'somememberid',
+  });
+  const CHAT_MENTION_2: ChatMentionRecord = createMockChatMention({
+    id: 'someid',
+    message: 'a message here',
+    messageId: 'anotherid',
+    status: 'read',
+    creator: 'someothermemberid',
+  });
+  const CHAT_MENTIONS: List<ChatMentionRecord> = List([
+    CHAT_MENTION_1,
+    CHAT_MENTION_2,
+  ]);
+  return CHAT_MENTIONS;
+};
+
 const defaultFlagsValues: Flag = {
   id: 'flag-1-id',
   name: 'flag-1',
@@ -365,7 +404,9 @@ const defaultItemTagsValues: ItemTag = {
   path: 'somepath',
   tagId: 'tag-id',
 };
-const createMockItemTags: Record.Factory<ItemTag> = Record(defaultItemTagsValues);
+const createMockItemTags: Record.Factory<ItemTag> = Record(
+  defaultItemTagsValues,
+);
 
 const ITEM_TAG_1: ItemTagRecord = createMockItemTags({
   id: 'tag-id',
@@ -404,7 +445,9 @@ const defaultItemChatValues: MessageItemChatList = {
   messages: MESSAGE_ITEM_CHAT_LIST,
 };
 
-const createMockItemChat: Record.Factory<MessageItemChatList> = Record(defaultItemChatValues);
+const createMockItemChat: Record.Factory<MessageItemChatList> = Record(
+  defaultItemChatValues,
+);
 
 export const ITEM_CHAT: MessageItemChatListRecord = createMockItemChat({
   messages: MESSAGE_ITEM_CHAT_LIST,
@@ -697,6 +740,12 @@ export const buildInvitationRecord = ({
 
 export const buildMockInvitations = (itemId: string) =>
   List([
-    buildInvitationRecord({ itemPath: itemId, email: 'a' }),
-    buildInvitationRecord({ itemPath: itemId, email: 'b' }),
+    buildInvitationRecord({
+      itemPath: itemId,
+      email: 'a',
+    }),
+    buildInvitationRecord({
+      itemPath: itemId,
+      email: 'b',
+    }),
   ]);
