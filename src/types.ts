@@ -195,6 +195,11 @@ export type ChatMessage = {
 
 export type ChatMessageRecord = RecordOf<ChatMessage>;
 
+export type ItemChatResponse = {
+  id: string;
+  messages: ChatMessage[];
+};
+
 export type ItemChat = {
   id?: string;
   messages: List<ChatMessageRecord>;
