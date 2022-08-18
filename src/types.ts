@@ -186,10 +186,10 @@ export type PartialChatMessage = {
 };
 
 export type ChatMessage = {
-  id?: string;
+  id: string;
   chatId: string;
   creator: string;
-  createdAt?: string;
+  createdAt: string;
   body: string;
 };
 
@@ -201,16 +201,11 @@ export type ItemChatResponse = {
 };
 
 export type ItemChat = {
-  id?: string;
+  id: string;
   messages: List<ChatMessageRecord>;
 };
 
 export type ItemChatRecord = RecordOf<ItemChat>;
-
-export interface Chat {
-  id: string;
-  messages: List<ChatMessageRecord>;
-}
 
 // todo: get from graasp types
 export type GraaspError = {

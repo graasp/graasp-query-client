@@ -326,19 +326,23 @@ export const APPS: List<AppRecord> = List([APP_1, APP_2]);
 
 export const buildChatMessages = (id: UUID) => {
   const defaultChatMessageValues: ChatMessage = {
+    id: '',
     chatId: id,
     body: 'some text',
     creator: 'somememberid',
+    createdAt: 'someDate',
   };
   const createMockChatMessage: Record.Factory<ChatMessage> = Record(
     defaultChatMessageValues,
   );
   const CHAT_MESSAGE_1: ChatMessageRecord = createMockChatMessage({
+    id: v4(),
     chatId: id,
     body: 'some text',
     creator: 'somememberid',
   });
   const CHAT_MESSAGE_2: ChatMessageRecord = createMockChatMessage({
+    id: v4(),
     chatId: id,
     body: 'some other text',
     creator: 'someothermemberid',

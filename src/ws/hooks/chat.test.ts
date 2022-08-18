@@ -1,4 +1,3 @@
-import { RecordOf } from 'immutable';
 import {
   getHandlerByChannel,
   mockWsHook,
@@ -8,7 +7,7 @@ import { ITEMS, ITEM_CHAT, MESSAGE_IDS } from '../../../test/constants';
 import { buildItemChatKey } from '../../config/keys';
 import { configureWsChatHooks } from './chat';
 import { KINDS, OPS, TOPICS } from '../constants';
-import { Chat } from '../../types';
+import { ItemChatRecord } from '../../types';
 
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsChatHooks,
@@ -45,7 +44,7 @@ describe('Ws Chat Hooks', () => {
 
       // expect no change
       expect(
-        queryClient.getQueryData<RecordOf<Chat>>(chatKey)?.messages.toJS(),
+        queryClient.getQueryData<ItemChatRecord>(chatKey)?.messages.toJS(),
       ).toEqual(ITEM_CHAT.messages.toJS());
     });
   });
@@ -77,7 +76,7 @@ describe('Ws Chat Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       expect(
-        queryClient.getQueryData<RecordOf<Chat>>(chatKey)?.messages.toJS(),
+        queryClient.getQueryData<ItemChatRecord>(chatKey)?.messages.toJS(),
       ).toContainEqual(newMessage);
     });
 
@@ -101,7 +100,7 @@ describe('Ws Chat Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       expect(
-        queryClient.getQueryData<RecordOf<Chat>>(chatKey)?.messages.toJS(),
+        queryClient.getQueryData<ItemChatRecord>(chatKey)?.messages.toJS(),
       ).toContainEqual(updatedMessage);
     });
 
@@ -122,7 +121,7 @@ describe('Ws Chat Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       expect(
-        queryClient.getQueryData<RecordOf<Chat>>(chatKey)?.messages.toJS(),
+        queryClient.getQueryData<ItemChatRecord>(chatKey)?.messages.toJS(),
       ).not.toContainEqual(ITEM_CHAT.messages.first()!.toJS());
     });
 
@@ -141,7 +140,7 @@ describe('Ws Chat Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       expect(
-        queryClient.getQueryData<RecordOf<Chat>>(chatKey)?.messages.toJS(),
+        queryClient.getQueryData<ItemChatRecord>(chatKey)?.messages.toJS(),
       ).toEqual([]);
     });
 
@@ -162,7 +161,7 @@ describe('Ws Chat Hooks', () => {
 
       expect(
         queryClient
-          .getQueryData<RecordOf<Chat>>(chatKey)
+          .getQueryData<ItemChatRecord>(chatKey)
           ?.messages.find(({ body }) => body === newMessage.body),
       ).toBeFalsy();
     });
@@ -184,7 +183,7 @@ describe('Ws Chat Hooks', () => {
 
       expect(
         queryClient
-          .getQueryData<RecordOf<Chat>>(chatKey)
+          .getQueryData<ItemChatRecord>(chatKey)
           ?.messages.find(({ body }) => body === newMessage.body),
       ).toBeFalsy();
     });
