@@ -190,15 +190,11 @@ export type ChatMessage = {
   chatId: string;
   creator: string;
   createdAt: string;
+  updatedAt: string;
   body: string;
 };
 
 export type ChatMessageRecord = RecordOf<ChatMessage>;
-
-export type ItemChatResponse = {
-  id: string;
-  messages: ChatMessage[];
-};
 
 export type ItemChat = {
   id: string;

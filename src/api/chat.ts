@@ -1,6 +1,5 @@
 import {
   ChatMessage,
-  ItemChatResponse,
   PartialChatMessage,
   PartialNewChatMessage,
   QueryClientConfig,
@@ -21,10 +20,7 @@ import {
 
 const axios = configureAxios();
 
-export const getItemChat = async (
-  id: UUID,
-  { API_HOST }: QueryClientConfig,
-): Promise<ItemChatResponse> =>
+export const getItemChat = async (id: UUID, { API_HOST }: QueryClientConfig) =>
   fallbackToPublic(
     () => axios.get(`${API_HOST}/${buildGetItemChatRoute(id)}`),
     () => axios.get(`${API_HOST}/${buildGetPublicItemChatRoute(id)}`),

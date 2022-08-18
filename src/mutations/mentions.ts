@@ -21,7 +21,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
     onSettled: (_data, _error, { memberId }) => {
-      console.log(memberId);
       // invalidate keys only if websockets are disabled
       // otherwise the cache is updated automatically
       if (!queryConfig.enableWebsocket) {

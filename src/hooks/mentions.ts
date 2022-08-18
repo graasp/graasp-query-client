@@ -1,7 +1,7 @@
 import { QueryClient, useQuery, UseQueryResult } from 'react-query';
 import * as Api from '../api';
 import { buildMentionKey } from '../config/keys';
-import { Member, QueryClientConfig } from '../types';
+import { Member, MemberMentionsRecord, QueryClientConfig } from '../types';
 import { WebsocketClient } from '../ws/ws-client';
 import { configureWsChatMentionsHooks } from '../ws';
 import { Record } from 'immutable';
@@ -30,7 +30,7 @@ export default (
 
       return useQuery({
         queryKey: buildMentionKey(memberId),
-        queryFn: () =>
+        queryFn: (): Promise<MemberMentionsRecord> =>
           Api.getMemberMentions(queryConfig).then((data) => convertJs(data)),
         ...defaultQueryOptions,
         enabled: Boolean(memberId),

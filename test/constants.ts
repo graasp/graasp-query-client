@@ -331,6 +331,7 @@ export const buildChatMessages = (id: UUID) => {
     body: 'some text',
     creator: 'somememberid',
     createdAt: 'someDate',
+    updatedAt: 'someDate',
   };
   const createMockChatMessage: Record.Factory<ChatMessage> = Record(
     defaultChatMessageValues,
