@@ -1,4 +1,5 @@
 import { RecordOf, List } from 'immutable';
+import { MentionStatus } from '@graasp/sdk';
 
 export type Notifier = (e: unknown) => void;
 
@@ -155,7 +156,7 @@ export type ChatMention = {
   creator: string;
   createdAt: string;
   updatedAt: string;
-  status: string;
+  status: MentionStatus;
 };
 
 export type ChatMentionRecord = RecordOf<ChatMention>;
