@@ -13,6 +13,7 @@ import { buildItemChatKey, buildMentionKey } from '../../config/keys';
 import { OPS, TOPICS } from '../constants';
 import { MemberMentionsRecord } from '../../types';
 import { configureWsChatMentionsHooks } from './mentions';
+import { MentionStatus } from '@graasp/sdk';
 
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsChatMentionsHooks,
@@ -90,7 +91,7 @@ describe('Ws Mention Hooks', () => {
     it(`Receive mention edit update`, async () => {
       const updatedMention = {
         ...MENTIONS_QUERY_DATA.mentions.first()!.toJS(),
-        status: 'read',
+        status: MentionStatus.READ,
       };
       queryClient.setQueryData(mentionKey, MENTIONS_QUERY_DATA);
       await mockWsHook({

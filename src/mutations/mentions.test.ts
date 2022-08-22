@@ -26,6 +26,7 @@ import {
   deleteMentionRoutine,
   patchMentionRoutine,
 } from '../routines';
+import { MentionStatus } from '@graasp/sdk';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -63,7 +64,7 @@ describe('Mention Mutations', () => {
             response: buildMentionResponse(
               MENTIONS[0],
               REQUEST_METHODS.PATCH,
-              'read',
+              MentionStatus.READ,
             ),
             method: REQUEST_METHODS.PATCH,
           },
@@ -81,7 +82,7 @@ describe('Mention Mutations', () => {
           await mockedMutation.mutate({
             memberId,
             id: mentionId,
-            status: 'read',
+            status: MentionStatus.READ,
           });
           await waitForMutation();
         });
@@ -116,7 +117,7 @@ describe('Mention Mutations', () => {
           await mockedMutation.mutate({
             memberId,
             id: mentionId,
-            status: 'read',
+            status: MentionStatus.READ,
           });
           await waitForMutation();
         });
@@ -314,7 +315,7 @@ describe('Mention Mutations', () => {
           await mockedMutation.mutate({
             memberId,
             id: mentionId,
-            status: 'read',
+            status: MentionStatus.READ,
           });
           await waitForMutation();
         });

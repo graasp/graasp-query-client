@@ -59,6 +59,7 @@ import {
 } from '../src/types';
 import { REQUEST_METHODS } from '../src/api/utils';
 import { v4 } from 'uuid';
+import { MentionStatus } from '@graasp/sdk';
 
 export const WS_HOST = 'ws://localhost:3000';
 export const API_HOST = 'http://localhost:3000';
@@ -282,7 +283,7 @@ export const AVATAR_BLOB_RESPONSE = BlobMock;
 export const buildMentionResponse = (
   mention: ChatMention,
   method: REQUEST_METHODS,
-  status?: string,
+  status?: MentionStatus,
 ): ChatMention => {
   switch (method) {
     case REQUEST_METHODS.PATCH:
@@ -358,11 +359,11 @@ export const buildChatMessages = (id: UUID) => {
 export const buildChatMention = ({
   id = v4(),
   memberId,
-  status = 'unread',
+  status = MentionStatus.UNREAD,
 }: {
   id?: UUID;
   memberId: UUID;
-  status?: string;
+  status?: MentionStatus;
 }) => {
   const defaultChatMentionValues: ChatMention = {
     id: 'someid',
@@ -372,7 +373,7 @@ export const buildChatMention = ({
     createdAt: 'somedate',
     updatedAt: 'somedate',
     memberId: 'amemberid',
-    status: 'unread',
+    status: MentionStatus.UNREAD,
     creator: 'somememberid',
   };
   const createMockChatMention: Record.Factory<ChatMention> = Record(

@@ -163,7 +163,7 @@ export type ChatMentionRecord = RecordOf<ChatMention>;
 
 export type PartialChatMention = {
   id: string;
-  status: string;
+  status: MentionStatus;
 };
 
 export type MemberMentions = {
