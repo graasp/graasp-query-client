@@ -246,10 +246,8 @@ export default (
             return Api.getItem(ids[0], queryConfig).then((data) =>
               convertJs([data]),
             );
-          };
-          return Api.getItems(ids, queryConfig).then((data) =>
-            convertJs(data),
-          );
+          }
+          return Api.getItems(ids, queryConfig).then((data) => convertJs(data));
         },
         onSuccess: async (items: List<ItemRecord>) => {
           // save items in their own key

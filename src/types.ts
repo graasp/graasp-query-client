@@ -1,4 +1,5 @@
 import { RecordOf, List } from 'immutable';
+import { MentionStatus } from '@graasp/sdk';
 
 export type Notifier = (e: unknown) => void;
 
@@ -146,38 +147,62 @@ export enum PERMISSION_LEVELS {
   ADMIN = 'admin',
 }
 
+export type ChatMention = {
+  id: string;
+  itemPath: string;
+  message: string;
+  messageId: string;
+  memberId: string;
+  creator: string;
+  createdAt: string;
+  updatedAt: string;
+  status: MentionStatus;
+};
+
+export type ChatMentionRecord = RecordOf<ChatMention>;
+
+export type PartialChatMention = {
+  id: string;
+  status: MentionStatus;
+};
+
+export type MemberMentions = {
+  memberId: string;
+  mentions: List<ChatMentionRecord>;
+};
+
+export type MemberMentionsRecord = RecordOf<MemberMentions>;
+
+export type MessageBodyType = { message: string; mentions?: string[] };
+
 export type PartialNewChatMessage = {
   chatId: string;
-  body: string;
+  body: MessageBodyType;
 };
 
 export type PartialChatMessage = {
   chatId: string;
   messageId: string;
-  body?: string;
+  body?: MessageBodyType;
 };
 
 export type ChatMessage = {
-  id?: string;
+  id: string;
   chatId: string;
   creator: string;
-  createdAt?: string;
+  createdAt: string;
+  updatedAt: string;
   body: string;
 };
 
 export type ChatMessageRecord = RecordOf<ChatMessage>;
 
 export type ItemChat = {
-  id?: string;
+  id: string;
   messages: List<ChatMessageRecord>;
 };
 
 export type ItemChatRecord = RecordOf<ItemChat>;
-
-export interface Chat {
-  id: string;
-  messages: List<ChatMessageRecord>;
-}
 
 // todo: get from graasp types
 export type GraaspError = {
@@ -235,13 +260,13 @@ export interface Action {
   name?: string;
   itemId: UUID;
   memberId: UUID;
-};
+}
 
 export type ActionRecord = RecordOf<Action>;
 
 export interface ActionData {
   actions: List<Action>;
-};
+}
 
 export type ActionDataRecord = RecordOf<ActionData>;
 
@@ -293,9 +318,9 @@ export type Tag = {
 export type TagRecord = RecordOf<Tag>;
 
 export type MessageItemChat = {
-  id: UUID,
-  creator: UUID,
-  content: string,
+  id: UUID;
+  creator: UUID;
+  content: string;
 };
 
 export type MessageItemChatRecord = RecordOf<MessageItemChat>;

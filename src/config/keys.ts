@@ -25,6 +25,8 @@ export const buildMembersKey = (ids: UUID[]) => [
 export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, id, 'parents'];
 export const CHATS_KEY = 'chats';
 export const buildItemChatKey = (id: UUID) => [CHATS_KEY, id];
+export const MENTIONS_KEY = 'mentions';
+export const buildMentionKey = (memberId: UUID) => [MENTIONS_KEY, memberId];
 
 export const getKeyForParentId = (parentId: UUID | null) =>
   parentId ? buildItemChildrenKey(parentId) : OWN_ITEMS_KEY;
@@ -126,7 +128,10 @@ export const buildActionsKey = (args: {
 }) => [
   'actions',
   args.itemId,
-  { view: args.view, size: args.requestedSampleSize },
+  {
+    view: args.view,
+    size: args.requestedSampleSize,
+  },
 ];
 
 export const buildInvitationKey = (id: UUID) => ['invitations', id];
@@ -169,6 +174,7 @@ export const DATA_KEYS = {
   buildItemParentsKey,
   CHATS_KEY,
   buildItemChatKey,
+  buildMentionKey,
   getKeyForParentId,
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
@@ -233,6 +239,9 @@ export const MUTATION_KEYS = {
   PATCH_ITEM_CHAT_MESSAGE: 'patchChatMessage',
   DELETE_ITEM_CHAT_MESSAGE: 'deleteChatMessage',
   CLEAR_ITEM_CHAT: 'clearItemChat',
+  PATCH_MENTION: 'patchMention',
+  DELETE_MENTION: 'deleteMention',
+  CLEAR_MENTIONS: 'clearMentions',
   RECYCLE_ITEM: 'recycleItem',
   RECYCLE_ITEMS: 'recycleItems',
   RESTORE_ITEMS: 'restoreItems',

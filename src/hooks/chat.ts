@@ -1,7 +1,7 @@
 import { QueryClient, useQuery } from 'react-query';
 import * as Api from '../api';
 import { buildItemChatKey } from '../config/keys';
-import { QueryClientConfig, UUID } from '../types';
+import { ItemChatRecord, QueryClientConfig, UUID } from '../types';
 import { configureWsChatHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 import { convertJs } from '../utils/util';
@@ -26,7 +26,7 @@ export default (
 
       return useQuery({
         queryKey: buildItemChatKey(itemId),
-        queryFn: () =>
+        queryFn: (): Promise<ItemChatRecord> =>
           Api.getItemChat(itemId, queryConfig).then((data) => convertJs(data)),
         ...defaultQueryOptions,
         enabled: Boolean(itemId),

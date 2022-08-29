@@ -19,7 +19,7 @@ export const getApps = async ({ API_HOST }: QueryClientConfig) =>
 export const requestApiAccessToken = async (
   args: { id: UUID; app: string; origin: string },
   { API_HOST }: QueryClientConfig,
-) => {
+): Promise<{ token: string }> => {
   const { id, app, origin } = args;
   return fallbackToPublic(
     () =>

@@ -2,7 +2,7 @@ import { List, RecordOf } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 import { buildItemChatKey } from '../../config/keys';
-import { Chat, ChatMessage, ChatMessageRecord, UUID } from '../../types';
+import { ItemChat, ChatMessage, ChatMessageRecord, UUID } from '../../types';
 import { convertJs } from '../../utils/util';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
@@ -31,12 +31,15 @@ export const configureWsChatHooks = (
         };
       }
 
-      const channel: Channel = { name: chatId, topic: TOPICS.CHAT_ITEM };
+      const channel: Channel = {
+        name: chatId,
+        topic: TOPICS.CHAT_ITEM,
+      };
 
       const handler = (event: ChatEvent) => {
         if (event.kind === KINDS.ITEM) {
           const chatKey = buildItemChatKey(chatId);
-          const current: RecordOf<Chat> | undefined =
+          const current: RecordOf<ItemChat> | undefined =
             queryClient.getQueryData(chatKey);
 
           const message: ChatMessageRecord = convertJs(event.message);
