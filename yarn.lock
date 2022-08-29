@@ -2081,7 +2081,7 @@ __metadata:
     "@babel/preset-typescript": 7.16.7
     "@commitlint/cli": 16.2.4
     "@commitlint/config-conventional": 16.2.4
-    "@graasp/sdk": "github:graasp/graasp-sdk#38/addMentionStatusEnum"
+    "@graasp/sdk": "github:graasp/graasp-sdk"
     "@graasp/translations": "github:graasp/graasp-translations.git"
     "@graasp/utils": "github:graasp/graasp-utils.git"
     "@testing-library/jest-dom": 5.16.4
@@ -2136,9 +2136,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@github:graasp/graasp-sdk#38/addMentionStatusEnum":
+"@graasp/sdk@github:graasp/graasp-sdk":
   version: 0.1.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=f52381160e722e1e09a64c4bee4c07a0d9e96c6a"
+  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=5170aab6390aa6deb16b9be559a359bdec050cc9"
   dependencies:
     "@fastify/secure-session": 5.2.0
     aws-sdk: 2.1111.0
