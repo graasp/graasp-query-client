@@ -1,6 +1,6 @@
 // redefine global type to mock fetch
-import { WebSocket } from 'mock-socket';
 import axios from 'axios';
+import { WebSocket } from 'mock-socket';
 
 // adapter for test
 axios.defaults.adapter = require('axios/lib/adapters/http');

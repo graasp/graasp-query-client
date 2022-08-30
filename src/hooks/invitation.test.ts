@@ -1,18 +1,19 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
+import nock from 'nock';
+
+import {
+  ITEMS,
+  UNAUTHORIZED_RESPONSE,
+  buildInvitationRecord,
+} from '../../test/constants';
+import { mockHook, setUpTest } from '../../test/utils';
 import {
   buildGetInvitationRoute,
   buildGetItemInvitationsForItemRoute,
 } from '../api/routes';
-import { mockHook, setUpTest } from '../../test/utils';
-import {
-  buildInvitationRecord,
-  ITEMS,
-  UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
 import { buildInvitationKey, buildItemInvitationsKey } from '../config/keys';
 import { InvitationRecord } from '../types';
 

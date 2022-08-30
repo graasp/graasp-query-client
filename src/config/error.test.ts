@@ -1,5 +1,4 @@
-import { UndefinedArgument } from '../types';
-import { UserIsSignedOut } from './errors';
+import { UndefinedArgument, UserIsSignedOut } from './errors';
 
 describe('Errors', () => {
   it('Undefined Argument error', () => {

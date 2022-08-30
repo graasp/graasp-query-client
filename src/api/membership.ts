@@ -1,18 +1,20 @@
+import { ItemMembership, PermissionLevel } from '@graasp/sdk';
 import { FAILURE_MESSAGES } from '@graasp/translations';
-import { getMembersBy } from './member';
-import {
-  buildPostItemMembershipRoute,
-  buildEditItemMembershipRoute,
-  buildDeleteItemMembershipRoute,
-  buildGetItemMembershipsForItemsRoute,
-  buildGetPublicItemMembershipsForItemsRoute,
-  buildPostManyItemMembershipsRoute,
-} from './routes';
-import { Membership, Permission, QueryClientConfig, UUID } from '../types';
+
+import { QueryClientConfig, UUID } from '../types';
 import configureAxios, {
   fallbackToPublic,
   verifyAuthentication,
 } from './axios';
+import { getMembersBy } from './member';
+import {
+  buildDeleteItemMembershipRoute,
+  buildEditItemMembershipRoute,
+  buildGetItemMembershipsForItemsRoute,
+  buildGetPublicItemMembershipsForItemsRoute,
+  buildPostItemMembershipRoute,
+  buildPostManyItemMembershipsRoute,
+} from './routes';
 
 const axios = configureAxios();
 
@@ -29,9 +31,12 @@ export const getMembershipsForItems = async (
   );
 
 export const postManyItemMemberships = async (
-  { memberships, itemId }: { itemId: UUID; memberships: Partial<Membership>[] },
+  {
+    memberships,
+    itemId,
+  }: { itemId: UUID; memberships: Partial<ItemMembership>[] },
   config: QueryClientConfig,
-): Promise<(Membership | Error)[]> => {
+): Promise<(ItemMembership | Error)[]> => {
   const { API_HOST } = config;
 
   return verifyAuthentication(() =>
@@ -48,7 +53,7 @@ export const postItemMembership = async (
     id,
     email,
     permission,
-  }: { id: UUID; email: string; permission: Permission },
+  }: { id: UUID; email: string; permission: PermissionLevel },
   config: QueryClientConfig,
 ) => {
   const { API_HOST } = config;
@@ -70,7 +75,7 @@ export const postItemMembership = async (
 };
 
 export const editItemMembership = async (
-  { id, permission }: { id: UUID; permission: Permission },
+  { id, permission }: { id: UUID; permission: PermissionLevel },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>

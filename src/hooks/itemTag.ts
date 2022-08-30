@@ -1,20 +1,18 @@
-import { QueryClient, useQuery } from 'react-query';
 import { List } from 'immutable';
+import { QueryClient, useQuery } from 'react-query';
+
+import { convertJs } from '@graasp/sdk';
 import { isError } from '@graasp/utils';
-import {
-  ItemTagRecord,
-  QueryClientConfig,
-  UndefinedArgument,
-  UUID,
-} from '../types';
+
 import * as Api from '../api';
+import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
+import { UndefinedArgument } from '../config/errors';
 import {
+  TAGS_KEY,
   buildItemTagsKey,
   buildManyItemTagsKey,
-  TAGS_KEY,
 } from '../config/keys';
-import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
-import { convertJs } from '../utils/util';
+import { ItemTagRecord, QueryClientConfig, UUID } from '../types';
 
 export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
   const { defaultQueryOptions } = queryConfig;

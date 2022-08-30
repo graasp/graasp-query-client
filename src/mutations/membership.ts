@@ -1,9 +1,18 @@
-import { QueryClient } from 'react-query';
-import { List } from 'immutable';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { List } from 'immutable';
+import { QueryClient } from 'react-query';
+
+import { ItemMembership, PermissionLevel } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
-import { partition, isError } from '@graasp/utils';
+import { isError, partition } from '@graasp/utils';
+
 import * as Api from '../api';
+import {
+  MUTATION_KEYS,
+  buildItemInvitationsKey,
+  buildItemMembershipsKey,
+  buildManyItemMembershipsKey,
+} from '../config/keys';
 import {
   deleteItemMembershipRoutine,
   editItemMembershipRoutine,
@@ -11,15 +20,8 @@ import {
   shareItemRoutine,
 } from '../routines';
 import {
-  buildItemInvitationsKey,
-  buildItemMembershipsKey,
-  buildManyItemMembershipsKey,
-  MUTATION_KEYS,
-} from '../config/keys';
-import {
   Invitation,
-  Membership,
-  MembershipRecord,
+  ItemMembershipRecord,
   QueryClientConfig,
   UUID,
 } from '../types';
@@ -53,11 +55,16 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   /**
    * @param {UUID} id membership id to edit
    * @param {UUID} itemId corresponding item id
-   * @param {PERMISSION_LEVELS} permission permission level to apply
+   * @param {PermissionLevel} permission permission level to apply
    */
   queryClient.setMutationDefaults(MUTATION_KEYS.EDIT_ITEM_MEMBERSHIP, {
-    mutationFn: ({ id, permission }: { id: UUID; permission: string }) =>
-      Api.editItemMembership({ id, permission }, queryConfig),
+    mutationFn: ({
+      id,
+      permission,
+    }: {
+      id: UUID;
+      permission: PermissionLevel;
+    }) => Api.editItemMembership({ id, permission }, queryConfig),
     onSuccess: () => {
       notifier?.({
         type: editItemMembershipRoutine.SUCCESS,
@@ -81,7 +88,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onMutate: ({ itemId, id }) => {
       const membershipsKey = buildItemMembershipsKey(itemId);
       const memberships =
-        queryClient.getQueryData<List<MembershipRecord>>(membershipsKey);
+        queryClient.getQueryData<List<ItemMembershipRecord>>(membershipsKey);
 
       queryClient.setQueryData(
         membershipsKey,
@@ -148,14 +155,15 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       // split between invitations and memberships
       const dataWithMemberId = dataWithEmail.map((d) => ({
         ...d,
-        memberId: accounts.find(({ email }) => email === d.email)?.id,
+        memberId: accounts.find(({ email }) => email === d.email?.toLowerCase())
+          ?.id,
       }));
       const [newMemberships, invitations] = partition(dataWithMemberId, (d) =>
         Boolean(d.memberId),
       );
 
       // create memberships
-      let membershipsResult: (Membership | Error)[] = [];
+      let membershipsResult: (ItemMembership | Error)[] = [];
       if (newMemberships.length) {
         try {
           membershipsResult = await Api.postManyItemMemberships(

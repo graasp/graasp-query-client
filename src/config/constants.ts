@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
+
 // React Query Configs
 
 // time during which cache entry is never refetched

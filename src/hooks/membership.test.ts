@@ -1,23 +1,24 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
-import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
-import {
-  buildGetItemMembershipsForItemsRoute,
-  buildGetPublicItemMembershipsForItemsRoute,
-} from '../api/routes';
-import { mockHook, setUpTest } from '../../test/utils';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+
 import {
   ITEMS,
   ITEM_MEMBERSHIPS_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
+import { mockHook, setUpTest } from '../../test/utils';
 import {
-  buildManyItemMembershipsKey,
+  buildGetItemMembershipsForItemsRoute,
+  buildGetPublicItemMembershipsForItemsRoute,
+} from '../api/routes';
+import {
   buildItemMembershipsKey,
+  buildManyItemMembershipsKey,
 } from '../config/keys';
-import type { MembershipRecord } from '../types';
+import type { ItemMembershipRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -39,7 +40,7 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<MembershipRecord>).toEqualImmutable(response[0]);
+      expect(data as List<ItemMembershipRecord>).toEqualImmutable(response[0]);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response[0]);
     });
@@ -84,7 +85,7 @@ describe('Membership Hooks', () => {
         wrapper,
       });
 
-      expect(data as List<MembershipRecord>).toEqualImmutable(response[0]);
+      expect(data as List<ItemMembershipRecord>).toEqualImmutable(response[0]);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response[0]);
     });
@@ -129,7 +130,7 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route: oneRoute, response: oneResponse }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<List<MembershipRecord>>).toEqualImmutable(
+      expect(data as List<List<ItemMembershipRecord>>).toEqualImmutable(
         oneResponse,
       );
       // verify cache keys
@@ -141,7 +142,9 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<List<MembershipRecord>>).toEqualImmutable(response);
+      expect(data as List<List<ItemMembershipRecord>>).toEqualImmutable(
+        response,
+      );
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
@@ -184,7 +187,9 @@ describe('Membership Hooks', () => {
         wrapper,
       });
 
-      expect(data as List<List<MembershipRecord>>).toEqualImmutable(response);
+      expect(data as List<List<ItemMembershipRecord>>).toEqualImmutable(
+        response,
+      );
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });

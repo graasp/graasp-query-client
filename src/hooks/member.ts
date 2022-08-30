@@ -1,23 +1,22 @@
-import { QueryClient, useQuery } from 'react-query';
 import { List } from 'immutable';
+import { QueryClient, useQuery } from 'react-query';
+
+import { convertJs } from '@graasp/sdk';
+
 import * as Api from '../api';
+import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
+import { UndefinedArgument } from '../config/errors';
 import {
+  CURRENT_MEMBER_KEY,
   buildAvatarKey,
   buildMemberKey,
   buildMembersKey,
-  CURRENT_MEMBER_KEY,
 } from '../config/keys';
-import {
-  MemberRecord,
-  QueryClientConfig,
-  UndefinedArgument,
-  UUID,
-} from '../types';
-import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
-import { convertJs } from '../utils/util';
+import { getMembersRoutine } from '../routines';
+import { MemberRecord, QueryClientConfig, UUID } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
-  const { defaultQueryOptions } = queryConfig;
+  const { defaultQueryOptions, notifier } = queryConfig;
 
   const useCurrentMember = () =>
     useQuery({
@@ -54,6 +53,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           const { id } = member;
           queryClient.setQueryData(buildMemberKey(id), member);
         });
+      },
+      onError: (error) => {
+        notifier?.({ type: getMembersRoutine.FAILURE, payload: { error } });
       },
       ...defaultQueryOptions,
     });

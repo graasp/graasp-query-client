@@ -1,14 +1,14 @@
 import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
-  buildChangePlanRoute,
-  buildGetPlanRoute,
-  buildSetDefaultCardRoute,
   CREATE_SETUP_INTENT_ROUTE,
   GET_CARDS_ROUTE,
   GET_CURRENT_CUSTOMER,
   GET_OWN_PLAN_ROUTE,
   GET_PLANS_ROUTE,
+  buildChangePlanRoute,
+  buildGetPlanRoute,
+  buildSetDefaultCardRoute,
 } from './routes';
 
 const axios = configureAxios();

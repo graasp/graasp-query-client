@@ -3,6 +3,9 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
+
+import { HttpMethod } from '@graasp/sdk';
+
 import {
   ITEMS,
   ITEM_LIKES,
@@ -14,11 +17,10 @@ import {
   buildDeleteItemLikeRoute,
   buildPostItemLikeRoute,
 } from '../api/routes';
-import { REQUEST_METHODS } from '../api/utils';
 import {
+  MUTATION_KEYS,
   buildGetLikeCountKey,
   buildGetLikedItemsKey,
-  MUTATION_KEYS,
 } from '../config/keys';
 import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
 
@@ -51,7 +53,7 @@ describe('Item Like Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -83,7 +85,7 @@ describe('Item Like Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -125,7 +127,7 @@ describe('Item Like Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -157,7 +159,7 @@ describe('Item Like Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];

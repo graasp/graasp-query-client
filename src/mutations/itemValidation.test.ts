@@ -1,29 +1,31 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
-import Cookies from 'js-cookie';
-import { act } from 'react-test-renderer';
-import { List } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { REQUEST_METHODS } from '../api/utils';
-import {
-  buildItemValidationAndReviewKey,
-  ITEM_VALIDATION_REVIEWS_KEY,
-  MUTATION_KEYS,
-} from '../config/keys';
-import {
-  buildPostItemValidationRoute,
-  buildUpdateItemValidationReviewRoute,
-} from '../api/routes';
-import {
-  postItemValidationRoutine,
-  updateItemValidationReviewRoutine,
-} from '../routines';
+import { List } from 'immutable';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+import { act } from 'react-test-renderer';
+
+import { HttpMethod } from '@graasp/sdk';
+
 import {
   FULL_VALIDATION_RECORDS,
   ITEM_VALIDATION_STATUS,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  buildPostItemValidationRoute,
+  buildUpdateItemValidationReviewRoute,
+} from '../api/routes';
+import {
+  ITEM_VALIDATION_REVIEWS_KEY,
+  MUTATION_KEYS,
+  buildItemValidationAndReviewKey,
+} from '../config/keys';
+import {
+  postItemValidationRoutine,
+  updateItemValidationReviewRoutine,
+} from '../routines';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
@@ -50,7 +52,7 @@ describe('Item Validation Mutations', () => {
       const endpoints = [
         {
           response: { itemId },
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -79,7 +81,7 @@ describe('Item Validation Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -122,7 +124,7 @@ describe('Item Validation Mutations', () => {
         {
           // just for test, real response is of ItemValidationReview object
           response: { id: 'entry-id', itemId: 'item-id', statusId: 'status' },
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -160,7 +162,7 @@ describe('Item Validation Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];

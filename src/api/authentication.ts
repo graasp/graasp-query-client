@@ -1,3 +1,5 @@
+import { HttpMethod } from '@graasp/sdk';
+
 import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
@@ -6,7 +8,6 @@ import {
   SIGN_OUT_ROUTE,
   SIGN_UP_ROUTE,
 } from './routes';
-import { REQUEST_METHODS } from './utils';
 
 const axios = configureAxios();
 
@@ -25,7 +26,7 @@ export const signInWithPassword = async (
   { API_HOST }: QueryClientConfig,
 ) =>
   axios({
-    method: REQUEST_METHODS.POST,
+    method: HttpMethod.POST,
     url: `${API_HOST}/${SIGN_IN_WITH_PASSWORD_ROUTE}`,
     data: payload,
     // Resolve only if the status code is less than 500

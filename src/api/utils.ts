@@ -1,11 +1,4 @@
 import Cookies from 'js-cookie';
 
-export enum REQUEST_METHODS {
-  GET = 'GET',
-  POST = 'POST',
-  DELETE = 'DELETE',
-  PUT = 'PUT',
-  PATCH = 'PATCH',
-}
-
+// eslint-disable-next-line import/prefer-default-export
 export const isUserAuthenticated = () => Boolean(Cookies.get('session'));

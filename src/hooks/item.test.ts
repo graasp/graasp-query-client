@@ -1,9 +1,23 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import { StatusCodes } from 'http-status-codes';
+import { List, Map } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
-import { StatusCodes } from 'http-status-codes';
-import { Map, List } from 'immutable';
+
+import { Item, ItemType } from '@graasp/sdk';
+
 import {
+  FILE_RESPONSE,
+  ITEMS,
+  TAGS,
+  THUMBNAIL_BLOB_RESPONSE,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants';
+import { Endpoint, mockHook, setUpTest } from '../../test/utils';
+import {
+  GET_OWN_ITEMS_ROUTE,
+  GET_RECYCLED_ITEMS_ROUTE,
+  SHARED_ITEM_WITH_ROUTE,
   buildDownloadFilesRoute,
   buildDownloadItemThumbnailRoute,
   buildGetChildrenRoute,
@@ -13,34 +27,23 @@ import {
   buildGetPublicItemRoute,
   buildGetPublicItemsWithTag,
   buildPublicDownloadFilesRoute,
-  GET_OWN_ITEMS_ROUTE,
-  GET_RECYCLED_ITEMS_ROUTE,
-  SHARED_ITEM_WITH_ROUTE,
 } from '../api/routes';
-import { Endpoint, mockHook, setUpTest } from '../../test/utils';
+import { THUMBNAIL_SIZES } from '../config/constants';
 import {
-  FILE_RESPONSE,
-  ITEMS,
-  TAGS,
-  THUMBNAIL_BLOB_RESPONSE,
-  UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
-import {
+  OWN_ITEMS_KEY,
+  RECYCLED_ITEMS_KEY,
+  SHARED_ITEMS_KEY,
   buildFileContentKey,
   buildItemChildrenKey,
   buildItemKey,
   buildItemLoginKey,
   buildItemParentsKey,
+  buildItemThumbnailKey,
   buildItemsChildrenKey,
   buildItemsKey,
   buildPublicItemsWithTagKey,
-  buildItemThumbnailKey,
-  OWN_ITEMS_KEY,
-  RECYCLED_ITEMS_KEY,
-  SHARED_ITEMS_KEY,
 } from '../config/keys';
-import type { ItemRecord, Item, ItemLoginRecord } from '../types';
-import { THUMBNAIL_SIZES } from '../config/constants';
+import type { ItemLoginRecord, ItemRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -260,9 +263,13 @@ describe('Items Hooks', () => {
       id: 'child-item-id',
       path: [...ITEMS.map(({ id }) => id), 'child_item_id'].join('.'),
       name: 'child-item-id',
-      type: 'folder',
+      type: ItemType.FOLDER,
       description: '',
       extra: {},
+      settings: {},
+      updatedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      creator: 'creator',
     };
     const response = ITEMS;
     it(`Receive parents of item by id`, async () => {
@@ -507,7 +514,7 @@ describe('Items Hooks', () => {
     });
 
     it(`Receive two items`, async () => {
-      const response = ITEMS;
+      const response = ITEMS.slice(0, 2);
       const ids: string[] = response.map(({ id }) => id).toArray();
       const hook = () => hooks.useItems(ids);
       const route = `/${buildGetItemsRoute(ids)}`;

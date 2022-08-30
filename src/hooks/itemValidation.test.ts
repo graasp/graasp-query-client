@@ -1,23 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
-import { List } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
+import { List } from 'immutable';
 import Cookies from 'js-cookie';
-import { mockHook, setUpTest } from '../../test/utils';
-import {
-  buildGetItemValidationAndReviewRoute,
-  buildGetItemValidationGroupsRoute,
-  GET_ITEM_VALIDATION_REVIEWS_ROUTE,
-  GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE,
-  GET_ITEM_VALIDATION_STATUSES_ROUTE,
-} from '../api/routes';
-import {
-  buildItemValidationAndReviewKey,
-  buildItemValidationGroupsKey,
-  ITEM_VALIDATION_REVIEWS_KEY,
-  ITEM_VALIDATION_REVIEW_STATUSES_KEY,
-  ITEM_VALIDATION_STATUSES_KEY,
-} from '../config/keys';
+import nock from 'nock';
+
 import {
   FULL_VALIDATION_RECORDS,
   ITEM_VALIDATION_GROUPS,
@@ -25,6 +11,21 @@ import {
   STATUS_LIST,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
+import { mockHook, setUpTest } from '../../test/utils';
+import {
+  GET_ITEM_VALIDATION_REVIEWS_ROUTE,
+  GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE,
+  GET_ITEM_VALIDATION_STATUSES_ROUTE,
+  buildGetItemValidationAndReviewRoute,
+  buildGetItemValidationGroupsRoute,
+} from '../api/routes';
+import {
+  ITEM_VALIDATION_REVIEWS_KEY,
+  ITEM_VALIDATION_REVIEW_STATUSES_KEY,
+  ITEM_VALIDATION_STATUSES_KEY,
+  buildItemValidationAndReviewKey,
+  buildItemValidationGroupsKey,
+} from '../config/keys';
 import {
   FullValidationRecordRecord,
   ItemValidationAndReviewRecord,

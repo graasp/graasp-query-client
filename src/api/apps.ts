@@ -1,13 +1,13 @@
-import {
-  buildAppListRoute,
-  buildGetApiAccessTokenRoute,
-  buildGetPublicApiAccessTokenRoute,
-} from './routes';
 import { QueryClientConfig, UUID } from '../types';
 import configureAxios, {
   fallbackToPublic,
   verifyAuthentication,
 } from './axios';
+import {
+  buildAppListRoute,
+  buildGetApiAccessTokenRoute,
+  buildGetPublicApiAccessTokenRoute,
+} from './routes';
 
 const axios = configureAxios();
 

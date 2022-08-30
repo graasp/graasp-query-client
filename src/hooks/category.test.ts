@@ -1,29 +1,30 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
-import { List, Record, RecordOf } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
+import { List, Record, RecordOf } from 'immutable';
 import Cookies from 'js-cookie';
-import { mockHook, setUpTest } from '../../test/utils';
-import {
-  buildGetCategoriesRoute,
-  buildGetCategoryRoute,
-  buildGetItemCategoriesRoute,
-  buildGetItemsInCategoryRoute,
-  GET_CATEGORY_TYPES_ROUTE,
-} from '../api/routes';
-import {
-  buildCategoriesKey,
-  buildCategoryKey,
-  buildItemCategoriesKey,
-  buildItemsByCategoriesKey,
-  CATEGORY_TYPES_KEY,
-} from '../config/keys';
+import nock from 'nock';
+
 import {
   CATEGORIES,
   CATEGORY_TYPES,
   ITEM_CATEGORIES,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
+import { mockHook, setUpTest } from '../../test/utils';
+import {
+  GET_CATEGORY_TYPES_ROUTE,
+  buildGetCategoriesRoute,
+  buildGetCategoryRoute,
+  buildGetItemCategoriesRoute,
+  buildGetItemsInCategoryRoute,
+} from '../api/routes';
+import {
+  CATEGORY_TYPES_KEY,
+  buildCategoriesKey,
+  buildCategoryKey,
+  buildItemCategoriesKey,
+  buildItemsByCategoriesKey,
+} from '../config/keys';
 import {
   CategoryRecord,
   CategoryTypeRecord,

@@ -1,14 +1,16 @@
 import { useQuery } from 'react-query';
-import { QueryClientConfig } from '../types';
+
+import { convertJs } from '@graasp/sdk';
+
 import * as Api from '../api';
 import {
-  buildPlanKey,
   CARDS_KEY,
   CURRENT_CUSTOMER_KEY,
   OWN_PLAN_KEY,
   PLANS_KEY,
+  buildPlanKey,
 } from '../config/keys';
-import { convertJs } from '../utils/util';
+import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions: defaultOptions } = queryConfig;

@@ -1,11 +1,13 @@
-import { QueryClient, useQuery, UseQueryResult } from 'react-query';
+import { Record } from 'immutable';
+import { QueryClient, UseQueryResult, useQuery } from 'react-query';
+
+import { Member, convertJs } from '@graasp/sdk';
+
 import * as Api from '../api';
 import { buildMentionKey } from '../config/keys';
-import { Member, MemberMentionsRecord, QueryClientConfig } from '../types';
-import { WebsocketClient } from '../ws/ws-client';
+import { MemberMentionsRecord, QueryClientConfig } from '../types';
 import { configureWsChatMentionsHooks } from '../ws';
-import { Record } from 'immutable';
-import { convertJs } from '../utils/util';
+import { WebsocketClient } from '../ws/ws-client';
 
 export default (
   queryClient: QueryClient,

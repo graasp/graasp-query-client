@@ -1,20 +1,23 @@
-import Cookies from 'js-cookie';
 import { List } from 'immutable';
+import Cookies from 'js-cookie';
+
+import { Item } from '@graasp/sdk';
+
+import { ITEMS } from '../../../test/constants';
 import {
   getHandlerByChannel,
   mockWsHook,
   setUpWsTest,
 } from '../../../test/wsUtils';
-import { ITEMS } from '../../../test/constants';
 import {
-  buildItemChildrenKey,
-  buildItemKey,
   OWN_ITEMS_KEY,
   SHARED_ITEMS_KEY,
+  buildItemChildrenKey,
+  buildItemKey,
 } from '../../config/keys';
-import { Item, ItemRecord } from '../../types';
-import { configureWsItemHooks } from './item';
+import { ItemRecord } from '../../types';
 import { KINDS, OPS, TOPICS } from '../constants';
+import { configureWsItemHooks } from './item';
 
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsItemHooks,

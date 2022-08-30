@@ -1,12 +1,12 @@
-import {
-  buildDeleteItemTagRoute,
-  buildGetItemsTagsRoute,
-  buildGetItemTagsRoute,
-  buildPostItemTagRoute,
-  GET_TAGS_ROUTE,
-} from './routes';
 import { QueryClientConfig, UUID } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
+import {
+  GET_TAGS_ROUTE,
+  buildDeleteItemTagRoute,
+  buildGetItemTagsRoute,
+  buildGetItemsTagsRoute,
+  buildPostItemTagRoute,
+} from './routes';
 
 const axios = configureAxios();
 

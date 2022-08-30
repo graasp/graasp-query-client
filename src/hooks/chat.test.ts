@@ -1,15 +1,16 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
 import { Record, RecordOf } from 'immutable';
 import Cookies from 'js-cookie';
-import { buildGetItemChatRoute } from '../api/routes';
-import { mockHook, setUpTest } from '../../test/utils';
+import nock from 'nock';
+
 import {
-  buildChatMessages,
   ITEMS,
   UNAUTHORIZED_RESPONSE,
+  buildChatMessages,
 } from '../../test/constants';
+import { mockHook, setUpTest } from '../../test/utils';
+import { buildGetItemChatRoute } from '../api/routes';
 import { buildItemChatKey } from '../config/keys';
 import type { ItemChat, ItemChatRecord } from '../types';
 

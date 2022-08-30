@@ -1,7 +1,17 @@
-import { QueryClient } from 'react-query';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
 import Cookies from 'js-cookie';
+import { QueryClient } from 'react-query';
+
+import { convertJs } from '@graasp/sdk';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
+
 import * as Api from '../api';
+import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
+import { COOKIE_SESSION_NAME, THUMBNAIL_SIZES } from '../config/constants';
+import {
+  CURRENT_MEMBER_KEY,
+  MUTATION_KEYS,
+  buildAvatarKey,
+} from '../config/keys';
 import {
   addFavoriteItemRoutine,
   deleteFavoriteItemRoutine,
@@ -9,15 +19,7 @@ import {
   editMemberRoutine,
   uploadAvatarRoutine,
 } from '../routines';
-import {
-  buildAvatarKey,
-  CURRENT_MEMBER_KEY,
-  MUTATION_KEYS,
-} from '../config/keys';
 import { MemberRecord, QueryClientConfig, UUID } from '../types';
-import { COOKIE_SESSION_NAME, THUMBNAIL_SIZES } from '../config/constants';
-import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
-import { convertJs } from '../utils/util';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

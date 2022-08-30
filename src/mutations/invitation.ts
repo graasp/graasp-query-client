@@ -1,13 +1,14 @@
 import { List } from 'immutable';
 import { QueryClient } from 'react-query';
+
 import {
-  postInvitations,
-  patchInvitation,
   deleteInvitation,
+  patchInvitation,
+  postInvitations,
   resendInvitation,
 } from '../api';
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
-import { buildItemInvitationsKey, MUTATION_KEYS } from '../config/keys';
+import { MUTATION_KEYS, buildItemInvitationsKey } from '../config/keys';
 import {
   deleteInvitationRoutine,
   patchInvitationRoutine,

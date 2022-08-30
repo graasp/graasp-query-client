@@ -1,13 +1,14 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
-import { mockHook, setUpTest } from '../../test/utils';
+import nock from 'nock';
+
 import {
   ACTIONS_DATA,
   ITEMS,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
+import { mockHook, setUpTest } from '../../test/utils';
 import { buildGetActions } from '../api/routes';
 import { buildActionsKey } from '../config/keys';
 import { ActionDataRecord } from '../types';

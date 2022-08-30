@@ -1,8 +1,9 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { isUserAuthenticated } from './utils';
+
 import { FALLBACK_TO_PUBLIC_FOR_STATUS_CODES } from '../config/constants';
 import { UserIsSignedOut } from '../config/errors';
 import { isObject } from '../utils/util';
+import { isUserAuthenticated } from './utils';
 
 const configureAxios = () => {
   axios.defaults.withCredentials = true;
