@@ -1,12 +1,11 @@
-import Cookies from 'js-cookie';
 import { QueryClient } from 'react-query';
 
-import { convertJs } from '@graasp/sdk';
+import { convertJs, removeSession, setCurrentSession } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
-import { COOKIE_SESSION_NAME, THUMBNAIL_SIZES } from '../config/constants';
+import { THUMBNAIL_SIZES } from '../config/constants';
 import {
   CURRENT_MEMBER_KEY,
   MUTATION_KEYS,
@@ -29,7 +28,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       Api.deleteMember(payload, queryConfig).then(() =>
         Api.signOut(queryConfig),
       ),
-    onSuccess: () => {
+    onSuccess: (_data, { id }) => {
       notifier?.({
         type: deleteMemberRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.DELETE_MEMBER },
@@ -37,8 +36,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       queryClient.resetQueries();
 
-      // remove cookies from browser when the logout is confirmed
-      Cookies.remove(COOKIE_SESSION_NAME);
+      // remove cookies from browser when logout succeeds
+      if (queryConfig.DOMAIN) {
+        removeSession(id, queryConfig.DOMAIN);
+        setCurrentSession(null, queryConfig.DOMAIN);
+      }
 
       // Update when the server confirmed the logout, instead optimistically updating the member
       // This prevents logout loop (redirect to logout -> still cookie -> logs back in)

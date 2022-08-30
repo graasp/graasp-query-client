@@ -2322,7 +2322,6 @@ __metadata:
     jest: 28.1.0
     jest-environment-jsdom: 28.1.0
     jest-immutable-matchers: 3.0.0
-    js-cookie: 3.0.1
     microbundle-crl: 0.13.11
     mock-socket: 9.1.2
     nock: 13.2.4
@@ -2343,7 +2342,7 @@ __metadata:
 
 "@graasp/sdk@github:graasp/graasp-sdk#42/limits":
   version: 0.1.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=c33a85f67736d0362ee2cbabb9250fab5e1980bb"
+  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=82f5b3c9a748b52513f3be815ddd822b501e999d"
   dependencies:
     "@fastify/secure-session": 5.2.0
     aws-sdk: 2.1111.0
@@ -2354,7 +2353,7 @@ __metadata:
     qs: 6.11.0
     slonik: 28.1.1
     uuid: 8.3.2
-  checksum: 8da44f403d13ff56b73897deeb729ab527152d57b65dedfbe9c2300afff509acb50fb3f097e27f1cfaca138a97aa28aeaf4931e108cf0288b4daac30a29cd022
+  checksum: a06ae77ca3199da1cb1589f41a99c8f5e6af5e8bde9722881f79171fd97468b85a5f89ba6fcec7a4381fa81f2d4d19379e546028c33c4db74abc1916cf3a31d5
   languageName: node
   linkType: hard
 
