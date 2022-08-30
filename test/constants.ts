@@ -89,6 +89,7 @@ const createMockItem: Record.Factory<
   id: '42',
   name: 'item1',
   path: '42',
+  // clearly type enum for immutable record to correctly infer
   type: ItemType.FOLDER as ItemType,
   description: '',
   extra: createItemExtra({}),
@@ -227,7 +228,7 @@ const createMockMembership: Record.Factory<ItemMembership> = Record({
   id: 'membership-id',
   memberId: 'member-id',
   itemPath: ITEMS.first()!.path,
-  // clearly type enum for immutable record
+  // clearly type enum for immutable record to correctly infer
   permission: PermissionLevel.Read as PermissionLevel,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
