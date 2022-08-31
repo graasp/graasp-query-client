@@ -4,13 +4,15 @@ import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
+import { MAX_TARGETS_FOR_READ_REQUEST } from '@graasp/sdk';
+
 import {
   AVATAR_BLOB_RESPONSE,
   MEMBERS_RESPONSE,
   MEMBER_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
-import { mockHook, setUpTest } from '../../test/utils';
+import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils';
 import {
   GET_CURRENT_MEMBER_ROUTE,
   buildDownloadAvatarRoute,
@@ -226,6 +228,34 @@ describe('Member Hooks', () => {
         queryClient.getQueryData(buildMembersKey(twoIds)),
       ).toEqualImmutable(data);
       for (const id of twoIds) {
+        expect(
+          queryClient.getQueryData<MemberRecord>(buildMemberKey(id)),
+        ).toEqualImmutable(members.find(({ id: thisId }) => thisId === id));
+      }
+    });
+
+    it(`Receive lots of members`, async () => {
+      const endpoints = splitEndpointByIds(
+        ids,
+        MAX_TARGETS_FOR_READ_REQUEST,
+        (chunk) => `/${buildGetMembersRoute(chunk)}`,
+        response.toJS(),
+      );
+
+      const hook = () => hooks.useMembers(ids);
+      const { data } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      const members = data as List<MemberRecord>;
+      expect(members).toEqualImmutable(response);
+      // verify cache keys
+      expect(queryClient.getQueryData(buildMembersKey(ids))).toEqualImmutable(
+        data,
+      );
+      for (const id of ids) {
         expect(
           queryClient.getQueryData<MemberRecord>(buildMemberKey(id)),
         ).toEqualImmutable(members.find(({ id: thisId }) => thisId === id));

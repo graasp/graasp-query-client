@@ -5,7 +5,13 @@ import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { GraaspError, HttpMethod, Item, ItemType } from '@graasp/sdk';
+import {
+  GraaspError,
+  HttpMethod,
+  Item,
+  ItemType,
+  MAX_TARGETS_FOR_MODIFY_REQUEST,
+} from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
@@ -14,7 +20,12 @@ import {
   THUMBNAIL_BLOB_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  mockMutation,
+  setUpTest,
+  splitEndpointByIds,
+  waitForMutation,
+} from '../../test/utils';
 import {
   buildCopyItemRoute,
   buildCopyItemsRoute,
@@ -476,16 +487,15 @@ describe('Items Mutations', () => {
 
   describe(MUTATION_KEYS.COPY_ITEMS, () => {
     const to = ITEMS.first()!.id;
-    const copied = ITEMS.slice(1);
-    const copiedIds = copied.map((x) => x.id).toArray();
-
-    const route = `/${buildCopyItemsRoute(copiedIds)}`;
 
     const mutation = () => useMutation(MUTATION_KEYS.COPY_ITEMS);
 
     const key = getKeyForParentId(to);
 
     it('copy multiple root items to first level item', async () => {
+      const copied = ITEMS.slice(1);
+      const copiedIds = copied.map((x) => x.id).toArray();
+
       // set data in cache
       ITEMS.forEach((item) => {
         const itemKey = buildItemKey(item.id);
@@ -494,15 +504,16 @@ describe('Items Mutations', () => {
 
       queryClient.setQueryData(key, List([ITEMS.get(1)!]));
 
-      const response = OK_RESPONSE;
+      // we don't care about the returned value
+      const response = ITEMS.map(() => OK_RESPONSE);
 
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.POST,
-          route,
-        },
-      ];
+      const endpoints = splitEndpointByIds(
+        copiedIds,
+        MAX_TARGETS_FOR_MODIFY_REQUEST,
+        (chunk) => `/${buildCopyItemsRoute(chunk)}`,
+        response.toJS(),
+        HttpMethod.POST,
+      );
 
       const mockedMutation = await mockMutation({
         endpoints,
@@ -530,12 +541,16 @@ describe('Items Mutations', () => {
     });
 
     it('Unauthorized to copy multiple items', async () => {
+      const nb = 2;
+      const copied = ITEMS.slice(0, nb);
+      const copiedIds = copied.map(({ id }) => id).toArray();
+      const route = `/${buildCopyItemsRoute(copiedIds)}`;
       // set data in cache
-      ITEMS.forEach((item) => {
+      copied.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
-      queryClient.setQueryData(key, List([ITEMS.get(1)!]));
+      queryClient.setQueryData(key, List([copied.get(1)!]));
 
       const response = UNAUTHORIZED_RESPONSE;
 
@@ -685,21 +700,21 @@ describe('Items Mutations', () => {
     const to = ITEMS.first()!;
     const toId = to.id;
 
-    const moved = ITEMS.slice(1);
-    const movedIds = moved.map((x) => x.id).toArray();
-    const route = `/${buildMoveItemsRoute(movedIds)}`;
-
     const mutation = () => useMutation(MUTATION_KEYS.MOVE_ITEMS);
 
-    it('Move items from root to first level item', async () => {
+    it('Move 2 items from root to first level item', async () => {
+      const nb = 2;
+      const moved = ITEMS.slice(0, nb);
+      const movedIds = moved.map((x) => x.id).toArray();
+      const route = `/${buildMoveItemsRoute(movedIds)}`;
       // set data in cache
-      ITEMS.forEach((item) => {
+      moved.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
-      queryClient.setQueryData(getKeyForParentId(null), ITEMS);
+      queryClient.setQueryData(getKeyForParentId(null), moved);
 
-      const response = ITEMS.map(({ id }) => id);
+      const response = moved.map(({ id }) => id);
 
       const endpoints = [
         {
@@ -718,7 +733,7 @@ describe('Items Mutations', () => {
       await act(async () => {
         await mockedMutation.mutate({
           to: toId,
-          id: movedIds,
+          ids: movedIds,
         });
         await waitForMutation();
       });
@@ -741,7 +756,9 @@ describe('Items Mutations', () => {
       ).toBeTruthy();
     });
 
-    it('Unauthorized to move multiple items', async () => {
+    it('Move many items from root to first level item', async () => {
+      const moved = ITEMS;
+      const movedIds = moved.map((x) => x.id).toArray();
       // set data in cache
       ITEMS.forEach((item) => {
         const itemKey = buildItemKey(item.id);
@@ -749,16 +766,15 @@ describe('Items Mutations', () => {
       });
       queryClient.setQueryData(getKeyForParentId(null), ITEMS);
 
-      const response = UNAUTHORIZED_RESPONSE;
+      const response = moved.map(({ id }) => id);
 
-      const endpoints = [
-        {
-          response,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
-          route,
-        },
-      ];
+      const endpoints = splitEndpointByIds(
+        movedIds,
+        MAX_TARGETS_FOR_MODIFY_REQUEST,
+        (chunk) => `/${buildMoveItemsRoute(chunk)}`,
+        response.toJS(),
+        HttpMethod.POST,
+      );
 
       const mockedMutation = await mockMutation({
         endpoints,
@@ -769,16 +785,16 @@ describe('Items Mutations', () => {
       await act(async () => {
         await mockedMutation.mutate({
           to: toId,
-          id: movedIds,
+          ids: movedIds,
         });
         await waitForMutation();
       });
 
-      // items path have not changed
+      // Check new path are corrects
       moved.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         const path = queryClient.getQueryData<ItemRecord>(itemKey)?.path;
-        expect(path).toEqual(item.path);
+        expect(path).toEqual(`${to.path}.${transformIdForPath(item.id)}`);
       });
 
       // Check new parent is correctly invalidated
@@ -791,55 +807,117 @@ describe('Items Mutations', () => {
         queryClient.getQueryState(fromItemKey)?.isInvalidated,
       ).toBeTruthy();
     });
-    it('Unauthorized to move one of the items', async () => {
-      // set data in cache
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, item);
-      });
-      queryClient.setQueryData(getKeyForParentId(null), ITEMS);
 
-      const response: (Item | GraaspError)[] = [...moved];
-      response[0] = UNAUTHORIZED_RESPONSE;
+    describe('Error handling', () => {
+      const moved = ITEMS.slice(0, 2);
+      const movedIds = moved.map((x) => x.id).toArray();
+      const route = `/${buildMoveItemsRoute(movedIds)}`;
 
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.POST,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({
-          to: toId,
-          id: movedIds,
+      it('Unauthorized to move multiple items', async () => {
+        // set data in cache
+        moved.forEach((item) => {
+          const itemKey = buildItemKey(item.id);
+          queryClient.setQueryData(itemKey, item);
         });
-        await waitForMutation();
+        queryClient.setQueryData(getKeyForParentId(null), moved);
+
+        const response = UNAUTHORIZED_RESPONSE;
+
+        const endpoints = [
+          {
+            response,
+            statusCode: StatusCodes.UNAUTHORIZED,
+            method: HttpMethod.POST,
+            route,
+          },
+        ];
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate({
+            to: toId,
+            id: movedIds,
+          });
+          await waitForMutation();
+        });
+
+        // items path have not changed
+        moved.forEach((item) => {
+          const itemKey = buildItemKey(item.id);
+          const path = queryClient.getQueryData<ItemRecord>(itemKey)?.path;
+          expect(path).toEqual(item.path);
+        });
+
+        // Check new parent is correctly invalidated
+        const toItemKey = getKeyForParentId(toId);
+        expect(
+          queryClient.getQueryState(toItemKey)?.isInvalidated,
+        ).toBeTruthy();
+
+        // Check old parent is correctly invalidated
+        const fromItemKey = getKeyForParentId(null);
+        expect(
+          queryClient.getQueryState(fromItemKey)?.isInvalidated,
+        ).toBeTruthy();
       });
 
-      // items path have not changed
-      moved.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        const path = queryClient.getQueryData<ItemRecord>(itemKey)?.path;
-        expect(path).toEqual(item.path);
+      it('Unauthorized to move one of the items', async () => {
+        // set data in cache
+        moved.forEach((item) => {
+          const itemKey = buildItemKey(item.id);
+          queryClient.setQueryData(itemKey, item);
+        });
+        queryClient.setQueryData(getKeyForParentId(null), moved);
+
+        const response: (Item | GraaspError)[] = [...moved];
+        response[0] = UNAUTHORIZED_RESPONSE;
+
+        const endpoints = [
+          {
+            response,
+            method: HttpMethod.POST,
+            route,
+          },
+        ];
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate({
+            to: toId,
+            id: movedIds,
+          });
+          await waitForMutation();
+        });
+
+        // items path have not changed
+        moved.forEach((item) => {
+          const itemKey = buildItemKey(item.id);
+          const path = queryClient.getQueryData<ItemRecord>(itemKey)?.path;
+          expect(path).toEqual(item.path);
+        });
+
+        // Check new parent is correctly invalidated
+        const toItemKey = getKeyForParentId(toId);
+        expect(
+          queryClient.getQueryState(toItemKey)?.isInvalidated,
+        ).toBeTruthy();
+
+        // Check old parent is correctly invalidated
+        const fromItemKey = getKeyForParentId(null);
+        expect(
+          queryClient.getQueryState(fromItemKey)?.isInvalidated,
+        ).toBeTruthy();
       });
-
-      // Check new parent is correctly invalidated
-      const toItemKey = getKeyForParentId(toId);
-      expect(queryClient.getQueryState(toItemKey)?.isInvalidated).toBeTruthy();
-
-      // Check old parent is correctly invalidated
-      const fromItemKey = getKeyForParentId(null);
-      expect(
-        queryClient.getQueryState(fromItemKey)?.isInvalidated,
-      ).toBeTruthy();
     });
   });
 
@@ -1109,7 +1187,7 @@ describe('Items Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.RECYCLE_ITEMS);
 
     it('Recycle root items', async () => {
-      const items = ITEMS.slice(2);
+      const items = ITEMS.slice(0, 2);
       const itemIds = items.map(({ id }) => id).toArray();
       const route = `/${buildRecycleItemsRoute(itemIds)}`;
 
@@ -1329,7 +1407,7 @@ describe('Items Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEMS);
 
     it('Delete root items', async () => {
-      const items = ITEMS.slice(2);
+      const items = ITEMS.slice(0, 2);
       const itemIds = items.map(({ id }) => id).toArray();
       const route = `/${buildDeleteItemsRoute(itemIds)}`;
 
@@ -1720,7 +1798,7 @@ describe('Items Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.RESTORE_ITEMS);
 
     it('Restore items', async () => {
-      const items = ITEMS.slice(2);
+      const items = ITEMS.slice(0, 2);
       const itemIds = items.map(({ id }) => id).toArray();
       const route = `/${buildRestoreItemsRoute(itemIds)}`;
 
@@ -1743,6 +1821,65 @@ describe('Items Mutations', () => {
           route,
         },
       ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate(itemIds);
+        await waitForMutation();
+      });
+
+      // verify item is still available
+      // in real cases, the path should be different
+      for (const item of items) {
+        const itemKey = buildItemKey(item.id);
+        const data = queryClient.getQueryData<ItemRecord>(itemKey);
+        expect(data).toEqualImmutable(item);
+      }
+
+      // Check parent's children key is correctly invalidated
+      // and should not contain recycled item
+      expect(
+        queryClient
+          .getQueryData<List<ItemRecord>>(recycledKey)
+          ?.filter(({ id: thisId }) => itemIds.includes(thisId)).size,
+      ).toBeFalsy();
+      expect(
+        queryClient.getQueryState(recycledKey)?.isInvalidated,
+      ).toBeTruthy();
+
+      // check original parent is invalidated
+      for (const item of items) {
+        const cKey = getKeyForParentId(getDirectParentId(item.path));
+        expect(queryClient.getQueryState(cKey)?.isInvalidated).toBeTruthy();
+      }
+    });
+
+    it('Restore many items', async () => {
+      const items = ITEMS;
+      const itemIds = items.map(({ id }) => id).toArray();
+
+      // set data in cache
+      ITEMS.forEach((item) => {
+        const itemKey = buildItemKey(item.id);
+        queryClient.setQueryData(itemKey, item);
+        const parentKey = getKeyForParentId(getDirectParentId(item.path));
+        queryClient.setQueryData(parentKey, List([item]));
+      });
+      const recycledKey = RECYCLED_ITEMS_KEY;
+      queryClient.setQueryData(recycledKey, ITEMS);
+
+      const endpoints = splitEndpointByIds(
+        itemIds,
+        MAX_TARGETS_FOR_MODIFY_REQUEST,
+        (chunk) => `/${buildRestoreItemsRoute(chunk)}`,
+        items.toJS(),
+        HttpMethod.POST,
+      );
 
       const mockedMutation = await mockMutation({
         endpoints,

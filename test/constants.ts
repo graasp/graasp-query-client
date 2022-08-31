@@ -8,6 +8,8 @@ import {
   ItemMembership,
   ItemSettings,
   ItemType,
+  MAX_TARGETS_FOR_MODIFY_REQUEST,
+  MAX_TARGETS_FOR_READ_REQUEST,
   Member,
   MemberExtra,
   MemberType,
@@ -142,6 +144,21 @@ export const ITEMS: List<ItemRecord> = List([
   ITEM_4,
   ITEM_5,
   ITEM_6,
+  ...Array.from(
+    {
+      length:
+        Math.max(MAX_TARGETS_FOR_MODIFY_REQUEST, MAX_TARGETS_FOR_READ_REQUEST) +
+        1,
+    },
+    (_, idx) =>
+      createMockItem({
+        id: `item-${idx}`,
+        name: `item-${idx}`,
+        path: `item_${idx}`,
+        type: ItemType.FOLDER,
+        description: '',
+      }),
+  ),
 ]);
 
 export const MESSAGE_IDS = ['12345', '78945'];
@@ -220,6 +237,13 @@ const MEMBER_RESPONSE_2: MemberRecord = createMockMember({
 export const MEMBERS_RESPONSE: List<MemberRecord> = List([
   MEMBER_RESPONSE,
   MEMBER_RESPONSE_2,
+  ...Array.from({ length: MAX_TARGETS_FOR_READ_REQUEST }, (_, idx) =>
+    createMockMember({
+      id: idx.toString(),
+      name: `username-${idx}`,
+      email: `username-${idx}@graasp.org`,
+    }),
+  ),
 ]);
 
 export const OK_RESPONSE = {};

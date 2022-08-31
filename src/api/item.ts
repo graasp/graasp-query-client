@@ -150,14 +150,25 @@ export const moveItem = async (
   });
 
 export const moveItems = async (
-  { to, id }: { id: UUID[]; to: UUID },
+  {
+    to,
+    id,
+    ids,
+  }: {
+    /**
+     * @deprecated use ids instead
+     */
+    id?: UUID[];
+    ids: UUID[];
+    to: UUID;
+  },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() => {
     // send parentId if defined
     const body = { ...(to && { parentId: to }) };
     return axios
-      .post(`${API_HOST}/${buildMoveItemsRoute(id)}`, {
+      .post(`${API_HOST}/${buildMoveItemsRoute(id ?? ids)}`, {
         ...body,
       })
       .then(({ data }) => data);
@@ -191,14 +202,25 @@ export const copyPublicItem = async (
 };
 
 export const copyItems = async (
-  { id, to }: { id: UUID[]; to: UUID },
+  {
+    id,
+    ids,
+    to,
+  }: {
+    /**
+     * @deprecated use ids instead
+     */
+    id?: UUID[];
+    ids: UUID[];
+    to: UUID;
+  },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() => {
     // send parentId if defined
     const body = { ...(to && { parentId: to }) };
     return axios
-      .post(`${API_HOST}/${buildCopyItemsRoute(id)}`, {
+      .post(`${API_HOST}/${buildCopyItemsRoute(id ?? ids)}`, {
         ...body,
       })
       .then(({ data }) => data);

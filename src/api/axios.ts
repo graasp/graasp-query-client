@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
-import { isUserAuthenticated } from '@graasp/sdk';
+import { convertJs, isUserAuthenticated, spliceIntoChunks } from '@graasp/sdk';
 
 import { FALLBACK_TO_PUBLIC_FOR_STATUS_CODES } from '../config/constants';
 import { UserIsSignedOut } from '../config/errors';
@@ -117,3 +117,24 @@ export const throwIfArrayContainsErrorOrReturn = (array: any[]) => {
 };
 
 export default configureAxios;
+
+/**
+ * Split a given request in multiple smallest requests, so it conforms to the backend limitations
+ * The response is parsed to detect errors, and is transformed into a deep immutable data
+ * @param {string[]} ids elements' id
+ * @param {number} chunkSize maximum number of ids par request
+ * @param {function} buildRequest builder for the request given the chunk ids
+ * @returns {Promise} all requests returning their data merged
+ */
+export const splitRequestByIds = (
+  ids: string[],
+  chunkSize: number,
+  buildRequest: (ids: string[]) => Promise<any>,
+) => {
+  const shunkedIds = spliceIntoChunks(ids, chunkSize);
+  return Promise.all(
+    shunkedIds.map((groupedIds) => buildRequest(groupedIds)),
+  ).then((responses) =>
+    convertJs(throwIfArrayContainsErrorOrReturn(responses.flat())),
+  );
+};

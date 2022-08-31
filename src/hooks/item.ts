@@ -1,9 +1,10 @@
 import { List } from 'immutable';
 import { QueryClient, UseQueryResult, useQuery } from 'react-query';
 
-import { convertJs } from '@graasp/sdk';
+import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
 
 import * as Api from '../api';
+import { splitRequestByIds } from '../api/axios';
 import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
 import {
@@ -240,7 +241,9 @@ export default (
             );
           }
 
-          return Api.getItems(ids, queryConfig).then((data) => convertJs(data));
+          return splitRequestByIds(ids, MAX_TARGETS_FOR_READ_REQUEST, (chunk) =>
+            Api.getItems(chunk, queryConfig),
+          );
         },
         onSuccess: async (items: List<ItemRecord>) => {
           // save items in their own key

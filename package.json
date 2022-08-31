@@ -23,6 +23,7 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
+    "jest-immutable-matchers": "3.0.0",
     "@babel/core": "7.17.10",
     "@babel/preset-env": "7.17.10",
     "@babel/preset-typescript": "7.16.7",
@@ -57,7 +58,6 @@
     "husky": "7.0.4",
     "jest": "28.1.0",
     "jest-environment-jsdom": "28.1.0",
-    "jest-immutable-matchers": "3.0.0",
     "microbundle-crl": "0.13.11",
     "mock-socket": "9.1.2",
     "nock": "13.2.4",
