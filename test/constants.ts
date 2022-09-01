@@ -365,7 +365,9 @@ const defaultItemTagsValues: ItemTag = {
   path: 'somepath',
   tagId: 'tag-id',
 };
-const createMockItemTags: Record.Factory<ItemTag> = Record(defaultItemTagsValues);
+const createMockItemTags: Record.Factory<ItemTag> = Record(
+  defaultItemTagsValues,
+);
 
 const ITEM_TAG_1: ItemTagRecord = createMockItemTags({
   id: 'tag-id',
@@ -404,7 +406,9 @@ const defaultItemChatValues: MessageItemChatList = {
   messages: MESSAGE_ITEM_CHAT_LIST,
 };
 
-const createMockItemChat: Record.Factory<MessageItemChatList> = Record(defaultItemChatValues);
+const createMockItemChat: Record.Factory<MessageItemChatList> = Record(
+  defaultItemChatValues,
+);
 
 export const ITEM_CHAT: MessageItemChatListRecord = createMockItemChat({
   messages: MESSAGE_ITEM_CHAT_LIST,

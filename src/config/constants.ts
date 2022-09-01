@@ -22,3 +22,5 @@ export const THUMBNAIL_SIZES = {
   ORIGINAL: 'original',
 };
 export const DEFAULT_THUMBNAIL_SIZES = THUMBNAIL_SIZES.SMALL;
+
+export const PAGINATED_ITEMS_PER_PAGE = 8;

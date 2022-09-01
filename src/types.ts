@@ -235,13 +235,13 @@ export interface Action {
   name?: string;
   itemId: UUID;
   memberId: UUID;
-};
+}
 
 export type ActionRecord = RecordOf<Action>;
 
 export interface ActionData {
   actions: List<Action>;
-};
+}
 
 export type ActionDataRecord = RecordOf<ActionData>;
 
@@ -293,9 +293,9 @@ export type Tag = {
 export type TagRecord = RecordOf<Tag>;
 
 export type MessageItemChat = {
-  id: UUID,
-  creator: UUID,
-  content: string,
+  id: UUID;
+  creator: UUID;
+  content: string;
 };
 
 export type MessageItemChatRecord = RecordOf<MessageItemChat>;
