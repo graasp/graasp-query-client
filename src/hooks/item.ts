@@ -1,10 +1,19 @@
-import { List } from 'immutable';
-import { QueryClient, useQuery, UseQueryResult } from 'react-query';
+import { List, is, RecordOf } from 'immutable';
+import {
+  QueryClient,
+  useQuery,
+  UseQueryResult,
+  useInfiniteQuery,
+} from 'react-query';
 import * as Api from '../api';
-import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
+import {
+  DEFAULT_THUMBNAIL_SIZES,
+  PAGINATED_ITEMS_PER_PAGE,
+} from '../config/constants';
 import {
   buildFileContentKey,
   buildItemChildrenKey,
+  buildItemPaginatedChildrenKey,
   buildItemKey,
   buildItemLoginKey,
   buildItemParentsKey,
@@ -26,7 +35,7 @@ import {
 } from '../types';
 import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
-import { convertJs } from '../utils/util';
+import { convertJs, paginate } from '../utils/util';
 
 export default (
   queryClient: QueryClient,
@@ -105,6 +114,45 @@ export default (
         enabled: Boolean(id) && enabled,
         placeholderData: options?.placeholderData,
       });
+    },
+
+    useChildrenPaginated: (
+      id: UUID | undefined,
+      children: any,
+      options?: {
+        enabled?: boolean;
+        itemsPerPage?: number;
+      },
+    ): UseQueryResult<any> => {
+      const enabled = options?.enabled;
+
+      const childrenPaginatedOptions = {
+        ...defaultQueryOptions,
+        isDataEqual: (oldData: any, newData: any) => {
+          return is(oldData, newData);
+        },
+      };
+
+      return useInfiniteQuery(
+        buildItemPaginatedChildrenKey(id),
+        ({ pageParam = 1 }) =>
+          paginate(
+            children,
+            options?.itemsPerPage || PAGINATED_ITEMS_PER_PAGE,
+            pageParam,
+          ),
+        {
+          enabled: enabled,
+          getNextPageParam: (lastPage: RecordOf<any>) => {
+            const pageNumber = lastPage.pageNumber;
+            if (pageNumber !== -1) {
+              return pageNumber + 1;
+            }
+            return undefined;
+          },
+          ...childrenPaginatedOptions,
+        },
+      );
     },
 
     useItemsChildren: (
