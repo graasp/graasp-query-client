@@ -1,10 +1,20 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
-import nock from 'nock';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
-import Cookies from 'js-cookie';
-import { List } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
+import { List } from 'immutable';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+
+import { GraaspError, HttpMethod, Item, ItemType } from '@graasp/sdk';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
+
+import {
+  ITEMS,
+  OK_RESPONSE,
+  THUMBNAIL_BLOB_RESPONSE,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
   buildCopyItemRoute,
   buildCopyItemsRoute,
@@ -20,35 +30,27 @@ import {
   buildRestoreItemsRoute,
   buildUploadItemThumbnailRoute,
 } from '../api/routes';
-import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
-import { REQUEST_METHODS } from '../api/utils';
+import { THUMBNAIL_SIZES } from '../config/constants';
 import {
-  OK_RESPONSE,
-  ITEMS,
-  UNAUTHORIZED_RESPONSE,
-  THUMBNAIL_BLOB_RESPONSE,
-} from '../../test/constants';
-import {
+  MUTATION_KEYS,
+  OWN_ITEMS_KEY,
+  RECYCLED_ITEMS_KEY,
   buildItemChildrenKey,
   buildItemKey,
   buildItemThumbnailKey,
   getKeyForParentId,
-  MUTATION_KEYS,
-  OWN_ITEMS_KEY,
-  RECYCLED_ITEMS_KEY,
 } from '../config/keys';
-import { GraaspError, Item, ItemRecord, ITEM_TYPES } from '../types';
-import {
-  buildPath,
-  getDirectParentId,
-  transformIdForPath,
-} from '../utils/item';
 import {
   deleteItemsRoutine,
   uploadFileRoutine,
   uploadItemThumbnailRoutine,
 } from '../routines';
-import { THUMBNAIL_SIZES } from '../config/constants';
+import { ItemRecord } from '../types';
+import {
+  buildPath,
+  getDirectParentId,
+  transformIdForPath,
+} from '../utils/item';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
@@ -66,7 +68,7 @@ describe('Items Mutations', () => {
   describe(MUTATION_KEYS.POST_ITEM, () => {
     const newItem = {
       name: 'new item',
-      type: ITEM_TYPES.FOLDER,
+      type: ItemType.FOLDER,
     };
 
     it('Post item in root', async () => {
@@ -79,7 +81,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -117,7 +119,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route: `/${buildPostItemRoute(parentItem.id)}`,
         },
       ];
@@ -150,7 +152,7 @@ describe('Items Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -188,7 +190,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           route,
         },
       ];
@@ -229,7 +231,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           route,
         },
       ];
@@ -260,7 +262,7 @@ describe('Items Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           route,
         },
       ];
@@ -306,7 +308,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -348,7 +350,7 @@ describe('Items Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -400,7 +402,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -442,7 +444,7 @@ describe('Items Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -497,7 +499,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -541,7 +543,7 @@ describe('Items Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -592,7 +594,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -642,7 +644,7 @@ describe('Items Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -702,7 +704,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -753,7 +755,7 @@ describe('Items Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -803,7 +805,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -861,7 +863,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -914,7 +916,7 @@ describe('Items Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -968,7 +970,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -1018,7 +1020,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -1069,7 +1071,7 @@ describe('Items Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -1123,7 +1125,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -1178,7 +1180,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -1232,7 +1234,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -1286,7 +1288,7 @@ describe('Items Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -1343,7 +1345,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -1398,7 +1400,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -1462,7 +1464,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -1503,7 +1505,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -1567,7 +1569,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -1608,7 +1610,7 @@ describe('Items Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -1737,7 +1739,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -1798,7 +1800,7 @@ describe('Items Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -1852,7 +1854,7 @@ describe('Items Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -1908,7 +1910,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -1951,7 +1953,7 @@ describe('Items Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];

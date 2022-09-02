@@ -1,10 +1,11 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import { Notifier, QueryClientConfig } from '../src/types';
-import { API_HOST, WS_HOST, DOMAIN } from './constants';
+import React from 'react';
+
 import configureQueryClient from '../src/queryClient';
-import { Channel } from '../src/ws/ws-client';
+import { Notifier, QueryClientConfig } from '../src/types';
 import { isDataEqual } from '../src/utils/util';
+import { Channel } from '../src/ws/ws-client';
+import { API_HOST, DOMAIN, WS_HOST } from './constants';
 
 export type Handler = { channel: Channel; handler: (event: unknown) => void };
 

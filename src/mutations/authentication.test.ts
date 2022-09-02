@@ -1,25 +1,27 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
-import nock from 'nock';
-import Cookies from 'js-cookie';
-import * as utils from '@graasp/utils';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { StatusCodes } from 'http-status-codes';
-import {
-  buildUpdateMemberPasswordRoute,
-  SIGN_IN_ROUTE,
-  SIGN_IN_WITH_PASSWORD_ROUTE,
-  SIGN_OUT_ROUTE,
-  SIGN_UP_ROUTE,
-} from '../api/routes';
-import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+
+import { HttpMethod } from '@graasp/sdk';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
+import * as utils from '@graasp/utils';
+
 import {
   DOMAIN,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  SIGN_IN_ROUTE,
+  SIGN_IN_WITH_PASSWORD_ROUTE,
+  SIGN_OUT_ROUTE,
+  SIGN_UP_ROUTE,
+  buildUpdateMemberPasswordRoute,
+} from '../api/routes';
 import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
-import { REQUEST_METHODS } from '../api/utils';
 import {
   signInRoutine,
   signInWithPasswordRoutine,
@@ -52,7 +54,7 @@ describe('Authentication Mutations', () => {
 
     it(`Sign in`, async () => {
       const endpoints = [
-        { route, response: OK_RESPONSE, method: REQUEST_METHODS.POST },
+        { route, response: OK_RESPONSE, method: HttpMethod.POST },
       ];
 
       const mockedMutation = await mockMutation({
@@ -77,7 +79,7 @@ describe('Authentication Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];
@@ -113,7 +115,7 @@ describe('Authentication Mutations', () => {
           route,
           response: { resource: link },
           statusCode: StatusCodes.SEE_OTHER,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
         },
       ];
       // set random data in cache
@@ -144,7 +146,7 @@ describe('Authentication Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];
@@ -182,7 +184,7 @@ describe('Authentication Mutations', () => {
           route,
           response: { email, id, name },
           statusCode: StatusCodes.OK,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
         },
       ];
 
@@ -208,7 +210,7 @@ describe('Authentication Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];
@@ -239,7 +241,7 @@ describe('Authentication Mutations', () => {
 
     it(`Sign up`, async () => {
       const endpoints = [
-        { route, response: OK_RESPONSE, method: REQUEST_METHODS.POST },
+        { route, response: OK_RESPONSE, method: HttpMethod.POST },
       ];
 
       const mockedMutation = await mockMutation({
@@ -264,7 +266,7 @@ describe('Authentication Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];
@@ -298,7 +300,7 @@ describe('Authentication Mutations', () => {
       queryClient.setQueryData(CURRENT_MEMBER_KEY, 'somevalue');
 
       const endpoints = [
-        { route, response: OK_RESPONSE, method: REQUEST_METHODS.GET },
+        { route, response: OK_RESPONSE, method: HttpMethod.GET },
       ];
 
       const mockedMutation = await mockMutation({
@@ -330,7 +332,7 @@ describe('Authentication Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];

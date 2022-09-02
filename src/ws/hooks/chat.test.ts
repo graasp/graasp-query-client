@@ -1,13 +1,13 @@
+import { ITEMS, ITEM_CHAT, MESSAGE_IDS } from '../../../test/constants';
 import {
   getHandlerByChannel,
   mockWsHook,
   setUpWsTest,
 } from '../../../test/wsUtils';
-import { ITEMS, ITEM_CHAT, MESSAGE_IDS } from '../../../test/constants';
 import { buildItemChatKey } from '../../config/keys';
-import { configureWsChatHooks } from './chat';
-import { KINDS, OPS, TOPICS } from '../constants';
 import { ItemChatRecord } from '../../types';
+import { KINDS, OPS, TOPICS } from '../constants';
+import { configureWsChatHooks } from './chat';
 
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsChatHooks,

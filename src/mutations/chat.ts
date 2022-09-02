@@ -1,6 +1,7 @@
 import { QueryClient } from 'react-query';
+
 import * as Api from '../api';
-import { buildItemChatKey, MUTATION_KEYS } from '../config/keys';
+import { MUTATION_KEYS, buildItemChatKey } from '../config/keys';
 import {
   clearItemChatRoutine,
   deleteItemChatMessageRoutine,

@@ -3,7 +3,6 @@
  * Provides front-end integration for real-time updates using WebSocket
  * Implements the client protocol from https://github.com/graasp/graasp-websockets
  */
-
 import { QueryClientConfig } from '../types';
 import {
   CLIENT_ACTION_SUBSCRIBE,

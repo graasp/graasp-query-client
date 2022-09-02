@@ -1,32 +1,33 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
-import nock from 'nock';
-import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+
+import { HttpMethod, MentionStatus } from '@graasp/sdk';
+
 import {
-  buildClearMentionsRoute,
-  buildDeleteMentionRoute,
-  buildPatchMentionRoute,
-  GET_CURRENT_MEMBER_ROUTE,
-} from '../api/routes';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import {
-  buildChatMention,
-  buildMemberMentions,
-  buildMentionResponse,
   MEMBER_RESPONSE,
   MENTION_IDS,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
+  buildChatMention,
+  buildMemberMentions,
+  buildMentionResponse,
 } from '../../test/constants';
-import { buildMentionKey, MUTATION_KEYS } from '../config/keys';
-import { REQUEST_METHODS } from '../api/utils';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  GET_CURRENT_MEMBER_ROUTE,
+  buildClearMentionsRoute,
+  buildDeleteMentionRoute,
+  buildPatchMentionRoute,
+} from '../api/routes';
+import { MUTATION_KEYS, buildMentionKey } from '../config/keys';
 import {
   clearMentionsRoutine,
   deleteMentionRoutine,
   patchMentionRoutine,
 } from '../routines';
-import { MentionStatus } from '@graasp/sdk';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -63,10 +64,10 @@ describe('Mention Mutations', () => {
             route,
             response: buildMentionResponse(
               MENTIONS[0],
-              REQUEST_METHODS.PATCH,
+              HttpMethod.PATCH,
               MentionStatus.READ,
             ),
-            method: REQUEST_METHODS.PATCH,
+            method: HttpMethod.PATCH,
           },
         ];
         // set random data in cache
@@ -100,7 +101,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: REQUEST_METHODS.PATCH,
+            method: HttpMethod.PATCH,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -145,7 +146,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: OK_RESPONSE,
-            method: REQUEST_METHODS.DELETE,
+            method: HttpMethod.DELETE,
           },
         ];
         // set random data in cache
@@ -178,7 +179,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: REQUEST_METHODS.DELETE,
+            method: HttpMethod.DELETE,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -222,7 +223,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: OK_RESPONSE,
-            method: REQUEST_METHODS.DELETE,
+            method: HttpMethod.DELETE,
           },
         ];
         // set random data in cache
@@ -248,7 +249,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: REQUEST_METHODS.DELETE,
+            method: HttpMethod.DELETE,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -299,7 +300,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: OK_RESPONSE,
-            method: REQUEST_METHODS.PATCH,
+            method: HttpMethod.PATCH,
           },
         ];
         // set random data in cache
@@ -337,7 +338,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: OK_RESPONSE,
-            method: REQUEST_METHODS.DELETE,
+            method: HttpMethod.DELETE,
           },
         ];
         // set random data in cache
@@ -374,7 +375,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: OK_RESPONSE,
-            method: REQUEST_METHODS.DELETE,
+            method: HttpMethod.DELETE,
           },
         ];
         // set random data in cache

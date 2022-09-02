@@ -1,16 +1,17 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import { List, Record } from 'immutable';
-import {
-  buildGetItemsTagsRoute,
-  buildGetItemTagsRoute,
-  GET_TAGS_ROUTE,
-} from '../api/routes';
-import { mockHook, setUpTest } from '../../test/utils';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+
 import { ITEMS, TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { buildItemTagsKey, TAGS_KEY } from '../config/keys';
+import { mockHook, setUpTest } from '../../test/utils';
+import {
+  GET_TAGS_ROUTE,
+  buildGetItemTagsRoute,
+  buildGetItemsTagsRoute,
+} from '../api/routes';
+import { TAGS_KEY, buildItemTagsKey } from '../config/keys';
 import { ItemTagRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();

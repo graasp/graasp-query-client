@@ -1,11 +1,11 @@
+import { QueryClientConfig, UUID } from '../types';
+import configureAxios, { verifyAuthentication } from './axios';
 import {
   buildDeleteItemLikeRoute,
   buildGetLikeCountRoute,
   buildGetLikedItemsRoute,
   buildPostItemLikeRoute,
 } from './routes';
-import { QueryClientConfig, UUID } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
 
 const axios = configureAxios();
 

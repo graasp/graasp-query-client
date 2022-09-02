@@ -1,5 +1,20 @@
 import { StatusCodes } from 'http-status-codes';
-import { List, Record, RecordOf } from 'immutable';
+import { List, Record } from 'immutable';
+import { v4 } from 'uuid';
+
+import {
+  HttpMethod,
+  Item,
+  ItemMembership,
+  ItemSettings,
+  ItemType,
+  Member,
+  MemberExtra,
+  MemberType,
+  MentionStatus,
+  PermissionLevel,
+  UnknownExtra,
+} from '@graasp/sdk';
 
 import {
   Action,
@@ -13,53 +28,46 @@ import {
   CategoryType,
   CategoryTypeRecord,
   ChatMention,
+  ChatMentionRecord,
   ChatMessage,
   ChatMessageRecord,
   Flag,
   FlagRecord,
   FullValidationRecord,
   FullValidationRecordRecord,
+  ITEM_LOGIN_SCHEMAS,
   Invitation,
   InvitationRecord,
-  Item,
   ItemCategory,
   ItemCategoryRecord,
+  ItemExtraRecord,
   ItemLike,
   ItemLikeRecord,
   ItemLogin,
   ItemLoginRecord,
+  ItemMembershipRecord,
   ItemRecord,
+  ItemSettingsRecord,
   ItemTag,
   ItemTagRecord,
   ItemValidationAndReview,
   ItemValidationAndReviewRecord,
   ItemValidationGroup,
   ItemValidationGroupRecord,
-  ITEM_LOGIN_SCHEMAS,
-  ITEM_TYPES,
-  Member,
-  MemberExtra,
   MemberExtraRecord,
+  MemberMentions,
+  MemberMentionsRecord,
   MemberRecord,
-  Membership,
-  MembershipRecord,
   MessageItemChat,
   MessageItemChatList,
   MessageItemChatListRecord,
   MessageItemChatRecord,
-  PERMISSION_LEVELS,
   Status,
   StatusRecord,
   Tag,
   TagRecord,
   UUID,
-  ChatMentionRecord,
-  MemberMentions,
-  MemberMentionsRecord,
 } from '../src/types';
-import { REQUEST_METHODS } from '../src/api/utils';
-import { v4 } from 'uuid';
-import { MentionStatus } from '@graasp/sdk';
 
 export const WS_HOST = 'ws://localhost:3000';
 export const API_HOST = 'http://localhost:3000';
@@ -69,74 +77,62 @@ export const UNAUTHORIZED_RESPONSE = {
   code: 'ERRCODE',
   message: 'unauthorized error message',
   statusCode: StatusCodes.UNAUTHORIZED,
+  origin: 'plugin',
 };
 
-const defaultItemExtraValues: any = {};
-const createItemExtra: Record.Factory<any> = Record(defaultItemExtraValues);
-const extra: RecordOf<any> = createItemExtra({});
+const createItemExtra: Record.Factory<UnknownExtra> = Record({});
+const createItemSettings: Record.Factory<ItemSettings> = Record({});
 
-const defaultItemValues: Item = {
+const createMockItem: Record.Factory<
+  Item<ItemExtraRecord, ItemSettingsRecord>
+> = Record({
   id: '42',
   name: 'item1',
   path: '42',
-  type: ITEM_TYPES.FOLDER,
+  // clearly type enum for immutable record to correctly infer
+  type: ItemType.FOLDER as ItemType,
   description: '',
-  extra: extra,
-};
-const createMockItem: Record.Factory<Item> = Record(defaultItemValues);
+  extra: createItemExtra({}),
+  creator: 'creator',
+  updatedAt: new Date().toISOString(),
+  createdAt: new Date().toISOString(),
+  settings: createItemSettings({}),
+});
 
 const ITEM_1: ItemRecord = createMockItem({
   id: '42',
   name: 'item1',
   path: '42',
-  type: ITEM_TYPES.FOLDER,
-  description: '',
-  extra: extra,
 });
 
 const ITEM_2: ItemRecord = createMockItem({
   id: '5243',
   name: 'item2',
   path: '5243',
-  type: ITEM_TYPES.FOLDER,
-  description: '',
-  extra: extra,
 });
 
 const ITEM_3: ItemRecord = createMockItem({
   id: '5896',
   name: 'item3',
   path: '5896',
-  type: ITEM_TYPES.FOLDER,
-  description: '',
-  extra: extra,
 });
 
 const ITEM_4: ItemRecord = createMockItem({
   id: 'dddd',
   name: 'item4',
   path: '5896.dddd',
-  type: ITEM_TYPES.FOLDER,
-  description: '',
-  extra: extra,
 });
 
 const ITEM_5: ItemRecord = createMockItem({
   id: 'eeee',
   name: 'item5',
   path: '5896.eeee',
-  type: ITEM_TYPES.FOLDER,
-  description: '',
-  extra: extra,
 });
 
 const ITEM_6: ItemRecord = createMockItem({
   id: 'gggg',
   name: 'item5',
   path: '5896.gggg',
-  type: ITEM_TYPES.FOLDER,
-  description: '',
-  extra: extra,
 });
 
 export const ITEMS: List<ItemRecord> = List([
@@ -154,15 +150,16 @@ const defaultMemberExtraValues: MemberExtra = {};
 const createMemberExtra: Record.Factory<MemberExtra> = Record(
   defaultMemberExtraValues,
 );
-const extraMember: MemberExtraRecord = createMemberExtra({});
 
-const defaultMemberValues: Member = {
+const createMockMember: Record.Factory<Member<MemberExtraRecord>> = Record({
   id: '42',
   name: 'username',
   email: 'username@graasp.org',
-  extra: extraMember,
-};
-const createMockMember: Record.Factory<Member> = Record(defaultMemberValues);
+  type: MemberType.Individual as MemberType,
+  extra: createMemberExtra({}),
+  updatedAt: new Date().toISOString(),
+  createdAt: new Date().toISOString(),
+});
 
 export const MEMBER_RESPONSE: MemberRecord = createMockMember();
 
@@ -175,7 +172,7 @@ export const GET_RECYCLED_ITEMS_FIXTURES = {
       id: `${recycleBinItemId}.42`,
       name: 'item1',
       path: '42',
-      type: ITEM_TYPES.FOLDER,
+      type: ItemType.FOLDER,
       description: '',
       extra: {},
     },
@@ -183,7 +180,7 @@ export const GET_RECYCLED_ITEMS_FIXTURES = {
       id: `${recycleBinItemId}.5243`,
       name: 'item2',
       path: '5243',
-      type: ITEM_TYPES.FOLDER,
+      type: ItemType.FOLDER,
       description: '',
       extra: {},
     },
@@ -191,7 +188,7 @@ export const GET_RECYCLED_ITEMS_FIXTURES = {
       id: `${recycleBinItemId}.5896`,
       name: 'item3',
       path: '5896',
-      type: ITEM_TYPES.FOLDER,
+      type: ItemType.FOLDER,
       description: '',
       extra: {},
     },
@@ -199,7 +196,7 @@ export const GET_RECYCLED_ITEMS_FIXTURES = {
       id: `${recycleBinItemId}.dddd`,
       name: 'item4',
       path: '5896.dddd',
-      type: ITEM_TYPES.FOLDER,
+      type: ItemType.FOLDER,
       description: '',
       extra: {},
     },
@@ -218,7 +215,6 @@ const MEMBER_RESPONSE_2: MemberRecord = createMockMember({
   id: '421',
   name: 'username1',
   email: 'username1@graasp.org',
-  extra: extraMember,
 });
 
 export const MEMBERS_RESPONSE: List<MemberRecord> = List([
@@ -228,31 +224,32 @@ export const MEMBERS_RESPONSE: List<MemberRecord> = List([
 
 export const OK_RESPONSE = {};
 
-const defaultMembershipValues: Membership = {
+const createMockMembership: Record.Factory<ItemMembership> = Record({
   id: 'membership-id',
   memberId: 'member-id',
-  itemId: ITEMS.toArray()[0].id,
-  permission: PERMISSION_LEVELS.READ,
-};
-const createMockMembership: Record.Factory<Membership> = Record(
-  defaultMembershipValues,
-);
-
-const MEMBERSHIP_1: MembershipRecord = createMockMembership({
-  id: 'membership-id',
-  memberId: 'member-id',
-  itemId: ITEMS.toArray()[0].id,
-  permission: PERMISSION_LEVELS.READ,
+  itemPath: ITEMS.first()!.path,
+  // clearly type enum for immutable record to correctly infer
+  permission: PermissionLevel.Read as PermissionLevel,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  creator: 'creator-id',
 });
 
-const MEMBERSHIP_2: MembershipRecord = createMockMembership({
+const MEMBERSHIP_1: ItemMembershipRecord = createMockMembership({
+  id: 'membership-id',
+  memberId: 'member-id',
+  itemPath: ITEMS.first()!.path,
+  permission: PermissionLevel.Read,
+});
+
+const MEMBERSHIP_2: ItemMembershipRecord = createMockMembership({
   id: 'membership-id1',
   memberId: 'member-id1',
-  itemId: ITEMS.toArray()[0].id,
-  permission: PERMISSION_LEVELS.ADMIN,
+  itemPath: ITEMS.first()!.path,
+  permission: PermissionLevel.Admin,
 });
 
-export const ITEM_MEMBERSHIPS_RESPONSE: List<MembershipRecord> = List([
+export const ITEM_MEMBERSHIPS_RESPONSE: List<ItemMembershipRecord> = List([
   MEMBERSHIP_1,
   MEMBERSHIP_2,
 ]);
@@ -282,16 +279,16 @@ export const AVATAR_BLOB_RESPONSE = BlobMock;
 
 export const buildMentionResponse = (
   mention: ChatMention,
-  method: REQUEST_METHODS,
+  method: HttpMethod,
   status?: MentionStatus,
 ): ChatMention => {
   switch (method) {
-    case REQUEST_METHODS.PATCH:
+    case HttpMethod.PATCH:
       return {
         ...mention,
         status: status || mention.status,
       };
-    case REQUEST_METHODS.DELETE:
+    case HttpMethod.DELETE:
       return mention;
     default:
       return mention;
@@ -567,28 +564,23 @@ export enum Ranges {
   Author = 'author',
 }
 
-const defaultItemLikesValues: ItemLike = {
+const createMockItemLike: Record.Factory<ItemLike> = Record({
   id: 'id1',
   itemId: 'item-id',
   memberId: 'member-id',
-  createdAt: 'timestamp',
-};
-const createMockItemLike: Record.Factory<ItemLike> = Record(
-  defaultItemLikesValues,
-);
+  createdAt: new Date().toISOString(),
+});
 
 const ITEM_LIKE_1: ItemLikeRecord = createMockItemLike({
   id: 'id1',
   itemId: 'item-id',
   memberId: 'member-id',
-  createdAt: 'timestamp',
 });
 
 const ITEM_LIKE_2: ItemLikeRecord = createMockItemLike({
   id: 'id2',
   itemId: 'item-id2',
   memberId: 'member-id',
-  createdAt: 'timestamp',
 });
 
 export const ITEM_LIKES: List<ItemLikeRecord> = List([
@@ -598,11 +590,10 @@ export const ITEM_LIKES: List<ItemLikeRecord> = List([
 
 export const LIKE_COUNT = 100;
 
-const defaultStatusValues: Status = {
+const createMockStatus: Record.Factory<Status> = Record({
   id: 'id',
   name: 'status-1',
-};
-const createMockStatus: Record.Factory<Status> = Record(defaultStatusValues);
+});
 
 const STATUS_1: StatusRecord = createMockStatus({
   id: 'id',
@@ -616,35 +607,30 @@ const STATUS_2: StatusRecord = createMockStatus({
 
 export const STATUS_LIST: List<StatusRecord> = List([STATUS_1, STATUS_2]);
 
-const defaultItemValidationStatusValues: ItemValidationAndReview = {
-  itemValidationId: 'iv-id-1',
-  reviewStatusId: 'accepted',
-  reviewReason: '',
-  createdAt: 'ts',
-};
 const createMockItemValidationSatus: Record.Factory<ItemValidationAndReview> =
-  Record(defaultItemValidationStatusValues);
+  Record({
+    itemValidationId: 'iv-id-1',
+    reviewStatusId: 'accepted',
+    reviewReason: '',
+    createdAt: new Date().toISOString(),
+  });
 
 export const ITEM_VALIDATION_STATUS: ItemValidationAndReviewRecord =
   createMockItemValidationSatus({
     itemValidationId: 'iv-id-1',
     reviewStatusId: 'accepted',
     reviewReason: '',
-    createdAt: 'ts',
   });
 
-const defaultFullValidationValues: FullValidationRecord = {
+const createMockFullValidation: Record.Factory<FullValidationRecord> = Record({
   id: 'id-1',
   itemId: 'item-id-1',
   reviewStatusId: 'status-id-1',
   validationStatusId: 'status-id-2',
   validationResult: '',
   process: 'process-1',
-  createdAt: 'ts',
-};
-const createMockFullValidation: Record.Factory<FullValidationRecord> = Record(
-  defaultFullValidationValues,
-);
+  createdAt: new Date().toISOString(),
+});
 
 const FULL_VALIDATION_RECORDS_1: FullValidationRecordRecord =
   createMockFullValidation({
@@ -654,7 +640,6 @@ const FULL_VALIDATION_RECORDS_1: FullValidationRecordRecord =
     validationStatusId: 'status-id-2',
     validationResult: '',
     process: 'process-1',
-    createdAt: 'ts',
   });
 
 const FULL_VALIDATION_RECORDS_2: FullValidationRecordRecord =
@@ -665,7 +650,6 @@ const FULL_VALIDATION_RECORDS_2: FullValidationRecordRecord =
     validationStatusId: 'status-id-2',
     validationResult: '',
     process: 'process-2',
-    createdAt: 'ts',
   });
 
 export const FULL_VALIDATION_RECORDS: List<FullValidationRecordRecord> = List([
@@ -673,18 +657,17 @@ export const FULL_VALIDATION_RECORDS: List<FullValidationRecordRecord> = List([
   FULL_VALIDATION_RECORDS_2,
 ]);
 
-const defaultItemValidationGroupValues: ItemValidationGroup = {
-  id: 'id-1',
-  itemId: 'item-id-1',
-  itemValidationId: 'iv-id',
-  processId: 'ivp-id-1',
-  statusId: 'success-id',
-  result: '',
-  updatedAt: 'ts',
-  createdAt: '',
-};
 const createMockItemValidationGroup: Record.Factory<ItemValidationGroup> =
-  Record(defaultItemValidationGroupValues);
+  Record({
+    id: 'id-1',
+    itemId: 'item-id-1',
+    itemValidationId: 'iv-id',
+    processId: 'ivp-id-1',
+    statusId: 'success-id',
+    result: '',
+    updatedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+  });
 
 const ITEM_VALIDATION_GROUP_1: ItemValidationGroupRecord =
   createMockItemValidationGroup({
@@ -694,8 +677,6 @@ const ITEM_VALIDATION_GROUP_1: ItemValidationGroupRecord =
     processId: 'ivp-id-1',
     statusId: 'success-id',
     result: '',
-    updatedAt: 'ts',
-    createdAt: '',
   });
 
 const ITEM_VALIDATION_GROUP_2: ItemValidationGroupRecord =
@@ -706,8 +687,6 @@ const ITEM_VALIDATION_GROUP_2: ItemValidationGroupRecord =
     processId: 'ivp-id-2',
     statusId: 'success-id',
     result: '',
-    updatedAt: 'ts',
-    createdAt: '',
   });
 
 export const ITEM_VALIDATION_GROUPS: List<ItemValidationGroupRecord> = List([
@@ -715,12 +694,11 @@ export const ITEM_VALIDATION_GROUPS: List<ItemValidationGroupRecord> = List([
   ITEM_VALIDATION_GROUP_2,
 ]);
 
-const defaultActionValues: Action = {
+const createMockAction: Record.Factory<Action> = Record({
   id: 'action-id',
   itemId: 'item-id',
   memberId: 'member-id',
-};
-const createMockAction: Record.Factory<Action> = Record(defaultActionValues);
+});
 
 const ACTION_1: ActionRecord = createMockAction({
   id: 'action-id',
@@ -730,13 +708,9 @@ const ACTION_1: ActionRecord = createMockAction({
 
 export const ACTIONS_LIST: List<ActionRecord> = List([ACTION_1]);
 
-const defaultActionDataValues: ActionData = {
+const createMockActionData: Record.Factory<ActionData> = Record({
   actions: ACTIONS_LIST,
-};
-
-const createMockActionData: Record.Factory<ActionData> = Record(
-  defaultActionDataValues,
-);
+});
 
 export const ACTIONS_DATA: ActionDataRecord = createMockActionData({
   actions: ACTIONS_LIST,
@@ -767,16 +741,13 @@ export const buildInvitationRecord = ({
   email?: string;
   name?: string;
 }) => {
-  const defaultInvitationValues: Invitation = {
+  const createMockInvitation: Record.Factory<Invitation> = Record({
     id: 'id',
     name: name ?? 'member-name',
     email: email ?? 'email',
     creator: 'creator-id',
     itemPath,
-  };
-  const createMockInvitation: Record.Factory<Invitation> = Record(
-    defaultInvitationValues,
-  );
+  });
   const invitation: InvitationRecord = createMockInvitation();
   return invitation;
 };

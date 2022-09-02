@@ -1,9 +1,10 @@
 import { QueryClient } from 'react-query';
+
 import * as Api from '../api';
 import {
+  MUTATION_KEYS,
   buildGetLikeCountKey,
   buildGetLikedItemsKey,
-  MUTATION_KEYS,
 } from '../config/keys';
 import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
 import { QueryClientConfig } from '../types';

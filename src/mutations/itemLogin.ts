@@ -1,8 +1,10 @@
 import { QueryClient } from 'react-query';
+
 import { SUCCESS_MESSAGES } from '@graasp/translations';
+
 import * as Api from '../api';
-import { putItemLoginRoutine, postItemLoginRoutine } from '../routines';
 import { MUTATION_KEYS, buildItemLoginKey } from '../config/keys';
+import { postItemLoginRoutine, putItemLoginRoutine } from '../routines';
 import type { QueryClientConfig } from '../types';
 
 const { POST_ITEM_LOGIN, PUT_ITEM_LOGIN } = MUTATION_KEYS;

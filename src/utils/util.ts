@@ -1,4 +1,4 @@
-import { List, Record, RecordOf, Seq, is } from 'immutable';
+import { List, RecordOf, is } from 'immutable';
 
 export const isObject = (value: unknown) =>
   typeof value === 'object' && !Array.isArray(value) && value !== null;
@@ -16,20 +16,6 @@ export const getHostname = () => {
   return window?.location?.hostname;
 };
 
-export function convertJs<T extends object>(data: T) {
-  if (typeof data !== 'object' || data === null) {
-    return data;
-  }
-
-  if (Array.isArray(data) || data instanceof Map) {
-    return Seq<any>(data).map(convertJs).toList();
-  }
-
-  const Factory = Record(data);
-
-  return new Factory(Seq<any>(data).map(convertJs));
-}
-
 export const isDataEqual = (
   oldData:
     | RecordOf<any>
@@ -37,6 +23,4 @@ export const isDataEqual = (
     | List<List<RecordOf<any>>>
     | undefined,
   newData: RecordOf<any> | List<RecordOf<any>> | List<List<RecordOf<any>>>,
-): boolean => {
-  return is(oldData, newData);
-};
+): boolean => is(oldData, newData);

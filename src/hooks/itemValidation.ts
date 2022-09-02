@@ -1,14 +1,16 @@
 import { useQuery } from 'react-query';
-import { QueryClientConfig, UUID } from '../types';
+
+import { convertJs } from '@graasp/sdk';
+
 import * as Api from '../api';
 import {
-  buildItemValidationAndReviewKey,
-  buildItemValidationGroupsKey,
   ITEM_VALIDATION_REVIEWS_KEY,
   ITEM_VALIDATION_REVIEW_STATUSES_KEY,
   ITEM_VALIDATION_STATUSES_KEY,
+  buildItemValidationAndReviewKey,
+  buildItemValidationGroupsKey,
 } from '../config/keys';
-import { convertJs } from '../utils/util';
+import { QueryClientConfig, UUID } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;

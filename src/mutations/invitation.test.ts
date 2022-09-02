@@ -1,26 +1,28 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
-import nock from 'nock';
-import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+
+import { HttpMethod } from '@graasp/sdk';
+
+import {
+  ITEMS,
+  OK_RESPONSE,
+  UNAUTHORIZED_RESPONSE,
+  buildInvitation,
+  buildInvitationRecord,
+  buildMockInvitations,
+} from '../../test/constants';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
   buildDeleteInvitationRoute,
   buildPatchInvitationRoute,
   buildPostInvitationsRoute,
   buildResendInvitationRoute,
 } from '../api/routes';
-import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
-import {
-  buildInvitation,
-  buildInvitationRecord,
-  buildMockInvitations,
-  ITEMS,
-  OK_RESPONSE,
-  UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
-import { buildItemInvitationsKey, MUTATION_KEYS } from '../config/keys';
-import { REQUEST_METHODS } from '../api/utils';
+import { MUTATION_KEYS, buildItemInvitationsKey } from '../config/keys';
 import {
   deleteInvitationRoutine,
   patchInvitationRoutine,
@@ -63,7 +65,7 @@ describe('Invitations Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -99,7 +101,7 @@ describe('Invitations Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -130,7 +132,7 @@ describe('Invitations Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -164,7 +166,7 @@ describe('Invitations Mutations', () => {
       const endpoints = [
         {
           response: [newInvitationRecord, UNAUTHORIZED_RESPONSE],
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -214,7 +216,7 @@ describe('Invitations Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           route,
         },
       ];
@@ -246,7 +248,7 @@ describe('Invitations Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           route,
         },
       ];
@@ -297,7 +299,7 @@ describe('Invitations Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -335,7 +337,7 @@ describe('Invitations Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -379,7 +381,7 @@ describe('Invitations Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -405,7 +407,7 @@ describe('Invitations Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];

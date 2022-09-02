@@ -1,5 +1,5 @@
-import configureAxios, { verifyAuthentication } from './axios';
 import { ChatMention, MemberMentions, QueryClientConfig, UUID } from '../types';
+import configureAxios, { verifyAuthentication } from './axios';
 import {
   buildClearMentionsRoute,
   buildDeleteMentionRoute,

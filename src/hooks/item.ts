@@ -1,32 +1,29 @@
 import { List } from 'immutable';
-import { QueryClient, useQuery, UseQueryResult } from 'react-query';
+import { QueryClient, UseQueryResult, useQuery } from 'react-query';
+
+import { convertJs } from '@graasp/sdk';
+
 import * as Api from '../api';
 import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
+import { UndefinedArgument } from '../config/errors';
 import {
+  OWN_ITEMS_KEY,
+  RECYCLED_ITEMS_KEY,
+  SHARED_ITEMS_KEY,
   buildFileContentKey,
   buildItemChildrenKey,
   buildItemKey,
   buildItemLoginKey,
   buildItemParentsKey,
+  buildItemThumbnailKey,
   buildItemsChildrenKey,
   buildItemsKey,
   buildPublicItemsWithTagKey,
-  buildItemThumbnailKey,
-  OWN_ITEMS_KEY,
-  RECYCLED_ITEMS_KEY,
-  SHARED_ITEMS_KEY,
 } from '../config/keys';
 import { getOwnItemsRoutine } from '../routines';
-import {
-  ItemRecord,
-  MemberRecord,
-  QueryClientConfig,
-  UndefinedArgument,
-  UUID,
-} from '../types';
+import { ItemRecord, MemberRecord, QueryClientConfig, UUID } from '../types';
 import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
-import { convertJs } from '../utils/util';
 
 export default (
   queryClient: QueryClient,
@@ -121,17 +118,14 @@ export default (
 
       return useQuery({
         queryKey: buildItemsChildrenKey(ids),
-        queryFn: (): Promise<List<List<ItemRecord>>> => {
-          return Promise.all(
+        queryFn: (): Promise<List<List<ItemRecord>>> =>
+          Promise.all(
             ids.map((id) =>
               Api.getChildren(id, ordered, queryConfig).then((data) =>
                 convertJs(data),
               ),
             ),
-          ).then((items) => {
-            return List(items);
-          });
-        },
+          ).then((items) => List(items)),
         onSuccess: async (items: List<List<ItemRecord>>) => {
           /* Because the query function loops over the ids, this returns an array 
           of immutable list of items, each list correspond to an item and contains 
@@ -218,9 +212,7 @@ export default (
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getItem(id, queryConfig).then((data) => {
-            return convertJs(data);
-          });
+          return Api.getItem(id, queryConfig).then((data) => convertJs(data));
         },
         enabled: Boolean(id),
         ...defaultQueryOptions,
@@ -247,6 +239,7 @@ export default (
               convertJs([data]),
             );
           }
+
           return Api.getItems(ids, queryConfig).then((data) => convertJs(data));
         },
         onSuccess: async (items: List<ItemRecord>) => {

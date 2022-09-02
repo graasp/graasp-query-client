@@ -1,7 +1,7 @@
 /** Utils functions
  * todo: use utils from a dedicated repo */
-
 import CryptoJS from 'crypto-js';
+
 import type { UUID } from '../types';
 
 // eslint-disable-next-line no-useless-escape

@@ -1,4 +1,16 @@
+import { Item } from '@graasp/sdk';
+
+import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
+import { QueryClientConfig, UUID } from '../types';
+import { getParentsIdsFromPath } from '../utils/item';
+import configureAxios, {
+  fallbackToPublic,
+  verifyAuthentication,
+} from './axios';
 import {
+  GET_OWN_ITEMS_ROUTE,
+  GET_RECYCLED_ITEMS_ROUTE,
+  SHARED_ITEM_WITH_ROUTE,
   buildCopyItemRoute,
   buildCopyItemsRoute,
   buildCopyPublicItemRoute,
@@ -21,17 +33,7 @@ import {
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
-  GET_OWN_ITEMS_ROUTE,
-  GET_RECYCLED_ITEMS_ROUTE,
-  SHARED_ITEM_WITH_ROUTE,
 } from './routes';
-import { getParentsIdsFromPath } from '../utils/item';
-import { ExtendedItem, Item, QueryClientConfig, UUID } from '../types';
-import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
-import configureAxios, {
-  fallbackToPublic,
-  verifyAuthentication,
-} from './axios';
 
 const axios = configureAxios();
 
@@ -56,7 +58,15 @@ export const getOwnItems = async ({ API_HOST }: QueryClientConfig) =>
 // payload = {name, type, description, extra}
 // querystring = {parentId}
 export const postItem = async (
-  { name, type, description, extra, parentId }: ExtendedItem,
+  {
+    name,
+    type,
+    description,
+    extra,
+    parentId,
+  }: Item & {
+    parentId: UUID;
+  },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>

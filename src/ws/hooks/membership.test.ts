@@ -1,15 +1,18 @@
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
+
+import { ItemMembership, PermissionLevel } from '@graasp/sdk';
+
+import { ITEMS, ITEM_MEMBERSHIPS_RESPONSE } from '../../../test/constants';
 import {
   getHandlerByChannel,
   mockWsHook,
   setUpWsTest,
 } from '../../../test/wsUtils';
-import { ITEMS, ITEM_MEMBERSHIPS_RESPONSE } from '../../../test/constants';
 import { buildItemMembershipsKey } from '../../config/keys';
-import { configureWsMembershipHooks } from './membership';
+import { ItemMembershipRecord } from '../../types';
 import { KINDS, OPS, TOPICS } from '../constants';
-import { Membership, MembershipRecord, PERMISSION_LEVELS } from '../../types';
+import { configureWsMembershipHooks } from './membership';
 
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsMembershipHooks,
@@ -25,7 +28,7 @@ describe('Ws Membership Hooks', () => {
   describe('useItemsMembershipsUpdates', () => {
     const itemId = ITEMS.first()!.id;
     const membershipsKey = buildItemMembershipsKey(itemId);
-    const newMembershipRecord = ITEM_MEMBERSHIPS_RESPONSE.first()!;
+    const newItemMembershipRecord = ITEM_MEMBERSHIPS_RESPONSE.first()!;
     const newMembership = ITEM_MEMBERSHIPS_RESPONSE.first()!.toJS();
     const memberships = List([ITEM_MEMBERSHIPS_RESPONSE.get(1)]);
     const channel = { name: itemId, topic: TOPICS.MEMBERSHIPS_ITEM };
@@ -46,7 +49,7 @@ describe('Ws Membership Hooks', () => {
 
       expect(
         queryClient
-          .getQueryData<List<MembershipRecord>>(membershipsKey)
+          .getQueryData<List<ItemMembershipRecord>>(membershipsKey)
           ?.toJS(),
       ).toContainEqual(newMembership);
     });
@@ -54,10 +57,10 @@ describe('Ws Membership Hooks', () => {
     it(`Receive update membership update`, async () => {
       queryClient.setQueryData(
         membershipsKey,
-        memberships.push(newMembershipRecord),
+        memberships.push(newItemMembershipRecord),
       );
-      const updatedMembership = newMembershipRecord
-        .update('permission', () => PERMISSION_LEVELS.WRITE)
+      const updatedMembership = newItemMembershipRecord
+        .update('permission', () => PermissionLevel.Write)
         .toJS();
       await mockWsHook({ hook, wrapper });
 
@@ -70,7 +73,7 @@ describe('Ws Membership Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       const membershipsData = queryClient
-        .getQueryData<List<MembershipRecord>>(membershipsKey)
+        .getQueryData<List<ItemMembershipRecord>>(membershipsKey)
         ?.toJS();
       expect(membershipsData).toContainEqual(updatedMembership);
       expect(membershipsData?.length).toBe(memberships.size + 1);
@@ -89,8 +92,8 @@ describe('Ws Membership Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       const membershipsData = queryClient
-        .getQueryData<List<MembershipRecord>>(membershipsKey)
-        ?.toJS() as Membership[];
+        .getQueryData<List<ItemMembershipRecord>>(membershipsKey)
+        ?.toJS() as ItemMembership[];
       expect(
         membershipsData?.find(({ id }) => id === memberships.get(0)?.id),
       ).toBeFalsy();
@@ -110,7 +113,7 @@ describe('Ws Membership Hooks', () => {
 
       expect(
         queryClient
-          .getQueryData<List<MembershipRecord>>(membershipsKey)
+          .getQueryData<List<ItemMembershipRecord>>(membershipsKey)
           ?.equals(memberships),
       ).toBeTruthy();
     });

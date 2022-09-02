@@ -4,14 +4,14 @@ import configureAxios, {
   verifyAuthentication,
 } from './axios';
 import {
-  buildGetCategoriesRoute,
-  buildGetItemCategoriesRoute,
-  buildPostItemCategoryRoute,
-  buildDeleteItemCategoryRoute,
   GET_CATEGORY_TYPES_ROUTE,
-  buildGetPublicItemCategoriesRoute,
+  buildDeleteItemCategoryRoute,
+  buildGetCategoriesRoute,
   buildGetCategoryRoute,
+  buildGetItemCategoriesRoute,
   buildGetItemsInCategoryRoute,
+  buildGetPublicItemCategoriesRoute,
+  buildPostItemCategoryRoute,
 } from './routes';
 
 const axios = configureAxios();

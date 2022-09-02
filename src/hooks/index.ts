@@ -1,21 +1,22 @@
 import { QueryClient } from 'react-query';
+
 import { QueryClientConfig } from '../types';
 import { WebsocketClient } from '../ws/ws-client';
-import configureChatHooks from './chat';
-import configureMentionsHooks from './mentions';
-import configureItemHooks from './item';
-import configureItemFlagHooks from './itemFlag';
-import configureItemTagHooks from './itemTag';
-import configureMemberHooks from './member';
+import configureActionHooks from './action';
 import configureAppsHooks from './apps';
 import configureCategoryHooks from './category';
-import configureKeywordSearchHooks from './search';
-import configureItemLikeHooks from './itemLike';
-import configureItemValidationHooks from './itemValidation';
-import configureActionHooks from './action';
+import configureChatHooks from './chat';
 import configureInvitationHooks from './invitation';
+import configureItemHooks from './item';
+import configureItemFlagHooks from './itemFlag';
+import configureItemLikeHooks from './itemLike';
+import configureItemTagHooks from './itemTag';
+import configureItemValidationHooks from './itemValidation';
+import configureMemberHooks from './member';
 import configureMembershipHooks from './membership';
+import configureMentionsHooks from './mentions';
 import configurePlanHooks from './plan';
+import configureKeywordSearchHooks from './search';
 
 export default (
   queryClient: QueryClient,

@@ -1,14 +1,16 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
-import Cookies from 'js-cookie';
-import { act } from 'react-test-renderer';
 import { StatusCodes } from 'http-status-codes';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { REQUEST_METHODS } from '../api/utils';
-import { buildItemTagsKey, MUTATION_KEYS } from '../config/keys';
-import { buildItemPublishRoute } from '../api/routes';
-import { publishItemRoutine } from '../routines';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+import { act } from 'react-test-renderer';
+
+import { HttpMethod } from '@graasp/sdk';
+
 import { ITEMS, ITEM_TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import { buildItemPublishRoute } from '../api/routes';
+import { MUTATION_KEYS, buildItemTagsKey } from '../config/keys';
+import { publishItemRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
@@ -37,7 +39,7 @@ describe('Publish Item', () => {
       const endpoints = [
         {
           response: { item },
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           route,
         },
       ];
@@ -70,7 +72,7 @@ describe('Publish Item', () => {
       const endpoints = [
         {
           response: { item },
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           route,
         },
       ];
@@ -103,7 +105,7 @@ describe('Publish Item', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           route,
         },
       ];

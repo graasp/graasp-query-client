@@ -1,8 +1,10 @@
 import { useQuery } from 'react-query';
+
+import { convertJs } from '@graasp/sdk';
+
 import * as Api from '../api';
 import { buildActionsKey } from '../config/keys';
 import { QueryClientConfig, UUID } from '../types';
-import { convertJs } from '../utils/util';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;

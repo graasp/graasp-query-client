@@ -1,9 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
-import nock from 'nock';
 import Cookies from 'js-cookie';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
+import nock from 'nock';
 import { act } from 'react-test-renderer';
+
+import { HttpMethod } from '@graasp/sdk';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
+
 import {
   ITEMS,
   ITEM_LOGIN_RESPONSE,
@@ -14,12 +17,11 @@ import {
   buildPostItemLoginSignInRoute,
   buildPutItemLoginSchema,
 } from '../api/routes';
-import { REQUEST_METHODS } from '../api/utils';
 import {
-  buildItemLoginKey,
   CURRENT_MEMBER_KEY,
   MUTATION_KEYS,
   OWN_ITEMS_KEY,
+  buildItemLoginKey,
 } from '../config/keys';
 import { postItemLoginRoutine, putItemLoginRoutine } from '../routines';
 import { ITEM_LOGIN_SCHEMAS } from '../types';
@@ -49,7 +51,7 @@ describe('Item Login Mutations', () => {
       const endpoints = [
         {
           response: {},
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -83,7 +85,7 @@ describe('Item Login Mutations', () => {
         {
           response: {},
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -129,7 +131,7 @@ describe('Item Login Mutations', () => {
       const endpoints = [
         {
           response: {},
-          method: REQUEST_METHODS.PUT,
+          method: HttpMethod.PUT,
           route,
         },
       ];
@@ -162,7 +164,7 @@ describe('Item Login Mutations', () => {
         {
           response: {},
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.PUT,
+          method: HttpMethod.PUT,
           route,
         },
       ];

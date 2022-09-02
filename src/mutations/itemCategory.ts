@@ -1,7 +1,9 @@
-import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { QueryClient } from 'react-query';
+
+import { SUCCESS_MESSAGES } from '@graasp/translations';
+
 import * as Api from '../api';
-import { buildItemCategoriesKey, MUTATION_KEYS } from '../config/keys';
+import { MUTATION_KEYS, buildItemCategoriesKey } from '../config/keys';
 import {
   deleteItemCategoryRoutine,
   postItemCategoryRoutine,

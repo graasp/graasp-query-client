@@ -1,17 +1,19 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
-import nock from 'nock';
-import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
-import { buildExportActions } from '../api/routes';
-import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+
+import { HttpMethod } from '@graasp/sdk';
+
 import {
   ITEMS,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import { buildExportActions } from '../api/routes';
 import { MUTATION_KEYS } from '../config/keys';
-import { REQUEST_METHODS } from '../api/utils';
 import { exportActionsRoutine } from '../routines';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -35,7 +37,7 @@ describe('Action Mutations', () => {
 
     it(`Export Actions`, async () => {
       const endpoints = [
-        { route, response: OK_RESPONSE, method: REQUEST_METHODS.POST },
+        { route, response: OK_RESPONSE, method: HttpMethod.POST },
       ];
 
       const mockedMutation = await mockMutation({
@@ -61,7 +63,7 @@ describe('Action Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];

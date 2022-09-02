@@ -1,12 +1,13 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import nock from 'nock';
-import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
-import { GET_FLAGS_ROUTE } from '../api/routes';
-import { mockHook, setUpTest } from '../../test/utils';
-import { FLAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { ITEM_FLAGS_KEY } from '../config/keys';
 import { List } from 'immutable';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+
+import { FLAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import { mockHook, setUpTest } from '../../test/utils';
+import { GET_FLAGS_ROUTE } from '../api/routes';
+import { ITEM_FLAGS_KEY } from '../config/keys';
 import { FlagRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();

@@ -1,9 +1,11 @@
 import { List, RecordOf } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
+
+import { convertJs } from '@graasp/sdk';
+
 import { buildItemChatKey } from '../../config/keys';
-import { ItemChat, ChatMessage, ChatMessageRecord, UUID } from '../../types';
-import { convertJs } from '../../utils/util';
+import { ChatMessage, ChatMessageRecord, ItemChat, UUID } from '../../types';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 

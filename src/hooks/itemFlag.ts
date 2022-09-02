@@ -1,9 +1,11 @@
 import { useQuery } from 'react-query';
-import { QueryClientConfig } from '../types';
+
+import { convertJs } from '@graasp/sdk';
+
 import * as Api from '../api';
-import { ITEM_FLAGS_KEY } from '../config/keys';
 import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
-import { convertJs } from '../utils/util';
+import { ITEM_FLAGS_KEY } from '../config/keys';
+import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;

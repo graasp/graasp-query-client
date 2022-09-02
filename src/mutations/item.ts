@@ -1,43 +1,39 @@
 import { List, Record } from 'immutable';
 import { QueryClient } from 'react-query';
+
+import { GraaspError, Item, convertJs } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
+
 import * as Api from '../api';
+import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
+import { THUMBNAIL_SIZES } from '../config/constants';
+import {
+  MUTATION_KEYS,
+  OWN_ITEMS_KEY,
+  RECYCLED_ITEMS_KEY,
+  buildItemChildrenKey,
+  buildItemKey,
+  buildItemThumbnailKey,
+  getKeyForParentId,
+} from '../config/keys';
 import {
   copyItemRoutine,
   copyItemsRoutine,
   createItemRoutine,
-  deleteItemsRoutine,
   deleteItemRoutine,
+  deleteItemsRoutine,
   editItemRoutine,
+  importH5PRoutine,
+  importZipRoutine,
   moveItemRoutine,
   moveItemsRoutine,
-  uploadFileRoutine,
   recycleItemsRoutine,
   restoreItemsRoutine,
+  uploadFileRoutine,
   uploadItemThumbnailRoutine,
-  importZipRoutine,
-  importH5PRoutine,
 } from '../routines';
-import {
-  buildItemChildrenKey,
-  buildItemKey,
-  getKeyForParentId,
-  MUTATION_KEYS,
-  OWN_ITEMS_KEY,
-  RECYCLED_ITEMS_KEY,
-  buildItemThumbnailKey,
-} from '../config/keys';
+import type { ItemRecord, QueryClientConfig, UUID } from '../types';
 import { buildPath, getDirectParentId } from '../utils/item';
-import type {
-  GraaspError,
-  Item,
-  ItemRecord,
-  QueryClientConfig,
-  UUID,
-} from '../types';
-import { THUMBNAIL_SIZES } from '../config/constants';
-import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
-import { convertJs } from '../utils/util';
 
 const {
   POST_ITEM,

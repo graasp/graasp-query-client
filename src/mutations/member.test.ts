@@ -1,32 +1,34 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { StatusCodes } from 'http-status-codes';
 import { act } from '@testing-library/react-hooks';
+import { StatusCodes } from 'http-status-codes';
 import { List, Record } from 'immutable';
-import nock from 'nock';
 import Cookies from 'js-cookie';
+import nock from 'nock';
+
+import { HttpMethod } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
-import {
-  buildDeleteMemberRoute,
-  buildPatchMember,
-  buildUploadAvatarRoute,
-  SIGN_OUT_ROUTE,
-} from '../api/routes';
-import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
+
 import {
   AVATAR_BLOB_RESPONSE,
   MEMBER_RESPONSE,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
-  buildAvatarKey,
+  SIGN_OUT_ROUTE,
+  buildDeleteMemberRoute,
+  buildPatchMember,
+  buildUploadAvatarRoute,
+} from '../api/routes';
+import { THUMBNAIL_SIZES } from '../config/constants';
+import {
   CURRENT_MEMBER_KEY,
   MUTATION_KEYS,
+  buildAvatarKey,
 } from '../config/keys';
-import { MemberRecord } from '../types';
-import { REQUEST_METHODS } from '../api/utils';
-import { THUMBNAIL_SIZES } from '../config/constants';
 import { addFavoriteItemRoutine, uploadAvatarRoutine } from '../routines';
+import { MemberRecord } from '../types';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -69,7 +71,7 @@ describe('Member Mutations', () => {
       queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const endpoints = [
         {
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
           route,
@@ -102,7 +104,7 @@ describe('Member Mutations', () => {
       const endpoints = [
         {
           route: `/${buildDeleteMemberRoute(memberId)}`,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           response: OK_RESPONSE,
         },
         {
@@ -133,7 +135,7 @@ describe('Member Mutations', () => {
       queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const endpoints = [
         {
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
           route: `/${buildDeleteMemberRoute(memberId)}`,
@@ -171,7 +173,7 @@ describe('Member Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           route,
         },
       ];
@@ -200,7 +202,7 @@ describe('Member Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           route,
         },
       ];
@@ -242,7 +244,7 @@ describe('Member Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -285,7 +287,7 @@ describe('Member Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -332,7 +334,7 @@ describe('Member Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           route,
         },
       ];
@@ -368,7 +370,7 @@ describe('Member Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           route,
         },
       ];
@@ -408,7 +410,7 @@ describe('Member Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           route,
         },
       ];
@@ -437,7 +439,7 @@ describe('Member Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           route,
         },
       ];

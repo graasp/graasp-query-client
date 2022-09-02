@@ -1,4 +1,6 @@
 import { QueryClient } from 'react-query';
+
+import * as Api from '../api';
 import {
   CURRENT_CUSTOMER_KEY,
   MUTATION_KEYS,
@@ -9,7 +11,6 @@ import {
   createSetupIntentRoutine,
   setDefaultCardRoutine,
 } from '../routines';
-import * as Api from '../api';
 import { QueryClientConfig } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {

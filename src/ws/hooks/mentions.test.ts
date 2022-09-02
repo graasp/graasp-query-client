@@ -1,19 +1,21 @@
 import { List } from 'immutable';
+
+import { MentionStatus } from '@graasp/sdk';
+
+import {
+  MEMBER_RESPONSE,
+  buildChatMention,
+  buildMemberMentions,
+} from '../../../test/constants';
 import {
   getHandlerByChannel,
   mockWsHook,
   setUpWsTest,
 } from '../../../test/wsUtils';
-import {
-  buildMemberMentions,
-  buildChatMention,
-  MEMBER_RESPONSE,
-} from '../../../test/constants';
 import { buildItemChatKey, buildMentionKey } from '../../config/keys';
-import { OPS, TOPICS } from '../constants';
 import { MemberMentionsRecord } from '../../types';
+import { OPS, TOPICS } from '../constants';
 import { configureWsChatMentionsHooks } from './mentions';
-import { MentionStatus } from '@graasp/sdk';
 
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsChatMentionsHooks,

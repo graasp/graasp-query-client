@@ -1,10 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
-import nock from 'nock';
 import { List } from 'immutable';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
-import { act } from 'react-test-renderer';
 import Cookies from 'js-cookie';
+import nock from 'nock';
+import { act } from 'react-test-renderer';
+
+import { HttpMethod } from '@graasp/sdk';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
+
 import {
   ITEMS,
   ITEM_TAGS,
@@ -13,8 +16,7 @@ import {
 } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildDeleteItemTagRoute, buildPostItemTagRoute } from '../api/routes';
-import { REQUEST_METHODS } from '../api/utils';
-import { buildItemTagsKey, MUTATION_KEYS } from '../config/keys';
+import { MUTATION_KEYS, buildItemTagsKey } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
 import { ItemTagRecord } from '../types';
 
@@ -46,7 +48,7 @@ describe('Item Tag Mutations', () => {
       const endpoints = [
         {
           response: {},
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -81,7 +83,7 @@ describe('Item Tag Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -125,7 +127,7 @@ describe('Item Tag Mutations', () => {
       const endpoints = [
         {
           response: {},
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -159,7 +161,7 @@ describe('Item Tag Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
