@@ -258,7 +258,7 @@ export const getFileContentWithUrl = async (
         params: {
           replyUrl
         },
-      }).then(({ data }) => data),
+      }),
     () =>
       axios.get(`${API_HOST}/${buildPublicDownloadFilesRoute(id)}`, {
         params: {
