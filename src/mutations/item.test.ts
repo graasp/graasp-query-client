@@ -790,7 +790,7 @@ describe('Items Mutations', () => {
         await waitForMutation();
       });
 
-      // Check new path are corrects
+      // Check new paths are corrects
       moved.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         const path = queryClient.getQueryData<ItemRecord>(itemKey)?.path;

@@ -241,8 +241,11 @@ export default (
             );
           }
 
-          return splitRequestByIds(ids, MAX_TARGETS_FOR_READ_REQUEST, (chunk) =>
-            Api.getItems(chunk, queryConfig),
+          return splitRequestByIds(
+            ids,
+            MAX_TARGETS_FOR_READ_REQUEST,
+            (chunk) => Api.getItems(chunk, queryConfig),
+            true,
           );
         },
         onSuccess: async (items: List<ItemRecord>) => {

@@ -124,17 +124,23 @@ export default configureAxios;
  * @param {string[]} ids elements' id
  * @param {number} chunkSize maximum number of ids par request
  * @param {function} buildRequest builder for the request given the chunk ids
+ * @param {boolean} [ignoreErrors=false] whether we ignore errors
  * @returns {Promise} all requests returning their data merged
  */
 export const splitRequestByIds = (
   ids: string[],
   chunkSize: number,
   buildRequest: (ids: string[]) => Promise<any>,
+  ignoreErrors = false,
 ) => {
   const shunkedIds = spliceIntoChunks(ids, chunkSize);
   return Promise.all(
     shunkedIds.map((groupedIds) => buildRequest(groupedIds)),
-  ).then((responses) =>
-    convertJs(throwIfArrayContainsErrorOrReturn(responses.flat())),
-  );
+  ).then((responses) => {
+    const result = responses.flat();
+    if (!ignoreErrors) {
+      throwIfArrayContainsErrorOrReturn(result);
+    }
+    return convertJs(throwIfArrayContainsErrorOrReturn(result));
+  });
 };
