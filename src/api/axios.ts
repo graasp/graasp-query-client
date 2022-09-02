@@ -141,6 +141,6 @@ export const splitRequestByIds = (
     if (!ignoreErrors) {
       throwIfArrayContainsErrorOrReturn(result);
     }
-    return convertJs(throwIfArrayContainsErrorOrReturn(result));
+    return convertJs(result);
   });
 };
