@@ -2285,7 +2285,7 @@ __metadata:
     "@babel/preset-typescript": 7.16.7
     "@commitlint/cli": 16.2.4
     "@commitlint/config-conventional": 16.2.4
-    "@graasp/sdk": "github:graasp/graasp-sdk#42/limits"
+    "@graasp/sdk": "github:graasp/graasp-sdk"
     "@graasp/translations": "github:graasp/graasp-translations.git"
     "@graasp/utils": "github:graasp/graasp-utils.git"
     "@testing-library/jest-dom": 5.16.4
@@ -2340,9 +2340,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@github:graasp/graasp-sdk#42/limits":
+"@graasp/sdk@github:graasp/graasp-sdk":
   version: 0.1.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=82f5b3c9a748b52513f3be815ddd822b501e999d"
+  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=41b8c166b4a4db98259e56797f9b1f56e1b40465"
   dependencies:
     "@fastify/secure-session": 5.2.0
     aws-sdk: 2.1111.0
@@ -2353,7 +2353,7 @@ __metadata:
     qs: 6.11.0
     slonik: 28.1.1
     uuid: 8.3.2
-  checksum: a06ae77ca3199da1cb1589f41a99c8f5e6af5e8bde9722881f79171fd97468b85a5f89ba6fcec7a4381fa81f2d4d19379e546028c33c4db74abc1916cf3a31d5
+  checksum: e3d9523f5b6ea307a1ed5dfcf7827addf2f16a8b01220dd0ad6ebcda7d28dbd93ac4caacd76f3d8159bec5f4c02395713cc874e18e795bfc7a65a2b8ea494496
   languageName: node
   linkType: hard
 
