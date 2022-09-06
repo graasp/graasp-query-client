@@ -79,12 +79,12 @@ export default (config: Partial<QueryClientConfig>) => {
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       notifyOnChangeProps: 'tracked',
-      isDataEqual: isDataEqual,
+      isDataEqual,
       ...config?.defaultQueryOptions,
     },
   };
 
-  // create queryclient with given config
+  // create queryclient
   const queryClient = new QueryClient();
 
   // set up mutations given config

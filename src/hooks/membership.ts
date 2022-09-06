@@ -1,9 +1,10 @@
 import { List } from 'immutable';
 import { QueryClient, useQuery } from 'react-query';
 
-import { convertJs } from '@graasp/sdk';
+import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
 
 import * as Api from '../api';
+import { splitRequestByIds } from '../api/axios';
 import { UndefinedArgument } from '../config/errors';
 import {
   buildItemMembershipsKey,
@@ -64,8 +65,8 @@ export default (
             throw new UndefinedArgument();
           }
 
-          return Api.getMembershipsForItems(ids, queryConfig).then((data) =>
-            convertJs(data),
+          return splitRequestByIds(ids, MAX_TARGETS_FOR_READ_REQUEST, (chunk) =>
+            Api.getMembershipsForItems(chunk, queryConfig),
           );
         },
         onSuccess: async (memberships: List<List<ItemMembershipRecord>>) => {

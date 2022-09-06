@@ -4,7 +4,7 @@ import { List, Map } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { Item, ItemType } from '@graasp/sdk';
+import { Item, ItemType, MAX_TARGETS_FOR_READ_REQUEST } from '@graasp/sdk';
 
 import {
   FILE_RESPONSE,
@@ -13,7 +13,12 @@ import {
   THUMBNAIL_BLOB_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
-import { Endpoint, mockHook, setUpTest } from '../../test/utils';
+import {
+  Endpoint,
+  mockHook,
+  setUpTest,
+  splitEndpointByIds,
+} from '../../test/utils';
 import {
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_ROUTE,
@@ -519,6 +524,33 @@ describe('Items Hooks', () => {
       const hook = () => hooks.useItems(ids);
       const route = `/${buildGetItemsRoute(ids)}`;
       const endpoints = [{ route, response }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+
+      expect(data as ItemRecord).toEqualImmutable(response);
+      // verify cache keys
+      expect(queryClient.getQueryData(buildItemsKey(ids))).toEqualImmutable(
+        data,
+      );
+      for (const item of response) {
+        const itemById = response.find(
+          ({ id }) => id === item.id,
+        ) as ItemRecord;
+        expect(
+          queryClient.getQueryData(buildItemKey(item.id)),
+        ).toEqualImmutable(itemById);
+      }
+    });
+
+    it(`Receive many items`, async () => {
+      const response = ITEMS;
+      const ids: string[] = response.map(({ id }) => id).toArray();
+      const hook = () => hooks.useItems(ids);
+      const endpoints = splitEndpointByIds(
+        ids,
+        MAX_TARGETS_FOR_READ_REQUEST,
+        (chunk) => `/${buildGetItemsRoute(chunk)}`,
+        response.toJS(),
+      );
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
       expect(data as ItemRecord).toEqualImmutable(response);

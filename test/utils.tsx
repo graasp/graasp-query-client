@@ -8,7 +8,7 @@ import nock from 'nock';
 import React from 'react';
 import { MutationObserverResult, QueryObserverBaseResult } from 'react-query';
 
-import { HttpMethod } from '@graasp/sdk';
+import { HttpMethod, spliceIntoChunks } from '@graasp/sdk';
 
 import configureHooks from '../src/hooks';
 import configureQueryClient from '../src/queryClient';
@@ -151,3 +151,29 @@ export const waitForMutation = async (t = 500) => {
     setTimeout(r, t);
   });
 };
+
+export const splitEndpointByIds = (
+  ids: string[],
+  chunkSize: number,
+  buildRoute: (ids: string[]) => string,
+  response: any[],
+  method?: HttpMethod,
+) =>
+  spliceIntoChunks(ids, chunkSize).map((chunk, idx) => ({
+    route: buildRoute(chunk),
+    response: response.slice(idx * chunkSize, (idx + 1) * chunkSize),
+    method,
+  }));
+
+export const splitEndpointByIdsForErrors = (
+  ids: string[],
+  chunkSize: number,
+  buildRoute: (ids: string[]) => string,
+  data: { response: any; statusCode: StatusCodes },
+  method?: HttpMethod,
+) =>
+  spliceIntoChunks(ids, chunkSize).map((chunk) => ({
+    route: buildRoute(chunk),
+    ...data,
+    method,
+  }));

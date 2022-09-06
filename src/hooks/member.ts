@@ -1,10 +1,14 @@
 import { List } from 'immutable';
 import { QueryClient, useQuery } from 'react-query';
 
-import { convertJs } from '@graasp/sdk';
+import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
 
 import * as Api from '../api';
-import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
+import { splitRequestByIds } from '../api/axios';
+import {
+  CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
+  DEFAULT_THUMBNAIL_SIZES,
+} from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
 import {
   CURRENT_MEMBER_KEY,
@@ -45,7 +49,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildMembersKey(ids),
       queryFn: (): Promise<List<MemberRecord>> =>
-        Api.getMembers({ ids }, queryConfig).then((data) => convertJs(data)),
+        splitRequestByIds(ids, MAX_TARGETS_FOR_READ_REQUEST, (chunk) =>
+          Api.getMembers({ ids: chunk }, queryConfig),
+        ),
       enabled: Boolean(ids?.length),
       onSuccess: async (members: List<MemberRecord>) => {
         // save members in their own key
@@ -85,6 +91,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       },
       ...defaultQueryOptions,
       enabled: Boolean(id) && shouldFetch,
+      cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
   };
 
