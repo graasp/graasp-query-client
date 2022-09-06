@@ -603,6 +603,8 @@ describe('Items Mutations', () => {
         queryClient.setQueryData(itemKey, item);
       });
       queryClient.setQueryData(OWN_ITEMS_KEY, List(ITEMS));
+      const toItemKey = getKeyForParentId(to);
+      queryClient.setQueryData(toItemKey, List(ITEMS));
 
       const response = OK_RESPONSE;
 
@@ -636,7 +638,6 @@ describe('Items Mutations', () => {
       );
 
       // Check new parent is correctly invalidated
-      const toItemKey = getKeyForParentId(to);
       expect(queryClient.getQueryState(toItemKey)?.isInvalidated).toBeTruthy();
 
       // Check old parent is correctly invalidated
@@ -713,6 +714,8 @@ describe('Items Mutations', () => {
         queryClient.setQueryData(itemKey, item);
       });
       queryClient.setQueryData(getKeyForParentId(null), moved);
+      const toItemKey = getKeyForParentId(toId);
+      queryClient.setQueryData(toItemKey, ITEMS);
 
       const response = moved.map(({ id }) => id);
 
@@ -746,7 +749,6 @@ describe('Items Mutations', () => {
       });
 
       // Check new parent is correctly invalidated
-      const toItemKey = getKeyForParentId(toId);
       expect(queryClient.getQueryState(toItemKey)?.isInvalidated).toBeTruthy();
 
       // Check old parent is correctly invalidated
@@ -765,6 +767,8 @@ describe('Items Mutations', () => {
         queryClient.setQueryData(itemKey, item);
       });
       queryClient.setQueryData(getKeyForParentId(null), ITEMS);
+      const toItemKey = getKeyForParentId(toId);
+      queryClient.setQueryData(toItemKey, ITEMS);
 
       const response = moved.map(({ id }) => id);
 
@@ -798,7 +802,6 @@ describe('Items Mutations', () => {
       });
 
       // Check new parent is correctly invalidated
-      const toItemKey = getKeyForParentId(toId);
       expect(queryClient.getQueryState(toItemKey)?.isInvalidated).toBeTruthy();
 
       // Check old parent is correctly invalidated
@@ -820,6 +823,8 @@ describe('Items Mutations', () => {
           queryClient.setQueryData(itemKey, item);
         });
         queryClient.setQueryData(getKeyForParentId(null), moved);
+        const toItemKey = getKeyForParentId(toId);
+        queryClient.setQueryData(toItemKey, ITEMS);
 
         const response = UNAUTHORIZED_RESPONSE;
 
@@ -854,7 +859,6 @@ describe('Items Mutations', () => {
         });
 
         // Check new parent is correctly invalidated
-        const toItemKey = getKeyForParentId(toId);
         expect(
           queryClient.getQueryState(toItemKey)?.isInvalidated,
         ).toBeTruthy();
@@ -873,6 +877,8 @@ describe('Items Mutations', () => {
           queryClient.setQueryData(itemKey, item);
         });
         queryClient.setQueryData(getKeyForParentId(null), moved);
+        const toItemKey = getKeyForParentId(toId);
+        queryClient.setQueryData(toItemKey, ITEMS);
 
         const response: (Item | GraaspError)[] = [...moved];
         response[0] = UNAUTHORIZED_RESPONSE;
@@ -907,7 +913,6 @@ describe('Items Mutations', () => {
         });
 
         // Check new parent is correctly invalidated
-        const toItemKey = getKeyForParentId(toId);
         expect(
           queryClient.getQueryState(toItemKey)?.isInvalidated,
         ).toBeTruthy();

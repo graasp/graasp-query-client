@@ -107,14 +107,18 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
     await queryClient.cancelQueries(childrenKey);
 
-    // Snapshot the previous value
-    const prevChildren = queryClient.getQueryData(childrenKey);
+    // Snapshot the previous value if exists
+    // do not create entry if it doesn't exist
+    if (queryClient.getQueryState(childrenKey)) {
+      const prevChildren = queryClient.getQueryData(childrenKey);
 
-    // Optimistically update
-    queryClient.setQueryData(childrenKey, value);
+      // Optimistically update
+      queryClient.setQueryData(childrenKey, value);
 
-    // Return a context object with the snapshotted value
-    return prevChildren;
+      // Return a context object with the snapshotted value
+      return prevChildren;
+    }
+    return null;
   };
 
   queryClient.setMutationDefaults(POST_ITEM, {
@@ -183,7 +187,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onError: (error, newItem, context) => {
       const { item: prevItem } = context;
       const parentKey = getKeyForParentId(getDirectParentId(prevItem.path));
-      queryClient.setQueryData(parentKey, context.parent);
+      if (context.parent) {
+        queryClient.setQueryData(parentKey, context.parent);
+      }
+
       const itemKey = buildItemKey(newItem.id);
       queryClient.setQueryData(itemKey, context.item);
       notifier?.({ type: editItemRoutine.FAILURE, payload: { error } });
@@ -229,7 +236,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onError: (error, _itemId, context) => {
       const itemData = context.item;
 
-      if (itemData) {
+      if (itemData && context.children) {
         const childrenKey = getKeyForParentId(getDirectParentId(itemData.path));
         queryClient.setQueryData(childrenKey, context.children);
       }
@@ -281,7 +288,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       const itemData = queryClient.getQueryData(itemKey) as ItemRecord;
       const itemPath = itemData?.path;
 
-      if (itemPath) {
+      if (itemPath && context.parent) {
         const childrenKey = getKeyForParentId(getDirectParentId(itemPath));
         queryClient.setQueryData(childrenKey, context.parent);
       }
@@ -549,7 +556,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.setQueryData(parentKey, context.targetParent);
 
       const itemData = context.item;
-      if (itemData) {
+      if (itemData && context.originalParent) {
         const pKey = getKeyForParentId(getDirectParentId(itemData.path));
         queryClient.setQueryData(pKey, context.originalParent);
       }
@@ -644,13 +651,15 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onError: (error, { id, ids, to }, context) => {
       const itemIds = id ?? ids;
       const parentKey = getKeyForParentId(to);
-      queryClient.setQueryData(parentKey, context.targetParent);
+      if (context.targetParent) {
+        queryClient.setQueryData(parentKey, context.targetParent);
+      }
       itemIds.forEach((itemId: UUID) => {
         const itemKey = buildItemKey(itemId);
         queryClient.setQueryData(itemKey, context[itemId]);
 
         const itemData = context[itemId];
-        if (itemData) {
+        if (itemData && context.originalParent) {
           const pKey = getKeyForParentId(getDirectParentId(itemData.path));
           queryClient.setQueryData(pKey, context.originalParent);
         }

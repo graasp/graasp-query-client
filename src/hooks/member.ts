@@ -5,7 +5,10 @@ import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
 
 import * as Api from '../api';
 import { splitRequestByIds } from '../api/axios';
-import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
+import {
+  CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
+  DEFAULT_THUMBNAIL_SIZES,
+} from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
 import {
   CURRENT_MEMBER_KEY,
@@ -88,6 +91,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       },
       ...defaultQueryOptions,
       enabled: Boolean(id) && shouldFetch,
+      cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
   };
 
