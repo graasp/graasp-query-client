@@ -8,11 +8,17 @@ import {
   ITEMS,
   UNAUTHORIZED_RESPONSE,
   buildChatMessages,
+  buildExportedChat,
 } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
-import { buildGetItemChatRoute } from '../api/routes';
-import { buildItemChatKey } from '../config/keys';
-import type { ItemChat, ItemChatRecord } from '../types';
+import { buildExportItemChatRoute, buildGetItemChatRoute } from '../api/routes';
+import { buildExportItemChatKey, buildItemChatKey } from '../config/keys';
+import type {
+  ExportedItemChat,
+  ExportedItemChatRecord,
+  ItemChat,
+  ItemChatRecord,
+} from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -138,6 +144,61 @@ describe('Chat Hooks', () => {
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+    });
+  });
+
+  describe('useItemChat', () => {
+    const itemId = ITEMS.first()!.id;
+    const route = `/${buildExportItemChatRoute(itemId)}`;
+    const key = buildExportItemChatKey(itemId);
+
+    const hook = () => hooks.useExportItemChat(itemId);
+
+    it(`Receive exported chat`, async () => {
+      const defaultExportedItemChatMessageValues: ExportedItemChat = {
+        id: itemId,
+        messages: buildExportedChat(itemId),
+      };
+      const createMockExportedItemChatMessage: Record.Factory<ExportedItemChat> =
+        Record(defaultExportedItemChatMessageValues);
+      const response: ExportedItemChatRecord =
+        createMockExportedItemChatMessage();
+      const endpoints = [
+        {
+          route,
+          response,
+        },
+      ];
+      const { data } = await mockHook({
+        endpoints,
+        hook,
+        wrapper,
+      });
+
+      expect(data as ExportedItemChatRecord).toEqualImmutable(response);
+
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
     });
   });
 });

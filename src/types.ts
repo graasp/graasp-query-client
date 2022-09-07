@@ -159,6 +159,27 @@ export type ItemChat = {
 
 export type ItemChatRecord = RecordOf<ItemChat>;
 
+// type of the exported chat message
+// contains the additional "creatorName" key with the plain text name of the user
+export type ExportedChatMessage = {
+  id: string;
+  chatId: string;
+  creator: string;
+  creatorName: string;
+  createdAt: string;
+  updatedAt: string;
+  body: string;
+};
+
+export type ExportedChatMessageRecord = RecordOf<ExportedChatMessage>;
+
+export type ExportedItemChat = {
+  id: string;
+  messages: List<ExportedChatMessageRecord>;
+};
+
+export type ExportedItemChatRecord = RecordOf<ExportedItemChat>;
+
 // a combined record from item-validation, item-validation-review, item-validation-process
 export type FullValidationRecord = {
   id: string;

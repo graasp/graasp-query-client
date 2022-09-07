@@ -1,5 +1,6 @@
 import {
   ChatMessage,
+  ExportedChatMessage,
   PartialChatMessage,
   PartialNewChatMessage,
   QueryClientConfig,
@@ -12,6 +13,7 @@ import configureAxios, {
 import {
   buildClearItemChatRoute,
   buildDeleteItemChatMessageRoute,
+  buildExportItemChatRoute,
   buildGetItemChatRoute,
   buildGetPublicItemChatRoute,
   buildPatchItemChatMessageRoute,
@@ -24,6 +26,17 @@ export const getItemChat = async (id: UUID, { API_HOST }: QueryClientConfig) =>
   fallbackToPublic(
     () => axios.get(`${API_HOST}/${buildGetItemChatRoute(id)}`),
     () => axios.get(`${API_HOST}/${buildGetPublicItemChatRoute(id)}`),
+  );
+
+export const exportItemChat = async (
+  id: UUID,
+  { API_HOST }: QueryClientConfig,
+) =>
+  verifyAuthentication(
+    (): Promise<ExportedChatMessage> =>
+      axios
+        .get(`${API_HOST}/${buildExportItemChatRoute(id)}`)
+        .then(({ data }) => data),
   );
 
 export const postItemChatMessage = async (

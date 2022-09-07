@@ -71,6 +71,8 @@ import {
   TagRecord,
   Tag as TagType,
   UUID,
+  ExportedChatMessage,
+  ExportedChatMessageRecord,
 } from '../src/types';
 
 export const WS_HOST = 'ws://localhost:3000';
@@ -373,6 +375,40 @@ export const buildChatMessages = (id: UUID) => {
     creator: 'someothermemberid',
   });
   const CHAT_MESSAGES: List<ChatMessageRecord> = List([
+    CHAT_MESSAGE_1,
+    CHAT_MESSAGE_2,
+  ]);
+  return CHAT_MESSAGES;
+};
+
+export const buildExportedChat = (id: UUID) => {
+  const defaultExportedChatMessageValues: ExportedChatMessage = {
+    id: '',
+    chatId: id,
+    body: 'some text',
+    creator: 'somememberid',
+    creatorName: 'Some Name',
+    createdAt: 'someDate',
+    updatedAt: 'someDate',
+  };
+  const createMockExportedChatMessage: Record.Factory<ExportedChatMessage> =
+    Record(defaultExportedChatMessageValues);
+  const CHAT_MESSAGE_1: ExportedChatMessageRecord =
+    createMockExportedChatMessage({
+      id: v4(),
+      chatId: id,
+      body: 'some text',
+      creator: 'somememberid',
+    });
+  const CHAT_MESSAGE_2: ExportedChatMessageRecord =
+    createMockExportedChatMessage({
+      id: v4(),
+      chatId: id,
+      body: 'some other text',
+      creator: 'someothermemberid',
+      creatorName: 'Some other name',
+    });
+  const CHAT_MESSAGES: List<ExportedChatMessageRecord> = List([
     CHAT_MESSAGE_1,
     CHAT_MESSAGE_2,
   ]);

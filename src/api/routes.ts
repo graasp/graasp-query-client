@@ -79,6 +79,8 @@ export const buildGetItemInvitationsForItemRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/invitations`;
 
 export const buildGetItemChatRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/chat`;
+export const buildExportItemChatRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/export/chat`;
 export const buildGetPublicItemChatRoute = (id: UUID) =>
   `${PUBLIC_PREFIX}/${buildGetItemChatRoute(id)}`;
 export const buildPostItemChatMessageRoute = (id: UUID) =>
@@ -410,6 +412,7 @@ export const API_ROUTES = {
   buildGetPublicItemRoute,
   buildGetPublicChildrenRoute,
   buildGetItemChatRoute,
+  buildExportItemChatRoute,
   buildPostItemChatMessageRoute,
   buildPatchItemChatMessageRoute,
   buildDeleteItemChatMessageRoute,
