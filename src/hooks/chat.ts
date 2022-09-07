@@ -39,7 +39,10 @@ export default (
         enabled: Boolean(itemId),
       });
     },
-    useExportItemChat: (itemId: UUID) =>
+    useExportItemChat: (
+      itemId: UUID,
+      options: { enabled: boolean } = { enabled: true },
+    ) =>
       useQuery({
         queryKey: buildExportItemChatKey(itemId),
         queryFn: (): Promise<ExportedItemChatRecord> =>
@@ -47,7 +50,7 @@ export default (
             convertJs(data),
           ),
         ...defaultQueryOptions,
-        enabled: Boolean(itemId),
+        enabled: Boolean(itemId) && options.enabled,
       }),
   };
 };
