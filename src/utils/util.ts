@@ -1,5 +1,5 @@
 import { List, Record, RecordOf, Seq, is } from 'immutable';
-import { ITEM_TYPES } from '../types';
+import { InfiniteData } from 'react-query';
 
 export const isObject = (value: unknown) =>
   typeof value === 'object' && !Array.isArray(value) && value !== null;
@@ -42,30 +42,40 @@ export const isDataEqual = (
   return is(oldData, newData);
 };
 
+export const isPaginatedChildrenDataEqual = (
+  oldData: InfiniteData<RecordOf<any>> | undefined,
+  newData: InfiniteData<RecordOf<any>>,
+) => {
+  if (oldData?.pages.length === newData?.pages.length) {
+    for (var i = 0; i < oldData?.pages.length; i++) {
+      if (!is(oldData.pages[i], newData.pages[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
+};
+
 export const paginate = (
   list: List<RecordOf<any>>,
   pageSize: number,
   pageNumber: number,
+  filterFunction?: (item: List<RecordOf<any>>) => List<RecordOf<any>>,
 ): Promise<RecordOf<any>> => {
   return new Promise((resolve, reject) => {
     try {
-      const data = list
-        .filter((i) => i.type !== ITEM_TYPES.FOLDER)
-        .filter((i) => !i.settings?.isPinned)
-        .slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+      let data = filterFunction ? filterFunction(list) : list;
+      data = data.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
+      // compute next page number, set at -1 if it's the end of the list
+      let nextPageNumber =
+        data.isEmpty() || list.size <= pageNumber * pageSize ? -1 : pageNumber;
       const createRecordPaginatedResponse = Record({
         data: data,
-        pageNumber: -1,
+        pageNumber: nextPageNumber,
       });
-
-      if (data.isEmpty() || list.size <= pageNumber * pageSize) {
-        resolve(createRecordPaginatedResponse());
-      }
-      const response = createRecordPaginatedResponse({
-        data: data,
-        pageNumber: pageNumber,
-      });
+      const response = createRecordPaginatedResponse();
       resolve(response);
     } catch (error) {
       reject(error);

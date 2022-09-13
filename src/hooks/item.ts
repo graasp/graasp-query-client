@@ -1,4 +1,4 @@
-import { List, is, RecordOf } from 'immutable';
+import { List, RecordOf } from 'immutable';
 import {
   QueryClient,
   useQuery,
@@ -9,6 +9,7 @@ import * as Api from '../api';
 import {
   DEFAULT_THUMBNAIL_SIZES,
   PAGINATED_ITEMS_PER_PAGE,
+  STALE_TIME_CHILDREN_PAGINATED_MILLISECONDS,
 } from '../config/constants';
 import {
   buildFileContentKey,
@@ -35,7 +36,11 @@ import {
 } from '../types';
 import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
-import { convertJs, paginate } from '../utils/util';
+import {
+  convertJs,
+  isPaginatedChildrenDataEqual,
+  paginate,
+} from '../utils/util';
 
 export default (
   queryClient: QueryClient,
@@ -118,19 +123,19 @@ export default (
 
     useChildrenPaginated: (
       id: UUID | undefined,
-      children: any,
+      children: List<RecordOf<any>>,
       options?: {
         enabled?: boolean;
         itemsPerPage?: number;
+        filterFunction?: (item: List<RecordOf<any>>) => List<RecordOf<any>>;
       },
     ): UseQueryResult<any> => {
       const enabled = options?.enabled;
 
       const childrenPaginatedOptions = {
         ...defaultQueryOptions,
-        isDataEqual: (oldData: any, newData: any) => {
-          return is(oldData, newData);
-        },
+        staleTime: STALE_TIME_CHILDREN_PAGINATED_MILLISECONDS,
+        isDataEqual: isPaginatedChildrenDataEqual,
       };
 
       return useInfiniteQuery(
@@ -140,11 +145,12 @@ export default (
             children,
             options?.itemsPerPage || PAGINATED_ITEMS_PER_PAGE,
             pageParam,
+            options?.filterFunction,
           ),
         {
-          enabled: enabled,
+          enabled,
           getNextPageParam: (lastPage: RecordOf<any>) => {
-            const pageNumber = lastPage.pageNumber;
+            const { pageNumber } = lastPage;
             if (pageNumber !== -1) {
               return pageNumber + 1;
             }
