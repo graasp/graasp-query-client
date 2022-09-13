@@ -1,17 +1,16 @@
 import { List } from 'immutable';
 import { QueryClient, useQuery } from 'react-query';
+
+import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
+
 import * as Api from '../api';
+import { splitRequestByIds } from '../api/axios';
+import { UndefinedArgument } from '../config/errors';
 import {
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
 } from '../config/keys';
-import {
-  MembershipRecord,
-  QueryClientConfig,
-  UndefinedArgument,
-  UUID,
-} from '../types';
-import { convertJs } from '../utils/util';
+import { ItemMembershipRecord, QueryClientConfig, UUID } from '../types';
 import { configureWsMembershipHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
@@ -37,7 +36,7 @@ export default (
 
       return useQuery({
         queryKey: buildItemMembershipsKey(id),
-        queryFn: (): Promise<List<MembershipRecord>> => {
+        queryFn: (): Promise<List<ItemMembershipRecord>> => {
           if (!id) {
             throw new UndefinedArgument();
           }
@@ -61,21 +60,21 @@ export default (
 
       return useQuery({
         queryKey: buildManyItemMembershipsKey(ids),
-        queryFn: (): Promise<List<List<MembershipRecord>>> => {
+        queryFn: (): Promise<List<List<ItemMembershipRecord>>> => {
           if (!ids) {
             throw new UndefinedArgument();
           }
 
-          return Api.getMembershipsForItems(ids, queryConfig).then((data) =>
-            convertJs(data),
+          return splitRequestByIds(ids, MAX_TARGETS_FOR_READ_REQUEST, (chunk) =>
+            Api.getMembershipsForItems(chunk, queryConfig),
           );
         },
-        onSuccess: async (memberships: List<List<MembershipRecord>>) => {
+        onSuccess: async (memberships: List<List<ItemMembershipRecord>>) => {
           // save memberships in their own key
           ids?.forEach(async (id, idx) => {
             queryClient.setQueryData(
               buildItemMembershipsKey(id),
-              memberships.get(idx) as List<MembershipRecord>,
+              memberships.get(idx) as List<ItemMembershipRecord>,
             );
           });
         },

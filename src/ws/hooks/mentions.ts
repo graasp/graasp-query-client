@@ -1,6 +1,10 @@
 import { List, Record } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
+
+import { convertJs } from '@graasp/sdk';
+
+import { buildMentionKey } from '../../config/keys';
 import {
   ChatMention,
   ChatMentionRecord,
@@ -9,8 +13,6 @@ import {
 } from '../../types';
 import { OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
-import { buildMentionKey } from '../../config/keys';
-import { convertJs } from '../../utils/util';
 
 // todo: use graasp-types?
 interface MentionEvent {

@@ -1,6 +1,7 @@
 import { QueryClient } from 'react-query';
+
 import * as Api from '../api';
-import { buildMentionKey, MUTATION_KEYS } from '../config/keys';
+import { MUTATION_KEYS, buildMentionKey } from '../config/keys';
 import {
   clearMentionsRoutine,
   deleteMentionRoutine,

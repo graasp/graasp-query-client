@@ -1,13 +1,13 @@
 import { QueryClientConfig, UUID } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
+  GET_ITEM_VALIDATION_REVIEWS_ROUTE,
+  GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE,
+  GET_ITEM_VALIDATION_STATUSES_ROUTE,
   buildGetItemValidationAndReviewRoute,
   buildGetItemValidationGroupsRoute,
   buildPostItemValidationRoute,
   buildUpdateItemValidationReviewRoute,
-  GET_ITEM_VALIDATION_REVIEWS_ROUTE,
-  GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE,
-  GET_ITEM_VALIDATION_STATUSES_ROUTE,
 } from './routes';
 
 const axios = configureAxios();

@@ -1,11 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import Cookies from 'js-cookie';
-import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
-import { buildGetItemsByKeywordRoute } from '../api/routes';
-import { mockHook, setUpTest } from '../../test/utils';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+
 import { ITEMS, Ranges, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import { mockHook, setUpTest } from '../../test/utils';
+import { buildGetItemsByKeywordRoute } from '../api/routes';
 import { buildSearchByKeywordKey } from '../config/keys';
 import { ItemRecord } from '../types';
 

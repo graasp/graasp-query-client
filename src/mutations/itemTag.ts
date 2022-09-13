@@ -1,9 +1,11 @@
-import { QueryClient } from 'react-query';
 import { List } from 'immutable';
+import { QueryClient } from 'react-query';
+
 import { SUCCESS_MESSAGES } from '@graasp/translations';
-import { buildItemTagsKey, MUTATION_KEYS } from '../config/keys';
-import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
+
 import * as Api from '../api';
+import { MUTATION_KEYS, buildItemTagsKey } from '../config/keys';
+import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
 import { ItemTagRecord, QueryClientConfig } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {

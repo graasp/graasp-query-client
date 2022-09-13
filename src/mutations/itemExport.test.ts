@@ -1,17 +1,19 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
-import Cookies from 'js-cookie';
-import { act } from 'react-test-renderer';
 import { StatusCodes } from 'http-status-codes';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+import { act } from 'react-test-renderer';
+
+import { HttpMethod } from '@graasp/sdk';
+
+import { UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { REQUEST_METHODS } from '../api/utils';
-import { MUTATION_KEYS } from '../config/keys';
 import {
   buildExportItemRoute,
   buildExportPublicItemRoute,
 } from '../api/routes';
+import { MUTATION_KEYS } from '../config/keys';
 import { exportItemRoutine } from '../routines';
-import { UNAUTHORIZED_RESPONSE } from '../../test/constants';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
@@ -35,7 +37,7 @@ describe('Export Zip', () => {
       const endpoints = [
         {
           response: { id: 'id', content: 'content' },
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           route,
         },
       ];
@@ -65,7 +67,7 @@ describe('Export Zip', () => {
         },
         {
           response: { id: 'id', content: 'content' },
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           route: `/${buildExportPublicItemRoute(itemId)}`,
         },
       ];
@@ -90,7 +92,7 @@ describe('Export Zip', () => {
       const endpoints = [
         {
           response: { id: 'id', content: 'public content' },
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           route: `/${buildExportPublicItemRoute(itemId)}`,
         },
       ];

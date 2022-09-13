@@ -5,39 +5,38 @@ import {
   UseQueryResult,
   useInfiniteQuery,
 } from 'react-query';
+
+import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
+
 import * as Api from '../api';
+import { splitRequestByIds } from '../api/axios';
 import {
+  CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZES,
   PAGINATED_ITEMS_PER_PAGE,
   STALE_TIME_CHILDREN_PAGINATED_MILLISECONDS,
 } from '../config/constants';
+import { UndefinedArgument } from '../config/errors';
 import {
+  OWN_ITEMS_KEY,
+  RECYCLED_ITEMS_KEY,
+  SHARED_ITEMS_KEY,
   buildFileContentKey,
   buildItemChildrenKey,
   buildItemPaginatedChildrenKey,
   buildItemKey,
   buildItemLoginKey,
   buildItemParentsKey,
+  buildItemThumbnailKey,
   buildItemsChildrenKey,
   buildItemsKey,
   buildPublicItemsWithTagKey,
-  buildItemThumbnailKey,
-  OWN_ITEMS_KEY,
-  RECYCLED_ITEMS_KEY,
-  SHARED_ITEMS_KEY,
 } from '../config/keys';
 import { getOwnItemsRoutine } from '../routines';
-import {
-  ItemRecord,
-  MemberRecord,
-  QueryClientConfig,
-  UndefinedArgument,
-  UUID,
-} from '../types';
+import { ItemRecord, MemberRecord, QueryClientConfig, UUID } from '../types';
 import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 import {
-  convertJs,
   isPaginatedChildrenDataEqual,
   paginate,
 } from '../utils/util';
@@ -175,17 +174,14 @@ export default (
 
       return useQuery({
         queryKey: buildItemsChildrenKey(ids),
-        queryFn: (): Promise<List<List<ItemRecord>>> => {
-          return Promise.all(
+        queryFn: (): Promise<List<List<ItemRecord>>> =>
+          Promise.all(
             ids.map((id) =>
               Api.getChildren(id, ordered, queryConfig).then((data) =>
                 convertJs(data),
               ),
             ),
-          ).then((items) => {
-            return List(items);
-          });
-        },
+          ).then((items) => List(items)),
         onSuccess: async (items: List<List<ItemRecord>>) => {
           /* Because the query function loops over the ids, this returns an array 
           of immutable list of items, each list correspond to an item and contains 
@@ -272,9 +268,7 @@ export default (
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getItem(id, queryConfig).then((data) => {
-            return convertJs(data);
-          });
+          return Api.getItem(id, queryConfig).then((data) => convertJs(data));
         },
         enabled: Boolean(id),
         ...defaultQueryOptions,
@@ -301,7 +295,13 @@ export default (
               convertJs([data]),
             );
           }
-          return Api.getItems(ids, queryConfig).then((data) => convertJs(data));
+
+          return splitRequestByIds(
+            ids,
+            MAX_TARGETS_FOR_READ_REQUEST,
+            (chunk) => Api.getItems(chunk, queryConfig),
+            true,
+          );
         },
         onSuccess: async (items: List<ItemRecord>) => {
           // save items in their own key
@@ -344,6 +344,7 @@ export default (
         },
         enabled: Boolean(id) && enabled,
         ...defaultQueryOptions,
+        cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
       }),
 
     useRecycledItems: () =>
@@ -415,6 +416,7 @@ export default (
         },
         ...defaultQueryOptions,
         enabled: Boolean(id) && shouldFetch,
+        cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
       });
     },
   };

@@ -1,6 +1,6 @@
 import { QueryClientConfig, UUID } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
-import { buildPostItemFlagRoute, GET_FLAGS_ROUTE } from './routes';
+import { GET_FLAGS_ROUTE, buildPostItemFlagRoute } from './routes';
 
 const axios = configureAxios();
 

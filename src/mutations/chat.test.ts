@@ -1,24 +1,26 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
-import nock from 'nock';
-import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+
+import { HttpMethod } from '@graasp/sdk';
+
+import {
+  ITEMS,
+  ITEM_CHAT,
+  MESSAGE_IDS,
+  OK_RESPONSE,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
   buildClearItemChatRoute,
   buildDeleteItemChatMessageRoute,
   buildPatchItemChatMessageRoute,
   buildPostItemChatMessageRoute,
 } from '../api/routes';
-import { setUpTest, mockMutation, waitForMutation } from '../../test/utils';
-import {
-  ITEMS,
-  ITEM_CHAT,
-  OK_RESPONSE,
-  UNAUTHORIZED_RESPONSE,
-  MESSAGE_IDS,
-} from '../../test/constants';
-import { buildItemChatKey, MUTATION_KEYS } from '../config/keys';
-import { REQUEST_METHODS } from '../api/utils';
+import { MUTATION_KEYS, buildItemChatKey } from '../config/keys';
 import {
   clearItemChatRoutine,
   deleteItemChatMessageRoutine,
@@ -51,7 +53,7 @@ describe('Chat Mutations', () => {
 
       it(`Post item chat message`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: REQUEST_METHODS.POST },
+          { route, response: OK_RESPONSE, method: HttpMethod.POST },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, ITEM_CHAT);
@@ -76,7 +78,7 @@ describe('Chat Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: REQUEST_METHODS.POST,
+            method: HttpMethod.POST,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -110,7 +112,7 @@ describe('Chat Mutations', () => {
 
       it(`Patch item chat message`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: REQUEST_METHODS.PATCH },
+          { route, response: OK_RESPONSE, method: HttpMethod.PATCH },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, ITEM_CHAT);
@@ -139,7 +141,7 @@ describe('Chat Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: REQUEST_METHODS.PATCH,
+            method: HttpMethod.PATCH,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -178,7 +180,7 @@ describe('Chat Mutations', () => {
 
       it(`Delete item chat message`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: REQUEST_METHODS.DELETE },
+          { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, ITEM_CHAT);
@@ -203,7 +205,7 @@ describe('Chat Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: REQUEST_METHODS.DELETE,
+            method: HttpMethod.DELETE,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -237,7 +239,7 @@ describe('Chat Mutations', () => {
 
       it(`Clear chat`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: REQUEST_METHODS.DELETE },
+          { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, ITEM_CHAT);
@@ -262,7 +264,7 @@ describe('Chat Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: REQUEST_METHODS.DELETE,
+            method: HttpMethod.DELETE,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -306,7 +308,7 @@ describe('Chat Mutations', () => {
       const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_CHAT_MESSAGE);
       it(`Post item chat message`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: REQUEST_METHODS.POST },
+          { route, response: OK_RESPONSE, method: HttpMethod.POST },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, ITEM_CHAT);
@@ -332,7 +334,7 @@ describe('Chat Mutations', () => {
       const mutation = () => useMutation(MUTATION_KEYS.PATCH_ITEM_CHAT_MESSAGE);
       it(`Patch item chat message`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: REQUEST_METHODS.PATCH },
+          { route, response: OK_RESPONSE, method: HttpMethod.PATCH },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, ITEM_CHAT);
@@ -359,7 +361,7 @@ describe('Chat Mutations', () => {
         useMutation(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE);
       it(`Delete item chat message`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: REQUEST_METHODS.DELETE },
+          { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, ITEM_CHAT);
@@ -385,7 +387,7 @@ describe('Chat Mutations', () => {
       const mutation = () => useMutation(MUTATION_KEYS.CLEAR_ITEM_CHAT);
       it(`Clear chat`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: REQUEST_METHODS.DELETE },
+          { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, ITEM_CHAT);

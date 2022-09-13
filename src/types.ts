@@ -1,5 +1,15 @@
-import { RecordOf, List } from 'immutable';
-import { MentionStatus } from '@graasp/sdk';
+import { List, RecordOf } from 'immutable';
+
+import {
+  Item,
+  ItemMembership,
+  ItemSettings,
+  Member,
+  MemberExtra,
+  MentionStatus,
+  PermissionLevel,
+  UnknownExtra,
+} from '@graasp/sdk';
 
 export type Notifier = (e: unknown) => void;
 
@@ -31,58 +41,19 @@ export type QueryClientConfig = {
   };
 };
 
-// Graasp Core Types
-// todo: use graasp-types
-
 export type UUID = string;
-
-export type ItemSettings = {
-  hasThumbnail?: boolean;
-};
 
 export type ItemSettingsRecord = RecordOf<ItemSettings>;
 
-export type Item = {
-  id: UUID;
-  name: string;
-  path: string;
-  type: string;
-  description: string;
-  extra: unknown;
-  settings?: ItemSettingsRecord;
-};
+export type ItemExtraRecord = RecordOf<UnknownExtra>;
 
-export type ItemRecord = RecordOf<Item>;
-
-export type MemberExtra = {
-  hasAvatar?: boolean;
-};
+export type ItemRecord = RecordOf<Item<ItemExtraRecord, ItemSettingsRecord>>;
 
 export type MemberExtraRecord = RecordOf<MemberExtra>;
 
-export type Member = {
-  id: UUID;
-  name: string;
-  email: string;
-  extra: MemberExtraRecord;
-};
+export type MemberRecord = RecordOf<Member<MemberExtraRecord>>;
 
-export type MemberRecord = RecordOf<Member>;
-
-export type Membership = {
-  id: UUID;
-  memberId: string;
-  itemId: string;
-  permission: string;
-};
-
-export type MembershipRecord = RecordOf<Membership>;
-
-export type ExtendedItem = Item & {
-  parentId: UUID;
-};
-
-export type Permission = string;
+export type ItemMembershipRecord = RecordOf<ItemMembership>;
 
 export type ItemTag = {
   id: UUID;
@@ -115,16 +86,6 @@ export type ItemCategory = {
 
 export type ItemCategoryRecord = RecordOf<ItemCategory>;
 
-export class UndefinedArgument extends Error {
-  constructor() {
-    super();
-    this.message = 'UnexpectedInput';
-    this.name = 'UnexpectedInput';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.stack = (<any>new Error()).stack;
-  }
-}
-
 export enum ITEM_LOGIN_SCHEMAS {
   USERNAME = 'username',
   USERNAME_AND_PASSWORD = 'username+password',
@@ -135,17 +96,6 @@ export type ItemLogin = {
 };
 
 export type ItemLoginRecord = RecordOf<ItemLogin>;
-
-// todo: use types from graasp types
-export enum ITEM_TYPES {
-  FOLDER = 'folder',
-}
-
-export enum PERMISSION_LEVELS {
-  READ = 'read',
-  WRITE = 'write',
-  ADMIN = 'admin',
-}
 
 export type ChatMention = {
   id: string;
@@ -204,15 +154,6 @@ export type ItemChat = {
 
 export type ItemChatRecord = RecordOf<ItemChat>;
 
-// todo: get from graasp types
-export type GraaspError = {
-  name: string;
-  code: string;
-  statusCode?: number;
-  message: string;
-  data?: unknown;
-};
-
 // a combined record from item-validation, item-validation-review, item-validation-process
 export type FullValidationRecord = {
   id: string;
@@ -257,7 +198,6 @@ export type StatusRecord = RecordOf<Status>;
 
 export interface Action {
   id: string;
-  name?: string;
   itemId: UUID;
   memberId: UUID;
 }
@@ -265,7 +205,7 @@ export interface Action {
 export type ActionRecord = RecordOf<Action>;
 
 export interface ActionData {
-  actions: List<Action>;
+  actions: List<ActionRecord>;
 }
 
 export type ActionDataRecord = RecordOf<ActionData>;
@@ -273,7 +213,7 @@ export type ActionDataRecord = RecordOf<ActionData>;
 export type Invitation = {
   id: UUID;
   email: string;
-  permission?: string;
+  permission?: PermissionLevel;
   name?: string;
   creator: UUID;
   itemPath: string;

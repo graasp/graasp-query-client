@@ -1,9 +1,11 @@
 import { List } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
+
+import { ItemMembership, convertJs, getIdsFromPath } from '@graasp/sdk';
+
 import { buildItemMembershipsKey } from '../../config/keys';
-import { Membership, MembershipRecord, UUID } from '../../types';
-import { convertJs } from '../../utils/util';
+import { ItemMembershipRecord, UUID } from '../../types';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 
@@ -11,7 +13,7 @@ import { Channel, WebsocketClient } from '../ws-client';
 interface MembershipEvent {
   kind: string;
   op: string;
-  membership: Membership;
+  membership: ItemMembership;
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -39,12 +41,17 @@ export const configureWsMembershipHooks = (
         const handler = (event: MembershipEvent) => {
           if (event.kind === KINDS.ITEM) {
             const current =
-              queryClient.getQueryData<List<MembershipRecord>>(
+              queryClient.getQueryData<List<ItemMembershipRecord>>(
                 itemMembershipsKey,
               );
-            const membership: MembershipRecord = convertJs(event.membership);
+            const membership: ItemMembershipRecord = convertJs(
+              event.membership,
+            );
 
-            if (current && membership.itemId === itemId) {
+            // we handle only direct memberships
+            // since we have only the item id information
+            const lastId = getIdsFromPath(membership.itemPath).pop();
+            if (current && lastId === itemId) {
               let mutation;
               switch (event.op) {
                 case OPS.CREATE: {

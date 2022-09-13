@@ -1,17 +1,18 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import nock from 'nock';
-import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
-import { buildGetLikeCountRoute, buildGetLikedItemsRoute } from '../api/routes';
-import { mockHook, setUpTest } from '../../test/utils';
+import { List } from 'immutable';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+
 import {
   ITEMS,
-  LIKE_COUNT,
   ITEM_LIKES,
+  LIKE_COUNT,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
+import { mockHook, setUpTest } from '../../test/utils';
+import { buildGetLikeCountRoute, buildGetLikedItemsRoute } from '../api/routes';
 import { buildGetLikeCountKey, buildGetLikedItemsKey } from '../config/keys';
-import { List } from 'immutable';
 import { ItemLikeRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();

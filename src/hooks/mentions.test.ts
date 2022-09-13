@@ -1,12 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
 import Cookies from 'js-cookie';
-import {
-  buildGetMemberMentionsRoute,
-  GET_CURRENT_MEMBER_ROUTE,
-} from '../api/routes';
+import nock from 'nock';
+
+import { MEMBER_RESPONSE, buildMemberMentions } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
-import { buildMemberMentions, MEMBER_RESPONSE } from '../../test/constants';
+import {
+  GET_CURRENT_MEMBER_ROUTE,
+  buildGetMemberMentionsRoute,
+} from '../api/routes';
 import { buildMentionKey } from '../config/keys';
 import type { MemberMentionsRecord } from '../types';
 

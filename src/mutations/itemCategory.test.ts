@@ -1,21 +1,23 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
-import Cookies from 'js-cookie';
-import { act } from 'react-test-renderer';
 import { StatusCodes } from 'http-status-codes';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+import { act } from 'react-test-renderer';
+
+import { HttpMethod } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
+
+import { ITEM_CATEGORIES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { REQUEST_METHODS } from '../api/utils';
-import { buildItemCategoriesKey, MUTATION_KEYS } from '../config/keys';
 import {
   buildDeleteItemCategoryRoute,
   buildPostItemCategoryRoute,
 } from '../api/routes';
+import { MUTATION_KEYS, buildItemCategoriesKey } from '../config/keys';
 import {
   deleteItemCategoryRoutine,
   postItemCategoryRoutine,
 } from '../routines';
-import { ITEM_CATEGORIES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
@@ -43,7 +45,7 @@ describe('Item Category Mutations', () => {
       const endpoints = [
         {
           response: { itemId: 'item-id', categoryId: 'new-category' },
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -74,7 +76,7 @@ describe('Item Category Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -115,7 +117,7 @@ describe('Item Category Mutations', () => {
       const endpoints = [
         {
           response: { itemId: 'item-id' },
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -147,7 +149,7 @@ describe('Item Category Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];

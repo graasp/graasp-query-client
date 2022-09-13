@@ -1,14 +1,16 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
+
+import { HttpMethod } from '@graasp/sdk';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
+
 import { FLAGS, ITEMS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildPostItemFlagRoute } from '../api/routes';
-import { REQUEST_METHODS } from '../api/utils';
-import { buildItemFlagsKey, MUTATION_KEYS } from '../config/keys';
+import { MUTATION_KEYS, buildItemFlagsKey } from '../config/keys';
 import { postItemFlagRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -38,7 +40,7 @@ describe('Item Flag Mutations', () => {
       const endpoints = [
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -67,7 +69,7 @@ describe('Item Flag Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];

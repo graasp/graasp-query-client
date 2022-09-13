@@ -1,18 +1,21 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
-import { List } from 'immutable';
-import { act } from 'react-test-renderer';
 import { StatusCodes } from 'http-status-codes';
+import { List } from 'immutable';
 import Cookies from 'js-cookie';
+import nock from 'nock';
+import { act } from 'react-test-renderer';
+
+import { HttpMethod, PermissionLevel } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
+
 import {
-  buildMockInvitations,
   ITEMS,
   ITEM_MEMBERSHIPS_RESPONSE,
   MEMBERS_RESPONSE,
   MEMBER_RESPONSE,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
+  buildMockInvitations,
 } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
@@ -23,20 +26,19 @@ import {
   buildPostItemMembershipRoute,
   buildPostManyItemMembershipsRoute,
 } from '../api/routes';
-import { REQUEST_METHODS } from '../api/utils';
 import {
+  MUTATION_KEYS,
+  OWN_ITEMS_KEY,
   buildItemInvitationsKey,
   buildItemKey,
   buildItemMembershipsKey,
-  MUTATION_KEYS,
-  OWN_ITEMS_KEY,
 } from '../config/keys';
 import {
   deleteItemMembershipRoutine,
   editItemMembershipRoutine,
   shareItemRoutine,
 } from '../routines';
-import { MembershipRecord, PERMISSION_LEVELS } from '../types';
+import { ItemMembershipRecord } from '../types';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({
@@ -57,7 +59,7 @@ describe('Membership Mutations', () => {
   const memberships = ITEM_MEMBERSHIPS_RESPONSE;
   const membershipsKey = buildItemMembershipsKey(itemId);
   const membershipId = memberships.first()!.id;
-  const permission = PERMISSION_LEVELS.READ;
+  const permission = PermissionLevel.Read;
 
   describe(MUTATION_KEYS.POST_ITEM_MEMBERSHIP, () => {
     const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_MEMBERSHIP);
@@ -82,12 +84,12 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: [MEMBERS_RESPONSE],
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           route: `/${buildGetMembersBy([email])}`,
         },
         {
           response,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -125,13 +127,13 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: [MEMBERS_RESPONSE],
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           route: `/${buildGetMembersBy([email])}`,
         },
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -163,7 +165,7 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: {},
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           route,
         },
       ];
@@ -198,7 +200,7 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: UNAUTHORIZED_RESPONSE,
-          method: REQUEST_METHODS.PATCH,
+          method: HttpMethod.PATCH,
           statusCode: StatusCodes.UNAUTHORIZED,
           route,
         },
@@ -236,7 +238,7 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: {},
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -256,7 +258,7 @@ describe('Membership Mutations', () => {
         queryClient.getQueryState(membershipsKey)?.isInvalidated,
       ).toBeTruthy();
       expect(
-        queryClient.getQueryData<List<MembershipRecord>>(membershipsKey),
+        queryClient.getQueryData<List<ItemMembershipRecord>>(membershipsKey),
       ).toEqualImmutable(memberships.filter(({ id }) => id !== membershipId));
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: deleteItemMembershipRoutine.SUCCESS,
@@ -271,7 +273,7 @@ describe('Membership Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.DELETE,
+          method: HttpMethod.DELETE,
           route,
         },
       ];
@@ -291,7 +293,7 @@ describe('Membership Mutations', () => {
         queryClient.getQueryState(membershipsKey)?.isInvalidated,
       ).toBeTruthy();
       expect(
-        queryClient.getQueryData<List<MembershipRecord>>(membershipsKey),
+        queryClient.getQueryData<List<ItemMembershipRecord>>(membershipsKey),
       ).toEqualImmutable(memberships);
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -325,17 +327,17 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: [MEMBERS_RESPONSE],
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           route: `/${buildGetMembersBy(emails)}`,
         },
         {
           response: ITEM_MEMBERSHIPS_RESPONSE,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
         {
           response: initialInvitations,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route: `/${buildPostInvitationsRoute(itemId)}`,
         },
       ];
@@ -384,17 +386,17 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: [[{ email: emails[0], id: emails[0] }]],
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           route: `/${buildGetMembersBy(emails)}`,
         },
         {
           response: [...ITEM_MEMBERSHIPS_RESPONSE, UNAUTHORIZED_RESPONSE],
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
         {
           response: [...initialInvitations, UNAUTHORIZED_RESPONSE],
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route: `/${buildPostInvitationsRoute(itemId)}`,
         },
       ];
@@ -448,7 +450,7 @@ describe('Membership Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           route: `/${buildGetMembersBy(emails)}`,
         },
       ];
@@ -497,18 +499,18 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: [[{ email: emails[0], id: emails[0] }]],
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           route: `/${buildGetMembersBy(emails)}`,
         },
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
         {
           response: initialInvitations,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route: `/${buildPostInvitationsRoute(itemId)}`,
         },
       ];
@@ -559,18 +561,18 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: [[{ email: emails[0], id: emails[0] }]],
-          method: REQUEST_METHODS.GET,
+          method: HttpMethod.GET,
           route: `/${buildGetMembersBy(emails)}`,
         },
         {
           response: ITEM_MEMBERSHIPS_RESPONSE,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: REQUEST_METHODS.POST,
+          method: HttpMethod.POST,
           route: `/${buildPostInvitationsRoute(itemId)}`,
         },
       ];

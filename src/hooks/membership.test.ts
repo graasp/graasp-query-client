@@ -1,23 +1,26 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
-import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
-import {
-  buildGetItemMembershipsForItemsRoute,
-  buildGetPublicItemMembershipsForItemsRoute,
-} from '../api/routes';
-import { mockHook, setUpTest } from '../../test/utils';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+
+import { MAX_TARGETS_FOR_READ_REQUEST } from '@graasp/sdk';
+
 import {
   ITEMS,
   ITEM_MEMBERSHIPS_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
+import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils';
 import {
-  buildManyItemMembershipsKey,
+  buildGetItemMembershipsForItemsRoute,
+  buildGetPublicItemMembershipsForItemsRoute,
+} from '../api/routes';
+import {
   buildItemMembershipsKey,
+  buildManyItemMembershipsKey,
 } from '../config/keys';
-import type { MembershipRecord } from '../types';
+import type { ItemMembershipRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -39,7 +42,7 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<MembershipRecord>).toEqualImmutable(response[0]);
+      expect(data as List<ItemMembershipRecord>).toEqualImmutable(response[0]);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response[0]);
     });
@@ -84,7 +87,7 @@ describe('Membership Hooks', () => {
         wrapper,
       });
 
-      expect(data as List<MembershipRecord>).toEqualImmutable(response[0]);
+      expect(data as List<ItemMembershipRecord>).toEqualImmutable(response[0]);
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response[0]);
     });
@@ -129,28 +132,49 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route: oneRoute, response: oneResponse }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<List<MembershipRecord>>).toEqualImmutable(
+      expect(data as List<List<ItemMembershipRecord>>).toEqualImmutable(
         oneResponse,
       );
       // verify cache keys
       expect(queryClient.getQueryData(oneKey)).toEqualImmutable(oneResponse);
     });
 
-    it(`Receive multiple item memberships`, async () => {
-      const hook = () => hooks.useManyItemMemberships(ids);
+    it(`Receive two item memberships`, async () => {
       const endpoints = [{ route, response }];
+      const hook = () => hooks.useManyItemMemberships(ids);
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<List<MembershipRecord>>).toEqualImmutable(response);
+      expect(data as List<List<ItemMembershipRecord>>).toEqualImmutable(
+        response,
+      );
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
+    it(`Receive lots of item memberships`, async () => {
+      const manyIds = ITEMS.map(({ id }) => id).toArray();
+      const manyResponse = List(manyIds.map(() => ITEM_MEMBERSHIPS_RESPONSE));
+      const manyKey = buildManyItemMembershipsKey(manyIds);
+      const hook = () => hooks.useManyItemMemberships(manyIds);
+      const endpoints = splitEndpointByIds(
+        manyIds,
+        MAX_TARGETS_FOR_READ_REQUEST,
+        (chunk) => `/${buildGetItemMembershipsForItemsRoute(chunk)}`,
+        manyResponse.toJS(),
+      );
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+
+      expect(data as List<List<ItemMembershipRecord>>).toEqualImmutable(
+        manyResponse,
+      );
+      // verify cache keys
+      expect(queryClient.getQueryData(manyKey)).toEqualImmutable(manyResponse);
+    });
+
     it(`Undefined ids does not fetch`, async () => {
       const hook = () => hooks.useManyItemMemberships(undefined);
-      const endpoints = [{ route, response }];
       const { data, isFetched } = await mockHook({
-        endpoints,
+        endpoints: [],
         hook,
         wrapper,
         enabled: false,
@@ -184,7 +208,9 @@ describe('Membership Hooks', () => {
         wrapper,
       });
 
-      expect(data as List<List<MembershipRecord>>).toEqualImmutable(response);
+      expect(data as List<List<ItemMembershipRecord>>).toEqualImmutable(
+        response,
+      );
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });

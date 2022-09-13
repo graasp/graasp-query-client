@@ -3,8 +3,8 @@ import configureAxios, { verifyAuthentication } from './axios';
 import {
   buildDeleteInvitationRoute,
   buildGetInvitationRoute,
-  buildPatchInvitationRoute,
   buildGetItemInvitationsForItemRoute,
+  buildPatchInvitationRoute,
   buildPostInvitationsRoute,
   buildResendInvitationRoute,
 } from './routes';

@@ -1,18 +1,20 @@
-import React from 'react';
 import {
-  renderHook,
   RenderResult,
   WaitFor,
+  renderHook,
 } from '@testing-library/react-hooks';
-import nock from 'nock';
 import { StatusCodes } from 'http-status-codes';
-import { QueryObserverBaseResult, MutationObserverResult } from 'react-query';
+import nock from 'nock';
+import React from 'react';
+import { MutationObserverResult, QueryObserverBaseResult } from 'react-query';
+
+import { HttpMethod, spliceIntoChunks } from '@graasp/sdk';
+
 import configureHooks from '../src/hooks';
-import { Notifier, QueryClientConfig } from '../src/types';
-import { API_HOST, WS_HOST, DOMAIN } from './constants';
 import configureQueryClient from '../src/queryClient';
-import { REQUEST_METHODS } from '../src/api/utils';
+import { Notifier, QueryClientConfig } from '../src/types';
 import { isDataEqual } from '../src/utils/util';
+import { API_HOST, DOMAIN, WS_HOST } from './constants';
 
 type Args = { enableWebsocket?: boolean; notifier?: Notifier };
 
@@ -30,7 +32,7 @@ export const setUpTest = (args?: Args) => {
       retry: 0,
       cacheTime: 0,
       staleTime: 0,
-      isDataEqual: isDataEqual,
+      isDataEqual,
     },
     SHOW_NOTIFICATIONS: false,
     notifier,
@@ -55,7 +57,7 @@ export type Endpoint = {
   route: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   response: any;
-  method?: REQUEST_METHODS;
+  method?: HttpMethod;
   statusCode?: number;
   headers?: unknown;
 };
@@ -79,7 +81,7 @@ export const mockEndpoints = (endpoints: Endpoint[]) => {
   // mock endpoint with given response
   const server = nock(API_HOST);
   endpoints.forEach(({ route, method, statusCode, response, headers }) => {
-    server[(method || REQUEST_METHODS.GET).toLowerCase()](route).reply(
+    server[(method || HttpMethod.GET).toLowerCase()](route).reply(
       statusCode || StatusCodes.OK,
       response,
       headers,
@@ -149,3 +151,29 @@ export const waitForMutation = async (t = 500) => {
     setTimeout(r, t);
   });
 };
+
+export const splitEndpointByIds = (
+  ids: string[],
+  chunkSize: number,
+  buildRoute: (ids: string[]) => string,
+  response: any[],
+  method?: HttpMethod,
+) =>
+  spliceIntoChunks(ids, chunkSize).map((chunk, idx) => ({
+    route: buildRoute(chunk),
+    response: response.slice(idx * chunkSize, (idx + 1) * chunkSize),
+    method,
+  }));
+
+export const splitEndpointByIdsForErrors = (
+  ids: string[],
+  chunkSize: number,
+  buildRoute: (ids: string[]) => string,
+  data: { response: any; statusCode: StatusCodes },
+  method?: HttpMethod,
+) =>
+  spliceIntoChunks(ids, chunkSize).map((chunk) => ({
+    route: buildRoute(chunk),
+    ...data,
+    method,
+  }));

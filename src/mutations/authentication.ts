@@ -1,21 +1,23 @@
 import { QueryClient } from 'react-query';
+
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 import {
-  removeSession,
   getStoredSessions,
-  setCurrentSession,
+  removeSession,
   saveUrlForRedirection,
+  setCurrentSession,
 } from '@graasp/utils';
+
 import * as Api from '../api';
+import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
 import {
-  signOutRoutine,
   signInRoutine,
   signInWithPasswordRoutine,
+  signOutRoutine,
   signUpRoutine,
   switchMemberRoutine,
   updatePasswordRoutine,
 } from '../routines';
-import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
 import { QueryClientConfig, UUID } from '../types';
 import { isServer } from '../utils/util';
 

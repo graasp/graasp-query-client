@@ -1,30 +1,27 @@
 import { StatusCodes } from 'http-status-codes';
-import {
-  buildGetMembersBy,
-  buildGetMember,
-  GET_CURRENT_MEMBER_ROUTE,
-  buildPatchMember,
-  buildGetMembersRoute,
-  buildGetPublicMembersRoute,
-  buildGetPublicMember,
-  buildUploadAvatarRoute,
-  buildDownloadAvatarRoute,
-  buildDownloadPublicAvatarRoute,
-  buildDeleteMemberRoute,
-  buildUpdateMemberPasswordRoute,
-} from './routes';
-import {
-  Member,
-  MemberExtra,
-  Password,
-  QueryClientConfig,
-  UUID,
-} from '../types';
+
+import { Member, MemberExtra } from '@graasp/sdk';
+
 import { DEFAULT_THUMBNAIL_SIZES, SIGNED_OUT_USER } from '../config/constants';
+import { Password, QueryClientConfig, UUID } from '../types';
 import configureAxios, {
   fallbackToPublic,
   verifyAuthentication,
 } from './axios';
+import {
+  GET_CURRENT_MEMBER_ROUTE,
+  buildDeleteMemberRoute,
+  buildDownloadAvatarRoute,
+  buildDownloadPublicAvatarRoute,
+  buildGetMember,
+  buildGetMembersBy,
+  buildGetMembersRoute,
+  buildGetPublicMember,
+  buildGetPublicMembersRoute,
+  buildPatchMember,
+  buildUpdateMemberPasswordRoute,
+  buildUploadAvatarRoute,
+} from './routes';
 
 const axios = configureAxios();
 

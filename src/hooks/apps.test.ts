@@ -1,11 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
-import { List } from 'immutable';
 import { StatusCodes } from 'http-status-codes';
+import { List } from 'immutable';
 import Cookies from 'js-cookie';
-import { buildAppListRoute } from '../api/routes';
-import { mockHook, setUpTest } from '../../test/utils';
+import nock from 'nock';
+
 import { APPS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import { mockHook, setUpTest } from '../../test/utils';
+import { buildAppListRoute } from '../api/routes';
 import { APPS_KEY } from '../config/keys';
 import { AppRecord } from '../types';
 

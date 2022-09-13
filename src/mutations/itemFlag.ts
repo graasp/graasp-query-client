@@ -1,8 +1,10 @@
-import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { QueryClient } from 'react-query';
-import { buildItemFlagsKey, MUTATION_KEYS } from '../config/keys';
-import { postItemFlagRoutine } from '../routines';
+
+import { SUCCESS_MESSAGES } from '@graasp/translations';
+
 import * as Api from '../api';
+import { MUTATION_KEYS, buildItemFlagsKey } from '../config/keys';
+import { postItemFlagRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {

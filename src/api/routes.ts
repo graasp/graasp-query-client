@@ -1,4 +1,5 @@
 import qs from 'qs';
+
 import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
 import { UUID } from '../types';
 

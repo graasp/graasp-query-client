@@ -2,19 +2,20 @@
  * Graasp websocket client
  * React effect hooks to subscribe to real-time updates and mutate query client
  */
-
 import { List } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
+
+import { convertJs } from '@graasp/sdk';
+
 import {
-  buildItemChildrenKey,
-  buildItemKey,
   OWN_ITEMS_KEY,
   SHARED_ITEMS_KEY,
+  buildItemChildrenKey,
+  buildItemKey,
 } from '../../config/keys';
 import { ItemRecord, UUID } from '../../types';
-import { convertJs } from '../../utils/util';
-import { TOPICS, OPS, KINDS } from '../constants';
+import { KINDS, OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 
 // TODO: use graasp-types?

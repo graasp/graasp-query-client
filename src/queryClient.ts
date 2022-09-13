@@ -1,13 +1,14 @@
 import { AxiosError } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import {
+  Hydrate,
   QueryClient,
   QueryClientProvider,
-  useMutation,
-  Hydrate,
   dehydrate,
+  useMutation,
 } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+
 import {
   CACHE_TIME_MILLISECONDS,
   STALE_TIME_MILLISECONDS,
@@ -16,8 +17,8 @@ import configureHooks from './hooks';
 import configureMutations from './mutations';
 import type { QueryClientConfig } from './types';
 import { getHostname } from './utils/util';
-import { configureWebsocketClient } from './ws';
 import { isDataEqual } from './utils/util';
+import { configureWebsocketClient } from './ws';
 
 /* istanbul ignore next */
 // Query client retry function decides when and how many times a request should be retried
@@ -78,12 +79,12 @@ export default (config: Partial<QueryClientConfig>) => {
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       notifyOnChangeProps: 'tracked',
-      isDataEqual: isDataEqual,
+      isDataEqual,
       ...config?.defaultQueryOptions,
     },
   };
 
-  // create queryclient with given config
+  // create queryclient
   const queryClient = new QueryClient();
 
   // set up mutations given config

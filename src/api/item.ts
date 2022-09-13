@@ -1,4 +1,16 @@
+import { Item } from '@graasp/sdk';
+
+import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
+import { QueryClientConfig, UUID } from '../types';
+import { getParentsIdsFromPath } from '../utils/item';
+import configureAxios, {
+  fallbackToPublic,
+  verifyAuthentication,
+} from './axios';
 import {
+  GET_OWN_ITEMS_ROUTE,
+  GET_RECYCLED_ITEMS_ROUTE,
+  SHARED_ITEM_WITH_ROUTE,
   buildCopyItemRoute,
   buildCopyItemsRoute,
   buildCopyPublicItemRoute,
@@ -21,17 +33,7 @@ import {
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
-  GET_OWN_ITEMS_ROUTE,
-  GET_RECYCLED_ITEMS_ROUTE,
-  SHARED_ITEM_WITH_ROUTE,
 } from './routes';
-import { getParentsIdsFromPath } from '../utils/item';
-import { ExtendedItem, Item, QueryClientConfig, UUID } from '../types';
-import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
-import configureAxios, {
-  fallbackToPublic,
-  verifyAuthentication,
-} from './axios';
 
 const axios = configureAxios();
 
@@ -56,7 +58,15 @@ export const getOwnItems = async ({ API_HOST }: QueryClientConfig) =>
 // payload = {name, type, description, extra}
 // querystring = {parentId}
 export const postItem = async (
-  { name, type, description, extra, parentId }: ExtendedItem,
+  {
+    name,
+    type,
+    description,
+    extra,
+    parentId,
+  }: Item & {
+    parentId: UUID;
+  },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
@@ -140,14 +150,25 @@ export const moveItem = async (
   });
 
 export const moveItems = async (
-  { to, id }: { id: UUID[]; to: UUID },
+  {
+    to,
+    id,
+    ids,
+  }: {
+    /**
+     * @deprecated use ids instead
+     */
+    id?: UUID[];
+    ids: UUID[];
+    to: UUID;
+  },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() => {
     // send parentId if defined
     const body = { ...(to && { parentId: to }) };
     return axios
-      .post(`${API_HOST}/${buildMoveItemsRoute(id)}`, {
+      .post(`${API_HOST}/${buildMoveItemsRoute(id ?? ids)}`, {
         ...body,
       })
       .then(({ data }) => data);
@@ -181,14 +202,25 @@ export const copyPublicItem = async (
 };
 
 export const copyItems = async (
-  { id, to }: { id: UUID[]; to: UUID },
+  {
+    id,
+    ids,
+    to,
+  }: {
+    /**
+     * @deprecated use ids instead
+     */
+    id?: UUID[];
+    ids: UUID[];
+    to: UUID;
+  },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() => {
     // send parentId if defined
     const body = { ...(to && { parentId: to }) };
     return axios
-      .post(`${API_HOST}/${buildCopyItemsRoute(id)}`, {
+      .post(`${API_HOST}/${buildCopyItemsRoute(id ?? ids)}`, {
         ...body,
       })
       .then(({ data }) => data);

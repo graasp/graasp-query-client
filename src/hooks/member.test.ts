@@ -1,31 +1,34 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import nock from 'nock';
-import Cookies from 'js-cookie';
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
-import {
-  buildDownloadAvatarRoute,
-  buildGetMember,
-  buildGetMembersRoute,
-  buildGetPublicMember,
-  buildGetPublicMembersRoute,
-  GET_CURRENT_MEMBER_ROUTE,
-} from '../api/routes';
-import { mockHook, setUpTest } from '../../test/utils';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+
+import { MAX_TARGETS_FOR_READ_REQUEST } from '@graasp/sdk';
+
 import {
   AVATAR_BLOB_RESPONSE,
   MEMBERS_RESPONSE,
   MEMBER_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
+import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils';
 import {
+  GET_CURRENT_MEMBER_ROUTE,
+  buildDownloadAvatarRoute,
+  buildGetMember,
+  buildGetMembersRoute,
+  buildGetPublicMember,
+  buildGetPublicMembersRoute,
+} from '../api/routes';
+import { SIGNED_OUT_USER, THUMBNAIL_SIZES } from '../config/constants';
+import {
+  CURRENT_MEMBER_KEY,
   buildAvatarKey,
   buildMemberKey,
   buildMembersKey,
-  CURRENT_MEMBER_KEY,
 } from '../config/keys';
 import type { MemberRecord, UUID } from '../types';
-import { SIGNED_OUT_USER, THUMBNAIL_SIZES } from '../config/constants';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -203,12 +206,42 @@ describe('Member Hooks', () => {
     });
 
     it(`Receive two members`, async () => {
+      const twoIds = ids.slice(0, 2);
+      const twoMembers = response.slice(0, 2);
       const endpoints = [
         {
-          route: `/${buildGetMembersRoute(ids)}`,
-          response,
+          route: `/${buildGetMembersRoute(twoIds)}`,
+          response: twoMembers,
         },
       ];
+      const hook = () => hooks.useMembers(twoIds);
+      const { data } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      const members = data as List<MemberRecord>;
+      expect(members).toEqualImmutable(twoMembers);
+      // verify cache keys
+      expect(
+        queryClient.getQueryData(buildMembersKey(twoIds)),
+      ).toEqualImmutable(data);
+      for (const id of twoIds) {
+        expect(
+          queryClient.getQueryData<MemberRecord>(buildMemberKey(id)),
+        ).toEqualImmutable(members.find(({ id: thisId }) => thisId === id));
+      }
+    });
+
+    it(`Receive lots of members`, async () => {
+      const endpoints = splitEndpointByIds(
+        ids,
+        MAX_TARGETS_FOR_READ_REQUEST,
+        (chunk) => `/${buildGetMembersRoute(chunk)}`,
+        response.toJS(),
+      );
+
       const hook = () => hooks.useMembers(ids);
       const { data } = await mockHook({
         hook,
@@ -255,19 +288,21 @@ describe('Member Hooks', () => {
       }
     });
 
-    it(`Fallback to public`, async () => {
+    it(`Fallback to public for two members`, async () => {
+      const twoMembers = response.slice(0, 2);
+      const twoIds = ids.slice(0, 2);
       const endpoints = [
         {
-          route: `/${buildGetMembersRoute(ids)}`,
+          route: `/${buildGetMembersRoute(twoIds)}`,
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
         {
-          route: `/${buildGetPublicMembersRoute(ids)}`,
-          response,
+          route: `/${buildGetPublicMembersRoute(twoIds)}`,
+          response: twoMembers,
         },
       ];
-      const hook = () => hooks.useMembers(ids);
+      const hook = () => hooks.useMembers(twoIds);
       const { data } = await mockHook({
         hook,
         wrapper,
@@ -275,12 +310,12 @@ describe('Member Hooks', () => {
       });
 
       const members = data as List<MemberRecord>;
-      expect(members).toEqualImmutable(response);
+      expect(members).toEqualImmutable(twoMembers);
       // verify cache keys
-      expect(queryClient.getQueryData(buildMembersKey(ids))).toEqualImmutable(
-        data,
-      );
-      for (const id of ids) {
+      expect(
+        queryClient.getQueryData(buildMembersKey(twoIds)),
+      ).toEqualImmutable(data);
+      for (const id of twoIds) {
         expect(
           queryClient.getQueryData<MemberRecord>(buildMemberKey(id)),
         ).toEqualImmutable(members.find(({ id: thisId }) => thisId === id));

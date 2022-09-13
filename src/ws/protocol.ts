@@ -1,7 +1,6 @@
 /**
  * TODO: use types from graasp-websockets
  */
-
 import {
   CLIENT_ACTION_DISCONNECT,
   CLIENT_ACTION_SUBSCRIBE,
