@@ -1,5 +1,10 @@
-import { List } from 'immutable';
-import { QueryClient, UseQueryResult, useQuery } from 'react-query';
+import { List, RecordOf } from 'immutable';
+import {
+  QueryClient,
+  useQuery,
+  UseQueryResult,
+  useInfiniteQuery,
+} from 'react-query';
 
 import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
 
@@ -8,6 +13,8 @@ import { splitRequestByIds } from '../api/axios';
 import {
   CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZES,
+  PAGINATED_ITEMS_PER_PAGE,
+  STALE_TIME_CHILDREN_PAGINATED_MILLISECONDS,
 } from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
 import {
@@ -16,6 +23,7 @@ import {
   SHARED_ITEMS_KEY,
   buildFileContentKey,
   buildItemChildrenKey,
+  buildItemPaginatedChildrenKey,
   buildItemKey,
   buildItemLoginKey,
   buildItemParentsKey,
@@ -28,6 +36,10 @@ import { getOwnItemsRoutine } from '../routines';
 import { ItemRecord, MemberRecord, QueryClientConfig, UUID } from '../types';
 import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
+import {
+  isPaginatedChildrenDataEqual,
+  paginate,
+} from '../utils/util';
 
 export default (
   queryClient: QueryClient,
@@ -106,6 +118,46 @@ export default (
         enabled: Boolean(id) && enabled,
         placeholderData: options?.placeholderData,
       });
+    },
+
+    useChildrenPaginated: (
+      id: UUID | undefined,
+      children: List<RecordOf<any>>,
+      options?: {
+        enabled?: boolean;
+        itemsPerPage?: number;
+        filterFunction?: (item: List<RecordOf<any>>) => List<RecordOf<any>>;
+      },
+    ): UseQueryResult<any> => {
+      const enabled = options?.enabled;
+
+      const childrenPaginatedOptions = {
+        ...defaultQueryOptions,
+        staleTime: STALE_TIME_CHILDREN_PAGINATED_MILLISECONDS,
+        isDataEqual: isPaginatedChildrenDataEqual,
+      };
+
+      return useInfiniteQuery(
+        buildItemPaginatedChildrenKey(id),
+        ({ pageParam = 1 }) =>
+          paginate(
+            children,
+            options?.itemsPerPage || PAGINATED_ITEMS_PER_PAGE,
+            pageParam,
+            options?.filterFunction,
+          ),
+        {
+          enabled,
+          getNextPageParam: (lastPage: RecordOf<any>) => {
+            const { pageNumber } = lastPage;
+            if (pageNumber !== -1) {
+              return pageNumber + 1;
+            }
+            return undefined;
+          },
+          ...childrenPaginatedOptions,
+        },
+      );
     },
 
     useItemsChildren: (
