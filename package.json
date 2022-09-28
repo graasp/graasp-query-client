@@ -6,10 +6,11 @@
     "example"
   ],
   "repository": "graasp/query-client",
-  "main": "dist/index.js",
+  "main": "dist/index",
   "module": "dist/index.modern.js",
   "source": "src/index.ts",
   "types": "dist/src/index.d.ts",
+  "typings": "dist/src/index",
   "dependencies": {
     "@graasp/sdk": "github:graasp/graasp-sdk",
     "@graasp/translations": "github:graasp/graasp-translations.git",
