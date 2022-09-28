@@ -35,8 +35,14 @@ export type QueryClientConfig = {
         | RecordOf<any>
         | List<RecordOf<any>>
         | List<List<RecordOf<any>>>
+        // necessary for download avatar, thumbnail
+        // might be removed if we only use links
+        | Blob
         | undefined,
-      newData: RecordOf<any> | List<RecordOf<any>> | List<List<RecordOf<any>>>,
+      newData: RecordOf<any> | List<RecordOf<any>> | List<List<RecordOf<any>>>
+        // necessary for download avatar, thumbnail
+        // might be removed if we only use links
+        | Blob,
     ) => boolean;
   };
 };
