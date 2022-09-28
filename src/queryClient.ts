@@ -16,8 +16,7 @@ import {
 import configureHooks from './hooks';
 import configureMutations from './mutations';
 import type { QueryClientConfig } from './types';
-import { getHostname } from './utils/util';
-import { isDataEqual } from './utils/util';
+import { getHostname, isDataEqual } from './utils/util';
 import { configureWebsocketClient } from './ws';
 
 /* istanbul ignore next */

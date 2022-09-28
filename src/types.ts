@@ -10,6 +10,7 @@ import {
   PermissionLevel,
   UnknownExtra,
 } from '@graasp/sdk';
+import { isDataEqual } from './utils/util';
 
 export type Notifier = (e: unknown) => void;
 
@@ -30,20 +31,7 @@ export type QueryClientConfig = {
     keepPreviousData?: boolean;
     refetchOnMount?: boolean;
     notifyOnChangeProps?: any;
-    isDataEqual: (
-      oldData:
-        | RecordOf<any>
-        | List<RecordOf<any>>
-        | List<List<RecordOf<any>>>
-        // necessary for download avatar, thumbnail
-        // might be removed if we only use links
-        | Blob
-        | undefined,
-      newData: RecordOf<any> | List<RecordOf<any>> | List<List<RecordOf<any>>>
-        // necessary for download avatar, thumbnail
-        // might be removed if we only use links
-        | Blob,
-    ) => boolean;
+    isDataEqual: typeof isDataEqual
   };
 };
 
