@@ -1,9 +1,9 @@
 import { List, RecordOf } from 'immutable';
 import {
   QueryClient,
-  useQuery,
   UseQueryResult,
   useInfiniteQuery,
+  useQuery,
 } from 'react-query';
 
 import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
@@ -23,9 +23,9 @@ import {
   SHARED_ITEMS_KEY,
   buildFileContentKey,
   buildItemChildrenKey,
-  buildItemPaginatedChildrenKey,
   buildItemKey,
   buildItemLoginKey,
+  buildItemPaginatedChildrenKey,
   buildItemParentsKey,
   buildItemThumbnailKey,
   buildItemsChildrenKey,
@@ -33,13 +33,16 @@ import {
   buildPublicItemsWithTagKey,
 } from '../config/keys';
 import { getOwnItemsRoutine } from '../routines';
-import { ItemRecord, MemberRecord, QueryClientConfig, UUID } from '../types';
+import {
+  ItemLoginRecord,
+  ItemRecord,
+  MemberRecord,
+  QueryClientConfig,
+  UUID,
+} from '../types';
+import { isPaginatedChildrenDataEqual, paginate } from '../utils/util';
 import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
-import {
-  isPaginatedChildrenDataEqual,
-  paginate,
-} from '../utils/util';
 
 export default (
   queryClient: QueryClient,
@@ -318,7 +321,7 @@ export default (
     useItemLogin: (id?: UUID) =>
       useQuery({
         queryKey: buildItemLoginKey(id),
-        queryFn: () => {
+        queryFn: (): Promise<ItemLoginRecord> => {
           if (!id) {
             throw new UndefinedArgument();
           }

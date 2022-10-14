@@ -1,8 +1,8 @@
+import { List, RecordOf } from 'immutable';
 import { useQuery } from 'react-query';
 
 import { convertJs } from '@graasp/sdk';
 
-import { List, RecordOf } from 'immutable';
 import * as Api from '../api';
 import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
 import { APPS_KEY } from '../config/keys';

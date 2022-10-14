@@ -26,7 +26,10 @@ export const isDataEqual = (
     // might be removed if we only use links
     | Blob
     | undefined,
-  newData: RecordOf<any> | List<RecordOf<any>> | List<List<RecordOf<any>>>
+  newData:
+    | RecordOf<any>
+    | List<RecordOf<any>>
+    | List<List<RecordOf<any>>>
     // necessary for download avatar, thumbnail
     // might be removed if we only use links
     | Blob,
@@ -52,21 +55,22 @@ export const paginate = (
   pageSize: number,
   pageNumber: number,
   filterFunction?: (item: List<RecordOf<any>>) => List<RecordOf<any>>,
-): Promise<RecordOf<any>> => new Promise((resolve, reject) => {
-  try {
-    let data = filterFunction ? filterFunction(list) : list;
-    data = data.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+): Promise<RecordOf<any>> =>
+  new Promise((resolve, reject) => {
+    try {
+      let data = filterFunction ? filterFunction(list) : list;
+      data = data.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
-    // compute next page number, set at -1 if it's the end of the list
-    const nextPageNumber =
-      data.isEmpty() || list.size <= pageNumber * pageSize ? -1 : pageNumber;
-    const createRecordPaginatedResponse = Record({
-      data,
-      pageNumber: nextPageNumber,
-    });
-    const response = createRecordPaginatedResponse();
-    resolve(response);
-  } catch (error) {
-    reject(error);
-  }
-});
+      // compute next page number, set at -1 if it's the end of the list
+      const nextPageNumber =
+        data.isEmpty() || list.size <= pageNumber * pageSize ? -1 : pageNumber;
+      const createRecordPaginatedResponse = Record({
+        data,
+        pageNumber: nextPageNumber,
+      });
+      const response = createRecordPaginatedResponse();
+      resolve(response);
+    } catch (error) {
+      reject(error);
+    }
+  });

@@ -1,10 +1,11 @@
+import { List } from 'immutable';
 import { useQuery } from 'react-query';
 
-import { List } from 'immutable';
 import { convertJs } from '@graasp/sdk';
 
 import * as Api from '../api';
 import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
+import { UndefinedArgument } from '../config/errors';
 import {
   CATEGORY_TYPES_KEY,
   buildCategoriesKey,
@@ -12,8 +13,13 @@ import {
   buildItemCategoriesKey,
   buildItemsByCategoriesKey,
 } from '../config/keys';
-import { CategoryRecord, CategoryTypeRecord, ItemCategoryRecord, QueryClientConfig, UUID } from '../types';
-import { UndefinedArgument } from '../config/errors';
+import {
+  CategoryRecord,
+  CategoryTypeRecord,
+  ItemCategoryRecord,
+  QueryClientConfig,
+  UUID,
+} from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -58,7 +64,7 @@ export default (queryConfig: QueryClientConfig) => {
         }
         return Api.getItemCategories(itemId, queryConfig).then((data) =>
           convertJs(data),
-        )
+        );
       },
       ...defaultQueryOptions,
       enabled: Boolean(itemId),

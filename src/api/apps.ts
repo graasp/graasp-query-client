@@ -11,7 +11,9 @@ import {
 
 const axios = configureAxios();
 
-export const getApps = async ({ API_HOST }: QueryClientConfig): Promise<App[]> =>
+export const getApps = async ({
+  API_HOST,
+}: QueryClientConfig): Promise<App[]> =>
   verifyAuthentication(() =>
     axios.get(`${API_HOST}/${buildAppListRoute}`).then(({ data }) => data),
   );
