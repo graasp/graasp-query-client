@@ -1,4 +1,4 @@
-import { QueryClientConfig, UUID } from '../types';
+import { Category, ItemCategory, QueryClientConfig, UUID } from '../types';
 import configureAxios, {
   fallbackToPublic,
   verifyAuthentication,
@@ -22,7 +22,7 @@ export const getCategoryTypes = async ({ API_HOST }: QueryClientConfig) =>
 export const getCategories = async (
   { API_HOST }: QueryClientConfig,
   typeIds?: UUID[],
-) =>
+): Promise<Category[]> =>
   axios
     .get(`${API_HOST}/${buildGetCategoriesRoute(typeIds)}`)
     .then(({ data }) => data);
@@ -30,7 +30,7 @@ export const getCategories = async (
 export const getCategory = async (
   categoryId: UUID,
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<Category> =>
   axios
     .get(`${API_HOST}/${buildGetCategoryRoute(categoryId)}`)
     .then(({ data }) => data);
@@ -38,7 +38,7 @@ export const getCategory = async (
 export const getItemCategories = async (
   itemId: UUID,
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<ItemCategory[]> =>
   fallbackToPublic(
     () => axios.get(`${API_HOST}/${buildGetItemCategoriesRoute(itemId)}`),
     () => axios.get(`${API_HOST}/${buildGetPublicItemCategoriesRoute(itemId)}`),
@@ -56,7 +56,7 @@ export const buildGetItemsForCategoriesRoute = async (
 export const postItemCategory = async (
   { itemId, categoryId }: { itemId: UUID; categoryId: UUID },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<ItemCategory> =>
   verifyAuthentication(() =>
     axios
       .post(`${API_HOST}/${buildPostItemCategoryRoute(itemId)}`, {
@@ -68,7 +68,7 @@ export const postItemCategory = async (
 export const deleteItemCategory = async (
   args: { itemCategoryId: UUID; itemId: UUID },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<ItemCategory> =>
   verifyAuthentication(() =>
     axios
       .delete(`${API_HOST}/${buildDeleteItemCategoryRoute(args)}`)

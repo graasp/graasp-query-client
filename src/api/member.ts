@@ -132,7 +132,7 @@ export const uploadAvatar = async (
 export const downloadAvatar = async (
   { id, size = DEFAULT_THUMBNAIL_SIZES }: { id: UUID; size?: string },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<Blob> =>
   fallbackToPublic(
     () =>
       axios.get(`${API_HOST}/${buildDownloadAvatarRoute({ id, size })}`, {

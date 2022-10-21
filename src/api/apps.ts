@@ -1,4 +1,4 @@
-import { QueryClientConfig, UUID } from '../types';
+import { App, QueryClientConfig, UUID } from '../types';
 import configureAxios, {
   fallbackToPublic,
   verifyAuthentication,
@@ -11,7 +11,9 @@ import {
 
 const axios = configureAxios();
 
-export const getApps = async ({ API_HOST }: QueryClientConfig) =>
+export const getApps = async ({
+  API_HOST,
+}: QueryClientConfig): Promise<App[]> =>
   verifyAuthentication(() =>
     axios.get(`${API_HOST}/${buildAppListRoute}`).then(({ data }) => data),
   );
