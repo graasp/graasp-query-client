@@ -4,8 +4,13 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { HttpMethod } from '@graasp/sdk';
-import * as utils from '@graasp/sdk';
+import {
+  HttpMethod,
+  getStoredSessions,
+  removeSession,
+  saveUrlForRedirection,
+  setCurrentSession,
+} from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
@@ -322,9 +327,9 @@ describe('Authentication Mutations', () => {
       });
 
       // cookie management
-      expect(utils.saveUrlForRedirection).toHaveBeenCalled();
-      expect(utils.setCurrentSession).toHaveBeenCalledWith(null, DOMAIN);
-      expect(utils.removeSession).toHaveBeenCalledWith(userId, DOMAIN);
+      expect(saveUrlForRedirection).toHaveBeenCalled();
+      expect(setCurrentSession).toHaveBeenCalledWith(null, DOMAIN);
+      expect(removeSession).toHaveBeenCalledWith(userId, DOMAIN);
     });
 
     it(`Unauthorized`, async () => {
@@ -366,7 +371,7 @@ describe('Authentication Mutations', () => {
         wrapper,
       });
 
-      (utils.getStoredSessions as jest.Mock).mockReturnValue(MOCK_SESSIONS);
+      (getStoredSessions as jest.Mock).mockReturnValue(MOCK_SESSIONS);
 
       await act(async () => {
         await mockedMutation.mutate({
@@ -383,8 +388,8 @@ describe('Authentication Mutations', () => {
       });
 
       // cookie management
-      expect(utils.getStoredSessions).toHaveBeenCalled();
-      expect(utils.setCurrentSession).toHaveBeenCalledWith(
+      expect(getStoredSessions).toHaveBeenCalled();
+      expect(setCurrentSession).toHaveBeenCalledWith(
         MOCK_SESSIONS[0].token,
         DOMAIN,
       );
@@ -395,7 +400,7 @@ describe('Authentication Mutations', () => {
         wrapper,
       });
 
-      (utils.getStoredSessions as jest.Mock).mockReturnValue([]);
+      (getStoredSessions as jest.Mock).mockReturnValue([]);
 
       await act(async () => {
         await mockedMutation.mutate({
