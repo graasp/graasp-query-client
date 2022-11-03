@@ -2287,7 +2287,6 @@ __metadata:
     "@commitlint/config-conventional": 16.2.4
     "@graasp/sdk": "github:graasp/graasp-sdk"
     "@graasp/translations": "github:graasp/graasp-translations.git"
-    "@graasp/utils": "github:graasp/graasp-utils.git"
     "@testing-library/jest-dom": 5.16.4
     "@testing-library/react": 12.1.4
     "@testing-library/react-hooks": 7.0.2
@@ -2363,16 +2362,6 @@ __metadata:
   dependencies:
     i18next: 21.6.11
   checksum: de03da287758e53bca6b14ca0b59045761ff14358034df604ae864765b180a763151fe61ab699834f414bf85ac4c104f52e4a5646528c59beeb7ff1c9814694d
-  languageName: node
-  linkType: hard
-
-"@graasp/utils@github:graasp/graasp-utils.git":
-  version: 0.1.0
-  resolution: "@graasp/utils@https://github.com/graasp/graasp-utils.git#commit=f6c9e08e68d6e9a5b9480b8facdfb2f4cc474716"
-  dependencies:
-    js-cookie: 3.0.1
-    qs: 6.10.3
-  checksum: d6558ef72834eb65fa873d7a51e1e554437721377e7c487171c38b002b925dc04621abf99fa1ea4b29cc8c0c7842929e7cc1065af2e0514ad0bee3fe32bfc351
   languageName: node
   linkType: hard
 

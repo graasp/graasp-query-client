@@ -2,9 +2,13 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import { QueryClient } from 'react-query';
 
-import { ItemMembership, PermissionLevel } from '@graasp/sdk';
+import {
+  ItemMembership,
+  PermissionLevel,
+  isError,
+  partition,
+} from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
-import { isError, partition } from '@graasp/utils';
 
 import * as Api from '../api';
 import {

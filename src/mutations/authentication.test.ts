@@ -5,8 +5,8 @@ import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import { HttpMethod } from '@graasp/sdk';
+import * as utils from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
-import * as utils from '@graasp/utils';
 
 import {
   DOMAIN,
@@ -31,7 +31,7 @@ import {
   updatePasswordRoutine,
 } from '../routines';
 
-jest.mock('@graasp/utils');
+jest.mock('@graasp/sdk');
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 

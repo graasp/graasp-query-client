@@ -1,12 +1,12 @@
 import { QueryClient } from 'react-query';
 
-import { SUCCESS_MESSAGES } from '@graasp/translations';
 import {
   getStoredSessions,
   removeSession,
   saveUrlForRedirection,
   setCurrentSession,
-} from '@graasp/utils';
+} from '@graasp/sdk';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
 import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
