@@ -335,7 +335,7 @@ export default (
 
     useFileContent: (
       id?: UUID,
-      { enabled = true }: { enabled?: boolean } = {},
+      { enabled = true, replyUrl }: { enabled?: boolean, replyUrl?: boolean } = {},
     ) =>
       useQuery({
         queryKey: buildFileContentKey(id),
@@ -343,6 +343,9 @@ export default (
           if (!id) {
             throw new UndefinedArgument();
           }
+          if (replyUrl) {
+            return Api.getFileContentWithUrl({ id, replyUrl }, queryConfig).then((data) => convertJs(data));
+          };
           return Api.getFileContent({ id }, queryConfig).then((data) => data);
         },
         enabled: Boolean(id) && enabled,

@@ -248,6 +248,25 @@ export const getFileContent = async (
       }),
   );
 
+export const getFileContentWithUrl = async (
+  { id, replyUrl }: { id: UUID, replyUrl: boolean },
+  { API_HOST }: QueryClientConfig,
+) =>
+  fallbackToPublic(
+    () =>
+      axios.get(`${API_HOST}/${buildDownloadFilesRoute(id)}`, {
+        params: {
+          replyUrl
+        },
+      }),
+    () =>
+      axios.get(`${API_HOST}/${buildPublicDownloadFilesRoute(id)}`, {
+        params: {
+          replyUrl
+        },
+      }),
+  );
+
 export const getRecycledItems = async ({ API_HOST }: QueryClientConfig) =>
   verifyAuthentication(() =>
     axios
