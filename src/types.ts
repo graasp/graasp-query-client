@@ -27,12 +27,15 @@ export type QueryClientConfig = {
     staleTime: number;
     // time before cache labeled as inactive to be garbage collected
     cacheTime: number;
-    retry: number | boolean | ((failureCount: number, error: Error) => boolean);
+    retry?:
+      | number
+      | boolean
+      | ((failureCount: number, error: Error) => boolean);
     refetchOnWindowFocus?: boolean;
     keepPreviousData?: boolean;
     refetchOnMount?: boolean;
     notifyOnChangeProps?: any;
-    isDataEqual: typeof isDataEqual;
+    isDataEqual?: typeof isDataEqual;
   };
 };
 
