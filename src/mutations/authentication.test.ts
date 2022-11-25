@@ -13,7 +13,12 @@ import {
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  buildTitleFromMutationKey,
+  mockMutation,
+  setUpTest,
+  waitForMutation,
+} from '../../test/utils';
 import {
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
@@ -48,7 +53,7 @@ describe('Authentication Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.SIGN_IN, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.SIGN_IN), () => {
     const route = `/${SIGN_IN_ROUTE}`;
     const mutation = () => useMutation(MUTATION_KEYS.SIGN_IN);
 
@@ -103,74 +108,77 @@ describe('Authentication Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.SIGN_IN_WITH_PASSWORD, () => {
-    const route = `/${SIGN_IN_WITH_PASSWORD_ROUTE}`;
-    const mutation = () => useMutation(MUTATION_KEYS.SIGN_IN_WITH_PASSWORD);
-    const password = 'password';
-    const link = 'mylink';
+  describe(
+    buildTitleFromMutationKey(MUTATION_KEYS.SIGN_IN_WITH_PASSWORD),
+    () => {
+      const route = `/${SIGN_IN_WITH_PASSWORD_ROUTE}`;
+      const mutation = () => useMutation(MUTATION_KEYS.SIGN_IN_WITH_PASSWORD);
+      const password = 'password';
+      const link = 'mylink';
 
-    it(`Sign in with password`, async () => {
-      const endpoints = [
-        {
-          route,
-          response: { resource: link },
-          statusCode: StatusCodes.SEE_OTHER,
-          method: HttpMethod.POST,
-        },
-      ];
-      // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, 'somevalue');
+      it(`Sign in with password`, async () => {
+        const endpoints = [
+          {
+            route,
+            response: { resource: link },
+            statusCode: StatusCodes.SEE_OTHER,
+            method: HttpMethod.POST,
+          },
+        ];
+        // set random data in cache
+        queryClient.setQueryData(CURRENT_MEMBER_KEY, 'somevalue');
 
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate({ email, password });
+          await waitForMutation();
+        });
+
+        // verify cache keys
+        expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+
+        expect(mockedNotifier).toHaveBeenCalledWith({
+          type: signInWithPasswordRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.SIGN_IN_WITH_PASSWORD },
+        });
       });
 
-      await act(async () => {
-        await mockedMutation.mutate({ email, password });
-        await waitForMutation();
+      it(`Unauthorized`, async () => {
+        const endpoints = [
+          {
+            route,
+            response: UNAUTHORIZED_RESPONSE,
+            method: HttpMethod.POST,
+            statusCode: StatusCodes.UNAUTHORIZED,
+          },
+        ];
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate({ email });
+          await waitForMutation();
+        });
+
+        expect(mockedNotifier).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: signInWithPasswordRoutine.FAILURE,
+          }),
+        );
       });
+    },
+  );
 
-      // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
-
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: signInWithPasswordRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.SIGN_IN_WITH_PASSWORD },
-      });
-    });
-
-    it(`Unauthorized`, async () => {
-      const endpoints = [
-        {
-          route,
-          response: UNAUTHORIZED_RESPONSE,
-          method: HttpMethod.POST,
-          statusCode: StatusCodes.UNAUTHORIZED,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({ email });
-        await waitForMutation();
-      });
-
-      expect(mockedNotifier).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: signInWithPasswordRoutine.FAILURE,
-        }),
-      );
-    });
-  });
-
-  describe(MUTATION_KEYS.UPDATE_PASSWORD, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.UPDATE_PASSWORD), () => {
     const route = `/${buildUpdateMemberPasswordRoute()}`;
     const mutation = () => useMutation(MUTATION_KEYS.UPDATE_PASSWORD);
     const password = 'ASDasd123';
@@ -234,7 +242,7 @@ describe('Authentication Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.SIGN_UP, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.SIGN_UP), () => {
     const route = `/${SIGN_UP_ROUTE}`;
     const mutation = () => useMutation(MUTATION_KEYS.SIGN_UP);
     const name = 'name';
@@ -290,7 +298,7 @@ describe('Authentication Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.SIGN_OUT, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.SIGN_OUT), () => {
     const route = `/${SIGN_OUT_ROUTE}`;
     const mutation = () => useMutation(MUTATION_KEYS.SIGN_OUT);
     const userId = 'userId';
@@ -356,7 +364,7 @@ describe('Authentication Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.SWITCH_MEMBER, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.SWITCH_MEMBER), () => {
     const mutation = () => useMutation(MUTATION_KEYS.SWITCH_MEMBER);
     const MOCK_SESSIONS = [{ id: 'id1', token: 'token1' }];
 

@@ -12,7 +12,12 @@ import {
   LIKE_COUNT,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  buildTitleFromMutationKey,
+  mockMutation,
+  setUpTest,
+  waitForMutation,
+} from '../../test/utils';
 import {
   buildDeleteItemLikeRoute,
   buildPostItemLikeRoute,
@@ -36,7 +41,7 @@ describe('Item Like Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM_LIKE, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.POST_ITEM_LIKE), () => {
     const itemId = ITEMS.first()!.id;
     const memberId = 'member-id';
     const likedItemsKey = buildGetLikedItemsKey(memberId);
@@ -109,7 +114,7 @@ describe('Item Like Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_ITEM_LIKE, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.DELETE_ITEM_LIKE), () => {
     const itemId = ITEMS.first()!.id;
     const memberId = 'member-id';
     const entryId = 'id';

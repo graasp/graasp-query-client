@@ -62,7 +62,7 @@ export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) =>
         .catch((error) => {
           if (error.response) {
             // return valid response for unauthorized requests
-            // avoid infinite loading induced by failure in react-query
+            // avoid infinite loading induced by failure in @tanstack/react-query
             if (error.response.status === StatusCodes.UNAUTHORIZED) {
               return SIGNED_OUT_USER;
             }

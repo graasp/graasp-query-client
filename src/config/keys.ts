@@ -1,74 +1,105 @@
-import { SUBSCRIPTION_KEY } from '../api/routes';
 import type { UUID } from '../types';
 import { hashItemsIds } from '../utils/item';
 import { DEFAULT_THUMBNAIL_SIZES } from './constants';
 
-export const APPS_KEY = 'apps';
-export const ITEMS_KEY = 'items';
-export const OWN_ITEMS_KEY = [ITEMS_KEY, 'own'];
-export const buildItemKey = (id?: UUID) => [ITEMS_KEY, id];
-export const buildItemsKey = (ids: UUID[]) => [ITEMS_KEY, hashItemsIds(ids)];
-export const buildItemChildrenKey = (id?: UUID) => [ITEMS_KEY, id, 'children'];
+const ITEMS_CONTEXT = 'items';
+const APPS_CONTEXT = 'apps';
+const SHARED_ITEMS_CONTEXT = 'shared';
+const CURRENT_MEMBER_CONTEXT = 'currentMember';
+const MEMBERS_CONTEXT = 'members';
+const CHATS_CONTEXT = 'chats';
+const MENTIONS_CONTEXT = 'mentions';
+const ITEM_FLAGS_CONTEXT = 'itemFlags';
+const TAGS_CONTEXT = 'tags';
+const ITEM_TAGS_CONTEXT = 'itemTags';
+const CATEGORY_TYPES_CONTEXT = 'categoryTypes';
+const ITEM_VALIDATION_REVIEWS_CONTEXT = 'itemValidationReviews';
+const RECYCLED_ITEMS_CONTEXT = 'recycledItems';
+const ITEM_VALIDATION_STATUSES_CONTEXT = 'itemValidationStatuses';
+const ITEM_VALIDATION_REVIEW_STATUSES_CONTEXT = 'itemValidationReviewStatuses';
+export const SUBSCRIPTION_CONTEXT = 'subscriptions';
+
+export const APPS_KEY = [APPS_CONTEXT];
+export const ITEMS_KEY = [ITEMS_CONTEXT];
+export const OWN_ITEMS_KEY = [ITEMS_CONTEXT, 'own'];
+export const buildItemKey = (id?: UUID) => [ITEMS_CONTEXT, id];
+export const buildItemsKey = (ids: UUID[]) => [
+  ITEMS_CONTEXT,
+  hashItemsIds(ids),
+];
+export const buildItemChildrenKey = (id?: UUID) => [
+  ITEMS_CONTEXT,
+  id,
+  'children',
+];
 export const buildItemPaginatedChildrenKey = (id?: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   id,
   'childrenPaginated',
 ];
 export const buildItemsChildrenKey = (ids: UUID[]) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   hashItemsIds(ids),
   'children',
 ];
-export const SHARED_ITEMS_KEY = 'shared';
-export const CURRENT_MEMBER_KEY = 'currentMember';
-export const MEMBERS_KEY = 'members';
-export const buildMemberKey = (id?: UUID) => [MEMBERS_KEY, id];
+export const SHARED_ITEMS_KEY = [SHARED_ITEMS_CONTEXT];
+export const CURRENT_MEMBER_KEY = [CURRENT_MEMBER_CONTEXT];
+export const MEMBERS_KEY = [MEMBERS_CONTEXT];
+export const buildMemberKey = (id?: UUID) => [MEMBERS_CONTEXT, id];
 export const buildMembersKey = (ids: UUID[]) => [
-  MEMBERS_KEY,
+  MEMBERS_CONTEXT,
   hashItemsIds(ids),
 ];
-export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, id, 'parents'];
-export const CHATS_KEY = 'chats';
-export const buildItemChatKey = (id: UUID) => [CHATS_KEY, id];
-export const MENTIONS_KEY = 'mentions';
-export const buildMentionKey = (memberId: UUID) => [MENTIONS_KEY, memberId];
+export const buildItemParentsKey = (id: UUID) => [ITEMS_CONTEXT, id, 'parents'];
+export const CHATS_KEY = [CHATS_CONTEXT];
+export const buildItemChatKey = (id: UUID) => [CHATS_CONTEXT, id];
+export const MENTIONS_KEY = [MENTIONS_CONTEXT];
+export const buildMentionKey = (memberId: UUID) => [MENTIONS_CONTEXT, memberId];
 
 export const getKeyForParentId = (parentId: UUID | null) =>
   parentId ? buildItemChildrenKey(parentId) : OWN_ITEMS_KEY;
 
 export const buildItemMembershipsKey = (id?: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   id,
   'memberships',
 ];
 export const buildManyItemMembershipsKey = (ids?: UUID[]) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   hashItemsIds(ids),
   'memberships',
 ];
-export const buildItemLoginKey = (id?: UUID) => [ITEMS_KEY, id, 'login'];
-export const TAGS_KEY = 'tags';
-export const ITEM_TAGS_KEY = 'itemTags';
-export const buildItemTagsKey = (id?: UUID) => [ITEMS_KEY, id, 'tags'];
+export const buildItemLoginKey = (id?: UUID) => [ITEMS_CONTEXT, id, 'login'];
+export const TAGS_KEY = [TAGS_CONTEXT];
+export const ITEM_TAGS_KEY = [ITEM_TAGS_CONTEXT];
+export const buildItemTagsKey = (id?: UUID) => [ITEMS_CONTEXT, id, 'tags'];
 export const buildManyItemTagsKey = (ids?: UUID[]) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   hashItemsIds(ids),
   'tags',
 ];
-export const buildFileContentKey = (id?: UUID) => [ITEMS_KEY, id, 'content'];
-export const buildS3FileContentKey = (id?: UUID) => [ITEMS_KEY, id, 'content'];
+export const buildFileContentKey = (id?: UUID) => [
+  ITEMS_CONTEXT,
+  id,
+  'content',
+];
+export const buildS3FileContentKey = (id?: UUID) => [
+  ITEMS_CONTEXT,
+  id,
+  'content',
+];
 
-export const ITEM_FLAGS_KEY = 'itemFlags';
-export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, id, 'flags'];
+export const ITEM_FLAGS_KEY = [ITEM_FLAGS_CONTEXT];
+export const buildItemFlagsKey = (id: UUID) => [ITEMS_CONTEXT, id, 'flags'];
 
-export const CATEGORY_TYPES_KEY = 'categoryTypes';
+export const CATEGORY_TYPES_KEY = [CATEGORY_TYPES_CONTEXT];
 export const buildCategoryKey = (id: UUID) => ['category', id];
 export const buildCategoriesKey = (typeId?: UUID[]) => [
   'categories',
   hashItemsIds(typeId),
 ];
 export const buildItemCategoriesKey = (id?: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   id,
   'categories',
 ];
@@ -84,44 +115,49 @@ export const buildSearchByKeywordKey = (range: string, keywords: string) => [
 ];
 
 export const buildPublicItemsWithTagKey = (id?: UUID) => [
-  ITEMS_KEY,
-  ITEM_TAGS_KEY,
+  ITEMS_CONTEXT,
+  ITEM_TAGS_CONTEXT,
   id,
 ];
-export const RECYCLED_ITEMS_KEY = 'recycledItems';
+export const RECYCLED_ITEMS_KEY = [RECYCLED_ITEMS_CONTEXT];
 export const buildItemThumbnailKey = ({
   id,
   size = DEFAULT_THUMBNAIL_SIZES,
 }: {
   id?: UUID;
   size?: string;
-}) => [ITEMS_KEY, id, 'thumbnails', size];
+}) => [ITEMS_CONTEXT, id, 'thumbnails', size];
 export const buildAvatarKey = ({
   id,
   size = DEFAULT_THUMBNAIL_SIZES,
 }: {
   id?: UUID;
   size?: string;
-}) => [MEMBERS_KEY, id, 'avatars', size];
+}) => [MEMBERS_CONTEXT, id, 'avatars', size];
 
 export const buildGetLikedItemsKey = (id: UUID) => [
-  MEMBERS_KEY,
+  MEMBERS_CONTEXT,
   id,
   'likedItems',
 ];
-export const buildGetLikeCountKey = (id: UUID) => [ITEMS_KEY, id, 'likeCount'];
+export const buildGetLikeCountKey = (id: UUID) => [
+  ITEMS_CONTEXT,
+  id,
+  'likeCount',
+];
 
-export const ITEM_VALIDATION_REVIEWS_KEY = 'itemValidationReviews';
-export const ITEM_VALIDATION_STATUSES_KEY = 'itemValidationStatuses';
-export const ITEM_VALIDATION_REVIEW_STATUSES_KEY =
-  'itemValidationReviewStatuses';
+export const ITEM_VALIDATION_REVIEWS_KEY = [ITEM_VALIDATION_REVIEWS_CONTEXT];
+export const ITEM_VALIDATION_STATUSES_KEY = [ITEM_VALIDATION_STATUSES_CONTEXT];
+export const ITEM_VALIDATION_REVIEW_STATUSES_KEY = [
+  ITEM_VALIDATION_REVIEW_STATUSES_CONTEXT,
+];
 export const buildItemValidationAndReviewKey = (id: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   id,
   'itemValidationAndReview',
 ];
 export const buildItemValidationGroupsKey = (id: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   id,
   'itemValidationGroups',
 ];
@@ -141,27 +177,27 @@ export const buildActionsKey = (args: {
 
 export const buildInvitationKey = (id: UUID) => ['invitations', id];
 export const buildItemInvitationsKey = (id?: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   id,
   'invitations',
 ];
 
-export const PLANS_KEY = [SUBSCRIPTION_KEY, 'plans'];
-export const OWN_PLAN_KEY = [SUBSCRIPTION_KEY, 'ownPlan'];
-export const CARDS_KEY = [SUBSCRIPTION_KEY, 'cards'];
+export const PLANS_KEY = [SUBSCRIPTION_CONTEXT, 'plans'];
+export const OWN_PLAN_KEY = [SUBSCRIPTION_CONTEXT, 'ownPlan'];
+export const CARDS_KEY = [SUBSCRIPTION_CONTEXT, 'cards'];
 export const buildPlanKey = (id: string) => [
-  MEMBERS_KEY,
-  SUBSCRIPTION_KEY,
+  MEMBERS_CONTEXT,
+  SUBSCRIPTION_CONTEXT,
   id,
   'plans',
 ];
 export const buildPlansKey = (id: string) => [
-  MEMBERS_KEY,
-  SUBSCRIPTION_KEY,
+  MEMBERS_CONTEXT,
+  SUBSCRIPTION_CONTEXT,
   id,
   'plans',
 ];
-export const CURRENT_CUSTOMER_KEY = [SUBSCRIPTION_KEY, 'currentCustomer'];
+export const CURRENT_CUSTOMER_KEY = [SUBSCRIPTION_CONTEXT, 'currentCustomer'];
 
 export const DATA_KEYS = {
   APPS_KEY,
@@ -216,63 +252,63 @@ export const DATA_KEYS = {
 };
 
 export const MUTATION_KEYS = {
-  POST_ITEM: 'postItem',
-  EDIT_ITEM: 'editItem',
-  DELETE_ITEM: 'deleteItem',
-  DELETE_ITEMS: 'deleteItems',
-  COPY_ITEM: 'copyItem',
-  COPY_PUBLIC_ITEM: 'copyPublicItem',
-  COPY_ITEMS: 'copyItems',
-  MOVE_ITEM: 'moveItem',
-  MOVE_ITEMS: 'moveItems',
-  UPLOAD_FILES: 'uploadFiles',
-  SIGN_OUT: 'signOut',
-  SIGN_IN: 'signIn',
-  SIGN_IN_WITH_PASSWORD: 'signInWithPassword',
-  SIGN_UP: 'signUp',
-  POST_ITEM_LOGIN: 'postItemLoginSignIn',
-  DELETE_ITEM_TAG: 'deleteItemTag',
-  POST_ITEM_TAG: 'postItemTags',
-  PUT_ITEM_LOGIN: 'putItemLogin',
-  EDIT_MEMBER: 'editMember',
-  DELETE_MEMBER: 'deleteMember',
-  POST_ITEM_FLAG: 'postItemFlag',
-  POST_ITEM_MEMBERSHIP: 'postItemMembership',
-  EDIT_ITEM_MEMBERSHIP: 'editItemMembership',
-  DELETE_ITEM_MEMBERSHIP: 'deleteItemMembership',
-  POST_ITEM_CHAT_MESSAGE: 'postChatMessage',
-  PATCH_ITEM_CHAT_MESSAGE: 'patchChatMessage',
-  DELETE_ITEM_CHAT_MESSAGE: 'deleteChatMessage',
-  CLEAR_ITEM_CHAT: 'clearItemChat',
-  PATCH_MENTION: 'patchMention',
-  DELETE_MENTION: 'deleteMention',
-  CLEAR_MENTIONS: 'clearMentions',
-  RECYCLE_ITEM: 'recycleItem',
-  RECYCLE_ITEMS: 'recycleItems',
-  RESTORE_ITEMS: 'restoreItems',
-  POST_ITEM_CATEGORY: 'postItemCategory',
-  DELETE_ITEM_CATEGORY: 'deleteItemCategory',
-  UPLOAD_ITEM_THUMBNAIL: 'uploadItemThumbnail',
-  UPLOAD_AVATAR: 'uploadAvatar',
-  IMPORT_ZIP: 'importZip',
-  EXPORT_ZIP: 'exportZip',
-  IMPORT_H5P: 'importH5P',
-  POST_ITEM_LIKE: 'postItemLike',
-  DELETE_ITEM_LIKE: 'deleteItemLike',
-  ADD_FAVORITE_ITEM: 'addFavoriteItem',
-  DELETE_FAVORITE_ITEM: 'deleteFavoriteItem',
-  POST_ITEM_VALIDATION: 'postItemValidation',
-  UPDATE_ITEM_VALIDATION_REVIEW: 'updateItemValidationReview',
-  EXPORT_ACTIONS: 'exportActions',
-  POST_INVITATIONS: 'postInvitations',
-  PATCH_INVITATION: 'patchInvitation',
-  DELETE_INVITATION: 'deleteInvitation',
-  RESEND_INVITATION: 'resendInvitation',
-  CHANGE_PLAN: 'subscriptionChangePlan',
-  CREATE_SETUP_INTENT: 'subscriptionCreateSetupIntent',
-  SET_DEFAULT_CARD: 'subscriptionSetDefaultCard',
-  PUBLISH_ITEM: 'publishItem',
-  SWITCH_MEMBER: 'switchMember',
-  UPDATE_PASSWORD: 'updatePassword',
-  SHARE_ITEM: 'shareItem',
+  POST_ITEM: [ITEMS_CONTEXT, 'post'],
+  EDIT_ITEM: [ITEMS_CONTEXT, 'edit'],
+  DELETE_ITEM: [ITEMS_CONTEXT, 'delete'],
+  DELETE_ITEMS: [ITEMS_CONTEXT, 'deleteMany'],
+  COPY_ITEM: [ITEMS_CONTEXT, 'copy'],
+  COPY_PUBLIC_ITEM: [ITEMS_CONTEXT, 'copyPublic'],
+  COPY_ITEMS: [ITEMS_CONTEXT, 'copyMany'],
+  MOVE_ITEM: [ITEMS_CONTEXT, 'move'],
+  MOVE_ITEMS: [ITEMS_CONTEXT, 'moveMany'],
+  UPLOAD_FILES: ['uploadFiles'],
+  SIGN_OUT: [MEMBERS_CONTEXT, 'signOut'],
+  SIGN_IN: [MEMBERS_CONTEXT, 'signIn'],
+  SIGN_IN_WITH_PASSWORD: [MEMBERS_CONTEXT, 'signInWithPassword'],
+  SIGN_UP: [MEMBERS_CONTEXT, 'signUp'],
+  POST_ITEM_LOGIN: ['postItemLoginSignIn'],
+  DELETE_ITEM_TAG: [ITEM_TAGS_CONTEXT, 'delete'],
+  POST_ITEM_TAG: [ITEM_TAGS_CONTEXT, 'postMany'],
+  PUT_ITEM_LOGIN: ['putItemLogin'],
+  EDIT_MEMBER: [MEMBERS_CONTEXT, 'edit'],
+  DELETE_MEMBER: [MEMBERS_CONTEXT, 'delete'],
+  POST_ITEM_FLAG: [ITEM_FLAGS_CONTEXT, 'postItemFlag'],
+  POST_ITEM_MEMBERSHIP: [ITEMS_CONTEXT, 'postItemMembership'],
+  EDIT_ITEM_MEMBERSHIP: [ITEMS_CONTEXT, 'editItemMembership'],
+  DELETE_ITEM_MEMBERSHIP: [ITEMS_CONTEXT, 'deleteItemMembership'],
+  POST_ITEM_CHAT_MESSAGE: ['postChatMessage'],
+  PATCH_ITEM_CHAT_MESSAGE: ['patchChatMessage'],
+  DELETE_ITEM_CHAT_MESSAGE: ['deleteChatMessage'],
+  CLEAR_ITEM_CHAT: ['clearItemChat'],
+  PATCH_MENTION: ['patchMention'],
+  DELETE_MENTION: ['deleteMention'],
+  CLEAR_MENTIONS: ['clearMentions'],
+  RECYCLE_ITEM: ['recycleItem'],
+  RECYCLE_ITEMS: ['recycleItems'],
+  RESTORE_ITEMS: ['restoreItems'],
+  POST_ITEM_CATEGORY: ['postItemCategory'],
+  DELETE_ITEM_CATEGORY: ['deleteItemCategory'],
+  UPLOAD_ITEM_THUMBNAIL: ['uploadItemThumbnail'],
+  UPLOAD_AVATAR: ['uploadAvatar'],
+  IMPORT_ZIP: ['importZip'],
+  EXPORT_ZIP: ['exportZip'],
+  IMPORT_H5P: ['importH5P'],
+  POST_ITEM_LIKE: ['postItemLike'],
+  DELETE_ITEM_LIKE: ['deleteItemLike'],
+  ADD_FAVORITE_ITEM: ['addFavoriteItem'],
+  DELETE_FAVORITE_ITEM: ['deleteFavoriteItem'],
+  POST_ITEM_VALIDATION: ['postItemValidation'],
+  UPDATE_ITEM_VALIDATION_REVIEW: ['updateItemValidationReview'],
+  EXPORT_ACTIONS: ['exportActions'],
+  POST_INVITATIONS: ['postInvitations'],
+  PATCH_INVITATION: ['patchInvitation'],
+  DELETE_INVITATION: ['deleteInvitation'],
+  RESEND_INVITATION: ['resendInvitation'],
+  CHANGE_PLAN: ['subscriptionChangePlan'],
+  CREATE_SETUP_INTENT: ['subscriptionCreateSetupIntent'],
+  SET_DEFAULT_CARD: ['subscriptionSetDefaultCard'],
+  PUBLISH_ITEM: ['publishItem'],
+  SWITCH_MEMBER: ['switchMember'],
+  UPDATE_PASSWORD: ['updatePassword'],
+  SHARE_ITEM: ['shareItem'],
 };

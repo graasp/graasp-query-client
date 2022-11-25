@@ -14,12 +14,13 @@
     "@graasp/sdk": "github:graasp/graasp-sdk",
     "@graasp/translations": "github:graasp/graasp-translations.git",
     "@graasp/utils": "github:graasp/graasp-utils.git",
+    "@tanstack/react-query": "4.16.1",
+    "@tanstack/react-query-devtools": "4.16.1",
     "axios": "0.27.2",
     "crypto-js": "4.1.1",
     "http-status-codes": "2.2.0",
-    "immutable": "4.0.0",
-    "qs": "6.10.3",
-    "react-query": "3.34.19",
+    "immutable": "4.1.0",
+    "qs": "6.11.0",
     "uuid": "8.3.2"
   },
   "devDependencies": {
@@ -39,9 +40,8 @@
     "@types/jsdom": "16.2.14",
     "@types/node": "17.0.31",
     "@types/qs": "6.9.7",
-    "@types/react": "17.0.44",
-    "@types/react-dom": "17.0.16",
-    "@types/react-query": "1.2.9",
+    "@types/react": "18.0.25",
+    "@types/react-dom": "18.0.9",
     "@types/uuid": "8.3.4",
     "@typescript-eslint/eslint-plugin": "5.22.0",
     "@typescript-eslint/parser": "5.22.0",
@@ -62,7 +62,7 @@
     "mock-socket": "9.1.2",
     "nock": "13.2.4",
     "prettier": "2.6.0",
-    "react-test-renderer": "17.0.2",
+    "react-test-renderer": "18.2.0",
     "standard-version": "9.3.2",
     "ts-jest": "28.0.4",
     "ts-node": "10.8.0",
@@ -70,7 +70,7 @@
     "wait-on": "6.0.1"
   },
   "peerDependencies": {
-    "react": "^17.0.0"
+    "react": "^17.0.0 || ^18.0.0"
   },
   "localDependencies": {
     "react": "./example/node_modules/react",

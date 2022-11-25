@@ -1,5 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
 import { List, RecordOf } from 'immutable';
-import { useQuery } from 'react-query';
 
 import { convertJs } from '@graasp/sdk';
 

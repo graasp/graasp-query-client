@@ -15,7 +15,12 @@ import {
   buildMemberMentions,
   buildMentionResponse,
 } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  buildTitleFromMutationKey,
+  mockMutation,
+  setUpTest,
+  waitForMutation,
+} from '../../test/utils';
 import {
   GET_CURRENT_MEMBER_ROUTE,
   buildClearMentionsRoute,
@@ -49,7 +54,7 @@ describe('Mention Mutations', () => {
       nock.cleanAll();
     });
 
-    describe(MUTATION_KEYS.PATCH_MENTION, () => {
+    describe(buildTitleFromMutationKey(MUTATION_KEYS.PATCH_MENTION), () => {
       const route = `/${buildPatchMentionRoute(mentionId)}`;
       const mutation = () => useMutation(MUTATION_KEYS.PATCH_MENTION);
 
@@ -133,7 +138,7 @@ describe('Mention Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.DELETE_MENTION, () => {
+    describe(buildTitleFromMutationKey(MUTATION_KEYS.DELETE_MENTION), () => {
       const route = `/${buildDeleteMentionRoute(mentionId)}`;
       const mutation = () => useMutation(MUTATION_KEYS.DELETE_MENTION);
 
@@ -210,7 +215,7 @@ describe('Mention Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.CLEAR_MENTIONS, () => {
+    describe(buildTitleFromMutationKey(MUTATION_KEYS.CLEAR_MENTIONS), () => {
       const route = `/${buildClearMentionsRoute()}`;
       const mutation = () => useMutation(MUTATION_KEYS.CLEAR_MENTIONS);
 
@@ -288,7 +293,7 @@ describe('Mention Mutations', () => {
       nock.cleanAll();
     });
 
-    describe(MUTATION_KEYS.PATCH_MENTION, () => {
+    describe(buildTitleFromMutationKey(MUTATION_KEYS.PATCH_MENTION), () => {
       const route = `/${buildPatchMentionRoute(mentionId)}`;
       const mutation = () => useMutation(MUTATION_KEYS.PATCH_MENTION);
       it(`Patch mention status`, async () => {
@@ -326,7 +331,7 @@ describe('Mention Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.DELETE_MENTION, () => {
+    describe(buildTitleFromMutationKey(MUTATION_KEYS.DELETE_MENTION), () => {
       const route = `/${buildDeleteMentionRoute(mentionId)}`;
       const mutation = () => useMutation(MUTATION_KEYS.DELETE_MENTION);
       it(`Delete member mention`, async () => {
@@ -363,7 +368,7 @@ describe('Mention Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.CLEAR_MENTIONS, () => {
+    describe(buildTitleFromMutationKey(MUTATION_KEYS.CLEAR_MENTIONS), () => {
       const route = `/${buildClearMentionsRoute()}`;
       const mutation = () => useMutation(MUTATION_KEYS.CLEAR_MENTIONS);
       it(`Clear chat`, async () => {

@@ -1,6 +1,6 @@
+import { QueryClient } from '@tanstack/react-query';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
-import { QueryClient } from 'react-query';
 
 import { ItemMembership, PermissionLevel } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';

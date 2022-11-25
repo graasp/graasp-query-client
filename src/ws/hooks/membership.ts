@@ -1,6 +1,6 @@
+import { QueryClient } from '@tanstack/react-query';
 import { List } from 'immutable';
 import { useEffect } from 'react';
-import { QueryClient } from 'react-query';
 
 import { ItemMembership, convertJs, getIdsFromPath } from '@graasp/sdk';
 

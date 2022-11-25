@@ -1,4 +1,8 @@
 import {
+  MutationObserverResult,
+  QueryObserverBaseResult,
+} from '@tanstack/react-query';
+import {
   RenderResult,
   WaitFor,
   renderHook,
@@ -6,14 +10,13 @@ import {
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import React from 'react';
-import { MutationObserverResult, QueryObserverBaseResult } from 'react-query';
 
 import { HttpMethod, spliceIntoChunks } from '@graasp/sdk';
 
 import configureHooks from '../src/hooks';
 import configureQueryClient from '../src/queryClient';
 import { Notifier, QueryClientConfig } from '../src/types';
-import { isDataEqual } from '../src/utils/util';
+import { structuralSharing } from '../src/utils/util';
 import { API_HOST, DOMAIN, WS_HOST } from './constants';
 
 type Args = { enableWebsocket?: boolean; notifier?: Notifier };
@@ -32,7 +35,7 @@ export const setUpTest = (args?: Args) => {
       retry: 0,
       cacheTime: 0,
       staleTime: 0,
-      isDataEqual,
+      structuralSharing,
     },
     SHOW_NOTIFICATIONS: false,
     notifier,
@@ -177,3 +180,6 @@ export const splitEndpointByIdsForErrors = (
     ...data,
     method,
   }));
+
+export const buildTitleFromMutationKey = (mutationKey: string[]) =>
+  mutationKey.join('-');

@@ -3,7 +3,7 @@ import React from 'react';
 
 import configureQueryClient from '../src/queryClient';
 import { Notifier, QueryClientConfig } from '../src/types';
-import { isDataEqual } from '../src/utils/util';
+import { structuralSharing } from '../src/utils/util';
 import { Channel } from '../src/ws/ws-client';
 import { API_HOST, DOMAIN, WS_HOST } from './constants';
 
@@ -38,7 +38,7 @@ export const setUpWsTest = (args?: {
       retry: 0,
       cacheTime: 0,
       staleTime: 0,
-      isDataEqual: isDataEqual,
+      structuralSharing,
     },
     SHOW_NOTIFICATIONS: false,
     notifier,

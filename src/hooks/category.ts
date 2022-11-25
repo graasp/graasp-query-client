@@ -1,5 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
 import { List } from 'immutable';
-import { useQuery } from 'react-query';
 
 import { convertJs } from '@graasp/sdk';
 
@@ -58,7 +58,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useItemCategories = (itemId?: UUID) =>
     useQuery<List<ItemCategoryRecord>, Error>({
       queryKey: buildItemCategoriesKey(itemId),
-      queryFn: () => {
+      queryFn: (): Promise<List<ItemCategoryRecord>> => {
         if (!itemId) {
           throw new UndefinedArgument();
         }

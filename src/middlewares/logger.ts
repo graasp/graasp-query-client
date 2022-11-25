@@ -1,4 +1,4 @@
-import { setLogger } from 'react-query';
+import { setLogger } from '@tanstack/react-query';
 
 // Custom logger
 setLogger({

@@ -1,5 +1,5 @@
+import { QueryClient, useQuery } from '@tanstack/react-query';
 import { List } from 'immutable';
-import { QueryClient, useQuery } from 'react-query';
 
 import { convertJs } from '@graasp/sdk';
 import { isError } from '@graasp/utils';

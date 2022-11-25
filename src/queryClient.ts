@@ -1,13 +1,13 @@
-import { AxiosError } from 'axios';
-import { StatusCodes } from 'http-status-codes';
 import {
   Hydrate,
   QueryClient,
   QueryClientProvider,
   dehydrate,
   useMutation,
-} from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+} from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { AxiosError } from 'axios';
+import { StatusCodes } from 'http-status-codes';
 
 import {
   CACHE_TIME_MILLISECONDS,
@@ -16,7 +16,7 @@ import {
 import configureHooks from './hooks';
 import configureMutations from './mutations';
 import type { QueryClientConfig } from './types';
-import { getHostname, isDataEqual } from './utils/util';
+import { getHostname, structuralSharing } from './utils/util';
 import { configureWebsocketClient } from './ws';
 
 /* istanbul ignore next */
@@ -77,8 +77,7 @@ export default (config: Partial<QueryClientConfig>) => {
       keepPreviousData: false,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-      notifyOnChangeProps: 'tracked',
-      isDataEqual,
+      structuralSharing,
       ...config?.defaultQueryOptions,
     },
   };

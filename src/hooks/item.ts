@@ -1,10 +1,10 @@
-import { List, RecordOf } from 'immutable';
 import {
   QueryClient,
   UseQueryResult,
   useInfiniteQuery,
   useQuery,
-} from 'react-query';
+} from '@tanstack/react-query';
+import { List, RecordOf } from 'immutable';
 
 import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
 
@@ -76,7 +76,7 @@ export default (
             queryClient.setQueryData(buildItemKey(id), item);
           });
         },
-        onError: (error) => {
+        onError: (error: Error) => {
           notifier?.({ type: getOwnItemsRoutine.FAILURE, payload: { error } });
         },
         ...defaultQueryOptions,
@@ -137,7 +137,7 @@ export default (
       const childrenPaginatedOptions = {
         ...defaultQueryOptions,
         staleTime: STALE_TIME_CHILDREN_PAGINATED_MILLISECONDS,
-        isDataEqual: isPaginatedChildrenDataEqual,
+        structuralSharing: isPaginatedChildrenDataEqual,
       };
 
       return useInfiniteQuery(
@@ -335,7 +335,10 @@ export default (
 
     useFileContent: (
       id?: UUID,
-      { enabled = true, replyUrl }: { enabled?: boolean, replyUrl?: boolean } = {},
+      {
+        enabled = true,
+        replyUrl,
+      }: { enabled?: boolean; replyUrl?: boolean } = {},
     ) =>
       useQuery({
         queryKey: buildFileContentKey(id),
@@ -344,8 +347,11 @@ export default (
             throw new UndefinedArgument();
           }
           if (replyUrl) {
-            return Api.getFileContentWithUrl({ id, replyUrl }, queryConfig).then((data) => convertJs(data));
-          };
+            return Api.getFileContentWithUrl(
+              { id, replyUrl },
+              queryConfig,
+            ).then((data) => convertJs(data));
+          }
           return Api.getFileContent({ id }, queryConfig).then((data) => data);
         },
         enabled: Boolean(id) && enabled,

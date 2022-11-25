@@ -15,7 +15,12 @@ import {
   buildInvitationRecord,
   buildMockInvitations,
 } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  buildTitleFromMutationKey,
+  mockMutation,
+  setUpTest,
+  waitForMutation,
+} from '../../test/utils';
 import {
   buildDeleteInvitationRoute,
   buildPatchInvitationRoute,
@@ -49,7 +54,7 @@ describe('Invitations Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_INVITATIONS, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.POST_INVITATIONS), () => {
     const mutation = () => useMutation(MUTATION_KEYS.POST_INVITATIONS);
     const key = buildItemInvitationsKey(itemId);
     const route = `/${buildPostInvitationsRoute(itemId)}`;
@@ -194,7 +199,7 @@ describe('Invitations Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.PATCH_INVITATION, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.PATCH_INVITATION), () => {
     const mutation = () => useMutation(MUTATION_KEYS.PATCH_INVITATION);
     const key = buildItemInvitationsKey(itemId);
     const newInvitation = buildInvitation({
@@ -275,7 +280,7 @@ describe('Invitations Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_INVITATION, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.DELETE_INVITATION), () => {
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_INVITATION);
     const key = buildItemInvitationsKey(itemId);
     const invitationToDelete = buildInvitation({ itemPath: 'itemPath' });
@@ -367,7 +372,7 @@ describe('Invitations Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.RESEND_INVITATION, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.RESEND_INVITATION), () => {
     const mutation = () => useMutation(MUTATION_KEYS.RESEND_INVITATION);
     const invitation = buildInvitation({ itemPath: 'itemPath' });
     const route = `/${buildResendInvitationRoute({

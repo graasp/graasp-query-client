@@ -1,4 +1,5 @@
 import { List } from 'immutable';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import Cookies from 'js-cookie';
 
 import { Item } from '@graasp/sdk';

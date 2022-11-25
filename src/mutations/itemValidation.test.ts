@@ -12,7 +12,12 @@ import {
   ITEM_VALIDATION_STATUS,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  buildTitleFromMutationKey,
+  mockMutation,
+  setUpTest,
+  waitForMutation,
+} from '../../test/utils';
 import {
   buildPostItemValidationRoute,
   buildUpdateItemValidationReviewRoute,
@@ -40,154 +45,164 @@ describe('Item Validation Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM_VALIDATION, () => {
-    const itemId = 'item-id';
-    const route = `/${buildPostItemValidationRoute(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_VALIDATION);
-    const key = buildItemValidationAndReviewKey(itemId);
+  describe(
+    buildTitleFromMutationKey(MUTATION_KEYS.POST_ITEM_VALIDATION),
+    () => {
+      const itemId = 'item-id';
+      const route = `/${buildPostItemValidationRoute(itemId)}`;
+      const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_VALIDATION);
+      const key = buildItemValidationAndReviewKey(itemId);
 
-    it('Post item validation', async () => {
-      queryClient.setQueryData(key, List([ITEM_VALIDATION_STATUS]));
+      it('Post item validation', async () => {
+        queryClient.setQueryData(key, List([ITEM_VALIDATION_STATUS]));
 
-      const endpoints = [
-        {
-          response: { itemId },
-          method: HttpMethod.POST,
-          route,
-        },
-      ];
+        const endpoints = [
+          {
+            response: { itemId },
+            method: HttpMethod.POST,
+            route,
+          },
+        ];
 
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({
-          itemId,
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
         });
-        await waitForMutation();
-      });
 
-      expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: postItemValidationRoutine.SUCCESS,
-      });
-    });
-    it('Unauthorized to post item validation', async () => {
-      queryClient.setQueryData(key, List([ITEM_VALIDATION_STATUS]));
-      const endpoints = [
-        {
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({ itemId });
-        await waitForMutation();
-      });
-
-      expect(mockedNotifier).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: postItemValidationRoutine.FAILURE,
-        }),
-      );
-    });
-  });
-
-  describe(MUTATION_KEYS.UPDATE_ITEM_VALIDATION_REVIEW, () => {
-    const id = 'id1';
-    const itemId = 'item-id';
-    const status = 'accepted';
-    const reason = '';
-    const route = `/${buildUpdateItemValidationReviewRoute(id)}`;
-    const mutation = () =>
-      useMutation(MUTATION_KEYS.UPDATE_ITEM_VALIDATION_REVIEW);
-    const statusKey = buildItemValidationAndReviewKey(itemId);
-    const reviewsKey = ITEM_VALIDATION_REVIEWS_KEY;
-
-    it('Update item validation review record', async () => {
-      queryClient.setQueryData(statusKey, ITEM_VALIDATION_STATUS);
-      queryClient.setQueryData(reviewsKey, FULL_VALIDATION_RECORDS);
-
-      const endpoints = [
-        {
-          // just for test, real response is of ItemValidationReview object
-          response: { id: 'entry-id', itemId: 'item-id', statusId: 'status' },
-          method: HttpMethod.POST,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({
-          id,
-          itemId,
-          status,
-          reason,
+        await act(async () => {
+          await mockedMutation.mutate({
+            itemId,
+          });
+          await waitForMutation();
         });
-        await waitForMutation();
-      });
 
-      expect(queryClient.getQueryState(statusKey)?.isInvalidated).toBeTruthy();
-      expect(queryClient.getQueryState(reviewsKey)?.isInvalidated).toBeTruthy();
-      expect(mockedNotifier).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: updateItemValidationReviewRoutine.SUCCESS,
-        }),
-      );
-    });
-
-    it('Unauthorized to update item validation review', async () => {
-      queryClient.setQueryData(statusKey, ITEM_VALIDATION_STATUS);
-      queryClient.setQueryData(reviewsKey, FULL_VALIDATION_RECORDS);
-
-      const endpoints = [
-        {
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({
-          id,
-          itemId,
-          status,
-          reason,
+        expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
+        expect(mockedNotifier).toHaveBeenCalledWith({
+          type: postItemValidationRoutine.SUCCESS,
         });
-        await waitForMutation();
+      });
+      it('Unauthorized to post item validation', async () => {
+        queryClient.setQueryData(key, List([ITEM_VALIDATION_STATUS]));
+        const endpoints = [
+          {
+            response: UNAUTHORIZED_RESPONSE,
+            statusCode: StatusCodes.UNAUTHORIZED,
+            method: HttpMethod.POST,
+            route,
+          },
+        ];
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate({ itemId });
+          await waitForMutation();
+        });
+
+        expect(mockedNotifier).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: postItemValidationRoutine.FAILURE,
+          }),
+        );
+      });
+    },
+  );
+
+  describe(
+    buildTitleFromMutationKey(MUTATION_KEYS.UPDATE_ITEM_VALIDATION_REVIEW),
+    () => {
+      const id = 'id1';
+      const itemId = 'item-id';
+      const status = 'accepted';
+      const reason = '';
+      const route = `/${buildUpdateItemValidationReviewRoute(id)}`;
+      const mutation = () =>
+        useMutation(MUTATION_KEYS.UPDATE_ITEM_VALIDATION_REVIEW);
+      const statusKey = buildItemValidationAndReviewKey(itemId);
+      const reviewsKey = ITEM_VALIDATION_REVIEWS_KEY;
+
+      it('Update item validation review record', async () => {
+        queryClient.setQueryData(statusKey, ITEM_VALIDATION_STATUS);
+        queryClient.setQueryData(reviewsKey, FULL_VALIDATION_RECORDS);
+
+        const endpoints = [
+          {
+            // just for test, real response is of ItemValidationReview object
+            response: { id: 'entry-id', itemId: 'item-id', statusId: 'status' },
+            method: HttpMethod.POST,
+            route,
+          },
+        ];
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate({
+            id,
+            itemId,
+            status,
+            reason,
+          });
+          await waitForMutation();
+        });
+
+        expect(
+          queryClient.getQueryState(statusKey)?.isInvalidated,
+        ).toBeTruthy();
+        expect(
+          queryClient.getQueryState(reviewsKey)?.isInvalidated,
+        ).toBeTruthy();
+        expect(mockedNotifier).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: updateItemValidationReviewRoutine.SUCCESS,
+          }),
+        );
       });
 
-      expect(mockedNotifier).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: updateItemValidationReviewRoutine.FAILURE,
-        }),
-      );
-    });
-  });
+      it('Unauthorized to update item validation review', async () => {
+        queryClient.setQueryData(statusKey, ITEM_VALIDATION_STATUS);
+        queryClient.setQueryData(reviewsKey, FULL_VALIDATION_RECORDS);
+
+        const endpoints = [
+          {
+            response: UNAUTHORIZED_RESPONSE,
+            statusCode: StatusCodes.UNAUTHORIZED,
+            method: HttpMethod.POST,
+            route,
+          },
+        ];
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate({
+            id,
+            itemId,
+            status,
+            reason,
+          });
+          await waitForMutation();
+        });
+
+        expect(mockedNotifier).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: updateItemValidationReviewRoutine.FAILURE,
+          }),
+        );
+      });
+    },
+  );
 });

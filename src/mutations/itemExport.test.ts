@@ -7,7 +7,12 @@ import { act } from 'react-test-renderer';
 import { HttpMethod } from '@graasp/sdk';
 
 import { UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  buildTitleFromMutationKey,
+  mockMutation,
+  setUpTest,
+  waitForMutation,
+} from '../../test/utils';
 import {
   buildExportItemRoute,
   buildExportPublicItemRoute,
@@ -28,7 +33,7 @@ describe('Export Zip', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.EXPORT_ZIP, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.EXPORT_ZIP), () => {
     const itemId = 'item-id';
     const route = `/${buildExportItemRoute(itemId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.EXPORT_ZIP);

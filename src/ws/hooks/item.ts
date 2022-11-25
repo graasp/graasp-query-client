@@ -2,9 +2,9 @@
  * Graasp websocket client
  * React effect hooks to subscribe to real-time updates and mutate query client
  */
+import { QueryClient } from '@tanstack/react-query';
 import { List } from 'immutable';
 import { useEffect } from 'react';
-import { QueryClient } from 'react-query';
 
 import { convertJs } from '@graasp/sdk';
 

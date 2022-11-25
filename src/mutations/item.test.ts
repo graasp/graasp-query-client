@@ -21,6 +21,7 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
 import {
+  buildTitleFromMutationKey,
   mockMutation,
   setUpTest,
   splitEndpointByIds,
@@ -76,7 +77,7 @@ describe('Items Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.POST_ITEM), () => {
     const newItem = {
       name: 'new item',
       type: ItemType.FOLDER,
@@ -185,7 +186,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.EDIT_ITEM, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.EDIT_ITEM), () => {
     const item = ITEMS.first()!;
     const itemKey = buildItemKey(item.id);
     const payload = { id: item.id, description: 'new description' };
@@ -297,7 +298,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.COPY_ITEM, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.COPY_ITEM), () => {
     const to = ITEMS.first()!.id;
     const copied = ITEMS.get(1)!;
     const copiedId = copied.id;
@@ -391,7 +392,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.COPY_PUBLIC_ITEM, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.COPY_PUBLIC_ITEM), () => {
     const to = ITEMS.first()!.id;
     const copied = ITEMS.get(1)!;
     const copiedId = copied.id;
@@ -485,7 +486,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.COPY_ITEMS, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.COPY_ITEMS), () => {
     const to = ITEMS.first()!.id;
 
     const mutation = () => useMutation(MUTATION_KEYS.COPY_ITEMS);
@@ -589,7 +590,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.MOVE_ITEM, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.MOVE_ITEM), () => {
     const to = ITEMS.first()!.id;
     const moved = ITEMS.get(1)!.id;
     const route = `/${buildMoveItemRoute(moved)}`;
@@ -697,7 +698,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.MOVE_ITEMS, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.MOVE_ITEMS), () => {
     const to = ITEMS.first()!;
     const toId = to.id;
 
@@ -926,7 +927,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.RECYCLE_ITEM, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.RECYCLE_ITEM), () => {
     const mutation = () => useMutation(MUTATION_KEYS.RECYCLE_ITEM);
 
     it('Recycle a root item', async () => {
@@ -1033,7 +1034,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_ITEM, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.DELETE_ITEM), () => {
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM);
 
     it('Delete a root item', async () => {
@@ -1188,7 +1189,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.RECYCLE_ITEMS, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.RECYCLE_ITEMS), () => {
     const mutation = () => useMutation(MUTATION_KEYS.RECYCLE_ITEMS);
 
     it('Recycle root items', async () => {
@@ -1408,7 +1409,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_ITEMS, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.DELETE_ITEMS), () => {
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEMS);
 
     it('Delete root items', async () => {
@@ -1730,7 +1731,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.UPLOAD_FILES, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.UPLOAD_FILES), () => {
     const mutation = () => useMutation(MUTATION_KEYS.UPLOAD_FILES);
     const { id } = ITEMS.first()!;
 
@@ -1799,7 +1800,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.RESTORE_ITEMS, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.RESTORE_ITEMS), () => {
     const mutation = () => useMutation(MUTATION_KEYS.RESTORE_ITEMS);
 
     it('Restore items', async () => {
@@ -2033,95 +2034,98 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.UPLOAD_ITEM_THUMBNAIL, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.UPLOAD_ITEM_THUMBNAIL);
-    const item = ITEMS.first()!;
-    const { id } = item;
+  describe(
+    buildTitleFromMutationKey(MUTATION_KEYS.UPLOAD_ITEM_THUMBNAIL),
+    () => {
+      const mutation = () => useMutation(MUTATION_KEYS.UPLOAD_ITEM_THUMBNAIL);
+      const item = ITEMS.first()!;
+      const { id } = item;
 
-    it('Upload thumbnail', async () => {
-      const route = `/${buildUploadItemThumbnailRoute(id)}`;
+      it('Upload thumbnail', async () => {
+        const route = `/${buildUploadItemThumbnailRoute(id)}`;
 
-      // set data in cache
-      Object.values(THUMBNAIL_SIZES).forEach((size) => {
-        const key = buildItemThumbnailKey({ id, size });
-        queryClient.setQueryData(key, Math.random());
+        // set data in cache
+        Object.values(THUMBNAIL_SIZES).forEach((size) => {
+          const key = buildItemThumbnailKey({ id, size });
+          queryClient.setQueryData(key, Math.random());
+        });
+
+        const response = THUMBNAIL_BLOB_RESPONSE;
+
+        const endpoints = [
+          {
+            response,
+            method: HttpMethod.POST,
+            route,
+          },
+        ];
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate({ id, data: [id] });
+          await waitForMutation();
+        });
+
+        // verify item is still available
+        // in real cases, the path should be different
+        for (const size of Object.values(THUMBNAIL_SIZES)) {
+          const key = buildItemThumbnailKey({ id, size });
+          const state = queryClient.getQueryState(key);
+          expect(state?.isInvalidated).toBeTruthy();
+        }
+        expect(mockedNotifier).toHaveBeenCalledWith({
+          type: uploadItemThumbnailRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.UPLOAD_ITEM_THUMBNAIL },
+        });
       });
 
-      const response = THUMBNAIL_BLOB_RESPONSE;
+      it('Unauthorized to upload a thumbnail', async () => {
+        const route = `/${buildUploadItemThumbnailRoute(id)}`;
+        // set data in cache
+        Object.values(THUMBNAIL_SIZES).forEach((size) => {
+          const key = buildItemThumbnailKey({ id, size });
+          queryClient.setQueryData(key, Math.random());
+        });
 
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.POST,
-          route,
-        },
-      ];
+        const response = UNAUTHORIZED_RESPONSE;
 
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
+        const endpoints = [
+          {
+            response,
+            statusCode: StatusCodes.UNAUTHORIZED,
+            method: HttpMethod.POST,
+            route,
+          },
+        ];
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate({ id, error: StatusCodes.UNAUTHORIZED });
+          await waitForMutation();
+        });
+
+        // verify item is still available
+        // in real cases, the path should be different
+        for (const size of Object.values(THUMBNAIL_SIZES)) {
+          const key = buildItemThumbnailKey({ id, size });
+          const state = queryClient.getQueryState(key);
+          expect(state?.isInvalidated).toBeTruthy();
+        }
+        expect(mockedNotifier).toHaveBeenCalledWith({
+          type: uploadItemThumbnailRoutine.FAILURE,
+          payload: { error: StatusCodes.UNAUTHORIZED },
+        });
       });
-
-      await act(async () => {
-        await mockedMutation.mutate({ id, data: [id] });
-        await waitForMutation();
-      });
-
-      // verify item is still available
-      // in real cases, the path should be different
-      for (const size of Object.values(THUMBNAIL_SIZES)) {
-        const key = buildItemThumbnailKey({ id, size });
-        const state = queryClient.getQueryState(key);
-        expect(state?.isInvalidated).toBeTruthy();
-      }
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: uploadItemThumbnailRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.UPLOAD_ITEM_THUMBNAIL },
-      });
-    });
-
-    it('Unauthorized to upload a thumbnail', async () => {
-      const route = `/${buildUploadItemThumbnailRoute(id)}`;
-      // set data in cache
-      Object.values(THUMBNAIL_SIZES).forEach((size) => {
-        const key = buildItemThumbnailKey({ id, size });
-        queryClient.setQueryData(key, Math.random());
-      });
-
-      const response = UNAUTHORIZED_RESPONSE;
-
-      const endpoints = [
-        {
-          response,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({ id, error: StatusCodes.UNAUTHORIZED });
-        await waitForMutation();
-      });
-
-      // verify item is still available
-      // in real cases, the path should be different
-      for (const size of Object.values(THUMBNAIL_SIZES)) {
-        const key = buildItemThumbnailKey({ id, size });
-        const state = queryClient.getQueryState(key);
-        expect(state?.isInvalidated).toBeTruthy();
-      }
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: uploadItemThumbnailRoutine.FAILURE,
-        payload: { error: StatusCodes.UNAUTHORIZED },
-      });
-    });
-  });
+    },
+  );
 });

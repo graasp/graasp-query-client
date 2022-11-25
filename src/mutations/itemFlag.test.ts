@@ -8,7 +8,12 @@ import { HttpMethod } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { FLAGS, ITEMS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  buildTitleFromMutationKey,
+  mockMutation,
+  setUpTest,
+  waitForMutation,
+} from '../../test/utils';
 import { buildPostItemFlagRoute } from '../api/routes';
 import { MUTATION_KEYS, buildItemFlagsKey } from '../config/keys';
 import { postItemFlagRoutine } from '../routines';
@@ -25,7 +30,7 @@ describe('Item Flag Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM_FLAG, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.POST_ITEM_FLAG), () => {
     const flagId = FLAGS.first()!.id;
     const itemId = ITEMS.first()!.id;
     const flagKey = buildItemFlagsKey(itemId);

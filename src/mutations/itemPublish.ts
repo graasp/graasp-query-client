@@ -1,4 +1,4 @@
-import { QueryClient } from 'react-query';
+import { QueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api';
 import { MUTATION_KEYS, buildItemTagsKey } from '../config/keys';

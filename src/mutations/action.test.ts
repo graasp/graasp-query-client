@@ -11,7 +11,12 @@ import {
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  buildTitleFromMutationKey,
+  mockMutation,
+  setUpTest,
+  waitForMutation,
+} from '../../test/utils';
 import { buildExportActions } from '../api/routes';
 import { MUTATION_KEYS } from '../config/keys';
 import { exportActionsRoutine } from '../routines';
@@ -31,59 +36,62 @@ describe('Action Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM_CHAT_MESSAGE, () => {
-    const route = `/${buildExportActions(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.EXPORT_ACTIONS);
+  describe(
+    buildTitleFromMutationKey(MUTATION_KEYS.POST_ITEM_CHAT_MESSAGE),
+    () => {
+      const route = `/${buildExportActions(itemId)}`;
+      const mutation = () => useMutation(MUTATION_KEYS.EXPORT_ACTIONS);
 
-    it(`Export Actions`, async () => {
-      const endpoints = [
-        { route, response: OK_RESPONSE, method: HttpMethod.POST },
-      ];
+      it(`Export Actions`, async () => {
+        const endpoints = [
+          { route, response: OK_RESPONSE, method: HttpMethod.POST },
+        ];
 
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate(itemId);
+          await waitForMutation();
+        });
+
+        expect(mockedNotifier).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: exportActionsRoutine.SUCCESS,
+          }),
+        );
       });
 
-      await act(async () => {
-        await mockedMutation.mutate(itemId);
-        await waitForMutation();
+      it(`Unauthorized`, async () => {
+        const endpoints = [
+          {
+            route,
+            response: UNAUTHORIZED_RESPONSE,
+            method: HttpMethod.POST,
+            statusCode: StatusCodes.UNAUTHORIZED,
+          },
+        ];
+
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate(itemId);
+          await waitForMutation();
+        });
+
+        expect(mockedNotifier).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: exportActionsRoutine.FAILURE,
+          }),
+        );
       });
-
-      expect(mockedNotifier).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: exportActionsRoutine.SUCCESS,
-        }),
-      );
-    });
-
-    it(`Unauthorized`, async () => {
-      const endpoints = [
-        {
-          route,
-          response: UNAUTHORIZED_RESPONSE,
-          method: HttpMethod.POST,
-          statusCode: StatusCodes.UNAUTHORIZED,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate(itemId);
-        await waitForMutation();
-      });
-
-      expect(mockedNotifier).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: exportActionsRoutine.FAILURE,
-        }),
-      );
-    });
-  });
+    },
+  );
 });

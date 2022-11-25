@@ -101,7 +101,7 @@ export const fallbackToPublic = (
     });
 };
 
-// this function is used to purposely trigger an error for react-query
+// this function is used to purposely trigger an error for @tanstack/react-query
 // especially when the request returns positively with an array of errors (ie: copy many items)
 export const throwIfArrayContainsErrorOrReturn = (array: any[]) => {
   const errors = array?.filter((value) => isObject(value) && value.statusCode);

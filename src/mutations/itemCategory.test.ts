@@ -8,7 +8,12 @@ import { HttpMethod } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { ITEM_CATEGORIES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  buildTitleFromMutationKey,
+  mockMutation,
+  setUpTest,
+  waitForMutation,
+} from '../../test/utils';
 import {
   buildDeleteItemCategoryRoute,
   buildPostItemCategoryRoute,
@@ -32,7 +37,7 @@ describe('Item Category Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM_CATEGORY, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.POST_ITEM_CATEGORY), () => {
     const itemId = 'item-id';
     const categoryId = 'new-category';
     const route = `/${buildPostItemCategoryRoute(itemId)}`;
@@ -101,76 +106,79 @@ describe('Item Category Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_ITEM_CATEGORY, () => {
-    const itemCategoryId = 'id1';
-    const itemId = 'item-id';
-    const route = `/${buildDeleteItemCategoryRoute({
-      itemId,
-      itemCategoryId,
-    })}`;
-    const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_CATEGORY);
-    const key = buildItemCategoriesKey(itemId);
+  describe(
+    buildTitleFromMutationKey(MUTATION_KEYS.DELETE_ITEM_CATEGORY),
+    () => {
+      const itemCategoryId = 'id1';
+      const itemId = 'item-id';
+      const route = `/${buildDeleteItemCategoryRoute({
+        itemId,
+        itemCategoryId,
+      })}`;
+      const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_CATEGORY);
+      const key = buildItemCategoriesKey(itemId);
 
-    it('Delete item category', async () => {
-      queryClient.setQueryData(key, ITEM_CATEGORIES);
+      it('Delete item category', async () => {
+        queryClient.setQueryData(key, ITEM_CATEGORIES);
 
-      const endpoints = [
-        {
-          response: { itemId: 'item-id' },
-          method: HttpMethod.DELETE,
-          route,
-        },
-      ];
+        const endpoints = [
+          {
+            response: { itemId: 'item-id' },
+            method: HttpMethod.DELETE,
+            route,
+          },
+        ];
 
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({
-          itemCategoryId,
-          itemId,
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
         });
-        await waitForMutation();
+
+        await act(async () => {
+          await mockedMutation.mutate({
+            itemCategoryId,
+            itemId,
+          });
+          await waitForMutation();
+        });
+
+        expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
+        expect(mockedNotifier).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: deleteItemCategoryRoutine.SUCCESS,
+          }),
+        );
       });
+      it('Unauthorized to delete item category', async () => {
+        queryClient.setQueryData(key, ITEM_CATEGORIES);
+        const endpoints = [
+          {
+            response: UNAUTHORIZED_RESPONSE,
+            statusCode: StatusCodes.UNAUTHORIZED,
+            method: HttpMethod.POST,
+            route,
+          },
+        ];
 
-      expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
-      expect(mockedNotifier).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: deleteItemCategoryRoutine.SUCCESS,
-        }),
-      );
-    });
-    it('Unauthorized to delete item category', async () => {
-      queryClient.setQueryData(key, ITEM_CATEGORIES);
-      const endpoints = [
-        {
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
-          route,
-        },
-      ];
+        const mockedMutation = await mockMutation({
+          endpoints,
+          mutation,
+          wrapper,
+        });
 
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
+        await act(async () => {
+          await mockedMutation.mutate({ itemCategoryId, itemId });
+          await waitForMutation();
+        });
+
+        expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
+        expect(mockedNotifier).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: deleteItemCategoryRoutine.FAILURE,
+          }),
+        );
       });
-
-      await act(async () => {
-        await mockedMutation.mutate({ itemCategoryId, itemId });
-        await waitForMutation();
-      });
-
-      expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
-      expect(mockedNotifier).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: deleteItemCategoryRoutine.FAILURE,
-        }),
-      );
-    });
-  });
+    },
+  );
 });

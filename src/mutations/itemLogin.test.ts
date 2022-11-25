@@ -12,7 +12,12 @@ import {
   ITEM_LOGIN_RESPONSE,
   MEMBER_RESPONSE,
 } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  buildTitleFromMutationKey,
+  mockMutation,
+  setUpTest,
+  waitForMutation,
+} from '../../test/utils';
 import {
   buildPostItemLoginSignInRoute,
   buildPutItemLoginSchema,
@@ -41,7 +46,7 @@ describe('Item Login Mutations', () => {
   const { name: username, id: memberId } = MEMBER_RESPONSE;
   const password = 'password';
   const itemId = ITEMS.first()!.id;
-  describe(MUTATION_KEYS.POST_ITEM_LOGIN, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.POST_ITEM_LOGIN), () => {
     const route = `/${buildPostItemLoginSignInRoute(itemId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_LOGIN);
     it('Post item login', async () => {
@@ -118,7 +123,7 @@ describe('Item Login Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.PUT_ITEM_LOGIN, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.PUT_ITEM_LOGIN), () => {
     const route = `/${buildPutItemLoginSchema(itemId)}`;
     const mutation = () => useMutation(MUTATION_KEYS.PUT_ITEM_LOGIN);
     const loginSchema = ITEM_LOGIN_RESPONSE;

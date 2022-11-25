@@ -1,5 +1,5 @@
+import { QueryClient } from '@tanstack/react-query';
 import { List } from 'immutable';
-import { QueryClient } from 'react-query';
 
 import {
   deleteInvitation,

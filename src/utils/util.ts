@@ -1,5 +1,5 @@
+import { InfiniteData } from '@tanstack/react-query';
 import { List, Record, RecordOf, is } from 'immutable';
-import { InfiniteData } from 'react-query';
 
 export const isObject = (value: unknown) =>
   typeof value === 'object' && !Array.isArray(value) && value !== null;
@@ -17,37 +17,32 @@ export const getHostname = () => {
   return window?.location?.hostname;
 };
 
-export const isDataEqual = (
-  oldData:
-    | RecordOf<any>
-    | List<RecordOf<any>>
-    | List<List<RecordOf<any>>>
-    // necessary for download avatar, thumbnail
-    // might be removed if we only use links
-    | Blob
-    | undefined,
-  newData:
-    | RecordOf<any>
-    | List<RecordOf<any>>
-    | List<List<RecordOf<any>>>
-    // necessary for download avatar, thumbnail
-    // might be removed if we only use links
-    | Blob,
-): boolean => is(oldData, newData);
+type GeneralType =
+  | RecordOf<any>
+  | List<RecordOf<any>>
+  | List<List<RecordOf<any>>>
+  // necessary for download avatar, thumbnail
+  // might be removed if we only use links
+  | Blob;
+
+export const structuralSharing = (
+  oldData: GeneralType | undefined,
+  newData: GeneralType,
+): GeneralType | undefined => (is(oldData, newData) ? oldData : newData);
 
 export const isPaginatedChildrenDataEqual = (
   oldData: InfiniteData<RecordOf<any>> | undefined,
   newData: InfiniteData<RecordOf<any>>,
-) => {
+): InfiniteData<RecordOf<any>> => {
   if (oldData?.pages.length === newData?.pages.length && oldData.pages.length) {
     for (const [idx, p] of oldData.pages.entries()) {
       if (!is(p, newData.pages[idx])) {
-        return false;
+        return newData;
       }
     }
-    return true;
+    return oldData;
   }
-  return false;
+  return newData;
 };
 
 export const paginate = (

@@ -11,8 +11,6 @@ import {
   UnknownExtra,
 } from '@graasp/sdk';
 
-import { isDataEqual } from './utils/util';
-
 export type Notifier = (e: unknown) => void;
 
 export type QueryClientConfig = {
@@ -32,7 +30,9 @@ export type QueryClientConfig = {
     keepPreviousData?: boolean;
     refetchOnMount?: boolean;
     notifyOnChangeProps?: any;
-    isDataEqual: typeof isDataEqual;
+    structuralSharing:
+      | boolean
+      | ((oldData: any | undefined, newData: any) => any);
   };
 };
 

@@ -14,7 +14,12 @@ import {
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  buildTitleFromMutationKey,
+  mockMutation,
+  setUpTest,
+  waitForMutation,
+} from '../../test/utils';
 import {
   SIGN_OUT_ROUTE,
   buildDeleteMemberRoute,
@@ -42,7 +47,7 @@ describe('Member Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.SIGN_OUT, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.SIGN_OUT), () => {
     const route = `/${SIGN_OUT_ROUTE}`;
     const mutation = () => useMutation(MUTATION_KEYS.SIGN_OUT);
 
@@ -95,7 +100,7 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_MEMBER, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.DELETE_MEMBER), () => {
     const memberId = 'member-id';
 
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_MEMBER);
@@ -159,7 +164,7 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.EDIT_MEMBER, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.EDIT_MEMBER), () => {
     const id = 'member-id';
     const route = `/${buildPatchMember(id)}`;
     const newMember = { name: 'newname' };
@@ -225,7 +230,7 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.UPLOAD_AVATAR, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.UPLOAD_AVATAR), () => {
     const mutation = () => useMutation(MUTATION_KEYS.UPLOAD_AVATAR);
     const member = MEMBER_RESPONSE;
     const { id } = member;
@@ -317,7 +322,7 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.ADD_FAVORITE_ITEM, () => {
+  describe(buildTitleFromMutationKey(MUTATION_KEYS.ADD_FAVORITE_ITEM), () => {
     const id = 'member-id';
     const itemId = 'item-id';
     const extra = {
@@ -393,72 +398,78 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_FAVORITE_ITEM, () => {
-    const id = 'member-id';
-    const route = `/${buildPatchMember(id)}`;
-    const itemId = 'item-id';
-    const extra = {
-      favoriteItems: ['item-id', 'item-id2'],
-    };
-    const mutation = () => useMutation(MUTATION_KEYS.DELETE_FAVORITE_ITEM);
+  describe(
+    buildTitleFromMutationKey(MUTATION_KEYS.DELETE_FAVORITE_ITEM),
+    () => {
+      const id = 'member-id';
+      const route = `/${buildPatchMember(id)}`;
+      const itemId = 'item-id';
+      const extra = {
+        favoriteItems: ['item-id', 'item-id2'],
+      };
+      const mutation = () => useMutation(MUTATION_KEYS.DELETE_FAVORITE_ITEM);
 
-    it(`Successfully delete favorite item`, async () => {
-      const createMemberExtra = Record({ favoriteItems: List(['item-id2']) });
-      const response = MEMBER_RESPONSE.set('extra', createMemberExtra() as any);
-      // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.PATCH,
-          route,
-        },
-      ];
-      const mockedMutation = await mockMutation({
-        mutation,
-        wrapper,
-        endpoints,
+      it(`Successfully delete favorite item`, async () => {
+        const createMemberExtra = Record({ favoriteItems: List(['item-id2']) });
+        const response = MEMBER_RESPONSE.set(
+          'extra',
+          createMemberExtra() as any,
+        );
+        // set random data in cache
+        queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+        const endpoints = [
+          {
+            response,
+            method: HttpMethod.PATCH,
+            route,
+          },
+        ];
+        const mockedMutation = await mockMutation({
+          mutation,
+          wrapper,
+          endpoints,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate({ memberId: id, itemId, extra });
+          await waitForMutation();
+        });
+
+        // verify cache keys
+        const newData = queryClient.getQueryData(
+          CURRENT_MEMBER_KEY,
+        ) as MemberRecord;
+        expect(newData).toEqualImmutable(response);
       });
 
-      await act(async () => {
-        await mockedMutation.mutate({ memberId: id, itemId, extra });
-        await waitForMutation();
+      it(`Unauthorized`, async () => {
+        // set random data in cache
+        queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+        const endpoints = [
+          {
+            response: UNAUTHORIZED_RESPONSE,
+            statusCode: StatusCodes.UNAUTHORIZED,
+            method: HttpMethod.PATCH,
+            route,
+          },
+        ];
+        const mockedMutation = await mockMutation({
+          mutation,
+          wrapper,
+          endpoints,
+        });
+
+        await act(async () => {
+          await mockedMutation.mutate({ memberId: id, itemId, extra });
+          await waitForMutation();
+        });
+
+        // verify cache keys
+        const oldData = queryClient.getQueryData(
+          CURRENT_MEMBER_KEY,
+        ) as MemberRecord;
+        expect(oldData).toEqualImmutable(MEMBER_RESPONSE);
       });
-
-      // verify cache keys
-      const newData = queryClient.getQueryData(
-        CURRENT_MEMBER_KEY,
-      ) as MemberRecord;
-      expect(newData).toEqualImmutable(response);
-    });
-
-    it(`Unauthorized`, async () => {
-      // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
-      const endpoints = [
-        {
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.PATCH,
-          route,
-        },
-      ];
-      const mockedMutation = await mockMutation({
-        mutation,
-        wrapper,
-        endpoints,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({ memberId: id, itemId, extra });
-        await waitForMutation();
-      });
-
-      // verify cache keys
-      const oldData = queryClient.getQueryData(
-        CURRENT_MEMBER_KEY,
-      ) as MemberRecord;
-      expect(oldData).toEqualImmutable(MEMBER_RESPONSE);
-    });
-  });
+    },
+  );
 });

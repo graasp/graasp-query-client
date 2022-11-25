@@ -8,7 +8,7 @@ import {
   GET_CURRENT_MEMBER_ROUTE,
   buildGetMemberMentionsRoute,
 } from '../api/routes';
-import { buildMentionKey } from '../config/keys';
+import { CURRENT_MEMBER_KEY, buildMentionKey } from '../config/keys';
 import type { MemberMentionsRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
@@ -30,6 +30,8 @@ describe('Chat Mention Hooks', () => {
     const hook = () => hooks.useMentions();
 
     it(`Receive member mentions`, async () => {
+      // set current member
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const response = buildMemberMentions(memberId);
       const endpoints = [
         {
