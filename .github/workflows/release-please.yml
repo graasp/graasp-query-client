@@ -1,11 +1,11 @@
-# automate relases for a library package
-name: Release new version
+# automate releases for a library package
+name: Release new package version
 
 # Control when the action will run
 on:
   push:
-    branches: 
-      - "main"
+    branches:
+      - 'main'
 
 jobs:
   release-please:
@@ -35,6 +35,8 @@ jobs:
       # This section is useful only if you plan on publishing your package to NPM
       # Remove it if you do not plan to publish to NPM
       - name: Publish to NPM
-        uses: graasp/graasp-deploy/.github/actions/publish-to-NPM@v1
+        uses: graasp/graasp-deploy/.github/actions/publish-to-npm@v1
+        with:
+          npm-token: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}
       # -------------------------------------------------------------------------
