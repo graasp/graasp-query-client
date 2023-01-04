@@ -27,6 +27,7 @@ import {
 import {
   copyItemRoutine,
   copyItemsRoutine,
+  createEtherpadRoutine,
   createItemRoutine,
   deleteItemRoutine,
   deleteItemsRoutine,
@@ -60,6 +61,7 @@ const {
   COPY_PUBLIC_ITEM,
   IMPORT_ZIP,
   IMPORT_H5P,
+  POST_ETHERPAD,
 } = MUTATION_KEYS;
 
 interface Value {
@@ -132,6 +134,24 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onError: (error) => {
       notifier?.({ type: createItemRoutine.FAILURE, payload: { error } });
+    },
+    onSettled: (_data, _error, { parentId }) => {
+      const key = getKeyForParentId(parentId);
+      queryClient.invalidateQueries(key);
+    },
+  });
+
+  queryClient.setMutationDefaults(POST_ETHERPAD, {
+    mutationFn: async (params) => Api.postEtherpad(params, queryConfig),
+    // we cannot optimistically add an item because we need its id
+    onSuccess: () => {
+      notifier?.({
+        type: createEtherpadRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
+      });
+    },
+    onError: (error) => {
+      notifier?.({ type: createEtherpadRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_data, _error, { parentId }) => {
       const key = getKeyForParentId(parentId);
