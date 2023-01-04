@@ -346,8 +346,14 @@ export const postEtherpad = async (
       .then(({ data }) => data),
   );
 
-export const getEtherpad = (itemId: UUID, { API_HOST }: QueryClientConfig) =>
+export const getEtherpad = (
+  { itemId, mode }: { itemId: UUID; mode: 'read' | 'write' },
+  { API_HOST }: QueryClientConfig,
+) =>
   fallbackToPublic(
-    () => axios.get(`${API_HOST}/${buildGetEtherpadRoute(itemId)}`),
+    () =>
+      axios.get(`${API_HOST}/${buildGetEtherpadRoute(itemId)}`, {
+        params: { mode },
+      }),
     () => axios.get(`${API_HOST}/${buildGetPublicEtherpadRoute(itemId)}`),
   );

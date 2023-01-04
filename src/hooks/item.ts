@@ -439,7 +439,7 @@ export default (
       });
     },
 
-    useEtherpad: (item: Item) => {
+    useEtherpad: (item: Item, mode: 'read' | 'write') => {
       if (item.type !== ItemType.ETHERPAD) {
         return null;
       }
@@ -449,8 +449,8 @@ export default (
           if (!item.id) {
             throw new UndefinedArgument();
           }
-          return Api.getEtherpad(item.id, queryConfig).then((data) =>
-            convertJs(data),
+          return Api.getEtherpad({ itemId: item.id, mode }, queryConfig).then(
+            (data) => convertJs(data),
           );
         },
         enabled: Boolean(item.id),
