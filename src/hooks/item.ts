@@ -6,7 +6,12 @@ import {
   useQuery,
 } from 'react-query';
 
-import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
+import {
+  Item,
+  ItemType,
+  MAX_TARGETS_FOR_READ_REQUEST,
+  convertJs,
+} from '@graasp/sdk';
 
 import * as Api from '../api';
 import { splitRequestByIds } from '../api/axios';
@@ -21,6 +26,7 @@ import {
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
+  buildEtherpadKey,
   buildFileContentKey,
   buildItemChildrenKey,
   buildItemKey,
@@ -34,6 +40,7 @@ import {
 } from '../config/keys';
 import { getOwnItemsRoutine } from '../routines';
 import {
+  EtherpadRecord,
   ItemLoginRecord,
   ItemRecord,
   MemberRecord,
@@ -335,7 +342,10 @@ export default (
 
     useFileContent: (
       id?: UUID,
-      { enabled = true, replyUrl }: { enabled?: boolean, replyUrl?: boolean } = {},
+      {
+        enabled = true,
+        replyUrl,
+      }: { enabled?: boolean; replyUrl?: boolean } = {},
     ) =>
       useQuery({
         queryKey: buildFileContentKey(id),
@@ -344,8 +354,11 @@ export default (
             throw new UndefinedArgument();
           }
           if (replyUrl) {
-            return Api.getFileContentWithUrl({ id, replyUrl }, queryConfig).then((data) => convertJs(data));
-          };
+            return Api.getFileContentWithUrl(
+              { id, replyUrl },
+              queryConfig,
+            ).then((data) => convertJs(data));
+          }
           return Api.getFileContent({ id }, queryConfig).then((data) => data);
         },
         enabled: Boolean(id) && enabled,
@@ -423,6 +436,25 @@ export default (
         ...defaultQueryOptions,
         enabled: Boolean(id) && shouldFetch,
         cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
+      });
+    },
+
+    useEtherpad: (item: Item) => {
+      if (item.type !== ItemType.ETHERPAD) {
+        return null;
+      }
+      return useQuery({
+        queryKey: buildEtherpadKey(item.id),
+        queryFn: (): Promise<EtherpadRecord> => {
+          if (!item.id) {
+            throw new UndefinedArgument();
+          }
+          return Api.getEtherpad(item.id, queryConfig).then((data) =>
+            convertJs(data),
+          );
+        },
+        enabled: Boolean(item.id),
+        ...defaultQueryOptions,
       });
     },
   };

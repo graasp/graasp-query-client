@@ -21,9 +21,11 @@ import {
   buildDownloadPublicItemThumbnailRoute,
   buildEditItemRoute,
   buildGetChildrenRoute,
+  buildGetEtherpadRoute,
   buildGetItemRoute,
   buildGetItemsRoute,
   buildGetPublicChildrenRoute,
+  buildGetPublicEtherpadRoute,
   buildGetPublicItemRoute,
   buildGetPublicItemsWithTag,
   buildMoveItemRoute,
@@ -342,4 +344,10 @@ export const postEtherpad = async (
         name: name.trim(),
       })
       .then(({ data }) => data),
+  );
+
+export const getEtherpad = (itemId: UUID, { API_HOST }: QueryClientConfig) =>
+  fallbackToPublic(
+    () => axios.get(`${API_HOST}/${buildGetEtherpadRoute(itemId)}`),
+    () => axios.get(`${API_HOST}/${buildGetPublicEtherpadRoute(itemId)}`),
   );

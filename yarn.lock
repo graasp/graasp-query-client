@@ -2285,7 +2285,7 @@ __metadata:
     "@babel/preset-typescript": 7.16.7
     "@commitlint/cli": 16.2.4
     "@commitlint/config-conventional": 16.2.4
-    "@graasp/sdk": "github:graasp/graasp-sdk"
+    "@graasp/sdk": "github:graasp/graasp-sdk#etherpad"
     "@graasp/translations": "github:graasp/graasp-translations.git"
     "@graasp/utils": "github:graasp/graasp-utils.git"
     "@testing-library/jest-dom": 5.16.4
@@ -2340,20 +2340,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@github:graasp/graasp-sdk":
+"@graasp/sdk@github:graasp/graasp-sdk#etherpad":
   version: 0.1.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=41b8c166b4a4db98259e56797f9b1f56e1b40465"
+  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=0848359adacd8249aa684a81b00615988e5a0de7"
   dependencies:
     "@fastify/secure-session": 5.2.0
     aws-sdk: 2.1111.0
-    fastify: ^3.29.1
+    fastify: 3.29.1
     fluent-json-schema: 3.1.0
     immutable: 4.1.0
     js-cookie: 3.0.1
     qs: 6.11.0
     slonik: 28.1.1
     uuid: 8.3.2
-  checksum: e3d9523f5b6ea307a1ed5dfcf7827addf2f16a8b01220dd0ad6ebcda7d28dbd93ac4caacd76f3d8159bec5f4c02395713cc874e18e795bfc7a65a2b8ea494496
+  checksum: f3f6a6f33c524bcd11b04853d3553dd8bfae39fdacbe0c1696d032cac8e8aa9f58aeb3d1acfbc8405d2a1df6aec0d06217dda3f2fa9d5d37d3bd6fa464d0da6d
   languageName: node
   linkType: hard
 
@@ -8596,7 +8596,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:^3.29.1":
+"fastify@npm:3.29.1":
   version: 3.29.1
   resolution: "fastify@npm:3.29.1"
   dependencies:

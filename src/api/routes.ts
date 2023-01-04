@@ -349,6 +349,10 @@ export const buildItemPublishRoute = (itemId: UUID, notification?: boolean) =>
 
 export const buildPostEtherpadRoute = (parentId?: UUID) =>
   `${ETHERPAD_ROUTE}/create${parentId ? qs.stringify({ parentId }) : ''}`;
+export const buildGetEtherpadRoute = (itemId: UUID) =>
+  `${ETHERPAD_ROUTE}/view/${itemId}`;
+export const buildGetPublicEtherpadRoute = (itemId: UUID) =>
+  `${PUBLIC_PREFIX}/${ETHERPAD_ROUTE}/read/${itemId}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,
@@ -449,4 +453,7 @@ export const API_ROUTES = {
   buildGetPlanRoute,
   buildItemPublishRoute,
   buildPostManyItemMembershipsRoute,
+  buildGetEtherpadRoute,
+  buildPostEtherpadRoute,
+  buildGetPublicEtherpadRoute,
 };

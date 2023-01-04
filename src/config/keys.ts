@@ -6,6 +6,8 @@ import { DEFAULT_THUMBNAIL_SIZES } from './constants';
 export const APPS_KEY = 'apps';
 export const ITEMS_KEY = 'items';
 export const OWN_ITEMS_KEY = [ITEMS_KEY, 'own'];
+export const ETHERPADS_KEY = 'etherpads';
+
 export const buildItemKey = (id?: UUID) => [ITEMS_KEY, id];
 export const buildItemsKey = (ids: UUID[]) => [ITEMS_KEY, hashItemsIds(ids)];
 export const buildItemChildrenKey = (id?: UUID) => [ITEMS_KEY, id, 'children'];
@@ -163,6 +165,8 @@ export const buildPlansKey = (id: string) => [
 ];
 export const CURRENT_CUSTOMER_KEY = [SUBSCRIPTION_KEY, 'currentCustomer'];
 
+export const buildEtherpadKey = (itemId?: UUID) => [ETHERPADS_KEY, itemId];
+
 export const DATA_KEYS = {
   APPS_KEY,
   ITEMS_KEY,
@@ -213,6 +217,7 @@ export const DATA_KEYS = {
   buildItemInvitationsKey,
   CARDS_KEY,
   buildPlanKey,
+  buildEtherpadKey,
 };
 
 export const MUTATION_KEYS = {
