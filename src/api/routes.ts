@@ -14,6 +14,7 @@ export const INVITATIONS_ROUTE = `invitations`;
 export const GET_RECYCLED_ITEMS_ROUTE = `${ITEMS_ROUTE}/recycled`;
 export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
+export const ETHERPAD_ROUTE = `${ITEMS_ROUTE}/etherpad`;
 const PUBLIC_PREFIX = `p`;
 
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
@@ -346,6 +347,13 @@ export const buildItemPublishRoute = (itemId: UUID, notification?: boolean) =>
     { addQueryPrefix: true },
   )}`;
 
+export const buildPostEtherpadRoute = (parentId?: UUID) =>
+  `${ETHERPAD_ROUTE}/create${parentId ? qs.stringify({ parentId }) : ''}`;
+export const buildGetEtherpadRoute = (itemId: UUID) =>
+  `${ETHERPAD_ROUTE}/view/${itemId}`;
+export const buildGetPublicEtherpadRoute = (itemId: UUID) =>
+  `${PUBLIC_PREFIX}/${ETHERPAD_ROUTE}/read/${itemId}`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   ITEMS_ROUTE,
@@ -445,4 +453,7 @@ export const API_ROUTES = {
   buildGetPlanRoute,
   buildItemPublishRoute,
   buildPostManyItemMembershipsRoute,
+  buildGetEtherpadRoute,
+  buildPostEtherpadRoute,
+  buildGetPublicEtherpadRoute,
 };

@@ -1,6 +1,7 @@
 import { List, RecordOf } from 'immutable';
 
 import {
+  Etherpad,
   Item,
   ItemMembership,
   ItemSettings,
@@ -46,6 +47,8 @@ export type ItemSettingsRecord = RecordOf<ItemSettings>;
 export type ItemExtraRecord = RecordOf<UnknownExtra>;
 
 export type ItemRecord = RecordOf<Item<ItemExtraRecord, ItemSettingsRecord>>;
+
+export type EtherpadRecord = RecordOf<Etherpad>;
 
 export type MemberExtraRecord = RecordOf<MemberExtra>;
 

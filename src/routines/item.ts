@@ -18,3 +18,4 @@ export const uploadItemThumbnailRoutine = createRoutine(
 );
 export const importZipRoutine = createRoutine('IMPORT_ZIP');
 export const importH5PRoutine = createRoutine('IMPORT_H5P');
+export const createEtherpadRoutine = createRoutine('CREATE_ETHERPAD');

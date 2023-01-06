@@ -21,13 +21,16 @@ import {
   buildDownloadPublicItemThumbnailRoute,
   buildEditItemRoute,
   buildGetChildrenRoute,
+  buildGetEtherpadRoute,
   buildGetItemRoute,
   buildGetItemsRoute,
   buildGetPublicChildrenRoute,
+  buildGetPublicEtherpadRoute,
   buildGetPublicItemRoute,
   buildGetPublicItemsWithTag,
   buildMoveItemRoute,
   buildMoveItemsRoute,
+  buildPostEtherpadRoute,
   buildPostItemRoute,
   buildPublicDownloadFilesRoute,
   buildRecycleItemRoute,
@@ -249,20 +252,20 @@ export const getFileContent = async (
   );
 
 export const getFileContentWithUrl = async (
-  { id, replyUrl }: { id: UUID, replyUrl: boolean },
+  { id, replyUrl }: { id: UUID; replyUrl: boolean },
   { API_HOST }: QueryClientConfig,
 ) =>
   fallbackToPublic(
     () =>
       axios.get(`${API_HOST}/${buildDownloadFilesRoute(id)}`, {
         params: {
-          replyUrl
+          replyUrl,
         },
       }),
     () =>
       axios.get(`${API_HOST}/${buildPublicDownloadFilesRoute(id)}`, {
         params: {
-          replyUrl
+          replyUrl,
         },
       }),
   );
@@ -324,4 +327,33 @@ export const downloadItemThumbnail = async (
         `${API_HOST}/${buildDownloadPublicItemThumbnailRoute({ id, size })}`,
         { responseType: 'blob' },
       ),
+  );
+
+export const postEtherpad = async (
+  {
+    name,
+    parentId,
+  }: Pick<Item, 'name'> & {
+    parentId: UUID;
+  },
+  { API_HOST }: QueryClientConfig,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .post(`${API_HOST}/${buildPostEtherpadRoute(parentId)}`, {
+        name: name.trim(),
+      })
+      .then(({ data }) => data),
+  );
+
+export const getEtherpad = (
+  { itemId, mode }: { itemId: UUID; mode: 'read' | 'write' },
+  { API_HOST }: QueryClientConfig,
+) =>
+  fallbackToPublic(
+    () =>
+      axios.get(`${API_HOST}/${buildGetEtherpadRoute(itemId)}`, {
+        params: { mode },
+      }),
+    () => axios.get(`${API_HOST}/${buildGetPublicEtherpadRoute(itemId)}`),
   );
