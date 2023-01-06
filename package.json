@@ -11,8 +11,8 @@
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@graasp/sdk": "github:graasp/graasp-sdk#etherpad",
-    "@graasp/translations": "github:graasp/graasp-translations.git",
+    "@graasp/sdk": "0.2.0",
+    "@graasp/translations": "1.1.0",
     "@graasp/utils": "github:graasp/graasp-utils.git",
     "axios": "0.27.2",
     "crypto-js": "4.1.1",
