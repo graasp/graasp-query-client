@@ -1,7 +1,6 @@
 {
   "name": "@graasp/query-client",
   "version": "0.1.0",
-  "private": true,
   "workspaces": [
     "example"
   ],
@@ -10,6 +9,15 @@
   "module": "dist/index.modern.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
+  "author": "Graasp",
+  "contributors": [
+    "Kim Lan Phan Hoang",
+    "Julien Torrent",
+    "Basile Spaenlehauer",
+    "Alvaro Bautista",
+    "Víctor González",
+    "Alexandre Chau"
+  ],
   "dependencies": {
     "@graasp/sdk": "0.2.0",
     "@graasp/translations": "1.1.0",
