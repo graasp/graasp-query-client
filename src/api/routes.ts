@@ -348,7 +348,10 @@ export const buildItemPublishRoute = (itemId: UUID, notification?: boolean) =>
   )}`;
 
 export const buildPostEtherpadRoute = (parentId?: UUID) =>
-  `${ETHERPAD_ROUTE}/create${parentId ? qs.stringify({ parentId }) : ''}`;
+  `${ETHERPAD_ROUTE}/create${qs.stringify(
+    { parentId },
+    { addQueryPrefix: true },
+  )}`;
 export const buildGetEtherpadRoute = (itemId: UUID) =>
   `${ETHERPAD_ROUTE}/view/${itemId}`;
 export const buildGetPublicEtherpadRoute = (itemId: UUID) =>
