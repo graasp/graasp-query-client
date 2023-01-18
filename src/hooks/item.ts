@@ -227,7 +227,24 @@ export default (
       useQuery({
         queryKey: buildItemParentsKey(id),
         queryFn: (): Promise<List<ItemRecord>> =>
-          Api.getParents({ path }, queryConfig).then((data) => convertJs(data)),
+          Api.getParents({ path }, queryConfig).then((data) => {
+            const items = data
+              .map((i) => {
+                // we ignore errors because root items might not be reachable
+                // todo: if a specific endpoint is used, we don't need to filter out errors
+                if (i.status === 'fulfilled') {
+                  return i.value;
+                }
+                return null;
+              })
+              .filter(Boolean);
+
+            // if the result contained only errors, we throw
+            if (data.length !== items.length && items.length === 0) {
+              throw data[0];
+            }
+            return convertJs(items);
+          }),
         onSuccess: async (items: List<ItemRecord>) => {
           if (items?.size) {
             // save items in their own key
