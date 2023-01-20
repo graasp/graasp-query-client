@@ -17,7 +17,6 @@ export function verifyAuthentication<R>(request: () => R, returnValue?: R) {
     if (returnValue) {
       return returnValue;
     }
-    console.log(isUserAuthenticated())
     throw new UserIsSignedOut();
   }
 
