@@ -133,7 +133,10 @@ export const getParents = async (
 ) => {
   const parentIds = getParentsIdsFromPath(path, { ignoreSelf: true });
   if (parentIds.length) {
-    return Promise.all(parentIds.map((id) => getItem(id, config)));
+    // use getItem to fallback to public easily
+    return Promise.allSettled<Promise<Item>>(
+      parentIds.map((id) => getItem(id, config)),
+    );
   }
   return [];
 };

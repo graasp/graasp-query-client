@@ -2296,7 +2296,6 @@ __metadata:
     "@commitlint/config-conventional": 16.2.4
     "@graasp/sdk": 0.2.0
     "@graasp/translations": 1.1.0
-    "@graasp/utils": "github:graasp/graasp-utils.git"
     "@testing-library/jest-dom": 5.16.4
     "@testing-library/react": 12.1.4
     "@testing-library/react-hooks": 7.0.2
@@ -2372,23 +2371,6 @@ __metadata:
   dependencies:
     i18next: 21.8.1
   checksum: 1d6fabce21ef205146c4f74b9b4b5dafc5969cf13a78cd7c4947a9b882cb22d48f3832ad6e20c21cc905b41b4809a1c2efa7ba629b12cd79bd2067df6ebd2f22
-  languageName: node
-  linkType: hard
-
-"@graasp/utils@github:graasp/graasp-utils.git":
-  version: 0.2.0
-  resolution: "@graasp/utils@https://github.com/graasp/graasp-utils.git#commit=a82c39b5ccfebb91ac9bfad978b549712ba193da"
-  dependencies:
-    "@fastify/secure-session": 5.2.0
-    aws-sdk: 2.1111.0
-    fastify: 3.29.1
-    fluent-json-schema: 3.1.0
-    immutable: 4.1.0
-    js-cookie: 3.0.1
-    qs: 6.11.0
-    slonik: 28.1.1
-    uuid: 8.3.2
-  checksum: 3eb934876453e069fe80da1f59f0298d9c99a87a816fd353ba71b41c3271f332ac6f7aedbe97979dca1390c1902a6532a2f6d4f93de126cdf976b54f0a7afef5
   languageName: node
   linkType: hard
 

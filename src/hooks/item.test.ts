@@ -350,33 +350,55 @@ describe('Items Hooks', () => {
       }
     });
 
-    it(`Return an error if one item rejects`, async () => {
+    it(`Return successfully and filter out rejected item`, async () => {
       // build endpoint for each item
       const endpoints: Endpoint[] = [];
+      const failedItem = response.first();
       for (const i of response.slice(1)) {
         endpoints.push({ route: `/${buildGetItemRoute(i.id)}`, response: i });
       }
       // error for one item
       endpoints.push({
-        route: `/${buildGetItemRoute(response.first()!.id)}`,
+        route: `/${buildGetItemRoute(failedItem!.id)}`,
         response: UNAUTHORIZED_RESPONSE,
         statusCode: StatusCodes.UNAUTHORIZED,
       });
 
-      const { data, isError } = await mockHook({
+      const { data, isSuccess } = await mockHook({
         hook: () => hooks.useParents({ ...childItem, enabled: true }),
         endpoints,
         wrapper,
       });
 
-      expect(data).toBeFalsy();
-      expect(isError).toBeTruthy();
-      expect(
-        queryClient.getQueryData(buildItemParentsKey(childItem.id)),
-      ).toBeFalsy();
+      expect(data).toBeTruthy();
+      expect(isSuccess).toBeTruthy();
+      const list = data as List<ItemRecord>;
+      const parentQueryData = queryClient.getQueryData<List<ItemRecord>>(
+        buildItemParentsKey(childItem.id),
+      );
       // verify cache keys
       for (const i of response) {
-        expect(queryClient.getQueryData(buildItemKey(i.id))).toBeFalsy();
+        const itemQueryData = queryClient.getQueryData(buildItemKey(i.id));
+        const parentQueryDataItem = parentQueryData!.find(
+          ({ id }) => id === i.id,
+        );
+        const resultItem = list.find(({ id }) => id === i.id);
+        // should not contain failed item
+        if (failedItem!.id === i.id) {
+          // returned value
+          expect(resultItem).toBeFalsy();
+          // query data
+          expect(itemQueryData).not.toEqualImmutable(i);
+          expect(parentQueryDataItem).toBeFalsy();
+        }
+        // but should contain all the other items
+        else {
+          // returned value
+          expect(resultItem).toEqualImmutable(i);
+          // query data
+          expect(itemQueryData).toEqualImmutable(i);
+          expect(parentQueryDataItem).toEqualImmutable(i);
+        }
       }
     });
   });
