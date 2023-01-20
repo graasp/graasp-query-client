@@ -5,8 +5,8 @@ import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import { HttpMethod } from '@graasp/sdk';
+import * as utils from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
-import * as utils from '@graasp/utils';
 
 import {
   DOMAIN,
@@ -31,9 +31,10 @@ import {
   updatePasswordRoutine,
 } from '../routines';
 
-jest.mock('@graasp/utils');
+jest.mock('@graasp/sdk');
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
+jest.spyOn(utils, 'isUserAuthenticated').mockReturnValue(true);
 
 const email = 'myemail@email.com';
 
@@ -314,12 +315,12 @@ describe('Authentication Mutations', () => {
         await waitForMutation();
       });
 
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
 
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: signOutRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
       });
+      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
 
       // cookie management
       expect(utils.saveUrlForRedirection).toHaveBeenCalled();

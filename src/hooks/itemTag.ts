@@ -1,8 +1,7 @@
 import { List } from 'immutable';
 import { QueryClient, useQuery } from 'react-query';
 
-import { convertJs } from '@graasp/sdk';
-import { isError } from '@graasp/utils';
+import { convertJs, isError } from '@graasp/sdk';
 
 import * as Api from '../api';
 import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';

@@ -6,7 +6,7 @@ import {
   removeSession,
   saveUrlForRedirection,
   setCurrentSession,
-} from '@graasp/utils';
+} from '@graasp/sdk';
 
 import * as Api from '../api';
 import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
