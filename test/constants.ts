@@ -66,7 +66,7 @@ import {
   MessageItemChatRecord,
   Status,
   StatusRecord,
-  Tag,
+  Tag as TagType,
   TagRecord,
   UUID,
 } from '../src/types';
@@ -445,11 +445,11 @@ const FLAG_2: FlagRecord = createMockFlags({
 
 export const FLAGS: List<FlagRecord> = List([FLAG_1, FLAG_2]);
 
-const defaultTagsValues: Tag = {
+const defaultTagsValues: TagType = {
   id: 'item-login-tag-id',
   name: 'item-login',
 };
-const createMockTags: Record.Factory<Tag> = Record(defaultTagsValues);
+const createMockTags: Record.Factory<TagType> = Record(defaultTagsValues);
 
 const TAG_1: TagRecord = createMockTags({
   id: 'item-login-tag-id',
@@ -465,8 +465,10 @@ export const TAGS: List<TagRecord> = List([TAG_1, TAG_2]);
 
 const defaultItemTagsValues: ItemTag = {
   id: 'tag-id',
-  path: 'somepath',
+  itemPath: 'somepath',
   tagId: 'tag-id',
+  createdAt: 'createdAt',
+  creator: 'creator-id'
 };
 const createMockItemTags: Record.Factory<ItemTag> = Record(
   defaultItemTagsValues,
@@ -474,13 +476,13 @@ const createMockItemTags: Record.Factory<ItemTag> = Record(
 
 const ITEM_TAG_1: ItemTagRecord = createMockItemTags({
   id: 'tag-id',
-  path: 'somepath',
+  itemPath: 'somepath',
   tagId: 'tag-id',
 });
 
 const ITEM_TAG_2: ItemTagRecord = createMockItemTags({
   id: 'tag-id1',
-  path: 'somepath1',
+  itemPath: 'somepath1',
   tagId: 'tag-id1',
 });
 
@@ -559,6 +561,8 @@ const defaultItemCategoryValues: ItemCategory = {
   id: 'id1',
   itemId: 'item-id',
   categoryId: 'category-id1',
+  createdAt: 'somedate',
+  creator: 'creator-id'
 };
 const createMockItemCategory: Record.Factory<ItemCategory> = Record(
   defaultItemCategoryValues,
