@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/graasp/graasp-query-client/compare/v0.1.0...v0.1.1) (2023-01-20)
+
+
+### Bug Fixes
+
+* get parents can return partial result ([#225](https://github.com/graasp/graasp-query-client/issues/225)) ([c476a04](https://github.com/graasp/graasp-query-client/commit/c476a04fb22dbe5b78a83da02100e3a242953728))
+
 ## 0.1.0 (2023-01-10)
 
 
