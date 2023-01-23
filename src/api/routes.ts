@@ -1,23 +1,22 @@
 import qs from 'qs';
 
-import { UUID } from '@graasp/sdk';
+import { ItemTagType, UUID } from '@graasp/sdk';
 
-import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
+import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
+import { SearchFields } from '../types';
 
 export const APPS_ROUTE = 'app-items';
 export const ITEMS_ROUTE = 'items';
 export const ITEM_MEMBERSHIPS_ROUTE = 'item-memberships';
 export const MEMBERS_ROUTE = `members`;
 export const SUBSCRIPTION_ROUTE = 'subscriptions';
-export const SUBSCRIPTION_KEY = 'subscriptions';
 export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const INVITATIONS_ROUTE = `invitations`;
-export const GET_RECYCLED_ITEMS_ROUTE = `${ITEMS_ROUTE}/recycled`;
+export const GET_RECYCLED_ITEMS_DATA_ROUTE = `${ITEMS_ROUTE}/recycled`;
 export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
 export const ETHERPAD_ROUTE = `${ITEMS_ROUTE}/etherpad`;
-const PUBLIC_PREFIX = `p`;
-
+export const COLLECTIONS_ROUTE = `collections`;
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
 
 export const buildPostItemRoute = (parentId?: UUID) => {
@@ -42,25 +41,20 @@ export const buildGetChildrenRoute = (id: UUID, ordered: boolean) =>
     { addQueryPrefix: true },
   )}`;
 export const buildGetItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
-export const buildGetPublicItemRoute = (id: UUID) =>
-  `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/${id}`;
-export const buildGetPublicChildrenRoute = (id: UUID, ordered: boolean) =>
-  `${PUBLIC_PREFIX}/${buildGetChildrenRoute(id, ordered)}`;
+export const buildGetItemParents = (id: UUID) => `${ITEMS_ROUTE}/${id}/parents`;
+export const buildGetItemDescendants = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/descendants`;
 export const buildGetItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildMoveItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/move`;
 export const buildMoveItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/move?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildCopyItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/copy`;
-export const buildCopyPublicItemRoute = (id: UUID) =>
-  `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/${id}/copy`;
 export const buildCopyItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/copy?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildEditItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
 export const buildExportItemRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/zip-export/${id}`;
-export const buildExportPublicItemRoute = (id: UUID) =>
-  `${PUBLIC_PREFIX}/${buildExportItemRoute(id)}`;
 export const buildPostItemMembershipRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
 export const buildPostManyItemMembershipsRoute = (id: UUID) =>
@@ -74,16 +68,12 @@ export const buildGetItemMembershipsForItemsRoute = (ids: UUID[]) =>
       arrayFormat: 'repeat',
     },
   )}`;
-export const buildGetPublicItemMembershipsForItemsRoute = (ids: UUID[]) =>
-  `${PUBLIC_PREFIX}/${buildGetItemMembershipsForItemsRoute(ids)}`;
 export const buildGetItemInvitationsForItemRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/invitations`;
 
 export const buildGetItemChatRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/chat`;
 export const buildExportItemChatRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/export/chat`;
-export const buildGetPublicItemChatRoute = (id: UUID) =>
-  `${PUBLIC_PREFIX}/${buildGetItemChatRoute(id)}`;
 export const buildPostItemChatMessageRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/chat`;
 export const buildPatchItemChatMessageRoute = (chatId: UUID, messageId: UUID) =>
@@ -117,79 +107,52 @@ export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildDeleteMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildUpdateMemberPasswordRoute = () =>
   `${MEMBERS_ROUTE}/update-password`;
-export const buildUploadFilesRoute = (parentId: UUID) =>
+export const buildUploadFilesRoute = (parentId?: UUID) =>
   `${ITEMS_ROUTE}/upload${qs.stringify(
     { id: parentId },
     { addQueryPrefix: true },
   )}`;
-export const buildImportZipRoute = (parentId: UUID) =>
+export const buildImportZipRoute = (parentId?: UUID) =>
   `${ITEMS_ROUTE}/zip-import${qs.stringify(
     { parentId },
     { addQueryPrefix: true },
   )}`;
-export const buildImportH5PRoute = (parentId: UUID) =>
+export const buildImportH5PRoute = (parentId?: UUID) =>
   `${ITEMS_ROUTE}/h5p-import${qs.stringify(
     { parentId },
     { addQueryPrefix: true },
   )}`;
 export const buildDownloadFilesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/download`;
-export const buildUploadAvatarRoute = (id: UUID) =>
-  `${MEMBERS_ROUTE}/avatars/upload${qs.stringify(
-    { id },
-    { addQueryPrefix: true },
-  )}`;
+export const buildUploadAvatarRoute = () => `${MEMBERS_ROUTE}/avatar`;
 export const buildDownloadAvatarRoute = ({
   id,
-  size = DEFAULT_THUMBNAIL_SIZES,
+  replyUrl,
+  size = DEFAULT_THUMBNAIL_SIZE,
 }: {
   id: UUID;
+  replyUrl: boolean;
   size?: string;
 }) =>
-  `${MEMBERS_ROUTE}/avatars/${id}/download${qs.stringify(
-    { size },
+  `${MEMBERS_ROUTE}/${id}/avatar/${size}${qs.stringify(
+    { replyUrl },
     { addQueryPrefix: true },
   )}`;
-export const buildDownloadPublicAvatarRoute = ({
-  id,
-  size = DEFAULT_THUMBNAIL_SIZES,
-}: {
-  id: UUID;
-  size?: string;
-}) =>
-  `p/${buildDownloadAvatarRoute({
-    id,
-    size,
-  })}`;
 export const buildUploadItemThumbnailRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/thumbnails/upload${qs.stringify(
-    { id },
-    { addQueryPrefix: true },
-  )}`;
+  `${ITEMS_ROUTE}/${id}/thumbnails`;
 export const buildDownloadItemThumbnailRoute = ({
   id,
-  size = DEFAULT_THUMBNAIL_SIZES,
+  replyUrl,
+  size = DEFAULT_THUMBNAIL_SIZE,
 }: {
   id: UUID;
+  replyUrl?: boolean;
   size?: string;
 }) =>
-  `${ITEMS_ROUTE}/thumbnails/${id}/download${qs.stringify(
-    { size },
+  `${ITEMS_ROUTE}/${id}/thumbnails/${size}${qs.stringify(
+    { replyUrl },
     { addQueryPrefix: true },
   )}`;
-export const buildDownloadPublicItemThumbnailRoute = ({
-  id,
-  size = DEFAULT_THUMBNAIL_SIZES,
-}: {
-  id: UUID;
-  size?: string;
-}) =>
-  `${PUBLIC_PREFIX}/${buildDownloadItemThumbnailRoute({
-    id,
-    size,
-  })}`;
-export const buildPublicDownloadFilesRoute = (id: UUID) =>
-  `${PUBLIC_PREFIX}/${buildDownloadFilesRoute(id)}`;
 
 export const GET_CURRENT_MEMBER_ROUTE = `${MEMBERS_ROUTE}/current`;
 export const SIGN_IN_ROUTE = `login`;
@@ -199,20 +162,32 @@ export const SIGN_OUT_ROUTE = 'logout';
 export const buildGetItemTagsRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/tags`;
 export const buildGetItemsTagsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/tags?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
-export const buildPostItemTagRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/tags`;
-export const buildPutItemLoginSchema = (id: UUID) =>
-  `${ITEMS_ROUTE}/${id}/login-schema`;
-export const buildDeleteItemTagRoute = ({
-  id,
-  tagId,
+export const buildPostItemTagRoute = ({
+  itemId,
+  type,
 }: {
-  id: UUID;
-  tagId: UUID;
-}) => `${ITEMS_ROUTE}/${id}/tags/${tagId}`;
+  itemId: UUID;
+  type: ItemTagType;
+}) => `${ITEMS_ROUTE}/${itemId}/tags/${type}`;
+export const buildPutItemLoginSchemaRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/login-schema`;
+export const buildGetItemLoginSchemaRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/login-schema`;
+export const buildGetItemLoginSchemaTypeRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/login-schema-type`;
+export const buildDeleteItemTagRoute = ({
+  itemId,
+  type,
+}: {
+  itemId: UUID;
+  type: ItemTagType;
+}) => `${ITEMS_ROUTE}/${itemId}/tags/${type}`;
 export const buildPostItemLoginSignInRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login`;
 export const GET_TAGS_ROUTE = `${ITEMS_ROUTE}/tags/list`;
-export const buildGetItemLoginRoute = (id: UUID) =>
+// export const buildGetItemLoginRoute = (id: UUID) =>
+//   `${ITEMS_ROUTE}/${id}/login-schema`;
+export const buildDeleteItemLoginSchemaRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema`;
 export const buildEditItemMembershipRoute = (id: UUID) =>
   `${ITEM_MEMBERSHIPS_ROUTE}/${id}`;
@@ -232,15 +207,7 @@ export const buildRecycleItemsRoute = (ids: UUID[]) =>
       addQueryPrefix: true,
     },
   )}`;
-export const buildGetPublicItemsWithTag = (options: { tagId: UUID }) =>
-  `${PUBLIC_PREFIX}/${ITEMS_ROUTE}?${qs.stringify(options)}`;
-export const buildGetPublicMembersRoute = (ids: UUID[]) =>
-  `${PUBLIC_PREFIX}/${MEMBERS_ROUTE}?${qs.stringify(
-    { id: ids },
-    { arrayFormat: 'repeat' },
-  )}`;
 
-export const buildGetPublicMember = (id: UUID) => `p/${MEMBERS_ROUTE}/${id}`;
 export const buildRestoreItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/restore${qs.stringify(
     { id: ids },
@@ -250,23 +217,20 @@ export const buildRestoreItemsRoute = (ids: UUID[]) =>
     },
   )}`;
 
-export const GET_CATEGORY_TYPES_ROUTE = `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/category-types`;
+export const GET_CATEGORY_TYPES_ROUTE = `${ITEMS_ROUTE}/category-types`;
 export const buildGetCategoriesRoute = (ids?: UUID[]) =>
-  `${PUBLIC_PREFIX}/${CATEGORIES_ROUTE}${qs.stringify(
+  `${CATEGORIES_ROUTE}${qs.stringify(
     { typeId: ids },
     {
       arrayFormat: 'repeat',
       addQueryPrefix: true,
     },
   )}`;
-export const buildGetCategoryRoute = (id: UUID) =>
-  `${PUBLIC_PREFIX}/${CATEGORIES_ROUTE}/${id}`;
+export const buildGetCategoryRoute = (id: UUID) => `${CATEGORIES_ROUTE}/${id}`;
 export const buildGetItemCategoriesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/categories`;
-export const buildGetPublicItemCategoriesRoute = (id: UUID) =>
-  `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/${id}/categories`;
 export const buildGetItemsInCategoryRoute = (ids: UUID[]) =>
-  `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/with-categories${qs.stringify(
+  `${ITEMS_ROUTE}/with-categories${qs.stringify(
     { categoryId: ids },
     {
       arrayFormat: 'repeat',
@@ -281,21 +245,29 @@ export const buildDeleteItemCategoryRoute = (args: {
 }) => `${ITEMS_ROUTE}/${args.itemId}/categories/${args.itemCategoryId}`;
 export const buildGetApiAccessTokenRoute = (id: UUID) =>
   `${APPS_ROUTE}/${id}/api-access-token`;
-export const buildGetPublicApiAccessTokenRoute = (id: UUID) =>
-  `${PUBLIC_PREFIX}/${buildGetApiAccessTokenRoute(id)}`;
 
-export const buildGetItemsByKeywordRoute = (range: string, keywords: string) =>
-  `${PUBLIC_PREFIX}/${ITEMS_ROUTE}/search/${range}/${keywords}`;
+export const buildGetItemsByKeywordRoute = (fields: SearchFields) =>
+  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/search${qs.stringify(fields, {
+    addQueryPrefix: true,
+  })}`;
 
-export const buildGetLikedItemsRoute = (id: UUID) =>
+export const buildGetLikesForMemberRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/liked${qs.stringify(
+    { memberId: id },
+    {
+      addQueryPrefix: true,
+    },
+  )}`;
+export const buildGetItemLikesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/likes`;
-export const buildGetLikeCountRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/${id}/like-count`;
-export const buildPostItemLikeRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/like`;
-export const buildDeleteItemLikeRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/likes/${id}`;
+export const buildPostItemLikeRoute = (itemId: UUID) =>
+  `${ITEMS_ROUTE}/${itemId}/like`;
+export const buildDeleteItemLikeRoute = (itemId: UUID) =>
+  `${ITEMS_ROUTE}/${itemId}/like`;
 
 export const VALIDATION_ROUTE = 'validations';
+export const buildGetLastItemValidationGroupRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/${VALIDATION_ROUTE}/latest`;
 export const buildGetItemValidationAndReviewRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/status/${id}`;
 export const buildGetItemValidationGroupsRoute = (id: UUID) =>
@@ -304,14 +276,14 @@ export const GET_ITEM_VALIDATION_REVIEWS_ROUTE = `${ITEMS_ROUTE}/${VALIDATION_RO
 export const GET_ITEM_VALIDATION_STATUSES_ROUTE = `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/statuses`;
 export const GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE = `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/review/statuses`;
 export const buildPostItemValidationRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/${id}`;
+  `${ITEMS_ROUTE}/${id}/validate`;
 export const buildUpdateItemValidationReviewRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/${id}/review`;
 export const buildGetActions = (
   itemId: UUID,
   options: { requestedSampleSize: number; view: string },
 ) =>
-  `analytics/${ITEMS_ROUTE}/${itemId}${qs.stringify(
+  `${ITEMS_ROUTE}/${itemId}/actions${qs.stringify(
     {
       requestedSampleSize: options.requestedSampleSize,
       view: options.view,
@@ -321,7 +293,7 @@ export const buildGetActions = (
     },
   )}`;
 export const buildExportActions = (itemId: UUID) =>
-  `analytics/${ITEMS_ROUTE}/${itemId}/export`;
+  `${ITEMS_ROUTE}/${itemId}/actions/export`;
 export const buildGetInvitationRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${INVITATIONS_ROUTE}/${id}`;
 export const buildPatchInvitationRoute = (args: { itemId: UUID; id: UUID }) =>
@@ -346,9 +318,28 @@ export const CREATE_SETUP_INTENT_ROUTE = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}
 export const GET_CURRENT_CUSTOMER = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/customer/current`;
 export const buildItemPublishRoute = (itemId: UUID, notification?: boolean) =>
   // do not include notification query string if false
-  `${ITEMS_ROUTE}/${itemId}/publish${
+  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/${itemId}/publish${
     notification ? qs.stringify({ notification }, { addQueryPrefix: true }) : ''
   }`;
+export const buildItemUnpublishRoute = (itemId: UUID) =>
+  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/${itemId}/unpublish`;
+
+export const buildGetItemPublishedInformationRoute = (itemId: UUID) =>
+  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/${itemId}/informations`;
+export const buildGetAllPublishedItemsRoute = (categoryIds?: UUID[]) =>
+  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}${
+    categoryIds?.length
+      ? qs.stringify(
+          { categoryIds },
+          {
+            arrayFormat: 'repeat',
+            addQueryPrefix: true,
+          },
+        )
+      : ''
+  }`;
+export const buildGetPublishedItemsForMemberRoute = (memberId: UUID) =>
+  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/members/${memberId}`;
 
 export const buildPostEtherpadRoute = (parentId?: UUID) =>
   `${ETHERPAD_ROUTE}/create${qs.stringify(
@@ -357,110 +348,102 @@ export const buildPostEtherpadRoute = (parentId?: UUID) =>
   )}`;
 export const buildGetEtherpadRoute = (itemId: UUID) =>
   `${ETHERPAD_ROUTE}/view/${itemId}`;
-export const buildGetPublicEtherpadRoute = (itemId: UUID) =>
-  `${PUBLIC_PREFIX}/${ETHERPAD_ROUTE}/read/${itemId}`;
 
 export const API_ROUTES = {
+  // buildGetItemLoginRoute,
   APPS_ROUTE,
-  ITEMS_ROUTE,
-  SHARED_ITEM_WITH_ROUTE,
-  GET_OWN_ITEMS_ROUTE,
-  GET_RECYCLED_ITEMS_ROUTE,
-  SIGN_OUT_ROUTE,
-  GET_CURRENT_MEMBER_ROUTE,
-  GET_TAGS_ROUTE,
-  GET_FLAGS_ROUTE,
-  GET_CATEGORY_TYPES_ROUTE,
-  VALIDATION_ROUTE,
-  GET_ITEM_VALIDATION_REVIEWS_ROUTE,
-  GET_ITEM_VALIDATION_STATUSES_ROUTE,
   buildAppListRoute,
-  buildGetMember,
-  buildGetMembersRoute,
-  buildDeleteMemberRoute,
-  buildUpdateMemberPasswordRoute,
-  buildUploadFilesRoute,
-  buildDownloadFilesRoute,
-  buildPostItemMembershipRoute,
-  SIGN_IN_ROUTE,
-  SIGN_IN_WITH_PASSWORD_ROUTE,
-  SIGN_UP_ROUTE,
-  buildPostItemLoginSignInRoute,
-  buildGetItemMembershipsForItemsRoute,
-  buildMoveItemRoute,
-  buildMoveItemsRoute,
-  buildPostItemRoute,
-  buildPostItemTagRoute,
-  buildPutItemLoginSchema,
-  buildEditItemRoute,
-  buildGetChildrenRoute,
-  buildGetItemLoginRoute,
-  buildGetItemRoute,
-  buildGetItemTagsRoute,
-  buildGetMembersBy,
-  buildDeleteItemTagRoute,
+  buildClearItemChatRoute,
+  buildCopyItemRoute,
+  buildCopyItemsRoute,
+  buildDeleteInvitationRoute,
+  buildDeleteItemCategoryRoute,
+  buildDeleteItemChatMessageRoute,
+  buildDeleteItemLikeRoute,
+  buildDeleteItemLoginSchemaRoute,
+  buildDeleteItemMembershipRoute,
   buildDeleteItemRoute,
   buildDeleteItemsRoute,
-  buildCopyItemRoute,
-  buildCopyPublicItemRoute,
-  buildCopyItemsRoute,
-  buildExportItemRoute,
-  buildExportPublicItemRoute,
-  buildPatchMember,
-  buildPostItemFlagRoute,
+  buildDeleteItemTagRoute,
+  buildDeleteMemberRoute,
+  buildDownloadAvatarRoute,
+  buildDownloadFilesRoute,
+  buildDownloadItemThumbnailRoute,
   buildEditItemMembershipRoute,
-  buildDeleteItemMembershipRoute,
-  buildGetPublicItemRoute,
-  buildGetPublicChildrenRoute,
-  buildGetItemChatRoute,
+  buildEditItemRoute,
+  buildExportActions,
   buildExportItemChatRoute,
-  buildPostItemChatMessageRoute,
-  buildPatchItemChatMessageRoute,
-  buildDeleteItemChatMessageRoute,
-  buildClearItemChatRoute,
-  buildRecycleItemRoute,
-  buildRecycleItemsRoute,
-  buildGetPublicItemsWithTag,
-  buildGetPublicMember,
-  buildGetPublicMembersRoute,
-  buildRestoreItemsRoute,
+  buildExportItemRoute,
+  buildGetActions,
+  buildGetApiAccessTokenRoute,
   buildGetCategoriesRoute,
   buildGetCategoryRoute,
-  buildGetItemCategoriesRoute,
-  buildGetItemsInCategoryRoute,
-  buildGetItemsByKeywordRoute,
-  buildPostItemCategoryRoute,
-  buildDeleteItemCategoryRoute,
-  buildUploadItemThumbnailRoute,
-  buildDownloadItemThumbnailRoute,
-  buildDownloadPublicItemThumbnailRoute,
-  buildUploadAvatarRoute,
-  buildDownloadAvatarRoute,
-  buildDownloadPublicAvatarRoute,
-  buildImportZipRoute,
-  buildImportH5PRoute,
-  buildGetApiAccessTokenRoute,
-  buildGetPublicApiAccessTokenRoute,
-  buildPublicDownloadFilesRoute,
-  buildGetPublicItemMembershipsForItemsRoute,
-  buildGetLikedItemsRoute,
-  buildGetLikeCountRoute,
-  buildPostItemLikeRoute,
-  buildDeleteItemLikeRoute,
-  buildPostItemValidationRoute,
-  buildUpdateItemValidationReviewRoute,
-  buildGetActions,
-  buildExportActions,
-  buildGetInvitationRoute,
-  buildPatchInvitationRoute,
-  buildDeleteInvitationRoute,
-  buildResendInvitationRoute,
-  buildPostInvitationsRoute,
-  buildGetItemInvitationsForItemRoute,
-  buildGetPlanRoute,
-  buildItemPublishRoute,
-  buildPostManyItemMembershipsRoute,
+  buildGetChildrenRoute,
   buildGetEtherpadRoute,
+  buildGetInvitationRoute,
+  buildGetItemCategoriesRoute,
+  buildGetItemChatRoute,
+  buildGetItemInvitationsForItemRoute,
+  buildGetItemLikesRoute,
+  buildGetItemLoginSchemaRoute,
+  buildGetItemLoginSchemaTypeRoute,
+  buildGetItemMembershipsForItemsRoute,
+  buildGetItemPublishedInformationRoute,
+  buildGetItemRoute,
+  buildGetItemsByKeywordRoute,
+  buildGetItemsInCategoryRoute,
+  buildGetItemTagsRoute,
+  buildGetLastItemValidationGroupRoute,
+  buildGetLikesForMemberRoute,
+  buildGetMember,
+  buildGetMembersBy,
+  buildGetMembersRoute,
+  buildGetPlanRoute,
+  buildGetPublishedItemsForMemberRoute,
+  buildImportH5PRoute,
+  buildImportZipRoute,
+  buildItemPublishRoute,
+  buildItemUnpublishRoute,
+  buildMoveItemRoute,
+  buildMoveItemsRoute,
+  buildPatchInvitationRoute,
+  buildPatchItemChatMessageRoute,
+  buildPatchMember,
   buildPostEtherpadRoute,
-  buildGetPublicEtherpadRoute,
+  buildPostInvitationsRoute,
+  buildPostItemCategoryRoute,
+  buildPostItemChatMessageRoute,
+  buildPostItemFlagRoute,
+  buildPostItemLikeRoute,
+  buildPostItemLoginSignInRoute,
+  buildPostItemMembershipRoute,
+  buildPostItemRoute,
+  buildPostItemTagRoute,
+  buildPostItemValidationRoute,
+  buildPostManyItemMembershipsRoute,
+  buildPutItemLoginSchemaRoute,
+  buildRecycleItemRoute,
+  buildRecycleItemsRoute,
+  buildResendInvitationRoute,
+  buildRestoreItemsRoute,
+  buildUpdateItemValidationReviewRoute,
+  buildUpdateMemberPasswordRoute,
+  buildUploadAvatarRoute,
+  buildUploadFilesRoute,
+  buildUploadItemThumbnailRoute,
+  GET_CATEGORY_TYPES_ROUTE,
+  GET_CURRENT_MEMBER_ROUTE,
+  GET_FLAGS_ROUTE,
+  GET_ITEM_VALIDATION_REVIEWS_ROUTE,
+  GET_ITEM_VALIDATION_STATUSES_ROUTE,
+  GET_OWN_ITEMS_ROUTE,
+  GET_RECYCLED_ITEMS_DATA_ROUTE,
+  GET_TAGS_ROUTE,
+  ITEMS_ROUTE,
+  SHARED_ITEM_WITH_ROUTE,
+  SIGN_IN_ROUTE,
+  SIGN_IN_WITH_PASSWORD_ROUTE,
+  SIGN_OUT_ROUTE,
+  SIGN_UP_ROUTE,
+  VALIDATION_ROUTE,
 };

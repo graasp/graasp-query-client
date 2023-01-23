@@ -4,8 +4,8 @@ import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
   buildDeleteItemLikeRoute,
-  buildGetLikeCountRoute,
-  buildGetLikedItemsRoute,
+  buildGetItemLikesRoute,
+  buildGetLikesForMemberRoute,
   buildPostItemLikeRoute,
 } from './routes';
 
@@ -17,17 +17,14 @@ export const getLikedItems = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .get(`${API_HOST}/${buildGetLikedItemsRoute(memberId)}`)
+      .get(`${API_HOST}/${buildGetLikesForMemberRoute(memberId)}`)
       .then(({ data }) => data),
   );
 
-// TODO: make a public one
-export const getLikeCount = async (id: UUID, { API_HOST }: QueryClientConfig) =>
-  verifyAuthentication(() =>
-    axios
-      .get(`${API_HOST}/${buildGetLikeCountRoute(id)}`)
-      .then(({ data }) => data),
-  );
+export const getItemLikes = async (id: UUID, { API_HOST }: QueryClientConfig) =>
+  axios
+    .get(`${API_HOST}/${buildGetItemLikesRoute(id)}`)
+    .then(({ data }) => data);
 
 export const postItemLike = async (
   itemId: UUID,
@@ -40,11 +37,11 @@ export const postItemLike = async (
   );
 
 export const deleteItemLike = async (
-  id: UUID,
+  itemId: UUID,
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
     axios
-      .delete(`${API_HOST}/${buildDeleteItemLikeRoute(id)}`)
+      .delete(`${API_HOST}/${buildDeleteItemLikeRoute(itemId)}`)
       .then(({ data }) => data),
   );

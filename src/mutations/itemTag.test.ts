@@ -1,11 +1,10 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
-import { HttpMethod } from '@graasp/sdk';
+import { HttpMethod, ItemTagType } from '@graasp/sdk';
 import { ItemTagRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -36,9 +35,9 @@ describe('Item Tag Mutations', () => {
   describe('usePostItemTag', () => {
     const item = ITEMS.first()!;
     const itemId = item.id;
-    const tagId = ITEM_TAGS.first()!.id;
     const creator = MEMBER_RESPONSE.id;
-    const route = `/${buildPostItemTagRoute(itemId)}`;
+    const tagType = ItemTagType.HIDDEN;
+    const route = `/${buildPostItemTagRoute({ itemId, type: tagType })}`;
     const mutation = mutations.usePostItemTag;
     const itemTagKey = itemTagsKeys.singleId(itemId);
 
@@ -61,9 +60,8 @@ describe('Item Tag Mutations', () => {
 
       await act(async () => {
         await mockedMutation.mutate({
-          id: itemId,
-          tagId,
-          itemPath: item.path,
+          itemId,
+          type: tagType,
           creator,
         });
         await waitForMutation();
@@ -96,9 +94,8 @@ describe('Item Tag Mutations', () => {
 
       await act(async () => {
         await mockedMutation.mutate({
-          id: itemId,
-          tagId,
-          itemPath: item.path,
+          itemId,
+          type: tagType,
           creator,
         });
         await waitForMutation();
@@ -114,10 +111,10 @@ describe('Item Tag Mutations', () => {
   });
 
   describe('useDeleteItemTag', () => {
-    const item = ITEMS.first()!;
+    const tag = ITEM_TAGS.first()!;
+    const { item, type: tagType } = tag;
     const itemId = item.id;
-    const tagId = ITEM_TAGS.first()!.id;
-    const route = `/${buildDeleteItemTagRoute({ id: itemId, tagId })}`;
+    const route = `/${buildDeleteItemTagRoute({ itemId, type: tagType })}`;
     const mutation = mutations.useDeleteItemTag;
     const itemTagKey = itemTagsKeys.singleId(itemId);
 
@@ -139,14 +136,14 @@ describe('Item Tag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: itemId, tagId });
+        await mockedMutation.mutate({ itemId, type: tagType });
         await waitForMutation();
       });
 
       const data = queryClient.getQueryState(itemTagKey);
       expect(data?.isInvalidated).toBeTruthy();
       expect(data?.data as List<ItemTagRecord>).toEqualImmutable(
-        ITEM_TAGS.filter(({ id }) => id !== tagId),
+        ITEM_TAGS.filter(({ type }) => type !== tagType),
       );
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: deleteItemTagRoutine.SUCCESS,
@@ -173,7 +170,7 @@ describe('Item Tag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: itemId, tagId });
+        await mockedMutation.mutate({ itemId, type: tagType });
         await waitForMutation();
       });
 

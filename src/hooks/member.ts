@@ -1,16 +1,18 @@
-import { AxiosError } from 'axios';
-import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
-import { QueryClient, useQuery } from 'react-query';
+import { QueryClient, UseQueryResult, useQuery } from 'react-query';
 
-import { MAX_TARGETS_FOR_READ_REQUEST, UUID, convertJs } from '@graasp/sdk';
-import { MemberRecord } from '@graasp/sdk/frontend';
+import {
+  MAX_TARGETS_FOR_READ_REQUEST,
+  Member,
+  UUID,
+  convertJs,
+} from '@graasp/sdk';
+import { MemberRecord, ResultOfRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
 import { splitRequestByIds } from '../api/axios';
 import {
   CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
-  DEFAULT_THUMBNAIL_SIZES,
+  DEFAULT_THUMBNAIL_SIZE,
 } from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
 import {
@@ -19,7 +21,7 @@ import {
   buildMemberKey,
   buildMembersKey,
 } from '../config/keys';
-import { getMembersRoutine } from '../routines';
+import { getMembersRoutine } from '../routines/member';
 import { QueryClientConfig } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
@@ -49,17 +51,16 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ...defaultQueryOptions,
       }),
 
-    useMembers: (ids: UUID[]) =>
+    useMembers: (ids: UUID[]): UseQueryResult<ResultOfRecord<Member>> =>
       useQuery({
         queryKey: buildMembersKey(ids),
-        queryFn: (): Promise<List<MemberRecord>> =>
+        queryFn: async () =>
           splitRequestByIds(ids, MAX_TARGETS_FOR_READ_REQUEST, (chunk) =>
             Api.getMembers({ ids: chunk }, queryConfig),
           ),
-        enabled: Boolean(ids?.length),
-        onSuccess: async (members: List<MemberRecord>) => {
+        onSuccess: async (members) => {
           // save members in their own key
-          members?.forEach(async (member) => {
+          members?.data?.toSeq().forEach(async (member) => {
             const { id } = member;
             queryClient.setQueryData(buildMemberKey(id), member);
           });
@@ -67,12 +68,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         onError: (error) => {
           notifier?.({ type: getMembersRoutine.FAILURE, payload: { error } });
         },
+        enabled: Boolean(ids?.length),
         ...defaultQueryOptions,
       }),
 
     useAvatar: ({
       id,
-      size = DEFAULT_THUMBNAIL_SIZES,
+      size = DEFAULT_THUMBNAIL_SIZE,
     }: {
       id?: UUID;
       size?: string;
@@ -84,19 +86,40 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             ?.hasAvatar ?? true;
       }
       return useQuery({
-        queryKey: buildAvatarKey({ id, size }),
-        queryFn: (): Promise<Blob | undefined> => {
+        queryKey: buildAvatarKey({ id, size, replyUrl: false }),
+        queryFn: (): Promise<Blob> => {
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.downloadAvatar({ id, size }, queryConfig)
-            .then((data) => data)
-            .catch((error: AxiosError) => {
-              if (error.response?.status === StatusCodes.NOT_FOUND) {
-                return undefined;
-              }
-              throw error;
-            });
+          return Api.downloadAvatar({ id, size }, queryConfig);
+        },
+        ...defaultQueryOptions,
+        enabled: Boolean(id) && shouldFetch,
+        cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
+      });
+    },
+
+    // use another hook because of key content
+    useAvatarUrl: ({
+      id,
+      size = DEFAULT_THUMBNAIL_SIZE,
+    }: {
+      id?: UUID;
+      size?: string;
+    }) => {
+      let shouldFetch = true;
+      if (id) {
+        shouldFetch =
+          queryClient.getQueryData<MemberRecord>(buildMemberKey(id))?.extra
+            ?.hasAvatar ?? true;
+      }
+      return useQuery({
+        queryKey: buildAvatarKey({ id, size, replyUrl: true }),
+        queryFn: (): Promise<string> => {
+          if (!id) {
+            throw new UndefinedArgument();
+          }
+          return Api.downloadAvatarUrl({ id, size }, queryConfig);
         },
         ...defaultQueryOptions,
         enabled: Boolean(id) && shouldFetch,

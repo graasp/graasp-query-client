@@ -98,7 +98,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     useMutation<
       void,
       unknown,
-      { itemId: UUID; id: UUID; permission: PermissionLevel; name: string }
+      { itemId: UUID; id: UUID; permission: PermissionLevel; name?: string }
     >(PATCH_INVITATION);
 
   queryClient.setMutationDefaults(DELETE_INVITATION, {

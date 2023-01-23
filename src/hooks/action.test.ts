@@ -3,8 +3,6 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { ActionDataRecord } from '@graasp/sdk/frontend';
-
 import {
   ACTIONS_DATA,
   ITEMS,
@@ -36,10 +34,9 @@ describe('Action Hooks', () => {
 
     it(`Receive actions for item id`, async () => {
       const hook = () => hooks.useActions(args);
-      const endpoints = [{ route, response }];
+      const endpoints = [{ route, response: response.toJS() }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
-
-      expect(data as ActionDataRecord).toEqualImmutable(response);
+      expect(data).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);

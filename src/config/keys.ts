@@ -1,13 +1,14 @@
 import { UUID } from '@graasp/sdk';
 
-import { SUBSCRIPTION_KEY } from '../api/routes';
+import { SearchFields } from '../types';
 import { hashItemsIds } from '../utils/item';
-import { DEFAULT_THUMBNAIL_SIZES } from './constants';
+import { DEFAULT_THUMBNAIL_SIZE } from './constants';
 
 export const APPS_KEY = 'apps';
 export const ITEMS_KEY = 'items';
 export const OWN_ITEMS_KEY = [ITEMS_KEY, 'own'];
 export const ETHERPADS_KEY = 'etherpads';
+export const SUBSCRIPTION_KEY = 'subscriptions';
 
 export const buildItemKey = (id?: UUID) => [ITEMS_KEY, id];
 export const buildItemsKey = (ids: UUID[]) => [ITEMS_KEY, hashItemsIds(ids)];
@@ -21,6 +22,11 @@ export const buildItemsChildrenKey = (ids: UUID[]) => [
   ITEMS_KEY,
   hashItemsIds(ids),
   'children',
+];
+export const buildItemDescendantsKey = (id: UUID) => [
+  ITEMS_KEY,
+  id,
+  'descendants',
 ];
 export const SHARED_ITEMS_KEY = 'shared';
 export const CURRENT_MEMBER_KEY = 'currentMember';
@@ -52,6 +58,15 @@ export const buildManyItemMembershipsKey = (ids?: UUID[]) => [
   'memberships',
 ];
 export const buildItemLoginKey = (id?: UUID) => [ITEMS_KEY, id, 'login'];
+export const buildItemLoginSchemaKey = (id?: UUID) => [
+  ITEMS_KEY,
+  id,
+  'loginSchema',
+];
+export const buildItemLoginSchemaTypeKey = (id?: UUID) => [
+  ...buildItemLoginSchemaKey(id),
+  'type',
+];
 export const TAGS_KEY = 'tags';
 export const ITEM_TAGS_KEY = 'itemTags';
 export const itemTagsKeys = {
@@ -73,8 +88,13 @@ export const buildManyItemTagsKey = (ids?: UUID[]) => [
   hashItemsIds(ids),
   'tags',
 ];
-export const buildFileContentKey = (id?: UUID) => [ITEMS_KEY, id, 'content'];
-export const buildS3FileContentKey = (id?: UUID) => [ITEMS_KEY, id, 'content'];
+export const buildFileContentKey = ({
+  id,
+  replyUrl,
+}: {
+  id?: UUID;
+  replyUrl?: boolean;
+}) => [ITEMS_KEY, id, 'file', replyUrl ? 'url' : 'blob'];
 
 export const ITEM_FLAGS_KEY = 'itemFlags';
 export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, id, 'flags'];
@@ -95,44 +115,63 @@ export const buildItemsByCategoriesKey = (ids: UUID[]) => [
   hashItemsIds(ids),
 ];
 
-export const buildSearchByKeywordKey = (range: string, keywords: string) => [
+export const buildSearchByKeywordKey = (fields: SearchFields) => [
   'keywordSearch',
-  range,
-  keywords,
+  fields,
 ];
 
-export const buildPublicItemsWithTagKey = (id?: UUID) => [
-  ITEMS_KEY,
-  ITEM_TAGS_KEY,
-  id,
-];
-export const RECYCLED_ITEMS_KEY = 'recycledItems';
+export const RECYCLED_ITEMS_DATA_KEY = 'recycledItemsData';
 export const buildItemThumbnailKey = ({
   id,
-  size = DEFAULT_THUMBNAIL_SIZES,
+  size = DEFAULT_THUMBNAIL_SIZE,
+  replyUrl,
 }: {
   id?: UUID;
   size?: string;
-}) => [ITEMS_KEY, id, 'thumbnails', size];
+  replyUrl?: boolean;
+}) => [ITEMS_KEY, id, 'thumbnails', size, replyUrl ? 'url' : 'blob'];
 export const buildAvatarKey = ({
   id,
-  size = DEFAULT_THUMBNAIL_SIZES,
+  replyUrl,
+  size = DEFAULT_THUMBNAIL_SIZE,
 }: {
   id?: UUID;
   size?: string;
-}) => [MEMBERS_KEY, id, 'avatars', size];
+  replyUrl: boolean;
+}) => [MEMBERS_KEY, id, 'avatars', size, replyUrl ? 'url' : 'blob'];
 
-export const buildGetLikedItemsKey = (id: UUID) => [
+export const buildGetLikesForMemberKey = (id?: UUID) => [
   MEMBERS_KEY,
   id,
   'likedItems',
 ];
-export const buildGetLikeCountKey = (id: UUID) => [ITEMS_KEY, id, 'likeCount'];
+export const buildGetLikesForItem = (id?: UUID) => [ITEMS_KEY, id, 'likes'];
 
-export const ITEM_VALIDATION_REVIEWS_KEY = 'itemValidationReviews';
-export const ITEM_VALIDATION_STATUSES_KEY = 'itemValidationStatuses';
-export const ITEM_VALIDATION_REVIEW_STATUSES_KEY =
-  'itemValidationReviewStatuses';
+export const buildPublishedItemsKey = (categoryIds?: UUID[]) => [
+  ITEMS_KEY,
+  'collections',
+  hashItemsIds(categoryIds),
+];
+export const buildPublishedItemsForMemberKey = (memberId?: UUID) => [
+  ITEMS_KEY,
+  'collections',
+  MEMBERS_KEY,
+  memberId,
+];
+
+export const buildItemPublishedInformationKey = (id: UUID) => [
+  ITEMS_KEY,
+  id,
+  'publishedInformation',
+];
+
+export const buildLastItemValidationGroupKey = (id: UUID) => [
+  ITEMS_KEY,
+  id,
+  'itemValidation',
+  'latest',
+];
+
 export const buildItemValidationAndReviewKey = (id: UUID) => [
   ITEMS_KEY,
   id,
@@ -210,7 +249,6 @@ export const DATA_KEYS = {
   buildItemTagsKey,
   buildManyItemTagsKey,
   buildFileContentKey,
-  buildS3FileContentKey,
   ITEM_FLAGS_KEY,
   buildItemFlagsKey,
   CATEGORY_TYPES_KEY,
@@ -219,21 +257,19 @@ export const DATA_KEYS = {
   buildItemCategoriesKey,
   buildItemsByCategoriesKey,
   buildSearchByKeywordKey,
-  buildPublicItemsWithTagKey,
-  RECYCLED_ITEMS_KEY,
+  RECYCLED_ITEMS_DATA_KEY,
   buildItemThumbnailKey,
   buildAvatarKey,
-  buildGetLikedItemsKey,
-  buildGetLikeCountKey,
-  ITEM_VALIDATION_REVIEWS_KEY,
-  ITEM_VALIDATION_STATUSES_KEY,
-  ITEM_VALIDATION_REVIEW_STATUSES_KEY,
+  buildGetLikesForMemberKey,
+  buildGetLikesForItem,
   buildItemValidationAndReviewKey,
   buildItemValidationGroupsKey,
+  buildLastItemValidationGroupKey,
   buildInvitationKey,
   buildItemInvitationsKey,
   CARDS_KEY,
   buildPlanKey,
+  buildPublishedItemsKey,
   buildEtherpadKey,
 };
 
@@ -244,7 +280,6 @@ export const MUTATION_KEYS = {
   DELETE_ITEM: 'deleteItem',
   DELETE_ITEMS: 'deleteItems',
   COPY_ITEM: 'copyItem',
-  COPY_PUBLIC_ITEM: 'copyPublicItem',
   COPY_ITEMS: 'copyItems',
   MOVE_ITEM: 'moveItem',
   MOVE_ITEMS: 'moveItems',
@@ -256,7 +291,8 @@ export const MUTATION_KEYS = {
   POST_ITEM_LOGIN: 'postItemLoginSignIn',
   DELETE_ITEM_TAG: 'deleteItemTag',
   POST_ITEM_TAG: 'postItemTags',
-  PUT_ITEM_LOGIN: 'putItemLogin',
+  PUT_ITEM_LOGIN_SCHEMA: 'putItemLogin',
+  DELETE_ITEM_LOGIN_SCHEMA: 'deleteItemLoginSchema',
   EDIT_MEMBER: 'editMember',
   DELETE_MEMBER: 'deleteMember',
   POST_ITEM_FLAG: 'postItemFlag',
@@ -296,6 +332,7 @@ export const MUTATION_KEYS = {
   CREATE_SETUP_INTENT: 'subscriptionCreateSetupIntent',
   SET_DEFAULT_CARD: 'subscriptionSetDefaultCard',
   PUBLISH_ITEM: 'publishItem',
+  UNPUBLISH_ITEM: 'unpublishItem',
   SWITCH_MEMBER: 'switchMember',
   UPDATE_PASSWORD: 'updatePassword',
   SHARE_ITEM: 'shareItem',

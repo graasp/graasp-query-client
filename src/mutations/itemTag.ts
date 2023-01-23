@@ -1,7 +1,7 @@
 import { List } from 'immutable';
 import { QueryClient, useMutation } from 'react-query';
 
-import { UUID } from '@graasp/sdk';
+import { ItemTagType, UUID } from '@graasp/sdk';
 import { ItemTagRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -16,8 +16,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   queryClient.setMutationDefaults(POST_ITEM_TAG, {
-    mutationFn: (payload) =>
-      Api.postItemTag(payload, queryConfig).then(() => payload),
+    mutationFn: (payload: {
+      creator?: UUID;
+      itemId: UUID;
+      type: ItemTagType;
+    }) => Api.postItemTag(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
         type: postItemTagRoutine.SUCCESS,
@@ -29,22 +32,21 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onSettled: (_data, _error, { id }) => {
       queryClient.invalidateQueries(itemTagsKeys.singleId(id));
-      // invalidate any "many" query that contains the id we modified
-      queryClient.invalidateQueries(itemTagsKeys.manyIds([id]));
+      // invalidate any "many" query targeting item tags
+      queryClient.invalidateQueries(itemTagsKeys.many());
     },
   });
   const usePostItemTag = () =>
     useMutation<
       void,
       unknown,
-      { id: UUID; tagId: UUID; itemPath: string; creator: UUID }
+      { type: ItemTagType; itemId: string; creator?: UUID }
     >(POST_ITEM_TAG);
 
   queryClient.setMutationDefaults(DELETE_ITEM_TAG, {
-    mutationFn: (payload) =>
-      Api.deleteItemTag(payload, queryConfig).then(() => payload),
-    onMutate: async ({ id, tagId }) => {
-      const itemTagKey = itemTagsKeys.singleId(id);
+    mutationFn: (payload) => Api.deleteItemTag(payload, queryConfig),
+    onMutate: async ({ itemId, type }) => {
+      const itemTagKey = itemTagsKeys.singleId(itemId);
       await queryClient.cancelQueries(itemTagKey);
 
       // Snapshot the previous value
@@ -55,7 +57,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       if (prevValue) {
         queryClient.setQueryData(
           itemTagKey,
-          prevValue.filter(({ id: tId }) => tId !== tagId),
+          prevValue.filter(({ type: ttype }) => ttype !== type),
         );
       }
       return { itemTags: prevValue };
@@ -66,19 +68,21 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_TAG },
       });
     },
-    onError: (error, { id }, context) => {
-      const itemKey = itemTagsKeys.singleId(id);
+    onError: (error, { itemId }, context) => {
+      const itemKey = itemTagsKeys.singleId(itemId);
       queryClient.setQueryData(itemKey, context.itemTags);
       notifier?.({ type: deleteItemTagRoutine.FAILURE, payload: { error } });
     },
-    onSettled: (_data, _error, { id }) => {
-      queryClient.invalidateQueries(itemTagsKeys.singleId(id));
+    onSettled: (_data, _error, { itemId }) => {
+      queryClient.invalidateQueries(itemTagsKeys.singleId(itemId));
       // invalidate any "many" query that contains the id we modified
-      queryClient.invalidateQueries(itemTagsKeys.manyIds([id]));
+      queryClient.invalidateQueries(itemTagsKeys.many());
     },
   });
   const useDeleteItemTag = () =>
-    useMutation<void, unknown, { id: UUID; tagId: UUID }>(DELETE_ITEM_TAG);
+    useMutation<void, unknown, { itemId: UUID; type: ItemTagType }>(
+      DELETE_ITEM_TAG,
+    );
 
   return {
     usePostItemTag,

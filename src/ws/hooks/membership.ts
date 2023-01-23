@@ -1,12 +1,10 @@
-import { List } from 'immutable';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
-import { ItemMembership, UUID, convertJs, getIdsFromPath } from '@graasp/sdk';
-import { ItemMembershipRecord } from '@graasp/sdk/frontend';
+import { ItemMembership, UUID } from '@graasp/sdk';
 
-import { buildItemMembershipsKey } from '../../config/keys';
-import { KINDS, OPS, TOPICS } from '../constants';
+import { KINDS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 
 // todo: use graasp-types?
@@ -18,7 +16,7 @@ interface MembershipEvent {
 
 // eslint-disable-next-line import/prefer-default-export
 export const configureWsMembershipHooks = (
-  queryClient: QueryClient,
+  _queryClient: QueryClient,
   websocketClient: WebsocketClient,
 ): { useItemsMembershipsUpdates: (itemIds?: UUID[] | null) => void } => ({
   /**
@@ -36,50 +34,49 @@ export const configureWsMembershipHooks = (
           name: itemId,
           topic: TOPICS.MEMBERSHIPS_ITEM,
         };
-        const itemMembershipsKey = buildItemMembershipsKey(itemId);
+        // const itemMembershipsKey = buildItemMembershipsKey(itemId);
 
         const handler = (event: MembershipEvent): void => {
           if (event.kind === KINDS.ITEM) {
-            const current =
-              queryClient.getQueryData<List<ItemMembershipRecord>>(
-                itemMembershipsKey,
-              );
-            const membership: ItemMembershipRecord = convertJs(
-              event.membership,
-            );
-
+            // const current =
+            //   queryClient.getQueryData<List<ItemMembershipRecord>>(
+            //     itemMembershipsKey,
+            //   );
+            // const membership: ItemMembershipRecord = convertJs(
+            //   event.membership,
+            // );
             // we handle only direct memberships
             // since we have only the item id information
-            const lastId = getIdsFromPath(membership.itemPath).pop();
-            if (current && lastId === itemId) {
-              let mutation;
-              switch (event.op) {
-                case OPS.CREATE: {
-                  if (!current.find((m) => m.id === membership.id)) {
-                    mutation = current.push(membership);
-                    queryClient.setQueryData(itemMembershipsKey, mutation);
-                  }
-                  break;
-                }
-                case OPS.UPDATE: {
-                  mutation = current.map((m) =>
-                    m.id === membership.id ? membership : m,
-                  );
-                  queryClient.setQueryData(itemMembershipsKey, mutation);
-                  break;
-                }
-                case OPS.DELETE: {
-                  mutation = current.filter((m) => m.id !== membership.id);
-                  queryClient.setQueryData(itemMembershipsKey, mutation);
-                  break;
-                }
-                default:
-                  console.error(
-                    'unhandled event for useItemsMembershipsUpdates',
-                  );
-                  break;
-              }
-            }
+            // const lastId = getIdsFromPath(membership.itemPath).pop();
+            // if (current && lastId === itemId) {
+            //   let mutation;
+            //   switch (event.op) {
+            //     case OPS.CREATE: {
+            //       if (!current.find((m) => m.id === membership.id)) {
+            //         mutation = current.push(membership);
+            //         queryClient.setQueryData(itemMembershipsKey, mutation);
+            //       }
+            //       break;
+            //     }
+            //     case OPS.UPDATE: {
+            //       mutation = current.map((m) =>
+            //         m.id === membership.id ? membership : m,
+            //       );
+            //       queryClient.setQueryData(itemMembershipsKey, mutation);
+            //       break;
+            //     }
+            //     case OPS.DELETE: {
+            //       mutation = current.filter((m) => m.id !== membership.id);
+            //       queryClient.setQueryData(itemMembershipsKey, mutation);
+            //       break;
+            //     }
+            //     default:
+            //       console.error(
+            //         'unhandled event for useItemsMembershipsUpdates',
+            //       );
+            //       break;
+            //   }
+            // }
           }
         };
 

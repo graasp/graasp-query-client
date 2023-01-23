@@ -5,6 +5,7 @@ import { MemberMentionsRecord } from '@graasp/sdk/frontend';
 
 import {
   MEMBER_RESPONSE,
+  MOCK_MEMBER,
   buildChatMention,
   buildMemberMentions,
 } from '../../../test/constants';
@@ -163,7 +164,7 @@ describe('Ws Mention Hooks', () => {
         hook,
         wrapper,
       });
-      const newMention = buildChatMention({ memberId });
+      const newMention = buildChatMention({ member: MOCK_MEMBER });
       const mentionEvent = {
         op: 'unset op',
         mention: newMention.toJS(),

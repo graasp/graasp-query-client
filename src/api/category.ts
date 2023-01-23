@@ -1,10 +1,7 @@
 import { Category, CategoryType, ItemCategory, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
-import configureAxios, {
-  fallbackToPublic,
-  verifyAuthentication,
-} from './axios';
+import configureAxios, { verifyAuthentication } from './axios';
 import {
   GET_CATEGORY_TYPES_ROUTE,
   buildDeleteItemCategoryRoute,
@@ -12,7 +9,6 @@ import {
   buildGetCategoryRoute,
   buildGetItemCategoriesRoute,
   buildGetItemsInCategoryRoute,
-  buildGetPublicItemCategoriesRoute,
   buildPostItemCategoryRoute,
 } from './routes';
 
@@ -43,10 +39,9 @@ export const getItemCategories = async (
   itemId: UUID,
   { API_HOST }: QueryClientConfig,
 ): Promise<ItemCategory[]> =>
-  fallbackToPublic(
-    () => axios.get(`${API_HOST}/${buildGetItemCategoriesRoute(itemId)}`),
-    () => axios.get(`${API_HOST}/${buildGetPublicItemCategoriesRoute(itemId)}`),
-  );
+  axios
+    .get(`${API_HOST}/${buildGetItemCategoriesRoute(itemId)}`)
+    .then(({ data }) => data);
 
 export const buildGetItemsForCategoriesRoute = async (
   categoryIds: UUID[],

@@ -1,5 +1,4 @@
-import { UUID } from '@graasp/sdk';
-import { ActionData } from '@graasp/sdk/frontend';
+import { ActionData, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import configureAxios from './axios';

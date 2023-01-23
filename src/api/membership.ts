@@ -1,17 +1,13 @@
-import { ItemMembership, PermissionLevel, UUID } from '@graasp/sdk';
+import { ItemMembership, PermissionLevel, ResultOf, UUID } from '@graasp/sdk';
 import { FAILURE_MESSAGES } from '@graasp/translations';
 
 import { QueryClientConfig } from '../types';
-import configureAxios, {
-  fallbackToPublic,
-  verifyAuthentication,
-} from './axios';
+import configureAxios, { verifyAuthentication } from './axios';
 import { getMembersBy } from './member';
 import {
   buildDeleteItemMembershipRoute,
   buildEditItemMembershipRoute,
   buildGetItemMembershipsForItemsRoute,
-  buildGetPublicItemMembershipsForItemsRoute,
   buildPostItemMembershipRoute,
   buildPostManyItemMembershipsRoute,
 } from './routes';
@@ -21,14 +17,10 @@ const axios = configureAxios();
 export const getMembershipsForItems = async (
   ids: UUID[],
   { API_HOST }: QueryClientConfig,
-) =>
-  fallbackToPublic(
-    () => axios.get(`${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`),
-    () =>
-      axios.get(
-        `${API_HOST}/${buildGetPublicItemMembershipsForItemsRoute(ids)}`,
-      ),
-  );
+): Promise<ResultOf<ItemMembership[]>> =>
+  axios
+    .get(`${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`)
+    .then(({ data }) => data);
 
 export const postManyItemMemberships = async (
   {
@@ -36,7 +28,7 @@ export const postManyItemMemberships = async (
     itemId,
   }: { itemId: UUID; memberships: Partial<ItemMembership>[] },
   config: QueryClientConfig,
-): Promise<(ItemMembership | Error)[]> => {
+): Promise<ResultOf<ItemMembership>> => {
   const { API_HOST } = config;
 
   return verifyAuthentication(() =>
@@ -59,7 +51,7 @@ export const postItemMembership = async (
   const { API_HOST } = config;
   const member = await getMembersBy({ emails: [email] }, config);
 
-  if (!member || member?.length < 1 || member[0].length < 1) {
+  if (!member || !Object.values(member.data).length) {
     throw new Error(FAILURE_MESSAGES.MEMBER_NOT_FOUND);
   }
 
@@ -67,7 +59,7 @@ export const postItemMembership = async (
     axios
       .post(`${API_HOST}/${buildPostItemMembershipRoute(id)}`, {
         // assume will receive only one member
-        memberId: member[0][0].id,
+        memberId: Object.values(member.data)[0].id,
         permission,
       })
       .then(({ data }) => data),

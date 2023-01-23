@@ -1,4 +1,5 @@
 import createRoutine from './utils';
 
-/* eslint-disable import/prefer-default-export */
 export const publishItemRoutine = createRoutine('PUBLISH_ITEM');
+
+export const unpublishItemRoutine = createRoutine('UNPUBLISH_ITEM');

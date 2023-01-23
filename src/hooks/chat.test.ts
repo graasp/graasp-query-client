@@ -8,6 +8,8 @@ import { ExportedItemChatRecord, ItemChatRecord } from '@graasp/sdk/frontend';
 
 import {
   ITEMS,
+  MOCK_ITEM,
+  MOCK_MEMBER,
   UNAUTHORIZED_RESPONSE,
   createMockExportedItemChat,
   createMockItemChat,
@@ -30,11 +32,11 @@ describe('Chat Hooks', () => {
     const itemId = ITEMS.first()!.id;
     const mockMessage: ChatMessage = {
       id: 'some-messageId',
-      chatId: itemId,
+      item: MOCK_ITEM,
       body: 'some content',
-      creator: 'some-user',
-      createdAt: 'some Date',
-      updatedAt: 'some other Date',
+      creator: MOCK_MEMBER,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     const route = `/${buildGetItemChatRoute(itemId)}`;
     const key = buildItemChatKey(itemId);
@@ -88,11 +90,11 @@ describe('Chat Hooks', () => {
     const itemId = ITEMS.first()!.id;
     const mockMessage: ChatMessage = {
       id: 'some-messageId',
-      chatId: itemId,
+      item: MOCK_ITEM,
       body: 'some content',
-      creator: 'some-user',
-      createdAt: 'some Date',
-      updatedAt: 'some other Date',
+      creator: MOCK_MEMBER,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     const route = `/${buildGetItemChatRoute(itemId)}`;
     const key = buildItemChatKey(itemId);
@@ -113,7 +115,7 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(data as ItemChatRecord).toEqualImmutable(response);
+      expect(data).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -134,7 +136,7 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(data as ItemChatRecord).toEqualImmutable(response);
+      expect(data).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -156,9 +158,9 @@ describe('Chat Hooks', () => {
             id: 'some-id',
             chatId: itemId,
             body: 'some content',
-            createdAt: 'some date',
-            updatedAt: 'some other date',
-            creator: 'some memberId',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            creator: MOCK_MEMBER,
             creatorName: 'A user name',
           },
         ],

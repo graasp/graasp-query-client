@@ -1,6 +1,6 @@
 import { QueryClient, useMutation } from 'react-query';
 
-import { UUID } from '@graasp/sdk';
+import { FlagType, UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
@@ -20,6 +20,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
     onError: (error) => {
+      console.error(error);
       notifier?.({ type: postItemFlagRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_data, _error, { itemId }) => {
@@ -27,7 +28,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
   const usePostItemFlag = () =>
-    useMutation<void, unknown, { flagId: UUID; itemId: UUID }>(
+    useMutation<void, unknown, { type: FlagType; itemId: UUID }>(
       MUTATION_KEYS.POST_ITEM_FLAG,
     );
 

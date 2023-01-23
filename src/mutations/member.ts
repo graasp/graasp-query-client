@@ -1,7 +1,6 @@
 import { QueryClient, useMutation } from 'react-query';
 
 import {
-  Member,
   MemberExtra,
   ThumbnailSize,
   UUID,
@@ -72,7 +71,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   // suppose you can only edit yourself
   queryClient.setMutationDefaults(EDIT_MEMBER, {
-    mutationFn: (payload) =>
+    mutationFn: (payload: { id: UUID; extra: MemberExtra }) =>
       Api.editMember(payload, queryConfig).then((member) => convertJs(member)),
     onMutate: async ({ member }) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
@@ -109,7 +108,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
   const useEditMember = () =>
-    useMutation<void, unknown, { member: Partial<Member> }>(EDIT_MEMBER);
+    useMutation<void, unknown, { id: UUID; extra: MemberExtra }>(EDIT_MEMBER);
 
   // this mutation is used for its callback and invalidate the keys
   /**
@@ -132,13 +131,17 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onSettled: (_data, _error, { id }) => {
       Object.values(ThumbnailSize).forEach((size) => {
-        const key = buildAvatarKey({ id, size });
-        queryClient.invalidateQueries(key);
+        const key1 = buildAvatarKey({ replyUrl: true, id, size });
+        queryClient.invalidateQueries(key1);
+        const key2 = buildAvatarKey({ replyUrl: false, id, size });
+        queryClient.invalidateQueries(key2);
       });
     },
   });
   const useUploadAvatar = () =>
-    useMutation<void, unknown, { error: any; data: any }>(UPLOAD_AVATAR);
+    useMutation<void, unknown, { error?: any; data?: any; id: UUID }>(
+      UPLOAD_AVATAR,
+    );
 
   // mutation to update favorite items of given member
   queryClient.setMutationDefaults(ADD_FAVORITE_ITEM, {

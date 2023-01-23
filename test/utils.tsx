@@ -77,6 +77,32 @@ interface MockMutationArguments extends MockArguments {
   mutation: () => any;
 }
 
+// const parseDateToString = (data: any): any => {
+//   if (!data) {
+//     return data;
+//   }
+//   if (Array.isArray(data)) {
+//     return data.map(parseDateToString);
+//   }
+//   if (typeof data === 'object') {
+//     const d = Object.entries(data).map(([k, v]) => {
+//       if (v instanceof Date) {
+//         return [k, v.toISOString()];
+//       }
+//       if (Array.isArray(v)) {
+//         return [k, parseDateToString(v)];
+//       }
+//       if (typeof v === 'object') {
+//         return [k, parseDateToString(v)];
+//       }
+//       return [k, v];
+//     });
+//     return Object.fromEntries(d);
+//   }
+
+//   return data;
+// };
+
 export const mockEndpoints = (endpoints: Endpoint[]) => {
   // mock endpoint with given response
   const server = nock(API_HOST);
@@ -90,7 +116,7 @@ export const mockEndpoints = (endpoints: Endpoint[]) => {
   return server;
 };
 
-export const mockHook = async ({
+export const mockHook = async <T,>({
   endpoints,
   hook,
   wrapper,
@@ -116,7 +142,7 @@ export const mockHook = async ({
   await waitFor(() => result.current.isSuccess || result.current.isError);
 
   // return hook data
-  return result.current;
+  return result.current as QueryObserverBaseResult<T>;
 };
 
 export const mockMutation = async ({
@@ -157,19 +183,32 @@ export const splitEndpointByIds = (
   chunkSize: number,
   buildRoute: (ids: string[]) => string,
   response: any[],
+  getKey?: (d: any) => string,
   method?: HttpMethod,
 ) =>
-  spliceIntoChunks(ids, chunkSize).map((chunk, idx) => ({
-    route: buildRoute(chunk),
-    response: response.slice(idx * chunkSize, (idx + 1) * chunkSize),
-    method,
-  }));
+  spliceIntoChunks(ids, chunkSize).map((chunk, idx) => {
+    const data = response.slice(idx * chunkSize, (idx + 1) * chunkSize).reduce(
+      (prev, d) => ({
+        ...prev,
+        [getKey?.(d) ?? d.id]: d,
+      }),
+      {},
+    );
+    return {
+      route: buildRoute(chunk),
+      response: {
+        data,
+        errors: [],
+      },
+      method,
+    };
+  });
 
 export const splitEndpointByIdsForErrors = (
   ids: string[],
   chunkSize: number,
   buildRoute: (ids: string[]) => string,
-  data: { response: any; statusCode: StatusCodes },
+  data: { response: unknown; statusCode: StatusCodes },
   method?: HttpMethod,
 ) =>
   spliceIntoChunks(ids, chunkSize).map((chunk) => ({

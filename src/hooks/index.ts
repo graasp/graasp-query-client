@@ -10,6 +10,8 @@ import configureInvitationHooks from './invitation';
 import configureItemHooks from './item';
 import configureItemFlagHooks from './itemFlag';
 import configureItemLikeHooks from './itemLike';
+import configureItemLoginHooks from './itemLogin';
+import configureItemPublishedHooks from './itemPublish';
 import configureItemTagHooks from './itemTag';
 import configureItemValidationHooks from './itemValidation';
 import configureMemberHooks from './member';
@@ -45,6 +47,8 @@ export default (
     ...configureCategoryHooks(queryConfig),
     ...configureKeywordSearchHooks(queryConfig),
     ...configureItemLikeHooks(queryConfig),
+    ...configureItemLoginHooks(queryConfig),
+    ...configureItemPublishedHooks(queryConfig),
     ...configureItemValidationHooks(queryConfig),
     ...configureAppsHooks(queryConfig),
     ...configureActionHooks(queryConfig),

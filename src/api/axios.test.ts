@@ -1,11 +1,12 @@
-import { UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { splitRequestByIds } from './axios';
+import { UNAUTHORIZED_RESPONSE, buildResultOfData } from '../../test/constants';
+import { parseStringToDate, splitRequestByIds } from './axios';
 
 const chunkSize = 5;
 const ids = Array.from({ length: chunkSize * 3 + 1 }, (_, idx) =>
   idx.toString(),
 );
-const buildRequest = async (chunk: typeof ids) => chunk;
+const buildRequest = async (chunk: typeof ids) =>
+  buildResultOfData(chunk, (el) => el);
 
 describe('Axios Tests', () => {
   describe('Axios Tests', () => {
@@ -16,7 +17,7 @@ describe('Axios Tests', () => {
         chunkSize,
         buildRequest,
       );
-      expect(result0.size).toEqual(zero);
+      expect(result0).toBeNull();
 
       const small = 2;
       const result1 = await splitRequestByIds(
@@ -24,7 +25,7 @@ describe('Axios Tests', () => {
         chunkSize,
         buildRequest,
       );
-      expect(result1.size).toEqual(small);
+      expect(result1.data.toSeq().size).toEqual(small);
 
       const twice = chunkSize + 1;
       const result2 = await splitRequestByIds(
@@ -32,7 +33,7 @@ describe('Axios Tests', () => {
         chunkSize,
         buildRequest,
       );
-      expect(result2.size).toEqual(twice);
+      expect(result2.data.toSeq().size).toEqual(twice);
 
       const big = ids.length;
       const result3 = await splitRequestByIds(
@@ -40,7 +41,7 @@ describe('Axios Tests', () => {
         chunkSize,
         buildRequest,
       );
-      expect(result3.size).toEqual(big);
+      expect(result3.data.toSeq().size).toEqual(big);
     });
 
     it('throws if one of the request throws', async () => {
@@ -49,7 +50,7 @@ describe('Axios Tests', () => {
           if (id === '1') {
             throw new Error();
           }
-          return [id];
+          return buildResultOfData([id]);
         }),
       ).rejects.toThrow();
     });
@@ -60,9 +61,9 @@ describe('Axios Tests', () => {
       try {
         await splitRequestByIds(ids.slice(0, 2), 1, async ([id]) => {
           if (id === '1') {
-            return UNAUTHORIZED_RESPONSE;
+            return buildResultOfData([], (el) => el, [UNAUTHORIZED_RESPONSE]);
           }
-          return [id];
+          return buildResultOfData([id]);
         });
       } catch (error) {
         thrownError = error;
@@ -70,8 +71,48 @@ describe('Axios Tests', () => {
 
       // throwIfArrayContainsErrorOrReturn encapsulates the error in response.data
       expect(thrownError).toEqual({
-        response: { data: UNAUTHORIZED_RESPONSE },
+        response: { data: [UNAUTHORIZED_RESPONSE] },
       });
+    });
+  });
+  describe('parseStringToDate', () => {
+    it('transform date', () => {
+      const result = parseStringToDate([
+        {
+          actions: [
+            {
+              some: 'string',
+              createdAt: '2021-03-16T16:00:50.968Z',
+              item: { createdAt: '2021-03-16T16:00:50.968Z' },
+              memberships: [
+                {
+                  id: 'id',
+                  updatedAt: '2021-03-16T16:00:50.968Z',
+                  createdAt: '2021-03-16T16:00:50.968Z',
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+      expect(result).toMatchObject([
+        {
+          actions: [
+            {
+              some: 'string',
+              createdAt: new Date('2021-03-16T16:00:50.968Z'),
+              item: { createdAt: new Date('2021-03-16T16:00:50.968Z') },
+              memberships: [
+                {
+                  id: 'id',
+                  updatedAt: new Date('2021-03-16T16:00:50.968Z'),
+                  createdAt: new Date('2021-03-16T16:00:50.968Z'),
+                },
+              ],
+            },
+          ],
+        },
+      ]);
     });
   });
 });
