@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/graasp/graasp-query-client/compare/v0.1.1...v0.1.2) (2023-01-23)
+
+
+### Bug Fixes
+
+* fix item tag and item category types ([81f39b9](https://github.com/graasp/graasp-query-client/commit/81f39b9c631a9f25b893adff7e7b31da0b686b2f))
+
 ## [0.1.1](https://github.com/graasp/graasp-query-client/compare/v0.1.0...v0.1.1) (2023-01-20)
 
 
