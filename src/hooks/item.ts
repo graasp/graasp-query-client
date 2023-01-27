@@ -457,7 +457,7 @@ export default (
     },
 
     useEtherpad: (item: Item, mode: 'read' | 'write') => {
-      if (item.type !== ItemType.ETHERPAD) {
+      if (item?.type !== ItemType.ETHERPAD) {
         return null;
       }
       return useQuery({
