@@ -66,13 +66,14 @@
         "tsx": "never"
       }
     ],
+    "import/no-extraneous-dependencies": "off",
     "import/no-unresolved": [2, { "ignore": ["^react$"] }],
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": "error",
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
-      "warn", 
-      { 
+      "warn",
+      {
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_",
         "caughtErrorsIgnorePattern": "^_"

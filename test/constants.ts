@@ -35,6 +35,8 @@ import {
   ChatMentionRecord,
   ChatMessage,
   ChatMessageRecord,
+  ExportedChatMessage,
+  ExportedChatMessageRecord,
   Flag,
   FlagRecord,
   FullValidationRecord,
@@ -71,8 +73,6 @@ import {
   TagRecord,
   Tag as TagType,
   UUID,
-  ExportedChatMessage,
-  ExportedChatMessageRecord,
 } from '../src/types';
 
 export const WS_HOST = 'ws://localhost:3000';

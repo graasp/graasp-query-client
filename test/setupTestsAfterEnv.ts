@@ -1,5 +1,5 @@
 import * as matchers from 'jest-immutable-matchers';
 
-global.beforeEach(function () {
+global.beforeEach(() => {
   expect.extend(matchers);
 });

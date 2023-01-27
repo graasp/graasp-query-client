@@ -29,9 +29,9 @@ export type QueryClientConfig = {
     // time before cache labeled as inactive to be garbage collected
     cacheTime: number;
     retry?:
-    | number
-    | boolean
-    | ((failureCount: number, error: Error) => boolean);
+      | number
+      | boolean
+      | ((failureCount: number, error: Error) => boolean);
     refetchOnWindowFocus?: boolean;
     keepPreviousData?: boolean;
     refetchOnMount?: boolean;

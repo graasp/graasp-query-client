@@ -2330,11 +2330,13 @@ __metadata:
     jest: 28.1.0
     jest-environment-jsdom: 28.1.0
     jest-immutable-matchers: 3.0.0
+    js-cookie: 3.0.1
     microbundle-crl: 0.13.11
     mock-socket: 9.1.2
     nock: 13.2.4
     prettier: 2.6.0
     qs: 6.10.3
+    react: 17.0.2
     react-query: 3.34.19
     react-test-renderer: 17.0.2
     standard-version: 9.3.2
