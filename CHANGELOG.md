@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/graasp/graasp-query-client/compare/v0.1.2...v0.1.3) (2023-01-30)
+
+
+### Bug Fixes
+
+* return null if item is not defined in useEtherpad ([#230](https://github.com/graasp/graasp-query-client/issues/230)) ([1a170bf](https://github.com/graasp/graasp-query-client/commit/1a170bf816259e4f828be77259ae443d94a31ef7))
+
 ## [0.1.2](https://github.com/graasp/graasp-query-client/compare/v0.1.1...v0.1.2) (2023-01-23)
 
 
