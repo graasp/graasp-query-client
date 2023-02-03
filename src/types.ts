@@ -1,14 +1,22 @@
 import { List, RecordOf } from 'immutable';
 
 import {
+  AppItemType,
+  DocumentItemType,
+  EmbeddedLinkItemType,
   Etherpad,
-  Item,
+  EtherpadItemType,
+  FolderItemType,
+  H5PItemType,
   ItemMembership,
   ItemSettings,
+  LocalFileItemType,
   Member,
   MemberExtra,
   MentionStatus,
   PermissionLevel,
+  S3FileItemType,
+  ShortcutItemType,
   UnknownExtra,
 } from '@graasp/sdk';
 
@@ -46,7 +54,16 @@ export type ItemSettingsRecord = RecordOf<ItemSettings>;
 
 export type ItemExtraRecord = RecordOf<UnknownExtra>;
 
-export type ItemRecord = RecordOf<Item<ItemExtraRecord, ItemSettingsRecord>>;
+export type ItemRecord =
+  | RecordOf<AppItemType>
+  | RecordOf<DocumentItemType>
+  | RecordOf<FolderItemType>
+  | RecordOf<H5PItemType>
+  | RecordOf<EmbeddedLinkItemType>
+  | RecordOf<LocalFileItemType>
+  | RecordOf<S3FileItemType>
+  | RecordOf<ShortcutItemType>
+  | RecordOf<EtherpadItemType>;
 
 export type EtherpadRecord = RecordOf<Etherpad>;
 

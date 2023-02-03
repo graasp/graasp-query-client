@@ -3,8 +3,10 @@ import { List, Record } from 'immutable';
 import { v4 } from 'uuid';
 
 import {
+  AppItemExtraProperties,
+  FolderItemExtra,
+  FolderItemType,
   HttpMethod,
-  Item,
   ItemMembership,
   ItemSettings,
   ItemType,
@@ -15,7 +17,6 @@ import {
   MemberType,
   MentionStatus,
   PermissionLevel,
-  UnknownExtra,
 } from '@graasp/sdk';
 
 import {
@@ -46,14 +47,12 @@ import {
   InvitationRecord,
   ItemCategory,
   ItemCategoryRecord,
-  ItemExtraRecord,
   ItemLike,
   ItemLikeRecord,
   ItemLogin,
   ItemLoginRecord,
   ItemMembershipRecord,
   ItemRecord,
-  ItemSettingsRecord,
   ItemTag,
   ItemTagRecord,
   ItemValidationAndReview,
@@ -86,56 +85,56 @@ export const UNAUTHORIZED_RESPONSE = {
   origin: 'plugin',
 };
 
-const createItemExtra: Record.Factory<UnknownExtra> = Record({});
+const createFolderItemExtra: Record.Factory<FolderItemExtra> = Record({
+  [ItemType.FOLDER]: { childrenOrder: [] as string[] },
+});
 const createItemSettings: Record.Factory<ItemSettings> = Record({});
 
-const createMockItem: Record.Factory<
-  Item<ItemExtraRecord, ItemSettingsRecord>
-> = Record({
+const createMockFolderItem: Record.Factory<FolderItemType> = Record({
   id: '42',
   name: 'item1',
   path: '42',
   // clearly type enum for immutable record to correctly infer
-  type: ItemType.FOLDER as ItemType,
+  type: `${ItemType.FOLDER}`,
   description: '',
-  extra: createItemExtra({}),
+  extra: createFolderItemExtra({}),
   creator: 'creator',
   updatedAt: new Date().toISOString(),
   createdAt: new Date().toISOString(),
   settings: createItemSettings({}),
-});
+} as FolderItemType);
 
-const ITEM_1: ItemRecord = createMockItem({
+const ITEM_1: ItemRecord = createMockFolderItem({
   id: '42',
   name: 'item1',
   path: '42',
 });
 
-const ITEM_2: ItemRecord = createMockItem({
+const ITEM_2: ItemRecord = createMockFolderItem({
   id: '5243',
   name: 'item2',
   path: '5243',
 });
 
-const ITEM_3: ItemRecord = createMockItem({
+const ITEM_3: ItemRecord = createMockFolderItem({
   id: '5896',
   name: 'item3',
   path: '5896',
 });
 
-const ITEM_4: ItemRecord = createMockItem({
+const ITEM_4: ItemRecord = createMockFolderItem({
   id: 'dddd',
   name: 'item4',
   path: '5896.dddd',
 });
 
-const ITEM_5: ItemRecord = createMockItem({
+const ITEM_5: ItemRecord = createMockFolderItem({
   id: 'eeee',
   name: 'item5',
   path: '5896.eeee',
 });
 
-const ITEM_6: ItemRecord = createMockItem({
+const ITEM_6: ItemRecord = createMockFolderItem({
   id: 'gggg',
   name: 'item5',
   path: '5896.gggg',
@@ -155,11 +154,11 @@ export const ITEMS: List<ItemRecord> = List([
         1,
     },
     (_, idx) =>
-      createMockItem({
+      createMockFolderItem({
         id: `item-${idx}`,
         name: `item-${idx}`,
         path: `item_${idx}`,
-        type: ItemType.FOLDER,
+        type: 'folder',
         description: '',
       }),
   ),
@@ -323,14 +322,18 @@ export const buildMentionResponse = (
   }
 };
 
-const defaultAppExtraValues: any = { image: 'http://codeapp.com/logo.png' };
-const createAppExtra: Record.Factory<any> = Record(defaultAppExtraValues);
+const defaultAppExtraValues: AppItemExtraProperties = {
+  url: 'http://codeapp.com/logo.png',
+};
+const createAppExtra: Record.Factory<AppItemExtraProperties> = Record(
+  defaultAppExtraValues,
+);
 
 const defaultAppValues: App = {
   name: 'Code App',
   url: 'http://codeapp.com',
   description: 'description',
-  extra: createAppExtra({ image: 'http://codeapp.com/logo.png' }),
+  extra: createAppExtra({ url: 'http://codeapp.com/logo.png' }),
 };
 const createMockApps: Record.Factory<App> = Record(defaultAppValues);
 
@@ -338,14 +341,14 @@ const APP_1: AppRecord = createMockApps({
   name: 'Code App',
   url: 'http://codeapp.com',
   description: 'description',
-  extra: createAppExtra({ image: 'http://codeapp.com/logo.png' }),
+  extra: createAppExtra({ url: 'http://codeapp.com/logo.png' }),
 });
 
 const APP_2: AppRecord = createMockApps({
   name: 'File App',
   description: 'description',
   url: 'http://fileapp.com',
-  extra: createAppExtra({ image: 'http://fileapp.com/logo.png' }),
+  extra: createAppExtra({ url: 'http://fileapp.com/logo.png' }),
 });
 
 export const APPS: List<AppRecord> = List([APP_1, APP_2]);
