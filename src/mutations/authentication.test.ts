@@ -315,7 +315,6 @@ describe('Authentication Mutations', () => {
         await waitForMutation();
       });
 
-
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: signOutRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.SIGN_OUT },

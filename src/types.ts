@@ -208,9 +208,22 @@ export interface Action {
 }
 
 export type ActionRecord = RecordOf<Action>;
+export type ActionMetadata = {
+  numActionsRetrieved: number;
+  requestedSampleSize: number;
+};
+export type ActionMetadataRecord = RecordOf<{
+  numActionsRetrieved: number;
+  requestedSampleSize: number;
+}>;
 
 export interface ActionData {
   actions: List<ActionRecord>;
+  descendants: List<ItemRecord>;
+  item: ItemRecord;
+  itemMemberships: List<ItemMembershipRecord>;
+  members: List<MemberRecord>;
+  metadata: ActionMetadataRecord;
 }
 
 export type ActionDataRecord = RecordOf<ActionData>;

@@ -4,7 +4,7 @@ import { convertJs } from '@graasp/sdk';
 
 import * as Api from '../api';
 import { buildActionsKey } from '../config/keys';
-import { QueryClientConfig, UUID } from '../types';
+import { ActionDataRecord, QueryClientConfig, UUID } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -25,7 +25,9 @@ export default (queryConfig: QueryClientConfig) => {
       return useQuery({
         queryKey: buildActionsKey(args),
         queryFn: () =>
-          Api.getActions(args, queryConfig).then((data) => convertJs(data)),
+          Api.getActions(args, queryConfig).then(
+            (data) => convertJs(data) as ActionDataRecord,
+          ),
         ...defaultQueryOptions,
         enabled: enabledValue,
       });

@@ -22,6 +22,8 @@ import {
   Action,
   ActionData,
   ActionDataRecord,
+  ActionMetadata,
+  ActionMetadataRecord,
   ActionRecord,
   App,
   AppRecord,
@@ -66,8 +68,8 @@ import {
   MessageItemChatRecord,
   Status,
   StatusRecord,
-  Tag as TagType,
   TagRecord,
+  Tag as TagType,
   UUID,
 } from '../src/types';
 
@@ -468,7 +470,7 @@ const defaultItemTagsValues: ItemTag = {
   itemPath: 'somepath',
   tagId: 'tag-id',
   createdAt: 'createdAt',
-  creator: 'creator-id'
+  creator: 'creator-id',
 };
 const createMockItemTags: Record.Factory<ItemTag> = Record(
   defaultItemTagsValues,
@@ -562,7 +564,7 @@ const defaultItemCategoryValues: ItemCategory = {
   itemId: 'item-id',
   categoryId: 'category-id1',
   createdAt: 'somedate',
-  creator: 'creator-id'
+  creator: 'creator-id',
 };
 const createMockItemCategory: Record.Factory<ItemCategory> = Record(
   defaultItemCategoryValues,
@@ -736,8 +738,23 @@ const ACTION_1: ActionRecord = createMockAction({
 
 export const ACTIONS_LIST: List<ActionRecord> = List([ACTION_1]);
 
+const createMockActionMetadata: Record.Factory<ActionMetadata> = Record({
+  numActionsRetrieved: ACTIONS_LIST.size,
+  requestedSampleSize: ACTIONS_LIST.size,
+});
+
+const ACTION_METADATA: ActionMetadataRecord = createMockActionMetadata({
+  numActionsRetrieved: ACTIONS_LIST.size,
+  requestedSampleSize: ACTIONS_LIST.size,
+});
+
 const createMockActionData: Record.Factory<ActionData> = Record({
   actions: ACTIONS_LIST,
+  members: List([MEMBER_RESPONSE]),
+  descendants: List(),
+  item: ITEM_1,
+  itemMemberships: List([MEMBERSHIP_1]),
+  metadata: ACTION_METADATA,
 });
 
 export const ACTIONS_DATA: ActionDataRecord = createMockActionData({
