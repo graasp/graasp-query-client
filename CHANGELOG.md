@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/graasp/graasp-query-client/compare/v0.1.3...v0.1.4) (2023-02-06)
+
+
+### Bug Fixes
+
+* complete action type ([ebdf47f](https://github.com/graasp/graasp-query-client/commit/ebdf47ff2f1472dae8b440b62db7f2b4ad5f70a9))
+
 ## [0.1.3](https://github.com/graasp/graasp-query-client/compare/v0.1.2...v0.1.3) (2023-01-30)
 
 
