@@ -4,19 +4,16 @@ import { v4 } from 'uuid';
 
 import {
   AppItemExtraProperties,
-  FolderItemExtra,
   FolderItemType,
   HttpMethod,
   ItemMembership,
-  ItemSettings,
-  ItemType,
-  MAX_TARGETS_FOR_MODIFY_REQUEST,
+  ItemType, // MAX_TARGETS_FOR_MODIFY_REQUEST,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
-  MemberExtra,
   MemberType,
   MentionStatus,
   PermissionLevel,
+  convertJs,
 } from '@graasp/sdk';
 
 import {
@@ -59,7 +56,6 @@ import {
   ItemValidationAndReviewRecord,
   ItemValidationGroup,
   ItemValidationGroupRecord,
-  MemberExtraRecord,
   MemberMentions,
   MemberMentionsRecord,
   MemberRecord,
@@ -85,24 +81,29 @@ export const UNAUTHORIZED_RESPONSE = {
   origin: 'plugin',
 };
 
-const createFolderItemExtra: Record.Factory<FolderItemExtra> = Record({
-  [ItemType.FOLDER]: { childrenOrder: [] as string[] },
-});
-const createItemSettings: Record.Factory<ItemSettings> = Record({});
+const createMockFolderItem = (
+  folderItem?: Partial<FolderItemType>,
+): ItemRecord => {
+  const obj: FolderItemType = {
+    id: '42',
+    name: 'item1',
+    path: '42',
+    // clearly type enum for immutable record to correctly infer
+    type: ItemType.FOLDER,
+    description: '',
+    extra: { [ItemType.FOLDER]: { childrenOrder: [] } },
+    creator: 'creator',
+    updatedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+    settings: {},
+    ...folderItem,
+  };
+  console.log(obj);
 
-const createMockFolderItem: Record.Factory<FolderItemType> = Record({
-  id: '42',
-  name: 'item1',
-  path: '42',
-  // clearly type enum for immutable record to correctly infer
-  type: `${ItemType.FOLDER}`,
-  description: '',
-  extra: createFolderItemExtra({}),
-  creator: 'creator',
-  updatedAt: new Date().toISOString(),
-  createdAt: new Date().toISOString(),
-  settings: createItemSettings({}),
-} as FolderItemType);
+  const immutableObj = convertJs(obj);
+  console.log(immutableObj);
+  return immutableObj;
+};
 
 const ITEM_1: ItemRecord = createMockFolderItem({
   id: '42',
@@ -147,39 +148,35 @@ export const ITEMS: List<ItemRecord> = List([
   ITEM_4,
   ITEM_5,
   ITEM_6,
-  ...Array.from(
-    {
-      length:
-        Math.max(MAX_TARGETS_FOR_MODIFY_REQUEST, MAX_TARGETS_FOR_READ_REQUEST) +
-        1,
-    },
-    (_, idx) =>
-      createMockFolderItem({
-        id: `item-${idx}`,
-        name: `item-${idx}`,
-        path: `item_${idx}`,
-        type: 'folder',
-        description: '',
-      }),
-  ),
+  // ...Array.from(
+  //   {
+  //     length:
+  //       Math.max(MAX_TARGETS_FOR_MODIFY_REQUEST, MAX_TARGETS_FOR_READ_REQUEST) +
+  //       1,
+  //   },
+  //   (_, idx) =>
+  //     createMockFolderItem({
+  //       id: `item-${idx}`,
+  //       name: `item-${idx}`,
+  //       path: `item_${idx}`,
+  //       description: '',
+  //     }),
+  // ),
 ]);
 
 export const MESSAGE_IDS = ['12345', '78945'];
 
-const defaultMemberExtraValues: MemberExtra = {};
-const createMemberExtra: Record.Factory<MemberExtra> = Record(
-  defaultMemberExtraValues,
-);
-
-const createMockMember: Record.Factory<Member<MemberExtraRecord>> = Record({
-  id: '42',
-  name: 'username',
-  email: 'username@graasp.org',
-  type: MemberType.Individual as MemberType,
-  extra: createMemberExtra({}),
-  updatedAt: new Date().toISOString(),
-  createdAt: new Date().toISOString(),
-});
+const createMockMember = (member?: Partial<Member>): MemberRecord =>
+  convertJs({
+    id: '42',
+    name: 'username',
+    email: 'username@graasp.org',
+    type: MemberType.Individual,
+    extra: {},
+    updatedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+    ...member,
+  });
 
 export const MEMBER_RESPONSE: MemberRecord = createMockMember();
 
@@ -251,28 +248,33 @@ export const MEMBERS_RESPONSE: List<MemberRecord> = List([
 
 export const OK_RESPONSE = {};
 
-const createMockMembership: Record.Factory<ItemMembership> = Record({
-  id: 'membership-id',
-  memberId: 'member-id',
-  itemPath: ITEMS.first()!.path,
-  // clearly type enum for immutable record to correctly infer
-  permission: PermissionLevel.Read as PermissionLevel,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-  creator: 'creator-id',
-});
+const createMockMembership = (
+  membership?: Partial<ItemMembership>,
+): ItemMembershipRecord => {
+  console.error(ITEMS.toJS());
+  const obj: ItemMembership = {
+    id: 'membership-id',
+    memberId: 'member-id',
+    itemPath: ITEMS.first()!.path,
+    // clearly type enum for immutable record to correctly infer
+    permission: PermissionLevel.Read as PermissionLevel,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    creator: 'creator-id',
+    ...membership,
+  };
+  return convertJs(obj) as ItemMembershipRecord;
+};
 
 const MEMBERSHIP_1: ItemMembershipRecord = createMockMembership({
   id: 'membership-id',
   memberId: 'member-id',
-  itemPath: ITEMS.first()!.path,
   permission: PermissionLevel.Read,
 });
 
 const MEMBERSHIP_2: ItemMembershipRecord = createMockMembership({
   id: 'membership-id1',
   memberId: 'member-id1',
-  itemPath: ITEMS.first()!.path,
   permission: PermissionLevel.Admin,
 });
 

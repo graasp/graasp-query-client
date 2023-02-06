@@ -20,7 +20,7 @@ import {
   UnknownExtra,
 } from '@graasp/sdk';
 
-import { isDataEqual } from './utils/util';
+import { ImmutableCast, isDataEqual } from './utils/util';
 
 export type Notifier = (e: unknown) => void;
 
@@ -67,9 +67,9 @@ export type ItemRecord =
 
 export type EtherpadRecord = RecordOf<Etherpad>;
 
-export type MemberExtraRecord = RecordOf<MemberExtra>;
+export type MemberExtraRecord = ImmutableCast<MemberExtra>;
 
-export type MemberRecord = RecordOf<Member<MemberExtraRecord>>;
+export type MemberRecord = ImmutableCast<Member<MemberExtraRecord>>;
 
 export type ItemMembershipRecord = RecordOf<ItemMembership>;
 

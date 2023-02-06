@@ -31,7 +31,23 @@ import {
   updatePasswordRoutine,
 } from '../routines';
 
-jest.mock('@graasp/sdk');
+jest.mock('@graasp/sdk', () => {
+  // use auto-mocking system to get an object that mocks all
+  // of the module's functions, just like what `jest.mock()`
+  // (w/ no parameters) would do
+  const allAutoMocked = jest.createMockFromModule('@graasp/sdk');
+
+  // grab all the *real* implementations of the module's functions
+  // in an object
+  const actualModule = jest.requireActual('@graasp/sdk');
+  return {
+    __esModule: true,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    ...allAutoMocked,
+    convertJs: actualModule.convertJs,
+  };
+});
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 jest.spyOn(utils, 'isUserAuthenticated').mockReturnValue(true);
