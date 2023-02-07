@@ -9,7 +9,6 @@ import {
   FolderItemType,
   H5PItemType,
   ItemMembership,
-  ItemSettings,
   LocalFileItemType,
   Member,
   MemberExtra,
@@ -17,7 +16,6 @@ import {
   PermissionLevel,
   S3FileItemType,
   ShortcutItemType,
-  UnknownExtra,
 } from '@graasp/sdk';
 
 import { ImmutableCast, isDataEqual } from './utils/util';
@@ -50,20 +48,16 @@ export type QueryClientConfig = {
 
 export type UUID = string;
 
-export type ItemSettingsRecord = RecordOf<ItemSettings>;
-
-export type ItemExtraRecord = RecordOf<UnknownExtra>;
-
 export type ItemRecord =
-  | RecordOf<AppItemType>
-  | RecordOf<DocumentItemType>
-  | RecordOf<FolderItemType>
-  | RecordOf<H5PItemType>
-  | RecordOf<EmbeddedLinkItemType>
-  | RecordOf<LocalFileItemType>
-  | RecordOf<S3FileItemType>
-  | RecordOf<ShortcutItemType>
-  | RecordOf<EtherpadItemType>;
+  | ImmutableCast<AppItemType>
+  | ImmutableCast<DocumentItemType>
+  | ImmutableCast<FolderItemType>
+  | ImmutableCast<H5PItemType>
+  | ImmutableCast<EmbeddedLinkItemType>
+  | ImmutableCast<LocalFileItemType>
+  | ImmutableCast<S3FileItemType>
+  | ImmutableCast<ShortcutItemType>
+  | ImmutableCast<EtherpadItemType>;
 
 export type EtherpadRecord = RecordOf<Etherpad>;
 
@@ -71,7 +65,7 @@ export type MemberExtraRecord = ImmutableCast<MemberExtra>;
 
 export type MemberRecord = ImmutableCast<Member<MemberExtra>>;
 
-export type ItemMembershipRecord = RecordOf<ItemMembership>;
+export type ItemMembershipRecord = ImmutableCast<ItemMembership>;
 
 export type ItemTag = {
   id: UUID;

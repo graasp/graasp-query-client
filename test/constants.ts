@@ -5,9 +5,11 @@ import { v4 } from 'uuid';
 import {
   AppItemExtraProperties,
   FolderItemType,
+  GraaspError,
   HttpMethod,
   ItemMembership,
-  ItemType, // MAX_TARGETS_FOR_MODIFY_REQUEST,
+  ItemType,
+  MAX_TARGETS_FOR_MODIFY_REQUEST,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
   MemberType,
@@ -73,7 +75,7 @@ import {
 export const WS_HOST = 'ws://localhost:3000';
 export const API_HOST = 'http://localhost:3000';
 export const DOMAIN = 'domain';
-export const UNAUTHORIZED_RESPONSE = {
+export const UNAUTHORIZED_RESPONSE: GraaspError = {
   name: 'unauthorized',
   code: 'ERRCODE',
   message: 'unauthorized error message',
@@ -148,20 +150,20 @@ export const ITEMS: List<ItemRecord> = List([
   ITEM_4,
   ITEM_5,
   ITEM_6,
-  // ...Array.from(
-  //   {
-  //     length:
-  //       Math.max(MAX_TARGETS_FOR_MODIFY_REQUEST, MAX_TARGETS_FOR_READ_REQUEST) +
-  //       1,
-  //   },
-  //   (_, idx) =>
-  //     createMockFolderItem({
-  //       id: `item-${idx}`,
-  //       name: `item-${idx}`,
-  //       path: `item_${idx}`,
-  //       description: '',
-  //     }),
-  // ),
+  ...Array.from(
+    {
+      length:
+        Math.max(MAX_TARGETS_FOR_MODIFY_REQUEST, MAX_TARGETS_FOR_READ_REQUEST) +
+        1,
+    },
+    (_, idx) =>
+      createMockFolderItem({
+        id: `item-${idx}`,
+        name: `item-${idx}`,
+        path: `item_${idx}`,
+        description: '',
+      }),
+  ),
 ]);
 
 export const MESSAGE_IDS = ['12345', '78945'];
