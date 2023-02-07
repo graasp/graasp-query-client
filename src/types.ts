@@ -69,7 +69,7 @@ export type EtherpadRecord = RecordOf<Etherpad>;
 
 export type MemberExtraRecord = ImmutableCast<MemberExtra>;
 
-export type MemberRecord = ImmutableCast<Member<MemberExtraRecord>>;
+export type MemberRecord = ImmutableCast<Member<MemberExtra>>;
 
 export type ItemMembershipRecord = RecordOf<ItemMembership>;
 
