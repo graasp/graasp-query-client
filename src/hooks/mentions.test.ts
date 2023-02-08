@@ -2,6 +2,8 @@
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
+import { MemberMentionsRecord } from '@graasp/sdk/frontend';
+
 import { MEMBER_RESPONSE, buildMemberMentions } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import {
@@ -9,7 +11,6 @@ import {
   buildGetMemberMentionsRoute,
 } from '../api/routes';
 import { buildMentionKey } from '../config/keys';
-import type { MemberMentionsRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

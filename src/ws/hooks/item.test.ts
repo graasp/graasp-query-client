@@ -2,6 +2,7 @@ import { List } from 'immutable';
 import Cookies from 'js-cookie';
 
 import { Item } from '@graasp/sdk';
+import { ItemRecord } from '@graasp/sdk/frontend';
 
 import { ITEMS } from '../../../test/constants';
 import {
@@ -15,7 +16,6 @@ import {
   buildItemChildrenKey,
   buildItemKey,
 } from '../../config/keys';
-import { ItemRecord } from '../../types';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { configureWsItemHooks } from './item';
 

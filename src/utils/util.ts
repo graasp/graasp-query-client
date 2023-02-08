@@ -74,13 +74,3 @@ export const paginate = (
       reject(error);
     }
   });
-
-export type ImmutableCast<Type> = RecordOf<{
-  [Property in keyof Type]: Type[Property] extends (infer U)[]
-    ? List<U>
-    : Type[Property] extends (infer U)[] | undefined
-    ? List<U> | undefined
-    : Type[Property] extends object
-    ? ImmutableCast<Type[Property]>
-    : Type[Property];
-}>;

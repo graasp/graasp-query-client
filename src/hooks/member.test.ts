@@ -2,8 +2,10 @@ import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
+import { UseQueryResult } from 'react-query';
 
 import { MAX_TARGETS_FOR_READ_REQUEST } from '@graasp/sdk';
+import { MemberRecord } from '@graasp/sdk/frontend';
 
 import {
   AVATAR_BLOB_RESPONSE,
@@ -27,7 +29,7 @@ import {
   buildMemberKey,
   buildMembersKey,
 } from '../config/keys';
-import type { MemberRecord, UUID } from '../types';
+import type { UUID } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -39,7 +41,7 @@ describe('Member Hooks', () => {
 
   describe('useCurrentMember', () => {
     const route = `/${GET_CURRENT_MEMBER_ROUTE}`;
-    const hook = () => hooks.useCurrentMember();
+    const hook = (): UseQueryResult<MemberRecord> => hooks.useCurrentMember();
 
     it(`Receive current member`, async () => {
       const response = MEMBER_RESPONSE;

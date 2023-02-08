@@ -3,9 +3,10 @@ import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
 import { ItemMembership, convertJs, getIdsFromPath } from '@graasp/sdk';
+import { ItemMembershipRecord } from '@graasp/sdk/frontend';
 
 import { buildItemMembershipsKey } from '../../config/keys';
-import { ItemMembershipRecord, UUID } from '../../types';
+import { UUID } from '../../types';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 
@@ -20,7 +21,7 @@ interface MembershipEvent {
 export const configureWsMembershipHooks = (
   queryClient: QueryClient,
   websocketClient: WebsocketClient,
-) => ({
+): { useItemsMembershipsUpdates: (itemIds?: UUID[] | null) => void } => ({
   /**
    * React hooks to subscribe to membership updates for a given item ID
    * @param itemIds The IDs of the items of which to observe memberships updates
@@ -38,7 +39,7 @@ export const configureWsMembershipHooks = (
         };
         const itemMembershipsKey = buildItemMembershipsKey(itemId);
 
-        const handler = (event: MembershipEvent) => {
+        const handler = (event: MembershipEvent): void => {
           if (event.kind === KINDS.ITEM) {
             const current =
               queryClient.getQueryData<List<ItemMembershipRecord>>(

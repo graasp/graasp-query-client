@@ -3,7 +3,7 @@
     "outDir": "dist",
     "module": "esnext",
     "lib": ["dom", "esnext"],
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "jsx": "react",
     "sourceMap": true,
     "declaration": true,
@@ -27,5 +27,5 @@
   },
   "include": ["src"],
   "files": ["src/types.ts"], // allows to have the types.d.ts file under /dist
-  "exclude": ["node_modules", "dist", "example", "src/**/*.test.ts"]
+  "exclude": ["dist", "example", "src/**/*.test.ts"]
 }

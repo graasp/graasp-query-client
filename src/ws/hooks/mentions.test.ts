@@ -1,6 +1,7 @@
 import { List } from 'immutable';
 
 import { MentionStatus } from '@graasp/sdk';
+import { MemberMentionsRecord } from '@graasp/sdk/frontend';
 
 import {
   MEMBER_RESPONSE,
@@ -13,7 +14,6 @@ import {
   setUpWsTest,
 } from '../../../test/wsUtils';
 import { buildItemChatKey, buildMentionKey } from '../../config/keys';
-import { MemberMentionsRecord } from '../../types';
 import { OPS, TOPICS } from '../constants';
 import { configureWsChatMentionsHooks } from './mentions';
 

@@ -1,6 +1,7 @@
 import { QueryClient } from 'react-query';
 
 import { convertJs, removeSession, setCurrentSession } from '@graasp/sdk';
+import { MemberRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
@@ -18,9 +19,12 @@ import {
   editMemberRoutine,
   uploadAvatarRoutine,
 } from '../routines';
-import { MemberRecord, QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig, UUID } from '../types';
 
-export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
+export default (
+  queryClient: QueryClient,
+  queryConfig: QueryClientConfig,
+): void => {
   const { notifier } = queryConfig;
 
   queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_MEMBER, {
@@ -61,9 +65,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
 
       // Snapshot the previous value
-      const previousMember = queryClient.getQueryData(
-        CURRENT_MEMBER_KEY,
-      ) as MemberRecord;
+      const previousMember: MemberRecord =
+        queryClient.getQueryData(CURRENT_MEMBER_KEY);
 
       // Optimistically update to the new value
       queryClient.setQueryData(
@@ -139,9 +142,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
 
       // Snapshot the previous value
-      const previousMember = queryClient.getQueryData(
-        CURRENT_MEMBER_KEY,
-      ) as MemberRecord;
+      const previousMember: MemberRecord =
+        queryClient.getQueryData(CURRENT_MEMBER_KEY);
 
       // Optimistically update to the new value
       const { itemId, extra } = payload;
@@ -195,9 +197,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
 
       // Snapshot the previous value
-      const previousMember = queryClient.getQueryData(
-        CURRENT_MEMBER_KEY,
-      ) as MemberRecord;
+      const previousMember: MemberRecord =
+        queryClient.getQueryData(CURRENT_MEMBER_KEY);
 
       // Optimistically update to the new value
       const { itemId, extra } = payload;

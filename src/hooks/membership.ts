@@ -1,7 +1,8 @@
 import { List } from 'immutable';
-import { QueryClient, useQuery } from 'react-query';
+import { QueryClient, UseQueryResult, useQuery } from 'react-query';
 
 import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
+import { ItemMembershipRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
 import { splitRequestByIds } from '../api/axios';
@@ -10,7 +11,7 @@ import {
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
 } from '../config/keys';
-import { ItemMembershipRecord, QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig, UUID } from '../types';
 import { configureWsMembershipHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
@@ -18,7 +19,16 @@ export default (
   queryClient: QueryClient,
   queryConfig: QueryClientConfig,
   websocketClient?: WebsocketClient,
-) => {
+): {
+  useItemMemberships: (
+    id?: UUID,
+    options?: { getUpdates?: boolean },
+  ) => UseQueryResult<List<ItemMembershipRecord>>;
+  useManyItemMemberships: (
+    ids?: UUID[],
+    options?: { getUpdates?: boolean },
+  ) => UseQueryResult<List<List<ItemMembershipRecord>>>;
+} => {
   const { enableWebsocket, defaultQueryOptions } = queryConfig;
 
   const membershipWsHooks =
@@ -27,7 +37,10 @@ export default (
       : undefined;
 
   return {
-    useItemMemberships: (id?: UUID, options?: { getUpdates?: boolean }) => {
+    useItemMemberships: (
+      id?: UUID,
+      options?: { getUpdates?: boolean },
+    ): UseQueryResult<List<ItemMembershipRecord>> => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       membershipWsHooks?.useItemsMembershipsUpdates(
@@ -53,7 +66,7 @@ export default (
     useManyItemMemberships: (
       ids?: UUID[],
       options?: { getUpdates?: boolean },
-    ) => {
+    ): UseQueryResult<List<List<ItemMembershipRecord>>> => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       membershipWsHooks?.useItemsMembershipsUpdates(getUpdates ? ids : null);

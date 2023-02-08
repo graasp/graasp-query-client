@@ -1,24 +1,8 @@
 import { List, RecordOf } from 'immutable';
 
-import {
-  AppItemType,
-  DocumentItemType,
-  EmbeddedLinkItemType,
-  Etherpad,
-  EtherpadItemType,
-  FolderItemType,
-  H5PItemType,
-  ItemMembership,
-  LocalFileItemType,
-  Member,
-  MemberExtra,
-  MentionStatus,
-  PermissionLevel,
-  S3FileItemType,
-  ShortcutItemType,
-} from '@graasp/sdk';
+import { PermissionLevel } from '@graasp/sdk';
 
-import { ImmutableCast, isDataEqual } from './utils/util';
+import { isDataEqual } from './utils/util';
 
 export type Notifier = (e: unknown) => void;
 
@@ -47,25 +31,6 @@ export type QueryClientConfig = {
 };
 
 export type UUID = string;
-
-export type ItemRecord =
-  | ImmutableCast<AppItemType>
-  | ImmutableCast<DocumentItemType>
-  | ImmutableCast<FolderItemType>
-  | ImmutableCast<H5PItemType>
-  | ImmutableCast<EmbeddedLinkItemType>
-  | ImmutableCast<LocalFileItemType>
-  | ImmutableCast<S3FileItemType>
-  | ImmutableCast<ShortcutItemType>
-  | ImmutableCast<EtherpadItemType>;
-
-export type EtherpadRecord = RecordOf<Etherpad>;
-
-export type MemberExtraRecord = ImmutableCast<MemberExtra>;
-
-export type MemberRecord = ImmutableCast<Member<MemberExtra>>;
-
-export type ItemMembershipRecord = ImmutableCast<ItemMembership>;
 
 export type ItemTag = {
   id: UUID;
@@ -112,63 +77,6 @@ export type ItemLogin = {
 };
 
 export type ItemLoginRecord = RecordOf<ItemLogin>;
-
-export type ChatMention = {
-  id: string;
-  itemPath: string;
-  message: string;
-  messageId: string;
-  memberId: string;
-  creator: string;
-  createdAt: string;
-  updatedAt: string;
-  status: MentionStatus;
-};
-
-export type ChatMentionRecord = RecordOf<ChatMention>;
-
-export type PartialChatMention = {
-  id: string;
-  status: MentionStatus;
-};
-
-export type MemberMentions = {
-  memberId: string;
-  mentions: List<ChatMentionRecord>;
-};
-
-export type MemberMentionsRecord = RecordOf<MemberMentions>;
-
-export type MessageBodyType = { message: string; mentions?: string[] };
-
-export type PartialNewChatMessage = {
-  chatId: string;
-  body: MessageBodyType;
-};
-
-export type PartialChatMessage = {
-  chatId: string;
-  messageId: string;
-  body?: MessageBodyType;
-};
-
-export type ChatMessage = {
-  id: string;
-  chatId: string;
-  creator: string;
-  createdAt: string;
-  updatedAt: string;
-  body: string;
-};
-
-export type ChatMessageRecord = RecordOf<ChatMessage>;
-
-export type ItemChat = {
-  id: string;
-  messages: List<ChatMessageRecord>;
-};
-
-export type ItemChatRecord = RecordOf<ItemChat>;
 
 // type of the exported chat message
 // contains the additional "creatorName" key with the plain text name of the user
@@ -314,9 +222,3 @@ export type MessageItemChat = {
 };
 
 export type MessageItemChatRecord = RecordOf<MessageItemChat>;
-
-export type MessageItemChatList = {
-  messages: List<MessageItemChatRecord>;
-};
-
-export type MessageItemChatListRecord = RecordOf<MessageItemChatList>;

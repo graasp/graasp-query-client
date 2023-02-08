@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import { MAX_TARGETS_FOR_READ_REQUEST } from '@graasp/sdk';
+import { ItemMembershipRecord } from '@graasp/sdk/frontend';
 
 import {
   ITEMS,
@@ -20,7 +21,6 @@ import {
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
 } from '../config/keys';
-import type { ItemMembershipRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });

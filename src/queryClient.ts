@@ -7,6 +7,8 @@ import {
   dehydrate,
   useMutation,
 } from 'react-query';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 import {
@@ -21,7 +23,7 @@ import { configureWebsocketClient } from './ws';
 
 /* istanbul ignore next */
 // Query client retry function decides when and how many times a request should be retried
-const retry = (failureCount: number, error: Error) => {
+const retry = (failureCount: number, error: Error): boolean => {
   const response = (error as AxiosError)?.response;
   const codes = [
     StatusCodes.UNAUTHORIZED,
@@ -45,6 +47,8 @@ const retry = (failureCount: number, error: Error) => {
   return false;
 };
 
+// todo: remove and add precise return types
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default (config: Partial<QueryClientConfig>) => {
   const baseConfig = {
     API_HOST:

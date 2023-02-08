@@ -2,6 +2,7 @@ import { List } from 'immutable';
 import Cookies from 'js-cookie';
 
 import { ItemMembership, PermissionLevel } from '@graasp/sdk';
+import { ItemMembershipRecord } from '@graasp/sdk/frontend';
 
 import { ITEMS, ITEM_MEMBERSHIPS_RESPONSE } from '../../../test/constants';
 import {
@@ -10,7 +11,6 @@ import {
   setUpWsTest,
 } from '../../../test/wsUtils';
 import { buildItemMembershipsKey } from '../../config/keys';
-import { ItemMembershipRecord } from '../../types';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { configureWsMembershipHooks } from './membership';
 

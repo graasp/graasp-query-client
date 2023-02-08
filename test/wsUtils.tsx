@@ -55,7 +55,11 @@ export const setUpWsTest = (args?: {
   // configure hooks
   const hooks = configureWsHooks(queryClient, websocketClient);
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
+  const wrapper = ({
+    children,
+  }: {
+    children: React.ReactNode;
+  }): JSX.Element => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 

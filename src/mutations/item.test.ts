@@ -11,6 +11,7 @@ import {
   ItemType,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
 } from '@graasp/sdk';
+import { ItemRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
@@ -55,7 +56,6 @@ import {
   uploadFileRoutine,
   uploadItemThumbnailRoutine,
 } from '../routines';
-import { ItemRecord } from '../types';
 import {
   buildPath,
   getDirectParentId,

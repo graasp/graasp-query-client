@@ -12,6 +12,7 @@ import {
   MAX_TARGETS_FOR_READ_REQUEST,
   convertJs,
 } from '@graasp/sdk';
+import { EtherpadRecord, ItemRecord, MemberRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
 import { splitRequestByIds } from '../api/axios';
@@ -39,14 +40,7 @@ import {
   buildPublicItemsWithTagKey,
 } from '../config/keys';
 import { getOwnItemsRoutine } from '../routines';
-import {
-  EtherpadRecord,
-  ItemLoginRecord,
-  ItemRecord,
-  MemberRecord,
-  QueryClientConfig,
-  UUID,
-} from '../types';
+import { ItemLoginRecord, QueryClientConfig, UUID } from '../types';
 import { isPaginatedChildrenDataEqual, paginate } from '../utils/util';
 import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
@@ -54,7 +48,7 @@ import { WebsocketClient } from '../ws/ws-client';
 export default (
   queryClient: QueryClient,
   queryConfig: QueryClientConfig,
-  useCurrentMember: () => UseQueryResult<MemberRecord, Error>,
+  useCurrentMember: () => UseQueryResult<MemberRecord>,
   websocketClient?: WebsocketClient,
 ) => {
   const { enableWebsocket, notifier, defaultQueryOptions } = queryConfig;
@@ -91,14 +85,14 @@ export default (
     },
 
     useChildren: (
-      id: UUID | undefined,
+      id?: UUID,
       options?: {
         enabled?: boolean;
         ordered?: boolean;
         getUpdates?: boolean;
         placeholderData?: List<ItemRecord>;
       },
-    ): UseQueryResult<List<ItemRecord>> => {
+    ) => {
       const enabled = options?.enabled ?? true;
       const ordered = options?.ordered ?? true;
       const getUpdates = options?.getUpdates ?? enableWebsocket;
@@ -132,13 +126,13 @@ export default (
 
     useChildrenPaginated: (
       id: UUID | undefined,
-      children: List<RecordOf<any>>,
+      children: List<ItemRecord>,
       options?: {
         enabled?: boolean;
         itemsPerPage?: number;
-        filterFunction?: (item: List<RecordOf<any>>) => List<RecordOf<any>>;
+        filterFunction?: (item: List<ItemRecord>) => List<ItemRecord>;
       },
-    ): UseQueryResult<any> => {
+    ) => {
       const enabled = options?.enabled;
 
       const childrenPaginatedOptions = {
@@ -178,7 +172,7 @@ export default (
         getUpdates?: boolean;
         placeholderData?: List<List<ItemRecord>>;
       },
-    ): UseQueryResult<List<List<ItemRecord>>> => {
+    ) => {
       const enabled = options?.enabled ?? true;
       const ordered = options?.ordered ?? true;
 
@@ -193,8 +187,8 @@ export default (
             ),
           ).then((items) => List(items)),
         onSuccess: async (items: List<List<ItemRecord>>) => {
-          /* Because the query function loops over the ids, this returns an array 
-          of immutable list of items, each list correspond to an item and contains 
+          /* Because the query function loops over the ids, this returns an array
+          of immutable list of items, each list correspond to an item and contains
           their children */
           if (items.size) {
             // For each item, get the list of its childrens

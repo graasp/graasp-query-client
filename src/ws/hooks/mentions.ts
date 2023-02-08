@@ -1,16 +1,16 @@
-import { List, Record } from 'immutable';
+import { List } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
 import { convertJs } from '@graasp/sdk';
-
-import { buildMentionKey } from '../../config/keys';
 import {
   ChatMention,
   ChatMentionRecord,
-  MemberMentions,
-  UUID,
-} from '../../types';
+  MemberMentionsRecord,
+} from '@graasp/sdk/frontend';
+
+import { buildMentionKey } from '../../config/keys';
+import { UUID } from '../../types';
 import { OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 
@@ -24,7 +24,7 @@ interface MentionEvent {
 export const configureWsChatMentionsHooks = (
   queryClient: QueryClient,
   websocketClient: WebsocketClient,
-) => ({
+): { useMentionsUpdates: (memberId: UUID | null) => void } => ({
   /**
    * React hook to subscribe to the updates of the given member ID
    * @param memberId The ID of the member for which to observe updates
@@ -42,9 +42,9 @@ export const configureWsChatMentionsHooks = (
         topic: TOPICS.MENTIONS,
       };
 
-      const handler = (event: MentionEvent) => {
+      const handler = (event: MentionEvent): void => {
         const mentionKey = buildMentionKey(memberId);
-        const current: Record<MemberMentions> | undefined =
+        const current: MemberMentionsRecord | undefined =
           queryClient.getQueryData(mentionKey);
 
         const mention: ChatMentionRecord = convertJs(event.mention);

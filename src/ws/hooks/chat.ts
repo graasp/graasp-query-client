@@ -1,11 +1,16 @@
-import { List, RecordOf } from 'immutable';
+import { List } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
 import { convertJs } from '@graasp/sdk';
+import {
+  ChatMessage,
+  ChatMessageRecord,
+  ItemChatRecord,
+} from '@graasp/sdk/frontend';
 
 import { buildItemChatKey } from '../../config/keys';
-import { ChatMessage, ChatMessageRecord, ItemChat, UUID } from '../../types';
+import { UUID } from '../../types';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 
@@ -41,7 +46,7 @@ export const configureWsChatHooks = (
       const handler = (event: ChatEvent) => {
         if (event.kind === KINDS.ITEM) {
           const chatKey = buildItemChatKey(chatId);
-          const current: RecordOf<ItemChat> | undefined =
+          const current: ItemChatRecord | undefined =
             queryClient.getQueryData(chatKey);
 
           const message: ChatMessageRecord = convertJs(event.message);
