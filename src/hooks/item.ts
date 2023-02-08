@@ -279,7 +279,7 @@ export default (
         getUpdates?: boolean;
         placeholderData?: ItemRecord;
       },
-    ) => {
+    ): UseQueryResult<ItemRecord> => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
       itemWsHooks?.useItemUpdates(getUpdates ? id : null);
 
