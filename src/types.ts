@@ -1,6 +1,11 @@
 import { List, RecordOf } from 'immutable';
 
 import { PermissionLevel } from '@graasp/sdk';
+import {
+  ItemMembershipRecord,
+  ItemRecord,
+  MemberRecord,
+} from '@graasp/sdk/frontend';
 
 import { isDataEqual } from './utils/util';
 
