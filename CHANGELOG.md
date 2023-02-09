@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/graasp/graasp-query-client/compare/v0.1.4...v0.1.5) (2023-02-09)
+
+
+### Bug Fixes
+
+* add types to invitation hooks ([#236](https://github.com/graasp/graasp-query-client/issues/236)) ([723e817](https://github.com/graasp/graasp-query-client/commit/723e817c24bb70bb630125bad9487ef4f1f99c2f))
+
 ## [0.1.4](https://github.com/graasp/graasp-query-client/compare/v0.1.3...v0.1.4) (2023-02-06)
 
 
