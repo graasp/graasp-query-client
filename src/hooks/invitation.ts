@@ -12,11 +12,15 @@ import { InvitationRecord, QueryClientConfig, UUID } from '../types';
 export default (queryConfig: QueryClientConfig) => {
   const { notifier, defaultQueryOptions } = queryConfig;
 
-  const useInvitation = (id: UUID) =>
+  const useInvitation = (id?: UUID) =>
     useQuery({
       queryKey: buildInvitationKey(id),
-      queryFn: () =>
-        Api.getInvitation(queryConfig, id).then((data) => convertJs(data) as InvitationRecord),
+      queryFn: (): Promise<InvitationRecord> => {
+        if (!id) {
+          throw new UndefinedArgument();
+        }
+        return Api.getInvitation(queryConfig, id).then((data) => convertJs(data))
+      },
       ...defaultQueryOptions,
       enabled: Boolean(id),
       onError: (error) => {
@@ -27,13 +31,13 @@ export default (queryConfig: QueryClientConfig) => {
   const useItemInvitations = (id?: UUID) =>
     useQuery({
       queryKey: buildItemInvitationsKey(id),
-      queryFn: () => {
+      queryFn: (): Promise<List<InvitationRecord>> => {
         if (!id) {
           throw new UndefinedArgument();
         }
 
         return Api.getInvitationsForItem(id, queryConfig).then((data) =>
-          convertJs(data) as List<InvitationRecord>,
+          convertJs(data),
         );
       },
       enabled: Boolean(id),
