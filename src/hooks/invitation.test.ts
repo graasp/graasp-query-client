@@ -4,6 +4,8 @@ import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
+import { InvitationRecord } from '@graasp/sdk/frontend';
+
 import {
   ITEMS,
   UNAUTHORIZED_RESPONSE,
@@ -15,7 +17,6 @@ import {
   buildGetItemInvitationsForItemRoute,
 } from '../api/routes';
 import { buildInvitationKey, buildItemInvitationsKey } from '../config/keys';
-import { InvitationRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 const itemPath = ITEMS.first()!.path;

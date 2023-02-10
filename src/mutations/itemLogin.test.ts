@@ -5,6 +5,7 @@ import nock from 'nock';
 import { act } from 'react-test-renderer';
 
 import { HttpMethod } from '@graasp/sdk';
+import { ITEM_LOGIN_SCHEMAS } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
@@ -24,7 +25,6 @@ import {
   buildItemLoginKey,
 } from '../config/keys';
 import { postItemLoginRoutine, putItemLoginRoutine } from '../routines';
-import { ITEM_LOGIN_SCHEMAS } from '../types';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({

@@ -18,19 +18,6 @@ import {
   convertJs,
 } from '@graasp/sdk';
 import {
-  ChatMention,
-  ChatMentionRecord,
-  ChatMessage,
-  ChatMessageRecord,
-  ItemChatRecord,
-  ItemMembershipRecord,
-  ItemRecord,
-  MemberMentions,
-  MemberMentionsRecord,
-  MemberRecord,
-} from '@graasp/sdk/frontend';
-
-import {
   Action,
   ActionData,
   ActionDataRecord,
@@ -43,6 +30,10 @@ import {
   CategoryRecord,
   CategoryType,
   CategoryTypeRecord,
+  ChatMention,
+  ChatMentionRecord,
+  ChatMessage,
+  ChatMessageRecord,
   ExportedChatMessage,
   ExportedChatMessageRecord,
   ExportedItemChatRecord,
@@ -55,22 +46,29 @@ import {
   InvitationRecord,
   ItemCategory,
   ItemCategoryRecord,
+  ItemChatRecord,
   ItemLike,
   ItemLikeRecord,
   ItemLogin,
   ItemLoginRecord,
+  ItemMembershipRecord,
+  ItemRecord,
   ItemTag,
   ItemTagRecord,
   ItemValidationAndReview,
   ItemValidationAndReviewRecord,
   ItemValidationGroup,
   ItemValidationGroupRecord,
+  MemberMentions,
+  MemberMentionsRecord,
+  MemberRecord,
   Status,
   StatusRecord,
   TagRecord,
   Tag as TagType,
-  UUID,
-} from '../src/types';
+} from '@graasp/sdk/frontend';
+
+import { UUID } from '../src/types';
 
 export const WS_HOST = 'ws://localhost:3000';
 export const API_HOST = 'http://localhost:3000';

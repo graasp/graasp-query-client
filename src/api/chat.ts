@@ -1,6 +1,10 @@
-import { ChatMessage, ItemChat } from '@graasp/sdk/frontend';
+import {
+  ChatMessage,
+  ExportedChatMessage,
+  ItemChat,
+} from '@graasp/sdk/frontend';
 
-import { ExportedChatMessage, QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig, UUID } from '../types';
 import configureAxios, {
   fallbackToPublic,
   verifyAuthentication,

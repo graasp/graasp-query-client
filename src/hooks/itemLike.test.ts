@@ -4,6 +4,8 @@ import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
+import { ItemLikeRecord } from '@graasp/sdk/frontend';
+
 import {
   ITEMS,
   ITEM_LIKES,
@@ -13,7 +15,6 @@ import {
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildGetLikeCountRoute, buildGetLikedItemsRoute } from '../api/routes';
 import { buildGetLikeCountKey, buildGetLikedItemsKey } from '../config/keys';
-import { ItemLikeRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });

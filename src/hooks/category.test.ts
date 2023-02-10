@@ -5,6 +5,12 @@ import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
+  CategoryRecord,
+  CategoryTypeRecord,
+  ItemCategoryRecord,
+} from '@graasp/sdk/frontend';
+
+import {
   CATEGORIES,
   CATEGORY_TYPES,
   ITEM_CATEGORIES,
@@ -25,11 +31,6 @@ import {
   buildItemCategoriesKey,
   buildItemsByCategoriesKey,
 } from '../config/keys';
-import {
-  CategoryRecord,
-  CategoryTypeRecord,
-  ItemCategoryRecord,
-} from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

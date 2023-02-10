@@ -4,11 +4,12 @@ import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
+import { FlagRecord } from '@graasp/sdk/frontend';
+
 import { FLAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import { GET_FLAGS_ROUTE } from '../api/routes';
 import { ITEM_FLAGS_KEY } from '../config/keys';
-import { FlagRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });

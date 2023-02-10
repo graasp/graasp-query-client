@@ -10,7 +10,7 @@ import {
   MAX_TARGETS_FOR_READ_REQUEST,
   convertJs,
 } from '@graasp/sdk';
-import { ItemRecord } from '@graasp/sdk/frontend';
+import { ItemLoginRecord, ItemRecord } from '@graasp/sdk/frontend';
 
 import {
   FILE_RESPONSE,
@@ -54,7 +54,6 @@ import {
   buildItemsKey,
   buildPublicItemsWithTagKey,
 } from '../config/keys';
-import type { ItemLoginRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });

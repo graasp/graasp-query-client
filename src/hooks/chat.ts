@@ -1,11 +1,11 @@
 import { QueryClient, useQuery } from 'react-query';
 
 import { convertJs } from '@graasp/sdk';
-import { ItemChatRecord } from '@graasp/sdk/frontend';
+import { ExportedItemChatRecord, ItemChatRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
 import { buildExportItemChatKey, buildItemChatKey } from '../config/keys';
-import { ExportedItemChatRecord, QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig, UUID } from '../types';
 import { configureWsChatHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 

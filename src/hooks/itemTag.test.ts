@@ -4,6 +4,8 @@ import { List, Record } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
+import { ItemTagRecord } from '@graasp/sdk/frontend';
+
 import { ITEMS, TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import {
@@ -12,7 +14,6 @@ import {
   buildGetItemsTagsRoute,
 } from '../api/routes';
 import { TAGS_KEY, buildItemTagsKey } from '../config/keys';
-import { ItemTagRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

@@ -2,6 +2,11 @@ import { List } from 'immutable';
 import { useQuery } from 'react-query';
 
 import { convertJs } from '@graasp/sdk';
+import {
+  CategoryRecord,
+  CategoryTypeRecord,
+  ItemCategoryRecord,
+} from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
 import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
@@ -13,13 +18,7 @@ import {
   buildItemCategoriesKey,
   buildItemsByCategoriesKey,
 } from '../config/keys';
-import {
-  CategoryRecord,
-  CategoryTypeRecord,
-  ItemCategoryRecord,
-  QueryClientConfig,
-  UUID,
-} from '../types';
+import { QueryClientConfig, UUID } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;

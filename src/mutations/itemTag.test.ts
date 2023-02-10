@@ -6,6 +6,7 @@ import nock from 'nock';
 import { act } from 'react-test-renderer';
 
 import { HttpMethod } from '@graasp/sdk';
+import { ItemTagRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
@@ -18,7 +19,6 @@ import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildDeleteItemTagRoute, buildPostItemTagRoute } from '../api/routes';
 import { MUTATION_KEYS, buildItemTagsKey } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
-import { ItemTagRecord } from '../types';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({

@@ -5,6 +5,13 @@ import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
+  FullValidationRecordRecord,
+  ItemValidationAndReviewRecord,
+  ItemValidationGroupRecord,
+  StatusRecord,
+} from '@graasp/sdk/frontend';
+
+import {
   FULL_VALIDATION_RECORDS,
   ITEM_VALIDATION_GROUPS,
   ITEM_VALIDATION_STATUS,
@@ -26,12 +33,6 @@ import {
   buildItemValidationAndReviewKey,
   buildItemValidationGroupsKey,
 } from '../config/keys';
-import {
-  FullValidationRecordRecord,
-  ItemValidationAndReviewRecord,
-  ItemValidationGroupRecord,
-  StatusRecord,
-} from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

@@ -47,8 +47,6 @@ const retry = (failureCount: number, error: Error): boolean => {
   return false;
 };
 
-// todo: remove and add precise return types
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default (config: Partial<QueryClientConfig>) => {
   const baseConfig = {
     API_HOST:

@@ -3,7 +3,12 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { ChatMessage, ItemChatRecord } from '@graasp/sdk/frontend';
+import {
+  ChatMessage,
+  ExportedChatMessage,
+  ExportedItemChatRecord,
+  ItemChatRecord,
+} from '@graasp/sdk/frontend';
 
 import {
   ITEMS,
@@ -14,7 +19,6 @@ import {
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildExportItemChatRoute, buildGetItemChatRoute } from '../api/routes';
 import { buildExportItemChatKey, buildItemChatKey } from '../config/keys';
-import type { ExportedChatMessage, ExportedItemChatRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

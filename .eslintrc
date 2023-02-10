@@ -105,21 +105,5 @@
         "caughtErrorsIgnorePattern": "^_"
       }
     ]
-  },
-  "overrides": [
-    {
-      // enable the rule specifically for TypeScript files
-      "files": ["*.ts", "*.tsx"],
-      "rules": {
-        "@typescript-eslint/explicit-function-return-type": [
-          "warn",
-          {
-            "allowExpressions": true,
-            "allowHigherOrderFunctions": true,
-            "allowTypedFunctionExpressions": true
-          }
-        ]
-      }
-    }
-  ]
+  }
 }

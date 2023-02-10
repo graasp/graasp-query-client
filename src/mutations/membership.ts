@@ -8,7 +8,7 @@ import {
   isError,
   partition,
 } from '@graasp/sdk';
-import { ItemMembershipRecord } from '@graasp/sdk/frontend';
+import { Invitation, ItemMembershipRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
@@ -24,7 +24,7 @@ import {
   postItemMembershipRoutine,
   shareItemRoutine,
 } from '../routines';
-import { Invitation, QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig, UUID } from '../types';
 
 export default (
   queryClient: QueryClient,
