@@ -1,6 +1,6 @@
 import { QueryClient } from 'react-query';
 
-import { convertJs, removeSession, setCurrentSession } from '@graasp/sdk';
+import { UUID, convertJs, removeSession, setCurrentSession } from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -19,7 +19,7 @@ import {
   editMemberRoutine,
   uploadAvatarRoutine,
 } from '../routines';
-import { QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig } from '../types';
 
 export default (
   queryClient: QueryClient,

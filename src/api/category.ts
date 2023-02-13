@@ -1,6 +1,6 @@
-import { Category, ItemCategory } from '@graasp/sdk/frontend';
+import { Category, ItemCategory, UUID } from '@graasp/sdk';
 
-import { QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig } from '../types';
 import configureAxios, {
   fallbackToPublic,
   verifyAuthentication,

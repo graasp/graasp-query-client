@@ -10,9 +10,15 @@ import {
   Item,
   ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
+  UUID,
   convertJs,
 } from '@graasp/sdk';
-import { EtherpadRecord, ItemRecord, MemberRecord } from '@graasp/sdk/frontend';
+import {
+  EtherpadRecord,
+  ItemLoginRecord,
+  ItemRecord,
+  MemberRecord,
+} from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
 import { splitRequestByIds } from '../api/axios';
@@ -40,7 +46,7 @@ import {
   buildPublicItemsWithTagKey,
 } from '../config/keys';
 import { getOwnItemsRoutine } from '../routines';
-import { ItemLoginRecord, QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig } from '../types';
 import { isPaginatedChildrenDataEqual, paginate } from '../utils/util';
 import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';

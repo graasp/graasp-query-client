@@ -3,12 +3,8 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import {
-  ChatMessage,
-  ExportedChatMessage,
-  ExportedItemChatRecord,
-  ItemChatRecord,
-} from '@graasp/sdk/frontend';
+import { ChatMessage, ExportedChatMessage } from '@graasp/sdk';
+import { ExportedItemChatRecord, ItemChatRecord } from '@graasp/sdk/frontend';
 
 import {
   ITEMS,

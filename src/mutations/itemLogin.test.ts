@@ -4,8 +4,7 @@ import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
-import { HttpMethod } from '@graasp/sdk';
-import { ITEM_LOGIN_SCHEMAS } from '@graasp/sdk/frontend';
+import { HttpMethod, ItemLoginSchema } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
@@ -123,7 +122,7 @@ describe('Item Login Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.PUT_ITEM_LOGIN);
     const loginSchema = ITEM_LOGIN_RESPONSE;
     const itemLoginKey = buildItemLoginKey(itemId);
-    const newLoginSchema = ITEM_LOGIN_SCHEMAS.USERNAME_AND_PASSWORD;
+    const newLoginSchema = ItemLoginSchema.USERNAME_AND_PASSWORD;
 
     it('Put item login', async () => {
       queryClient.setQueryData(itemLoginKey, loginSchema);

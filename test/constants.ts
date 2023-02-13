@@ -4,17 +4,29 @@ import { v4 } from 'uuid';
 
 import {
   AppItemExtraProperties,
+  Category,
+  CategoryType,
+  ChatMention,
+  ChatMessage,
+  ExportedChatMessage,
+  Flag,
   FolderItemType,
   GraaspError,
   HttpMethod,
+  Invitation,
+  ItemCategory,
+  ItemLoginSchema,
   ItemMembership,
+  ItemTag,
   ItemType,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
+  MemberMentions,
   MemberType,
   MentionStatus,
   PermissionLevel,
+  UUID,
   convertJs,
 } from '@graasp/sdk';
 import {
@@ -26,25 +38,16 @@ import {
   ActionRecord,
   App,
   AppRecord,
-  Category,
   CategoryRecord,
-  CategoryType,
   CategoryTypeRecord,
-  ChatMention,
   ChatMentionRecord,
-  ChatMessage,
   ChatMessageRecord,
-  ExportedChatMessage,
   ExportedChatMessageRecord,
   ExportedItemChatRecord,
-  Flag,
   FlagRecord,
   FullValidationRecord,
   FullValidationRecordRecord,
-  ITEM_LOGIN_SCHEMAS,
-  Invitation,
   InvitationRecord,
-  ItemCategory,
   ItemCategoryRecord,
   ItemChatRecord,
   ItemLike,
@@ -53,13 +56,11 @@ import {
   ItemLoginRecord,
   ItemMembershipRecord,
   ItemRecord,
-  ItemTag,
   ItemTagRecord,
   ItemValidationAndReview,
   ItemValidationAndReviewRecord,
   ItemValidationGroup,
   ItemValidationGroupRecord,
-  MemberMentions,
   MemberMentionsRecord,
   MemberRecord,
   Status,
@@ -67,8 +68,6 @@ import {
   TagRecord,
   Tag as TagType,
 } from '@graasp/sdk/frontend';
-
-import { UUID } from '../src/types';
 
 export const WS_HOST = 'ws://localhost:3000';
 export const API_HOST = 'http://localhost:3000';
@@ -275,7 +274,7 @@ export const ITEM_MEMBERSHIPS_RESPONSE: List<ItemMembershipRecord> = List([
 ]);
 
 const defaultItemLoginResponseValues: ItemLogin = {
-  loginSchema: ITEM_LOGIN_SCHEMAS.USERNAME,
+  loginSchema: ItemLoginSchema.USERNAME,
 };
 const createMockItemLoginResponse: Record.Factory<ItemLogin> = Record(
   defaultItemLoginResponseValues,

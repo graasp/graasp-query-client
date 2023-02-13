@@ -86,7 +86,7 @@ describe('Ws Mention Hooks', () => {
       expect(
         queryClient
           .getQueryData<MemberMentionsRecord>(mentionKey)
-          ?.mentions.find(({ id }) => id === newMention.id),
+          ?.mentions.find(({ id }: { id: string }) => id === newMention.id),
       ).toEqualImmutable(newMention);
     });
 
@@ -134,7 +134,7 @@ describe('Ws Mention Hooks', () => {
         queryClient.getQueryData<MemberMentionsRecord>(mentionKey)?.mentions,
       ).toEqualImmutable(
         MENTIONS_QUERY_DATA.mentions.filter(
-          ({ id }) => id !== deletedMention.id,
+          ({ id }: { id: string }) => id !== deletedMention.id,
         ),
       );
     });
@@ -174,7 +174,7 @@ describe('Ws Mention Hooks', () => {
       expect(
         queryClient
           .getQueryData<MemberMentionsRecord>(chatKey)
-          ?.mentions.find(({ id }) => id === newMention.id),
+          ?.mentions.find(({ id }: { id: string }) => id === newMention.id),
       ).toBeFalsy();
     });
   });

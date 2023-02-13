@@ -1,5 +1,6 @@
+import { UUID } from '@graasp/sdk';
+
 import { SUBSCRIPTION_KEY } from '../api/routes';
-import type { UUID } from '../types';
 import { hashItemsIds } from '../utils/item';
 import { DEFAULT_THUMBNAIL_SIZES } from './constants';
 

@@ -1,7 +1,7 @@
 import { List } from 'immutable';
 import { QueryClient, UseQueryResult, useQuery } from 'react-query';
 
-import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
+import { MAX_TARGETS_FOR_READ_REQUEST, UUID, convertJs } from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
@@ -18,7 +18,7 @@ import {
   buildMembersKey,
 } from '../config/keys';
 import { getMembersRoutine } from '../routines';
-import { QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig } from '../types';
 
 export default (
   queryClient: QueryClient,

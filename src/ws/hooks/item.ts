@@ -6,7 +6,7 @@ import { List } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
-import { convertJs } from '@graasp/sdk';
+import { UUID, convertJs } from '@graasp/sdk';
 import { ItemRecord } from '@graasp/sdk/frontend';
 
 import {
@@ -15,7 +15,6 @@ import {
   buildItemChildrenKey,
   buildItemKey,
 } from '../../config/keys';
-import { UUID } from '../../types';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 

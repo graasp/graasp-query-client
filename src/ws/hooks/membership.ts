@@ -2,11 +2,10 @@ import { List } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
-import { ItemMembership, convertJs, getIdsFromPath } from '@graasp/sdk';
+import { ItemMembership, UUID, convertJs, getIdsFromPath } from '@graasp/sdk';
 import { ItemMembershipRecord } from '@graasp/sdk/frontend';
 
 import { buildItemMembershipsKey } from '../../config/keys';
-import { UUID } from '../../types';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 

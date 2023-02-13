@@ -1,10 +1,10 @@
 import { StatusCodes } from 'http-status-codes';
 
-import { Member, MemberExtra } from '@graasp/sdk';
+import { Member, MemberExtra, UUID } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
 
 import { DEFAULT_THUMBNAIL_SIZES, SIGNED_OUT_USER } from '../config/constants';
-import { QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig } from '../types';
 import configureAxios, {
   fallbackToPublic,
   verifyAuthentication,

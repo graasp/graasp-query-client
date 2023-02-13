@@ -1,6 +1,6 @@
-import { ChatMention, MemberMentions } from '@graasp/sdk/frontend';
+import { ChatMention, MemberMentions, UUID } from '@graasp/sdk';
 
-import { QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
   buildClearMentionsRoute,

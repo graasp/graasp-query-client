@@ -35,7 +35,10 @@ export type QueryClientConfig = {
   };
 };
 
-export type UUID = string;
+/**
+ * @deprecated use graasp sdk instead
+ */
+type UUID = string;
 /**
  * @deprecated use graasp sdk instead
  */

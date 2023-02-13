@@ -163,7 +163,9 @@ describe('Ws Chat Hooks', () => {
       expect(
         queryClient
           .getQueryData<ItemChatRecord>(chatKey)
-          ?.messages.find(({ body }) => body === newMessage.body),
+          ?.messages.find(
+            ({ body }: { body: string }) => body === newMessage.body,
+          ),
       ).toBeFalsy();
     });
 
@@ -185,7 +187,9 @@ describe('Ws Chat Hooks', () => {
       expect(
         queryClient
           .getQueryData<ItemChatRecord>(chatKey)
-          ?.messages.find(({ body }) => body === newMessage.body),
+          ?.messages.find(
+            ({ body }: { body: string }) => body === newMessage.body,
+          ),
       ).toBeFalsy();
     });
   });

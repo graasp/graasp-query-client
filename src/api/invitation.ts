@@ -1,6 +1,7 @@
-import { Invitation, NewInvitation } from '@graasp/sdk/frontend';
+import { Invitation, UUID } from '@graasp/sdk';
+import { NewInvitation } from '@graasp/sdk/frontend';
 
-import { QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
   buildDeleteInvitationRoute,

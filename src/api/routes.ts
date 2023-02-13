@@ -1,7 +1,8 @@
 import qs from 'qs';
 
+import { UUID } from '@graasp/sdk';
+
 import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
-import { UUID } from '../types';
 
 export const APPS_ROUTE = 'app-items';
 export const ITEMS_ROUTE = 'items';

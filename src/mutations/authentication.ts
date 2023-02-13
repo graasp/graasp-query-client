@@ -1,6 +1,7 @@
 import { QueryClient } from 'react-query';
 
 import {
+  UUID,
   getStoredSessions,
   removeSession,
   saveUrlForRedirection,
@@ -18,7 +19,7 @@ import {
   switchMemberRoutine,
   updatePasswordRoutine,
 } from '../routines';
-import { QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig } from '../types';
 import { isServer } from '../utils/util';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {

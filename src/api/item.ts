@@ -1,7 +1,7 @@
-import { Item } from '@graasp/sdk';
+import { Item, UUID } from '@graasp/sdk';
 
 import { DEFAULT_THUMBNAIL_SIZES } from '../config/constants';
-import { QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig } from '../types';
 import { getParentsIdsFromPath } from '../utils/item';
 import configureAxios, {
   fallbackToPublic,

@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import nock from 'nock';
 import { UseQueryResult } from 'react-query';
 
-import { MAX_TARGETS_FOR_READ_REQUEST } from '@graasp/sdk';
+import { MAX_TARGETS_FOR_READ_REQUEST, UUID } from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
 
 import {
@@ -29,7 +29,6 @@ import {
   buildMemberKey,
   buildMembersKey,
 } from '../config/keys';
-import type { UUID } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });

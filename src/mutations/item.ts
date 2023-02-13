@@ -5,6 +5,7 @@ import {
   GraaspError,
   Item,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
+  UUID,
   convertJs,
 } from '@graasp/sdk';
 import { ItemRecord } from '@graasp/sdk/frontend';
@@ -42,7 +43,7 @@ import {
   uploadFileRoutine,
   uploadItemThumbnailRoutine,
 } from '../routines';
-import type { QueryClientConfig, UUID } from '../types';
+import type { QueryClientConfig } from '../types';
 import { buildPath, getDirectParentId } from '../utils/item';
 
 const {
