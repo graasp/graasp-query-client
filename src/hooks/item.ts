@@ -456,7 +456,7 @@ export default (
       });
     },
 
-    useEtherpad: (item: Item, mode: 'read' | 'write') => {
+    useEtherpad: (item: Item | ItemRecord, mode: 'read' | 'write') => {
       if (item?.type !== ItemType.ETHERPAD) {
         return null;
       }
