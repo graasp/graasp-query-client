@@ -3,11 +3,7 @@ import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
 import { ChatMention, UUID, convertJs } from '@graasp/sdk';
-import {
-  ChatMentionRecord,
-  ImmutableCast,
-  MemberMentionsRecord,
-} from '@graasp/sdk/frontend';
+import { ChatMentionRecord, MemberMentionsRecord } from '@graasp/sdk/frontend';
 
 import { buildMentionKey } from '../../config/keys';
 import { OPS, TOPICS } from '../constants';
@@ -51,32 +47,25 @@ export const configureWsChatMentionsHooks = (
         if (current) {
           switch (event.op) {
             case OPS.PUBLISH: {
-              const mutation = current.update(
-                'mentions',
-                (mentions: ImmutableCast<ChatMention[]>) =>
-                  List([...mentions, mention]),
+              const mutation = current.update('mentions', (mentions) =>
+                List([...mentions, mention]),
               );
               queryClient.setQueryData(mentionKey, mutation);
               break;
             }
             case OPS.UPDATE: {
-              const mutation = current.update(
-                'mentions',
-                (mentions: ImmutableCast<ChatMention[]>) => {
-                  const index = mentions.findIndex(
-                    (m) => m.id === event.mention.id,
-                  );
-                  return mentions.setIn([index], mention);
-                },
-              );
+              const mutation = current.update('mentions', (mentions) => {
+                const index = mentions.findIndex(
+                  (m) => m.id === event.mention.id,
+                );
+                return mentions.setIn([index], mention);
+              });
               queryClient.setQueryData(mentionKey, mutation);
               break;
             }
             case OPS.DELETE: {
-              const mutation = current.update(
-                'mentions',
-                (mentions: ImmutableCast<ChatMention[]>) =>
-                  mentions.filter((m) => m.id !== event.mention.id),
+              const mutation = current.update('mentions', (mentions) =>
+                mentions.filter((m) => m.id !== event.mention.id),
               );
               queryClient.setQueryData(mentionKey, mutation);
               break;

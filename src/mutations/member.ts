@@ -65,13 +65,13 @@ export default (
       await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
 
       // Snapshot the previous value
-      const previousMember: MemberRecord =
-        queryClient.getQueryData(CURRENT_MEMBER_KEY);
+      const previousMember =
+        queryClient.getQueryData<MemberRecord>(CURRENT_MEMBER_KEY);
 
       // Optimistically update to the new value
       queryClient.setQueryData(
         CURRENT_MEMBER_KEY,
-        previousMember.merge(member),
+        previousMember?.merge(member),
       );
 
       // Return a context object with the snapshotted value
@@ -142,8 +142,8 @@ export default (
       await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
 
       // Snapshot the previous value
-      const previousMember: MemberRecord =
-        queryClient.getQueryData(CURRENT_MEMBER_KEY);
+      const previousMember =
+        queryClient.getQueryData<MemberRecord>(CURRENT_MEMBER_KEY);
 
       // Optimistically update to the new value
       const { itemId, extra } = payload;
@@ -157,7 +157,7 @@ export default (
 
       queryClient.setQueryData(
         CURRENT_MEMBER_KEY,
-        previousMember.merge(member),
+        previousMember?.merge(member),
       );
 
       // Return a context object with the snapshotted value
@@ -197,8 +197,8 @@ export default (
       await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
 
       // Snapshot the previous value
-      const previousMember: MemberRecord =
-        queryClient.getQueryData(CURRENT_MEMBER_KEY);
+      const previousMember =
+        queryClient.getQueryData<MemberRecord>(CURRENT_MEMBER_KEY);
 
       // Optimistically update to the new value
       const { itemId, extra } = payload;
@@ -209,7 +209,7 @@ export default (
 
       queryClient.setQueryData(
         CURRENT_MEMBER_KEY,
-        previousMember.merge(member),
+        previousMember?.merge(member),
       );
 
       // Return a context object with the snapshotted value

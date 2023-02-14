@@ -246,11 +246,11 @@ export default (
 
     onMutate: async (itemId) => {
       const itemKey = buildItemKey(itemId);
-      const itemData: ItemRecord = queryClient.getQueryData(itemKey);
+      const itemData = queryClient.getQueryData<ItemRecord>(itemKey);
       const previousItems = {
         ...(Boolean(itemData) && {
           children: await mutateParentChildren({
-            childPath: itemData.path,
+            childPath: itemData?.path || '',
             value: (children: List<ItemRecord>) =>
               children.filter((child) => child.id !== itemId),
           }),

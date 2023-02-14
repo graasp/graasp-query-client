@@ -188,8 +188,8 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      const newData: MemberRecord =
-        queryClient.getQueryData(CURRENT_MEMBER_KEY);
+      const newData =
+        queryClient.getQueryData<MemberRecord>(CURRENT_MEMBER_KEY);
       expect(newData).toEqualImmutable(response);
     });
 
@@ -216,8 +216,8 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      const oldData: MemberRecord =
-        queryClient.getQueryData(CURRENT_MEMBER_KEY);
+      const oldData =
+        queryClient.getQueryData<MemberRecord>(CURRENT_MEMBER_KEY);
       expect(oldData).toEqualImmutable(MEMBER_RESPONSE);
     });
   });

@@ -1,4 +1,4 @@
-import { List, RecordOf } from 'immutable';
+import { List } from 'immutable';
 import {
   QueryClient,
   UseQueryResult,
@@ -136,7 +136,7 @@ export default (
       options?: {
         enabled?: boolean;
         itemsPerPage?: number;
-        filterFunction?: (item: List<ItemRecord>) => List<ItemRecord>;
+        filterFunction?: (items: List<ItemRecord>) => List<ItemRecord>;
       },
     ) => {
       const enabled = options?.enabled;
@@ -158,7 +158,7 @@ export default (
           ),
         {
           enabled,
-          getNextPageParam: (lastPage: RecordOf<any>) => {
+          getNextPageParam: (lastPage) => {
             const { pageNumber } = lastPage;
             if (pageNumber !== -1) {
               return pageNumber + 1;
