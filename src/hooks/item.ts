@@ -444,7 +444,7 @@ export default (
       }
       return useQuery({
         queryKey: buildItemThumbnailKey({ id, size }),
-        queryFn: async () => {
+        queryFn: async (): Promise<Blob> => {
           if (!id) {
             throw new UndefinedArgument();
           }
