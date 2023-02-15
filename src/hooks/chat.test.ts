@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { ChatMessage, ExportedChatMessage } from '@graasp/sdk';
+import { ChatMessage } from '@graasp/sdk';
 import { ExportedItemChatRecord, ItemChatRecord } from '@graasp/sdk/frontend';
 
 import {
@@ -143,15 +143,6 @@ describe('Chat Hooks', () => {
 
   describe('useItemChat', () => {
     const itemId = ITEMS.first()!.id;
-    const mockExportedChatMessage: ExportedChatMessage = {
-      id: 'some-id',
-      chatId: itemId,
-      body: 'some content',
-      createdAt: 'some date',
-      updatedAt: 'some other date',
-      creator: 'some memberId',
-      creatorName: 'A user name',
-    };
     const route = `/${buildExportItemChatRoute(itemId)}`;
     const key = buildExportItemChatKey(itemId);
 
@@ -160,7 +151,17 @@ describe('Chat Hooks', () => {
     it(`Receive exported chat`, async () => {
       const response: ExportedItemChatRecord = createMockExportedItemChat(
         itemId,
-        [mockExportedChatMessage],
+        [
+          {
+            id: 'some-id',
+            chatId: itemId,
+            body: 'some content',
+            createdAt: 'some date',
+            updatedAt: 'some other date',
+            creator: 'some memberId',
+            creatorName: 'A user name',
+          },
+        ],
       );
       const endpoints = [
         {
