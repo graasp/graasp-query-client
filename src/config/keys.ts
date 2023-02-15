@@ -144,7 +144,7 @@ export const buildActionsKey = (args: {
   },
 ];
 
-export const buildInvitationKey = (id: UUID) => ['invitations', id];
+export const buildInvitationKey = (id?: UUID) => ['invitations', id];
 export const buildItemInvitationsKey = (id?: UUID) => [
   ITEMS_KEY,
   id,
