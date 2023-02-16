@@ -2173,8 +2173,8 @@ __metadata:
     "@babel/preset-typescript": 7.16.7
     "@commitlint/cli": 16.2.4
     "@commitlint/config-conventional": 16.2.4
-    "@graasp/sdk": "github:graasp/graasp-sdk#74-afine-item-type-with-discriminated-union"
-    "@graasp/translations": 1.3.0
+    "@graasp/sdk": 0.4.0
+    "@graasp/translations": 1.4.0
     "@testing-library/jest-dom": 5.16.4
     "@testing-library/react": 12.1.4
     "@testing-library/react-hooks": 7.0.2
@@ -2205,7 +2205,7 @@ __metadata:
     eslint-plugin-react-hooks: 4.6.0
     http-status-codes: 2.2.0
     husky: 8.0.3
-    immutable: 4.2.3
+    immutable: 4.2.4
     jest: 28.1.0
     jest-environment-jsdom: 28.1.0
     jest-immutable-matchers: 3.0.0
@@ -2228,9 +2228,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@github:graasp/graasp-sdk#74-afine-item-type-with-discriminated-union":
-  version: 0.3.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=8d531692f066cbbcdf5bba84097c2e1d05a194bf"
+"@graasp/sdk@npm:0.4.0":
+  version: 0.4.0
+  resolution: "@graasp/sdk@npm:0.4.0"
   dependencies:
     "@fastify/secure-session": 5.3.0
     aws-sdk: 2.1310.0
@@ -2241,16 +2241,16 @@ __metadata:
     qs: 6.11.0
     slonik: 28.1.1
     uuid: 9.0.0
-  checksum: d7b2de6bb8dfb2262c33ca67d8ca0fcc703d7e29b97fc74889e997feff0799d6dc3bc01a46f0e247390c39b2f029d943cfbd87239e247d4756939594f817e7a0
+  checksum: cf57c9e782b00c6406fbd4563e56b797bd78e8928cc4e1624601968541f6f72b7784c9d9e66bbcc46180030a7ff31f8089d8aca4ae393e57d3d5f1e8e6c614d6
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.3.0":
-  version: 1.3.0
-  resolution: "@graasp/translations@npm:1.3.0"
+"@graasp/translations@npm:1.4.0":
+  version: 1.4.0
+  resolution: "@graasp/translations@npm:1.4.0"
   dependencies:
     i18next: 21.8.1
-  checksum: 4117ea7763835caa77014e6ea3b36238fba6e6413aed5b732fc81dfd7cf214a9cb4b6331964d75d2a8918304b14e20715859bee0a672a8e81735b4727b7b7e8b
+  checksum: ca787604906c4531eded20941e968667a13f7c2fb5b4c2c03a149123ce6994ec685d1b5e125e37f420fa5d6b8edf4cbd0bb48452c554cde07d81bc0309b5dc1f
   languageName: node
   linkType: hard
 
@@ -9776,10 +9776,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immutable@npm:4.2.3":
-  version: 4.2.3
-  resolution: "immutable@npm:4.2.3"
-  checksum: 11be9a328d5e3a35de47b7b7835e7d89f790bf19595a8de11e1ae19b2bb3be5def00c69928969f1607aa66fe4a3f48e95460b2b58894a83ce70b65c872466940
+"immutable@npm:4.2.4":
+  version: 4.2.4
+  resolution: "immutable@npm:4.2.4"
+  checksum: 3be84eded37b05e65cad57bfba630bc1bf170c498b7472144bc02d2650cc9baef79daf03574a9c2e41d195ebb55a1c12c9b312f41ee324b653927b24ad8bcaa7
   languageName: node
   linkType: hard
 
