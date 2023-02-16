@@ -5,8 +5,10 @@ import {
   GraaspError,
   Item,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
+  UUID,
   convertJs,
 } from '@graasp/sdk';
+import { ItemRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
@@ -41,7 +43,7 @@ import {
   uploadFileRoutine,
   uploadItemThumbnailRoutine,
 } from '../routines';
-import type { ItemRecord, QueryClientConfig, UUID } from '../types';
+import type { QueryClientConfig } from '../types';
 import { buildPath, getDirectParentId } from '../utils/item';
 
 const {
@@ -78,11 +80,20 @@ interface PathAndValue extends Value {
 
 type IdOrPathWithValue = IdAndValue | PathAndValue;
 
-export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
+export default (
+  queryClient: QueryClient,
+  queryConfig: QueryClientConfig,
+): void => {
   const { notifier } = queryConfig;
 
   // Utils functions to mutate react query data
-  const mutateItem = async ({ id, value }: { id: UUID; value: unknown }) => {
+  const mutateItem = async ({
+    id,
+    value,
+  }: {
+    id: UUID;
+    value: unknown;
+  }): Promise<unknown> => {
     const itemKey = buildItemKey(id);
 
     await queryClient.cancelQueries(itemKey);
@@ -96,7 +107,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     return prevValue;
   };
 
-  const mutateParentChildren = async (args: IdOrPathWithValue) => {
+  const mutateParentChildren = async (
+    args: IdOrPathWithValue,
+  ): Promise<unknown> => {
     const { value } = args;
     const parentId =
       (args as IdAndValue).id ||
@@ -233,11 +246,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
     onMutate: async (itemId) => {
       const itemKey = buildItemKey(itemId);
-      const itemData = queryClient.getQueryData(itemKey) as ItemRecord;
+      const itemData = queryClient.getQueryData<ItemRecord>(itemKey);
       const previousItems = {
         ...(Boolean(itemData) && {
           children: await mutateParentChildren({
-            childPath: itemData.path,
+            childPath: itemData?.path || '',
             value: (children: List<ItemRecord>) =>
               children.filter((child) => child.id !== itemId),
           }),

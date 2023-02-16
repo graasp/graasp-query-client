@@ -1,12 +1,13 @@
 import { List } from 'immutable';
 import { QueryClient } from 'react-query';
 
+import { ItemTagRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
 import { MUTATION_KEYS, buildItemTagsKey } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
-import { ItemTagRecord, QueryClientConfig } from '../types';
+import { QueryClientConfig } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

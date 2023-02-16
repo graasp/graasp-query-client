@@ -1,11 +1,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
 import { StatusCodes } from 'http-status-codes';
-import { List, Record } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { HttpMethod } from '@graasp/sdk';
+import { HttpMethod, convertJs } from '@graasp/sdk';
+import { MemberRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
@@ -28,7 +28,6 @@ import {
   buildAvatarKey,
 } from '../config/keys';
 import { addFavoriteItemRoutine, uploadAvatarRoutine } from '../routines';
-import { MemberRecord } from '../types';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -189,9 +188,8 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      const newData = queryClient.getQueryData(
-        CURRENT_MEMBER_KEY,
-      ) as MemberRecord;
+      const newData =
+        queryClient.getQueryData<MemberRecord>(CURRENT_MEMBER_KEY);
       expect(newData).toEqualImmutable(response);
     });
 
@@ -218,9 +216,8 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      const oldData = queryClient.getQueryData(
-        CURRENT_MEMBER_KEY,
-      ) as MemberRecord;
+      const oldData =
+        queryClient.getQueryData<MemberRecord>(CURRENT_MEMBER_KEY);
       expect(oldData).toEqualImmutable(MEMBER_RESPONSE);
     });
   });
@@ -327,8 +324,10 @@ describe('Member Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.ADD_FAVORITE_ITEM);
 
     it(`Successfully add favorite item`, async () => {
-      const createMemberExtra = Record({ favoriteItems: List(['item-id']) });
-      const response = MEMBER_RESPONSE.set('extra', createMemberExtra() as any);
+      const response = MEMBER_RESPONSE.set(
+        'extra',
+        convertJs({ favoriteItems: ['item-id'] }),
+      );
       // set random data in cache
       queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const endpoints = [
@@ -403,8 +402,10 @@ describe('Member Mutations', () => {
     const mutation = () => useMutation(MUTATION_KEYS.DELETE_FAVORITE_ITEM);
 
     it(`Successfully delete favorite item`, async () => {
-      const createMemberExtra = Record({ favoriteItems: List(['item-id2']) });
-      const response = MEMBER_RESPONSE.set('extra', createMemberExtra() as any);
+      const response = MEMBER_RESPONSE.set(
+        'extra',
+        convertJs({ favoriteItems: ['item-id2'] }),
+      );
       // set random data in cache
       queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const endpoints = [

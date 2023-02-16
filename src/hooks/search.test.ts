@@ -4,11 +4,12 @@ import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
+import { ItemRecord } from '@graasp/sdk/frontend';
+
 import { ITEMS, Ranges, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildGetItemsByKeywordRoute } from '../api/routes';
 import { buildSearchByKeywordKey } from '../config/keys';
-import { ItemRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });

@@ -1,4 +1,5 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
     "module": "esnext",
@@ -25,7 +26,6 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": ["src"],
-  "files": ["src/types.ts"], // allows to have the types.d.ts file under /dist
-  "exclude": ["dist", "example", "src/**/*.test.ts"]
+  "include": ["test"],
+  "exclude": ["dist", "example"]
 }

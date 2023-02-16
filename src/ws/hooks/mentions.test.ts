@@ -1,6 +1,7 @@
 import { List } from 'immutable';
 
 import { MentionStatus } from '@graasp/sdk';
+import { MemberMentionsRecord } from '@graasp/sdk/frontend';
 
 import {
   MEMBER_RESPONSE,
@@ -13,7 +14,6 @@ import {
   setUpWsTest,
 } from '../../../test/wsUtils';
 import { buildItemChatKey, buildMentionKey } from '../../config/keys';
-import { MemberMentionsRecord } from '../../types';
 import { OPS, TOPICS } from '../constants';
 import { configureWsChatMentionsHooks } from './mentions';
 
@@ -86,7 +86,7 @@ describe('Ws Mention Hooks', () => {
       expect(
         queryClient
           .getQueryData<MemberMentionsRecord>(mentionKey)
-          ?.mentions.find(({ id }) => id === newMention.id),
+          ?.mentions.find(({ id }: { id: string }) => id === newMention.id),
       ).toEqualImmutable(newMention);
     });
 
@@ -134,7 +134,7 @@ describe('Ws Mention Hooks', () => {
         queryClient.getQueryData<MemberMentionsRecord>(mentionKey)?.mentions,
       ).toEqualImmutable(
         MENTIONS_QUERY_DATA.mentions.filter(
-          ({ id }) => id !== deletedMention.id,
+          ({ id }: { id: string }) => id !== deletedMention.id,
         ),
       );
     });
@@ -174,7 +174,7 @@ describe('Ws Mention Hooks', () => {
       expect(
         queryClient
           .getQueryData<MemberMentionsRecord>(chatKey)
-          ?.mentions.find(({ id }) => id === newMention.id),
+          ?.mentions.find(({ id }: { id: string }) => id === newMention.id),
       ).toBeFalsy();
     });
   });

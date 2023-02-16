@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import { HttpMethod } from '@graasp/sdk';
+import { InvitationRecord } from '@graasp/sdk/frontend';
 
 import {
   ITEMS,
@@ -29,7 +30,6 @@ import {
   postInvitationsRoutine,
   resendInvitationRoutine,
 } from '../routines';
-import { InvitationRecord } from '../types';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 

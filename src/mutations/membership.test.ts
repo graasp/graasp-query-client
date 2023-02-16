@@ -6,6 +6,7 @@ import nock from 'nock';
 import { act } from 'react-test-renderer';
 
 import { HttpMethod, PermissionLevel } from '@graasp/sdk';
+import { ItemMembershipRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
@@ -38,7 +39,6 @@ import {
   editItemMembershipRoutine,
   shareItemRoutine,
 } from '../routines';
-import { ItemMembershipRecord } from '../types';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, useMutation } = setUpTest({

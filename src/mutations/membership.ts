@@ -3,11 +3,14 @@ import { List } from 'immutable';
 import { QueryClient } from 'react-query';
 
 import {
+  Invitation,
   ItemMembership,
   PermissionLevel,
+  UUID,
   isError,
   partition,
 } from '@graasp/sdk';
+import { ItemMembershipRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
@@ -23,14 +26,12 @@ import {
   postItemMembershipRoutine,
   shareItemRoutine,
 } from '../routines';
-import {
-  Invitation,
-  ItemMembershipRecord,
-  QueryClientConfig,
-  UUID,
-} from '../types';
+import { QueryClientConfig } from '../types';
 
-export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
+export default (
+  queryClient: QueryClient,
+  queryConfig: QueryClientConfig,
+): void => {
   const { notifier } = queryConfig;
 
   queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_MEMBERSHIP, {

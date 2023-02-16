@@ -1,4 +1,7 @@
-import { App, QueryClientConfig, UUID } from '../types';
+import { UUID } from '@graasp/sdk';
+import { App } from '@graasp/sdk/frontend';
+
+import { QueryClientConfig } from '../types';
 import configureAxios, {
   fallbackToPublic,
   verifyAuthentication,

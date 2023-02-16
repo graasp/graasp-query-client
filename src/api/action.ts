@@ -1,4 +1,7 @@
-import { ActionData, QueryClientConfig, UUID } from '../types';
+import { UUID } from '@graasp/sdk';
+import { ActionData } from '@graasp/sdk/frontend';
+
+import { QueryClientConfig } from '../types';
 import configureAxios from './axios';
 import { buildExportActions, buildGetActions } from './routes';
 

@@ -1,6 +1,8 @@
 import { List } from 'immutable';
 import { QueryClient } from 'react-query';
 
+import { InvitationRecord } from '@graasp/sdk/frontend';
+
 import {
   deleteInvitation,
   patchInvitation,
@@ -15,7 +17,7 @@ import {
   postInvitationsRoutine,
   resendInvitationRoutine,
 } from '../routines';
-import { InvitationRecord, QueryClientConfig } from '../types';
+import { QueryClientConfig } from '../types';
 
 const {
   POST_INVITATIONS,

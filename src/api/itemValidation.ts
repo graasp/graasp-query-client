@@ -1,4 +1,6 @@
-import { QueryClientConfig, UUID } from '../types';
+import { UUID } from '@graasp/sdk';
+
+import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
   GET_ITEM_VALIDATION_REVIEWS_ROUTE,

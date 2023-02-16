@@ -1,4 +1,6 @@
-import { ChatMention, MemberMentions, QueryClientConfig, UUID } from '../types';
+import { ChatMention, MemberMentions, UUID } from '@graasp/sdk';
+
+import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
   buildClearMentionsRoute,
@@ -9,7 +11,9 @@ import {
 
 const axios = configureAxios();
 
-export const getMemberMentions = async ({ API_HOST }: QueryClientConfig) =>
+export const getMemberMentions = async ({
+  API_HOST,
+}: QueryClientConfig): Promise<MemberMentions> =>
   verifyAuthentication(
     (): Promise<MemberMentions> =>
       axios
@@ -20,7 +24,7 @@ export const getMemberMentions = async ({ API_HOST }: QueryClientConfig) =>
 export const patchMemberMentionsStatus = async (
   { id: mentionId, status }: { id: UUID; status: string },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<ChatMention> =>
   verifyAuthentication(
     (): Promise<ChatMention> =>
       axios
@@ -33,7 +37,7 @@ export const patchMemberMentionsStatus = async (
 export const deleteMention = async (
   { mentionId }: { mentionId: UUID },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<ChatMention> =>
   verifyAuthentication(
     (): Promise<ChatMention> =>
       axios
@@ -41,7 +45,9 @@ export const deleteMention = async (
         .then(({ data }) => data),
   );
 
-export const clearMentions = async ({ API_HOST }: QueryClientConfig) =>
+export const clearMentions = async ({
+  API_HOST,
+}: QueryClientConfig): Promise<MemberMentions> =>
   verifyAuthentication(
     (): Promise<MemberMentions> =>
       axios

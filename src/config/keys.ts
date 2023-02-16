@@ -1,5 +1,6 @@
+import { UUID } from '@graasp/sdk';
+
 import { SUBSCRIPTION_KEY } from '../api/routes';
-import type { UUID } from '../types';
 import { hashItemsIds } from '../utils/item';
 import { DEFAULT_THUMBNAIL_SIZES } from './constants';
 
@@ -32,6 +33,8 @@ export const buildMembersKey = (ids: UUID[]) => [
 export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, id, 'parents'];
 export const CHATS_KEY = 'chats';
 export const buildItemChatKey = (id: UUID) => [CHATS_KEY, id];
+export const EXPORT_CHATS_KEY = 'exportChats';
+export const buildExportItemChatKey = (id: UUID) => [EXPORT_CHATS_KEY, id];
 export const MENTIONS_KEY = 'mentions';
 export const buildMentionKey = (memberId: UUID) => [MENTIONS_KEY, memberId];
 
@@ -133,13 +136,13 @@ export const buildActionsKey = (args: {
   view: string;
   requestedSampleSize: number;
 }) => [
-    'actions',
-    args.itemId,
-    {
-      view: args.view,
-      size: args.requestedSampleSize,
-    },
-  ];
+  'actions',
+  args.itemId,
+  {
+    view: args.view,
+    size: args.requestedSampleSize,
+  },
+];
 
 export const buildInvitationKey = (id?: UUID) => ['invitations', id];
 export const buildItemInvitationsKey = (id?: UUID) => [

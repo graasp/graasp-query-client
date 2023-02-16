@@ -5,6 +5,13 @@ import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
+  FullValidationRecord,
+  ItemValidationAndReviewRecord,
+  ItemValidationGroupRecord,
+  StatusRecord,
+} from '@graasp/sdk/frontend';
+
+import {
   FULL_VALIDATION_RECORDS,
   ITEM_VALIDATION_GROUPS,
   ITEM_VALIDATION_STATUS,
@@ -26,12 +33,6 @@ import {
   buildItemValidationAndReviewKey,
   buildItemValidationGroupsKey,
 } from '../config/keys';
-import {
-  FullValidationRecordRecord,
-  ItemValidationAndReviewRecord,
-  ItemValidationGroupRecord,
-  StatusRecord,
-} from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -54,9 +55,7 @@ describe('Item Validation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<FullValidationRecordRecord>).toEqualImmutable(
-        response,
-      );
+      expect(data as List<FullValidationRecord>).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);

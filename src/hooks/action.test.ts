@@ -3,6 +3,8 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
+import { ActionDataRecord } from '@graasp/sdk/frontend';
+
 import {
   ACTIONS_DATA,
   ITEMS,
@@ -11,7 +13,6 @@ import {
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildGetActions } from '../api/routes';
 import { buildActionsKey } from '../config/keys';
-import { ActionDataRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 const itemId = ITEMS.first()!.id;

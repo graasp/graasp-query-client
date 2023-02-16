@@ -8,10 +8,10 @@ import nock from 'nock';
 import {
   GraaspError,
   HttpMethod,
-  Item,
   ItemType,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
 } from '@graasp/sdk';
+import { ItemRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
@@ -56,7 +56,6 @@ import {
   uploadFileRoutine,
   uploadItemThumbnailRoutine,
 } from '../routines';
-import { ItemRecord } from '../types';
 import {
   buildPath,
   getDirectParentId,
@@ -880,8 +879,10 @@ describe('Items Mutations', () => {
         const toItemKey = getKeyForParentId(toId);
         queryClient.setQueryData(toItemKey, ITEMS);
 
-        const response: (Item | GraaspError)[] = [...moved];
-        response[0] = UNAUTHORIZED_RESPONSE;
+        const response: List<ItemRecord | GraaspError> = List([
+          UNAUTHORIZED_RESPONSE,
+          ...moved.toArray(),
+        ]);
 
         const endpoints = [
           {
@@ -1309,10 +1310,12 @@ describe('Items Mutations', () => {
         queryClient.setQueryData(itemKey, item);
       });
       const childrenKey = getKeyForParentId(null);
-      queryClient.setQueryData(childrenKey, List(ITEMS));
+      queryClient.setQueryData(childrenKey, ITEMS);
 
-      const response: (Item | GraaspError)[] = [...items];
-      response[0] = UNAUTHORIZED_RESPONSE;
+      const response: List<ItemRecord | GraaspError> = List([
+        UNAUTHORIZED_RESPONSE,
+        ...items.toArray(),
+      ]);
 
       const endpoints = [
         {
@@ -1582,8 +1585,10 @@ describe('Items Mutations', () => {
       const childrenKey = RECYCLED_ITEMS_KEY;
       queryClient.setQueryData(childrenKey, ITEMS);
 
-      const response: (Item | GraaspError)[] = [...items];
-      response[0] = UNAUTHORIZED_RESPONSE;
+      const response: List<ItemRecord | GraaspError> = List([
+        UNAUTHORIZED_RESPONSE,
+        ...items.toArray(),
+      ]);
 
       const endpoints = [
         {
@@ -1935,8 +1940,10 @@ describe('Items Mutations', () => {
       const childrenKey = RECYCLED_ITEMS_KEY;
       queryClient.setQueryData(childrenKey, ITEMS);
 
-      const response: (Item | GraaspError)[] = [...items];
-      response[0] = UNAUTHORIZED_RESPONSE;
+      const response: List<ItemRecord | GraaspError> = List([
+        UNAUTHORIZED_RESPONSE,
+        ...items.toArray(),
+      ]);
 
       const endpoints = [
         {

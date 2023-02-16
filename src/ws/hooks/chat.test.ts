@@ -1,3 +1,5 @@
+import { ItemChatRecord } from '@graasp/sdk/frontend';
+
 import { ITEMS, ITEM_CHAT, MESSAGE_IDS } from '../../../test/constants';
 import {
   getHandlerByChannel,
@@ -5,7 +7,6 @@ import {
   setUpWsTest,
 } from '../../../test/wsUtils';
 import { buildItemChatKey } from '../../config/keys';
-import { ItemChatRecord } from '../../types';
 import { KINDS, OPS, TOPICS } from '../constants';
 import { configureWsChatHooks } from './chat';
 
@@ -162,7 +163,9 @@ describe('Ws Chat Hooks', () => {
       expect(
         queryClient
           .getQueryData<ItemChatRecord>(chatKey)
-          ?.messages.find(({ body }) => body === newMessage.body),
+          ?.messages.find(
+            ({ body }: { body: string }) => body === newMessage.body,
+          ),
       ).toBeFalsy();
     });
 
@@ -184,7 +187,9 @@ describe('Ws Chat Hooks', () => {
       expect(
         queryClient
           .getQueryData<ItemChatRecord>(chatKey)
-          ?.messages.find(({ body }) => body === newMessage.body),
+          ?.messages.find(
+            ({ body }: { body: string }) => body === newMessage.body,
+          ),
       ).toBeFalsy();
     });
   });

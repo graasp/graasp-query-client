@@ -1,7 +1,7 @@
-import { ItemMembership, PermissionLevel } from '@graasp/sdk';
+import { ItemMembership, PermissionLevel, UUID } from '@graasp/sdk';
 import { FAILURE_MESSAGES } from '@graasp/translations';
 
-import { QueryClientConfig, UUID } from '../types';
+import { QueryClientConfig } from '../types';
 import configureAxios, {
   fallbackToPublic,
   verifyAuthentication,

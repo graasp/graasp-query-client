@@ -1,4 +1,4 @@
-import { List, Record, RecordOf, is } from 'immutable';
+import { List, RecordOf, is } from 'immutable';
 import { InfiniteData } from 'react-query';
 
 export const isObject = (value: unknown) =>
@@ -35,9 +35,9 @@ export const isDataEqual = (
     | Blob,
 ): boolean => is(oldData, newData);
 
-export const isPaginatedChildrenDataEqual = (
-  oldData: InfiniteData<RecordOf<any>> | undefined,
-  newData: InfiniteData<RecordOf<any>>,
+export const isPaginatedChildrenDataEqual = <T>(
+  oldData: InfiniteData<T> | undefined,
+  newData: InfiniteData<T>,
 ) => {
   if (oldData?.pages.length === newData?.pages.length && oldData.pages.length) {
     for (const [idx, p] of oldData.pages.entries()) {
@@ -50,26 +50,26 @@ export const isPaginatedChildrenDataEqual = (
   return false;
 };
 
-export const paginate = (
-  list: List<RecordOf<any>>,
+export const paginate = <U, T extends List<U>>(
+  list: T,
   pageSize: number,
   pageNumber: number,
-  filterFunction?: (item: List<RecordOf<any>>) => List<RecordOf<any>>,
-): Promise<RecordOf<any>> =>
+  filterFunction?: (item: T) => T,
+): Promise<{ data: T; pageNumber: number }> =>
   new Promise((resolve, reject) => {
     try {
-      let data = filterFunction ? filterFunction(list) : list;
+      // apply some filtering to the elements provided
+      let data: T = filterFunction ? filterFunction(list) : list;
+      // get data from current page
       data = data.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
       // compute next page number, set at -1 if it's the end of the list
       const nextPageNumber =
         data.isEmpty() || list.size <= pageNumber * pageSize ? -1 : pageNumber;
-      const createRecordPaginatedResponse = Record({
+      resolve({
         data,
         pageNumber: nextPageNumber,
       });
-      const response = createRecordPaginatedResponse();
-      resolve(response);
     } catch (error) {
       reject(error);
     }

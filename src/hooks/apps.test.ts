@@ -4,11 +4,12 @@ import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
+import { AppRecord } from '@graasp/sdk/frontend';
+
 import { APPS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildAppListRoute } from '../api/routes';
 import { APPS_KEY } from '../config/keys';
-import { AppRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

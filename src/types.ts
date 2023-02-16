@@ -1,16 +1,11 @@
 import { List, RecordOf } from 'immutable';
 
+import { PermissionLevel } from '@graasp/sdk';
 import {
-  Etherpad,
-  Item,
-  ItemMembership,
-  ItemSettings,
-  Member,
-  MemberExtra,
-  MentionStatus,
-  PermissionLevel,
-  UnknownExtra,
-} from '@graasp/sdk';
+  ItemMembershipRecord,
+  ItemRecord,
+  MemberRecord,
+} from '@graasp/sdk/frontend';
 
 import { isDataEqual } from './utils/util';
 
@@ -29,9 +24,9 @@ export type QueryClientConfig = {
     // time before cache labeled as inactive to be garbage collected
     cacheTime: number;
     retry?:
-    | number
-    | boolean
-    | ((failureCount: number, error: Error) => boolean);
+      | number
+      | boolean
+      | ((failureCount: number, error: Error) => boolean);
     refetchOnWindowFocus?: boolean;
     keepPreviousData?: boolean;
     refetchOnMount?: boolean;
@@ -40,22 +35,13 @@ export type QueryClientConfig = {
   };
 };
 
-export type UUID = string;
-
-export type ItemSettingsRecord = RecordOf<ItemSettings>;
-
-export type ItemExtraRecord = RecordOf<UnknownExtra>;
-
-export type ItemRecord = RecordOf<Item<ItemExtraRecord, ItemSettingsRecord>>;
-
-export type EtherpadRecord = RecordOf<Etherpad>;
-
-export type MemberExtraRecord = RecordOf<MemberExtra>;
-
-export type MemberRecord = RecordOf<Member<MemberExtraRecord>>;
-
-export type ItemMembershipRecord = RecordOf<ItemMembership>;
-
+/**
+ * @deprecated use graasp sdk instead
+ */
+type UUID = string;
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ItemTag = {
   id: UUID;
   itemPath: string;
@@ -63,24 +49,41 @@ export type ItemTag = {
   createdAt: string;
   creator: string;
 };
-
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ItemTagRecord = RecordOf<ItemTag>;
 
+/**
+ * @deprecated use @graasp/sdk/frontend instead
+ */
 export type CategoryType = {
   id: UUID;
   name: string;
 };
 
+/**
+ * @deprecated use @graasp/sdk/frontend instead
+ */
 export type CategoryTypeRecord = RecordOf<CategoryType>;
 
+/**
+ * @deprecated use @graasp/sdk/frontend instead
+ */
 export type Category = {
   id: UUID;
   name: string;
   type: UUID;
 };
 
+/**
+ * @deprecated use @graasp/sdk/frontend instead
+ */
 export type CategoryRecord = RecordOf<Category>;
 
+/**
+ * @deprecated use @graasp
+ */
 export type ItemCategory = {
   id: UUID;
   itemId: UUID;
@@ -89,76 +92,67 @@ export type ItemCategory = {
   creator: string;
 };
 
+/**
+ * @deprecated use @graasp/sdk/frontend instead
+ */
 export type ItemCategoryRecord = RecordOf<ItemCategory>;
 
+/**
+ * @deprecated use @graasp/sdk/frontend instead
+ */
 export enum ITEM_LOGIN_SCHEMAS {
   USERNAME = 'username',
   USERNAME_AND_PASSWORD = 'username+password',
 }
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ItemLogin = {
   loginSchema: ITEM_LOGIN_SCHEMAS;
 };
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ItemLoginRecord = RecordOf<ItemLogin>;
 
-export type ChatMention = {
-  id: string;
-  itemPath: string;
-  message: string;
-  messageId: string;
-  memberId: string;
-  creator: string;
-  createdAt: string;
-  updatedAt: string;
-  status: MentionStatus;
-};
-
-export type ChatMentionRecord = RecordOf<ChatMention>;
-
-export type PartialChatMention = {
-  id: string;
-  status: MentionStatus;
-};
-
-export type MemberMentions = {
-  memberId: string;
-  mentions: List<ChatMentionRecord>;
-};
-
-export type MemberMentionsRecord = RecordOf<MemberMentions>;
-
-export type MessageBodyType = { message: string; mentions?: string[] };
-
-export type PartialNewChatMessage = {
-  chatId: string;
-  body: MessageBodyType;
-};
-
-export type PartialChatMessage = {
-  chatId: string;
-  messageId: string;
-  body?: MessageBodyType;
-};
-
-export type ChatMessage = {
+/**
+ * @deprecated use graasp sdk instead
+ */
+// type of the exported chat message
+// contains the additional "creatorName" key with the plain text name of the user
+export type ExportedChatMessage = {
   id: string;
   chatId: string;
   creator: string;
+  creatorName: string;
   createdAt: string;
   updatedAt: string;
   body: string;
 };
 
-export type ChatMessageRecord = RecordOf<ChatMessage>;
+/**
+ * @deprecated use graasp sdk instead
+ */
+export type ExportedChatMessageRecord = RecordOf<ExportedChatMessage>;
 
-export type ItemChat = {
+/**
+ * @deprecated use graasp sdk instead
+ */
+export type ExportedItemChat = {
   id: string;
-  messages: List<ChatMessageRecord>;
+  messages: List<ExportedChatMessageRecord>;
 };
 
-export type ItemChatRecord = RecordOf<ItemChat>;
+/**
+ * @deprecated use graasp sdk instead
+ */
+export type ExportedItemChatRecord = RecordOf<ExportedItemChat>;
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 // a combined record from item-validation, item-validation-review, item-validation-process
 export type FullValidationRecord = {
   id: string;
@@ -170,8 +164,14 @@ export type FullValidationRecord = {
   createdAt: string;
 };
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type FullValidationRecordRecord = RecordOf<FullValidationRecord>;
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ItemValidationAndReview = {
   itemValidationId: string;
   reviewStatusId: string;
@@ -179,8 +179,14 @@ export type ItemValidationAndReview = {
   createdAt: string;
 };
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ItemValidationAndReviewRecord = RecordOf<ItemValidationAndReview>;
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ItemValidationGroup = {
   id: string;
   itemId: string;
@@ -192,31 +198,55 @@ export type ItemValidationGroup = {
   createdAt: string;
 };
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ItemValidationGroupRecord = RecordOf<ItemValidationGroup>;
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type Status = {
   id: string;
   name: string;
 };
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type StatusRecord = RecordOf<Status>;
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export interface Action {
   id: string;
   itemId: UUID;
   memberId: UUID;
 }
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ActionRecord = RecordOf<Action>;
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ActionMetadata = {
   numActionsRetrieved: number;
   requestedSampleSize: number;
 };
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ActionMetadataRecord = RecordOf<{
   numActionsRetrieved: number;
   requestedSampleSize: number;
 }>;
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export interface ActionData {
   actions: List<ActionRecord>;
   descendants: List<ItemRecord>;
@@ -226,8 +256,13 @@ export interface ActionData {
   metadata: ActionMetadataRecord;
 }
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ActionDataRecord = RecordOf<ActionData>;
-
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type Invitation = {
   id: UUID;
   email: string;
@@ -236,20 +271,36 @@ export type Invitation = {
   creator: UUID;
   itemPath: string;
 };
-
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type InvitationRecord = RecordOf<Invitation>;
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type Password = string;
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type NewInvitation = Pick<Invitation, 'email' & 'permission'> &
   Partial<Invitation>;
 
+/**
+ * @deprecated use @graasp/sdk/frontend instead
+ */
 export type Flag = {
   id: UUID;
   name: string;
 };
-
+/**
+ * @deprecated use @graasp/sdk/frontend instead
+ */
 export type FlagRecord = RecordOf<Flag>;
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ItemLike = {
   id: UUID;
   itemId: UUID;
@@ -257,8 +308,14 @@ export type ItemLike = {
   createdAt: string;
 };
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type ItemLikeRecord = RecordOf<ItemLike>;
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type App = {
   name: string;
   url: string;
@@ -266,25 +323,20 @@ export type App = {
   extra: any;
 };
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type AppRecord = RecordOf<App>;
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type Tag = {
   id: UUID;
   name: string;
 };
 
+/**
+ * @deprecated use graasp sdk instead
+ */
 export type TagRecord = RecordOf<Tag>;
-
-export type MessageItemChat = {
-  id: UUID;
-  creator: UUID;
-  content: string;
-};
-
-export type MessageItemChatRecord = RecordOf<MessageItemChat>;
-
-export type MessageItemChatList = {
-  messages: List<MessageItemChatRecord>;
-};
-
-export type MessageItemChatListRecord = RecordOf<MessageItemChatList>;

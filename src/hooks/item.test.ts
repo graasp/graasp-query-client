@@ -4,7 +4,13 @@ import { List, Map } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { Item, ItemType, MAX_TARGETS_FOR_READ_REQUEST } from '@graasp/sdk';
+import {
+  FolderItemType,
+  ItemType,
+  MAX_TARGETS_FOR_READ_REQUEST,
+  convertJs,
+} from '@graasp/sdk';
+import { ItemLoginRecord, ItemRecord } from '@graasp/sdk/frontend';
 
 import {
   FILE_RESPONSE,
@@ -48,7 +54,6 @@ import {
   buildItemsKey,
   buildPublicItemsWithTagKey,
 } from '../config/keys';
-import type { ItemLoginRecord, ItemRecord } from '../types';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -264,13 +269,15 @@ describe('Items Hooks', () => {
   });
 
   describe('useParents', () => {
-    const childItem: Item = {
+    const childItem: FolderItemType = {
       id: 'child-item-id',
       path: [...ITEMS.map(({ id }) => id), 'child_item_id'].join('.'),
       name: 'child-item-id',
       type: ItemType.FOLDER,
       description: '',
-      extra: {},
+      extra: {
+        folder: { childrenOrder: [] },
+      },
       settings: {},
       updatedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
@@ -931,10 +938,10 @@ describe('Items Hooks', () => {
       });
 
       it(`Does not fetch if item has no thumbnail`, async () => {
-        const itemWithoutThumbnail = {
-          ...item,
+        const itemWithoutThumbnail = convertJs({
+          ...item.toJS(),
           settings: { hasThumbnail: false },
-        };
+        });
         queryClient.setQueryData(
           buildItemKey(itemWithoutThumbnail.id),
           Map(itemWithoutThumbnail),
