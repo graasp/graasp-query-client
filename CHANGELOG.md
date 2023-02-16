@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.2.0](https://github.com/graasp/graasp-query-client/compare/v0.1.5...v0.2.0) (2023-02-16)
+
+
+### Features
+
+* add `useExportItemChat` hook ([c9be56d](https://github.com/graasp/graasp-query-client/commit/c9be56d1cff0cfc96cb7bd9adeefc17033396a5c))
+* move types to `@graasp/sdk/frontend` ([#203](https://github.com/graasp/graasp-query-client/issues/203)) ([c9be56d](https://github.com/graasp/graasp-query-client/commit/c9be56d1cff0cfc96cb7bd9adeefc17033396a5c))
+
+
+### Bug Fixes
+
+* deprecate exported types, use types from sdk instead ([c9be56d](https://github.com/graasp/graasp-query-client/commit/c9be56d1cff0cfc96cb7bd9adeefc17033396a5c))
+* **types:** `useEtherpad` type ([c9be56d](https://github.com/graasp/graasp-query-client/commit/c9be56d1cff0cfc96cb7bd9adeefc17033396a5c))
+* **types:** `useItemThumbnail` hook return type ([c9be56d](https://github.com/graasp/graasp-query-client/commit/c9be56d1cff0cfc96cb7bd9adeefc17033396a5c))
+* **types:** improve `useItem` query return type ([c9be56d](https://github.com/graasp/graasp-query-client/commit/c9be56d1cff0cfc96cb7bd9adeefc17033396a5c))
+* **types:** in infinite query ([c9be56d](https://github.com/graasp/graasp-query-client/commit/c9be56d1cff0cfc96cb7bd9adeefc17033396a5c))
+
 ## [0.1.5](https://github.com/graasp/graasp-query-client/compare/v0.1.4...v0.1.5) (2023-02-09)
 
 
