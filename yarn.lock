@@ -2173,7 +2173,7 @@ __metadata:
     "@babel/preset-typescript": 7.16.7
     "@commitlint/cli": 16.2.4
     "@commitlint/config-conventional": 16.2.4
-    "@graasp/sdk": "github:graasp/graasp-sdk#78-fix-actiondata"
+    "@graasp/sdk": 0.4.1
     "@graasp/translations": 1.4.0
     "@testing-library/jest-dom": 5.16.4
     "@testing-library/react": 12.1.4
@@ -2228,9 +2228,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@github:graasp/graasp-sdk#78-fix-actiondata":
-  version: 0.4.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=ff9b3d7f34a86df43e53a4730646bd3821adc54d"
+"@graasp/sdk@npm:0.4.1":
+  version: 0.4.1
+  resolution: "@graasp/sdk@npm:0.4.1"
   dependencies:
     "@fastify/secure-session": 5.3.0
     aws-sdk: 2.1310.0
@@ -2241,7 +2241,7 @@ __metadata:
     qs: 6.11.0
     slonik: 28.1.1
     uuid: 9.0.0
-  checksum: baf8a60267f635800973607c383d6e503ed72bf5f91f90f1f4ab6a908fbe7affa31bc950202aba12567c9b93172d9040198803ffe28ac184192c0dbf192cd90f
+  checksum: dc65bdad6db5d8647c5753fa03c7d88cd894b3e3dc9da55c19e92da4bbc77cd85b542beb93ec5db46b75a8a7ac65ba8901258a667a3bedccb8fdfa6b4f13df14
   languageName: node
   linkType: hard
 
