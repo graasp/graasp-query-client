@@ -35,7 +35,6 @@ import {
   ActionDataRecord,
   ActionMetadata,
   ActionMetadataRecord,
-  ActionRecord,
   App,
   AppRecord,
   CategoryRecord,
@@ -45,8 +44,8 @@ import {
   ExportedChatMessageRecord,
   ExportedItemChatRecord,
   FlagRecord,
+  FullValidation,
   FullValidationRecord,
-  FullValidationRecordRecord,
   InvitationRecord,
   ItemCategoryRecord,
   ItemChatRecord,
@@ -695,7 +694,7 @@ export const ITEM_VALIDATION_STATUS: ItemValidationAndReviewRecord =
     reviewReason: '',
   });
 
-const createMockFullValidation: Record.Factory<FullValidationRecord> = Record({
+const createMockFullValidation: Record.Factory<FullValidation> = Record({
   id: 'id-1',
   itemId: 'item-id-1',
   reviewStatusId: 'status-id-1',
@@ -705,7 +704,7 @@ const createMockFullValidation: Record.Factory<FullValidationRecord> = Record({
   createdAt: new Date().toISOString(),
 });
 
-const FULL_VALIDATION_RECORDS_1: FullValidationRecordRecord =
+const FULL_VALIDATION_RECORDS_1: FullValidationRecord =
   createMockFullValidation({
     id: 'id-1',
     itemId: 'item-id-1',
@@ -715,7 +714,7 @@ const FULL_VALIDATION_RECORDS_1: FullValidationRecordRecord =
     process: 'process-1',
   });
 
-const FULL_VALIDATION_RECORDS_2: FullValidationRecordRecord =
+const FULL_VALIDATION_RECORDS_2: FullValidationRecord =
   createMockFullValidation({
     id: 'id-2',
     itemId: 'item-id-1',
@@ -725,7 +724,7 @@ const FULL_VALIDATION_RECORDS_2: FullValidationRecordRecord =
     process: 'process-2',
   });
 
-export const FULL_VALIDATION_RECORDS: List<FullValidationRecordRecord> = List([
+export const FULL_VALIDATION_RECORDS: List<FullValidationRecord> = List([
   FULL_VALIDATION_RECORDS_1,
   FULL_VALIDATION_RECORDS_2,
 ]);
@@ -767,41 +766,47 @@ export const ITEM_VALIDATION_GROUPS: List<ItemValidationGroupRecord> = List([
   ITEM_VALIDATION_GROUP_2,
 ]);
 
-const createMockAction: Record.Factory<Action> = Record({
+const buildAction = (action: Partial<Action>): Action => ({
+  id: 'action-id',
+  itemId: 'item-id',
+  memberId: 'member-id',
+  ...action,
+});
+
+const ACTION_1: Action = buildAction({
   id: 'action-id',
   itemId: 'item-id',
   memberId: 'member-id',
 });
 
-const ACTION_1: ActionRecord = createMockAction({
-  id: 'action-id',
-  itemId: 'item-id',
-  memberId: 'member-id',
-});
+export const ACTIONS_LIST: Action[] = [ACTION_1];
 
-export const ACTIONS_LIST: List<ActionRecord> = List([ACTION_1]);
+const createMockActionMetadata = (actionList: Action[]): ActionMetadataRecord =>
+  convertJs({
+    numActionsRetrieved: actionList.length,
+    requestedSampleSize: actionList.length,
+  });
 
-const createMockActionMetadata: Record.Factory<ActionMetadata> = Record({
-  numActionsRetrieved: ACTIONS_LIST.size,
-  requestedSampleSize: ACTIONS_LIST.size,
-});
+const ACTION_METADATA: ActionMetadataRecord =
+  createMockActionMetadata(ACTIONS_LIST);
 
-const ACTION_METADATA: ActionMetadataRecord = createMockActionMetadata({
-  numActionsRetrieved: ACTIONS_LIST.size,
-  requestedSampleSize: ACTIONS_LIST.size,
-});
-
-const createMockActionData: Record.Factory<ActionData> = Record({
-  actions: ACTIONS_LIST,
-  members: List([MEMBER_RESPONSE]),
-  descendants: List(),
-  item: ITEM_1,
-  itemMemberships: List([MEMBERSHIP_1]),
-  metadata: ACTION_METADATA,
-});
+const createMockActionData = (
+  actionData: Partial<ActionData>,
+): ActionDataRecord =>
+  convertJs({
+    actions: [],
+    members: [],
+    descendants: [],
+    itemMemberships: [],
+    ...actionData,
+  });
 
 export const ACTIONS_DATA: ActionDataRecord = createMockActionData({
   actions: ACTIONS_LIST,
+  members: [MEMBER_RESPONSE.toJS() as Member],
+  item: ITEM_1.toJS() as FolderItemType,
+  itemMemberships: [MEMBERSHIP_1.toJS()] as ItemMembership[],
+  metadata: ACTION_METADATA.toJS() as ActionMetadata,
 });
 
 export const buildInvitation = ({

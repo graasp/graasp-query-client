@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
-  FullValidationRecordRecord,
+  FullValidationRecord,
   ItemValidationAndReviewRecord,
   ItemValidationGroupRecord,
   StatusRecord,
@@ -55,9 +55,7 @@ describe('Item Validation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<FullValidationRecordRecord>).toEqualImmutable(
-        response,
-      );
+      expect(data as List<FullValidationRecord>).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
