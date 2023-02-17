@@ -15,7 +15,7 @@ export default (
   queryConfig: QueryClientConfig,
   useCurrentMember: () => UseQueryResult,
   websocketClient?: WebsocketClient,
-): { useMentions: (options?: { getUpdates?: boolean }) => UseQueryResult } => {
+) => {
   const { enableWebsocket, defaultQueryOptions } = queryConfig;
 
   const wsHooks =
