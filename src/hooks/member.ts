@@ -1,5 +1,5 @@
 import { List } from 'immutable';
-import { QueryClient, UseQueryResult, useQuery } from 'react-query';
+import { QueryClient, useQuery } from 'react-query';
 
 import { MAX_TARGETS_FOR_READ_REQUEST, UUID, convertJs } from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
@@ -20,21 +20,7 @@ import {
 import { getMembersRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
-export default (
-  queryClient: QueryClient,
-  queryConfig: QueryClientConfig,
-): {
-  useCurrentMember: () => UseQueryResult<MemberRecord>;
-  useMember: (id?: UUID) => UseQueryResult<MemberRecord>;
-  useMembers: (ids: UUID[]) => UseQueryResult<List<MemberRecord>>;
-  useAvatar: ({
-    id,
-    size,
-  }: {
-    id?: UUID;
-    size?: string;
-  }) => UseQueryResult<Blob, Error>;
-} => {
+export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions, notifier } = queryConfig;
 
   return {
@@ -46,7 +32,7 @@ export default (
         ...defaultQueryOptions,
       }),
 
-    useMember: (id?: UUID): UseQueryResult<MemberRecord> =>
+    useMember: (id?: UUID) =>
       useQuery({
         queryKey: buildMemberKey(id),
         queryFn: (): Promise<MemberRecord> => {
@@ -61,7 +47,7 @@ export default (
         ...defaultQueryOptions,
       }),
 
-    useMembers: (ids: UUID[]): UseQueryResult<List<MemberRecord>> =>
+    useMembers: (ids: UUID[]) =>
       useQuery({
         queryKey: buildMembersKey(ids),
         queryFn: (): Promise<List<MemberRecord>> =>
