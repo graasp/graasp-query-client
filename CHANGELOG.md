@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/graasp/graasp-query-client/compare/v0.2.0...v0.2.1) (2023-02-18)
+
+
+### Bug Fixes
+
+* remove wrong hook return types ([#240](https://github.com/graasp/graasp-query-client/issues/240)) ([924fb19](https://github.com/graasp/graasp-query-client/commit/924fb19c3472b6cc5e408cd0c23c08ad12ca9f38))
+
 ## [0.2.0](https://github.com/graasp/graasp-query-client/compare/v0.1.5...v0.2.0) (2023-02-16)
 
 
