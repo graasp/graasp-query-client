@@ -1,5 +1,6 @@
-import { QueryClient } from 'react-query';
+import { QueryClient, useMutation } from 'react-query';
 
+import { ItemLoginSchema, UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
@@ -22,6 +23,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.resetQueries();
     },
   });
+  const usePostItemLogin = () =>
+    useMutation<
+      void,
+      unknown,
+      { itemId: UUID; username: string; memberId: UUID; password: string }
+    >(POST_ITEM_LOGIN);
 
   queryClient.setMutationDefaults(PUT_ITEM_LOGIN, {
     mutationFn: (payload) => Api.putItemLoginSchema(payload, queryConfig),
@@ -40,4 +47,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(buildItemLoginKey(itemId));
     },
   });
+  const usePutItemLogin = () =>
+    useMutation<void, unknown, { itemId: UUID; loginSchema: ItemLoginSchema }>(
+      PUT_ITEM_LOGIN,
+    );
+
+  return {
+    usePostItemLogin,
+    usePutItemLogin,
+  };
 };

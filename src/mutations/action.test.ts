@@ -22,7 +22,7 @@ describe('Action Mutations', () => {
   const itemId = ITEMS.first()!.id;
 
   const mockedNotifier = jest.fn();
-  const { wrapper, queryClient, useMutation } = setUpTest({
+  const { wrapper, queryClient, mutations } = setUpTest({
     notifier: mockedNotifier,
   });
 
@@ -33,7 +33,7 @@ describe('Action Mutations', () => {
 
   describe(MUTATION_KEYS.POST_ITEM_CHAT_MESSAGE, () => {
     const route = `/${buildExportActions(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.EXPORT_ACTIONS);
+    const mutation = mutations.useExportActions;
 
     it(`Export Actions`, async () => {
       const endpoints = [

@@ -1,6 +1,13 @@
-import { QueryClient } from 'react-query';
+import { QueryClient, useMutation } from 'react-query';
 
-import { UUID, convertJs, removeSession, setCurrentSession } from '@graasp/sdk';
+import {
+  Member,
+  MemberExtra,
+  UUID,
+  convertJs,
+  removeSession,
+  setCurrentSession,
+} from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -21,13 +28,18 @@ import {
 } from '../routines';
 import { QueryClientConfig } from '../types';
 
-export default (
-  queryClient: QueryClient,
-  queryConfig: QueryClientConfig,
-): void => {
+const {
+  DELETE_MEMBER,
+  EDIT_MEMBER,
+  UPLOAD_AVATAR,
+  ADD_FAVORITE_ITEM,
+  DELETE_FAVORITE_ITEM,
+} = MUTATION_KEYS;
+
+export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_MEMBER, {
+  queryClient.setMutationDefaults(DELETE_MEMBER, {
     mutationFn: (payload) =>
       Api.deleteMember(payload, queryConfig).then(() =>
         Api.signOut(queryConfig),
@@ -55,9 +67,11 @@ export default (
       notifier?.({ type: deleteMemberRoutine.FAILURE, payload: { error } });
     },
   });
+  const useDeleteMember = () =>
+    useMutation<void, unknown, { id: UUID }>(DELETE_MEMBER);
 
   // suppose you can only edit yourself
-  queryClient.setMutationDefaults(MUTATION_KEYS.EDIT_MEMBER, {
+  queryClient.setMutationDefaults(EDIT_MEMBER, {
     mutationFn: (payload) =>
       Api.editMember(payload, queryConfig).then((member) => convertJs(member)),
     onMutate: async ({ member }) => {
@@ -94,13 +108,15 @@ export default (
       queryClient.invalidateQueries(CURRENT_MEMBER_KEY);
     },
   });
+  const useEditMember = () =>
+    useMutation<void, unknown, { member: Partial<Member> }>(EDIT_MEMBER);
 
   // this mutation is used for its callback and invalidate the keys
   /**
    * @param {UUID} id parent item id wher the file is uploaded in
    * @param {error} [error] error occured during the file uploading
    */
-  queryClient.setMutationDefaults(MUTATION_KEYS.UPLOAD_AVATAR, {
+  queryClient.setMutationDefaults(UPLOAD_AVATAR, {
     mutationFn: async ({ error, data } = {}) => {
       throwIfArrayContainsErrorOrReturn(data);
       if (error) throw new Error(JSON.stringify(error));
@@ -121,11 +137,12 @@ export default (
       });
     },
   });
+  const useUploadAvatar = () =>
+    useMutation<void, unknown, { error: any; data: any }>(UPLOAD_AVATAR);
 
   // mutation to update favorite items of given member
-  queryClient.setMutationDefaults(MUTATION_KEYS.ADD_FAVORITE_ITEM, {
-    mutationFn: (payload) => {
-      const { memberId, itemId, extra: prevExtra } = payload;
+  queryClient.setMutationDefaults(ADD_FAVORITE_ITEM, {
+    mutationFn: ({ memberId, itemId, extra: prevExtra }) => {
       const newFavoriteItems = prevExtra.favoriteItems
         ? prevExtra.favoriteItems.concat([itemId])
         : [itemId];
@@ -177,8 +194,14 @@ export default (
       queryClient.invalidateQueries(CURRENT_MEMBER_KEY);
     },
   });
+  const useAddFavoriteItem = () =>
+    useMutation<
+      void,
+      unknown,
+      { memberId: UUID; itemId: UUID; extra: MemberExtra }
+    >(ADD_FAVORITE_ITEM);
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_FAVORITE_ITEM, {
+  queryClient.setMutationDefaults(DELETE_FAVORITE_ITEM, {
     mutationFn: (payload) => {
       const { memberId, itemId, extra: prevExtra } = payload;
       const newFavoriteItems = prevExtra.favoriteItems?.filter(
@@ -232,4 +255,18 @@ export default (
       queryClient.invalidateQueries(CURRENT_MEMBER_KEY);
     },
   });
+  const useDeleteFavoriteItem = () =>
+    useMutation<
+      void,
+      unknown,
+      { memberId: UUID; itemId: UUID; extra: MemberExtra }
+    >(DELETE_FAVORITE_ITEM);
+
+  return {
+    useDeleteMember,
+    useDeleteFavoriteItem,
+    useAddFavoriteItem,
+    useUploadAvatar,
+    useEditMember,
+  };
 };

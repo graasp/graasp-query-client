@@ -63,7 +63,7 @@ import {
 } from '../utils/item';
 
 const mockedNotifier = jest.fn();
-const { wrapper, queryClient, useMutation } = setUpTest({
+const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 
@@ -76,6 +76,7 @@ describe('Items Mutations', () => {
   });
 
   describe(MUTATION_KEYS.POST_ITEM, () => {
+    const mutation = mutations.usePostItem;
     const newItem = {
       name: 'new item',
       type: ItemType.FOLDER,
@@ -83,7 +84,6 @@ describe('Items Mutations', () => {
 
     it('Post item in root', async () => {
       const route = `/${buildPostItemRoute()}`;
-      const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM);
       queryClient.setQueryData(OWN_ITEMS_KEY, List([ITEMS[1]]));
 
       const response = { ...newItem, id: 'someid', path: 'someid' };
@@ -134,8 +134,6 @@ describe('Items Mutations', () => {
         },
       ];
 
-      const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM);
-
       const mockedMutation = await mockMutation({
         endpoints,
         mutation,
@@ -155,7 +153,6 @@ describe('Items Mutations', () => {
 
     it('Unauthorized', async () => {
       const route = `/${buildPostItemRoute()}`;
-      const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM);
       queryClient.setQueryData(OWN_ITEMS_KEY, List([ITEMS.get(1)!]));
 
       const endpoints = [
@@ -186,6 +183,7 @@ describe('Items Mutations', () => {
 
   describe(MUTATION_KEYS.EDIT_ITEM, () => {
     const item = ITEMS.first()!;
+    const mutation = mutations.useEditItem;
     const itemKey = buildItemKey(item.id);
     const payload = { id: item.id, description: 'new description' };
 
@@ -195,7 +193,6 @@ describe('Items Mutations', () => {
       queryClient.setQueryData(OWN_ITEMS_KEY, List([ITEMS.get(1)!]));
 
       const route = `/${buildEditItemRoute(item.id)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.EDIT_ITEM);
       const response = item;
       const endpoints = [
         {
@@ -236,7 +233,6 @@ describe('Items Mutations', () => {
       queryClient.setQueryData(parentKey, List([ITEMS.get(1)!]));
 
       const route = `/${buildEditItemRoute(editedItem.id)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.EDIT_ITEM);
       const response = item;
       const endpoints = [
         {
@@ -265,7 +261,6 @@ describe('Items Mutations', () => {
 
     it('Unauthorized', async () => {
       const route = `/${buildEditItemRoute(item.id)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.EDIT_ITEM);
       queryClient.setQueryData(itemKey, item);
 
       const endpoints = [
@@ -302,7 +297,7 @@ describe('Items Mutations', () => {
     const copiedId = copied.id;
 
     const route = `/${buildCopyItemRoute(copiedId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.COPY_ITEM);
+    const mutation = mutations.useCopyItem;
 
     const key = getKeyForParentId(to);
 
@@ -396,7 +391,7 @@ describe('Items Mutations', () => {
     const copiedId = copied.id;
 
     const route = `/${buildCopyPublicItemRoute(copiedId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.COPY_PUBLIC_ITEM);
+    const mutation = mutations.useCopyPublicItem;
 
     const key = getKeyForParentId(to);
 
@@ -487,7 +482,7 @@ describe('Items Mutations', () => {
   describe(MUTATION_KEYS.COPY_ITEMS, () => {
     const to = ITEMS.first()!.id;
 
-    const mutation = () => useMutation(MUTATION_KEYS.COPY_ITEMS);
+    const mutation = mutations.useCopyItems;
 
     const key = getKeyForParentId(to);
 
@@ -593,7 +588,7 @@ describe('Items Mutations', () => {
     const moved = ITEMS.get(1)!.id;
     const route = `/${buildMoveItemRoute(moved)}`;
 
-    const mutation = () => useMutation(MUTATION_KEYS.MOVE_ITEM);
+    const mutation = mutations.useMoveItem;
 
     it('Move a single root item to first level item', async () => {
       // set data in cache
@@ -700,7 +695,7 @@ describe('Items Mutations', () => {
     const to = ITEMS.first()!;
     const toId = to.id;
 
-    const mutation = () => useMutation(MUTATION_KEYS.MOVE_ITEMS);
+    const mutation = mutations.useMoveItems;
 
     it('Move 2 items from root to first level item', async () => {
       const nb = 2;
@@ -928,7 +923,7 @@ describe('Items Mutations', () => {
   });
 
   describe(MUTATION_KEYS.RECYCLE_ITEM, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.RECYCLE_ITEM);
+    const mutation = mutations.useRecycleItem;
 
     it('Recycle a root item', async () => {
       const item = ITEMS.first()!;
@@ -1035,7 +1030,7 @@ describe('Items Mutations', () => {
   });
 
   describe(MUTATION_KEYS.DELETE_ITEM, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM);
+    const mutation = mutations.useDeleteItem;
 
     it('Delete a root item', async () => {
       const item = ITEMS.first()!;
@@ -1190,7 +1185,7 @@ describe('Items Mutations', () => {
   });
 
   describe(MUTATION_KEYS.RECYCLE_ITEMS, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.RECYCLE_ITEMS);
+    const mutation = mutations.useRecycleItems;
 
     it('Recycle root items', async () => {
       const items = ITEMS.slice(0, 2);
@@ -1412,7 +1407,7 @@ describe('Items Mutations', () => {
   });
 
   describe(MUTATION_KEYS.DELETE_ITEMS, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEMS);
+    const mutation = mutations.useDeleteItems;
 
     it('Delete root items', async () => {
       const items = ITEMS.slice(0, 2);
@@ -1736,7 +1731,7 @@ describe('Items Mutations', () => {
   });
 
   describe(MUTATION_KEYS.UPLOAD_FILES, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.UPLOAD_FILES);
+    const mutation = mutations.useUploadFiles;
     const { id } = ITEMS.first()!;
 
     it('Upload one item', async () => {
@@ -1805,7 +1800,7 @@ describe('Items Mutations', () => {
   });
 
   describe(MUTATION_KEYS.RESTORE_ITEMS, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.RESTORE_ITEMS);
+    const mutation = mutations.useRestoreItems;
 
     it('Restore items', async () => {
       const items = ITEMS.slice(0, 2);
@@ -2041,7 +2036,7 @@ describe('Items Mutations', () => {
   });
 
   describe(MUTATION_KEYS.UPLOAD_ITEM_THUMBNAIL, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.UPLOAD_ITEM_THUMBNAIL);
+    const mutation = mutations.useUploadItemThumbnail;
     const item = ITEMS.first()!;
     const { id } = item;
 

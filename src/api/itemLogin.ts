@@ -1,4 +1,4 @@
-import { UUID } from '@graasp/sdk';
+import { ItemLoginSchema, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
@@ -33,7 +33,7 @@ export const getItemLogin = async (id: UUID, { API_HOST }: QueryClientConfig) =>
     .then(({ data }) => data);
 
 export const putItemLoginSchema = async (
-  { itemId, loginSchema }: { itemId: UUID; loginSchema: string },
+  { itemId, loginSchema }: { itemId: UUID; loginSchema: ItemLoginSchema },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>

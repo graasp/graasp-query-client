@@ -1,9 +1,10 @@
 import { List, Record } from 'immutable';
-import { QueryClient } from 'react-query';
+import { QueryClient, useMutation } from 'react-query';
 
 import {
   GraaspError,
   Item,
+  ItemSettings,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
   UUID,
   convertJs,
@@ -80,10 +81,7 @@ interface PathAndValue extends Value {
 
 type IdOrPathWithValue = IdAndValue | PathAndValue;
 
-export default (
-  queryClient: QueryClient,
-  queryConfig: QueryClientConfig,
-): void => {
+export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   // Utils functions to mutate react query data
@@ -153,6 +151,7 @@ export default (
       queryClient.invalidateQueries(key);
     },
   });
+  const usePostItem = () => useMutation<void, unknown, Item>(POST_ITEM);
 
   queryClient.setMutationDefaults(POST_ETHERPAD, {
     mutationFn: async (params) => Api.postEtherpad(params, queryConfig),
@@ -171,6 +170,14 @@ export default (
       queryClient.invalidateQueries(key);
     },
   });
+  const usePostEtherpad = () =>
+    useMutation<
+      void,
+      unknown,
+      Pick<Item<ItemSettings>, 'name'> & {
+        parentId: string;
+      }
+    >(POST_ETHERPAD);
 
   queryClient.setMutationDefaults(EDIT_ITEM, {
     mutationFn: (item) => Api.editItem(item.id, item, queryConfig),
@@ -239,6 +246,7 @@ export default (
       queryClient.invalidateQueries(itemKey);
     },
   });
+  const useEditItem = () => useMutation<void, unknown, Item>(EDIT_ITEM);
 
   queryClient.setMutationDefaults(RECYCLE_ITEM, {
     mutationFn: (itemId) =>
@@ -287,6 +295,7 @@ export default (
       }
     },
   });
+  const useRecycleItem = () => useMutation<void, unknown, UUID>(RECYCLE_ITEM);
 
   queryClient.setMutationDefaults(RECYCLE_ITEMS, {
     mutationFn: (itemIds) =>
@@ -343,6 +352,8 @@ export default (
       }
     },
   });
+  const useRecycleItems = () =>
+    useMutation<void, unknown, UUID[]>(RECYCLE_ITEMS);
 
   queryClient.setMutationDefaults(DELETE_ITEM, {
     mutationFn: ([itemId]) => Api.deleteItem(itemId, queryConfig),
@@ -386,6 +397,7 @@ export default (
       }
     },
   });
+  const useDeleteItem = () => useMutation<void, unknown, UUID[]>(DELETE_ITEM);
 
   queryClient.setMutationDefaults(DELETE_ITEMS, {
     mutationFn: (itemIds) =>
@@ -453,6 +465,7 @@ export default (
       }
     },
   });
+  const useDeleteItems = () => useMutation<void, unknown, UUID[]>(DELETE_ITEMS);
 
   queryClient.setMutationDefaults(COPY_ITEM, {
     mutationFn: (payload) =>
@@ -475,6 +488,15 @@ export default (
       queryClient.invalidateQueries(parentKey);
     },
   });
+  const useCopyItem = () =>
+    useMutation<
+      void,
+      unknown,
+      {
+        id: UUID;
+        to: UUID;
+      }
+    >(COPY_ITEM);
 
   queryClient.setMutationDefaults(COPY_PUBLIC_ITEM, {
     mutationFn: (payload) =>
@@ -500,6 +522,15 @@ export default (
       queryClient.invalidateQueries(parentKey);
     },
   });
+  const useCopyPublicItem = () =>
+    useMutation<
+      void,
+      unknown,
+      {
+        id: string;
+        to: string;
+      }
+    >(COPY_PUBLIC_ITEM);
 
   queryClient.setMutationDefaults(COPY_ITEMS, {
     mutationFn: ({
@@ -532,6 +563,19 @@ export default (
       queryClient.invalidateQueries(parentKey);
     },
   });
+  const useCopyItems = () =>
+    useMutation<
+      void,
+      unknown,
+      {
+        /**
+         * @deprecated use ids instead
+         */
+        id?: UUID[];
+        ids: UUID[];
+        to: UUID;
+      }
+    >(COPY_ITEMS);
 
   queryClient.setMutationDefaults(MOVE_ITEM, {
     mutationFn: (payload) =>
@@ -610,6 +654,15 @@ export default (
       queryClient.invalidateQueries(itemKey);
     },
   });
+  const useMoveItem = () =>
+    useMutation<
+      void,
+      unknown,
+      {
+        id?: UUID;
+        to: UUID;
+      }
+    >(MOVE_ITEM);
 
   queryClient.setMutationDefaults(MOVE_ITEMS, {
     mutationFn: ({
@@ -717,6 +770,19 @@ export default (
       });
     },
   });
+  const useMoveItems = () =>
+    useMutation<
+      void,
+      unknown,
+      {
+        /**
+         * @deprecated use ids instead
+         */
+        id?: UUID[];
+        ids: UUID[];
+        to: UUID;
+      }
+    >(MOVE_ITEMS);
 
   // this mutation is used for its callback and invalidate the keys
   /**
@@ -745,6 +811,8 @@ export default (
       queryClient.invalidateQueries(parentKey);
     },
   });
+  const useUploadFiles = () =>
+    useMutation<void, unknown, { error: any; data: any }>(UPLOAD_FILES);
 
   // this mutation is used for its callback and invalidate the keys
   /**
@@ -772,9 +840,14 @@ export default (
         const key = buildItemThumbnailKey({ id, size });
         queryClient.invalidateQueries(key);
       });
+      // invalidate item to update settings.hasThumbnail
       queryClient.invalidateQueries(buildItemKey(id));
     },
   });
+  const useUploadItemThumbnail = () =>
+    useMutation<void, unknown, { error: any; data: any }>(
+      UPLOAD_ITEM_THUMBNAIL,
+    );
 
   queryClient.setMutationDefaults(IMPORT_ZIP, {
     mutationFn: async ({ error }) => {
@@ -796,6 +869,8 @@ export default (
       queryClient.invalidateQueries(parentKey);
     },
   });
+  const useImportZip = () =>
+    useMutation<void, unknown, { error: any }>(IMPORT_ZIP);
 
   queryClient.setMutationDefaults(IMPORT_H5P, {
     mutationFn: async ({ error }) => {
@@ -817,6 +892,8 @@ export default (
       queryClient.invalidateQueries(parentKey);
     },
   });
+  const useImportH5P = () =>
+    useMutation<void, unknown, { error: any }>(IMPORT_H5P);
 
   queryClient.setMutationDefaults(RESTORE_ITEMS, {
     mutationFn: (itemIds) =>
@@ -857,4 +934,26 @@ export default (
       queryClient.invalidateQueries(RECYCLED_ITEMS_KEY);
     },
   });
+  const useRestoreItems = () =>
+    useMutation<void, unknown, UUID[]>(RESTORE_ITEMS);
+
+  return {
+    usePostItem,
+    usePostEtherpad,
+    useEditItem,
+    useRecycleItem,
+    useRecycleItems,
+    useDeleteItem,
+    useDeleteItems,
+    useCopyItem,
+    useCopyItems,
+    useCopyPublicItem,
+    useUploadFiles,
+    useUploadItemThumbnail,
+    useRestoreItems,
+    useImportH5P,
+    useImportZip,
+    useMoveItems,
+    useMoveItem,
+  };
 };

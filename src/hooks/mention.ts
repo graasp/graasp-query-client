@@ -4,10 +4,10 @@ import { QueryClient, UseQueryResult, useQuery } from 'react-query';
 import { Member, convertJs } from '@graasp/sdk';
 import { MemberMentionsRecord } from '@graasp/sdk/frontend';
 
-import * as Api from '../api';
+import * as Api from '../api/index';
 import { buildMentionKey } from '../config/keys';
 import { QueryClientConfig } from '../types';
-import { configureWsChatMentionsHooks } from '../ws';
+import { configureWsChatMentionsHooks } from '../ws/index';
 import { WebsocketClient } from '../ws/ws-client';
 
 export default (

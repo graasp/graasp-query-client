@@ -20,7 +20,7 @@ import {
 } from '../routines';
 
 const mockedNotifier = jest.fn();
-const { wrapper, queryClient, useMutation } = setUpTest({
+const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 
@@ -36,7 +36,7 @@ describe('Item Category Mutations', () => {
     const itemId = 'item-id';
     const categoryId = 'new-category';
     const route = `/${buildPostItemCategoryRoute(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_CATEGORY);
+    const mutation = mutations.usePostItemCategory;
     const key = buildItemCategoriesKey(itemId);
 
     it('Post item category', async () => {
@@ -108,7 +108,7 @@ describe('Item Category Mutations', () => {
       itemId,
       itemCategoryId,
     })}`;
-    const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_CATEGORY);
+    const mutation = mutations.useDeleteItemCategory;
     const key = buildItemCategoriesKey(itemId);
 
     it('Delete item category', async () => {

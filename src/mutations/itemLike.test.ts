@@ -25,7 +25,7 @@ import {
 import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
-const { wrapper, queryClient, useMutation } = setUpTest({
+const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -42,7 +42,7 @@ describe('Item Like Mutations', () => {
     const likedItemsKey = buildGetLikedItemsKey(memberId);
     const likeCountKey = buildGetLikeCountKey(itemId);
     const route = `/${buildPostItemLikeRoute(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_LIKE);
+    const mutation = mutations.usePostItemLike;
 
     it('Post item like', async () => {
       queryClient.setQueryData(likedItemsKey, ITEM_LIKES);
@@ -116,7 +116,7 @@ describe('Item Like Mutations', () => {
     const likedItemsKey = buildGetLikedItemsKey(memberId);
     const likeCountKey = buildGetLikeCountKey(itemId);
     const route = `/${buildDeleteItemLikeRoute(entryId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_LIKE);
+    const mutation = mutations.useDeleteItemLike;
 
     it('Delete item like', async () => {
       queryClient.setQueryData(likedItemsKey, ITEM_LIKES);

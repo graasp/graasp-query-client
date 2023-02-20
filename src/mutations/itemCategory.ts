@@ -1,5 +1,6 @@
-import { QueryClient } from 'react-query';
+import { QueryClient, useMutation } from 'react-query';
 
+import { UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
@@ -10,12 +11,13 @@ import {
 } from '../routines';
 import { QueryClientConfig } from '../types';
 
+const { POST_ITEM_CATEGORY, DELETE_ITEM_CATEGORY } = MUTATION_KEYS;
+
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_CATEGORY, {
-    mutationFn: (payload) =>
-      Api.postItemCategory(payload, queryConfig).then(() => payload),
+  queryClient.setMutationDefaults(POST_ITEM_CATEGORY, {
+    mutationFn: (payload) => Api.postItemCategory(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
         type: postItemCategoryRoutine.SUCCESS,
@@ -29,6 +31,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(buildItemCategoriesKey(itemId));
     },
   });
+  const usePostItemCategory = () =>
+    useMutation<void, unknown, { itemId: UUID; categoryId: UUID }>(
+      POST_ITEM_CATEGORY,
+    );
 
   queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_ITEM_CATEGORY, {
     mutationFn: (payload) => Api.deleteItemCategory(payload, queryConfig),
@@ -48,4 +54,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(buildItemCategoriesKey(itemId));
     },
   });
+  const useDeleteItemCategory = () =>
+    useMutation<void, unknown, { itemCategoryId: UUID; itemId: UUID }>(
+      DELETE_ITEM_CATEGORY,
+    );
+
+  return {
+    usePostItemCategory,
+    useDeleteItemCategory,
+  };
 };

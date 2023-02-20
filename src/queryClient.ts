@@ -90,7 +90,7 @@ export default (config: Partial<QueryClientConfig>) => {
 
   // set up mutations given config
   // mutations are attached to queryClient
-  configureMutations(queryClient, queryConfig);
+  const mutations = configureMutations(queryClient, queryConfig);
 
   // set up hooks given config
   const websocketClient = queryConfig.enableWebsocket
@@ -107,5 +107,6 @@ export default (config: Partial<QueryClientConfig>) => {
     ReactQueryDevtools,
     dehydrate,
     Hydrate,
+    mutations,
   };
 };

@@ -13,7 +13,7 @@ import { MUTATION_KEYS, buildItemTagsKey } from '../config/keys';
 import { publishItemRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
-const { wrapper, queryClient, useMutation } = setUpTest({
+const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 
@@ -29,7 +29,7 @@ describe('Publish Item', () => {
     const item = ITEMS.first()!;
     const itemId = item.id;
     const notification = true;
-    const mutation = () => useMutation(MUTATION_KEYS.PUBLISH_ITEM);
+    const mutation = mutations.usePublishItem;
     const itemTagKey = buildItemTagsKey(itemId);
 
     it('Publish Item with notification', async () => {

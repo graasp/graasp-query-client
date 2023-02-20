@@ -16,7 +16,7 @@ import { MUTATION_KEYS } from '../config/keys';
 import { exportItemRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
-const { wrapper, queryClient, useMutation } = setUpTest({
+const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 
@@ -31,7 +31,7 @@ describe('Export Zip', () => {
   describe(MUTATION_KEYS.EXPORT_ZIP, () => {
     const itemId = 'item-id';
     const route = `/${buildExportItemRoute(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.EXPORT_ZIP);
+    const mutation = mutations.useExportZip;
 
     it('Export zip', async () => {
       const endpoints = [

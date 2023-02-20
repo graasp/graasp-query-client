@@ -14,7 +14,7 @@ import { MUTATION_KEYS, buildItemFlagsKey } from '../config/keys';
 import { postItemFlagRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
-const { wrapper, queryClient, useMutation } = setUpTest({
+const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -30,7 +30,7 @@ describe('Item Flag Mutations', () => {
     const itemId = ITEMS.first()!.id;
     const flagKey = buildItemFlagsKey(itemId);
     const route = `/${buildPostItemFlagRoute(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_FLAG);
+    const mutation = mutations.usePostItemFlag;
 
     it('Post item flag', async () => {
       queryClient.setQueryData(flagKey, FLAGS);

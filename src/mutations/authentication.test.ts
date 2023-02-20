@@ -56,7 +56,7 @@ const email = 'myemail@email.com';
 
 describe('Authentication Mutations', () => {
   const mockedNotifier = jest.fn();
-  const { wrapper, queryClient, useMutation } = setUpTest({
+  const { wrapper, queryClient, mutations } = setUpTest({
     notifier: mockedNotifier,
   });
 
@@ -67,7 +67,7 @@ describe('Authentication Mutations', () => {
 
   describe(MUTATION_KEYS.SIGN_IN, () => {
     const route = `/${SIGN_IN_ROUTE}`;
-    const mutation = () => useMutation(MUTATION_KEYS.SIGN_IN);
+    const mutation = mutations.useSignIn;
 
     it(`Sign in`, async () => {
       const endpoints = [
@@ -122,7 +122,7 @@ describe('Authentication Mutations', () => {
 
   describe(MUTATION_KEYS.SIGN_IN_WITH_PASSWORD, () => {
     const route = `/${SIGN_IN_WITH_PASSWORD_ROUTE}`;
-    const mutation = () => useMutation(MUTATION_KEYS.SIGN_IN_WITH_PASSWORD);
+    const mutation = mutations.useSignInWithPassword;
     const password = 'password';
     const link = 'mylink';
 
@@ -189,7 +189,7 @@ describe('Authentication Mutations', () => {
 
   describe(MUTATION_KEYS.UPDATE_PASSWORD, () => {
     const route = `/${buildUpdateMemberPasswordRoute()}`;
-    const mutation = () => useMutation(MUTATION_KEYS.UPDATE_PASSWORD);
+    const mutation = mutations.useUpdatePassword;
     const password = 'ASDasd123';
     const currentPassword = 'ASDasd123';
     const name = 'myName';
@@ -253,7 +253,7 @@ describe('Authentication Mutations', () => {
 
   describe(MUTATION_KEYS.SIGN_UP, () => {
     const route = `/${SIGN_UP_ROUTE}`;
-    const mutation = () => useMutation(MUTATION_KEYS.SIGN_UP);
+    const mutation = mutations.useSignUp;
     const name = 'name';
 
     it(`Sign up`, async () => {
@@ -309,7 +309,7 @@ describe('Authentication Mutations', () => {
 
   describe(MUTATION_KEYS.SIGN_OUT, () => {
     const route = `/${SIGN_OUT_ROUTE}`;
-    const mutation = () => useMutation(MUTATION_KEYS.SIGN_OUT);
+    const mutation = mutations.useSignOut;
     const userId = 'userId';
 
     it(`Sign out`, async () => {
@@ -373,7 +373,7 @@ describe('Authentication Mutations', () => {
   });
 
   describe(MUTATION_KEYS.SWITCH_MEMBER, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.SWITCH_MEMBER);
+    const mutation = mutations.useSwitchMember;
     const MOCK_SESSIONS = [{ id: 'id1', token: 'token1' }];
 
     it(`Switch Member`, async () => {

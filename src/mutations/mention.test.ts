@@ -40,7 +40,7 @@ describe('Mention Mutations', () => {
 
   describe('enableWebsockets = false', () => {
     const mockedNotifier = jest.fn();
-    const { wrapper, queryClient, useMutation } = setUpTest({
+    const { wrapper, queryClient, mutations } = setUpTest({
       notifier: mockedNotifier,
     });
 
@@ -51,7 +51,7 @@ describe('Mention Mutations', () => {
 
     describe(MUTATION_KEYS.PATCH_MENTION, () => {
       const route = `/${buildPatchMentionRoute(mentionId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.PATCH_MENTION);
+      const mutation = mutations.usePatchMention;
 
       it(`Patch mention status`, async () => {
         const endpoints = [
@@ -135,7 +135,7 @@ describe('Mention Mutations', () => {
 
     describe(MUTATION_KEYS.DELETE_MENTION, () => {
       const route = `/${buildDeleteMentionRoute(mentionId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.DELETE_MENTION);
+      const mutation = mutations.useDeleteMention;
 
       it(`Delete member mention`, async () => {
         const endpoints = [
@@ -212,7 +212,7 @@ describe('Mention Mutations', () => {
 
     describe(MUTATION_KEYS.CLEAR_MENTIONS, () => {
       const route = `/${buildClearMentionsRoute()}`;
-      const mutation = () => useMutation(MUTATION_KEYS.CLEAR_MENTIONS);
+      const mutation = mutations.useClearMentions;
 
       it(`Clear Member Mentions`, async () => {
         const endpoints = [
@@ -279,7 +279,7 @@ describe('Mention Mutations', () => {
   });
 
   describe('enableWebsockets = true', () => {
-    const { wrapper, queryClient, useMutation } = setUpTest({
+    const { wrapper, queryClient, mutations } = setUpTest({
       enableWebsocket: true,
     });
 
@@ -290,7 +290,7 @@ describe('Mention Mutations', () => {
 
     describe(MUTATION_KEYS.PATCH_MENTION, () => {
       const route = `/${buildPatchMentionRoute(mentionId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.PATCH_MENTION);
+      const mutation = mutations.usePatchMention;
       it(`Patch mention status`, async () => {
         const endpoints = [
           {
@@ -328,7 +328,7 @@ describe('Mention Mutations', () => {
 
     describe(MUTATION_KEYS.DELETE_MENTION, () => {
       const route = `/${buildDeleteMentionRoute(mentionId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.DELETE_MENTION);
+      const mutation = mutations.useDeleteMention;
       it(`Delete member mention`, async () => {
         const endpoints = [
           {
@@ -365,7 +365,7 @@ describe('Mention Mutations', () => {
 
     describe(MUTATION_KEYS.CLEAR_MENTIONS, () => {
       const route = `/${buildClearMentionsRoute()}`;
-      const mutation = () => useMutation(MUTATION_KEYS.CLEAR_MENTIONS);
+      const mutation = mutations.useClearMentions;
       it(`Clear chat`, async () => {
         const endpoints = [
           {

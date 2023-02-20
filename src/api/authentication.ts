@@ -1,4 +1,5 @@
 import { HttpMethod } from '@graasp/sdk';
+import { Password } from '@graasp/sdk/frontend';
 
 import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
@@ -22,7 +23,7 @@ export const signIn = async (
 ) => axios.post(`${API_HOST}/${SIGN_IN_ROUTE}`, payload);
 
 export const signInWithPassword = async (
-  payload: { email: string; password: string },
+  payload: { email: string; password: Password },
   { API_HOST }: QueryClientConfig,
 ) =>
   axios({

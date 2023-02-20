@@ -1,5 +1,6 @@
-import { QueryClient } from 'react-query';
+import { QueryClient, useMutation } from 'react-query';
 
+import { UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
@@ -25,4 +26,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(buildItemFlagsKey(itemId));
     },
   });
+  const usePostItemFlag = () =>
+    useMutation<void, unknown, { flagId: UUID; itemId: UUID }>(
+      MUTATION_KEYS.POST_ITEM_FLAG,
+    );
+
+  return {
+    usePostItemFlag,
+  };
 };

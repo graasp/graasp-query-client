@@ -28,7 +28,7 @@ import {
 } from '../routines';
 
 const mockedNotifier = jest.fn();
-const { wrapper, queryClient, useMutation } = setUpTest({
+const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 
@@ -43,7 +43,7 @@ describe('Item Validation Mutations', () => {
   describe(MUTATION_KEYS.POST_ITEM_VALIDATION, () => {
     const itemId = 'item-id';
     const route = `/${buildPostItemValidationRoute(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_VALIDATION);
+    const mutation = mutations.usePostItemValidation;
     const key = buildItemValidationAndReviewKey(itemId);
 
     it('Post item validation', async () => {
@@ -111,8 +111,7 @@ describe('Item Validation Mutations', () => {
     const status = 'accepted';
     const reason = '';
     const route = `/${buildUpdateItemValidationReviewRoute(id)}`;
-    const mutation = () =>
-      useMutation(MUTATION_KEYS.UPDATE_ITEM_VALIDATION_REVIEW);
+    const mutation = mutations.useUpdateItemValidationReview;
     const statusKey = buildItemValidationAndReviewKey(itemId);
     const reviewsKey = ITEM_VALIDATION_REVIEWS_KEY;
 

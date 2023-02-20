@@ -40,7 +40,7 @@ const defaultInvitations = buildMockInvitations(itemId);
 
 describe('Invitations Mutations', () => {
   const mockedNotifier = jest.fn();
-  const { wrapper, queryClient, useMutation } = setUpTest({
+  const { wrapper, queryClient, mutations } = setUpTest({
     notifier: mockedNotifier,
   });
 
@@ -50,7 +50,7 @@ describe('Invitations Mutations', () => {
   });
 
   describe(MUTATION_KEYS.POST_INVITATIONS, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.POST_INVITATIONS);
+    const mutation = mutations.usePostInvitations;
     const key = buildItemInvitationsKey(itemId);
     const route = `/${buildPostInvitationsRoute(itemId)}`;
 
@@ -195,7 +195,7 @@ describe('Invitations Mutations', () => {
   });
 
   describe(MUTATION_KEYS.PATCH_INVITATION, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.PATCH_INVITATION);
+    const mutation = mutations.usePatchInvitation;
     const key = buildItemInvitationsKey(itemId);
     const newInvitation = buildInvitation({
       itemPath: itemId,
@@ -276,7 +276,7 @@ describe('Invitations Mutations', () => {
   });
 
   describe(MUTATION_KEYS.DELETE_INVITATION, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.DELETE_INVITATION);
+    const mutation = mutations.useDeleteInvitation;
     const key = buildItemInvitationsKey(itemId);
     const invitationToDelete = buildInvitation({ itemPath: 'itemPath' });
     const invitationToDeleteRecord = buildInvitationRecord({
@@ -368,7 +368,7 @@ describe('Invitations Mutations', () => {
   });
 
   describe(MUTATION_KEYS.RESEND_INVITATION, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.RESEND_INVITATION);
+    const mutation = mutations.useResendInvitation;
     const invitation = buildInvitation({ itemPath: 'itemPath' });
     const route = `/${buildResendInvitationRoute({
       itemId,

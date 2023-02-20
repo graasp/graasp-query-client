@@ -1,10 +1,11 @@
-import { QueryClient } from 'react-query';
+import { QueryClient, useMutation } from 'react-query';
+
+import { UUID } from '@graasp/sdk';
 
 import * as Api from '../api';
 import { MUTATION_KEYS, buildItemTagsKey } from '../config/keys';
 import { publishItemRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
-import { convertFalseToUndefined } from '../utils/util';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -14,7 +15,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
    */
   queryClient.setMutationDefaults(MUTATION_KEYS.PUBLISH_ITEM, {
     mutationFn: ({ id, notification }) =>
-      Api.publishItem(id, queryConfig, convertFalseToUndefined(notification)),
+      Api.publishItem(id, queryConfig, notification),
     onSuccess: () => {
       notifier?.({ type: publishItemRoutine.SUCCESS });
     },
@@ -25,4 +26,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(buildItemTagsKey(id));
     },
   });
+  const usePublishItem = () =>
+    useMutation<void, unknown, { id: UUID; notification: string }>(
+      MUTATION_KEYS.PUBLISH_ITEM,
+    );
+
+  return {
+    usePublishItem,
+  };
 };

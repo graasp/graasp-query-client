@@ -14,7 +14,7 @@ import configureItemTagHooks from './itemTag';
 import configureItemValidationHooks from './itemValidation';
 import configureMemberHooks from './member';
 import configureMembershipHooks from './membership';
-import configureMentionsHooks from './mentions';
+import configureMentionsHooks from './mention';
 import configurePlanHooks from './plan';
 import configureKeywordSearchHooks from './search';
 

@@ -38,7 +38,7 @@ describe('Chat Mutations', () => {
 
   describe('enableWebsockets = false', () => {
     const mockedNotifier = jest.fn();
-    const { wrapper, queryClient, useMutation } = setUpTest({
+    const { wrapper, queryClient, mutations } = setUpTest({
       notifier: mockedNotifier,
     });
 
@@ -49,7 +49,7 @@ describe('Chat Mutations', () => {
 
     describe(MUTATION_KEYS.POST_ITEM_CHAT_MESSAGE, () => {
       const route = `/${buildPostItemChatMessageRoute(itemId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_CHAT_MESSAGE);
+      const mutation = mutations.usePostItemChatMessage;
 
       it(`Post item chat message`, async () => {
         const endpoints = [
@@ -108,7 +108,7 @@ describe('Chat Mutations', () => {
 
     describe(MUTATION_KEYS.PATCH_ITEM_CHAT_MESSAGE, () => {
       const route = `/${buildPatchItemChatMessageRoute(itemId, messageId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.PATCH_ITEM_CHAT_MESSAGE);
+      const mutation = mutations.usePatchItemChatMessage;
 
       it(`Patch item chat message`, async () => {
         const endpoints = [
@@ -175,8 +175,8 @@ describe('Chat Mutations', () => {
 
     describe(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE, () => {
       const route = `/${buildDeleteItemChatMessageRoute(itemId, messageId)}`;
-      const mutation = () =>
-        useMutation(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE);
+
+      const mutation = mutations.useDeleteItemChatMessage;
 
       it(`Delete item chat message`, async () => {
         const endpoints = [
@@ -235,7 +235,7 @@ describe('Chat Mutations', () => {
 
     describe(MUTATION_KEYS.CLEAR_ITEM_CHAT, () => {
       const route = `/${buildClearItemChatRoute(itemId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.CLEAR_ITEM_CHAT);
+      const mutation = mutations.useClearItemChat;
 
       it(`Clear chat`, async () => {
         const endpoints = [
@@ -294,7 +294,7 @@ describe('Chat Mutations', () => {
   });
 
   describe('enableWebsockets = true', () => {
-    const { wrapper, queryClient, useMutation } = setUpTest({
+    const { wrapper, queryClient, mutations } = setUpTest({
       enableWebsocket: true,
     });
 
@@ -305,7 +305,7 @@ describe('Chat Mutations', () => {
 
     describe(MUTATION_KEYS.POST_ITEM_CHAT_MESSAGE, () => {
       const route = `/${buildPostItemChatMessageRoute(itemId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_CHAT_MESSAGE);
+      const mutation = mutations.usePostItemChatMessage;
       it(`Post item chat message`, async () => {
         const endpoints = [
           { route, response: OK_RESPONSE, method: HttpMethod.POST },
@@ -331,7 +331,8 @@ describe('Chat Mutations', () => {
 
     describe(MUTATION_KEYS.PATCH_ITEM_CHAT_MESSAGE, () => {
       const route = `/${buildPatchItemChatMessageRoute(itemId, messageId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.PATCH_ITEM_CHAT_MESSAGE);
+
+      const mutation = mutations.usePatchItemChatMessage;
       it(`Patch item chat message`, async () => {
         const endpoints = [
           { route, response: OK_RESPONSE, method: HttpMethod.PATCH },
@@ -357,8 +358,8 @@ describe('Chat Mutations', () => {
 
     describe(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE, () => {
       const route = `/${buildDeleteItemChatMessageRoute(itemId, messageId)}`;
-      const mutation = () =>
-        useMutation(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE);
+
+      const mutation = mutations.useDeleteItemChatMessage;
       it(`Delete item chat message`, async () => {
         const endpoints = [
           { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
@@ -384,7 +385,7 @@ describe('Chat Mutations', () => {
 
     describe(MUTATION_KEYS.CLEAR_ITEM_CHAT, () => {
       const route = `/${buildClearItemChatRoute(itemId)}`;
-      const mutation = () => useMutation(MUTATION_KEYS.CLEAR_ITEM_CHAT);
+      const mutation = mutations.useClearItemChat;
       it(`Clear chat`, async () => {
         const endpoints = [
           { route, response: OK_RESPONSE, method: HttpMethod.DELETE },

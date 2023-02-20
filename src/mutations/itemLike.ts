@@ -1,4 +1,6 @@
-import { QueryClient } from 'react-query';
+import { QueryClient, useMutation } from 'react-query';
+
+import { UUID } from '@graasp/sdk';
 
 import * as Api from '../api';
 import {
@@ -8,6 +10,8 @@ import {
 } from '../config/keys';
 import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
+
+const { POST_ITEM_LIKE, DELETE_ITEM_LIKE } = MUTATION_KEYS;
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -25,8 +29,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(buildGetLikeCountKey(itemId));
     },
   });
+  const usePostItemLike = () =>
+    useMutation<void, unknown, { itemId: UUID }>(POST_ITEM_LIKE);
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_ITEM_LIKE, {
+  queryClient.setMutationDefaults(DELETE_ITEM_LIKE, {
     mutationFn: ({ id }) => Api.deleteItemLike(id, queryConfig),
     onSuccess: () => {
       notifier?.({ type: deleteItemLikeRoutine.SUCCESS });
@@ -42,4 +48,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(buildGetLikeCountKey(itemId));
     },
   });
+  const useDeleteItemLike = () =>
+    useMutation<void, unknown, { id: UUID }>(DELETE_ITEM_LIKE);
+
+  return {
+    usePostItemLike,
+    useDeleteItemLike,
+  };
 };

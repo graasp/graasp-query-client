@@ -1,4 +1,4 @@
-import { QueryClient } from 'react-query';
+import { QueryClient, useMutation } from 'react-query';
 
 import * as Api from '../api';
 import {
@@ -13,12 +13,13 @@ import {
 } from '../routines';
 import { QueryClientConfig } from '../types';
 
+const { SET_DEFAULT_CARD, CHANGE_PLAN, CREATE_SETUP_INTENT } = MUTATION_KEYS;
+
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.CHANGE_PLAN, {
-    mutationFn: (payload) =>
-      Api.changePlan(payload, queryConfig).then(() => payload),
+  queryClient.setMutationDefaults(CHANGE_PLAN, {
+    mutationFn: (payload) => Api.changePlan(payload, queryConfig),
     onSuccess: () => {
       notifier?.({ type: changePlanRoutine.SUCCESS });
     },
@@ -29,8 +30,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(OWN_PLAN_KEY);
     },
   });
+  const useChangePlan = () =>
+    useMutation<void, unknown, { planId: string; cardId?: string }>(
+      CHANGE_PLAN,
+    );
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.CREATE_SETUP_INTENT, {
+  queryClient.setMutationDefaults(CREATE_SETUP_INTENT, {
     mutationFn: () => Api.createSetupIntent(queryConfig),
     onSuccess: () => {
       notifier?.({ type: createSetupIntentRoutine.SUCCESS });
@@ -42,10 +47,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
   });
+  const useCreateSetupIntent = () =>
+    useMutation<void, unknown, void>(CREATE_SETUP_INTENT);
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.SET_DEFAULT_CARD, {
-    mutationFn: (payload) =>
-      Api.setDefaultCard(payload, queryConfig).then(() => payload),
+  queryClient.setMutationDefaults(SET_DEFAULT_CARD, {
+    mutationFn: (payload) => Api.setDefaultCard(payload, queryConfig),
     onSuccess: () => {
       notifier?.({ type: setDefaultCardRoutine.SUCCESS });
     },
@@ -56,4 +62,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(CURRENT_CUSTOMER_KEY);
     },
   });
+  const useSetDefaultCard = () =>
+    useMutation<void, unknown, { cardId: string }>(SET_DEFAULT_CARD);
+
+  return {
+    useSetDefaultCard,
+    useChangePlan,
+    useCreateSetupIntent,
+  };
 };

@@ -26,7 +26,7 @@ import {
 import { postItemLoginRoutine, putItemLoginRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
-const { wrapper, queryClient, useMutation } = setUpTest({
+const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -42,7 +42,7 @@ describe('Item Login Mutations', () => {
   const itemId = ITEMS.first()!.id;
   describe(MUTATION_KEYS.POST_ITEM_LOGIN, () => {
     const route = `/${buildPostItemLoginSignInRoute(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_LOGIN);
+    const mutation = mutations.usePostItemLogin;
     it('Post item login', async () => {
       queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
@@ -119,7 +119,7 @@ describe('Item Login Mutations', () => {
 
   describe(MUTATION_KEYS.PUT_ITEM_LOGIN, () => {
     const route = `/${buildPutItemLoginSchema(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.PUT_ITEM_LOGIN);
+    const mutation = mutations.usePutItemLogin;
     const loginSchema = ITEM_LOGIN_RESPONSE;
     const itemLoginKey = buildItemLoginKey(itemId);
     const newLoginSchema = ItemLoginSchema.USERNAME_AND_PASSWORD;
