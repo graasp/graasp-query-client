@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/graasp/graasp-query-client/compare/v0.2.1...v0.3.0) (2023-02-21)
+
+
+### Features
+
+* export mutations ([#242](https://github.com/graasp/graasp-query-client/issues/242)) ([a1fa06b](https://github.com/graasp/graasp-query-client/commit/a1fa06bbde96aa73f5b4a6af6b418cd479c7a25f))
+
 ## [0.2.1](https://github.com/graasp/graasp-query-client/compare/v0.2.0...v0.2.1) (2023-02-18)
 
 
