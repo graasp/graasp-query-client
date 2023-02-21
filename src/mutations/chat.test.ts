@@ -20,7 +20,7 @@ import {
   buildPatchItemChatMessageRoute,
   buildPostItemChatMessageRoute,
 } from '../api/routes';
-import { MUTATION_KEYS, buildItemChatKey } from '../config/keys';
+import { buildItemChatKey } from '../config/keys';
 import {
   clearItemChatRoutine,
   deleteItemChatMessageRoutine,
@@ -47,7 +47,7 @@ describe('Chat Mutations', () => {
       nock.cleanAll();
     });
 
-    describe(MUTATION_KEYS.POST_ITEM_CHAT_MESSAGE, () => {
+    describe('usePostItemChatMessage', () => {
       const route = `/${buildPostItemChatMessageRoute(itemId)}`;
       const mutation = mutations.usePostItemChatMessage;
 
@@ -106,7 +106,7 @@ describe('Chat Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.PATCH_ITEM_CHAT_MESSAGE, () => {
+    describe('usePatchItemChatMessage', () => {
       const route = `/${buildPatchItemChatMessageRoute(itemId, messageId)}`;
       const mutation = mutations.usePatchItemChatMessage;
 
@@ -173,7 +173,7 @@ describe('Chat Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE, () => {
+    describe('useDeleteItemChatMessage', () => {
       const route = `/${buildDeleteItemChatMessageRoute(itemId, messageId)}`;
 
       const mutation = mutations.useDeleteItemChatMessage;
@@ -233,7 +233,7 @@ describe('Chat Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.CLEAR_ITEM_CHAT, () => {
+    describe('useClearItemChat', () => {
       const route = `/${buildClearItemChatRoute(itemId)}`;
       const mutation = mutations.useClearItemChat;
 
@@ -303,7 +303,7 @@ describe('Chat Mutations', () => {
       nock.cleanAll();
     });
 
-    describe(MUTATION_KEYS.POST_ITEM_CHAT_MESSAGE, () => {
+    describe('usePostItemChatMessage', () => {
       const route = `/${buildPostItemChatMessageRoute(itemId)}`;
       const mutation = mutations.usePostItemChatMessage;
       it(`Post item chat message`, async () => {
@@ -329,10 +329,10 @@ describe('Chat Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.PATCH_ITEM_CHAT_MESSAGE, () => {
+    describe('usePatchItemChatMessage', () => {
       const route = `/${buildPatchItemChatMessageRoute(itemId, messageId)}`;
-
       const mutation = mutations.usePatchItemChatMessage;
+
       it(`Patch item chat message`, async () => {
         const endpoints = [
           { route, response: OK_RESPONSE, method: HttpMethod.PATCH },
@@ -356,10 +356,10 @@ describe('Chat Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.DELETE_ITEM_CHAT_MESSAGE, () => {
+    describe('useDeleteItemChatMessage', () => {
       const route = `/${buildDeleteItemChatMessageRoute(itemId, messageId)}`;
-
       const mutation = mutations.useDeleteItemChatMessage;
+
       it(`Delete item chat message`, async () => {
         const endpoints = [
           { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
@@ -383,9 +383,10 @@ describe('Chat Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.CLEAR_ITEM_CHAT, () => {
+    describe('useClearItemChat', () => {
       const route = `/${buildClearItemChatRoute(itemId)}`;
       const mutation = mutations.useClearItemChat;
+
       it(`Clear chat`, async () => {
         const endpoints = [
           { route, response: OK_RESPONSE, method: HttpMethod.DELETE },

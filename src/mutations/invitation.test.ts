@@ -23,7 +23,7 @@ import {
   buildPostInvitationsRoute,
   buildResendInvitationRoute,
 } from '../api/routes';
-import { MUTATION_KEYS, buildItemInvitationsKey } from '../config/keys';
+import { buildItemInvitationsKey } from '../config/keys';
 import {
   deleteInvitationRoutine,
   patchInvitationRoutine,
@@ -49,7 +49,7 @@ describe('Invitations Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_INVITATIONS, () => {
+  describe('usePostInvitations', () => {
     const mutation = mutations.usePostInvitations;
     const key = buildItemInvitationsKey(itemId);
     const route = `/${buildPostInvitationsRoute(itemId)}`;
@@ -194,7 +194,7 @@ describe('Invitations Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.PATCH_INVITATION, () => {
+  describe('usePatchInvitation', () => {
     const mutation = mutations.usePatchInvitation;
     const key = buildItemInvitationsKey(itemId);
     const newInvitation = buildInvitation({
@@ -275,7 +275,7 @@ describe('Invitations Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_INVITATION, () => {
+  describe('useDeleteInvitation', () => {
     const mutation = mutations.useDeleteInvitation;
     const key = buildItemInvitationsKey(itemId);
     const invitationToDelete = buildInvitation({ itemPath: 'itemPath' });
@@ -367,7 +367,7 @@ describe('Invitations Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.RESEND_INVITATION, () => {
+  describe('useResendInvitation', () => {
     const mutation = mutations.useResendInvitation;
     const invitation = buildInvitation({ itemPath: 'itemPath' });
     const route = `/${buildResendInvitationRoute({

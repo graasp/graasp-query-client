@@ -21,7 +21,7 @@ import {
   SIGN_UP_ROUTE,
   buildUpdateMemberPasswordRoute,
 } from '../api/routes';
-import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
+import { CURRENT_MEMBER_KEY } from '../config/keys';
 import {
   signInRoutine,
   signInWithPasswordRoutine,
@@ -65,7 +65,7 @@ describe('Authentication Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.SIGN_IN, () => {
+  describe('useSignIn', () => {
     const route = `/${SIGN_IN_ROUTE}`;
     const mutation = mutations.useSignIn;
 
@@ -120,7 +120,7 @@ describe('Authentication Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.SIGN_IN_WITH_PASSWORD, () => {
+  describe('useSignInWithPassword', () => {
     const route = `/${SIGN_IN_WITH_PASSWORD_ROUTE}`;
     const mutation = mutations.useSignInWithPassword;
     const password = 'password';
@@ -187,7 +187,7 @@ describe('Authentication Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.UPDATE_PASSWORD, () => {
+  describe('useUpdatePassword', () => {
     const route = `/${buildUpdateMemberPasswordRoute()}`;
     const mutation = mutations.useUpdatePassword;
     const password = 'ASDasd123';
@@ -251,7 +251,7 @@ describe('Authentication Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.SIGN_UP, () => {
+  describe('useSignUp', () => {
     const route = `/${SIGN_UP_ROUTE}`;
     const mutation = mutations.useSignUp;
     const name = 'name';
@@ -307,7 +307,7 @@ describe('Authentication Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.SIGN_OUT, () => {
+  describe('useSignOut', () => {
     const route = `/${SIGN_OUT_ROUTE}`;
     const mutation = mutations.useSignOut;
     const userId = 'userId';
@@ -372,7 +372,7 @@ describe('Authentication Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.SWITCH_MEMBER, () => {
+  describe('useSwitchMember', () => {
     const mutation = mutations.useSwitchMember;
     const MOCK_SESSIONS = [{ id: 'id1', token: 'token1' }];
 

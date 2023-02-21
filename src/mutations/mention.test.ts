@@ -22,7 +22,7 @@ import {
   buildDeleteMentionRoute,
   buildPatchMentionRoute,
 } from '../api/routes';
-import { MUTATION_KEYS, buildMentionKey } from '../config/keys';
+import { buildMentionKey } from '../config/keys';
 import {
   clearMentionsRoutine,
   deleteMentionRoutine,
@@ -49,7 +49,7 @@ describe('Mention Mutations', () => {
       nock.cleanAll();
     });
 
-    describe(MUTATION_KEYS.PATCH_MENTION, () => {
+    describe('usePatchMention', () => {
       const route = `/${buildPatchMentionRoute(mentionId)}`;
       const mutation = mutations.usePatchMention;
 
@@ -133,7 +133,7 @@ describe('Mention Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.DELETE_MENTION, () => {
+    describe('useDeleteMention', () => {
       const route = `/${buildDeleteMentionRoute(mentionId)}`;
       const mutation = mutations.useDeleteMention;
 
@@ -210,7 +210,7 @@ describe('Mention Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.CLEAR_MENTIONS, () => {
+    describe('useClearMentions', () => {
       const route = `/${buildClearMentionsRoute()}`;
       const mutation = mutations.useClearMentions;
 
@@ -288,7 +288,7 @@ describe('Mention Mutations', () => {
       nock.cleanAll();
     });
 
-    describe(MUTATION_KEYS.PATCH_MENTION, () => {
+    describe('usePatchMention', () => {
       const route = `/${buildPatchMentionRoute(mentionId)}`;
       const mutation = mutations.usePatchMention;
       it(`Patch mention status`, async () => {
@@ -326,7 +326,7 @@ describe('Mention Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.DELETE_MENTION, () => {
+    describe('useDeleteMention', () => {
       const route = `/${buildDeleteMentionRoute(mentionId)}`;
       const mutation = mutations.useDeleteMention;
       it(`Delete member mention`, async () => {
@@ -363,7 +363,7 @@ describe('Mention Mutations', () => {
       });
     });
 
-    describe(MUTATION_KEYS.CLEAR_MENTIONS, () => {
+    describe('useClearMentions', () => {
       const route = `/${buildClearMentionsRoute()}`;
       const mutation = mutations.useClearMentions;
       it(`Clear chat`, async () => {

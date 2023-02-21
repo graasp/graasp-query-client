@@ -13,7 +13,7 @@ import {
   buildDeleteItemCategoryRoute,
   buildPostItemCategoryRoute,
 } from '../api/routes';
-import { MUTATION_KEYS, buildItemCategoriesKey } from '../config/keys';
+import { buildItemCategoriesKey } from '../config/keys';
 import {
   deleteItemCategoryRoutine,
   postItemCategoryRoutine,
@@ -32,7 +32,7 @@ describe('Item Category Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM_CATEGORY, () => {
+  describe('usePostItemCategory', () => {
     const itemId = 'item-id';
     const categoryId = 'new-category';
     const route = `/${buildPostItemCategoryRoute(itemId)}`;
@@ -101,7 +101,7 @@ describe('Item Category Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_ITEM_CATEGORY, () => {
+  describe('useDeleteItemCategory', () => {
     const itemCategoryId = 'id1';
     const itemId = 'item-id';
     const route = `/${buildDeleteItemCategoryRoute({

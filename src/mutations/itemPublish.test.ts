@@ -9,7 +9,7 @@ import { HttpMethod } from '@graasp/sdk';
 import { ITEMS, ITEM_TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildItemPublishRoute } from '../api/routes';
-import { MUTATION_KEYS, buildItemTagsKey } from '../config/keys';
+import { buildItemTagsKey } from '../config/keys';
 import { publishItemRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -25,7 +25,7 @@ describe('Publish Item', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.PUBLISH_ITEM, () => {
+  describe('usePublishItem', () => {
     const item = ITEMS.first()!;
     const itemId = item.id;
     const notification = true;

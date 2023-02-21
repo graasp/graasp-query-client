@@ -19,7 +19,6 @@ import {
 } from '../api/routes';
 import {
   CURRENT_MEMBER_KEY,
-  MUTATION_KEYS,
   OWN_ITEMS_KEY,
   buildItemLoginKey,
 } from '../config/keys';
@@ -40,7 +39,7 @@ describe('Item Login Mutations', () => {
   const { name: username, id: memberId } = MEMBER_RESPONSE;
   const password = 'password';
   const itemId = ITEMS.first()!.id;
-  describe(MUTATION_KEYS.POST_ITEM_LOGIN, () => {
+  describe('usePostItemLogin', () => {
     const route = `/${buildPostItemLoginSignInRoute(itemId)}`;
     const mutation = mutations.usePostItemLogin;
     it('Post item login', async () => {
@@ -117,7 +116,7 @@ describe('Item Login Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.PUT_ITEM_LOGIN, () => {
+  describe('usePutItemLogin', () => {
     const route = `/${buildPutItemLoginSchema(itemId)}`;
     const mutation = mutations.usePutItemLogin;
     const loginSchema = ITEM_LOGIN_RESPONSE;

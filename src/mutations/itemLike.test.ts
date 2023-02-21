@@ -17,11 +17,7 @@ import {
   buildDeleteItemLikeRoute,
   buildPostItemLikeRoute,
 } from '../api/routes';
-import {
-  MUTATION_KEYS,
-  buildGetLikeCountKey,
-  buildGetLikedItemsKey,
-} from '../config/keys';
+import { buildGetLikeCountKey, buildGetLikedItemsKey } from '../config/keys';
 import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -36,7 +32,7 @@ describe('Item Like Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM_LIKE, () => {
+  describe('usePostItemLike', () => {
     const itemId = ITEMS.first()!.id;
     const memberId = 'member-id';
     const likedItemsKey = buildGetLikedItemsKey(memberId);
@@ -109,7 +105,7 @@ describe('Item Like Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_ITEM_LIKE, () => {
+  describe('useDeleteItemLike', () => {
     const itemId = ITEMS.first()!.id;
     const memberId = 'member-id';
     const entryId = 'id';

@@ -22,11 +22,7 @@ import {
   buildUploadAvatarRoute,
 } from '../api/routes';
 import { THUMBNAIL_SIZES } from '../config/constants';
-import {
-  CURRENT_MEMBER_KEY,
-  MUTATION_KEYS,
-  buildAvatarKey,
-} from '../config/keys';
+import { CURRENT_MEMBER_KEY, buildAvatarKey } from '../config/keys';
 import { addFavoriteItemRoutine, uploadAvatarRoutine } from '../routines';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -41,7 +37,7 @@ describe('Member Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.SIGN_OUT, () => {
+  describe('useSignOut', () => {
     const route = `/${SIGN_OUT_ROUTE}`;
     const mutation = mutations.useSignOut;
 
@@ -94,7 +90,7 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_MEMBER, () => {
+  describe('useDeleteMember', () => {
     const memberId = 'member-id';
 
     const mutation = mutations.useDeleteMember;
@@ -158,7 +154,7 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.EDIT_MEMBER, () => {
+  describe('useEditMember', () => {
     const id = 'member-id';
     const route = `/${buildPatchMember(id)}`;
     const newMember = { name: 'newname' };
@@ -222,7 +218,7 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.UPLOAD_AVATAR, () => {
+  describe('useUploadAvatar', () => {
     const mutation = mutations.useUploadAvatar;
     const member = MEMBER_RESPONSE;
     const { id } = member;
@@ -314,7 +310,7 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.ADD_FAVORITE_ITEM, () => {
+  describe('useAddFavoriteItem', () => {
     const id = 'member-id';
     const itemId = 'item-id';
     const extra = {
@@ -392,7 +388,7 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_FAVORITE_ITEM, () => {
+  describe('useDeleteFavoriteItem', () => {
     const id = 'member-id';
     const route = `/${buildPatchMember(id)}`;
     const itemId = 'item-id';

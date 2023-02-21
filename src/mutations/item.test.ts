@@ -43,7 +43,6 @@ import {
 } from '../api/routes';
 import { THUMBNAIL_SIZES } from '../config/constants';
 import {
-  MUTATION_KEYS,
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_KEY,
   buildItemChildrenKey,
@@ -75,7 +74,7 @@ describe('Items Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM, () => {
+  describe('usePostItem', () => {
     const mutation = mutations.usePostItem;
     const newItem = {
       name: 'new item',
@@ -181,7 +180,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.EDIT_ITEM, () => {
+  describe('useEditItem', () => {
     const item = ITEMS.first()!;
     const mutation = mutations.useEditItem;
     const itemKey = buildItemKey(item.id);
@@ -291,7 +290,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.COPY_ITEM, () => {
+  describe('useCopyItem', () => {
     const to = ITEMS.first()!.id;
     const copied = ITEMS.get(1)!;
     const copiedId = copied.id;
@@ -385,7 +384,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.COPY_PUBLIC_ITEM, () => {
+  describe('useCopyPublicItem', () => {
     const to = ITEMS.first()!.id;
     const copied = ITEMS.get(1)!;
     const copiedId = copied.id;
@@ -479,7 +478,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.COPY_ITEMS, () => {
+  describe('useCopyItems', () => {
     const to = ITEMS.first()!.id;
 
     const mutation = mutations.useCopyItems;
@@ -583,7 +582,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.MOVE_ITEM, () => {
+  describe('useMoveItem', () => {
     const to = ITEMS.first()!.id;
     const moved = ITEMS.get(1)!.id;
     const route = `/${buildMoveItemRoute(moved)}`;
@@ -691,7 +690,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.MOVE_ITEMS, () => {
+  describe('useMoveItems', () => {
     const to = ITEMS.first()!;
     const toId = to.id;
 
@@ -922,7 +921,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.RECYCLE_ITEM, () => {
+  describe('useRecycleItem', () => {
     const mutation = mutations.useRecycleItem;
 
     it('Recycle a root item', async () => {
@@ -1029,7 +1028,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_ITEM, () => {
+  describe('useDeleteItem', () => {
     const mutation = mutations.useDeleteItem;
 
     it('Delete a root item', async () => {
@@ -1184,7 +1183,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.RECYCLE_ITEMS, () => {
+  describe('useRecycleItems', () => {
     const mutation = mutations.useRecycleItems;
 
     it('Recycle root items', async () => {
@@ -1406,7 +1405,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_ITEMS, () => {
+  describe('useDeleteItems', () => {
     const mutation = mutations.useDeleteItems;
 
     it('Delete root items', async () => {
@@ -1730,7 +1729,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.UPLOAD_FILES, () => {
+  describe('useUploadFiles', () => {
     const mutation = mutations.useUploadFiles;
     const { id } = ITEMS.first()!;
 
@@ -1799,7 +1798,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.RESTORE_ITEMS, () => {
+  describe('useRestoreItems', () => {
     const mutation = mutations.useRestoreItems;
 
     it('Restore items', async () => {
@@ -2035,7 +2034,7 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.UPLOAD_ITEM_THUMBNAIL, () => {
+  describe('useUploadItemThumbnail', () => {
     const mutation = mutations.useUploadItemThumbnail;
     const item = ITEMS.first()!;
     const { id } = item;

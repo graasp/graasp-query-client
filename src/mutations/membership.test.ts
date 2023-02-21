@@ -28,7 +28,6 @@ import {
   buildPostManyItemMembershipsRoute,
 } from '../api/routes';
 import {
-  MUTATION_KEYS,
   OWN_ITEMS_KEY,
   buildItemInvitationsKey,
   buildItemKey,
@@ -61,7 +60,7 @@ describe('Membership Mutations', () => {
   const membershipId = memberships.first()!.id;
   const permission = PermissionLevel.Read;
 
-  describe(MUTATION_KEYS.POST_ITEM_MEMBERSHIP, () => {
+  describe('usePostItemMembership', () => {
     const mutation = mutations.usePostItemMembership;
 
     const { email } = MEMBER_RESPONSE;
@@ -156,7 +155,7 @@ describe('Membership Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.EDIT_ITEM_MEMBERSHIP, () => {
+  describe('useEditItemMembership', () => {
     const route = `/${buildEditItemMembershipRoute(membershipId)}`;
     const mutation = mutations.useEditItemMembership;
 
@@ -229,7 +228,7 @@ describe('Membership Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_ITEM_MEMBERSHIP, () => {
+  describe('useDeleteItemMembership', () => {
     const route = `/${buildDeleteItemMembershipRoute(membershipId)}`;
     const mutation = mutations.useDeleteItemMembership;
 
@@ -304,7 +303,7 @@ describe('Membership Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.SHARE_ITEM, () => {
+  describe('useShareItem', () => {
     const initialInvitations = buildMockInvitations(itemId);
     const mutation = mutations.useShareItem;
 

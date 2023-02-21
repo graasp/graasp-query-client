@@ -10,7 +10,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { FLAGS, ITEMS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildPostItemFlagRoute } from '../api/routes';
-import { MUTATION_KEYS, buildItemFlagsKey } from '../config/keys';
+import { buildItemFlagsKey } from '../config/keys';
 import { postItemFlagRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -25,7 +25,7 @@ describe('Item Flag Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM_FLAG, () => {
+  describe('usePostItemFlag', () => {
     const flagId = FLAGS.first()!.id;
     const itemId = ITEMS.first()!.id;
     const flagKey = buildItemFlagsKey(itemId);

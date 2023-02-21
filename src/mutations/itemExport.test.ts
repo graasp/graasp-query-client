@@ -12,7 +12,6 @@ import {
   buildExportItemRoute,
   buildExportPublicItemRoute,
 } from '../api/routes';
-import { MUTATION_KEYS } from '../config/keys';
 import { exportItemRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -28,7 +27,7 @@ describe('Export Zip', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.EXPORT_ZIP, () => {
+  describe('useExportZip', () => {
     const itemId = 'item-id';
     const route = `/${buildExportItemRoute(itemId)}`;
     const mutation = mutations.useExportZip;
