@@ -13,7 +13,6 @@ import {
 } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildExportActions } from '../api/routes';
-import { MUTATION_KEYS } from '../config/keys';
 import { exportActionsRoutine } from '../routines';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -22,7 +21,7 @@ describe('Action Mutations', () => {
   const itemId = ITEMS.first()!.id;
 
   const mockedNotifier = jest.fn();
-  const { wrapper, queryClient, useMutation } = setUpTest({
+  const { wrapper, queryClient, mutations } = setUpTest({
     notifier: mockedNotifier,
   });
 
@@ -31,9 +30,9 @@ describe('Action Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM_CHAT_MESSAGE, () => {
+  describe('useExportActions', () => {
     const route = `/${buildExportActions(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.EXPORT_ACTIONS);
+    const mutation = mutations.useExportActions;
 
     it(`Export Actions`, async () => {
       const endpoints = [

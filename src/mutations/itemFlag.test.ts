@@ -10,11 +10,11 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { FLAGS, ITEMS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildPostItemFlagRoute } from '../api/routes';
-import { MUTATION_KEYS, buildItemFlagsKey } from '../config/keys';
+import { buildItemFlagsKey } from '../config/keys';
 import { postItemFlagRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
-const { wrapper, queryClient, useMutation } = setUpTest({
+const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -25,12 +25,12 @@ describe('Item Flag Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM_FLAG, () => {
+  describe('usePostItemFlag', () => {
     const flagId = FLAGS.first()!.id;
     const itemId = ITEMS.first()!.id;
     const flagKey = buildItemFlagsKey(itemId);
     const route = `/${buildPostItemFlagRoute(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_FLAG);
+    const mutation = mutations.usePostItemFlag;
 
     it('Post item flag', async () => {
       queryClient.setQueryData(flagKey, FLAGS);

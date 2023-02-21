@@ -40,7 +40,7 @@ export const setUpTest = (args?: Args) => {
     WS_HOST,
   };
 
-  const { queryClient, QueryClientProvider, useMutation } =
+  const { queryClient, QueryClientProvider, mutations } =
     configureQueryClient(queryConfig);
 
   // configure hooks
@@ -50,7 +50,7 @@ export const setUpTest = (args?: Args) => {
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 
-  return { hooks, wrapper, queryClient, useMutation };
+  return { hooks, wrapper, queryClient, mutations };
 };
 
 export type Endpoint = {

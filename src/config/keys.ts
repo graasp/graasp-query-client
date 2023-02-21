@@ -223,6 +223,7 @@ export const DATA_KEYS = {
   buildEtherpadKey,
 };
 
+/** @deprecated use corresponding hook mutation instead, (ie: POST_ITEM -> usePostItem)  */
 export const MUTATION_KEYS = {
   POST_ITEM: 'postItem',
   EDIT_ITEM: 'editItem',

@@ -1,4 +1,6 @@
-import { QueryClient } from 'react-query';
+import { QueryClient, useMutation } from 'react-query';
+
+import { UUID } from '@graasp/sdk';
 
 import * as Api from '../api';
 import { MUTATION_KEYS } from '../config/keys';
@@ -20,4 +22,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: exportItemRoutine.FAILURE, payload: { error } });
     },
   });
+  const useExportZip = () =>
+    useMutation<void, unknown, { id: UUID; options: { public: boolean } }>(
+      MUTATION_KEYS.EXPORT_ZIP,
+    );
+
+  return {
+    useExportZip,
+  };
 };

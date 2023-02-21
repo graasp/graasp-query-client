@@ -1,12 +1,12 @@
-import { QueryClient } from 'react-query';
+import { QueryClient, useMutation } from 'react-query';
 
 import {
-  UUID,
   getStoredSessions,
   removeSession,
   saveUrlForRedirection,
   setCurrentSession,
 } from '@graasp/sdk';
+import { Password } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
@@ -22,10 +22,19 @@ import {
 import { QueryClientConfig } from '../types';
 import { isServer } from '../utils/util';
 
+const {
+  SIGN_IN,
+  SIGN_OUT,
+  UPDATE_PASSWORD,
+  SIGN_IN_WITH_PASSWORD,
+  SWITCH_MEMBER,
+  SIGN_UP,
+} = MUTATION_KEYS;
+
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.SIGN_IN, {
+  queryClient.setMutationDefaults(SIGN_IN, {
     mutationFn: (payload) => Api.signIn(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
@@ -41,8 +50,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
   });
+  const useSignIn = () =>
+    useMutation<void, unknown, { email: string }>(SIGN_IN);
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.SIGN_IN_WITH_PASSWORD, {
+  queryClient.setMutationDefaults(SIGN_IN_WITH_PASSWORD, {
     mutationFn: (payload) => Api.signInWithPassword(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
@@ -58,12 +69,16 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
   });
+  const useSignInWithPassword = () =>
+    useMutation<void, unknown, { email: string; password: Password }>(
+      SIGN_IN_WITH_PASSWORD,
+    );
 
   /**  mutation to update member password. suppose only you can edit yourself
    * @param {Password} password new password that user wants to set
    * @param {Password} currentPassword current password already stored
    */
-  queryClient.setMutationDefaults(MUTATION_KEYS.UPDATE_PASSWORD, {
+  queryClient.setMutationDefaults(UPDATE_PASSWORD, {
     mutationFn: (payload) => Api.updatePassword(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
@@ -78,8 +93,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
   });
+  const useUpdatePassword = () =>
+    useMutation<
+      void,
+      unknown,
+      { password: Password; currentPassword: Password }
+    >(UPDATE_PASSWORD);
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.SIGN_UP, {
+  queryClient.setMutationDefaults(SIGN_UP, {
     mutationFn: (payload) => Api.signUp(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
@@ -94,9 +115,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
   });
+  const useSignUp = () =>
+    useMutation<void, unknown, { name: string; email: string }>(SIGN_UP);
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.SIGN_OUT, {
-    mutationFn: (_currentUserId: UUID) => Api.signOut(queryConfig),
+  queryClient.setMutationDefaults(SIGN_OUT, {
+    mutationFn: () => Api.signOut(queryConfig),
     onSuccess: (_res, currentUserId) => {
       notifier?.({
         type: signOutRoutine.SUCCESS,
@@ -123,8 +146,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
   });
+  const useSignOut = () => useMutation<void, unknown, void>(SIGN_OUT);
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.SWITCH_MEMBER, {
+  queryClient.setMutationDefaults(SWITCH_MEMBER, {
     mutationFn: async (args: { memberId: string; domain: string }) => {
       // get token from stored sessions given memberId
       const sessions = getStoredSessions();
@@ -149,4 +173,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
   });
+  const useSwitchMember = () => useMutation<void, unknown, void>(SWITCH_MEMBER);
+
+  return {
+    useSwitchMember,
+    useSignIn,
+    useSignInWithPassword,
+    useSignOut,
+    useSignUp,
+    useUpdatePassword,
+  };
 };

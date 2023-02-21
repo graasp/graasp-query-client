@@ -345,10 +345,10 @@ export const buildSetDefaultCardRoute = (cardId: string) =>
 export const CREATE_SETUP_INTENT_ROUTE = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/setup-intent`;
 export const GET_CURRENT_CUSTOMER = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/customer/current`;
 export const buildItemPublishRoute = (itemId: UUID, notification?: boolean) =>
-  `${ITEMS_ROUTE}/${itemId}/publish${qs.stringify(
-    { notification },
-    { addQueryPrefix: true },
-  )}`;
+  // do not include notification query string if false
+  `${ITEMS_ROUTE}/${itemId}/publish${
+    notification ? qs.stringify({ notification }, { addQueryPrefix: true }) : ''
+  }`;
 
 export const buildPostEtherpadRoute = (parentId?: UUID) =>
   `${ETHERPAD_ROUTE}/create${qs.stringify(

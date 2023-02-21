@@ -1,6 +1,6 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
-import { QueryClient } from 'react-query';
+import { QueryClient, useMutation } from 'react-query';
 
 import {
   Invitation,
@@ -28,13 +28,17 @@ import {
 } from '../routines';
 import { QueryClientConfig } from '../types';
 
-export default (
-  queryClient: QueryClient,
-  queryConfig: QueryClientConfig,
-): void => {
+const {
+  POST_ITEM_MEMBERSHIP,
+  SHARE_ITEM,
+  EDIT_ITEM_MEMBERSHIP,
+  DELETE_ITEM_MEMBERSHIP,
+} = MUTATION_KEYS;
+
+export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_MEMBERSHIP, {
+  queryClient.setMutationDefaults(POST_ITEM_MEMBERSHIP, {
     mutationFn: (payload) => Api.postItemMembership(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
@@ -56,13 +60,22 @@ export default (
       queryClient.invalidateQueries(buildItemMembershipsKey(id));
     },
   });
+  const usePostItemMembership = () =>
+    useMutation<
+      void,
+      unknown,
+      {
+        id: UUID;
+        email: string;
+        permission: PermissionLevel;
+      }
+    >(POST_ITEM_MEMBERSHIP);
 
   /**
    * @param {UUID} id membership id to edit
-   * @param {UUID} itemId corresponding item id
    * @param {PermissionLevel} permission permission level to apply
    */
-  queryClient.setMutationDefaults(MUTATION_KEYS.EDIT_ITEM_MEMBERSHIP, {
+  queryClient.setMutationDefaults(EDIT_ITEM_MEMBERSHIP, {
     mutationFn: ({
       id,
       permission,
@@ -87,8 +100,17 @@ export default (
       queryClient.invalidateQueries(buildItemMembershipsKey(itemId));
     },
   });
+  const useEditItemMembership = () =>
+    useMutation<
+      void,
+      unknown,
+      {
+        id: UUID;
+        permission: PermissionLevel;
+      }
+    >(EDIT_ITEM_MEMBERSHIP);
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.DELETE_ITEM_MEMBERSHIP, {
+  queryClient.setMutationDefaults(DELETE_ITEM_MEMBERSHIP, {
     mutationFn: ({ id }) => Api.deleteItemMembership({ id }, queryConfig),
     onMutate: ({ itemId, id }) => {
       const membershipsKey = buildItemMembershipsKey(itemId);
@@ -121,11 +143,19 @@ export default (
       queryClient.invalidateQueries(buildItemMembershipsKey(itemId));
     },
   });
+  const useDeleteItemMembership = () =>
+    useMutation<
+      void,
+      unknown,
+      {
+        id: UUID;
+      }
+    >(DELETE_ITEM_MEMBERSHIP);
 
   // this mutation handles sharing an item to multiple emails
   // it will invite if the mail doesn't exist in the db
   // it will create a membership if an account exists
-  queryClient.setMutationDefaults(MUTATION_KEYS.SHARE_ITEM, {
+  queryClient.setMutationDefaults(SHARE_ITEM, {
     mutationFn: async ({
       data,
       itemId,
@@ -239,4 +269,20 @@ export default (
       queryClient.invalidateQueries(buildItemInvitationsKey(itemId));
     },
   });
+  const useShareItem = () =>
+    useMutation<
+      void,
+      unknown,
+      {
+        data: Partial<Invitation>[];
+        itemId: UUID;
+      }
+    >(SHARE_ITEM);
+
+  return {
+    useShareItem,
+    usePostItemMembership,
+    useEditItemMembership,
+    useDeleteItemMembership,
+  };
 };

@@ -23,7 +23,7 @@ import {
   buildPostInvitationsRoute,
   buildResendInvitationRoute,
 } from '../api/routes';
-import { MUTATION_KEYS, buildItemInvitationsKey } from '../config/keys';
+import { buildItemInvitationsKey } from '../config/keys';
 import {
   deleteInvitationRoutine,
   patchInvitationRoutine,
@@ -40,7 +40,7 @@ const defaultInvitations = buildMockInvitations(itemId);
 
 describe('Invitations Mutations', () => {
   const mockedNotifier = jest.fn();
-  const { wrapper, queryClient, useMutation } = setUpTest({
+  const { wrapper, queryClient, mutations } = setUpTest({
     notifier: mockedNotifier,
   });
 
@@ -49,8 +49,8 @@ describe('Invitations Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_INVITATIONS, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.POST_INVITATIONS);
+  describe('usePostInvitations', () => {
+    const mutation = mutations.usePostInvitations;
     const key = buildItemInvitationsKey(itemId);
     const route = `/${buildPostInvitationsRoute(itemId)}`;
 
@@ -194,8 +194,8 @@ describe('Invitations Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.PATCH_INVITATION, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.PATCH_INVITATION);
+  describe('usePatchInvitation', () => {
+    const mutation = mutations.usePatchInvitation;
     const key = buildItemInvitationsKey(itemId);
     const newInvitation = buildInvitation({
       itemPath: itemId,
@@ -275,8 +275,8 @@ describe('Invitations Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_INVITATION, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.DELETE_INVITATION);
+  describe('useDeleteInvitation', () => {
+    const mutation = mutations.useDeleteInvitation;
     const key = buildItemInvitationsKey(itemId);
     const invitationToDelete = buildInvitation({ itemPath: 'itemPath' });
     const invitationToDeleteRecord = buildInvitationRecord({
@@ -367,8 +367,8 @@ describe('Invitations Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.RESEND_INVITATION, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.RESEND_INVITATION);
+  describe('useResendInvitation', () => {
+    const mutation = mutations.useResendInvitation;
     const invitation = buildInvitation({ itemPath: 'itemPath' });
     const route = `/${buildResendInvitationRoute({
       itemId,

@@ -13,14 +13,14 @@ import {
   buildDeleteItemCategoryRoute,
   buildPostItemCategoryRoute,
 } from '../api/routes';
-import { MUTATION_KEYS, buildItemCategoriesKey } from '../config/keys';
+import { buildItemCategoriesKey } from '../config/keys';
 import {
   deleteItemCategoryRoutine,
   postItemCategoryRoutine,
 } from '../routines';
 
 const mockedNotifier = jest.fn();
-const { wrapper, queryClient, useMutation } = setUpTest({
+const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 
@@ -32,11 +32,11 @@ describe('Item Category Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM_CATEGORY, () => {
+  describe('usePostItemCategory', () => {
     const itemId = 'item-id';
     const categoryId = 'new-category';
     const route = `/${buildPostItemCategoryRoute(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_CATEGORY);
+    const mutation = mutations.usePostItemCategory;
     const key = buildItemCategoriesKey(itemId);
 
     it('Post item category', async () => {
@@ -101,14 +101,14 @@ describe('Item Category Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_ITEM_CATEGORY, () => {
+  describe('useDeleteItemCategory', () => {
     const itemCategoryId = 'id1';
     const itemId = 'item-id';
     const route = `/${buildDeleteItemCategoryRoute({
       itemId,
       itemCategoryId,
     })}`;
-    const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_CATEGORY);
+    const mutation = mutations.useDeleteItemCategory;
     const key = buildItemCategoriesKey(itemId);
 
     it('Delete item category', async () => {

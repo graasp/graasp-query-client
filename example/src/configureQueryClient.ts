@@ -10,7 +10,7 @@ const {
   QueryClientProvider,
   queryClient,
   hooks,
-  useMutation,
+  mutations,
 } = configureQueryClient(queryConfig);
 
-export { QueryClientProvider, queryClient, hooks, useMutation };
+export { QueryClientProvider, queryClient, hooks, mutations };

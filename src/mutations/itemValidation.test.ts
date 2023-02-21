@@ -19,7 +19,6 @@ import {
 } from '../api/routes';
 import {
   ITEM_VALIDATION_REVIEWS_KEY,
-  MUTATION_KEYS,
   buildItemValidationAndReviewKey,
 } from '../config/keys';
 import {
@@ -28,7 +27,7 @@ import {
 } from '../routines';
 
 const mockedNotifier = jest.fn();
-const { wrapper, queryClient, useMutation } = setUpTest({
+const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 
@@ -40,10 +39,10 @@ describe('Item Validation Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.POST_ITEM_VALIDATION, () => {
+  describe('usePostItemValidation', () => {
     const itemId = 'item-id';
     const route = `/${buildPostItemValidationRoute(itemId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_VALIDATION);
+    const mutation = mutations.usePostItemValidation;
     const key = buildItemValidationAndReviewKey(itemId);
 
     it('Post item validation', async () => {
@@ -105,14 +104,13 @@ describe('Item Validation Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.UPDATE_ITEM_VALIDATION_REVIEW, () => {
+  describe('useUpdateItemValidationReview', () => {
     const id = 'id1';
     const itemId = 'item-id';
     const status = 'accepted';
     const reason = '';
     const route = `/${buildUpdateItemValidationReviewRoute(id)}`;
-    const mutation = () =>
-      useMutation(MUTATION_KEYS.UPDATE_ITEM_VALIDATION_REVIEW);
+    const mutation = mutations.useUpdateItemValidationReview;
     const statusKey = buildItemValidationAndReviewKey(itemId);
     const reviewsKey = ITEM_VALIDATION_REVIEWS_KEY;
 

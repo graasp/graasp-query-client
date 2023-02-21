@@ -1,4 +1,6 @@
-import { QueryClient } from 'react-query';
+import { QueryClient, useMutation } from 'react-query';
+
+import { UUID } from '@graasp/sdk';
 
 import { exportActions } from '../api';
 import { MUTATION_KEYS } from '../config/keys';
@@ -22,4 +24,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
   });
+  const useExportActions = () =>
+    useMutation<void, unknown, UUID>(EXPORT_ACTIONS);
+  return {
+    useExportActions,
+  };
 };

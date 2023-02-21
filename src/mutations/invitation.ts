@@ -1,7 +1,8 @@
 import { List } from 'immutable';
-import { QueryClient } from 'react-query';
+import { QueryClient, useMutation } from 'react-query';
 
-import { InvitationRecord } from '@graasp/sdk/frontend';
+import { PermissionLevel, UUID } from '@graasp/sdk';
+import { InvitationRecord, NewInvitation } from '@graasp/sdk/frontend';
 
 import {
   deleteInvitation,
@@ -48,6 +49,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(buildItemInvitationsKey(itemId));
     },
   });
+  const usePostInvitations = () =>
+    useMutation<void, unknown, { itemId: UUID; invitations: NewInvitation[] }>(
+      POST_INVITATIONS,
+    );
+
   queryClient.setMutationDefaults(PATCH_INVITATION, {
     mutationFn: ({ itemId, id, permission, name }) =>
       patchInvitation({ itemId, id }, { permission, name }, queryConfig),
@@ -88,6 +94,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(buildItemInvitationsKey(itemId));
     },
   });
+  const usePatchInvitation = () =>
+    useMutation<
+      void,
+      unknown,
+      { itemId: UUID; id: UUID; permission: PermissionLevel; name: string }
+    >(PATCH_INVITATION);
 
   queryClient.setMutationDefaults(DELETE_INVITATION, {
     mutationFn: (payload) => deleteInvitation(payload, queryConfig),
@@ -122,6 +134,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(buildItemInvitationsKey(itemId));
     },
   });
+  const useDeleteInvitation = () =>
+    useMutation<void, unknown, { id: UUID; itemId: UUID }>(DELETE_INVITATION);
 
   queryClient.setMutationDefaults(RESEND_INVITATION, {
     mutationFn: (payload) => resendInvitation(payload, queryConfig),
@@ -137,4 +151,13 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
   });
+  const useResendInvitation = () =>
+    useMutation<void, unknown, { id: UUID; itemId: UUID }>(RESEND_INVITATION);
+
+  return {
+    useResendInvitation,
+    useDeleteInvitation,
+    usePatchInvitation,
+    usePostInvitations,
+  };
 };

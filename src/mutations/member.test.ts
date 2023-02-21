@@ -22,17 +22,13 @@ import {
   buildUploadAvatarRoute,
 } from '../api/routes';
 import { THUMBNAIL_SIZES } from '../config/constants';
-import {
-  CURRENT_MEMBER_KEY,
-  MUTATION_KEYS,
-  buildAvatarKey,
-} from '../config/keys';
+import { CURRENT_MEMBER_KEY, buildAvatarKey } from '../config/keys';
 import { addFavoriteItemRoutine, uploadAvatarRoutine } from '../routines';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 const mockedNotifier = jest.fn();
-const { wrapper, queryClient, useMutation } = setUpTest({
+const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 describe('Member Mutations', () => {
@@ -41,9 +37,9 @@ describe('Member Mutations', () => {
     nock.cleanAll();
   });
 
-  describe(MUTATION_KEYS.SIGN_OUT, () => {
+  describe('useSignOut', () => {
     const route = `/${SIGN_OUT_ROUTE}`;
-    const mutation = () => useMutation(MUTATION_KEYS.SIGN_OUT);
+    const mutation = mutations.useSignOut;
 
     it(`Successfully sign out`, async () => {
       const endpoints = [{ route, response: OK_RESPONSE }];
@@ -94,10 +90,10 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_MEMBER, () => {
+  describe('useDeleteMember', () => {
     const memberId = 'member-id';
 
-    const mutation = () => useMutation(MUTATION_KEYS.DELETE_MEMBER);
+    const mutation = mutations.useDeleteMember;
 
     it(`Successfully delete member`, async () => {
       const endpoints = [
@@ -158,11 +154,11 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.EDIT_MEMBER, () => {
+  describe('useEditMember', () => {
     const id = 'member-id';
     const route = `/${buildPatchMember(id)}`;
     const newMember = { name: 'newname' };
-    const mutation = () => useMutation(MUTATION_KEYS.EDIT_MEMBER);
+    const mutation = mutations.useEditMember;
 
     it(`Successfully edit member id = ${id}`, async () => {
       const response = MEMBER_RESPONSE.set('name', newMember.name);
@@ -222,8 +218,8 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.UPLOAD_AVATAR, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.UPLOAD_AVATAR);
+  describe('useUploadAvatar', () => {
+    const mutation = mutations.useUploadAvatar;
     const member = MEMBER_RESPONSE;
     const { id } = member;
 
@@ -314,14 +310,14 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.ADD_FAVORITE_ITEM, () => {
+  describe('useAddFavoriteItem', () => {
     const id = 'member-id';
     const itemId = 'item-id';
     const extra = {
       favoriteItems: [],
     };
     const route = `/${buildPatchMember(id)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.ADD_FAVORITE_ITEM);
+    const mutation = mutations.useAddFavoriteItem;
 
     it(`Successfully add favorite item`, async () => {
       const response = MEMBER_RESPONSE.set(
@@ -392,14 +388,14 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_FAVORITE_ITEM, () => {
+  describe('useDeleteFavoriteItem', () => {
     const id = 'member-id';
     const route = `/${buildPatchMember(id)}`;
     const itemId = 'item-id';
     const extra = {
       favoriteItems: ['item-id', 'item-id2'],
     };
-    const mutation = () => useMutation(MUTATION_KEYS.DELETE_FAVORITE_ITEM);
+    const mutation = mutations.useDeleteFavoriteItem;
 
     it(`Successfully delete favorite item`, async () => {
       const response = MEMBER_RESPONSE.set(

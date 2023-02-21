@@ -1,9 +1,10 @@
 import React from 'react';
-import { hooks, useMutation } from './configureQueryClient';
+
+import { hooks, mutations } from './configureQueryClient';
 
 const App = () => {
-  const { mutate: postItem }: any = useMutation('postItem');
-  const { data: user, isLoading }: any = hooks.useOwnItems();
+  const { mutate: postItem } = mutations.usePostItem();
+  const { data: user, isLoading } = hooks.useOwnItems();
 
   const onClick = () => {
     // use the post item mutation

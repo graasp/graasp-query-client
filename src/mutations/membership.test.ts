@@ -28,7 +28,6 @@ import {
   buildPostManyItemMembershipsRoute,
 } from '../api/routes';
 import {
-  MUTATION_KEYS,
   OWN_ITEMS_KEY,
   buildItemInvitationsKey,
   buildItemKey,
@@ -41,7 +40,7 @@ import {
 } from '../routines';
 
 const mockedNotifier = jest.fn();
-const { wrapper, queryClient, useMutation } = setUpTest({
+const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 
@@ -61,8 +60,9 @@ describe('Membership Mutations', () => {
   const membershipId = memberships.first()!.id;
   const permission = PermissionLevel.Read;
 
-  describe(MUTATION_KEYS.POST_ITEM_MEMBERSHIP, () => {
-    const mutation = () => useMutation(MUTATION_KEYS.POST_ITEM_MEMBERSHIP);
+  describe('usePostItemMembership', () => {
+    const mutation = mutations.usePostItemMembership;
+
     const { email } = MEMBER_RESPONSE;
 
     it('Create one membership', async () => {
@@ -155,9 +155,9 @@ describe('Membership Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.EDIT_ITEM_MEMBERSHIP, () => {
+  describe('useEditItemMembership', () => {
     const route = `/${buildEditItemMembershipRoute(membershipId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.EDIT_ITEM_MEMBERSHIP);
+    const mutation = mutations.useEditItemMembership;
 
     it('Edit item membership', async () => {
       queryClient.setQueryData(membershipsKey, memberships);
@@ -228,9 +228,9 @@ describe('Membership Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.DELETE_ITEM_MEMBERSHIP, () => {
+  describe('useDeleteItemMembership', () => {
     const route = `/${buildDeleteItemMembershipRoute(membershipId)}`;
-    const mutation = () => useMutation(MUTATION_KEYS.DELETE_ITEM_MEMBERSHIP);
+    const mutation = mutations.useDeleteItemMembership;
 
     it('Delete item membership', async () => {
       queryClient.setQueryData(membershipsKey, ITEM_MEMBERSHIPS_RESPONSE);
@@ -303,9 +303,10 @@ describe('Membership Mutations', () => {
     });
   });
 
-  describe(MUTATION_KEYS.SHARE_ITEM, () => {
+  describe('useShareItem', () => {
     const initialInvitations = buildMockInvitations(itemId);
-    const mutation = () => useMutation(MUTATION_KEYS.SHARE_ITEM);
+    const mutation = mutations.useShareItem;
+
     const emails = ['anna@email.com', 'bob@email.com', 'cedric@email.com'];
 
     it('Successfully share item with all emails', async () => {
