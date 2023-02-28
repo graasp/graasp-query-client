@@ -1,6 +1,7 @@
 import { QueryClient, useMutation } from 'react-query';
 
 import {
+  UUID,
   getStoredSessions,
   removeSession,
   saveUrlForRedirection,
@@ -119,7 +120,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     useMutation<void, unknown, { name: string; email: string }>(SIGN_UP);
 
   queryClient.setMutationDefaults(SIGN_OUT, {
-    mutationFn: () => Api.signOut(queryConfig),
+    mutationFn: (_currentMemberId: UUID) => Api.signOut(queryConfig),
     onSuccess: (_res, currentUserId) => {
       notifier?.({
         type: signOutRoutine.SUCCESS,
@@ -146,7 +147,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
   });
-  const useSignOut = () => useMutation<void, unknown, void>(SIGN_OUT);
+  const useSignOut = () => useMutation<void, unknown, UUID>(SIGN_OUT);
 
   queryClient.setMutationDefaults(SWITCH_MEMBER, {
     mutationFn: async (args: { memberId: string; domain: string }) => {
