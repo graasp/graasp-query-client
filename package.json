@@ -4,7 +4,7 @@
   "workspaces": [
     "example"
   ],
-  "repository": "graasp/query-client",
+  "repository": "graasp/graasp-query-client",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.ts",
