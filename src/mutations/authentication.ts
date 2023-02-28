@@ -121,7 +121,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(SIGN_OUT, {
     mutationFn: (_currentMemberId: UUID) => Api.signOut(queryConfig),
-    onSuccess: (_res, currentUserId) => {
+    onSuccess: (_res, currentMemberId) => {
       notifier?.({
         type: signOutRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
@@ -134,7 +134,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
         // remove cookie and stored session from browser when the logout is confirmed
         setCurrentSession(null, queryConfig.DOMAIN);
-        removeSession(currentUserId, queryConfig.DOMAIN);
+        removeSession(currentMemberId, queryConfig.DOMAIN);
       }
       // Update when the server confirmed the logout, instead optimistically updating the member
       // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
@@ -174,7 +174,10 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
   });
-  const useSwitchMember = () => useMutation<void, unknown, void>(SWITCH_MEMBER);
+  const useSwitchMember = () =>
+    useMutation<void, unknown, { memberId: string; domain: string }>(
+      SWITCH_MEMBER,
+    );
 
   return {
     useSwitchMember,
