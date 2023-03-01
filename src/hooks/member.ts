@@ -85,7 +85,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       }
       return useQuery({
         queryKey: buildAvatarKey({ id, size }),
-        queryFn: () => {
+        queryFn: (): Promise<Blob | undefined> => {
           if (!id) {
             throw new UndefinedArgument();
           }
