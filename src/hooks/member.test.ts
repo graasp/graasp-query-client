@@ -9,6 +9,7 @@ import { MemberRecord } from '@graasp/sdk/frontend';
 
 import {
   AVATAR_BLOB_RESPONSE,
+  FILE_NOT_FOUND_RESPONSE,
   MEMBERS_RESPONSE,
   MEMBER_RESPONSE,
   UNAUTHORIZED_RESPONSE,
@@ -385,6 +386,27 @@ describe('Member Hooks', () => {
 
       expect(data).toBeFalsy();
       expect(isFetched).toBeFalsy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+
+    it(`Error fetching avatar`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: FILE_NOT_FOUND_RESPONSE,
+          statusCode: StatusCodes.NOT_FOUND,
+        },
+      ];
+      const { data, isFetched, isError } = await mockHook({
+        endpoints,
+        hook: () => hooks.useAvatar({ id: member.id }),
+        wrapper,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isFetched).toBeTruthy();
+      expect(isError).toBeFalsy();
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
     });

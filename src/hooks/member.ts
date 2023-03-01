@@ -1,3 +1,5 @@
+import { AxiosError } from 'axios';
+import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import { QueryClient, useQuery } from 'react-query';
 
@@ -87,9 +89,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.downloadAvatar({ id, size }, queryConfig).then(
-            (data) => data,
-          );
+          return Api.downloadAvatar({ id, size }, queryConfig)
+            .then((data) => data)
+            .catch((error: AxiosError) => {
+              if (error.response?.status === StatusCodes.NOT_FOUND) {
+                return undefined;
+              }
+              throw error;
+            });
         },
         ...defaultQueryOptions,
         enabled: Boolean(id) && shouldFetch,
