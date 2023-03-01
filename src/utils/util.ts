@@ -1,4 +1,4 @@
-import { List, RecordOf, is } from 'immutable';
+import { List, is } from 'immutable';
 import { InfiniteData } from 'react-query';
 
 export const isObject = (value: unknown) =>
@@ -14,19 +14,19 @@ export const getHostname = () => {
   return window?.location?.hostname;
 };
 
-export const isDataEqual = (
+export const isDataEqual = <T>(
   oldData:
-    | RecordOf<any>
-    | List<RecordOf<any>>
-    | List<List<RecordOf<any>>>
+    | T
+    | List<T>
+    | List<List<T>>
     // necessary for download avatar, thumbnail
     // might be removed if we only use links
     | Blob
     | undefined,
   newData:
-    | RecordOf<any>
-    | List<RecordOf<any>>
-    | List<List<RecordOf<any>>>
+    | T
+    | List<T>
+    | List<List<T>>
     // necessary for download avatar, thumbnail
     // might be removed if we only use links
     | Blob,

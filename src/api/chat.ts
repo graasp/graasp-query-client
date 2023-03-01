@@ -1,4 +1,10 @@
-import { ChatMessage, ExportedChatMessage, ItemChat, UUID } from '@graasp/sdk';
+import {
+  ChatMessage,
+  ExportedChatMessage,
+  ItemChat,
+  MessageBodyType,
+  UUID,
+} from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import configureAxios, {
@@ -38,7 +44,7 @@ export const exportItemChat = async (
   );
 
 export const postItemChatMessage = async (
-  { chatId, body }: Pick<ChatMessage, 'chatId' | 'body'>,
+  { chatId, body }: Pick<ChatMessage, 'chatId'> & { body: MessageBodyType },
   { API_HOST }: QueryClientConfig,
 ): Promise<ChatMessage> =>
   verifyAuthentication(
@@ -51,7 +57,11 @@ export const postItemChatMessage = async (
   );
 
 export const patchItemChatMessage = async (
-  { chatId, id, body }: Pick<ChatMessage, 'chatId' | 'id' | 'body'>,
+  {
+    chatId,
+    id,
+    body,
+  }: Pick<ChatMessage, 'chatId' | 'id'> & { body: MessageBodyType },
   { API_HOST }: QueryClientConfig,
 ): Promise<ChatMessage> =>
   verifyAuthentication(

@@ -1,4 +1,4 @@
-import { Category, ItemCategory, UUID } from '@graasp/sdk';
+import { Category, CategoryType, ItemCategory, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import configureAxios, {
@@ -18,7 +18,9 @@ import {
 
 const axios = configureAxios();
 
-export const getCategoryTypes = async ({ API_HOST }: QueryClientConfig) =>
+export const getCategoryTypes = async ({
+  API_HOST,
+}: QueryClientConfig): Promise<CategoryType[]> =>
   axios.get(`${API_HOST}/${GET_CATEGORY_TYPES_ROUTE}`).then(({ data }) => data);
 
 export const getCategories = async (
