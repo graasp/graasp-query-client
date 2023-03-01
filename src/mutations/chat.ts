@@ -1,6 +1,6 @@
 import { QueryClient, useMutation } from 'react-query';
 
-import { ChatMessage, UUID } from '@graasp/sdk';
+import { ChatMessage, MessageBodyType, UUID } from '@graasp/sdk';
 
 import * as Api from '../api';
 import { MUTATION_KEYS, buildItemChatKey } from '../config/keys';
@@ -37,9 +37,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
   const usePostItemChatMessage = () =>
-    useMutation<void, unknown, Pick<ChatMessage, 'chatId' | 'body'>>(
-      POST_ITEM_CHAT_MESSAGE,
-    );
+    useMutation<
+      void,
+      unknown,
+      Pick<ChatMessage, 'chatId'> & { body: MessageBodyType }
+    >(POST_ITEM_CHAT_MESSAGE);
 
   queryClient.setMutationDefaults(PATCH_ITEM_CHAT_MESSAGE, {
     mutationFn: (chatMsg) => Api.patchItemChatMessage(chatMsg, queryConfig),
@@ -58,9 +60,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
   const usePatchItemChatMessage = () =>
-    useMutation<void, unknown, Pick<ChatMessage, 'chatId' | 'id' | 'body'>>(
-      PATCH_ITEM_CHAT_MESSAGE,
-    );
+    useMutation<
+      void,
+      unknown,
+      Pick<ChatMessage, 'chatId' | 'id'> & { body: MessageBodyType }
+    >(PATCH_ITEM_CHAT_MESSAGE);
 
   queryClient.setMutationDefaults(DELETE_ITEM_CHAT_MESSAGE, {
     mutationFn: (chatMsg) => Api.deleteItemChatMessage(chatMsg, queryConfig),
