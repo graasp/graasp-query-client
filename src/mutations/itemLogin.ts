@@ -27,7 +27,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     useMutation<
       void,
       unknown,
-      { itemId: UUID; username: string; memberId: UUID; password: string }
+      { itemId: UUID; username?: string; memberId?: UUID; password?: string }
     >(POST_ITEM_LOGIN);
 
   queryClient.setMutationDefaults(PUT_ITEM_LOGIN, {

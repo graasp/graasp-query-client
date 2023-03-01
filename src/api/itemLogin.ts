@@ -16,7 +16,7 @@ export const postItemLoginSignIn = async (
     username,
     memberId,
     password,
-  }: { itemId: UUID; username: string; memberId: UUID; password: string },
+  }: { itemId: UUID; username?: string; memberId?: UUID; password?: string },
   { API_HOST }: QueryClientConfig,
 ) =>
   axios
