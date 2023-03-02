@@ -78,6 +78,13 @@ export const UNAUTHORIZED_RESPONSE: GraaspError = {
   statusCode: StatusCodes.UNAUTHORIZED,
   origin: 'plugin',
 };
+export const FILE_NOT_FOUND_RESPONSE: GraaspError = {
+  name: 'unauthorized',
+  code: 'GPFERR006',
+  message: 'LOCAL_FILE_NOT_FOUND',
+  statusCode: StatusCodes.NOT_FOUND,
+  origin: 'graasp-plugin-file',
+};
 
 const createMockFolderItem = (
   folderItem?: Partial<FolderItemType>,
