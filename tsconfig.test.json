@@ -26,6 +26,6 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": ["test"],
+  "include": ["test", "src"],
   "exclude": ["dist", "example"]
 }

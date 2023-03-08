@@ -8,12 +8,11 @@ import {
   removeSession,
   setCurrentSession,
 } from '@graasp/sdk';
-import { MemberRecord } from '@graasp/sdk/frontend';
+import { MemberRecord, ThumbnailSize } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
-import { THUMBNAIL_SIZES } from '../config/constants';
 import {
   CURRENT_MEMBER_KEY,
   MUTATION_KEYS,
@@ -131,7 +130,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: uploadAvatarRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_data, _error, { id }) => {
-      Object.values(THUMBNAIL_SIZES).forEach((size) => {
+      Object.values(ThumbnailSize).forEach((size) => {
         const key = buildAvatarKey({ id, size });
         queryClient.invalidateQueries(key);
       });

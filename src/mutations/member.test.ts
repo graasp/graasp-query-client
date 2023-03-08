@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import { HttpMethod, convertJs } from '@graasp/sdk';
-import { MemberRecord } from '@graasp/sdk/frontend';
+import { MemberRecord, ThumbnailSize } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
@@ -21,7 +21,6 @@ import {
   buildPatchMember,
   buildUploadAvatarRoute,
 } from '../api/routes';
-import { THUMBNAIL_SIZES } from '../config/constants';
 import { CURRENT_MEMBER_KEY, buildAvatarKey } from '../config/keys';
 import { addFavoriteItemRoutine, uploadAvatarRoutine } from '../routines';
 
@@ -227,7 +226,7 @@ describe('Member Mutations', () => {
       const route = `/${buildUploadAvatarRoute(id)}`;
 
       // set data in cache
-      Object.values(THUMBNAIL_SIZES).forEach((size) => {
+      Object.values(ThumbnailSize).forEach((size) => {
         const key = buildAvatarKey({ id, size });
         queryClient.setQueryData(key, Math.random());
       });
@@ -255,7 +254,7 @@ describe('Member Mutations', () => {
 
       // verify member is still available
       // in real cases, the path should be different
-      for (const size of Object.values(THUMBNAIL_SIZES)) {
+      for (const size of Object.values(ThumbnailSize)) {
         const key = buildAvatarKey({ id, size });
         const state = queryClient.getQueryState(key);
         expect(state?.isInvalidated).toBeTruthy();
@@ -269,7 +268,7 @@ describe('Member Mutations', () => {
     it('Unauthorized to upload an avatar', async () => {
       const route = `/${buildUploadAvatarRoute(id)}`;
       // set data in cache
-      Object.values(THUMBNAIL_SIZES).forEach((size) => {
+      Object.values(ThumbnailSize).forEach((size) => {
         const key = buildAvatarKey({ id, size });
         queryClient.setQueryData(key, Math.random());
       });
@@ -298,7 +297,7 @@ describe('Member Mutations', () => {
 
       // verify member is still available
       // in real cases, the path should be different
-      for (const size of Object.values(THUMBNAIL_SIZES)) {
+      for (const size of Object.values(ThumbnailSize)) {
         const key = buildAvatarKey({ id, size });
         const state = queryClient.getQueryState(key);
         expect(state?.isInvalidated).toBeTruthy();

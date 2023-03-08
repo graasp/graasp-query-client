@@ -10,7 +10,11 @@ import {
   MAX_TARGETS_FOR_READ_REQUEST,
   convertJs,
 } from '@graasp/sdk';
-import { ItemLoginRecord, ItemRecord } from '@graasp/sdk/frontend';
+import {
+  ItemLoginRecord,
+  ItemRecord,
+  ThumbnailSize,
+} from '@graasp/sdk/frontend';
 
 import {
   FILE_RESPONSE,
@@ -39,7 +43,6 @@ import {
   buildGetPublicItemsWithTag,
   buildPublicDownloadFilesRoute,
 } from '../api/routes';
-import { THUMBNAIL_SIZES } from '../config/constants';
 import {
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_KEY,
@@ -889,7 +892,7 @@ describe('Items Hooks', () => {
       });
 
       it(`Receive large thumbnail`, async () => {
-        const size = THUMBNAIL_SIZES.LARGE;
+        const size = ThumbnailSize.LARGE;
         const routeLarge = `/${buildDownloadItemThumbnailRoute({
           id: item.id,
           size,

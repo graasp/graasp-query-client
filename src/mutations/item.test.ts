@@ -11,7 +11,7 @@ import {
   ItemType,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
 } from '@graasp/sdk';
-import { ItemRecord } from '@graasp/sdk/frontend';
+import { ItemRecord, ThumbnailSize } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
@@ -41,7 +41,6 @@ import {
   buildRestoreItemsRoute,
   buildUploadItemThumbnailRoute,
 } from '../api/routes';
-import { THUMBNAIL_SIZES } from '../config/constants';
 import {
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_KEY,
@@ -2043,7 +2042,7 @@ describe('Items Mutations', () => {
       const route = `/${buildUploadItemThumbnailRoute(id)}`;
 
       // set data in cache
-      Object.values(THUMBNAIL_SIZES).forEach((size) => {
+      Object.values(ThumbnailSize).forEach((size) => {
         const key = buildItemThumbnailKey({ id, size });
         queryClient.setQueryData(key, Math.random());
       });
@@ -2071,7 +2070,7 @@ describe('Items Mutations', () => {
 
       // verify item is still available
       // in real cases, the path should be different
-      for (const size of Object.values(THUMBNAIL_SIZES)) {
+      for (const size of Object.values(ThumbnailSize)) {
         const key = buildItemThumbnailKey({ id, size });
         const state = queryClient.getQueryState(key);
         expect(state?.isInvalidated).toBeTruthy();
@@ -2085,7 +2084,7 @@ describe('Items Mutations', () => {
     it('Unauthorized to upload a thumbnail', async () => {
       const route = `/${buildUploadItemThumbnailRoute(id)}`;
       // set data in cache
-      Object.values(THUMBNAIL_SIZES).forEach((size) => {
+      Object.values(ThumbnailSize).forEach((size) => {
         const key = buildItemThumbnailKey({ id, size });
         queryClient.setQueryData(key, Math.random());
       });
@@ -2114,7 +2113,7 @@ describe('Items Mutations', () => {
 
       // verify item is still available
       // in real cases, the path should be different
-      for (const size of Object.values(THUMBNAIL_SIZES)) {
+      for (const size of Object.values(ThumbnailSize)) {
         const key = buildItemThumbnailKey({ id, size });
         const state = queryClient.getQueryState(key);
         expect(state?.isInvalidated).toBeTruthy();

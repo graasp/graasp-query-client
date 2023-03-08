@@ -9,7 +9,7 @@ import {
   UUID,
   convertJs,
 } from '@graasp/sdk';
-import { ItemRecord } from '@graasp/sdk/frontend';
+import { ItemRecord, ThumbnailSize } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
@@ -17,7 +17,6 @@ import {
   splitRequestByIds,
   throwIfArrayContainsErrorOrReturn,
 } from '../api/axios';
-import { THUMBNAIL_SIZES } from '../config/constants';
 import {
   MUTATION_KEYS,
   OWN_ITEMS_KEY,
@@ -836,7 +835,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
     onSettled: (_data, _error, { id }) => {
-      Object.values(THUMBNAIL_SIZES).forEach((size) => {
+      Object.values(ThumbnailSize).forEach((size) => {
         const key = buildItemThumbnailKey({ id, size });
         queryClient.invalidateQueries(key);
       });
