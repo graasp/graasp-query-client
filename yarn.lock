@@ -2205,7 +2205,7 @@ __metadata:
     "@babel/preset-typescript": 7.16.7
     "@commitlint/cli": 16.2.4
     "@commitlint/config-conventional": 16.2.4
-    "@graasp/sdk": 0.8.0
+    "@graasp/sdk": 0.8.1
     "@graasp/translations": 1.8.0
     "@testing-library/jest-dom": 5.16.4
     "@testing-library/react": 12.1.4
@@ -2260,9 +2260,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@npm:0.8.0":
-  version: 0.8.0
-  resolution: "@graasp/sdk@npm:0.8.0"
+"@graasp/sdk@npm:0.8.1":
+  version: 0.8.1
+  resolution: "@graasp/sdk@npm:0.8.1"
   dependencies:
     "@fastify/secure-session": 5.3.0
     aws-sdk: 2.1310.0
@@ -2273,7 +2273,7 @@ __metadata:
     qs: 6.11.0
     slonik: 28.1.1
     uuid: 9.0.0
-  checksum: c2bdb0e0dc38b2636ca3698e30dd90dcf5eb2e01bf4b6af28b5fd2310e6ae167012cbbd4d1217ef3acc19da5bbc810e02fcd649a24cfc10d1937213762ef9266
+  checksum: b2e8dec4aa624faef523e3452d117d6d565c474b5a51edbd4c98de0d1d0cf515fa067d5e47ffe57ac84a76668e15b473363df181cfcdf07cd0942f82a2c9281e
   languageName: node
   linkType: hard
 

@@ -10,8 +10,9 @@ import {
   HttpMethod,
   ItemType,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
+  ThumbnailSize,
 } from '@graasp/sdk';
-import { ItemRecord, ThumbnailSize } from '@graasp/sdk/frontend';
+import { ItemRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {

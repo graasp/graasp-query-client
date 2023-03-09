@@ -3,12 +3,13 @@ import { QueryClient, useMutation } from 'react-query';
 import {
   Member,
   MemberExtra,
+  ThumbnailSize,
   UUID,
   convertJs,
   removeSession,
   setCurrentSession,
 } from '@graasp/sdk';
-import { MemberRecord, ThumbnailSize } from '@graasp/sdk/frontend';
+import { MemberRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';

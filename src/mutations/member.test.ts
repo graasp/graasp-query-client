@@ -4,8 +4,8 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { HttpMethod, convertJs } from '@graasp/sdk';
-import { MemberRecord, ThumbnailSize } from '@graasp/sdk/frontend';
+import { HttpMethod, ThumbnailSize, convertJs } from '@graasp/sdk';
+import { MemberRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {

@@ -6,10 +6,11 @@ import {
   Item,
   ItemSettings,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
+  ThumbnailSize,
   UUID,
   convertJs,
 } from '@graasp/sdk';
-import { ItemRecord, ThumbnailSize } from '@graasp/sdk/frontend';
+import { ItemRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';

@@ -8,13 +8,10 @@ import {
   FolderItemType,
   ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
+  ThumbnailSize,
   convertJs,
 } from '@graasp/sdk';
-import {
-  ItemLoginRecord,
-  ItemRecord,
-  ThumbnailSize,
-} from '@graasp/sdk/frontend';
+import { ItemLoginRecord, ItemRecord } from '@graasp/sdk/frontend';
 
 import {
   FILE_RESPONSE,
@@ -892,7 +889,7 @@ describe('Items Hooks', () => {
       });
 
       it(`Receive large thumbnail`, async () => {
-        const size = ThumbnailSize.LARGE;
+        const size = ThumbnailSize.Large;
         const routeLarge = `/${buildDownloadItemThumbnailRoute({
           id: item.id,
           size,
