@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.3.1](https://github.com/graasp/graasp-query-client/compare/v0.3.0...v0.3.1) (2023-03-09)
+
+
+### Bug Fixes
+
+* add `currentMemberId` back to `signOut` mutation ([#245](https://github.com/graasp/graasp-query-client/issues/245)) ([852e6e7](https://github.com/graasp/graasp-query-client/commit/852e6e7bb29f9e7b2c386c2efe38c7c82da545bd))
+* allow item to be undefined in `useEtherpad` ([852e6e7](https://github.com/graasp/graasp-query-client/commit/852e6e7bb29f9e7b2c386c2efe38c7c82da545bd))
+* allow optional properties ([#250](https://github.com/graasp/graasp-query-client/issues/250)) ([493d9e2](https://github.com/graasp/graasp-query-client/commit/493d9e2b0bc0480bd7e5ed38d0d0c8813f7504c9))
+* catch avatar not found error ([#248](https://github.com/graasp/graasp-query-client/issues/248)) ([d7d8e97](https://github.com/graasp/graasp-query-client/commit/d7d8e971fafaf16bfd2be301251dc40c3c27890b))
+* post and patch item chat message body type ([852e6e7](https://github.com/graasp/graasp-query-client/commit/852e6e7bb29f9e7b2c386c2efe38c7c82da545bd))
+* return type of mutations ([852e6e7](https://github.com/graasp/graasp-query-client/commit/852e6e7bb29f9e7b2c386c2efe38c7c82da545bd))
+* **types:** narrow type to only the required API_HOST from QueryConfig in apps ([493d9e2](https://github.com/graasp/graasp-query-client/commit/493d9e2b0bc0480bd7e5ed38d0d0c8813f7504c9))
+* typing of isDataEqual with generics ([852e6e7](https://github.com/graasp/graasp-query-client/commit/852e6e7bb29f9e7b2c386c2efe38c7c82da545bd))
+* use ThumbnailSize from sdk ([#252](https://github.com/graasp/graasp-query-client/issues/252)) ([58941fe](https://github.com/graasp/graasp-query-client/commit/58941fe6d577bfd0cb8f3ca660b1107f0fde0ec9))
+
+
+### Documentation
+
+* fix repo link in package ([852e6e7](https://github.com/graasp/graasp-query-client/commit/852e6e7bb29f9e7b2c386c2efe38c7c82da545bd))
+
 ## [0.3.0](https://github.com/graasp/graasp-query-client/compare/v0.2.1...v0.3.0) (2023-02-21)
 
 
