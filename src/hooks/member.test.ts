@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import nock from 'nock';
 import { UseQueryResult } from 'react-query';
 
-import { MAX_TARGETS_FOR_READ_REQUEST, UUID } from '@graasp/sdk';
+import { MAX_TARGETS_FOR_READ_REQUEST, ThumbnailSize, UUID } from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
 
 import {
@@ -23,7 +23,7 @@ import {
   buildGetPublicMember,
   buildGetPublicMembersRoute,
 } from '../api/routes';
-import { SIGNED_OUT_USER, THUMBNAIL_SIZES } from '../config/constants';
+import { SIGNED_OUT_USER } from '../config/constants';
 import {
   CURRENT_MEMBER_KEY,
   buildAvatarKey,
@@ -344,7 +344,7 @@ describe('Member Hooks', () => {
     });
 
     it(`Receive large avatar`, async () => {
-      const size = THUMBNAIL_SIZES.LARGE;
+      const size = ThumbnailSize.Large;
       const routeLarge = `/${buildDownloadAvatarRoute({
         id: member.id,
         size,

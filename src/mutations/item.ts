@@ -6,6 +6,7 @@ import {
   Item,
   ItemSettings,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
+  ThumbnailSize,
   UUID,
   convertJs,
 } from '@graasp/sdk';
@@ -17,7 +18,6 @@ import {
   splitRequestByIds,
   throwIfArrayContainsErrorOrReturn,
 } from '../api/axios';
-import { THUMBNAIL_SIZES } from '../config/constants';
 import {
   MUTATION_KEYS,
   OWN_ITEMS_KEY,
@@ -836,7 +836,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
     onSettled: (_data, _error, { id }) => {
-      Object.values(THUMBNAIL_SIZES).forEach((size) => {
+      Object.values(ThumbnailSize).forEach((size) => {
         const key = buildItemThumbnailKey({ id, size });
         queryClient.invalidateQueries(key);
       });
