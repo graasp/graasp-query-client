@@ -2,7 +2,7 @@ import { List } from 'immutable';
 import { QueryClient, useQuery } from 'react-query';
 
 import { UUID, convertJs, isError } from '@graasp/sdk';
-import { ItemTagRecord } from '@graasp/sdk/frontend';
+import { ItemTagRecord, TagRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
 import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
@@ -20,7 +20,7 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
   const useTags = () =>
     useQuery({
       queryKey: TAGS_KEY,
-      queryFn: (): Promise<List<ItemTagRecord>> =>
+      queryFn: (): Promise<List<TagRecord>> =>
         Api.getTags(queryConfig).then((data) => convertJs(data)),
       ...defaultQueryOptions,
       cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
