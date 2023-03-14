@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/graasp/graasp-query-client/compare/v0.3.1...v0.3.2) (2023-03-14)
+
+
+### Bug Fixes
+
+* **type:** of useTags hook ([#254](https://github.com/graasp/graasp-query-client/issues/254)) ([b6a7f83](https://github.com/graasp/graasp-query-client/commit/b6a7f835a6c64badf8f599ebee438b5772edf872))
+
 ## [0.3.1](https://github.com/graasp/graasp-query-client/compare/v0.3.0...v0.3.1) (2023-03-09)
 
 
