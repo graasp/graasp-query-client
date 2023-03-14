@@ -357,6 +357,49 @@ describe('Member Mutations', () => {
       expect(newData).toEqualImmutable(response);
     });
 
+    it(`Adding duplicated favorite item should dedupe`, async () => {
+      const response = MEMBER_RESPONSE.set(
+        'extra',
+        convertJs({ favoriteItems: ['item-id'] }),
+      );
+      // set random data in cache
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, response);
+      const endpoints = [
+        {
+          response,
+          method: HttpMethod.PATCH,
+          route,
+        },
+      ];
+      const mockedMutation = await mockMutation({
+        mutation,
+        wrapper,
+        endpoints,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({
+          memberId: id,
+          itemId,
+          extra: { favoriteItems: ['item-id'] },
+        });
+        await waitForMutation();
+      });
+
+      expect(
+        queryClient.getQueryState(CURRENT_MEMBER_KEY)?.isInvalidated,
+      ).toBeTruthy();
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: addFavoriteItemRoutine.SUCCESS,
+      });
+
+      // verify cache keys
+      const newData = queryClient.getQueryData(
+        CURRENT_MEMBER_KEY,
+      ) as MemberRecord;
+      expect(newData).toEqualImmutable(response);
+    });
+
     it(`Unauthorized`, async () => {
       // set random data in cache
       queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
