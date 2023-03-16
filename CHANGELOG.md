@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.3](https://github.com/graasp/graasp-query-client/compare/v0.3.2...v0.3.3) (2023-03-16)
+
+
+### Bug Fixes
+
+* deduplicate item ids on add favorites ([#256](https://github.com/graasp/graasp-query-client/issues/256)) ([3b40b5d](https://github.com/graasp/graasp-query-client/commit/3b40b5d9bbc04b9857471e858b4d9ca95bd1ef74))
+
 ## [0.3.2](https://github.com/graasp/graasp-query-client/compare/v0.3.1...v0.3.2) (2023-03-14)
 
 
