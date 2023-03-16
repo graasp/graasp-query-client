@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/graasp/graasp-query-client/compare/v0.3.3...v0.4.0) (2023-03-16)
+
+
+### Features
+
+* bump @graasp/sdk ([#258](https://github.com/graasp/graasp-query-client/issues/258)) ([bb25b5b](https://github.com/graasp/graasp-query-client/commit/bb25b5b79ddb3b8bbb1d531d85c303434e4b4bd3))
+
 ## [0.3.3](https://github.com/graasp/graasp-query-client/compare/v0.3.2...v0.3.3) (2023-03-16)
 
 
