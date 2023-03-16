@@ -143,13 +143,18 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   // mutation to update favorite items of given member
   queryClient.setMutationDefaults(ADD_FAVORITE_ITEM, {
     mutationFn: ({ memberId, itemId, extra: prevExtra }) => {
-      const newFavoriteItems = prevExtra.favoriteItems
-        ? prevExtra.favoriteItems.concat([itemId])
+      const favoriteItems = prevExtra.favoriteItems
+        ? prevExtra.favoriteItems.concat(
+            prevExtra.favoriteItems.includes(itemId) ? [] : [itemId],
+          )
         : [itemId];
       return Api.editMember(
         {
           id: memberId,
-          extra: { ...prevExtra, favoriteItems: newFavoriteItems },
+          extra: {
+            ...prevExtra,
+            favoriteItems,
+          },
         },
         queryConfig,
       ).then((member) => convertJs(member));
@@ -164,12 +169,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       // Optimistically update to the new value
       const { itemId, extra } = payload;
-      const newFavoriteItems = extra.favoriteItems
-        ? extra.favoriteItems.concat([itemId])
+      const favoriteItems = extra.favoriteItems
+        ? extra.favoriteItems.concat(
+            extra.favoriteItems.includes(itemId) ? [] : [itemId],
+          )
         : [itemId];
 
       const member = convertJs({
-        extra: { ...extra, favoriteItems: newFavoriteItems },
+        extra: { ...extra, favoriteItems },
       });
 
       queryClient.setQueryData(
