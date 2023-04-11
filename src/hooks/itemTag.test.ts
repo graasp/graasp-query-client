@@ -13,7 +13,7 @@ import {
   buildGetItemTagsRoute,
   buildGetItemsTagsRoute,
 } from '../api/routes';
-import { TAGS_KEY, buildItemTagsKey } from '../config/keys';
+import { TAGS_KEY, itemTagsKeys } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -67,7 +67,7 @@ describe('Item Tags Hooks', () => {
   describe('useItemTags', () => {
     const itemId = ITEMS.first()!.id;
     const route = `/${buildGetItemTagsRoute(itemId)}`;
-    const key = buildItemTagsKey(itemId);
+    const key = itemTagsKeys.singleId(itemId);
 
     const hook = () => hooks.useItemTags(itemId);
 
@@ -107,7 +107,7 @@ describe('Item Tags Hooks', () => {
   describe('useItemsTags', () => {
     const itemsIds = ITEMS.map(({ id }) => id).toArray();
     const route = `/${buildGetItemsTagsRoute(itemsIds)}`;
-    const keys = itemsIds.map((itemId) => buildItemTagsKey(itemId));
+    const keys = itemsIds.map((itemId) => itemTagsKeys.singleId(itemId));
 
     const hook = () => hooks.useItemsTags(itemsIds);
 
@@ -156,7 +156,7 @@ describe('Item Tags Hooks', () => {
         expect(queryClient.getQueryData(key)).toEqualImmutable(TAGS),
       );
       expect(
-        queryClient.getQueryData(buildItemTagsKey(idWithError)),
+        queryClient.getQueryData(itemTagsKeys.singleId(idWithError)),
       ).toBeFalsy();
 
       expect(isSuccess).toBeTruthy();

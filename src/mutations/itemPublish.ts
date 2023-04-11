@@ -3,7 +3,7 @@ import { QueryClient, useMutation } from 'react-query';
 import { UUID } from '@graasp/sdk';
 
 import * as Api from '../api';
-import { MUTATION_KEYS, buildItemTagsKey } from '../config/keys';
+import { MUTATION_KEYS, itemTagsKeys } from '../config/keys';
 import { publishItemRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
@@ -23,7 +23,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: publishItemRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_data, _error, { id }) => {
-      queryClient.invalidateQueries(buildItemTagsKey(id));
+      queryClient.invalidateQueries(itemTagsKeys.singleId(id));
     },
   });
   const usePublishItem = () =>

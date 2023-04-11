@@ -54,7 +54,20 @@ export const buildManyItemMembershipsKey = (ids?: UUID[]) => [
 export const buildItemLoginKey = (id?: UUID) => [ITEMS_KEY, id, 'login'];
 export const TAGS_KEY = 'tags';
 export const ITEM_TAGS_KEY = 'itemTags';
+export const itemTagsKeys = {
+  all: [ITEMS_KEY, ITEM_TAGS_KEY] as const,
+  many: () => [...itemTagsKeys.all, 'many'] as const,
+  single: () => [...itemTagsKeys.all, 'single'] as const,
+  singleId: (id?: UUID) => [...itemTagsKeys.single(), id] as const,
+  manyIds: (ids: UUID[]) => [...itemTagsKeys.many(), ...ids] as const,
+};
+/**
+ * @deprecated
+ */
 export const buildItemTagsKey = (id?: UUID) => [ITEMS_KEY, id, 'tags'];
+/**
+ * @deprecated
+ */
 export const buildManyItemTagsKey = (ids?: UUID[]) => [
   ITEMS_KEY,
   hashItemsIds(ids),
@@ -193,6 +206,7 @@ export const DATA_KEYS = {
   buildItemLoginKey,
   TAGS_KEY,
   ITEM_TAGS_KEY,
+  itemTagsKeys,
   buildItemTagsKey,
   buildManyItemTagsKey,
   buildFileContentKey,

@@ -9,7 +9,7 @@ import { HttpMethod } from '@graasp/sdk';
 import { ITEMS, ITEM_TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildItemPublishRoute } from '../api/routes';
-import { buildItemTagsKey } from '../config/keys';
+import { itemTagsKeys } from '../config/keys';
 import { publishItemRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -30,7 +30,7 @@ describe('Publish Item', () => {
     const itemId = item.id;
     const notification = true;
     const mutation = mutations.usePublishItem;
-    const itemTagKey = buildItemTagsKey(itemId);
+    const itemTagKey = itemTagsKeys.singleId(itemId);
 
     it('Publish Item with notification', async () => {
       const route = `/${buildItemPublishRoute(itemId, notification)}`;

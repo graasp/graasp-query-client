@@ -17,7 +17,7 @@ import {
 } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildDeleteItemTagRoute, buildPostItemTagRoute } from '../api/routes';
-import { buildItemTagsKey } from '../config/keys';
+import { itemTagsKeys } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -40,7 +40,7 @@ describe('Item Tag Mutations', () => {
     const creator = MEMBER_RESPONSE.id;
     const route = `/${buildPostItemTagRoute(itemId)}`;
     const mutation = mutations.usePostItemTag;
-    const itemTagKey = buildItemTagsKey(itemId);
+    const itemTagKey = itemTagsKeys.singleId(itemId);
 
     it('Post item tag', async () => {
       queryClient.setQueryData(itemTagKey, ITEM_TAGS);
@@ -119,7 +119,7 @@ describe('Item Tag Mutations', () => {
     const tagId = ITEM_TAGS.first()!.id;
     const route = `/${buildDeleteItemTagRoute({ id: itemId, tagId })}`;
     const mutation = mutations.useDeleteItemTag;
-    const itemTagKey = buildItemTagsKey(itemId);
+    const itemTagKey = itemTagsKeys.singleId(itemId);
 
     it('Delete item tag', async () => {
       queryClient.setQueryData(itemTagKey, ITEM_TAGS);
