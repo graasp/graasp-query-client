@@ -6,7 +6,7 @@ import { ItemTagRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
-import { MUTATION_KEYS, buildItemTagsKey } from '../config/keys';
+import { MUTATION_KEYS, itemTagsKeys } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
@@ -28,7 +28,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       notifier?.({ type: postItemTagRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_data, _error, { id }) => {
-      queryClient.invalidateQueries(buildItemTagsKey(id));
+      queryClient.invalidateQueries(itemTagsKeys.singleId(id));
+      // invalidate any "many" query that contains the id we modified
+      queryClient.invalidateQueries(itemTagsKeys.manyIds([id]));
     },
   });
   const usePostItemTag = () =>
@@ -42,7 +44,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     mutationFn: (payload) =>
       Api.deleteItemTag(payload, queryConfig).then(() => payload),
     onMutate: async ({ id, tagId }) => {
-      const itemTagKey = buildItemTagsKey(id);
+      const itemTagKey = itemTagsKeys.singleId(id);
       await queryClient.cancelQueries(itemTagKey);
 
       // Snapshot the previous value
@@ -65,12 +67,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
     },
     onError: (error, { id }, context) => {
-      const itemKey = buildItemTagsKey(id);
+      const itemKey = itemTagsKeys.singleId(id);
       queryClient.setQueryData(itemKey, context.itemTags);
       notifier?.({ type: deleteItemTagRoutine.FAILURE, payload: { error } });
     },
     onSettled: (_data, _error, { id }) => {
-      queryClient.invalidateQueries(buildItemTagsKey(id));
+      queryClient.invalidateQueries(itemTagsKeys.singleId(id));
+      // invalidate any "many" query that contains the id we modified
+      queryClient.invalidateQueries(itemTagsKeys.manyIds([id]));
     },
   });
   const useDeleteItemTag = () =>
