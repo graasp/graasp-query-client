@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1](https://github.com/graasp/graasp-query-client/compare/v0.4.0...v0.4.1) (2023-04-14)
+
+
+### Bug Fixes
+
+* bump sdk to 0.10.0 ([#263](https://github.com/graasp/graasp-query-client/issues/263)) ([c28d49d](https://github.com/graasp/graasp-query-client/commit/c28d49d010e19fa7c8eb221d0353edee890a2d7e))
+* use a factory to create the itemTags keys ([#268](https://github.com/graasp/graasp-query-client/issues/268)) ([5211d43](https://github.com/graasp/graasp-query-client/commit/5211d434d6a3fdb1dcdf29d59c799ac825192674))
+
 ## [0.4.0](https://github.com/graasp/graasp-query-client/compare/v0.3.3...v0.4.0) (2023-03-16)
 
 
