@@ -22,9 +22,9 @@
     "@types/react-dom": "link:../node_modules/@types/react-dom",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-query": "3.34.16",
+    "react-query": "3.39.3",
     "react-scripts": "5.0.0",
-    "typescript": "4.9.5"
+    "typescript": "5.0.4"
   },
   "devDependencies": {
     "@babel/plugin-syntax-object-rest-spread": "7.8.3"
