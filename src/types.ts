@@ -9,7 +9,10 @@ import {
 
 import { isDataEqual } from './utils/util';
 
-export type Notifier = (e: unknown) => void;
+export type Notifier = (e: {
+  type: string;
+  payload?: { error?: Error; message?: string; [key: string]: unknown };
+}) => void;
 
 export type QueryClientConfig = {
   API_HOST: string;
