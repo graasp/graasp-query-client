@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.2](https://github.com/graasp/graasp-query-client/compare/v0.4.1...v0.4.2) (2023-04-21)
+
+
+### Bug Fixes
+
+* **ci:** setup node with version 16 ([7d6e6d3](https://github.com/graasp/graasp-query-client/commit/7d6e6d3e046de8ee3dc89a33099a3277be89a6d4))
+* improve type of `notifier` ([#274](https://github.com/graasp/graasp-query-client/issues/274)) ([7d6e6d3](https://github.com/graasp/graasp-query-client/commit/7d6e6d3e046de8ee3dc89a33099a3277be89a6d4))
+* update deps and workflow with build step ([#271](https://github.com/graasp/graasp-query-client/issues/271)) ([9b457a2](https://github.com/graasp/graasp-query-client/commit/9b457a291a6b61ca6f85d03fdf0caba867068a0d))
+
 ## [0.4.1](https://github.com/graasp/graasp-query-client/compare/v0.4.0...v0.4.1) (2023-04-14)
 
 
