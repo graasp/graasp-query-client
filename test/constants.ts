@@ -18,8 +18,7 @@ import {
   HttpMethod,
   Invitation,
   ItemCategory,
-  ItemLoginSchemaType, // ItemLoginSchema,
-  // ItemLoginSchemaType,
+  ItemLoginSchemaType,
   ItemMembership,
   ItemTag,
   ItemTagType,
@@ -49,11 +48,11 @@ import {
   ItemChatRecord,
   ItemFlagRecord,
   ItemLikeRecord,
-  ItemLoginSchemaRecord, // ItemLoginSchemaRecord,
+  ItemLoginSchemaRecord,
   ItemMembershipRecord,
   ItemPublishedRecord,
   ItemRecord,
-  ItemTagRecord, // ItemValidationAndReviewRecord,
+  ItemTagRecord,
   ItemValidationGroupRecord,
   MemberMentionsRecord,
   MemberRecord,
@@ -255,7 +254,7 @@ export const ITEM_MEMBERSHIPS_RESPONSE: List<ItemMembershipRecord> = List([
 ]);
 
 export const ITEM_LOGIN_RESPONSE: ItemLoginSchemaRecord = convertJs({
-  type: ItemLoginSchemaType.USERNAME,
+  type: ItemLoginSchemaType.Username,
   item: ITEMS[0],
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -598,7 +597,7 @@ const ACTION_1: Action = {
   item: MOCK_ITEM,
   member: MOCK_MEMBER,
   createdAt: new Date(),
-  view: Context.ANALYTICS,
+  view: Context.Analytics,
   type: 'action-type',
   extra: { some: 'value' },
 };
