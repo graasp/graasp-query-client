@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "@graasp/sdk": "github:graasp/graasp-sdk#typeorm",
-    "@graasp/translations": "github:graasp/graasp-translations#89-email",
+    "@graasp/translations": "1.13.0",
     "axios": "0.27.2",
     "crypto-js": "4.1.1",
     "http-status-codes": "2.2.0",
