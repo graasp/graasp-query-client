@@ -2,6 +2,7 @@ import { List, Record } from 'immutable';
 import { QueryClient, useMutation } from 'react-query';
 
 import {
+  DiscriminatedItem,
   GraaspError,
   Item,
   ItemSettings,
@@ -243,7 +244,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
   const useEditItem = () =>
-    useMutation<void, unknown, Partial<Item> & Pick<Item, 'id'>>(EDIT_ITEM);
+    useMutation<void, unknown, Partial<DiscriminatedItem> & Pick<DiscriminatedItem, 'id'>>(EDIT_ITEM);
 
   // queryClient.setMutationDefaults(RECYCLE_ITEM, {
   //   mutationFn: (itemId) =>
@@ -306,12 +307,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       const itemPath = itemData?.path;
       const newParent = itemPath
         ? {
-            parent: await mutateParentChildren({
-              childPath: itemPath,
-              value: (old: List<ItemRecord>) =>
-                old.filter(({ id }) => !itemIds.includes(id)),
-            }),
-          }
+          parent: await mutateParentChildren({
+            childPath: itemPath,
+            value: (old: List<ItemRecord>) =>
+              old.filter(({ id }) => !itemIds.includes(id)),
+          }),
+        }
         : {};
       const previousItems = {
         ...newParent,
