@@ -1,12 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
-import {
-  ResultOf,
-  convertJs,
-  spliceIntoChunks,
-} from '@graasp/sdk';
+import { ResultOf, convertJs, spliceIntoChunks } from '@graasp/sdk';
 import { ResultOfRecord } from '@graasp/sdk/frontend';
-
 
 const isoDateFormat =
   /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d*)?(?:[-+]\d{2}:?\d{2}|Z)?$/;

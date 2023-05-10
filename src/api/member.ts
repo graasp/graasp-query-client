@@ -42,21 +42,20 @@ export const getMembers = (
     .then(({ data }) => data);
 
 export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) =>
-  verifyAuthentication(
-    () =>
-      axios
-        .get(`${API_HOST}/${GET_CURRENT_MEMBER_ROUTE}`)
-        .then(({ data }) => data)
-        .catch((error) => {
-          if (error.response) {
-            // return valid response for unauthorized requests
-            // avoid infinite loading induced by failure in react-query
-            if (error.response.status === StatusCodes.UNAUTHORIZED) {
-              return SIGNED_OUT_USER;
-            }
+  verifyAuthentication(() =>
+    axios
+      .get(`${API_HOST}/${GET_CURRENT_MEMBER_ROUTE}`)
+      .then(({ data }) => data)
+      .catch((error) => {
+        if (error.response) {
+          // return valid response for unauthorized requests
+          // avoid infinite loading induced by failure in react-query
+          if (error.response.status === StatusCodes.UNAUTHORIZED) {
+            return SIGNED_OUT_USER;
           }
-          throw error;
-        }),
+        }
+        throw error;
+      }),
   );
 
 export const editMember = async (

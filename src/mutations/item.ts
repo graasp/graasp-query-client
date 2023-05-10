@@ -128,7 +128,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   };
 
   queryClient.setMutationDefaults(POST_ITEM, {
-    mutationFn: async (item: Api.PostItemPayloadType) => Api.postItem(item, queryConfig),
+    mutationFn: async (item: Api.PostItemPayloadType) =>
+      Api.postItem(item, queryConfig),
     // we cannot optimistically add an item because we need its id
     onSuccess: () => {
       notifier?.({
@@ -144,7 +145,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(key);
     },
   });
-  const usePostItem = () => useMutation<void, unknown, Api.PostItemPayloadType>(POST_ITEM);
+  const usePostItem = () =>
+    useMutation<void, unknown, Api.PostItemPayloadType>(POST_ITEM);
 
   queryClient.setMutationDefaults(POST_ETHERPAD, {
     mutationFn: async (params) => Api.postEtherpad(params, queryConfig),
@@ -173,7 +175,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     >(POST_ETHERPAD);
 
   queryClient.setMutationDefaults(EDIT_ITEM, {
-    mutationFn: (item: Partial<Item> & Pick<Item, 'id'>) => Api.editItem(item.id, item, queryConfig),
+    mutationFn: (item: Partial<Item> & Pick<Item, 'id'>) =>
+      Api.editItem(item.id, item, queryConfig),
     // newItem contains only changed values
     onMutate: async (newItem: Partial<Item> & Pick<Item, 'id'>) => {
       const trimmed: ItemRecord = convertJs({
@@ -239,7 +242,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(itemKey);
     },
   });
-  const useEditItem = () => useMutation<void, unknown, Partial<Item> & Pick<Item, 'id'>>(EDIT_ITEM);
+  const useEditItem = () =>
+    useMutation<void, unknown, Partial<Item> & Pick<Item, 'id'>>(EDIT_ITEM);
 
   // queryClient.setMutationDefaults(RECYCLE_ITEM, {
   //   mutationFn: (itemId) =>
@@ -302,12 +306,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       const itemPath = itemData?.path;
       const newParent = itemPath
         ? {
-          parent: await mutateParentChildren({
-            childPath: itemPath,
-            value: (old: List<ItemRecord>) =>
-              old.filter(({ id }) => !itemIds.includes(id)),
-          }),
-        }
+            parent: await mutateParentChildren({
+              childPath: itemPath,
+              value: (old: List<ItemRecord>) =>
+                old.filter(({ id }) => !itemIds.includes(id)),
+            }),
+          }
         : {};
       const previousItems = {
         ...newParent,

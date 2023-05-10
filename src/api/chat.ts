@@ -38,13 +38,13 @@ export const exportItemChat = async (
   );
 
 export const postItemChatMessage = async (
-  { item, body, mentions }: PostChatMessageParamType,
+  { itemId, body, mentions }: PostChatMessageParamType,
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(
     (): Promise<ChatMessage> =>
       axios
-        .post(`${API_HOST}/${buildPostItemChatMessageRoute(item.id)}`, {
+        .post(`${API_HOST}/${buildPostItemChatMessageRoute(itemId)}`, {
           body,
           mentions,
         })
@@ -52,27 +52,32 @@ export const postItemChatMessage = async (
   );
 
 export const patchItemChatMessage = async (
-  { item, id, body, mentions }: PatchChatMessageParamType,
+  { itemId, messageId, body, mentions }: PatchChatMessageParamType,
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(
     (): Promise<ChatMessage> =>
       axios
-        .patch(`${API_HOST}/${buildPatchItemChatMessageRoute(item.id, id)}`, {
-          body,
-          mentions,
-        })
+        .patch(
+          `${API_HOST}/${buildPatchItemChatMessageRoute(itemId, messageId)}`,
+          {
+            body,
+            mentions,
+          },
+        )
         .then(({ data }) => data),
   );
 
 export const deleteItemChatMessage = async (
-  { item, id }: DeleteChatMessageParamType,
+  { itemId, messageId }: DeleteChatMessageParamType,
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(
     (): Promise<ChatMessage> =>
       axios
-        .delete(`${API_HOST}/${buildDeleteItemChatMessageRoute(item.id, id)}`)
+        .delete(
+          `${API_HOST}/${buildDeleteItemChatMessageRoute(itemId, messageId)}`,
+        )
         .then(({ data }) => data),
   );
 
