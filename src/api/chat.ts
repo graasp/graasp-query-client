@@ -24,7 +24,9 @@ export const getItemChat = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,
 ): Promise<ChatMessage[]> =>
-  axios.get(`${API_HOST}/${buildGetItemChatRoute(id)}`);
+  axios
+    .get(`${API_HOST}/${buildGetItemChatRoute(id)}`)
+    .then(({ data }) => data);
 
 export const exportItemChat = async (
   id: UUID,
