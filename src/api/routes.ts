@@ -13,6 +13,7 @@ export const SUBSCRIPTION_ROUTE = 'subscriptions';
 export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const INVITATIONS_ROUTE = `invitations`;
 export const GET_RECYCLED_ITEMS_DATA_ROUTE = `${ITEMS_ROUTE}/recycled`;
+export const GET_FAVORITE_ITEMS_ROUTE = `${ITEMS_ROUTE}/favorite`;
 export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
 export const ETHERPAD_ROUTE = `${ITEMS_ROUTE}/etherpad`;
@@ -206,6 +207,9 @@ export const buildRecycleItemsRoute = (ids: UUID[]) =>
     },
   )}`;
 
+export const buildFavoriteItemRoute = (itemId: UUID) =>
+  `${GET_FAVORITE_ITEMS_ROUTE}/${itemId}`;
+
 export const buildRestoreItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/restore${qs.stringify(
     { id: ids },
@@ -241,6 +245,7 @@ export const buildDeleteItemCategoryRoute = (args: {
   itemId: UUID;
   itemCategoryId: UUID;
 }) => `${ITEMS_ROUTE}/${args.itemId}/categories/${args.itemCategoryId}`;
+
 export const buildGetApiAccessTokenRoute = (id: UUID) =>
   `${APPS_ROUTE}/${id}/api-access-token`;
 

@@ -46,6 +46,7 @@ import {
   InvitationRecord,
   ItemCategoryRecord,
   ItemChatRecord,
+  ItemFavoriteRecord,
   ItemFlagRecord,
   ItemLikeRecord,
   ItemLoginSchemaRecord,
@@ -208,6 +209,13 @@ export const RECYCLED_ITEM_DATA: List<RecycledItemDataRecord> = convertJs([
   {
     id: `recycle-item-id-2`,
     item: ITEM_3,
+  },
+]);
+
+export const FAVORITE_ITEM: ItemFavoriteRecord = convertJs([
+  {
+    id: `favorite-item-id`,
+    item: ITEM_1,
   },
 ]);
 

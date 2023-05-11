@@ -7,6 +7,7 @@ import chatMutations from './chat';
 import invitationMutations from './invitation';
 import itemMutations from './item';
 import itemCategoryMutations from './itemCategory';
+import itemFavoriteMutations from './itemFavorite';
 import itemExportMutations from './itemExport';
 import flagsMutations from './itemFlag';
 import itemLikeMutations from './itemLike';
@@ -32,6 +33,7 @@ const configureMutations = (
   ...chatMutations(queryClient, queryConfig),
   ...mentionMutations(queryClient, queryConfig),
   ...itemCategoryMutations(queryClient, queryConfig),
+  ...itemFavoriteMutations(queryClient, queryConfig),
   ...itemExportMutations(queryClient, queryConfig),
   ...itemLikeMutations(queryClient, queryConfig),
   ...itemValidationMutations(queryClient, queryConfig),

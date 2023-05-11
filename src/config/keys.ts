@@ -110,6 +110,9 @@ export const buildSearchByKeywordKey = (fields: SearchFields) => [
 ];
 
 export const RECYCLED_ITEMS_DATA_KEY = 'recycledItemsData';
+
+export const FAVORITE_ITEMS_KEY = 'favoriteItems';
+
 export const buildItemThumbnailKey = ({
   id,
   size = DEFAULT_THUMBNAIL_SIZE,
@@ -251,6 +254,7 @@ export const DATA_KEYS = {
   buildItemsByCategoriesKey,
   buildSearchByKeywordKey,
   RECYCLED_ITEMS_DATA_KEY,
+  FAVORITE_ITEMS_KEY,
   buildItemThumbnailKey,
   buildAvatarKey,
   buildGetLikesForMemberKey,
@@ -302,6 +306,8 @@ export const MUTATION_KEYS = {
   RECYCLE_ITEM: 'recycleItem',
   RECYCLE_ITEMS: 'recycleItems',
   RESTORE_ITEMS: 'restoreItems',
+  FAVORITE_ITEM: 'favoriteItem',
+  UNFAVORITE_ITEM: 'unfavoriteItem',
   POST_ITEM_CATEGORY: 'postItemCategory',
   DELETE_ITEM_CATEGORY: 'deleteItemCategory',
   UPLOAD_ITEM_THUMBNAIL: 'uploadItemThumbnail',
@@ -312,8 +318,6 @@ export const MUTATION_KEYS = {
   POST_ETHERPAD: 'postEtherpad',
   POST_ITEM_LIKE: 'postItemLike',
   DELETE_ITEM_LIKE: 'deleteItemLike',
-  ADD_FAVORITE_ITEM: 'addFavoriteItem',
-  DELETE_FAVORITE_ITEM: 'deleteFavoriteItem',
   POST_ITEM_VALIDATION: 'postItemValidation',
   UPDATE_ITEM_VALIDATION_REVIEW: 'updateItemValidationReview',
   EXPORT_ACTIONS: 'exportActions',

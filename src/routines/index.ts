@@ -7,6 +7,7 @@ export * from './itemFlag';
 export * from './chat';
 export * from './mentions';
 export * from './itemCategory';
+export * from './itemFavorite'
 export * from './itemExport';
 export * from './itemLike';
 export * from './itemValidation';

@@ -14,6 +14,7 @@ import configureItemLoginHooks from './itemLogin';
 import configureItemPublishedHooks from './itemPublish';
 import configureItemTagHooks from './itemTag';
 import configureItemValidationHooks from './itemValidation';
+import configureItemFavoriteHooks from './itemFavorite'
 import configureMemberHooks from './member';
 import configureMembershipHooks from './membership';
 import configureMentionsHooks from './mention';
@@ -50,6 +51,7 @@ export default (
     ...configureItemLoginHooks(queryConfig),
     ...configureItemPublishedHooks(queryConfig),
     ...configureItemValidationHooks(queryConfig),
+    ...configureItemFavoriteHooks(queryConfig),
     ...configureAppsHooks(queryConfig),
     ...configureActionHooks(queryConfig),
     ...configureInvitationHooks(queryConfig),
