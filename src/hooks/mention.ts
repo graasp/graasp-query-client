@@ -1,8 +1,8 @@
-import { Record } from 'immutable';
+import { Record, List } from 'immutable';
 import { QueryClient, UseQueryResult, useQuery } from 'react-query';
 
 import { Member, convertJs } from '@graasp/sdk';
-import { MemberMentionsRecord } from '@graasp/sdk/frontend';
+import { ChatMentionRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api/index';
 import { buildMentionKey } from '../config/keys';
@@ -33,7 +33,7 @@ export default (
 
       return useQuery({
         queryKey: buildMentionKey(memberId),
-        queryFn: (): Promise<MemberMentionsRecord> =>
+        queryFn: (): Promise<List<ChatMentionRecord>> =>
           Api.getMemberMentions(queryConfig).then((data) => convertJs(data)),
         ...defaultQueryOptions,
         enabled: Boolean(memberId),
