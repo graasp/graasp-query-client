@@ -165,6 +165,12 @@ export const buildItemPublishedInformationKey = (id: UUID) => [
   'publishedInformation',
 ];
 
+export const buildManyItemPublishedInformationsKey = (ids: UUID[]) => [
+  ITEMS_KEY,
+  ids,
+  'publishedInformation',
+];
+
 export const buildLastItemValidationGroupKey = (id: UUID) => [
   ITEMS_KEY,
   id,

@@ -8,6 +8,7 @@ import {
   buildGetPublishedItemsForMemberRoute,
   buildItemPublishRoute,
   buildItemUnpublishRoute,
+  buildManyGetItemPublishedInformationsRoute,
 } from './routes';
 
 const axios = configureAxios();
@@ -34,6 +35,14 @@ export const getItemPublishedInformation = async (
 ) =>
   axios
     .get(`${API_HOST}/${buildGetItemPublishedInformationRoute(id)}`)
+    .then(({ data }) => data);
+
+export const getManyItemPublishedInformations = async (
+  ids: UUID[],
+  { API_HOST }: QueryClientConfig,
+) =>
+  axios
+    .get(`${API_HOST}/${buildManyGetItemPublishedInformationsRoute(ids)}`)
     .then(({ data }) => data);
 
 export const publishItem = async (

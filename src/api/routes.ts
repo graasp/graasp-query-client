@@ -326,6 +326,14 @@ export const buildItemUnpublishRoute = (itemId: UUID) =>
 
 export const buildGetItemPublishedInformationRoute = (itemId: UUID) =>
   `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/${itemId}/informations`;
+export const buildManyGetItemPublishedInformationsRoute = (itemIds: UUID[]) =>
+  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/informations${qs.stringify(
+    { itemId: itemIds },
+    {
+      arrayFormat: 'repeat',
+      addQueryPrefix: true,
+    },
+  )}`;
 export const buildGetAllPublishedItemsRoute = (categoryIds?: UUID[]) =>
   `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}${
     categoryIds?.length

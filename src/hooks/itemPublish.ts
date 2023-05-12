@@ -1,13 +1,18 @@
 import { List } from 'immutable';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 
-import { UUID, convertJs } from '@graasp/sdk';
-import { ItemPublishedRecord, ItemRecord } from '@graasp/sdk/frontend';
+import { ItemPublished, UUID, convertJs } from '@graasp/sdk';
+import {
+  ItemPublishedRecord,
+  ItemRecord,
+  ResultOfRecord,
+} from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
 import { UndefinedArgument } from '../config/errors';
 import {
   buildItemPublishedInformationKey,
+  buildManyItemPublishedInformationsKey,
   buildPublishedItemsForMemberKey,
   buildPublishedItemsKey,
 } from '../config/keys';
@@ -66,6 +71,32 @@ export default (queryConfig: QueryClientConfig) => {
           ),
         ...defaultQueryOptions,
         enabled: enabledValue,
+      });
+    },
+    useManyItemPublishedInformations: (
+      args: {
+        itemIds: UUID[];
+      },
+      options?: { enabled?: boolean },
+    ) => {
+      const enabled =
+        (options?.enabled ?? true) && Boolean(args.itemIds.length);
+      const queryClient = useQueryClient();
+      return useQuery({
+        queryKey: buildManyItemPublishedInformationsKey(args.itemIds),
+        queryFn: (): Promise<ResultOfRecord<ItemPublished>> =>
+          Api.getManyItemPublishedInformations(args.itemIds, queryConfig).then(
+            (data) => convertJs(data),
+          ),
+        onSuccess: async (publishedData) => {
+          // save items in their own key
+          publishedData?.data?.toSeq()?.forEach(async (p) => {
+            const { id } = p.item;
+            queryClient.setQueryData(buildItemPublishedInformationKey(id), p);
+          });
+        },
+        ...defaultQueryOptions,
+        enabled
       });
     },
   };
