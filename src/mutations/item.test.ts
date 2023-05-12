@@ -18,6 +18,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
   ITEMS,
+  ITEMS_JS,
   OK_RESPONSE,
   RECYCLED_ITEM_DATA,
   THUMBNAIL_BLOB_RESPONSE,
@@ -80,7 +81,7 @@ describe('Items Mutations', () => {
 
     it('Post item in root', async () => {
       const route = `/${buildPostItemRoute()}`;
-      queryClient.setQueryData(OWN_ITEMS_KEY, List([ITEMS[1]]));
+      queryClient.setQueryData(OWN_ITEMS_KEY, List([ITEMS.get(1)]));
 
       const response = { ...newItem, id: 'someid', path: 'someid' };
 
@@ -382,7 +383,7 @@ describe('Items Mutations', () => {
   // });
 
   describe('useCopyItems', () => {
-    const to = ITEMS.first()!.id;
+    const to = ITEMS_JS[0].id;
 
     const mutation = mutations.useCopyItems;
 
@@ -408,7 +409,7 @@ describe('Items Mutations', () => {
         MAX_TARGETS_FOR_MODIFY_REQUEST,
         (chunk) => `/${buildCopyItemsRoute(chunk)}`,
         response.toJS(),
-        (d) => (d as any).id,
+        (d) => d.id,
         HttpMethod.POST,
       );
 
@@ -595,7 +596,7 @@ describe('Items Mutations', () => {
   // });
 
   describe('useMoveItems', () => {
-    const to = ITEMS.first()!;
+    const to = ITEMS_JS[0];
     const toId = to.id;
 
     const mutation = mutations.useMoveItems;
@@ -1581,7 +1582,7 @@ describe('Items Mutations', () => {
 
   describe('useUploadFiles', () => {
     const mutation = mutations.useUploadFiles;
-    const { id } = ITEMS.first()!;
+    const { id } = ITEMS_JS[0];
 
     it('Upload one item', async () => {
       // set data in cache
@@ -1833,8 +1834,7 @@ describe('Items Mutations', () => {
 
   describe('useUploadItemThumbnail', () => {
     const mutation = mutations.useUploadItemThumbnail;
-    const item = ITEMS.first()!;
-    const { id } = item;
+    const { id } = ITEMS_JS[0];
 
     it('Upload thumbnail', async () => {
       const route = `/${buildUploadItemThumbnailRoute(id)}`;

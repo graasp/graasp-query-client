@@ -7,7 +7,7 @@ import nock from 'nock';
 import { HttpMethod } from '@graasp/sdk';
 
 import {
-  ITEMS,
+  ITEMS_JS,
   ITEM_CHAT,
   MESSAGE_IDS,
   OK_RESPONSE,
@@ -31,7 +31,7 @@ import {
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Chat Mutations', () => {
-  const itemId = ITEMS.first()!.id;
+  const itemId = ITEMS_JS[0].id;
   const chatId = itemId;
   const chatKey = buildItemChatKey(itemId);
   const messageId = MESSAGE_IDS[0];

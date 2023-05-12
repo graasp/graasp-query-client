@@ -41,7 +41,6 @@ export const configureWsChatHooks = (
         if (event.kind === KINDS.ITEM) {
           const chatKey = buildItemChatKey(chatId);
           const current = queryClient.getQueryData<ItemChatRecord>(chatKey);
-          console.error(current);
 
           const message: ChatMessageRecord = convertJs(event.message);
 
@@ -62,8 +61,9 @@ export const configureWsChatHooks = (
               }
               case OPS.DELETE: {
                 const mutation = current.delete(
-                  current.findIndex((m) => m.id !== message.id),
+                  current.findIndex((m) => m.id === message.id),
                 );
+                console.error(mutation.toJS());
                 queryClient.setQueryData(chatKey, mutation);
                 break;
               }

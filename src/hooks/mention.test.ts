@@ -32,7 +32,7 @@ describe('Chat Mention Hooks', () => {
     const hook = () => hooks.useMentions();
 
     it(`Receive member mentions`, async () => {
-      const response = buildMemberMentions(memberId);
+      const response = buildMemberMentions();
       const endpoints = [
         {
           route: currentMemberRoute,

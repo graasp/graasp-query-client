@@ -7,7 +7,11 @@ import { act } from 'react-test-renderer';
 import { FlagType, HttpMethod } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { ITEMS, ITEM_FLAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import {
+  ITEMS_JS,
+  ITEM_FLAGS,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildPostItemFlagRoute } from '../api/routes';
 import { buildItemFlagsKey } from '../config/keys';
@@ -27,7 +31,7 @@ describe('Item Flag Mutations', () => {
 
   describe('usePostItemFlag', () => {
     const flagType = FlagType.FALSE_INFORMATION;
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS_JS[0].id;
     const flagKey = buildItemFlagsKey(itemId);
     const route = `/${buildPostItemFlagRoute(itemId)}`;
     const mutation = mutations.usePostItemFlag;

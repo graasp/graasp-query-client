@@ -120,7 +120,7 @@ describe('Item Login Mutations', () => {
     const mutation = mutations.usePutItemLoginSchema;
     const loginSchema = ITEM_LOGIN_RESPONSE;
     const itemLoginKey = buildItemLoginSchemaKey(itemId);
-    const newLoginSchema = ItemLoginSchemaType.USERNAME_AND_PASSWORD;
+    const newLoginSchema = ItemLoginSchemaType.UsernameAndPassword;
 
     it('Put item login schema', async () => {
       queryClient.setQueryData(itemLoginKey, loginSchema);

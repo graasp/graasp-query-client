@@ -41,7 +41,7 @@ describe('Membership Hooks', () => {
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
       expect(data as List<ItemMembershipRecord>).toEqualImmutable(
-        convertJs(response[0]),
+        convertJs(response),
       );
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(

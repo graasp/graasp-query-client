@@ -9,7 +9,7 @@ import { ItemTagRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
-  ITEMS,
+  ITEMS_JS,
   ITEM_TAGS,
   MEMBER_RESPONSE,
   UNAUTHORIZED_RESPONSE,
@@ -33,8 +33,7 @@ describe('Item Tag Mutations', () => {
   });
 
   describe('usePostItemTag', () => {
-    const item = ITEMS.first()!;
-    const itemId = item.id;
+    const itemId = ITEMS_JS[0].id;
     const creator = MEMBER_RESPONSE.id;
     const tagType = ItemTagType.HIDDEN;
     const route = `/${buildPostItemTagRoute({ itemId, type: tagType })}`;

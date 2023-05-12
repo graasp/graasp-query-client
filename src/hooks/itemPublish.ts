@@ -96,7 +96,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         ...defaultQueryOptions,
-        enabled
+        enabled,
       });
     },
   };

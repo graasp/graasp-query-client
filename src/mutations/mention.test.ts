@@ -36,7 +36,7 @@ describe('Mention Mutations', () => {
   const memberId = member.id;
   const currentMemberRoute = `/${GET_CURRENT_MEMBER_ROUTE}`;
   const key = buildMentionKey(memberId);
-  const MENTIONS = buildMemberMentions(memberId);
+  const MENTIONS = buildMemberMentions();
 
   describe('enableWebsockets = false', () => {
     const mockedNotifier = jest.fn();
@@ -65,7 +65,7 @@ describe('Mention Mutations', () => {
             response: buildMentionResponse(
               MENTIONS[0],
               HttpMethod.PATCH,
-              MentionStatus.READ,
+              MentionStatus.Read,
             ),
             method: HttpMethod.PATCH,
           },
@@ -83,7 +83,7 @@ describe('Mention Mutations', () => {
           await mockedMutation.mutate({
             memberId,
             id: mentionId,
-            status: MentionStatus.READ,
+            status: MentionStatus.Read,
           });
           await waitForMutation();
         });
@@ -118,7 +118,7 @@ describe('Mention Mutations', () => {
           await mockedMutation.mutate({
             memberId,
             id: mentionId,
-            status: MentionStatus.READ,
+            status: MentionStatus.Read,
           });
           await waitForMutation();
         });
@@ -316,7 +316,7 @@ describe('Mention Mutations', () => {
           await mockedMutation.mutate({
             memberId,
             id: mentionId,
-            status: MentionStatus.READ,
+            status: MentionStatus.Read,
           });
           await waitForMutation();
         });
