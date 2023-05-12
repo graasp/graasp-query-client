@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 
-import { MentionStatus } from '@graasp/sdk';
+import { Member, MentionStatus } from '@graasp/sdk';
 import { ChatMentionRecord } from '@graasp/sdk/frontend';
 
 import {
@@ -43,7 +43,7 @@ describe('Ws Mention Hooks', () => {
         hook: incorrectHook,
         wrapper,
       });
-      const newMention = buildChatMention({ member });
+      const newMention = buildChatMention({});
       const mentionEvent = {
         op: OPS.PUBLISH,
         mention: newMention.toJS(),
@@ -59,7 +59,7 @@ describe('Ws Mention Hooks', () => {
   });
 
   describe('useMentionsUpdates', () => {
-    const member = MEMBER_RESPONSE;
+    const member = MEMBER_RESPONSE.toJS() as Member;
     const chatKey = buildItemChatKey(member.id);
     const mentionKey = buildMentionKey(member.id);
     const channel = {

@@ -403,7 +403,7 @@ export const buildChatMention = ({
   status = MentionStatus.Unread,
 }: {
   id?: UUID;
-  member: Member;
+  member?: Member;
   status?: MentionStatus;
 }): ChatMentionRecord => {
   const defaultChatMentionValues: ChatMention = {
@@ -423,7 +423,7 @@ export const buildChatMention = ({
   };
   const createMockChatMention = (
     values: Partial<ChatMention>,
-  ): ChatMentionRecord => convertJs({ ...values, ...defaultChatMentionValues });
+  ): ChatMentionRecord => convertJs({ ...defaultChatMentionValues, ...values });
 
   const CHAT_MENTION: ChatMentionRecord = createMockChatMention({
     id,
@@ -451,7 +451,7 @@ export const buildMemberMentions = (): List<ChatMentionRecord> => {
       status: MentionStatus.Unread,
     },
     {
-      id: 'someid',
+      id: 'someOtherId',
       message: {
         id: 'anotherid',
         item: MOCK_ITEM,

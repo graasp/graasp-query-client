@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { HttpMethod, Member, MentionStatus } from '@graasp/sdk';
+import { ChatMention, HttpMethod, Member, MentionStatus } from '@graasp/sdk';
 
 import {
   MEMBER_RESPONSE,
@@ -63,7 +63,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: buildMentionResponse(
-              MENTIONS[0],
+              MENTIONS.toJS()[0] as ChatMention,
               HttpMethod.PATCH,
               MentionStatus.Read,
             ),
