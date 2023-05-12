@@ -7,7 +7,7 @@ import { ChatMessage } from '@graasp/sdk';
 import { ExportedItemChatRecord, ItemChatRecord } from '@graasp/sdk/frontend';
 
 import {
-  ITEMS,
+  ITEMS_JS,
   MOCK_ITEM,
   MOCK_MEMBER,
   UNAUTHORIZED_RESPONSE,
@@ -29,7 +29,7 @@ describe('Chat Hooks', () => {
   });
 
   describe('useItemChat', () => {
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS_JS[0].id;
     const mockMessage: ChatMessage = {
       id: 'some-messageId',
       item: MOCK_ITEM,
@@ -44,9 +44,7 @@ describe('Chat Hooks', () => {
     const hook = () => hooks.useItemChat(itemId);
 
     it(`Receive chat messages`, async () => {
-      const response: ItemChatRecord = createMockItemChat(itemId, [
-        mockMessage,
-      ]);
+      const response: ItemChatRecord = createMockItemChat([mockMessage]);
       const endpoints = [
         {
           route,
@@ -87,7 +85,7 @@ describe('Chat Hooks', () => {
   });
 
   describe('useItemChat with arguments', () => {
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS_JS[0].id;
     const mockMessage: ChatMessage = {
       id: 'some-messageId',
       item: MOCK_ITEM,
@@ -102,7 +100,7 @@ describe('Chat Hooks', () => {
     it(`getUpdates = true`, async () => {
       const hook = () => hooks.useItemChat(itemId, { getUpdates: true });
 
-      const response = createMockItemChat(itemId, [mockMessage]);
+      const response = createMockItemChat([mockMessage]);
       const endpoints = [
         {
           route,
@@ -123,7 +121,7 @@ describe('Chat Hooks', () => {
 
     it(`getUpdates = false`, async () => {
       const hook = () => hooks.useItemChat(itemId, { getUpdates: false });
-      const response = createMockItemChat(itemId, [mockMessage]);
+      const response = createMockItemChat([mockMessage]);
       const endpoints = [
         {
           route,
@@ -144,7 +142,7 @@ describe('Chat Hooks', () => {
   });
 
   describe('useItemChat', () => {
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS_JS[0].id;
     const route = `/${buildExportItemChatRoute(itemId)}`;
     const key = buildExportItemChatKey(itemId);
 

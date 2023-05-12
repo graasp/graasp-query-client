@@ -4,7 +4,7 @@ import {
   renderHook,
 } from '@testing-library/react-hooks';
 import { StatusCodes } from 'http-status-codes';
-import nock from 'nock';
+import nock, { InterceptFunction, ReplyHeaders, Scope } from 'nock';
 import React from 'react';
 import { MutationObserverResult, QueryObserverBaseResult } from 'react-query';
 
@@ -59,7 +59,7 @@ export type Endpoint = {
   response: any;
   method?: HttpMethod;
   statusCode?: number;
-  headers?: unknown;
+  headers?: ReplyHeaders;
 };
 
 interface MockArguments {
@@ -103,15 +103,19 @@ interface MockMutationArguments extends MockArguments {
 //   return data;
 // };
 
+type NockMethodType = {
+  [MethodName in keyof Scope]: Scope[MethodName] extends InterceptFunction
+    ? MethodName
+    : never;
+}[keyof Scope];
+
 export const mockEndpoints = (endpoints: Endpoint[]) => {
   // mock endpoint with given response
   const server = nock(API_HOST);
   endpoints.forEach(({ route, method, statusCode, response, headers }) => {
-    server[(method || HttpMethod.GET).toLowerCase()](route).reply(
-      statusCode || StatusCodes.OK,
-      response,
-      headers,
-    );
+    server[(method || HttpMethod.GET).toLowerCase() as NockMethodType](
+      route,
+    ).reply(statusCode || StatusCodes.OK, response, headers);
   });
   return server;
 };
