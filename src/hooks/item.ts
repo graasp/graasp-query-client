@@ -486,13 +486,14 @@ export default (
     useEtherpad: (
       item: DiscriminatedItem | ItemRecord | undefined,
       mode: 'read' | 'write',
-    ) => {
-      if (item?.type !== ItemType.ETHERPAD) {
-        return null;
-      }
-      return useQuery({
-        queryKey: buildEtherpadKey(item.id),
+    ) =>
+      useQuery({
+        queryKey: buildEtherpadKey(item?.id),
         queryFn: (): Promise<EtherpadRecord> => {
+          if (item?.type !== ItemType.ETHERPAD) {
+            throw new Error('Item is not an etherpad item');
+          }
+
           if (!item.id) {
             throw new UndefinedArgument();
           }
@@ -500,9 +501,8 @@ export default (
             (data) => convertJs(data),
           );
         },
-        enabled: Boolean(item.id),
+        enabled: Boolean(item?.id),
         ...defaultQueryOptions,
-      });
-    },
+      }),
   };
 };

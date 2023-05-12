@@ -439,6 +439,7 @@ export const API_ROUTES = {
   buildUploadAvatarRoute,
   buildUploadFilesRoute,
   buildUploadItemThumbnailRoute,
+  buildManyGetItemPublishedInformationsRoute,
   GET_CATEGORY_TYPES_ROUTE,
   GET_CURRENT_MEMBER_ROUTE,
   GET_FLAGS_ROUTE,

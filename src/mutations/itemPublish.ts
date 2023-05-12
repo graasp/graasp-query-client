@@ -42,7 +42,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
   const usePublishItem = () =>
-    useMutation<void, unknown, { id: UUID; notification: string }>(
+    useMutation<void, unknown, { id: UUID; notification: boolean }>(
       MUTATION_KEYS.PUBLISH_ITEM,
     );
 

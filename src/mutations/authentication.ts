@@ -137,6 +137,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
   const useSignOut = () => useMutation<void, unknown, UUID>(SIGN_OUT);
 
+  // disable feature: session should't be store in cookie and available to js
   // queryClient.setMutationDefaults(SWITCH_MEMBER, {
   //   mutationFn: async (args: { memberId: string; domain: string }) => {
   //     // get token from stored sessions given memberId
@@ -168,7 +169,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   //   );
 
   return {
-    // useSwitchMember,
     useSignIn,
     useSignInWithPassword,
     useSignOut,

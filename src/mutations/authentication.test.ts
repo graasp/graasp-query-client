@@ -372,61 +372,61 @@ describe('Authentication Mutations', () => {
     });
   });
 
-  describe('useSwitchMember', () => {
-    const mutation = mutations.useSwitchMember;
-    const MOCK_SESSIONS = [{ id: 'id1', token: 'token1' }];
+  // describe('useSwitchMember', () => {
+  //   const mutation = mutations.useSwitchMember;
+  //   const MOCK_SESSIONS = [{ id: 'id1', token: 'token1' }];
 
-    it(`Switch Member`, async () => {
-      const mockedMutation = await mockMutation({
-        mutation,
-        wrapper,
-      });
+  //   it(`Switch Member`, async () => {
+  //     const mockedMutation = await mockMutation({
+  //       mutation,
+  //       wrapper,
+  //     });
 
-      (utils.getStoredSessions as jest.Mock).mockReturnValue(MOCK_SESSIONS);
+  //     (utils.getStoredSessions as jest.Mock).mockReturnValue(MOCK_SESSIONS);
 
-      await act(async () => {
-        await mockedMutation.mutate({
-          memberId: MOCK_SESSIONS[0].id,
-          domain: DOMAIN,
-        });
-        await waitForMutation();
-      });
+  //     await act(async () => {
+  //       await mockedMutation.mutate({
+  //         memberId: MOCK_SESSIONS[0].id,
+  //         domain: DOMAIN,
+  //       });
+  //       await waitForMutation();
+  //     });
 
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+  //     expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
 
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: switchMemberRoutine.SUCCESS,
-      });
+  //     expect(mockedNotifier).toHaveBeenCalledWith({
+  //       type: switchMemberRoutine.SUCCESS,
+  //     });
 
-      // cookie management
-      expect(utils.getStoredSessions).toHaveBeenCalled();
-      expect(utils.setCurrentSession).toHaveBeenCalledWith(
-        MOCK_SESSIONS[0].token,
-        DOMAIN,
-      );
-    });
-    it(`Throw if session does not exist`, async () => {
-      const mockedMutation = await mockMutation({
-        mutation,
-        wrapper,
-      });
+  //     // cookie management
+  //     expect(utils.getStoredSessions).toHaveBeenCalled();
+  //     expect(utils.setCurrentSession).toHaveBeenCalledWith(
+  //       MOCK_SESSIONS[0].token,
+  //       DOMAIN,
+  //     );
+  //   });
+  //   it(`Throw if session does not exist`, async () => {
+  //     const mockedMutation = await mockMutation({
+  //       mutation,
+  //       wrapper,
+  //     });
 
-      (utils.getStoredSessions as jest.Mock).mockReturnValue([]);
+  //     (utils.getStoredSessions as jest.Mock).mockReturnValue([]);
 
-      await act(async () => {
-        await mockedMutation.mutate({
-          memberId: MOCK_SESSIONS[0].id,
-          domain: DOMAIN,
-        });
-        await waitForMutation();
-      });
+  //     await act(async () => {
+  //       await mockedMutation.mutate({
+  //         memberId: MOCK_SESSIONS[0].id,
+  //         domain: DOMAIN,
+  //       });
+  //       await waitForMutation();
+  //     });
 
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+  //     expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
 
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: switchMemberRoutine.FAILURE,
-        payload: expect.anything(),
-      });
-    });
-  });
+  //     expect(mockedNotifier).toHaveBeenCalledWith({
+  //       type: switchMemberRoutine.FAILURE,
+  //       payload: expect.anything(),
+  //     });
+  //   });
+  // });
 });
