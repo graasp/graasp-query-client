@@ -1,12 +1,6 @@
 import { QueryClient, useMutation } from 'react-query';
 
-import {
-  UUID,
-  getStoredSessions,
-  removeSession,
-  saveUrlForRedirection,
-  setCurrentSession,
-} from '@graasp/sdk';
+import { UUID, saveUrlForRedirection } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -17,20 +11,13 @@ import {
   signInWithPasswordRoutine,
   signOutRoutine,
   signUpRoutine,
-  switchMemberRoutine,
   updatePasswordRoutine,
 } from '../routines';
 import { QueryClientConfig } from '../types';
 import { isServer } from '../utils/util';
 
-const {
-  SIGN_IN,
-  SIGN_OUT,
-  UPDATE_PASSWORD,
-  SIGN_IN_WITH_PASSWORD,
-  SWITCH_MEMBER,
-  SIGN_UP,
-} = MUTATION_KEYS;
+const { SIGN_IN, SIGN_OUT, UPDATE_PASSWORD, SIGN_IN_WITH_PASSWORD, SIGN_UP } =
+  MUTATION_KEYS;
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -121,7 +108,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   queryClient.setMutationDefaults(SIGN_OUT, {
     mutationFn: (_currentMemberId: UUID) => Api.signOut(queryConfig),
-    onSuccess: (_res, currentMemberId) => {
+    onSuccess: (_res, _currentMemberId) => {
       notifier?.({
         type: signOutRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
@@ -133,8 +120,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         // save current page for further redirection
         saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
         // remove cookie and stored session from browser when the logout is confirmed
-        setCurrentSession(null, queryConfig.DOMAIN);
-        removeSession(currentMemberId, queryConfig.DOMAIN);
+        // todo: find a way to do something equivalent but with httpOnly cookies
+        // setCurrentSession(null, queryConfig.DOMAIN);
+        // removeSession(currentMemberId, queryConfig.DOMAIN);
       }
       // Update when the server confirmed the logout, instead optimistically updating the member
       // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
@@ -149,38 +137,38 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
   const useSignOut = () => useMutation<void, unknown, UUID>(SIGN_OUT);
 
-  queryClient.setMutationDefaults(SWITCH_MEMBER, {
-    mutationFn: async (args: { memberId: string; domain: string }) => {
-      // get token from stored sessions given memberId
-      const sessions = getStoredSessions();
-      const session = sessions?.find(
-        ({ id: thisId }) => args.memberId === thisId,
-      );
-      if (!session) {
-        throw new Error('Session is invalid');
-      }
-      setCurrentSession(session.token, args.domain);
-      return args.memberId;
-    },
-    onSuccess: () => {
-      notifier?.({ type: switchMemberRoutine.SUCCESS });
-      // reset queries to take into account the new token
-      queryClient.resetQueries();
-    },
-    onError: (error) => {
-      notifier?.({
-        type: switchMemberRoutine.FAILURE,
-        payload: { error },
-      });
-    },
-  });
-  const useSwitchMember = () =>
-    useMutation<void, unknown, { memberId: string; domain: string }>(
-      SWITCH_MEMBER,
-    );
+  // queryClient.setMutationDefaults(SWITCH_MEMBER, {
+  //   mutationFn: async (args: { memberId: string; domain: string }) => {
+  //     // get token from stored sessions given memberId
+  //     const sessions = getStoredSessions();
+  //     const session = sessions?.find(
+  //       ({ id: thisId }) => args.memberId === thisId,
+  //     );
+  //     if (!session) {
+  //       throw new Error('Session is invalid');
+  //     }
+  //     setCurrentSession(session.token, args.domain);
+  //     return args.memberId;
+  //   },
+  //   onSuccess: () => {
+  //     notifier?.({ type: switchMemberRoutine.SUCCESS });
+  //     // reset queries to take into account the new token
+  //     queryClient.resetQueries();
+  //   },
+  //   onError: (error) => {
+  //     notifier?.({
+  //       type: switchMemberRoutine.FAILURE,
+  //       payload: { error },
+  //     });
+  //   },
+  // });
+  // const useSwitchMember = () =>
+  //   useMutation<void, unknown, { memberId: string; domain: string }>(
+  //     SWITCH_MEMBER,
+  //   );
 
   return {
-    useSwitchMember,
+    // useSwitchMember,
     useSignIn,
     useSignInWithPassword,
     useSignOut,

@@ -1,13 +1,6 @@
 import { QueryClient, useMutation } from 'react-query';
 
-import {
-  MemberExtra,
-  ThumbnailSize,
-  UUID,
-  convertJs,
-  removeSession,
-  setCurrentSession,
-} from '@graasp/sdk';
+import { MemberExtra, ThumbnailSize, UUID, convertJs } from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -43,7 +36,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       Api.deleteMember(payload, queryConfig).then(() =>
         Api.signOut(queryConfig),
       ),
-    onSuccess: (_data, { id }) => {
+    onSuccess: (_data, { id: _id }) => {
       notifier?.({
         type: deleteMemberRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.DELETE_MEMBER },
@@ -53,8 +46,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       // remove cookies from browser when logout succeeds
       if (queryConfig.DOMAIN) {
-        removeSession(id, queryConfig.DOMAIN);
-        setCurrentSession(null, queryConfig.DOMAIN);
+        // todo: find a way to do this with an httpOnly cookie
+        // removeSession(id, queryConfig.DOMAIN);
+        // setCurrentSession(null, queryConfig.DOMAIN);
       }
 
       // Update when the server confirmed the logout, instead optimistically updating the member

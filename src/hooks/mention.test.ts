@@ -1,8 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { MemberMentionsRecord } from '@graasp/sdk/frontend';
+import { ChatMentionRecord } from '@graasp/sdk/frontend';
 
 import { MEMBER_RESPONSE, buildMemberMentions } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
@@ -48,7 +49,7 @@ describe('Chat Mention Hooks', () => {
         wrapper,
       });
 
-      expect(data as MemberMentionsRecord).toEqualImmutable(response);
+      expect(data as List<ChatMentionRecord>).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
