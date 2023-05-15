@@ -38,7 +38,7 @@ export const configureWsChatMentionsHooks = (
       };
 
       const handler = (event: MentionEvent): void => {
-        const mentionKey = buildMentionKey(memberId);
+        const mentionKey = buildMentionKey();
         const current: List<ChatMentionRecord> | undefined =
           queryClient.getQueryData(mentionKey);
 
