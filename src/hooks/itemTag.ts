@@ -1,7 +1,7 @@
 import { List } from 'immutable';
 import { QueryClient, useQuery } from 'react-query';
 
-import { ItemTag, UUID, convertJs, isError } from '@graasp/sdk';
+import { ItemTag, UUID, convertJs } from '@graasp/sdk';
 import { ItemTagRecord, ResultOfRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
@@ -36,11 +36,11 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
           convertJs(data),
         );
       },
-      onSuccess: async (tags: List<List<ItemTagRecord>>) => {
+      onSuccess: async (tags) => {
         // save tags in their own key
         ids?.forEach(async (id, idx) => {
-          const itemTags = tags.get(idx);
-          if (!isError(itemTags)) {
+          const itemTags = tags?.data?.get(idx);
+          if (itemTags?.size) {
             queryClient.setQueryData(
               itemTagsKeys.singleId(id),
               itemTags as List<ItemTagRecord>,
