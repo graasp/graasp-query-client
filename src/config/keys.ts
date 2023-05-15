@@ -42,7 +42,7 @@ export const buildItemChatKey = (id: UUID) => [CHATS_KEY, id];
 export const EXPORT_CHATS_KEY = 'exportChats';
 export const buildExportItemChatKey = (id: UUID) => [EXPORT_CHATS_KEY, id];
 export const MENTIONS_KEY = 'mentions';
-export const buildMentionKey = (memberId: UUID) => [MENTIONS_KEY, memberId];
+export const buildMentionKey = () => [MENTIONS_KEY];
 
 export const getKeyForParentId = (parentId: UUID | null) =>
   parentId ? buildItemChildrenKey(parentId) : OWN_ITEMS_KEY;
@@ -194,13 +194,13 @@ export const buildActionsKey = (args: {
   view: string;
   requestedSampleSize: number;
 }) => [
-  'actions',
-  args.itemId,
-  {
-    view: args.view,
-    size: args.requestedSampleSize,
-  },
-];
+    'actions',
+    args.itemId,
+    {
+      view: args.view,
+      size: args.requestedSampleSize,
+    },
+  ];
 
 export const buildInvitationKey = (id?: UUID) => ['invitations', id];
 export const buildItemInvitationsKey = (id?: UUID) => [

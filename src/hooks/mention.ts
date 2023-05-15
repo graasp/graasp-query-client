@@ -32,7 +32,7 @@ export default (
       wsHooks?.useMentionsUpdates(getUpdates ? memberId : null);
 
       return useQuery({
-        queryKey: buildMentionKey(memberId),
+        queryKey: buildMentionKey(),
         queryFn: (): Promise<List<ChatMentionRecord>> =>
           Api.getMemberMentions(queryConfig).then((data) => convertJs(data)),
         ...defaultQueryOptions,

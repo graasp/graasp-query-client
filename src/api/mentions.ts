@@ -34,7 +34,7 @@ export const patchMemberMentionsStatus = async (
   );
 
 export const deleteMention = async (
-  { mentionId }: { mentionId: UUID },
+  mentionId: UUID,
   { API_HOST }: QueryClientConfig,
 ): Promise<ChatMention> =>
   verifyAuthentication(() =>
