@@ -1,8 +1,8 @@
 import { List } from 'immutable';
 import { QueryClient, useQuery } from 'react-query';
 
-import { UUID, convertJs, isError } from '@graasp/sdk';
-import { ItemTagRecord } from '@graasp/sdk/frontend';
+import { ItemTag, UUID, convertJs, isError } from '@graasp/sdk';
+import { ItemTagRecord, ResultOfRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
 import { UndefinedArgument } from '../config/errors';
@@ -28,7 +28,7 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
   const useItemsTags = (ids: UUID[]) =>
     useQuery({
       queryKey: itemTagsKeys.manyIds(ids),
-      queryFn: (): Promise<List<List<ItemTagRecord>>> => {
+      queryFn: (): Promise<ResultOfRecord<ItemTag[]>> => {
         if (!ids) {
           throw new UndefinedArgument();
         }
