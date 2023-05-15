@@ -345,13 +345,18 @@ export default (
       });
     },
 
+    /**
+     * @deprecated use url alternative when possible
+     * @param id itemId to download content from
+     * @returns Blob of the content
+     */
     useFileContent: (
       id?: UUID,
       { enabled = true }: { enabled?: boolean } = {},
     ) =>
       useQuery({
         queryKey: buildFileContentKey({ id, replyUrl: false }),
-        queryFn: () => {
+        queryFn: (): Promise<Blob> => {
           if (!id) {
             throw new UndefinedArgument();
           }
@@ -368,7 +373,7 @@ export default (
     ) =>
       useQuery({
         queryKey: buildFileContentKey({ id, replyUrl: true }),
-        queryFn: () => {
+        queryFn: (): Promise<string> => {
           if (!id) {
             throw new UndefinedArgument();
           }
