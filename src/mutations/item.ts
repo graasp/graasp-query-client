@@ -311,12 +311,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       const itemPath = itemData?.path;
       const newParent = itemPath
         ? {
-            parent: await mutateParentChildren({
-              childPath: itemPath,
-              value: (old: List<ItemRecord>) =>
-                old.filter(({ id }) => !itemIds.includes(id)),
-            }),
-          }
+          parent: await mutateParentChildren({
+            childPath: itemPath,
+            value: (old: List<ItemRecord>) =>
+              old.filter(({ id }) => !itemIds.includes(id)),
+          }),
+        }
         : {};
       const previousItems = {
         ...newParent,
@@ -721,7 +721,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       unknown,
       {
         ids: UUID[];
-        to: UUID;
+        to?: UUID;
       }
     >(MOVE_ITEMS);
 
