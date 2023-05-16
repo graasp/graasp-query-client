@@ -74,7 +74,8 @@ export const itemTagsKeys = {
   many: () => [...itemTagsKeys.all, 'many'] as const,
   single: () => [...itemTagsKeys.all, 'single'] as const,
   singleId: (id?: UUID) => [...itemTagsKeys.single(), id] as const,
-  manyIds: (ids: UUID[]) => [...itemTagsKeys.many(), ...ids] as const,
+  manyIds: (ids: UUID[] | undefined = []) =>
+    [...itemTagsKeys.many(), ...ids] as const,
 };
 /**
  * @deprecated

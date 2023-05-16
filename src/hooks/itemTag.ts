@@ -25,11 +25,11 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
       ...defaultQueryOptions,
     });
 
-  const useItemsTags = (ids: UUID[]) =>
+  const useItemsTags = (ids?: UUID[]) =>
     useQuery({
       queryKey: itemTagsKeys.manyIds(ids),
       queryFn: (): Promise<ResultOfRecord<ItemTag[]>> => {
-        if (!ids) {
+        if (!ids || ids?.length === 0) {
           throw new UndefinedArgument();
         }
         return Api.getItemsTags(ids, queryConfig).then((data) =>
