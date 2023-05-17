@@ -4,12 +4,12 @@ import { ItemLoginSchemaType, UUID, convertJs } from '@graasp/sdk';
 import { ItemLoginSchemaRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
+import { UndefinedArgument } from '../config/errors';
 import {
   buildItemLoginSchemaKey,
   buildItemLoginSchemaTypeKey,
 } from '../config/keys';
 import { QueryClientConfig } from '../types';
-import { UndefinedArgument } from '../config/errors';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -48,12 +48,11 @@ export default (queryConfig: QueryClientConfig) => {
           }
           Api.getItemLoginSchemaType(args.itemId, queryConfig).then((data) =>
             convertJs(data),
-          )
+          );
         },
         ...defaultQueryOptions,
         enabled: enabledValue,
       });
     },
-
   };
 };

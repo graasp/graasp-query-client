@@ -195,13 +195,13 @@ export const buildActionsKey = (args: {
   view: string;
   requestedSampleSize: number;
 }) => [
-    'actions',
-    args.itemId,
-    {
-      view: args.view,
-      size: args.requestedSampleSize,
-    },
-  ];
+  'actions',
+  args.itemId,
+  {
+    view: args.view,
+    size: args.requestedSampleSize,
+  },
+];
 
 export const buildInvitationKey = (id?: UUID) => ['invitations', id];
 export const buildItemInvitationsKey = (id?: UUID) => [

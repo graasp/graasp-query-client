@@ -286,7 +286,7 @@ export const postEtherpad = async (
     name,
     parentId,
   }: Pick<Item, 'name'> & {
-    parentId: UUID;
+    parentId?: UUID;
   },
   { API_HOST }: QueryClientConfig,
 ) =>

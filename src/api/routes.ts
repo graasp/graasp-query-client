@@ -318,7 +318,8 @@ export const CREATE_SETUP_INTENT_ROUTE = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}
 export const GET_CURRENT_CUSTOMER = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/customer/current`;
 export const buildItemPublishRoute = (itemId: UUID, notification?: boolean) =>
   // do not include notification query string if false
-  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/${itemId}/publish${notification ? qs.stringify({ notification }, { addQueryPrefix: true }) : ''
+  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/${itemId}/publish${
+    notification ? qs.stringify({ notification }, { addQueryPrefix: true }) : ''
   }`;
 export const buildItemUnpublishRoute = (itemId: UUID) =>
   `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/${itemId}/unpublish`;
@@ -334,15 +335,16 @@ export const buildManyGetItemPublishedInformationsRoute = (itemIds: UUID[]) =>
     },
   )}`;
 export const buildGetAllPublishedItemsRoute = (categoryIds?: UUID[]) =>
-  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}${categoryIds?.length
-    ? qs.stringify(
-      { categoryIds },
-      {
-        arrayFormat: 'repeat',
-        addQueryPrefix: true,
-      },
-    )
-    : ''
+  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}${
+    categoryIds?.length
+      ? qs.stringify(
+          { categoryIds },
+          {
+            arrayFormat: 'repeat',
+            addQueryPrefix: true,
+          },
+        )
+      : ''
   }`;
 export const buildGetPublishedItemsForMemberRoute = (memberId: UUID) =>
   `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/members/${memberId}`;

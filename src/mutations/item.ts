@@ -171,7 +171,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       void,
       unknown,
       Pick<Item<ItemSettings>, 'name'> & {
-        parentId: string;
+        parentId?: string;
       }
     >(POST_ETHERPAD);
 
