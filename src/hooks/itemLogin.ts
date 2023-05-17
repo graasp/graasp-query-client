@@ -9,6 +9,7 @@ import {
   buildItemLoginSchemaTypeKey,
 } from '../config/keys';
 import { QueryClientConfig } from '../types';
+import { UndefinedArgument } from '../config/errors';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -34,37 +35,25 @@ export default (queryConfig: QueryClientConfig) => {
 
     useItemLoginSchemaType: (
       args: {
-        itemId: UUID;
+        itemId?: UUID;
       },
       options?: { enabled?: boolean },
     ): UseQueryResult<ItemLoginSchemaType> => {
       const enabledValue = (options?.enabled ?? true) && Boolean(args.itemId);
       return useQuery({
         queryKey: buildItemLoginSchemaTypeKey(args.itemId),
-        queryFn: () =>
+        queryFn: () => {
+          if (!args.itemId) {
+            throw new UndefinedArgument();
+          }
           Api.getItemLoginSchemaType(args.itemId, queryConfig).then((data) =>
             convertJs(data),
-          ),
+          )
+        },
         ...defaultQueryOptions,
         enabled: enabledValue,
       });
     },
 
-    //   // still used?
-    //   useItemLogin: (id?: UUID) =>
-    //     useQuery({
-    //       queryKey: buildItemLoginKey(id),
-    //       queryFn: (): Promise<ItemLoginRecord> => {
-    //         if (!id) {
-    //           throw new UndefinedArgument();
-    //         }
-    //         return Api.getItemLogin(id, queryConfig).then((data) =>
-    //           convertJs(data),
-    //         );
-    //       },
-    //       enabled: Boolean(id),
-    //       ...defaultQueryOptions,
-    //     }),
-    // };
   };
 };

@@ -245,6 +245,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
           ],
         });
       } catch (e) {
+        console.error(e)
         const errors = [];
         if (e instanceof AxiosError) {
           const error = e.response?.data;
