@@ -8,11 +8,7 @@ import { HttpMethod } from '@graasp/sdk';
 import * as utils from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import {
-  DOMAIN,
-  OK_RESPONSE,
-  UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
+import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
   SIGN_IN_ROUTE,
@@ -27,7 +23,6 @@ import {
   signInWithPasswordRoutine,
   signOutRoutine,
   signUpRoutine,
-  switchMemberRoutine,
   updatePasswordRoutine,
 } from '../routines';
 
@@ -50,7 +45,6 @@ jest.mock('@graasp/sdk', () => {
 });
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
-jest.spyOn(utils, 'isUserAuthenticated').mockReturnValue(true);
 
 const email = 'myemail@email.com';
 
@@ -339,8 +333,6 @@ describe('Authentication Mutations', () => {
 
       // cookie management
       expect(utils.saveUrlForRedirection).toHaveBeenCalled();
-      expect(utils.setCurrentSession).toHaveBeenCalledWith(null, DOMAIN);
-      expect(utils.removeSession).toHaveBeenCalledWith(userId, DOMAIN);
     });
 
     it(`Unauthorized`, async () => {

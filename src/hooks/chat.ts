@@ -30,10 +30,7 @@ export default (
       return useQuery({
         queryKey: buildItemChatKey(itemId),
         queryFn: (): Promise<ItemChatRecord> =>
-          Api.getItemChat(itemId, queryConfig).then((data) => {
-            console.log('queryclient', data);
-            return convertJs(data);
-          }),
+          Api.getItemChat(itemId, queryConfig).then((data) => convertJs(data)),
         ...defaultQueryOptions,
         enabled: Boolean(itemId),
       });

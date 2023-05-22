@@ -38,8 +38,8 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
       },
       onSuccess: async (tags) => {
         // save tags in their own key
-        ids?.forEach(async (id, idx) => {
-          const itemTags = tags?.data?.get(idx);
+        ids?.forEach(async (id) => {
+          const itemTags = tags?.data?.get(id);
           if (itemTags?.size) {
             queryClient.setQueryData(
               itemTagsKeys.singleId(id),

@@ -30,7 +30,7 @@ describe('Ws Mention Hooks', () => {
   describe('useMentionsUpdates incorrect use', () => {
     const memberId = '';
     const incorrectHook = () => hooks.useMentionsUpdates(memberId);
-    const mentionKey = buildMentionKey(memberId);
+    const mentionKey = buildMentionKey();
     const channel = {
       name: memberId,
       topic: TOPICS.CHAT_ITEM,
@@ -61,7 +61,7 @@ describe('Ws Mention Hooks', () => {
   describe('useMentionsUpdates', () => {
     const member = MEMBER_RESPONSE.toJS() as Member;
     const chatKey = buildItemChatKey(member.id);
-    const mentionKey = buildMentionKey(member.id);
+    const mentionKey = buildMentionKey();
     const channel = {
       name: member.id,
       topic: TOPICS.MENTIONS,

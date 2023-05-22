@@ -1,9 +1,15 @@
 import { StatusCodes } from 'http-status-codes';
-import { List, Record } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { ITEMS, ITEM_TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import { Item, ItemTag, ItemTagType, Member, convertJs } from '@graasp/sdk';
+
+import {
+  ITEMS,
+  ITEM_TAGS,
+  UNAUTHORIZED_RESPONSE,
+  buildResultOfData,
+} from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildGetItemTagsRoute, buildGetItemsTagsRoute } from '../api/routes';
 import { itemTagsKeys } from '../config/keys';
@@ -62,32 +68,48 @@ describe('Item Tags Hooks', () => {
     const itemsIds = ITEMS.map(({ id }) => id).toArray();
     const route = `/${buildGetItemsTagsRoute(itemsIds)}`;
     const keys = itemsIds.map((itemId) => itemTagsKeys.singleId(itemId));
+    const tags = itemsIds.map((id) => [
+      {
+        id: 'some id',
+        createdAt: new Date(),
+        creator: {} as Member,
+        item: { id } as Item,
+        type: ItemTagType.HIDDEN,
+      },
+    ]);
 
     const hook = () => hooks.useItemsTags(itemsIds);
 
     it(`Receive tags of given items`, async () => {
-      const response = List(itemsIds.map(() => ITEM_TAGS));
-
+      const response = buildResultOfData(tags, (t: ItemTag[]) => t[0].item.id);
       const endpoints = [{ route, response }];
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toEqualImmutable(response);
+      expect(data).toEqualImmutable(convertJs(response));
 
       // verify cache keys
-      keys.forEach((key) =>
-        expect(queryClient.getQueryData(key)).toEqualImmutable(ITEM_TAGS),
+      keys.forEach((key, idx) =>
+        expect(queryClient.getQueryData(key)).toEqualImmutable(
+          convertJs(tags[idx]),
+        ),
       );
 
       expect(isSuccess).toBeTruthy();
     });
 
     it(`Receive tags and save only for non-error tags`, async () => {
-      const defaultStatusCode = { statusCode: StatusCodes.FORBIDDEN };
-      const createMockStatusCode = Record(defaultStatusCode);
-      const STATUS_CODE = createMockStatusCode({
-        statusCode: StatusCodes.FORBIDDEN,
-      });
-      const response = List([...itemsIds.map(() => ITEM_TAGS), STATUS_CODE]);
+      const errors = [
+        {
+          name: 'error',
+          message: 'error',
+          stack: '',
+        },
+      ];
+      const response = buildResultOfData(
+        tags,
+        (t: ItemTag[]) => t[0].item.id,
+        errors,
+      );
       const idWithError = 'some-id';
       const routeWithError = `/${buildGetItemsTagsRoute([
         ...itemsIds,
@@ -103,11 +125,13 @@ describe('Item Tags Hooks', () => {
         wrapper,
       });
 
-      expect(data).toEqualImmutable(response);
+      expect(data).toEqualImmutable(convertJs(response));
 
       // verify cache keys
-      keys.forEach((key) =>
-        expect(queryClient.getQueryData(key)).toEqualImmutable(ITEM_TAGS),
+      keys.forEach((key, idx) =>
+        expect(queryClient.getQueryData(key)).toEqualImmutable(
+          convertJs(tags[idx]),
+        ),
       );
       expect(
         queryClient.getQueryData(itemTagsKeys.singleId(idWithError)),

@@ -35,7 +35,7 @@ describe('Mention Mutations', () => {
   const member = MEMBER_RESPONSE.toJS() as Member;
   const memberId = member.id;
   const currentMemberRoute = `/${GET_CURRENT_MEMBER_ROUTE}`;
-  const key = buildMentionKey(memberId);
+  const key = buildMentionKey();
   const MENTIONS = buildMemberMentions();
 
   describe('enableWebsockets = false', () => {
