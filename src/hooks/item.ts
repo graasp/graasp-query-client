@@ -8,7 +8,6 @@ import {
 
 import {
   DiscriminatedItem,
-  Item,
   ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
   UUID,
@@ -315,7 +314,7 @@ export default (
     useItems: (
       ids: UUID[],
       options?: { getUpdates?: boolean },
-    ): UseQueryResult<ResultOfRecord<Item>> => {
+    ): UseQueryResult<ResultOfRecord<DiscriminatedItem>> => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       itemWsHooks?.useItemsUpdates(getUpdates ? ids : null);
