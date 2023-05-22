@@ -24,10 +24,9 @@ describe('Chat Mention Hooks', () => {
   });
 
   describe('useMentions', () => {
-    const memberId = MEMBER_RESPONSE.id;
     const currentMemberRoute = `/${GET_CURRENT_MEMBER_ROUTE}`;
     const route = `/${buildGetMemberMentionsRoute()}`;
-    const key = buildMentionKey(memberId);
+    const key = buildMentionKey();
 
     const hook = () => hooks.useMentions();
 

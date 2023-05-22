@@ -46,8 +46,8 @@ export default (queryConfig: QueryClientConfig) => {
           if (!args.itemId) {
             throw new UndefinedArgument();
           }
-          return Api.getItemLoginSchemaType(args.itemId, queryConfig).then((data) =>
-            convertJs(data),
+          return Api.getItemLoginSchemaType(args.itemId, queryConfig).then(
+            (data) => convertJs(data),
           );
         },
         ...defaultQueryOptions,
