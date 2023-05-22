@@ -12,21 +12,21 @@ export const SUBSCRIPTION_KEY = 'subscriptions';
 
 export const buildItemKey = (id?: UUID) => [ITEMS_KEY, id];
 export const buildItemsKey = (ids: UUID[]) => [ITEMS_KEY, hashItemsIds(ids)];
-export const buildItemChildrenKey = (id?: UUID) => [ITEMS_KEY, id, 'children'];
+export const buildItemChildrenKey = (id?: UUID) => [ITEMS_KEY, 'children', id];
 export const buildItemPaginatedChildrenKey = (id?: UUID) => [
   ITEMS_KEY,
-  id,
   'childrenPaginated',
+  id,
 ];
 export const buildItemsChildrenKey = (ids: UUID[]) => [
   ITEMS_KEY,
-  hashItemsIds(ids),
   'children',
+  hashItemsIds(ids),
 ];
 export const buildItemDescendantsKey = (id: UUID) => [
   ITEMS_KEY,
-  id,
   'descendants',
+  id,
 ];
 export const SHARED_ITEMS_KEY = 'shared';
 export const CURRENT_MEMBER_KEY = 'currentMember';
@@ -36,7 +36,7 @@ export const buildMembersKey = (ids: UUID[]) => [
   MEMBERS_KEY,
   hashItemsIds(ids),
 ];
-export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, id, 'parents'];
+export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, 'parents', id];
 export const CHATS_KEY = 'chats';
 export const buildItemChatKey = (id: UUID) => [CHATS_KEY, id];
 export const EXPORT_CHATS_KEY = 'exportChats';
@@ -49,19 +49,19 @@ export const getKeyForParentId = (parentId: UUID | null) =>
 
 export const buildItemMembershipsKey = (id?: UUID) => [
   ITEMS_KEY,
-  id,
   'memberships',
+  id,
 ];
 export const buildManyItemMembershipsKey = (ids?: UUID[]) => [
   ITEMS_KEY,
-  hashItemsIds(ids),
   'memberships',
+  hashItemsIds(ids),
 ];
-export const buildItemLoginKey = (id?: UUID) => [ITEMS_KEY, id, 'login'];
+export const buildItemLoginKey = (id?: UUID) => [ITEMS_KEY, 'login', id];
 export const buildItemLoginSchemaKey = (id?: UUID) => [
   ITEMS_KEY,
-  id,
   'loginSchema',
+  id,
 ];
 export const buildItemLoginSchemaTypeKey = (id?: UUID) => [
   ...buildItemLoginSchemaKey(id),
@@ -77,28 +77,16 @@ export const itemTagsKeys = {
   manyIds: (ids: UUID[] | undefined = []) =>
     [...itemTagsKeys.many(), ...ids] as const,
 };
-/**
- * @deprecated
- */
-export const buildItemTagsKey = (id?: UUID) => [ITEMS_KEY, id, 'tags'];
-/**
- * @deprecated
- */
-export const buildManyItemTagsKey = (ids?: UUID[]) => [
-  ITEMS_KEY,
-  hashItemsIds(ids),
-  'tags',
-];
 export const buildFileContentKey = ({
   id,
   replyUrl,
 }: {
   id?: UUID;
   replyUrl?: boolean;
-}) => [ITEMS_KEY, id, 'file', replyUrl ? 'url' : 'blob'];
+}) => [ITEMS_KEY, 'file', id, replyUrl ? 'url' : 'blob'];
 
 export const ITEM_FLAGS_KEY = 'itemFlags';
-export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, id, 'flags'];
+export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, 'flags', id];
 
 export const CATEGORY_TYPES_KEY = 'categoryTypes';
 export const buildCategoryKey = (id: UUID) => ['category', id];
@@ -108,8 +96,8 @@ export const buildCategoriesKey = (typeId?: UUID[]) => [
 ];
 export const buildItemCategoriesKey = (id?: UUID) => [
   ITEMS_KEY,
-  id,
   'categories',
+  id,
 ];
 export const buildItemsByCategoriesKey = (ids: UUID[]) => [
   'itemsInCategories',
@@ -143,10 +131,10 @@ export const buildAvatarKey = ({
 
 export const buildGetLikesForMemberKey = (id?: UUID) => [
   MEMBERS_KEY,
-  id,
   'likedItems',
+  id,
 ];
-export const buildGetLikesForItem = (id?: UUID) => [ITEMS_KEY, id, 'likes'];
+export const buildGetLikesForItem = (id?: UUID) => [ITEMS_KEY, 'likes', id];
 
 export const buildPublishedItemsKey = (categoryIds?: UUID[]) => [
   ITEMS_KEY,
@@ -162,32 +150,32 @@ export const buildPublishedItemsForMemberKey = (memberId?: UUID) => [
 
 export const buildItemPublishedInformationKey = (id: UUID) => [
   ITEMS_KEY,
-  id,
   'publishedInformation',
+  id,
 ];
 
 export const buildManyItemPublishedInformationsKey = (ids: UUID[]) => [
   ITEMS_KEY,
-  ids,
   'publishedInformation',
+  ids,
 ];
 
 export const buildLastItemValidationGroupKey = (id: UUID) => [
   ITEMS_KEY,
-  id,
   'itemValidation',
   'latest',
+  id,
 ];
 
 export const buildItemValidationAndReviewKey = (id: UUID) => [
   ITEMS_KEY,
-  id,
   'itemValidationAndReview',
+  id,
 ];
 export const buildItemValidationGroupsKey = (id: UUID) => [
   ITEMS_KEY,
-  id,
   'itemValidationGroups',
+  id,
 ];
 
 export const buildActionsKey = (args: {
@@ -216,14 +204,14 @@ export const CARDS_KEY = [SUBSCRIPTION_KEY, 'cards'];
 export const buildPlanKey = (id: string) => [
   MEMBERS_KEY,
   SUBSCRIPTION_KEY,
-  id,
   'plans',
+  id,
 ];
 export const buildPlansKey = (id: string) => [
   MEMBERS_KEY,
   SUBSCRIPTION_KEY,
-  id,
   'plans',
+  id,
 ];
 export const CURRENT_CUSTOMER_KEY = [SUBSCRIPTION_KEY, 'currentCustomer'];
 
@@ -253,8 +241,6 @@ export const DATA_KEYS = {
   TAGS_KEY,
   ITEM_TAGS_KEY,
   itemTagsKeys,
-  buildItemTagsKey,
-  buildManyItemTagsKey,
   buildFileContentKey,
   ITEM_FLAGS_KEY,
   buildItemFlagsKey,
