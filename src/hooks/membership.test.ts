@@ -1,11 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
-import { ItemMembershipRecord } from '@graasp/sdk/frontend';
 
 import {
   ITEMS,
@@ -31,6 +29,7 @@ describe('Membership Hooks', () => {
 
   describe('useItemMemberships', () => {
     const { id } = ITEMS.first()!;
+    // this hook uses the many endpoint
     const response = buildResultOfData([ITEM_MEMBERSHIPS_RESPONSE.toJS()]);
     const route = `/${buildGetItemMembershipsForItemsRoute([id])}`;
     const key = buildItemMembershipsKey(id);
@@ -40,8 +39,8 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<ItemMembershipRecord>).toEqualImmutable(
-        convertJs(response),
+      expect(data).toEqualImmutable(
+        convertJs(response.data[id]),
       );
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(
@@ -138,7 +137,7 @@ describe('Membership Hooks', () => {
       );
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<List<ItemMembershipRecord>>).toEqualImmutable(
+      expect(data).toEqualImmutable(
         convertJs(manyResponse),
       );
       // verify cache keys
