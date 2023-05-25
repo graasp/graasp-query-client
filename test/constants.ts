@@ -472,7 +472,7 @@ export const buildMemberMentions = (): List<ChatMentionRecord> => {
 const defaultItemTagsValues: ItemTag = {
   id: 'tag-id',
   item: MOCK_ITEM,
-  type: ItemTagType.PUBLIC,
+  type: ItemTagType.Public,
   createdAt: new Date(),
   creator: MOCK_MEMBER,
 };
@@ -482,13 +482,13 @@ const createMockItemTags = (values: Partial<ItemTag>): ItemTagRecord =>
 const ITEM_TAG_1: ItemTagRecord = createMockItemTags({
   id: 'tag-id',
   item: MOCK_ITEM,
-  type: ItemTagType.PUBLIC,
+  type: ItemTagType.Public,
 });
 
 const ITEM_TAG_2: ItemTagRecord = createMockItemTags({
   id: 'tag-id1',
   item: MOCK_ITEM,
-  type: ItemTagType.PUBLIC,
+  type: ItemTagType.Public,
 });
 
 export const ITEM_TAGS: List<ItemTagRecord> = List([ITEM_TAG_1, ITEM_TAG_2]);
@@ -515,7 +515,7 @@ export const ITEM_CHAT: ItemChatRecord = createMockItemChat([
 const defaultCategoryValues: Category = {
   id: 'category-id1',
   name: 'category-name1',
-  type: CategoryType.DISCIPLINE,
+  type: CategoryType.Discipline,
 };
 const createMockCategory: Record.Factory<Category> = Record(
   defaultCategoryValues,
@@ -524,13 +524,13 @@ const createMockCategory: Record.Factory<Category> = Record(
 const CATEGORY_1: CategoryRecord = createMockCategory({
   id: 'category-id1',
   name: 'category-name1',
-  type: CategoryType.DISCIPLINE,
+  type: CategoryType.Discipline,
 });
 
 const CATEGORY_2: CategoryRecord = createMockCategory({
   id: 'category-id2',
   name: 'category-name2',
-  type: CategoryType.DISCIPLINE,
+  type: CategoryType.Discipline,
 });
 
 export const CATEGORIES: List<CategoryRecord> = List([CATEGORY_1, CATEGORY_2]);
@@ -664,7 +664,7 @@ export const buildMockInvitations = (itemId: string): List<InvitationRecord> =>
 export const ITEM_FLAGS: ItemFlagRecord[] = [
   convertJs({
     id: 'item-flag-1',
-    type: FlagType.FALSE_INFORMATION,
+    type: FlagType.FalseInformation,
   }),
 ];
 

@@ -39,9 +39,7 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toEqualImmutable(
-        convertJs(response.data[id]),
-      );
+      expect(data).toEqualImmutable(convertJs(response.data[id]));
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(
         convertJs(response.data[id]),
@@ -137,9 +135,7 @@ describe('Membership Hooks', () => {
       );
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toEqualImmutable(
-        convertJs(manyResponse),
-      );
+      expect(data).toEqualImmutable(convertJs(manyResponse));
       // verify cache keys
       expect(queryClient.getQueryData(manyKey)).toEqualImmutable(
         convertJs(manyResponse),

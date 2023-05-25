@@ -1,6 +1,6 @@
 import qs from 'qs';
 
-import { ItemTagType, UUID } from '@graasp/sdk';
+import { DiscriminatedItem, ItemTag, ItemTagType, UUID } from '@graasp/sdk';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
 import { SearchFields } from '../types';
@@ -179,8 +179,8 @@ export const buildDeleteItemTagRoute = ({
   itemId,
   type,
 }: {
-  itemId: UUID;
-  type: ItemTagType;
+  itemId: DiscriminatedItem['id'];
+  type: ItemTag['type'];
 }) => `${ITEMS_ROUTE}/${itemId}/tags/${type}`;
 export const buildPostItemLoginSignInRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login`;

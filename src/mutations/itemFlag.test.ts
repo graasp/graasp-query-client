@@ -30,7 +30,7 @@ describe('Item Flag Mutations', () => {
   });
 
   describe('usePostItemFlag', () => {
-    const flagType = FlagType.FALSE_INFORMATION;
+    const flagType = FlagType.FalseInformation;
     const itemId = ITEMS_JS[0].id;
     const flagKey = buildItemFlagsKey(itemId);
     const route = `/${buildPostItemFlagRoute(itemId)}`;

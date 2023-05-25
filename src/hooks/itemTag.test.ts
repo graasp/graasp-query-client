@@ -74,7 +74,7 @@ describe('Item Tags Hooks', () => {
         createdAt: new Date(),
         creator: {} as Member,
         item: { id } as Item,
-        type: ItemTagType.HIDDEN,
+        type: ItemTagType.Hidden,
       },
     ]);
 
