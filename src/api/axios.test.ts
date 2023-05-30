@@ -1,5 +1,5 @@
 import { UNAUTHORIZED_RESPONSE, buildResultOfData } from '../../test/constants';
-import { parseStringToDate, splitRequestByIds } from './axios';
+import { splitRequestByIds } from './axios';
 
 const chunkSize = 5;
 const ids = Array.from({ length: chunkSize * 3 + 1 }, (_, idx) =>
@@ -73,46 +73,6 @@ describe('Axios Tests', () => {
       expect(thrownError).toEqual({
         response: { data: [UNAUTHORIZED_RESPONSE] },
       });
-    });
-  });
-  describe('parseStringToDate', () => {
-    it('transform date', () => {
-      const result = parseStringToDate([
-        {
-          actions: [
-            {
-              some: 'string',
-              createdAt: '2021-03-16T16:00:50.968Z',
-              item: { createdAt: '2021-03-16T16:00:50.968Z' },
-              memberships: [
-                {
-                  id: 'id',
-                  updatedAt: '2021-03-16T16:00:50.968Z',
-                  createdAt: '2021-03-16T16:00:50.968Z',
-                },
-              ],
-            },
-          ],
-        },
-      ]);
-      expect(result).toMatchObject([
-        {
-          actions: [
-            {
-              some: 'string',
-              createdAt: new Date('2021-03-16T16:00:50.968Z'),
-              item: { createdAt: new Date('2021-03-16T16:00:50.968Z') },
-              memberships: [
-                {
-                  id: 'id',
-                  updatedAt: new Date('2021-03-16T16:00:50.968Z'),
-                  createdAt: new Date('2021-03-16T16:00:50.968Z'),
-                },
-              ],
-            },
-          ],
-        },
-      ]);
     });
   });
 });

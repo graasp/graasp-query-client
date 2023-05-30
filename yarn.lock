@@ -2537,7 +2537,7 @@ __metadata:
 
 "@graasp/sdk@github:graasp/graasp-sdk":
   version: 0.12.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=4e2a3cbcd642393ebaa8ea0e4b860981aa7cd9f3"
+  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=985beaaac07eaf7fe6064cad49a35ded05698f85"
   dependencies:
     "@fastify/secure-session": 5.3.0
     "@graasp/etherpad-api": 2.1.1
@@ -2550,7 +2550,7 @@ __metadata:
     typeorm: 0.3.15
     uuid: 9.0.0
     validator: 13.9.0
-  checksum: 425fcae80f18af25616c579c70fab0ea3803e65b89d807f1b051708854c72bbf814253e5ae8d6babe444125a6bb7cee3849c6125529479b3f3b0e50a25b1a8b9
+  checksum: 091899e0da9fce0c52f3ed428e766ee0b13b6ea57d7948f9461a909fcc997b0a7a38bfba0c58db57fc959cf9c1f4fc7c0a6b8eb93be722454e5becc12b03cdb0
   languageName: node
   linkType: hard
 
