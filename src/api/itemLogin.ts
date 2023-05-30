@@ -29,12 +29,6 @@ export const postItemLoginSignIn = async (
     })
     .then(({ data }) => data);
 
-// TODO: still needed?
-// export const getItemLogin = async (id: UUID, { API_HOST }: QueryClientConfig) =>
-//   axios
-//     .get(`${API_HOST}/${buildGetItemLoginRoute(id)}`)
-//     .then(({ data }) => data);
-
 export const getItemLoginSchema = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,

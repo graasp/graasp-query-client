@@ -185,8 +185,6 @@ export const buildDeleteItemTagRoute = ({
 export const buildPostItemLoginSignInRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login`;
 export const GET_TAGS_ROUTE = `${ITEMS_ROUTE}/tags/list`;
-// export const buildGetItemLoginRoute = (id: UUID) =>
-//   `${ITEMS_ROUTE}/${id}/login-schema`;
 export const buildDeleteItemLoginSchemaRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema`;
 export const buildEditItemMembershipRoute = (id: UUID) =>
@@ -358,7 +356,6 @@ export const buildGetEtherpadRoute = (itemId: UUID) =>
   `${ETHERPAD_ROUTE}/view/${itemId}`;
 
 export const API_ROUTES = {
-  // buildGetItemLoginRoute,
   APPS_ROUTE,
   buildAppListRoute,
   buildClearItemChatRoute,
