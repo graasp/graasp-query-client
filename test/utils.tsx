@@ -77,32 +77,6 @@ interface MockMutationArguments extends MockArguments {
   mutation: () => any;
 }
 
-// const parseDateToString = (data: any): any => {
-//   if (!data) {
-//     return data;
-//   }
-//   if (Array.isArray(data)) {
-//     return data.map(parseDateToString);
-//   }
-//   if (typeof data === 'object') {
-//     const d = Object.entries(data).map(([k, v]) => {
-//       if (v instanceof Date) {
-//         return [k, v.toISOString()];
-//       }
-//       if (Array.isArray(v)) {
-//         return [k, parseDateToString(v)];
-//       }
-//       if (typeof v === 'object') {
-//         return [k, parseDateToString(v)];
-//       }
-//       return [k, v];
-//     });
-//     return Object.fromEntries(d);
-//   }
-
-//   return data;
-// };
-
 type NockMethodType = {
   [MethodName in keyof Scope]: Scope[MethodName] extends InterceptFunction
     ? MethodName
