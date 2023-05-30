@@ -1,6 +1,6 @@
 {
   "name": "@graasp/query-client",
-  "version": "0.4.2",
+  "version": "1.0.0-rc1",
   "workspaces": [
     "example"
   ],

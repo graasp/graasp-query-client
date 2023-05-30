@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0-rc1](https://github.com/graasp/graasp-query-client/compare/v0.4.2...v1.0.0-rc1) (2023-05-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* typeorm ([#260](https://github.com/graasp/graasp-query-client/issues/260))
+
+### Features
+
+* typeorm ([#260](https://github.com/graasp/graasp-query-client/issues/260)) ([0968e6e](https://github.com/graasp/graasp-query-client/commit/0968e6ed1d36be204c56d3dcf404ee6e39010801))
+
 ## [0.4.2](https://github.com/graasp/graasp-query-client/compare/v0.4.1...v0.4.2) (2023-04-21)
 
 
