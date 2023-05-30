@@ -2479,7 +2479,7 @@ __metadata:
     "@babel/preset-typescript": 7.21.5
     "@commitlint/cli": 17.6.1
     "@commitlint/config-conventional": 17.6.1
-    "@graasp/sdk": "github:graasp/graasp-sdk"
+    "@graasp/sdk": 1.0.0-rc1
     "@graasp/translations": 1.13.0
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
@@ -2535,9 +2535,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@github:graasp/graasp-sdk":
-  version: 0.12.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=985beaaac07eaf7fe6064cad49a35ded05698f85"
+"@graasp/sdk@npm:1.0.0-rc1":
+  version: 1.0.0-rc1
+  resolution: "@graasp/sdk@npm:1.0.0-rc1"
   dependencies:
     "@fastify/secure-session": 5.3.0
     "@graasp/etherpad-api": 2.1.1
@@ -2550,7 +2550,7 @@ __metadata:
     typeorm: 0.3.15
     uuid: 9.0.0
     validator: 13.9.0
-  checksum: 091899e0da9fce0c52f3ed428e766ee0b13b6ea57d7948f9461a909fcc997b0a7a38bfba0c58db57fc959cf9c1f4fc7c0a6b8eb93be722454e5becc12b03cdb0
+  checksum: 7d542c1c92d0846adade40b98c4c9915a3a7c1bf2abc404eae062e2b0dd249bf10d81e19d465bbf5bdfe2d2f4667277b03636ea032ebe616dc90203be7771845
   languageName: node
   linkType: hard
 
@@ -18018,11 +18018,11 @@ __metadata:
 
 "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>":
   version: 4.9.5
-  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=23ec76"
+  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=289587"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: ab417a2f398380c90a6cf5a5f74badd17866adf57f1165617d6a551f059c3ba0a3e4da0d147b3ac5681db9ac76a303c5876394b13b3de75fdd5b1eaa06181c9d
+  checksum: 1f8f3b6aaea19f0f67cba79057674ba580438a7db55057eb89cc06950483c5d632115c14077f6663ea76fd09fce3c190e6414bb98582ec80aa5a4eaf345d5b68
   languageName: node
   linkType: hard
 

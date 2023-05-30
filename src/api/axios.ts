@@ -1,6 +1,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
-import { ResultOf, convertJs, parseStringToDate, spliceIntoChunks } from '@graasp/sdk';
+import {
+  ResultOf,
+  convertJs,
+  parseStringToDate,
+  spliceIntoChunks,
+} from '@graasp/sdk';
 import { ResultOfRecord } from '@graasp/sdk/frontend';
 
 const configureAxios = () => {

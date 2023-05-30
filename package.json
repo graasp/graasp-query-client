@@ -19,7 +19,7 @@
     "Alexandre Chau"
   ],
   "dependencies": {
-    "@graasp/sdk": "github:graasp/graasp-sdk",
+    "@graasp/sdk": "1.0.0-rc1",
     "@graasp/translations": "1.13.0",
     "axios": "0.27.2",
     "crypto-js": "4.1.1",
@@ -129,8 +129,7 @@
     "typescript": "4.9.5",
     "rollup-plugin-typescript2": "0.34.1",
     "postcss": "7.0.36",
-    "nth-check": "2.0.1",
-    "immutable": "4.3.0"
+    "nth-check": "2.0.1"
   },
-  "packageManager": "yarn@3.5.0"
+  "packageManager": "yarn@3.5.1"
 }
