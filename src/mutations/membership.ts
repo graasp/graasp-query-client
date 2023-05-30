@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import { QueryClient, useMutation } from 'react-query';
@@ -6,12 +7,13 @@ import {
   Invitation,
   ItemMembership,
   PermissionLevel,
+  ResultOf,
   UUID,
-  isError,
+  convertJs,
   partition,
 } from '@graasp/sdk';
-import { ItemMembershipRecord } from '@graasp/sdk/frontend';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
+import { ItemMembershipRecord, ResultOfRecord } from '@graasp/sdk/frontend';
+import { FAILURE_MESSAGES, SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
 import {
@@ -162,7 +164,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     }: {
       data: Partial<Invitation>[];
       itemId: UUID;
-    }) => {
+    }): Promise<ResultOfRecord<ItemMembership | Invitation>> => {
       // validate has email, name and permission are optional
       // force type with email
       const [withEmail, withoutEmail] = partition(data, (d) =>
@@ -180,43 +182,45 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       // check email has an associated account
       // assume will receive only one member per mail
-      const accounts = (
-        await Api.getMembersBy(
-          { emails: dataWithEmail.map(({ email }) => email) },
-          queryConfig,
-        )
-      ).flat();
+      const accounts = await Api.getMembersBy(
+        { emails: dataWithEmail.map(({ email }) => email) },
+        queryConfig,
+      );
 
       // split between invitations and memberships
       const dataWithMemberId = dataWithEmail.map((d) => ({
         ...d,
-        memberId: accounts.find(({ email }) => email === d.email?.toLowerCase())
-          ?.id,
+        memberId: accounts.data[d.email?.toLowerCase()]?.id,
       }));
       const [newMemberships, invitations] = partition(dataWithMemberId, (d) =>
         Boolean(d.memberId),
       );
 
-      // create memberships
-      let membershipsResult: (ItemMembership | Error)[] = [];
-      if (newMemberships.length) {
-        try {
-          membershipsResult = await Api.postManyItemMemberships(
-            {
-              memberships: newMemberships,
-              itemId,
-            },
-            queryConfig,
-          );
-        } catch (e) {
-          membershipsResult = [e as Error];
+      try {
+        const dataForMemberships: ResultOf<ItemMembership> = {
+          data: {},
+          errors: [],
+        };
+        // create memberships
+        if (newMemberships.length) {
+          const membershipsResult: ResultOf<ItemMembership> =
+            await Api.postManyItemMemberships(
+              {
+                memberships: newMemberships,
+                itemId,
+              },
+              queryConfig,
+            );
+          // set map key to email
+          Object.values(membershipsResult.data).forEach((m) => {
+            dataForMemberships.data[m.member.email] = m;
+          });
+          dataForMemberships.errors = membershipsResult.errors;
         }
-      }
 
-      // create invitations
-      let invitationsResult: (Invitation | Error)[] = [];
-      if (invitations.length) {
-        try {
+        // create invitations
+        let invitationsResult: ResultOf<Invitation> = { data: {}, errors: [] };
+        if (invitations.length) {
           invitationsResult = await Api.postInvitations(
             {
               itemId,
@@ -224,33 +228,36 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             },
             queryConfig,
           );
-        } catch (e) {
-          invitationsResult = [e as Error];
         }
+
+        return convertJs({
+          data: { ...dataForMemberships.data, ...invitationsResult.data },
+          errors: [
+            // create error shape from input
+            // todo: use error constructor
+            ...withoutEmail.map((d) => ({
+              statusCode: StatusCodes.BAD_REQUEST,
+              message: ReasonPhrases.BAD_REQUEST,
+              data: d,
+            })),
+            ...invitationsResult.errors,
+            ...dataForMemberships.errors,
+          ],
+        });
+      } catch (e) {
+        console.error(e);
+        const errors = [];
+        if (e instanceof AxiosError) {
+          const error = e.response?.data;
+          errors.push(error);
+        } else {
+          errors.push({
+            name: 'error',
+            message: FAILURE_MESSAGES.UNEXPECTED_ERROR,
+          });
+        }
+        return convertJs({ data: {}, errors });
       }
-
-      const [mFailure, mSuccess] = partition(membershipsResult, (d) =>
-        isError(d),
-      );
-      const [iFailure, iSuccess] = partition(invitationsResult, (d) =>
-        isError(d),
-      );
-
-      const context = {
-        success: [...mSuccess, ...iSuccess],
-        failure: [
-          // create error shape from input
-          // todo: use error constructor
-          ...withoutEmail.map((d) => ({
-            statusCode: StatusCodes.BAD_REQUEST,
-            message: ReasonPhrases.BAD_REQUEST,
-            data: d,
-          })),
-          ...mFailure,
-          ...iFailure,
-        ],
-      };
-      return context;
     },
     onSuccess: (results) => {
       notifier?.({
@@ -271,7 +278,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
   const useShareItem = () =>
     useMutation<
-      void,
+      ResultOfRecord<ItemMembership | Invitation>,
       unknown,
       {
         data: Partial<Invitation>[];

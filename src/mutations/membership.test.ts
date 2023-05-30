@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
@@ -17,8 +16,14 @@ import {
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
   buildMockInvitations,
+  buildResultOfData,
 } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  Endpoint,
+  mockMutation,
+  setUpTest,
+  waitForMutation,
+} from '../../test/utils';
 import {
   buildDeleteItemMembershipRoute,
   buildEditItemMembershipRoute,
@@ -327,7 +332,7 @@ describe('Membership Mutations', () => {
 
       const endpoints = [
         {
-          response: [MEMBERS_RESPONSE],
+          response: buildResultOfData(MEMBERS_RESPONSE.toJS()),
           method: HttpMethod.GET,
           route: `/${buildGetMembersBy(emails)}`,
         },
@@ -386,17 +391,25 @@ describe('Membership Mutations', () => {
 
       const endpoints = [
         {
-          response: [[{ email: emails[0], id: emails[0] }]],
+          response: buildResultOfData([{ email: emails[0], id: emails[0] }]),
           method: HttpMethod.GET,
           route: `/${buildGetMembersBy(emails)}`,
         },
         {
-          response: [...ITEM_MEMBERSHIPS_RESPONSE, UNAUTHORIZED_RESPONSE],
+          response: buildResultOfData(
+            [ITEM_MEMBERSHIPS_RESPONSE.toJS()[0]],
+            (d) => (d as any).item.id,
+            [UNAUTHORIZED_RESPONSE],
+          ),
           method: HttpMethod.POST,
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
         {
-          response: [...initialInvitations, UNAUTHORIZED_RESPONSE],
+          response: buildResultOfData(
+            [initialInvitations.toJS()[0]],
+            (d) => (d as any).email,
+            [UNAUTHORIZED_RESPONSE],
+          ),
           method: HttpMethod.POST,
           route: `/${buildPostInvitationsRoute(itemId)}`,
         },
@@ -422,13 +435,14 @@ describe('Membership Mutations', () => {
 
       // check notification trigger
       const param = mockedNotifier.mock.calls[0][0];
-      expect(param).toMatchObject({
-        type: shareItemRoutine.SUCCESS,
-        payload: {
-          success: expect.anything(),
-          failure: [UNAUTHORIZED_RESPONSE, UNAUTHORIZED_RESPONSE],
-        },
-      });
+      expect(param.type).toEqual(shareItemRoutine.SUCCESS);
+      expect(param.payload.toJS()).toMatchObject(
+        buildResultOfData(
+          [ITEM_MEMBERSHIPS_RESPONSE.toJS()[0], initialInvitations.toJS()[0]],
+          (d) => (d as any)?.member?.email || (d as any)?.email,
+          [UNAUTHORIZED_RESPONSE, UNAUTHORIZED_RESPONSE],
+        ),
+      );
     });
 
     it('Unauthorized to search members', async () => {
@@ -497,9 +511,9 @@ describe('Membership Mutations', () => {
         initialInvitations,
       );
 
-      const endpoints = [
+      const endpoints: Endpoint[] = [
         {
-          response: [[{ email: emails[0], id: emails[0] }]],
+          response: buildResultOfData([{ email: emails[0], id: emails[0] }]),
           method: HttpMethod.GET,
           route: `/${buildGetMembersBy(emails)}`,
         },
@@ -510,7 +524,7 @@ describe('Membership Mutations', () => {
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
         {
-          response: initialInvitations,
+          response: buildResultOfData(initialInvitations.toJS()),
           method: HttpMethod.POST,
           route: `/${buildPostInvitationsRoute(itemId)}`,
         },
@@ -536,11 +550,8 @@ describe('Membership Mutations', () => {
 
       // check notification trigger
       const param = mockedNotifier.mock.calls[0][0];
-      expect(param).toMatchObject({
-        type: shareItemRoutine.SUCCESS,
-        payload: expect.anything(),
-      });
-      expect(param.payload.failure).toHaveLength(1);
+      expect(param.type).toEqual(shareItemRoutine.SUCCESS);
+      expect(param.payload.errors.toJS()).toHaveLength(1);
     });
 
     it('Unauthorized to post invitations', async () => {
@@ -561,12 +572,12 @@ describe('Membership Mutations', () => {
 
       const endpoints = [
         {
-          response: [[{ email: emails[0], id: emails[0] }]],
+          response: buildResultOfData([{ email: emails[0], id: emails[0] }]),
           method: HttpMethod.GET,
           route: `/${buildGetMembersBy(emails)}`,
         },
         {
-          response: ITEM_MEMBERSHIPS_RESPONSE,
+          response: buildResultOfData(ITEM_MEMBERSHIPS_RESPONSE.toJS()),
           method: HttpMethod.POST,
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
@@ -598,11 +609,7 @@ describe('Membership Mutations', () => {
 
       // check notification trigger
       const param = mockedNotifier.mock.calls[0][0];
-      expect(param).toMatchObject({
-        type: shareItemRoutine.SUCCESS,
-        payload: expect.anything(),
-      });
-      expect(param.payload.failure).toHaveLength(1);
+      expect(param.payload.errors.toJS()).toHaveLength(1);
     });
   });
 });

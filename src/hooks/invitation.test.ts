@@ -4,6 +4,7 @@ import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
+import { Item } from '@graasp/sdk';
 import { InvitationRecord } from '@graasp/sdk/frontend';
 
 import {
@@ -19,7 +20,7 @@ import {
 import { buildInvitationKey, buildItemInvitationsKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-const itemPath = ITEMS.first()!.path;
+const item = ITEMS.first()!.toJS() as Item;
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -37,7 +38,7 @@ describe('Invitation Hooks', () => {
     const hook = () => hooks.useInvitation(invId);
 
     it(`Receive invitation`, async () => {
-      const response = buildInvitationRecord({ itemPath });
+      const response = buildInvitationRecord({ item });
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
@@ -48,7 +49,7 @@ describe('Invitation Hooks', () => {
     });
 
     it(`Undefined id does not fetch`, async () => {
-      const response = buildInvitationRecord({ itemPath });
+      const response = buildInvitationRecord({ item });
       const endpoints = [{ route, response }];
       const { data, isFetched } = await mockHook({
         endpoints,
@@ -94,9 +95,9 @@ describe('Invitation Hooks', () => {
 
     it(`Receive invitations for item`, async () => {
       const response = List([
-        buildInvitationRecord({ itemPath }),
-        buildInvitationRecord({ itemPath }),
-        buildInvitationRecord({ itemPath }),
+        buildInvitationRecord({ item }),
+        buildInvitationRecord({ item }),
+        buildInvitationRecord({ item }),
       ]);
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
@@ -108,7 +109,7 @@ describe('Invitation Hooks', () => {
     });
 
     it(`Undefined id does not fetch`, async () => {
-      const response = buildInvitationRecord({ itemPath });
+      const response = buildInvitationRecord({ item });
       const endpoints = [{ route, response }];
       const { data, isFetched } = await mockHook({
         endpoints,

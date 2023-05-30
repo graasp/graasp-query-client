@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
@@ -6,18 +5,13 @@ import { act } from 'react-test-renderer';
 
 import { HttpMethod } from '@graasp/sdk';
 
-import {
-  ITEMS,
-  ITEM_LIKES,
-  LIKE_COUNT,
-  UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
+import { ITEMS, ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
   buildDeleteItemLikeRoute,
   buildPostItemLikeRoute,
 } from '../api/routes';
-import { buildGetLikeCountKey, buildGetLikedItemsKey } from '../config/keys';
+import { buildGetLikesForMemberKey } from '../config/keys';
 import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -28,6 +22,7 @@ jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Item Like Mutations', () => {
   afterEach(() => {
+    jest.clearAllMocks();
     queryClient.clear();
     nock.cleanAll();
   });
@@ -35,14 +30,12 @@ describe('Item Like Mutations', () => {
   describe('usePostItemLike', () => {
     const itemId = ITEMS.first()!.id;
     const memberId = 'member-id';
-    const likedItemsKey = buildGetLikedItemsKey(memberId);
-    const likeCountKey = buildGetLikeCountKey(itemId);
+    const likedItemsKey = buildGetLikesForMemberKey(memberId);
     const route = `/${buildPostItemLikeRoute(itemId)}`;
     const mutation = mutations.usePostItemLike;
 
     it('Post item like', async () => {
       queryClient.setQueryData(likedItemsKey, ITEM_LIKES);
-      queryClient.setQueryData(likeCountKey, LIKE_COUNT);
 
       const response = ITEM_LIKES.get(1)!;
 
@@ -67,9 +60,6 @@ describe('Item Like Mutations', () => {
 
       expect(
         queryClient.getQueryState(likedItemsKey)?.isInvalidated,
-      ).toBeTruthy();
-      expect(
-        queryClient.getQueryState(likeCountKey)?.isInvalidated,
       ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: postItemLikeRoutine.SUCCESS,
@@ -108,21 +98,18 @@ describe('Item Like Mutations', () => {
   describe('useDeleteItemLike', () => {
     const itemId = ITEMS.first()!.id;
     const memberId = 'member-id';
-    const entryId = 'id';
-    const likedItemsKey = buildGetLikedItemsKey(memberId);
-    const likeCountKey = buildGetLikeCountKey(itemId);
-    const route = `/${buildDeleteItemLikeRoute(entryId)}`;
+    const likedItemsKey = buildGetLikesForMemberKey(memberId);
+    const route = `/${buildDeleteItemLikeRoute(itemId)}`;
     const mutation = mutations.useDeleteItemLike;
 
     it('Delete item like', async () => {
       queryClient.setQueryData(likedItemsKey, ITEM_LIKES);
-      queryClient.setQueryData(likeCountKey, LIKE_COUNT);
 
       const response = ITEM_LIKES.get(1)!;
 
       const endpoints = [
         {
-          response,
+          response: response.toJS(),
           method: HttpMethod.DELETE,
           route,
         },
@@ -135,15 +122,12 @@ describe('Item Like Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: entryId, itemId, memberId });
+        await mockedMutation.mutate({ itemId, memberId });
         await waitForMutation();
       });
 
       expect(
         queryClient.getQueryState(likedItemsKey)?.isInvalidated,
-      ).toBeTruthy();
-      expect(
-        queryClient.getQueryState(likeCountKey)?.isInvalidated,
       ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: deleteItemLikeRoutine.SUCCESS,
@@ -167,7 +151,7 @@ describe('Item Like Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: entryId, itemId, memberId });
+        await mockedMutation.mutate({ itemId, memberId });
         await waitForMutation();
       });
 

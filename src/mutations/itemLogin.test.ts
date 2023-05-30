@@ -1,10 +1,9 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
-import { HttpMethod, ItemLoginSchema } from '@graasp/sdk';
+import { HttpMethod, ItemLoginSchemaType } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
@@ -15,14 +14,14 @@ import {
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
   buildPostItemLoginSignInRoute,
-  buildPutItemLoginSchema,
+  buildPutItemLoginSchemaRoute,
 } from '../api/routes';
 import {
   CURRENT_MEMBER_KEY,
   OWN_ITEMS_KEY,
-  buildItemLoginKey,
+  buildItemLoginSchemaKey,
 } from '../config/keys';
-import { postItemLoginRoutine, putItemLoginRoutine } from '../routines';
+import { postItemLoginRoutine, putItemLoginSchemaRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
@@ -116,14 +115,14 @@ describe('Item Login Mutations', () => {
     });
   });
 
-  describe('usePutItemLogin', () => {
-    const route = `/${buildPutItemLoginSchema(itemId)}`;
-    const mutation = mutations.usePutItemLogin;
+  describe('usePutItemLoginSchema', () => {
+    const route = `/${buildPutItemLoginSchemaRoute(itemId)}`;
+    const mutation = mutations.usePutItemLoginSchema;
     const loginSchema = ITEM_LOGIN_RESPONSE;
-    const itemLoginKey = buildItemLoginKey(itemId);
-    const newLoginSchema = ItemLoginSchema.USERNAME_AND_PASSWORD;
+    const itemLoginKey = buildItemLoginSchemaKey(itemId);
+    const newLoginSchema = ItemLoginSchemaType.UsernameAndPassword;
 
-    it('Put item login', async () => {
+    it('Put item login schema', async () => {
       queryClient.setQueryData(itemLoginKey, loginSchema);
 
       const endpoints = [
@@ -150,12 +149,12 @@ describe('Item Login Mutations', () => {
         queryClient.getQueryState(itemLoginKey)?.isInvalidated,
       ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
-        type: putItemLoginRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.PUT_ITEM_LOGIN },
+        type: putItemLoginSchemaRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.PUT_ITEM_LOGIN_SCHEMA },
       });
     });
 
-    it('Unauthorized to put item login', async () => {
+    it('Unauthorized to put item login schema', async () => {
       queryClient.setQueryData(itemLoginKey, loginSchema);
 
       const endpoints = [
@@ -185,7 +184,7 @@ describe('Item Login Mutations', () => {
 
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: putItemLoginRoutine.FAILURE,
+          type: putItemLoginSchemaRoutine.FAILURE,
         }),
       );
     });

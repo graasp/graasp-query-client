@@ -4,28 +4,21 @@ import { List, Record, RecordOf } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import {
-  CategoryRecord,
-  CategoryTypeRecord,
-  ItemCategoryRecord,
-} from '@graasp/sdk/frontend';
+import { CategoryRecord, ItemCategoryRecord } from '@graasp/sdk/frontend';
 
 import {
   CATEGORIES,
-  CATEGORY_TYPES,
   ITEM_CATEGORIES,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import {
-  GET_CATEGORY_TYPES_ROUTE,
   buildGetCategoriesRoute,
   buildGetCategoryRoute,
   buildGetItemCategoriesRoute,
   buildGetItemsInCategoryRoute,
 } from '../api/routes';
 import {
-  CATEGORY_TYPES_KEY,
   buildCategoriesKey,
   buildCategoryKey,
   buildItemCategoriesKey,
@@ -48,42 +41,42 @@ describe('Category Hooks', () => {
     queryClient.clear();
   });
 
-  describe('useCategoryTypes', () => {
-    const route = `/${GET_CATEGORY_TYPES_ROUTE}`;
-    const key = CATEGORY_TYPES_KEY;
+  // describe('useCategoryTypes', () => {
+  //   const route = `/${GET_CATEGORY_TYPES_ROUTE}`;
+  //   const key = CATEGORY_TYPES_KEY;
 
-    const hook = () => hooks.useCategoryTypes();
+  //   const hook = () => hooks.useCategoryTypes();
 
-    it(`Receive category types`, async () => {
-      const response = CATEGORY_TYPES;
-      const endpoints = [{ route, response }];
-      const { data } = await mockHook({ endpoints, hook, wrapper });
+  //   it(`Receive category types`, async () => {
+  //     const response = CATEGORY_TYPES;
+  //     const endpoints = [{ route, response }];
+  //     const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<CategoryTypeRecord>).toEqualImmutable(response);
+  //     expect(data as List<CategoryTypeRecord>).toEqualImmutable(response);
 
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
-    });
-    it(`Unauthorized`, async () => {
-      const endpoints = [
-        {
-          route,
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-        },
-      ];
-      const { data, isError } = await mockHook({
-        hook,
-        wrapper,
-        endpoints,
-      });
+  //     // verify cache keys
+  //     expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+  //   });
+  //   it(`Unauthorized`, async () => {
+  //     const endpoints = [
+  //       {
+  //         route,
+  //         response: UNAUTHORIZED_RESPONSE,
+  //         statusCode: StatusCodes.UNAUTHORIZED,
+  //       },
+  //     ];
+  //     const { data, isError } = await mockHook({
+  //       hook,
+  //       wrapper,
+  //       endpoints,
+  //     });
 
-      expect(data).toBeFalsy();
-      expect(isError).toBeTruthy();
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeFalsy();
-    });
-  });
+  //     expect(data).toBeFalsy();
+  //     expect(isError).toBeTruthy();
+  //     // verify cache keys
+  //     expect(queryClient.getQueryData(key)).toBeFalsy();
+  //   });
+  // });
 
   describe('useCategories', () => {
     const typeIds = ['type-id1', 'type-id2'];

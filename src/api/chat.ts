@@ -1,22 +1,19 @@
 import {
   ChatMessage,
+  DeleteChatMessageParamType,
   ExportedChatMessage,
-  ItemChat,
-  MessageBodyType,
+  PatchChatMessageParamType,
+  PostChatMessageParamType,
   UUID,
 } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
-import configureAxios, {
-  fallbackToPublic,
-  verifyAuthentication,
-} from './axios';
+import configureAxios, { verifyAuthentication } from './axios';
 import {
   buildClearItemChatRoute,
   buildDeleteItemChatMessageRoute,
   buildExportItemChatRoute,
   buildGetItemChatRoute,
-  buildGetPublicItemChatRoute,
   buildPatchItemChatMessageRoute,
   buildPostItemChatMessageRoute,
 } from './routes';
@@ -26,16 +23,15 @@ const axios = configureAxios();
 export const getItemChat = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,
-): Promise<ItemChat> =>
-  fallbackToPublic(
-    () => axios.get(`${API_HOST}/${buildGetItemChatRoute(id)}`),
-    () => axios.get(`${API_HOST}/${buildGetPublicItemChatRoute(id)}`),
-  );
+): Promise<ChatMessage[]> =>
+  axios
+    .get(`${API_HOST}/${buildGetItemChatRoute(id)}`)
+    .then(({ data }) => data);
 
 export const exportItemChat = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,
-): Promise<ExportedChatMessage> =>
+) =>
   verifyAuthentication(
     (): Promise<ExportedChatMessage> =>
       axios
@@ -44,50 +40,53 @@ export const exportItemChat = async (
   );
 
 export const postItemChatMessage = async (
-  { chatId, body }: Pick<ChatMessage, 'chatId'> & { body: MessageBodyType },
+  { itemId, body, mentions }: PostChatMessageParamType,
   { API_HOST }: QueryClientConfig,
-): Promise<ChatMessage> =>
+) =>
   verifyAuthentication(
     (): Promise<ChatMessage> =>
       axios
-        .post(`${API_HOST}/${buildPostItemChatMessageRoute(chatId)}`, {
+        .post(`${API_HOST}/${buildPostItemChatMessageRoute(itemId)}`, {
           body,
+          mentions,
         })
         .then(({ data }) => data),
   );
 
 export const patchItemChatMessage = async (
-  {
-    chatId,
-    id,
-    body,
-  }: Pick<ChatMessage, 'chatId' | 'id'> & { body: MessageBodyType },
+  { itemId, messageId, body, mentions }: PatchChatMessageParamType,
   { API_HOST }: QueryClientConfig,
-): Promise<ChatMessage> =>
+) =>
   verifyAuthentication(
     (): Promise<ChatMessage> =>
       axios
-        .patch(`${API_HOST}/${buildPatchItemChatMessageRoute(chatId, id)}`, {
-          body,
-        })
+        .patch(
+          `${API_HOST}/${buildPatchItemChatMessageRoute(itemId, messageId)}`,
+          {
+            body,
+            mentions,
+          },
+        )
         .then(({ data }) => data),
   );
 
 export const deleteItemChatMessage = async (
-  { chatId, id }: Pick<ChatMessage, 'chatId' | 'id'>,
+  { itemId, messageId }: DeleteChatMessageParamType,
   { API_HOST }: QueryClientConfig,
-): Promise<ChatMessage> =>
+) =>
   verifyAuthentication(
     (): Promise<ChatMessage> =>
       axios
-        .delete(`${API_HOST}/${buildDeleteItemChatMessageRoute(chatId, id)}`)
+        .delete(
+          `${API_HOST}/${buildDeleteItemChatMessageRoute(itemId, messageId)}`,
+        )
         .then(({ data }) => data),
   );
 
 export const clearItemChat = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,
-): Promise<void> =>
+) =>
   verifyAuthentication(() =>
     axios
       .delete(`${API_HOST}/${buildClearItemChatRoute(id)}`)

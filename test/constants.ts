@@ -3,69 +3,59 @@ import { List, Record } from 'immutable';
 import { v4 } from 'uuid';
 
 import {
-  AppItemExtraProperties,
+  Action,
+  ActionData,
+  App,
   Category,
   CategoryType,
   ChatMention,
   ChatMessage,
+  Context,
   ExportedChatMessage,
-  Flag,
+  FlagType,
   FolderItemType,
   GraaspError,
   HttpMethod,
   Invitation,
+  Item,
   ItemCategory,
-  ItemLoginSchema,
+  ItemLoginSchemaType,
   ItemMembership,
   ItemTag,
+  ItemTagType,
   ItemType,
+  ItemValidationStatus,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
-  MemberMentions,
   MemberType,
   MentionStatus,
   PermissionLevel,
+  ResultOf,
   UUID,
   convertJs,
 } from '@graasp/sdk';
 import {
-  Action,
-  ActionData,
   ActionDataRecord,
-  ActionMetadata,
-  ActionMetadataRecord,
-  App,
   AppRecord,
   CategoryRecord,
-  CategoryTypeRecord,
   ChatMentionRecord,
   ChatMessageRecord,
   ExportedChatMessageRecord,
   ExportedItemChatRecord,
-  FlagRecord,
-  FullValidation,
-  FullValidationRecord,
   InvitationRecord,
   ItemCategoryRecord,
   ItemChatRecord,
-  ItemLike,
+  ItemFlagRecord,
   ItemLikeRecord,
-  ItemLogin,
-  ItemLoginRecord,
+  ItemLoginSchemaRecord,
   ItemMembershipRecord,
+  ItemPublishedRecord,
   ItemRecord,
   ItemTagRecord,
-  ItemValidationAndReview,
-  ItemValidationAndReviewRecord,
-  ItemValidationGroup,
   ItemValidationGroupRecord,
-  MemberMentionsRecord,
   MemberRecord,
-  Status,
-  StatusRecord,
-  TagRecord,
-  Tag as TagType,
+  RecycledItemDataRecord,
 } from '@graasp/sdk/frontend';
 
 export const WS_HOST = 'ws://localhost:3000';
@@ -86,61 +76,101 @@ export const FILE_NOT_FOUND_RESPONSE: GraaspError = {
   origin: 'graasp-plugin-file',
 };
 
+const getById = (obj: { id: UUID }) => obj.id;
+
+export const buildResultOfData = <T>(
+  data: T[],
+  getKey?: (t: T) => string,
+  errors?: Error[],
+): ResultOf<T> => {
+  const buildGetKey = getKey ?? getById;
+  return {
+    data: data
+      // TODO
+      .map((d: any) => ({ [buildGetKey(d)]: d }))
+      .reduce((prev, curr) => ({ ...prev, ...curr }), {}),
+    errors: errors ?? [],
+  };
+};
+
+export const MESSAGE_IDS = ['12345', '78945'];
+
+export const MOCK_MEMBER: Member = {
+  id: '42',
+  name: 'username',
+  email: 'username@graasp.org',
+  type: MemberType.Individual,
+  extra: {},
+  updatedAt: new Date(),
+  createdAt: new Date(),
+};
+
+const createMockMember = (member?: Partial<Member>): MemberRecord =>
+  convertJs({ ...MOCK_MEMBER, ...member });
+
+export const MEMBER_RESPONSE: MemberRecord = createMockMember();
+
+export const MOCK_ITEM: FolderItemType = {
+  id: '42',
+  name: 'item1',
+  path: '42',
+  description: '',
+  creator: MOCK_MEMBER,
+  updatedAt: new Date(),
+  createdAt: new Date(),
+  settings: {},
+  type: ItemType.FOLDER,
+  extra: {
+    [ItemType.FOLDER]: {
+      childrenOrder: [],
+    },
+  },
+};
+
 const createMockFolderItem = (
   folderItem?: Partial<FolderItemType>,
-): ItemRecord =>
-  convertJs({
-    id: '42',
-    name: 'item1',
-    path: '42',
-    // clearly type enum for immutable record to correctly infer
-    type: ItemType.FOLDER,
-    description: '',
-    extra: { [ItemType.FOLDER]: { childrenOrder: [] } },
-    creator: 'creator',
-    updatedAt: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
-    settings: {},
-    ...folderItem,
-  });
+): FolderItemType => ({
+  ...MOCK_ITEM,
+  ...folderItem,
+});
 
-const ITEM_1: ItemRecord = createMockFolderItem({
+const ITEM_1: FolderItemType = createMockFolderItem({
   id: '42',
   name: 'item1',
   path: '42',
 });
 
-const ITEM_2: ItemRecord = createMockFolderItem({
+const ITEM_2: FolderItemType = createMockFolderItem({
   id: '5243',
   name: 'item2',
   path: '5243',
 });
 
-const ITEM_3: ItemRecord = createMockFolderItem({
+const ITEM_3: FolderItemType = createMockFolderItem({
   id: '5896',
   name: 'item3',
   path: '5896',
 });
 
-const ITEM_4: ItemRecord = createMockFolderItem({
+const ITEM_4: FolderItemType = createMockFolderItem({
   id: 'dddd',
   name: 'item4',
   path: '5896.dddd',
 });
 
-const ITEM_5: ItemRecord = createMockFolderItem({
+const ITEM_5: FolderItemType = createMockFolderItem({
   id: 'eeee',
   name: 'item5',
   path: '5896.eeee',
 });
 
-const ITEM_6: ItemRecord = createMockFolderItem({
+const ITEM_6: FolderItemType = createMockFolderItem({
   id: 'gggg',
   name: 'item5',
   path: '5896.gggg',
 });
 
-export const ITEMS: List<ItemRecord> = List([
+export const ITEMS_JS: Item[] = [
   ITEM_1,
   ITEM_2,
   ITEM_3,
@@ -161,71 +191,17 @@ export const ITEMS: List<ItemRecord> = List([
         description: '',
       }),
   ),
-]);
-
-export const MESSAGE_IDS = ['12345', '78945'];
-
-const createMockMember = (member?: Partial<Member>): MemberRecord =>
-  convertJs({
-    id: '42',
-    name: 'username',
-    email: 'username@graasp.org',
-    type: MemberType.Individual,
-    extra: {},
-    updatedAt: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
-    ...member,
-  });
-
-export const MEMBER_RESPONSE: MemberRecord = createMockMember();
+];
+export const ITEMS: List<ItemRecord> = convertJs(ITEMS_JS);
 
 export const MENTION_IDS = ['12345', '78945'];
 
-const recycleBinItemId = 'recycleBinId';
-export const GET_RECYCLED_ITEMS_FIXTURES = {
-  items: [
-    {
-      id: `${recycleBinItemId}.42`,
-      name: 'item1',
-      path: '42',
-      type: ItemType.FOLDER,
-      description: '',
-      extra: {},
-    },
-    {
-      id: `${recycleBinItemId}.5243`,
-      name: 'item2',
-      path: '5243',
-      type: ItemType.FOLDER,
-      description: '',
-      extra: {},
-    },
-    {
-      id: `${recycleBinItemId}.5896`,
-      name: 'item3',
-      path: '5896',
-      type: ItemType.FOLDER,
-      description: '',
-      extra: {},
-    },
-    {
-      id: `${recycleBinItemId}.dddd`,
-      name: 'item4',
-      path: '5896.dddd',
-      type: ItemType.FOLDER,
-      description: '',
-      extra: {},
-    },
-  ],
-  member: {
-    ...MEMBER_RESPONSE,
-    extra: {
-      recycleBin: {
-        itemId: recycleBinItemId,
-      },
-    },
+export const RECYCLED_ITEM_DATA: RecycledItemDataRecord = convertJs([
+  {
+    id: `recycle-item-id`,
+    item: ITEM_1,
   },
-};
+]);
 
 const MEMBER_RESPONSE_2: MemberRecord = createMockMember({
   id: '421',
@@ -252,25 +228,26 @@ const createMockMembership = (
 ): ItemMembershipRecord =>
   convertJs({
     id: 'membership-id',
-    memberId: 'member-id',
-    itemPath: ITEMS.first()!.path,
+    member: MEMBER_RESPONSE.toJS(),
+    item: ITEM_1,
     // clearly type enum for immutable record to correctly infer
-    permission: PermissionLevel.Read as PermissionLevel,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    creator: 'creator-id',
+    permission: PermissionLevel.Read,
+    createdAt: new Date('2023-04-26T08:46:34.812Z'),
+    updatedAt: new Date('2023-04-26T08:46:34.812Z'),
+    creator: MEMBER_RESPONSE.toJS(),
     ...membership,
   });
 
 const MEMBERSHIP_1: ItemMembershipRecord = createMockMembership({
   id: 'membership-id',
-  memberId: 'member-id',
+  member: MOCK_MEMBER,
   permission: PermissionLevel.Read,
 });
 
 const MEMBERSHIP_2: ItemMembershipRecord = createMockMembership({
   id: 'membership-id1',
-  memberId: 'member-id1',
+  member: MOCK_MEMBER,
+
   permission: PermissionLevel.Admin,
 });
 
@@ -279,15 +256,13 @@ export const ITEM_MEMBERSHIPS_RESPONSE: List<ItemMembershipRecord> = List([
   MEMBERSHIP_2,
 ]);
 
-const defaultItemLoginResponseValues: ItemLogin = {
-  loginSchema: ItemLoginSchema.USERNAME,
-};
-const createMockItemLoginResponse: Record.Factory<ItemLogin> = Record(
-  defaultItemLoginResponseValues,
-);
-
-export const ITEM_LOGIN_RESPONSE: ItemLoginRecord =
-  createMockItemLoginResponse();
+export const ITEM_LOGIN_RESPONSE: ItemLoginSchemaRecord = convertJs({
+  type: ItemLoginSchemaType.Username,
+  item: ITEMS_JS[0],
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  id: 'login-schema-id',
+});
 
 const BlobMock = {
   blob: () => 'blob',
@@ -300,7 +275,9 @@ export const S3_FILE_RESPONSE = {
 };
 export const S3_FILE_BLOB_RESPONSE = BlobMock;
 export const THUMBNAIL_BLOB_RESPONSE = BlobMock;
+export const THUMBNAIL_URL_RESPONSE = 'some-thumbnail-url';
 export const AVATAR_BLOB_RESPONSE = BlobMock;
+export const AVATAR_URL_RESPONSE = 'some-avatar-url';
 
 export const buildMentionResponse = (
   mention: ChatMention,
@@ -320,33 +297,37 @@ export const buildMentionResponse = (
   }
 };
 
-const defaultAppExtraValues: AppItemExtraProperties = {
-  url: 'http://codeapp.com/logo.png',
-};
-const createAppExtra: Record.Factory<AppItemExtraProperties> = Record(
-  defaultAppExtraValues,
-);
-
 const defaultAppValues: App = {
   name: 'Code App',
   url: 'http://codeapp.com',
   description: 'description',
-  extra: createAppExtra({ url: 'http://codeapp.com/logo.png' }),
+  id: 'app-id',
+  key: 'key',
+  extra: {},
+  publisher: {
+    id: 'publisher-id',
+    name: 'publisher name',
+    origins: ['origin'],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  createdAt: new Date(),
+  updatedAt: new Date(),
 };
-const createMockApps: Record.Factory<App> = Record(defaultAppValues);
 
-const APP_1: AppRecord = createMockApps({
+const APP_1: AppRecord = convertJs({
+  ...defaultAppValues,
   name: 'Code App',
   url: 'http://codeapp.com',
   description: 'description',
-  extra: createAppExtra({ url: 'http://codeapp.com/logo.png' }),
 });
 
-const APP_2: AppRecord = createMockApps({
+const APP_2: AppRecord = convertJs({
+  ...defaultAppValues,
   name: 'File App',
   description: 'description',
   url: 'http://fileapp.com',
-  extra: createAppExtra({ url: 'http://fileapp.com/logo.png' }),
+  extra: { url: 'http://fileapp.com/logo.png' },
 });
 
 export const APPS: List<AppRecord> = List([APP_1, APP_2]);
@@ -379,22 +360,11 @@ export const createMockExportedChatMessage = (
   });
 
 export const createMockMemberMentions = (
-  memberMentions?: Partial<MemberMentions>,
-): MemberMentionsRecord =>
-  convertJs({
-    memberId: '',
-    mentions: [],
-    ...memberMentions,
-  });
+  memberMentions?: Partial<ChatMention>[],
+): List<ChatMentionRecord> => convertJs(memberMentions);
 
-export const createMockItemChat = (
-  itemId: string,
-  messages?: ChatMessage[],
-): ItemChatRecord =>
-  convertJs({
-    id: itemId,
-    messages: messages || [],
-  });
+export const createMockItemChat = (messages?: ChatMessage[]): ItemChatRecord =>
+  convertJs(messages);
 
 export const createMockExportedItemChat = (
   itemId: string,
@@ -410,14 +380,14 @@ export const buildExportedChat = (
       id: v4(),
       chatId: id,
       body: 'some text',
-      creator: 'somememberid',
+      creator: MOCK_MEMBER,
     });
   const CHAT_MESSAGE_2: ExportedChatMessageRecord =
     createMockExportedChatMessage({
       id: v4(),
       chatId: id,
       body: 'some other text',
-      creator: 'someothermemberid',
+      creator: MOCK_MEMBER,
       creatorName: 'Some other name',
     });
   const CHAT_MESSAGES: List<ExportedChatMessageRecord> = List([
@@ -429,166 +399,123 @@ export const buildExportedChat = (
 
 export const buildChatMention = ({
   id = v4(),
-  memberId,
-  status = MentionStatus.UNREAD,
+  member,
+  status = MentionStatus.Unread,
 }: {
   id?: UUID;
-  memberId: UUID;
+  member?: Member;
   status?: MentionStatus;
 }): ChatMentionRecord => {
   const defaultChatMentionValues: ChatMention = {
     id: 'someid',
-    itemPath: 'somepath',
-    message: 'somemessage here',
-    messageId: 'anotherid',
-    createdAt: 'somedate',
-    updatedAt: 'somedate',
-    memberId: 'amemberid',
-    status: MentionStatus.UNREAD,
-    creator: 'somememberid',
+    message: {
+      id: 'anotherid',
+      item: MOCK_ITEM,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      body: 'somemessage here',
+      creator: MOCK_MEMBER,
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    member: member ?? MOCK_MEMBER,
+    status: MentionStatus.Unread,
   };
-  const createMockChatMention: Record.Factory<ChatMention> = Record(
-    defaultChatMentionValues,
-  );
+  const createMockChatMention = (
+    values: Partial<ChatMention>,
+  ): ChatMentionRecord => convertJs({ ...defaultChatMentionValues, ...values });
 
   const CHAT_MENTION: ChatMentionRecord = createMockChatMention({
     id,
-    memberId,
+    member: MOCK_MEMBER,
     status,
   });
   return CHAT_MENTION;
 };
 
-export const buildMemberMentions = (memberId: string): MemberMentionsRecord => {
-  const MEMBER_MENTIONS: MemberMentionsRecord = createMockMemberMentions({
-    memberId,
-    mentions: [
-      {
-        id: 'someid',
-        itemPath: 'somepath',
-        message: 'somemessage here',
-        messageId: 'anotherid',
-        createdAt: 'somedate',
-        updatedAt: 'somedate',
-        memberId,
-        status: MentionStatus.UNREAD,
-        creator: 'somememberid',
+export const buildMemberMentions = (): List<ChatMentionRecord> => {
+  const MEMBER_MENTIONS: List<ChatMentionRecord> = createMockMemberMentions([
+    {
+      id: 'someid',
+      message: {
+        id: 'anotherid',
+        item: MOCK_ITEM,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        body: 'somemessage here',
+        creator: MOCK_MEMBER,
       },
-      {
-        id: 'someid',
-        itemPath: 'somepath',
-        message: 'somemessage here',
-        messageId: 'anotherid',
-        createdAt: 'somedate',
-        updatedAt: 'somedate',
-        memberId,
-        status: MentionStatus.UNREAD,
-        creator: 'somememberid',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      member: MOCK_MEMBER,
+      status: MentionStatus.Unread,
+    },
+    {
+      id: 'someOtherId',
+      message: {
+        id: 'anotherid',
+        item: MOCK_ITEM,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        body: 'somemessage here',
+        creator: MOCK_MEMBER,
       },
-    ],
-  });
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      member: MOCK_MEMBER,
+      status: MentionStatus.Unread,
+    },
+  ]);
   return MEMBER_MENTIONS;
 };
 
-const defaultFlagsValues: Flag = {
-  id: 'flag-1-id',
-  name: 'flag-1',
-};
-const createMockFlags: Record.Factory<Flag> = Record(defaultFlagsValues);
-
-const FLAG_1: FlagRecord = createMockFlags({
-  id: 'flag-1-id',
-  name: 'flag-1',
-});
-
-const FLAG_2: FlagRecord = createMockFlags({
-  id: 'flag-2-id',
-  name: 'flag-2',
-});
-
-export const FLAGS: List<FlagRecord> = List([FLAG_1, FLAG_2]);
-
-const defaultTagsValues: TagType = {
-  id: 'item-login-tag-id',
-  name: 'item-login',
-};
-const createMockTags: Record.Factory<TagType> = Record(defaultTagsValues);
-
-const TAG_1: TagRecord = createMockTags({
-  id: 'item-login-tag-id',
-  name: 'item-login',
-});
-
-const TAG_2: TagRecord = createMockTags({
-  id: 'item-public-tag-id',
-  name: 'item-public',
-});
-
-export const TAGS: List<TagRecord> = List([TAG_1, TAG_2]);
-
 const defaultItemTagsValues: ItemTag = {
   id: 'tag-id',
-  itemPath: 'somepath',
-  tagId: 'tag-id',
-  createdAt: 'createdAt',
-  creator: 'creator-id',
+  item: MOCK_ITEM,
+  type: ItemTagType.Public,
+  createdAt: new Date(),
+  creator: MOCK_MEMBER,
 };
-const createMockItemTags: Record.Factory<ItemTag> = Record(
-  defaultItemTagsValues,
-);
+const createMockItemTags = (values: Partial<ItemTag>): ItemTagRecord =>
+  convertJs({ ...defaultItemTagsValues, ...values });
 
 const ITEM_TAG_1: ItemTagRecord = createMockItemTags({
   id: 'tag-id',
-  itemPath: 'somepath',
-  tagId: 'tag-id',
+  item: MOCK_ITEM,
+  type: ItemTagType.Public,
 });
 
 const ITEM_TAG_2: ItemTagRecord = createMockItemTags({
   id: 'tag-id1',
-  itemPath: 'somepath1',
-  tagId: 'tag-id1',
+  item: MOCK_ITEM,
+  type: ItemTagType.Public,
 });
 
 export const ITEM_TAGS: List<ItemTagRecord> = List([ITEM_TAG_1, ITEM_TAG_2]);
 
-export const ITEM_CHAT: ItemChatRecord = createMockItemChat('item-id', [
+export const ITEM_CHAT: ItemChatRecord = createMockItemChat([
   {
     id: MESSAGE_IDS[0],
-    chatId: 'item-id',
-    creator: MEMBER_RESPONSE.id,
-    createdAt: 'someDate',
-    updatedAt: 'someOtherDate',
+    item: ITEM_1,
+    creator: MOCK_MEMBER,
+    createdAt: new Date(),
+    updatedAt: new Date(),
     body: 'text',
   },
   {
     id: MESSAGE_IDS[1],
-    chatId: 'item-id',
-    creator: MEMBER_RESPONSE.id,
-    createdAt: 'someDate',
-    updatedAt: 'someOtherDate',
+    item: ITEM_1,
+    creator: MOCK_MEMBER,
+    createdAt: new Date(),
+    updatedAt: new Date(),
     body: 'text of second message',
   },
 ]);
 
-const defaultCategoryTypeValues: CategoryType = {
-  id: 'type-id',
-  name: 'type-name',
-};
-const createMockCategoryType: Record.Factory<CategoryType> = Record(
-  defaultCategoryTypeValues,
-);
-
-const CATEGORY_TYPE_1: CategoryTypeRecord = createMockCategoryType({
-  id: 'type-id',
-  name: 'type-name',
-});
-
-export const CATEGORY_TYPES: List<CategoryTypeRecord> = List([CATEGORY_TYPE_1]);
-
 const defaultCategoryValues: Category = {
   id: 'category-id1',
   name: 'category-name1',
-  type: 'type-id1',
+  type: CategoryType.Discipline,
 };
 const createMockCategory: Record.Factory<Category> = Record(
   defaultCategoryValues,
@@ -597,205 +524,86 @@ const createMockCategory: Record.Factory<Category> = Record(
 const CATEGORY_1: CategoryRecord = createMockCategory({
   id: 'category-id1',
   name: 'category-name1',
-  type: 'type-id1',
+  type: CategoryType.Discipline,
 });
 
 const CATEGORY_2: CategoryRecord = createMockCategory({
   id: 'category-id2',
   name: 'category-name2',
-  type: 'type-id2',
+  type: CategoryType.Discipline,
 });
 
 export const CATEGORIES: List<CategoryRecord> = List([CATEGORY_1, CATEGORY_2]);
 
 const defaultItemCategoryValues: ItemCategory = {
   id: 'id1',
-  itemId: 'item-id',
-  categoryId: 'category-id1',
-  createdAt: 'somedate',
-  creator: 'creator-id',
+  item: MOCK_ITEM,
+  category: defaultCategoryValues,
+  createdAt: new Date(),
+  creator: MOCK_MEMBER,
 };
-const createMockItemCategory: Record.Factory<ItemCategory> = Record(
-  defaultItemCategoryValues,
-);
+const createMockItemCategory = (
+  values: Partial<ItemCategory>,
+): ItemCategoryRecord => convertJs({ ...values, ...defaultItemCategoryValues });
 
 const ITEM_CATEGORY_1: ItemCategoryRecord = createMockItemCategory({
   id: 'id1',
-  itemId: 'item-id',
-  categoryId: 'category-id1',
+  item: MOCK_ITEM,
+  category: defaultCategoryValues,
 });
 
 const ITEM_CATEGORY_2: ItemCategoryRecord = createMockItemCategory({
   id: 'id2',
-  itemId: 'item-id',
-  categoryId: 'category-id2',
+  item: MOCK_ITEM,
+  category: defaultCategoryValues,
 });
 
 export const ITEM_CATEGORIES: List<ItemCategoryRecord> = List([
   ITEM_CATEGORY_1,
   ITEM_CATEGORY_2,
 ]);
-
-export enum Ranges {
-  All = 'all',
-  Tag = 'tag',
-  Title = 'title',
-  Author = 'author',
-}
-
-const createMockItemLike: Record.Factory<ItemLike> = Record({
-  id: 'id1',
-  itemId: 'item-id',
-  memberId: 'member-id',
-  createdAt: new Date().toISOString(),
-});
-
-const ITEM_LIKE_1: ItemLikeRecord = createMockItemLike({
-  id: 'id1',
-  itemId: 'item-id',
-  memberId: 'member-id',
-});
-
-const ITEM_LIKE_2: ItemLikeRecord = createMockItemLike({
-  id: 'id2',
-  itemId: 'item-id2',
-  memberId: 'member-id',
-});
-
-export const ITEM_LIKES: List<ItemLikeRecord> = List([
-  ITEM_LIKE_1,
-  ITEM_LIKE_2,
+export const ITEM_LIKES: List<ItemLikeRecord> = convertJs([
+  {
+    id: 'id1',
+    item: MOCK_ITEM,
+    member: MOCK_MEMBER,
+    createdAt: new Date(),
+  },
+  {
+    id: 'id2',
+    item: MOCK_ITEM,
+    member: MOCK_MEMBER,
+    createdAt: new Date(),
+  },
 ]);
 
-export const LIKE_COUNT = 100;
-
-const createMockStatus: Record.Factory<Status> = Record({
-  id: 'id',
-  name: 'status-1',
-});
-
-const STATUS_1: StatusRecord = createMockStatus({
-  id: 'id',
-  name: 'status-1',
-});
-
-const STATUS_2: StatusRecord = createMockStatus({
-  id: 'id-2',
-  name: 'status-2',
-});
-
-export const STATUS_LIST: List<StatusRecord> = List([STATUS_1, STATUS_2]);
-
-const createMockItemValidationSatus: Record.Factory<ItemValidationAndReview> =
-  Record({
-    itemValidationId: 'iv-id-1',
-    reviewStatusId: 'accepted',
-    reviewReason: '',
-    createdAt: new Date().toISOString(),
-  });
-
-export const ITEM_VALIDATION_STATUS: ItemValidationAndReviewRecord =
-  createMockItemValidationSatus({
-    itemValidationId: 'iv-id-1',
-    reviewStatusId: 'accepted',
-    reviewReason: '',
-  });
-
-const createMockFullValidation: Record.Factory<FullValidation> = Record({
+export const ITEM_VALIDATION_GROUP: ItemValidationGroupRecord = convertJs({
   id: 'id-1',
-  itemId: 'item-id-1',
-  reviewStatusId: 'status-id-1',
-  validationStatusId: 'status-id-2',
-  validationResult: '',
-  process: 'process-1',
-  createdAt: new Date().toISOString(),
+  item: MOCK_ITEM,
+  itemValidations: [
+    {
+      id: 'id-1',
+      item: MOCK_ITEM,
+      status: ItemValidationStatus.Success,
+      process: 'process-1',
+      createdAt: new Date(),
+    },
+  ],
+  updatedAt: new Date(),
+  createdAt: new Date(),
 });
 
-const FULL_VALIDATION_RECORDS_1: FullValidationRecord =
-  createMockFullValidation({
-    id: 'id-1',
-    itemId: 'item-id-1',
-    reviewStatusId: 'status-id-1',
-    validationStatusId: 'status-id-2',
-    validationResult: '',
-    process: 'process-1',
-  });
-
-const FULL_VALIDATION_RECORDS_2: FullValidationRecord =
-  createMockFullValidation({
-    id: 'id-2',
-    itemId: 'item-id-1',
-    reviewStatusId: 'status-id-1',
-    validationStatusId: 'status-id-2',
-    validationResult: '',
-    process: 'process-2',
-  });
-
-export const FULL_VALIDATION_RECORDS: List<FullValidationRecord> = List([
-  FULL_VALIDATION_RECORDS_1,
-  FULL_VALIDATION_RECORDS_2,
-]);
-
-const createMockItemValidationGroup: Record.Factory<ItemValidationGroup> =
-  Record({
-    id: 'id-1',
-    itemId: 'item-id-1',
-    itemValidationId: 'iv-id',
-    processId: 'ivp-id-1',
-    statusId: 'success-id',
-    result: '',
-    updatedAt: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
-  });
-
-const ITEM_VALIDATION_GROUP_1: ItemValidationGroupRecord =
-  createMockItemValidationGroup({
-    id: 'id-1',
-    itemId: 'item-id-1',
-    itemValidationId: 'iv-id',
-    processId: 'ivp-id-1',
-    statusId: 'success-id',
-    result: '',
-  });
-
-const ITEM_VALIDATION_GROUP_2: ItemValidationGroupRecord =
-  createMockItemValidationGroup({
-    id: 'id-2',
-    itemId: 'item-id-1',
-    itemValidationId: 'iv-id',
-    processId: 'ivp-id-2',
-    statusId: 'success-id',
-    result: '',
-  });
-
-export const ITEM_VALIDATION_GROUPS: List<ItemValidationGroupRecord> = List([
-  ITEM_VALIDATION_GROUP_1,
-  ITEM_VALIDATION_GROUP_2,
-]);
-
-const buildAction = (action: Partial<Action>): Action => ({
+const ACTION_1: Action = {
   id: 'action-id',
-  itemId: 'item-id',
-  memberId: 'member-id',
-  ...action,
-});
-
-const ACTION_1: Action = buildAction({
-  id: 'action-id',
-  itemId: 'item-id',
-  memberId: 'member-id',
-});
+  item: MOCK_ITEM,
+  member: MOCK_MEMBER,
+  createdAt: new Date(),
+  view: Context.Analytics,
+  type: 'action-type',
+  extra: { some: 'value' },
+};
 
 export const ACTIONS_LIST: Action[] = [ACTION_1];
-
-const createMockActionMetadata = (actionList: Action[]): ActionMetadataRecord =>
-  convertJs({
-    numActionsRetrieved: actionList.length,
-    requestedSampleSize: actionList.length,
-  });
-
-const ACTION_METADATA: ActionMetadataRecord =
-  createMockActionMetadata(ACTIONS_LIST);
 
 const createMockActionData = (
   actionData: Partial<ActionData>,
@@ -811,55 +619,57 @@ const createMockActionData = (
 export const ACTIONS_DATA: ActionDataRecord = createMockActionData({
   actions: ACTIONS_LIST,
   members: [MEMBER_RESPONSE.toJS() as Member],
-  item: ITEM_1.toJS() as FolderItemType,
+  item: ITEM_1,
   itemMemberships: [MEMBERSHIP_1.toJS()] as ItemMembership[],
-  metadata: ACTION_METADATA.toJS() as ActionMetadata,
+  metadata: {
+    numActionsRetrieved: 3,
+    requestedSampleSize: 24,
+  },
 });
 
-export const buildInvitation = ({
-  itemPath,
-  email,
-  name,
-}: {
-  itemPath: UUID;
-  email?: string;
-  name?: string;
-}): Invitation => ({
+export const buildInvitation = (values: Partial<Invitation>): Invitation => ({
   id: 'id',
-  name: name ?? 'member-name',
-  email: email ?? 'email',
-  creator: 'creator-id',
-  itemPath,
+  name: 'member-name',
+  email: 'email',
+  creator: MOCK_MEMBER,
+  permission: PermissionLevel.Read,
+  item: MOCK_ITEM,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  ...values,
 });
 
-export const buildInvitationRecord = ({
-  itemPath,
-  email,
-  name,
-}: {
-  itemPath: UUID;
-  email?: string;
-  name?: string;
-}): InvitationRecord => {
-  const createMockInvitation: Record.Factory<Invitation> = Record({
-    id: 'id',
-    name: name ?? 'member-name',
-    email: email ?? 'email',
-    creator: 'creator-id',
-    itemPath,
-  });
-  const invitation: InvitationRecord = createMockInvitation();
-  return invitation;
-};
+export const buildInvitationRecord = (
+  values: Partial<Invitation>,
+): InvitationRecord => convertJs(buildInvitation(values));
 
 export const buildMockInvitations = (itemId: string): List<InvitationRecord> =>
-  List([
-    buildInvitationRecord({
-      itemPath: itemId,
+  convertJs([
+    buildInvitation({
+      item: {
+        ...MOCK_ITEM,
+        path: itemId,
+      },
       email: 'a',
     }),
-    buildInvitationRecord({
-      itemPath: itemId,
+    buildInvitation({
+      item: {
+        ...MOCK_ITEM,
+        path: itemId,
+      },
       email: 'b',
     }),
   ]);
+
+export const ITEM_FLAGS: ItemFlagRecord[] = [
+  convertJs({
+    id: 'item-flag-1',
+    type: FlagType.FalseInformation,
+  }),
+];
+
+export const ITEM_PUBLISHED_DATA: ItemPublishedRecord = convertJs({
+  id: 'item-published-id',
+  item: ITEM_1,
+  member: MEMBER_RESPONSE.toJS(),
+});

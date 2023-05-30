@@ -1,14 +1,6 @@
 import { QueryClient, useMutation } from 'react-query';
 
-import {
-  Member,
-  MemberExtra,
-  ThumbnailSize,
-  UUID,
-  convertJs,
-  removeSession,
-  setCurrentSession,
-} from '@graasp/sdk';
+import { MemberExtra, ThumbnailSize, UUID, convertJs } from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -44,7 +36,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       Api.deleteMember(payload, queryConfig).then(() =>
         Api.signOut(queryConfig),
       ),
-    onSuccess: (_data, { id }) => {
+    onSuccess: (_data, { id: _id }) => {
       notifier?.({
         type: deleteMemberRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.DELETE_MEMBER },
@@ -54,8 +46,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       // remove cookies from browser when logout succeeds
       if (queryConfig.DOMAIN) {
-        removeSession(id, queryConfig.DOMAIN);
-        setCurrentSession(null, queryConfig.DOMAIN);
+        // todo: find a way to do this with an httpOnly cookie
+        // removeSession(id, queryConfig.DOMAIN);
+        // setCurrentSession(null, queryConfig.DOMAIN);
       }
 
       // Update when the server confirmed the logout, instead optimistically updating the member
@@ -72,7 +65,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   // suppose you can only edit yourself
   queryClient.setMutationDefaults(EDIT_MEMBER, {
-    mutationFn: (payload) =>
+    mutationFn: (payload: { id: UUID; extra: MemberExtra }) =>
       Api.editMember(payload, queryConfig).then((member) => convertJs(member)),
     onMutate: async ({ member }) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
@@ -109,7 +102,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
   const useEditMember = () =>
-    useMutation<void, unknown, { member: Partial<Member> }>(EDIT_MEMBER);
+    useMutation<void, unknown, { id: UUID; extra: MemberExtra }>(EDIT_MEMBER);
 
   // this mutation is used for its callback and invalidate the keys
   /**
@@ -132,13 +125,17 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
     onSettled: (_data, _error, { id }) => {
       Object.values(ThumbnailSize).forEach((size) => {
-        const key = buildAvatarKey({ id, size });
-        queryClient.invalidateQueries(key);
+        const key1 = buildAvatarKey({ replyUrl: true, id, size });
+        queryClient.invalidateQueries(key1);
+        const key2 = buildAvatarKey({ replyUrl: false, id, size });
+        queryClient.invalidateQueries(key2);
       });
     },
   });
   const useUploadAvatar = () =>
-    useMutation<void, unknown, { error: any; data: any }>(UPLOAD_AVATAR);
+    useMutation<void, unknown, { error?: any; data?: any; id: UUID }>(
+      UPLOAD_AVATAR,
+    );
 
   // mutation to update favorite items of given member
   queryClient.setMutationDefaults(ADD_FAVORITE_ITEM, {

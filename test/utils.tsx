@@ -4,7 +4,7 @@ import {
   renderHook,
 } from '@testing-library/react-hooks';
 import { StatusCodes } from 'http-status-codes';
-import nock from 'nock';
+import nock, { InterceptFunction, ReplyHeaders, Scope } from 'nock';
 import React from 'react';
 import { MutationObserverResult, QueryObserverBaseResult } from 'react-query';
 
@@ -59,7 +59,7 @@ export type Endpoint = {
   response: any;
   method?: HttpMethod;
   statusCode?: number;
-  headers?: unknown;
+  headers?: ReplyHeaders;
 };
 
 interface MockArguments {
@@ -77,20 +77,24 @@ interface MockMutationArguments extends MockArguments {
   mutation: () => any;
 }
 
+type NockMethodType = {
+  [MethodName in keyof Scope]: Scope[MethodName] extends InterceptFunction
+    ? MethodName
+    : never;
+}[keyof Scope];
+
 export const mockEndpoints = (endpoints: Endpoint[]) => {
   // mock endpoint with given response
   const server = nock(API_HOST);
   endpoints.forEach(({ route, method, statusCode, response, headers }) => {
-    server[(method || HttpMethod.GET).toLowerCase()](route).reply(
-      statusCode || StatusCodes.OK,
-      response,
-      headers,
-    );
+    server[(method || HttpMethod.GET).toLowerCase() as NockMethodType](
+      route,
+    ).reply(statusCode || StatusCodes.OK, response, headers);
   });
   return server;
 };
 
-export const mockHook = async ({
+export const mockHook = async <T,>({
   endpoints,
   hook,
   wrapper,
@@ -116,7 +120,7 @@ export const mockHook = async ({
   await waitFor(() => result.current.isSuccess || result.current.isError);
 
   // return hook data
-  return result.current;
+  return result.current as QueryObserverBaseResult<T>;
 };
 
 export const mockMutation = async ({
@@ -157,19 +161,32 @@ export const splitEndpointByIds = (
   chunkSize: number,
   buildRoute: (ids: string[]) => string,
   response: any[],
+  getKey?: (d: any) => string,
   method?: HttpMethod,
 ) =>
-  spliceIntoChunks(ids, chunkSize).map((chunk, idx) => ({
-    route: buildRoute(chunk),
-    response: response.slice(idx * chunkSize, (idx + 1) * chunkSize),
-    method,
-  }));
+  spliceIntoChunks(ids, chunkSize).map((chunk, idx) => {
+    const data = response.slice(idx * chunkSize, (idx + 1) * chunkSize).reduce(
+      (prev, d) => ({
+        ...prev,
+        [getKey?.(d) ?? d.id]: d,
+      }),
+      {},
+    );
+    return {
+      route: buildRoute(chunk),
+      response: {
+        data,
+        errors: [],
+      },
+      method,
+    };
+  });
 
 export const splitEndpointByIdsForErrors = (
   ids: string[],
   chunkSize: number,
   buildRoute: (ids: string[]) => string,
-  data: { response: any; statusCode: StatusCodes },
+  data: { response: unknown; statusCode: StatusCodes },
   method?: HttpMethod,
 ) =>
   spliceIntoChunks(ids, chunkSize).map((chunk) => ({

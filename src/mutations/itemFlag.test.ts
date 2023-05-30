@@ -4,10 +4,14 @@ import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
-import { HttpMethod } from '@graasp/sdk';
+import { FlagType, HttpMethod } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { FLAGS, ITEMS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import {
+  ITEMS_JS,
+  ITEM_FLAGS,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildPostItemFlagRoute } from '../api/routes';
 import { buildItemFlagsKey } from '../config/keys';
@@ -26,14 +30,15 @@ describe('Item Flag Mutations', () => {
   });
 
   describe('usePostItemFlag', () => {
-    const flagId = FLAGS.first()!.id;
-    const itemId = ITEMS.first()!.id;
+    const flagType = FlagType.FalseInformation;
+    const itemId = ITEMS_JS[0].id;
     const flagKey = buildItemFlagsKey(itemId);
     const route = `/${buildPostItemFlagRoute(itemId)}`;
     const mutation = mutations.usePostItemFlag;
 
     it('Post item flag', async () => {
-      queryClient.setQueryData(flagKey, FLAGS);
+      // set some starting data
+      queryClient.setQueryData(flagKey, ITEM_FLAGS);
 
       const response = {};
 
@@ -52,7 +57,7 @@ describe('Item Flag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ flagId, itemId });
+        await mockedMutation.mutate({ type: flagType, itemId });
         await waitForMutation();
       });
 
@@ -64,7 +69,9 @@ describe('Item Flag Mutations', () => {
     });
 
     it('Unauthorized to post item flag', async () => {
-      queryClient.setQueryData(flagKey, FLAGS);
+      // set some starting data
+      queryClient.setQueryData(flagKey, ITEM_FLAGS);
+
       const endpoints = [
         {
           response: UNAUTHORIZED_RESPONSE,
@@ -81,7 +88,7 @@ describe('Item Flag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ flagId, itemId });
+        await mockedMutation.mutate({ flagType, itemId });
         await waitForMutation();
       });
 

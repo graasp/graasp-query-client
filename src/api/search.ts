@@ -6,10 +6,15 @@ const axios = configureAxios();
 
 /* eslint-disable import/prefer-default-export */
 export const getItemsByKeywords = async (
-  range: string,
-  keywords: string,
+  fields: {
+    keywords?: string;
+    tags?: string[];
+    parentId?: string;
+    name?: string;
+    creator?: string;
+  },
   { API_HOST }: QueryClientConfig,
 ) =>
   axios
-    .get(`${API_HOST}/${buildGetItemsByKeywordRoute(range, keywords)}`)
+    .get(`${API_HOST}/${buildGetItemsByKeywordRoute(fields)}`)
     .then(({ data }) => data);

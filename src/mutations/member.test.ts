@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
@@ -220,14 +219,15 @@ describe('Member Mutations', () => {
   describe('useUploadAvatar', () => {
     const mutation = mutations.useUploadAvatar;
     const member = MEMBER_RESPONSE;
+    const replyUrl = true;
     const { id } = member;
 
     it('Upload avatar', async () => {
-      const route = `/${buildUploadAvatarRoute(id)}`;
+      const route = `/${buildUploadAvatarRoute()}`;
 
       // set data in cache
       Object.values(ThumbnailSize).forEach((size) => {
-        const key = buildAvatarKey({ id, size });
+        const key = buildAvatarKey({ id, size, replyUrl });
         queryClient.setQueryData(key, Math.random());
       });
 
@@ -248,14 +248,14 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id, data: [id] });
+        await mockedMutation.mutate({ id, data: {} });
         await waitForMutation();
       });
 
       // verify member is still available
       // in real cases, the path should be different
       for (const size of Object.values(ThumbnailSize)) {
-        const key = buildAvatarKey({ id, size });
+        const key = buildAvatarKey({ id, size, replyUrl });
         const state = queryClient.getQueryState(key);
         expect(state?.isInvalidated).toBeTruthy();
       }
@@ -266,10 +266,10 @@ describe('Member Mutations', () => {
     });
 
     it('Unauthorized to upload an avatar', async () => {
-      const route = `/${buildUploadAvatarRoute(id)}`;
+      const route = `/${buildUploadAvatarRoute()}`;
       // set data in cache
       Object.values(ThumbnailSize).forEach((size) => {
-        const key = buildAvatarKey({ id, size });
+        const key = buildAvatarKey({ id, size, replyUrl });
         queryClient.setQueryData(key, Math.random());
       });
 
@@ -298,7 +298,7 @@ describe('Member Mutations', () => {
       // verify member is still available
       // in real cases, the path should be different
       for (const size of Object.values(ThumbnailSize)) {
-        const key = buildAvatarKey({ id, size });
+        const key = buildAvatarKey({ id, size, replyUrl });
         const state = queryClient.getQueryState(key);
         expect(state?.isInvalidated).toBeTruthy();
       }

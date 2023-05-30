@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { act } from '@testing-library/react-hooks';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';

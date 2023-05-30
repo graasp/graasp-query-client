@@ -7,7 +7,9 @@ import { ChatMessage } from '@graasp/sdk';
 import { ExportedItemChatRecord, ItemChatRecord } from '@graasp/sdk/frontend';
 
 import {
-  ITEMS,
+  ITEMS_JS,
+  MOCK_ITEM,
+  MOCK_MEMBER,
   UNAUTHORIZED_RESPONSE,
   createMockExportedItemChat,
   createMockItemChat,
@@ -27,14 +29,14 @@ describe('Chat Hooks', () => {
   });
 
   describe('useItemChat', () => {
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS_JS[0].id;
     const mockMessage: ChatMessage = {
       id: 'some-messageId',
-      chatId: itemId,
+      item: MOCK_ITEM,
       body: 'some content',
-      creator: 'some-user',
-      createdAt: 'some Date',
-      updatedAt: 'some other Date',
+      creator: MOCK_MEMBER,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     const route = `/${buildGetItemChatRoute(itemId)}`;
     const key = buildItemChatKey(itemId);
@@ -42,9 +44,7 @@ describe('Chat Hooks', () => {
     const hook = () => hooks.useItemChat(itemId);
 
     it(`Receive chat messages`, async () => {
-      const response: ItemChatRecord = createMockItemChat(itemId, [
-        mockMessage,
-      ]);
+      const response: ItemChatRecord = createMockItemChat([mockMessage]);
       const endpoints = [
         {
           route,
@@ -85,14 +85,14 @@ describe('Chat Hooks', () => {
   });
 
   describe('useItemChat with arguments', () => {
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS_JS[0].id;
     const mockMessage: ChatMessage = {
       id: 'some-messageId',
-      chatId: itemId,
+      item: MOCK_ITEM,
       body: 'some content',
-      creator: 'some-user',
-      createdAt: 'some Date',
-      updatedAt: 'some other Date',
+      creator: MOCK_MEMBER,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     const route = `/${buildGetItemChatRoute(itemId)}`;
     const key = buildItemChatKey(itemId);
@@ -100,7 +100,7 @@ describe('Chat Hooks', () => {
     it(`getUpdates = true`, async () => {
       const hook = () => hooks.useItemChat(itemId, { getUpdates: true });
 
-      const response = createMockItemChat(itemId, [mockMessage]);
+      const response = createMockItemChat([mockMessage]);
       const endpoints = [
         {
           route,
@@ -113,7 +113,7 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(data as ItemChatRecord).toEqualImmutable(response);
+      expect(data).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -121,7 +121,7 @@ describe('Chat Hooks', () => {
 
     it(`getUpdates = false`, async () => {
       const hook = () => hooks.useItemChat(itemId, { getUpdates: false });
-      const response = createMockItemChat(itemId, [mockMessage]);
+      const response = createMockItemChat([mockMessage]);
       const endpoints = [
         {
           route,
@@ -134,7 +134,7 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(data as ItemChatRecord).toEqualImmutable(response);
+      expect(data).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -142,7 +142,7 @@ describe('Chat Hooks', () => {
   });
 
   describe('useItemChat', () => {
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS_JS[0].id;
     const route = `/${buildExportItemChatRoute(itemId)}`;
     const key = buildExportItemChatKey(itemId);
 
@@ -156,9 +156,9 @@ describe('Chat Hooks', () => {
             id: 'some-id',
             chatId: itemId,
             body: 'some content',
-            createdAt: 'some date',
-            updatedAt: 'some other date',
-            creator: 'some memberId',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            creator: MOCK_MEMBER,
             creatorName: 'A user name',
           },
         ],

@@ -1,14 +1,19 @@
 import { QueryClient, useMutation } from 'react-query';
 
-import { ItemLoginSchema, UUID } from '@graasp/sdk';
+import { ItemLoginSchemaType, UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
-import { MUTATION_KEYS, buildItemLoginKey } from '../config/keys';
-import { postItemLoginRoutine, putItemLoginRoutine } from '../routines';
+import { MUTATION_KEYS, buildItemLoginSchemaKey } from '../config/keys';
+import {
+  deleteItemLoginSchemaRoutine,
+  postItemLoginRoutine,
+  putItemLoginSchemaRoutine,
+} from '../routines';
 import type { QueryClientConfig } from '../types';
 
-const { POST_ITEM_LOGIN, PUT_ITEM_LOGIN } = MUTATION_KEYS;
+const { POST_ITEM_LOGIN, PUT_ITEM_LOGIN_SCHEMA, DELETE_ITEM_LOGIN_SCHEMA } =
+  MUTATION_KEYS;
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -30,30 +35,62 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       { itemId: UUID; username?: string; memberId?: UUID; password?: string }
     >(POST_ITEM_LOGIN);
 
-  queryClient.setMutationDefaults(PUT_ITEM_LOGIN, {
+  queryClient.setMutationDefaults(PUT_ITEM_LOGIN_SCHEMA, {
     mutationFn: (payload) => Api.putItemLoginSchema(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
-        type: putItemLoginRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.PUT_ITEM_LOGIN },
+        type: putItemLoginSchemaRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.PUT_ITEM_LOGIN_SCHEMA },
       });
     },
     onError: (error) => {
-      notifier?.({ type: putItemLoginRoutine.FAILURE, payload: { error } });
+      notifier?.({
+        type: putItemLoginSchemaRoutine.FAILURE,
+        payload: { error },
+      });
+    },
+    onSettled: (_data, _error, { itemId }) => {
+      queryClient.invalidateQueries(buildItemLoginSchemaKey(itemId));
+    },
+  });
+  const usePutItemLoginSchema = () =>
+    useMutation<void, unknown, { itemId: UUID; type: ItemLoginSchemaType }>(
+      PUT_ITEM_LOGIN_SCHEMA,
+    );
+
+  queryClient.setMutationDefaults(DELETE_ITEM_LOGIN_SCHEMA, {
+    mutationFn: (payload) => Api.deleteItemLoginSchema(payload, queryConfig),
+    onMutate: ({ itemId }) => {
+      const key = buildItemLoginSchemaKey(itemId);
+      const previous = queryClient.getQueryData(key);
+      queryClient.setQueryData(key, null);
+      return previous;
+    },
+    onSuccess: () => {
+      notifier?.({
+        type: deleteItemLoginSchemaRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_LOGIN_SCHEMA },
+      });
+    },
+    onError: (error, { itemId }, previous) => {
+      notifier?.({
+        type: deleteItemLoginSchemaRoutine.FAILURE,
+        payload: { error },
+      });
+      queryClient.setQueryData(buildItemLoginSchemaKey(itemId), previous);
     },
     onSettled: (_data, _error, { itemId }) => {
       // it is not necessary to update the cache for the given item login schema
       // because the item login only applies if the user is signed out
-      queryClient.invalidateQueries(buildItemLoginKey(itemId));
+      queryClient.invalidateQueries(buildItemLoginSchemaKey(itemId));
     },
   });
-  const usePutItemLogin = () =>
-    useMutation<void, unknown, { itemId: UUID; loginSchema: ItemLoginSchema }>(
-      PUT_ITEM_LOGIN,
-    );
+  const useDeleteItemLoginSchema = () =>
+    useMutation<void, unknown, { itemId: UUID }>(DELETE_ITEM_LOGIN_SCHEMA);
 
   return {
     usePostItemLogin,
-    usePutItemLogin,
+    useDeleteItemLoginSchema,
+    usePutItemLoginSchema,
   };
 };

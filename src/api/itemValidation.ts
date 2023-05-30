@@ -8,6 +8,7 @@ import {
   GET_ITEM_VALIDATION_STATUSES_ROUTE,
   buildGetItemValidationAndReviewRoute,
   buildGetItemValidationGroupsRoute,
+  buildGetLastItemValidationGroupRoute,
   buildPostItemValidationRoute,
   buildUpdateItemValidationReviewRoute,
 } from './routes';
@@ -35,6 +36,15 @@ export const getItemValidationReviewStatuses = async ({
     .get(`${API_HOST}/${GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE}`)
     .then(({ data }) => data);
 
+export const getLastItemValidationGroup = async (
+  { API_HOST }: QueryClientConfig,
+  itemId: UUID,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .get(`${API_HOST}/${buildGetLastItemValidationGroupRoute(itemId)}`)
+      .then(({ data }) => data),
+  );
 export const getItemValidationAndReview = async (
   { API_HOST }: QueryClientConfig,
   itemId: UUID,

@@ -1,24 +1,18 @@
 import { StatusCodes } from 'http-status-codes';
 
-import { Member, MemberExtra, UUID } from '@graasp/sdk';
+import { Member, MemberExtra, ResultOf, UUID } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
 
-import { DEFAULT_THUMBNAIL_SIZES, SIGNED_OUT_USER } from '../config/constants';
+import { DEFAULT_THUMBNAIL_SIZE, SIGNED_OUT_USER } from '../config/constants';
 import { QueryClientConfig } from '../types';
-import configureAxios, {
-  fallbackToPublic,
-  verifyAuthentication,
-} from './axios';
+import configureAxios, { verifyAuthentication } from './axios';
 import {
   GET_CURRENT_MEMBER_ROUTE,
   buildDeleteMemberRoute,
   buildDownloadAvatarRoute,
-  buildDownloadPublicAvatarRoute,
   buildGetMember,
   buildGetMembersBy,
   buildGetMembersRoute,
-  buildGetPublicMember,
-  buildGetPublicMembersRoute,
   buildPatchMember,
   buildUpdateMemberPasswordRoute,
   buildUploadAvatarRoute,
@@ -29,48 +23,39 @@ const axios = configureAxios();
 export const getMembersBy = async (
   { emails }: { emails: string[] },
   { API_HOST }: QueryClientConfig,
-): Promise<Member[][]> =>
-  verifyAuthentication(() =>
-    axios
-      .get(`${API_HOST}/${buildGetMembersBy(emails)}`)
-      .then(({ data }) => data),
-  );
+): Promise<ResultOf<Member>> =>
+  axios
+    .get(`${API_HOST}/${buildGetMembersBy(emails)}`)
+    .then(({ data }) => data);
 
 export const getMember = async (
   { id }: { id: UUID },
   { API_HOST }: QueryClientConfig,
-) =>
-  fallbackToPublic(
-    () => axios.get(`${API_HOST}/${buildGetMember(id)}`),
-    () => axios.get(`${API_HOST}/${buildGetPublicMember(id)}`),
-  );
+) => axios.get(`${API_HOST}/${buildGetMember(id)}`).then(({ data }) => data);
 
 export const getMembers = (
   { ids }: { ids: UUID[] },
   { API_HOST }: QueryClientConfig,
 ) =>
-  fallbackToPublic(
-    () => axios.get(`${API_HOST}/${buildGetMembersRoute(ids)}`),
-    () => axios.get(`${API_HOST}/${buildGetPublicMembersRoute(ids)}`),
-  );
+  axios
+    .get<ResultOf<Member[]>>(`${API_HOST}/${buildGetMembersRoute(ids)}`)
+    .then(({ data }) => data);
 
 export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) =>
-  verifyAuthentication(
-    () =>
-      axios
-        .get(`${API_HOST}/${GET_CURRENT_MEMBER_ROUTE}`)
-        .then(({ data }) => data)
-        .catch((error) => {
-          if (error.response) {
-            // return valid response for unauthorized requests
-            // avoid infinite loading induced by failure in react-query
-            if (error.response.status === StatusCodes.UNAUTHORIZED) {
-              return SIGNED_OUT_USER;
-            }
+  verifyAuthentication(() =>
+    axios
+      .get(`${API_HOST}/${GET_CURRENT_MEMBER_ROUTE}`)
+      .then(({ data }) => data)
+      .catch((error) => {
+        if (error.response) {
+          // return valid response for unauthorized requests
+          // avoid infinite loading induced by failure in react-query
+          if (error.response.status === StatusCodes.UNAUTHORIZED) {
+            return SIGNED_OUT_USER;
           }
-          throw error;
-        }),
-    SIGNED_OUT_USER,
+        }
+        throw error;
+      }),
   );
 
 export const editMember = async (
@@ -110,7 +95,6 @@ export const updatePassword = async (
 
 export const uploadAvatar = async (
   {
-    itemId,
     filename,
     contentType,
   }: { itemId: UUID; filename: string; contentType: string },
@@ -118,7 +102,7 @@ export const uploadAvatar = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .post(`${API_HOST}/${buildUploadAvatarRoute(itemId)}`, {
+      .post(`${API_HOST}/${buildUploadAvatarRoute()}`, {
         // Send and receive JSON.
         headers: {
           accept: 'application/json',
@@ -131,16 +115,24 @@ export const uploadAvatar = async (
   );
 
 export const downloadAvatar = async (
-  { id, size = DEFAULT_THUMBNAIL_SIZES }: { id: UUID; size?: string },
+  { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
   { API_HOST }: QueryClientConfig,
 ): Promise<Blob> =>
-  fallbackToPublic(
-    () =>
-      axios.get(`${API_HOST}/${buildDownloadAvatarRoute({ id, size })}`, {
+  axios
+    .get(
+      `${API_HOST}/${buildDownloadAvatarRoute({ id, size, replyUrl: false })}`,
+      {
         responseType: 'blob',
-      }),
-    () =>
-      axios.get(`${API_HOST}/${buildDownloadPublicAvatarRoute({ id, size })}`, {
-        responseType: 'blob',
-      }),
-  );
+      },
+    )
+    .then(({ data }) => data);
+
+export const downloadAvatarUrl = async (
+  { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
+  { API_HOST }: QueryClientConfig,
+): Promise<string> =>
+  axios
+    .get(
+      `${API_HOST}/${buildDownloadAvatarRoute({ id, size, replyUrl: true })}`,
+    )
+    .then(({ data }) => data);

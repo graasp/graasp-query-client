@@ -1,11 +1,13 @@
-import { ItemLoginSchema, UUID } from '@graasp/sdk';
+import { ItemLoginSchemaType, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
-  buildGetItemLoginRoute,
+  buildDeleteItemLoginSchemaRoute, // buildGetItemLoginRoute,
+  buildGetItemLoginSchemaRoute,
+  buildGetItemLoginSchemaTypeRoute,
   buildPostItemLoginSignInRoute,
-  buildPutItemLoginSchema,
+  buildPutItemLoginSchemaRoute,
 } from './routes';
 
 const axios = configureAxios();
@@ -27,19 +29,40 @@ export const postItemLoginSignIn = async (
     })
     .then(({ data }) => data);
 
-export const getItemLogin = async (id: UUID, { API_HOST }: QueryClientConfig) =>
+export const getItemLoginSchema = async (
+  id: UUID,
+  { API_HOST }: QueryClientConfig,
+) =>
   axios
-    .get(`${API_HOST}/${buildGetItemLoginRoute(id)}`)
+    .get(`${API_HOST}/${buildGetItemLoginSchemaRoute(id)}`)
+    .then(({ data }) => data);
+
+export const getItemLoginSchemaType = async (
+  id: UUID,
+  { API_HOST }: QueryClientConfig,
+): Promise<ItemLoginSchemaType> =>
+  axios
+    .get(`${API_HOST}/${buildGetItemLoginSchemaTypeRoute(id)}`)
     .then(({ data }) => data);
 
 export const putItemLoginSchema = async (
-  { itemId, loginSchema }: { itemId: UUID; loginSchema: ItemLoginSchema },
+  { itemId, type }: { itemId: UUID; type: ItemLoginSchemaType },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
     axios
-      .put(`${API_HOST}/${buildPutItemLoginSchema(itemId)}`, {
-        loginSchema,
+      .put(`${API_HOST}/${buildPutItemLoginSchemaRoute(itemId)}`, {
+        type,
       })
+      .then(({ data }) => data),
+  );
+
+export const deleteItemLoginSchema = async (
+  { itemId }: { itemId: UUID },
+  { API_HOST }: QueryClientConfig,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .delete(`${API_HOST}/${buildDeleteItemLoginSchemaRoute(itemId)}`)
       .then(({ data }) => data),
   );

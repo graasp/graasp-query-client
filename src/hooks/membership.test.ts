@@ -1,22 +1,18 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { MAX_TARGETS_FOR_READ_REQUEST } from '@graasp/sdk';
-import { ItemMembershipRecord } from '@graasp/sdk/frontend';
+import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
 
 import {
   ITEMS,
   ITEM_MEMBERSHIPS_RESPONSE,
   UNAUTHORIZED_RESPONSE,
+  buildResultOfData,
 } from '../../test/constants';
 import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils';
-import {
-  buildGetItemMembershipsForItemsRoute,
-  buildGetPublicItemMembershipsForItemsRoute,
-} from '../api/routes';
+import { buildGetItemMembershipsForItemsRoute } from '../api/routes';
 import {
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
@@ -33,7 +29,8 @@ describe('Membership Hooks', () => {
 
   describe('useItemMemberships', () => {
     const { id } = ITEMS.first()!;
-    const response = [ITEM_MEMBERSHIPS_RESPONSE];
+    // this hook uses the many endpoint
+    const response = buildResultOfData([ITEM_MEMBERSHIPS_RESPONSE.toJS()]);
     const route = `/${buildGetItemMembershipsForItemsRoute([id])}`;
     const key = buildItemMembershipsKey(id);
 
@@ -42,9 +39,11 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<ItemMembershipRecord>).toEqualImmutable(response[0]);
+      expect(data).toEqualImmutable(convertJs(response.data[id]));
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response[0]);
+      expect(queryClient.getQueryData(key)).toEqualImmutable(
+        convertJs(response.data[id]),
+      );
     });
 
     it(`Undefined ids does not fetch`, async () => {
@@ -61,35 +60,6 @@ describe('Membership Hooks', () => {
       expect(data).toBeFalsy();
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
-    });
-
-    // this tests fallbackForArray
-    it(`Merge private and public data if result with correct data and errors`, async () => {
-      const hook = () => hooks.useItemMemberships(id);
-      const publicRoute = `/${buildGetPublicItemMembershipsForItemsRoute([
-        id,
-      ])}`;
-      const publicResponse = [
-        { statusCode: StatusCodes.FORBIDDEN },
-        ITEM_MEMBERSHIPS_RESPONSE,
-      ];
-      const privateResponse = [
-        ITEM_MEMBERSHIPS_RESPONSE,
-        { statusCode: StatusCodes.FORBIDDEN },
-      ];
-      const endpoints = [
-        { route, response: privateResponse },
-        { route: publicRoute, response: publicResponse },
-      ];
-      const { data } = await mockHook({
-        endpoints,
-        hook,
-        wrapper,
-      });
-
-      expect(data as List<ItemMembershipRecord>).toEqualImmutable(response[0]);
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response[0]);
     });
 
     it(`Unauthorized`, async () => {
@@ -116,9 +86,9 @@ describe('Membership Hooks', () => {
 
   describe('useManyItemMemberships', () => {
     const ids = [ITEMS.first()!.id, ITEMS.get(1)!.id];
-    const response = List([
-      ITEM_MEMBERSHIPS_RESPONSE,
-      ITEM_MEMBERSHIPS_RESPONSE,
+    const response = buildResultOfData([
+      ITEM_MEMBERSHIPS_RESPONSE.toJS(),
+      ITEM_MEMBERSHIPS_RESPONSE.toJS(),
     ]);
     const route = `/${buildGetItemMembershipsForItemsRoute(ids)}`;
     const key = buildManyItemMembershipsKey(ids);
@@ -126,17 +96,17 @@ describe('Membership Hooks', () => {
     it(`Receive one item memberships`, async () => {
       const id = [ITEMS.first()!.id];
       const oneRoute = `/${buildGetItemMembershipsForItemsRoute(id)}`;
-      const oneResponse = List([ITEM_MEMBERSHIPS_RESPONSE]);
+      const oneResponse = buildResultOfData([ITEM_MEMBERSHIPS_RESPONSE.toJS()]);
       const oneKey = buildManyItemMembershipsKey(id);
       const hook = () => hooks.useManyItemMemberships(id);
       const endpoints = [{ route: oneRoute, response: oneResponse }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<List<ItemMembershipRecord>>).toEqualImmutable(
-        oneResponse,
-      );
+      expect(data).toEqualImmutable(convertJs(oneResponse));
       // verify cache keys
-      expect(queryClient.getQueryData(oneKey)).toEqualImmutable(oneResponse);
+      expect(queryClient.getQueryData(oneKey)).toEqualImmutable(
+        convertJs(oneResponse),
+      );
     });
 
     it(`Receive two item memberships`, async () => {
@@ -144,31 +114,32 @@ describe('Membership Hooks', () => {
       const hook = () => hooks.useManyItemMemberships(ids);
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<List<ItemMembershipRecord>>).toEqualImmutable(
-        response,
-      );
+      expect(data).toEqualImmutable(convertJs(response));
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(queryClient.getQueryData(key)).toEqualImmutable(
+        convertJs(response),
+      );
     });
 
     it(`Receive lots of item memberships`, async () => {
       const manyIds = ITEMS.map(({ id }) => id).toArray();
-      const manyResponse = List(manyIds.map(() => ITEM_MEMBERSHIPS_RESPONSE));
+      const memberships = manyIds.map(() => ITEM_MEMBERSHIPS_RESPONSE.toJS());
+      const manyResponse = buildResultOfData(memberships);
       const manyKey = buildManyItemMembershipsKey(manyIds);
       const hook = () => hooks.useManyItemMemberships(manyIds);
       const endpoints = splitEndpointByIds(
         manyIds,
         MAX_TARGETS_FOR_READ_REQUEST,
         (chunk) => `/${buildGetItemMembershipsForItemsRoute(chunk)}`,
-        manyResponse.toJS(),
+        memberships,
       );
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<List<ItemMembershipRecord>>).toEqualImmutable(
-        manyResponse,
-      );
+      expect(data).toEqualImmutable(convertJs(manyResponse));
       // verify cache keys
-      expect(queryClient.getQueryData(manyKey)).toEqualImmutable(manyResponse);
+      expect(queryClient.getQueryData(manyKey)).toEqualImmutable(
+        convertJs(manyResponse),
+      );
     });
 
     it(`Undefined ids does not fetch`, async () => {
@@ -184,35 +155,6 @@ describe('Membership Hooks', () => {
       expect(data).toBeFalsy();
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
-    });
-
-    // this tests fallbackForArray
-    it(`Merge private and public data if result with correct data and errors`, async () => {
-      const hook = () => hooks.useManyItemMemberships(ids);
-      const publicRoute = `/${buildGetPublicItemMembershipsForItemsRoute(ids)}`;
-      const publicResponse = [
-        { statusCode: StatusCodes.FORBIDDEN },
-        ITEM_MEMBERSHIPS_RESPONSE,
-      ];
-      const privateResponse = [
-        ITEM_MEMBERSHIPS_RESPONSE,
-        { statusCode: StatusCodes.FORBIDDEN },
-      ];
-      const endpoints = [
-        { route, response: privateResponse },
-        { route: publicRoute, response: publicResponse },
-      ];
-      const { data } = await mockHook({
-        endpoints,
-        hook,
-        wrapper,
-      });
-
-      expect(data as List<List<ItemMembershipRecord>>).toEqualImmutable(
-        response,
-      );
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {

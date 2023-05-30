@@ -8,11 +8,7 @@ import { HttpMethod } from '@graasp/sdk';
 import * as utils from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import {
-  DOMAIN,
-  OK_RESPONSE,
-  UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
+import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
   SIGN_IN_ROUTE,
@@ -27,7 +23,6 @@ import {
   signInWithPasswordRoutine,
   signOutRoutine,
   signUpRoutine,
-  switchMemberRoutine,
   updatePasswordRoutine,
 } from '../routines';
 
@@ -50,7 +45,6 @@ jest.mock('@graasp/sdk', () => {
 });
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
-jest.spyOn(utils, 'isUserAuthenticated').mockReturnValue(true);
 
 const email = 'myemail@email.com';
 
@@ -339,8 +333,6 @@ describe('Authentication Mutations', () => {
 
       // cookie management
       expect(utils.saveUrlForRedirection).toHaveBeenCalled();
-      expect(utils.setCurrentSession).toHaveBeenCalledWith(null, DOMAIN);
-      expect(utils.removeSession).toHaveBeenCalledWith(userId, DOMAIN);
     });
 
     it(`Unauthorized`, async () => {
@@ -372,61 +364,61 @@ describe('Authentication Mutations', () => {
     });
   });
 
-  describe('useSwitchMember', () => {
-    const mutation = mutations.useSwitchMember;
-    const MOCK_SESSIONS = [{ id: 'id1', token: 'token1' }];
+  // describe('useSwitchMember', () => {
+  //   const mutation = mutations.useSwitchMember;
+  //   const MOCK_SESSIONS = [{ id: 'id1', token: 'token1' }];
 
-    it(`Switch Member`, async () => {
-      const mockedMutation = await mockMutation({
-        mutation,
-        wrapper,
-      });
+  //   it(`Switch Member`, async () => {
+  //     const mockedMutation = await mockMutation({
+  //       mutation,
+  //       wrapper,
+  //     });
 
-      (utils.getStoredSessions as jest.Mock).mockReturnValue(MOCK_SESSIONS);
+  //     (utils.getStoredSessions as jest.Mock).mockReturnValue(MOCK_SESSIONS);
 
-      await act(async () => {
-        await mockedMutation.mutate({
-          memberId: MOCK_SESSIONS[0].id,
-          domain: DOMAIN,
-        });
-        await waitForMutation();
-      });
+  //     await act(async () => {
+  //       await mockedMutation.mutate({
+  //         memberId: MOCK_SESSIONS[0].id,
+  //         domain: DOMAIN,
+  //       });
+  //       await waitForMutation();
+  //     });
 
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+  //     expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
 
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: switchMemberRoutine.SUCCESS,
-      });
+  //     expect(mockedNotifier).toHaveBeenCalledWith({
+  //       type: switchMemberRoutine.SUCCESS,
+  //     });
 
-      // cookie management
-      expect(utils.getStoredSessions).toHaveBeenCalled();
-      expect(utils.setCurrentSession).toHaveBeenCalledWith(
-        MOCK_SESSIONS[0].token,
-        DOMAIN,
-      );
-    });
-    it(`Throw if session does not exist`, async () => {
-      const mockedMutation = await mockMutation({
-        mutation,
-        wrapper,
-      });
+  //     // cookie management
+  //     expect(utils.getStoredSessions).toHaveBeenCalled();
+  //     expect(utils.setCurrentSession).toHaveBeenCalledWith(
+  //       MOCK_SESSIONS[0].token,
+  //       DOMAIN,
+  //     );
+  //   });
+  //   it(`Throw if session does not exist`, async () => {
+  //     const mockedMutation = await mockMutation({
+  //       mutation,
+  //       wrapper,
+  //     });
 
-      (utils.getStoredSessions as jest.Mock).mockReturnValue([]);
+  //     (utils.getStoredSessions as jest.Mock).mockReturnValue([]);
 
-      await act(async () => {
-        await mockedMutation.mutate({
-          memberId: MOCK_SESSIONS[0].id,
-          domain: DOMAIN,
-        });
-        await waitForMutation();
-      });
+  //     await act(async () => {
+  //       await mockedMutation.mutate({
+  //         memberId: MOCK_SESSIONS[0].id,
+  //         domain: DOMAIN,
+  //       });
+  //       await waitForMutation();
+  //     });
 
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+  //     expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
 
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: switchMemberRoutine.FAILURE,
-        payload: expect.anything(),
-      });
-    });
-  });
+  //     expect(mockedNotifier).toHaveBeenCalledWith({
+  //       type: switchMemberRoutine.FAILURE,
+  //       payload: expect.anything(),
+  //     });
+  //   });
+  // });
 });

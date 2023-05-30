@@ -6,10 +6,20 @@ import { act } from 'react-test-renderer';
 
 import { HttpMethod } from '@graasp/sdk';
 
-import { ITEMS, ITEM_TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import {
+  ITEMS,
+  ITEM_PUBLISHED_DATA,
+  MEMBERS_RESPONSE,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildItemPublishRoute } from '../api/routes';
-import { itemTagsKeys } from '../config/keys';
+import {
+  CURRENT_MEMBER_KEY,
+  buildItemPublishedInformationKey,
+  buildPublishedItemsForMemberKey,
+  buildPublishedItemsKey,
+} from '../config/keys';
 import { publishItemRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -28,18 +38,28 @@ describe('Publish Item', () => {
   describe('usePublishItem', () => {
     const item = ITEMS.first()!;
     const itemId = item.id;
+    const currentMember = MEMBERS_RESPONSE.first();
+    const currentMemberId = currentMember!.id;
     const notification = true;
     const mutation = mutations.usePublishItem;
-    const itemTagKey = itemTagsKeys.singleId(itemId);
 
     it('Publish Item with notification', async () => {
       const route = `/${buildItemPublishRoute(itemId, notification)}`;
-      queryClient.setQueryData(itemTagKey, ITEM_TAGS);
+      queryClient.setQueryData(
+        buildItemPublishedInformationKey(itemId),
+        ITEM_PUBLISHED_DATA,
+      );
+      queryClient.setQueryData(
+        buildPublishedItemsForMemberKey(currentMemberId),
+        ITEMS,
+      );
+      queryClient.setQueryData(buildPublishedItemsKey(), ITEMS);
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, currentMember);
 
       const endpoints = [
         {
-          response: { item },
-          method: HttpMethod.GET,
+          response: ITEM_PUBLISHED_DATA.toJS(),
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -59,7 +79,20 @@ describe('Publish Item', () => {
       });
 
       expect(route.includes('notification'));
-      expect(queryClient.getQueryState(itemTagKey)?.isInvalidated).toBeTruthy();
+
+      expect(
+        queryClient.getQueryState(buildItemPublishedInformationKey(itemId))
+          ?.isInvalidated,
+      ).toBeTruthy();
+      expect(
+        queryClient.getQueryState(
+          buildPublishedItemsForMemberKey(currentMemberId),
+        )?.isInvalidated,
+      ).toBeTruthy();
+      expect(
+        queryClient.getQueryState(buildPublishedItemsKey())?.isInvalidated,
+      ).toBeTruthy();
+
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: publishItemRoutine.SUCCESS,
       });
@@ -67,12 +100,21 @@ describe('Publish Item', () => {
 
     it('Publish Item without notification', async () => {
       const route = `/${buildItemPublishRoute(itemId)}`;
-      queryClient.setQueryData(itemTagKey, ITEM_TAGS);
+      queryClient.setQueryData(
+        buildItemPublishedInformationKey(itemId),
+        ITEM_PUBLISHED_DATA,
+      );
+      queryClient.setQueryData(
+        buildPublishedItemsForMemberKey(currentMemberId),
+        ITEMS,
+      );
+      queryClient.setQueryData(buildPublishedItemsKey(), ITEMS);
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, currentMember);
 
       const endpoints = [
         {
-          response: { item },
-          method: HttpMethod.GET,
+          response: ITEM_PUBLISHED_DATA.toJS(),
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -86,12 +128,24 @@ describe('Publish Item', () => {
       await act(async () => {
         await mockedMutation.mutate({
           id: itemId,
-          notification,
+          notification: false,
         });
         await waitForMutation();
       });
 
-      expect(queryClient.getQueryState(itemTagKey)?.isInvalidated).toBeTruthy();
+      expect(
+        queryClient.getQueryState(buildItemPublishedInformationKey(itemId))
+          ?.isInvalidated,
+      ).toBeTruthy();
+      expect(
+        queryClient.getQueryState(
+          buildPublishedItemsForMemberKey(currentMemberId),
+        )?.isInvalidated,
+      ).toBeTruthy();
+      expect(
+        queryClient.getQueryState(buildPublishedItemsKey())?.isInvalidated,
+      ).toBeTruthy();
+
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: publishItemRoutine.SUCCESS,
       });
@@ -99,13 +153,12 @@ describe('Publish Item', () => {
 
     it('Unauthorized to publish item', async () => {
       const route = `/${buildItemPublishRoute(itemId, notification)}`;
-      queryClient.setQueryData(itemTagKey, ITEM_TAGS);
 
       const endpoints = [
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.GET,
+          method: HttpMethod.POST,
           route,
         },
       ];
@@ -124,7 +177,6 @@ describe('Publish Item', () => {
         await waitForMutation();
       });
 
-      expect(queryClient.getQueryState(itemTagKey)?.isInvalidated).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: publishItemRoutine.FAILURE,

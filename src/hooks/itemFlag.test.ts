@@ -1,13 +1,10 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { FlagRecord } from '@graasp/sdk/frontend';
+import { FlagType } from '@graasp/sdk';
 
-import { FLAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockHook, setUpTest } from '../../test/utils';
+import { Endpoint, mockHook, setUpTest } from '../../test/utils';
 import { GET_FLAGS_ROUTE } from '../api/routes';
 import { ITEM_FLAGS_KEY } from '../config/keys';
 
@@ -21,40 +18,24 @@ describe('Item Flag Hooks', () => {
   });
 
   describe('useFlags', () => {
-    const route = `/${GET_FLAGS_ROUTE}`;
     const key = ITEM_FLAGS_KEY;
 
     const hook = () => hooks.useFlags();
 
     it(`Receive flags`, async () => {
-      const response = FLAGS;
-      const endpoints = [{ route, response }];
-      const { data } = await mockHook({ endpoints, hook, wrapper });
-
-      expect(data as List<FlagRecord>).toEqualImmutable(response);
-
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
-    });
-
-    it(`Unauthorized`, async () => {
-      const endpoints = [
+      const response = Object.values(FlagType);
+      const endpoints: Endpoint[] = [
         {
-          route,
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
+          response,
+          route: `/${GET_FLAGS_ROUTE}`,
         },
       ];
-      const { data, isError } = await mockHook({
-        hook,
-        wrapper,
-        endpoints,
-      });
+      const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toBeFalsy();
-      expect(isError).toBeTruthy();
+      expect(data).toEqualImmutable(List(response));
+
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeFalsy();
+      expect(queryClient.getQueryData(key)).toEqualImmutable(List(response));
     });
   });
 });

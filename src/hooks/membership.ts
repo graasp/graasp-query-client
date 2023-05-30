@@ -1,8 +1,13 @@
 import { List } from 'immutable';
 import { QueryClient, UseQueryResult, useQuery } from 'react-query';
 
-import { MAX_TARGETS_FOR_READ_REQUEST, UUID, convertJs } from '@graasp/sdk';
-import { ItemMembershipRecord } from '@graasp/sdk/frontend';
+import {
+  ItemMembership,
+  MAX_TARGETS_FOR_READ_REQUEST,
+  UUID,
+  convertJs,
+} from '@graasp/sdk';
+import { ItemMembershipRecord, ResultOfRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
 import { splitRequestByIds } from '../api/axios';
@@ -27,7 +32,7 @@ export default (
   useManyItemMemberships: (
     ids?: UUID[],
     options?: { getUpdates?: boolean },
-  ) => UseQueryResult<List<List<ItemMembershipRecord>>>;
+  ) => UseQueryResult<ResultOfRecord<ItemMembership[]>>;
 } => {
   const { enableWebsocket, defaultQueryOptions } = queryConfig;
 
@@ -55,7 +60,7 @@ export default (
           }
 
           return Api.getMembershipsForItems([id], queryConfig).then((data) =>
-            convertJs(data[0]),
+            convertJs(data.data[id]),
           );
         },
         enabled: Boolean(id),
@@ -66,14 +71,14 @@ export default (
     useManyItemMemberships: (
       ids?: UUID[],
       options?: { getUpdates?: boolean },
-    ): UseQueryResult<List<List<ItemMembershipRecord>>> => {
+    ): UseQueryResult<ResultOfRecord<ItemMembership[]>> => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       membershipWsHooks?.useItemsMembershipsUpdates(getUpdates ? ids : null);
 
       return useQuery({
         queryKey: buildManyItemMembershipsKey(ids),
-        queryFn: (): Promise<List<List<ItemMembershipRecord>>> => {
+        queryFn: (): Promise<ResultOfRecord<ItemMembership[]>> => {
           if (!ids) {
             throw new UndefinedArgument();
           }
@@ -82,12 +87,12 @@ export default (
             Api.getMembershipsForItems(chunk, queryConfig),
           );
         },
-        onSuccess: async (memberships: List<List<ItemMembershipRecord>>) => {
+        onSuccess: async (memberships) => {
           // save memberships in their own key
-          ids?.forEach(async (id, idx) => {
+          ids?.forEach(async (id) => {
             queryClient.setQueryData(
               buildItemMembershipsKey(id),
-              memberships.get(idx) as List<ItemMembershipRecord>,
+              memberships.data[id],
             );
           });
         },

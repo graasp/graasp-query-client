@@ -5,7 +5,7 @@ import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { HttpMethod } from '@graasp/sdk';
+import { HttpMethod, Item } from '@graasp/sdk';
 import { InvitationRecord } from '@graasp/sdk/frontend';
 
 import {
@@ -33,7 +33,7 @@ import {
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
-const item = ITEMS.first()!;
+const item = ITEMS.first()!.toJS() as Item;
 const itemId = item.id;
 
 const defaultInvitations = buildMockInvitations(itemId);
@@ -55,7 +55,7 @@ describe('Invitations Mutations', () => {
     const route = `/${buildPostInvitationsRoute(itemId)}`;
 
     it('Invite with one email', async () => {
-      const newInvitation = buildInvitation({ itemPath: itemId, email: 'c' });
+      const newInvitation = buildInvitation({ item, email: 'c' });
 
       // set data in cache
       queryClient.setQueryData(key, defaultInvitations);
@@ -88,9 +88,9 @@ describe('Invitations Mutations', () => {
 
     it('Invite with multiple emails', async () => {
       const newInvitations = [
-        buildInvitation({ itemPath: itemId, email: 'c' }),
-        buildInvitation({ itemPath: itemId, email: 'd' }),
-        buildInvitation({ itemPath: itemId, email: 'e' }),
+        buildInvitation({ item, email: 'c' }),
+        buildInvitation({ item, email: 'd' }),
+        buildInvitation({ item, email: 'e' }),
       ];
 
       // set data in cache
@@ -123,7 +123,7 @@ describe('Invitations Mutations', () => {
     });
 
     it('Unauthorized to post invitation', async () => {
-      const newInvitation = buildInvitation({ itemPath: itemId, email: 'c' });
+      const newInvitation = buildInvitation({ item, email: 'c' });
 
       // set data in cache
       queryClient.setQueryData(key, defaultInvitations);
@@ -154,9 +154,9 @@ describe('Invitations Mutations', () => {
     });
 
     it('Notify if one error exists in returned value post invitation', async () => {
-      const newInvitation = buildInvitation({ itemPath: itemId, email: 'c' });
+      const newInvitation = buildInvitation({ item, email: 'c' });
       const newInvitationRecord = buildInvitationRecord({
-        itemPath: itemId,
+        item,
         email: 'c',
       });
 
@@ -198,7 +198,7 @@ describe('Invitations Mutations', () => {
     const mutation = mutations.usePatchInvitation;
     const key = buildItemInvitationsKey(itemId);
     const newInvitation = buildInvitation({
-      itemPath: itemId,
+      item,
       email: 'c',
       name: 'newname',
     });
@@ -278,9 +278,9 @@ describe('Invitations Mutations', () => {
   describe('useDeleteInvitation', () => {
     const mutation = mutations.useDeleteInvitation;
     const key = buildItemInvitationsKey(itemId);
-    const invitationToDelete = buildInvitation({ itemPath: 'itemPath' });
+    const invitationToDelete = buildInvitation({ item });
     const invitationToDeleteRecord = buildInvitationRecord({
-      itemPath: 'itemPath',
+      item,
     });
     const route = `/${buildDeleteInvitationRoute({
       itemId,
@@ -369,7 +369,7 @@ describe('Invitations Mutations', () => {
 
   describe('useResendInvitation', () => {
     const mutation = mutations.useResendInvitation;
-    const invitation = buildInvitation({ itemPath: 'itemPath' });
+    const invitation = buildInvitation({ item });
     const route = `/${buildResendInvitationRoute({
       itemId,
       id: invitation.id,

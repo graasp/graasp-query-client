@@ -1,16 +1,8 @@
-import { UUID } from '@graasp/sdk';
-import { App } from '@graasp/sdk/frontend';
+import { App, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
-import configureAxios, {
-  fallbackToPublic,
-  verifyAuthentication,
-} from './axios';
-import {
-  buildAppListRoute,
-  buildGetApiAccessTokenRoute,
-  buildGetPublicApiAccessTokenRoute,
-} from './routes';
+import configureAxios, { verifyAuthentication } from './axios';
+import { buildAppListRoute, buildGetApiAccessTokenRoute } from './routes';
 
 const axios = configureAxios();
 
@@ -22,20 +14,14 @@ export const getApps = async ({
   );
 
 export const requestApiAccessToken = async (
-  args: { id: UUID; app: string; origin: string },
+  args: { id: UUID; key: string; origin: string },
   { API_HOST }: Pick<QueryClientConfig, 'API_HOST'>,
 ): Promise<{ token: string }> => {
-  const { id, app, origin } = args;
-  return fallbackToPublic(
-    () =>
-      axios.post(`${API_HOST}/${buildGetApiAccessTokenRoute(id)}`, {
-        origin,
-        app,
-      }),
-    () =>
-      axios.post(`${API_HOST}/${buildGetPublicApiAccessTokenRoute(id)}`, {
-        origin,
-        app,
-      }),
-  );
+  const { id, key, origin } = args;
+  return axios
+    .post(`${API_HOST}/${buildGetApiAccessTokenRoute(id)}`, {
+      origin,
+      key,
+    })
+    .then(({ data }) => data);
 };

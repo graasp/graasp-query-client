@@ -23,11 +23,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         payload: { error },
       });
     },
-    onSettled: (_data, _error, { memberId }) => {
+    onSettled: (_data, _error) => {
       // invalidate keys only if websockets are disabled
       // otherwise the cache is updated automatically
       if (!queryConfig.enableWebsocket) {
-        queryClient.invalidateQueries(buildMentionKey(memberId));
+        queryClient.invalidateQueries(buildMentionKey());
       }
     },
   });
@@ -44,11 +44,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         payload: { error },
       });
     },
-    onSettled: (_data, _error, { memberId }) => {
+    onSettled: (_data, _error) => {
       // invalidate keys only if websockets are disabled
       // otherwise the cache is updated automatically
       if (!queryConfig.enableWebsocket) {
-        queryClient.invalidateQueries(buildMentionKey(memberId));
+        queryClient.invalidateQueries(buildMentionKey());
       }
     },
   });
@@ -63,11 +63,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         payload: { error },
       });
     },
-    onSettled: (_data, _error, { memberId }) => {
+    onSettled: (_data, _error) => {
       // invalidate keys only if websockets are disabled
       // otherwise the cache is updated automatically
       if (!queryConfig.enableWebsocket) {
-        queryClient.invalidateQueries(buildMentionKey(memberId));
+        queryClient.invalidateQueries(buildMentionKey());
       }
     },
   });

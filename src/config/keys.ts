@@ -1,26 +1,32 @@
 import { UUID } from '@graasp/sdk';
 
-import { SUBSCRIPTION_KEY } from '../api/routes';
+import { SearchFields } from '../types';
 import { hashItemsIds } from '../utils/item';
-import { DEFAULT_THUMBNAIL_SIZES } from './constants';
+import { DEFAULT_THUMBNAIL_SIZE } from './constants';
 
 export const APPS_KEY = 'apps';
 export const ITEMS_KEY = 'items';
 export const OWN_ITEMS_KEY = [ITEMS_KEY, 'own'];
 export const ETHERPADS_KEY = 'etherpads';
+export const SUBSCRIPTION_KEY = 'subscriptions';
 
 export const buildItemKey = (id?: UUID) => [ITEMS_KEY, id];
 export const buildItemsKey = (ids: UUID[]) => [ITEMS_KEY, hashItemsIds(ids)];
-export const buildItemChildrenKey = (id?: UUID) => [ITEMS_KEY, id, 'children'];
+export const buildItemChildrenKey = (id?: UUID) => [ITEMS_KEY, 'children', id];
 export const buildItemPaginatedChildrenKey = (id?: UUID) => [
   ITEMS_KEY,
-  id,
   'childrenPaginated',
+  id,
 ];
 export const buildItemsChildrenKey = (ids: UUID[]) => [
   ITEMS_KEY,
-  hashItemsIds(ids),
   'children',
+  hashItemsIds(ids),
+];
+export const buildItemDescendantsKey = (id: UUID) => [
+  ITEMS_KEY,
+  'descendants',
+  id,
 ];
 export const SHARED_ITEMS_KEY = 'shared';
 export const CURRENT_MEMBER_KEY = 'currentMember';
@@ -30,28 +36,37 @@ export const buildMembersKey = (ids: UUID[]) => [
   MEMBERS_KEY,
   hashItemsIds(ids),
 ];
-export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, id, 'parents'];
+export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, 'parents', id];
 export const CHATS_KEY = 'chats';
 export const buildItemChatKey = (id: UUID) => [CHATS_KEY, id];
 export const EXPORT_CHATS_KEY = 'exportChats';
 export const buildExportItemChatKey = (id: UUID) => [EXPORT_CHATS_KEY, id];
 export const MENTIONS_KEY = 'mentions';
-export const buildMentionKey = (memberId: UUID) => [MENTIONS_KEY, memberId];
+export const buildMentionKey = () => [MENTIONS_KEY];
 
 export const getKeyForParentId = (parentId: UUID | null) =>
   parentId ? buildItemChildrenKey(parentId) : OWN_ITEMS_KEY;
 
 export const buildItemMembershipsKey = (id?: UUID) => [
   ITEMS_KEY,
-  id,
   'memberships',
+  id,
 ];
 export const buildManyItemMembershipsKey = (ids?: UUID[]) => [
   ITEMS_KEY,
-  hashItemsIds(ids),
   'memberships',
+  hashItemsIds(ids),
 ];
-export const buildItemLoginKey = (id?: UUID) => [ITEMS_KEY, id, 'login'];
+export const buildItemLoginKey = (id?: UUID) => [ITEMS_KEY, 'login', id];
+export const buildItemLoginSchemaKey = (id?: UUID) => [
+  ITEMS_KEY,
+  'loginSchema',
+  id,
+];
+export const buildItemLoginSchemaTypeKey = (id?: UUID) => [
+  ...buildItemLoginSchemaKey(id),
+  'type',
+];
 export const TAGS_KEY = 'tags';
 export const ITEM_TAGS_KEY = 'itemTags';
 export const itemTagsKeys = {
@@ -59,25 +74,19 @@ export const itemTagsKeys = {
   many: () => [...itemTagsKeys.all, 'many'] as const,
   single: () => [...itemTagsKeys.all, 'single'] as const,
   singleId: (id?: UUID) => [...itemTagsKeys.single(), id] as const,
-  manyIds: (ids: UUID[]) => [...itemTagsKeys.many(), ...ids] as const,
+  manyIds: (ids: UUID[] | undefined = []) =>
+    [...itemTagsKeys.many(), ...ids] as const,
 };
-/**
- * @deprecated
- */
-export const buildItemTagsKey = (id?: UUID) => [ITEMS_KEY, id, 'tags'];
-/**
- * @deprecated
- */
-export const buildManyItemTagsKey = (ids?: UUID[]) => [
-  ITEMS_KEY,
-  hashItemsIds(ids),
-  'tags',
-];
-export const buildFileContentKey = (id?: UUID) => [ITEMS_KEY, id, 'content'];
-export const buildS3FileContentKey = (id?: UUID) => [ITEMS_KEY, id, 'content'];
+export const buildFileContentKey = ({
+  id,
+  replyUrl,
+}: {
+  id?: UUID;
+  replyUrl?: boolean;
+}) => [ITEMS_KEY, 'file', id, replyUrl ? 'url' : 'blob'];
 
 export const ITEM_FLAGS_KEY = 'itemFlags';
-export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, id, 'flags'];
+export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, 'flags', id];
 
 export const CATEGORY_TYPES_KEY = 'categoryTypes';
 export const buildCategoryKey = (id: UUID) => ['category', id];
@@ -87,61 +96,86 @@ export const buildCategoriesKey = (typeId?: UUID[]) => [
 ];
 export const buildItemCategoriesKey = (id?: UUID) => [
   ITEMS_KEY,
-  id,
   'categories',
+  id,
 ];
 export const buildItemsByCategoriesKey = (ids: UUID[]) => [
   'itemsInCategories',
   hashItemsIds(ids),
 ];
 
-export const buildSearchByKeywordKey = (range: string, keywords: string) => [
+export const buildSearchByKeywordKey = (fields: SearchFields) => [
   'keywordSearch',
-  range,
-  keywords,
+  fields,
 ];
 
-export const buildPublicItemsWithTagKey = (id?: UUID) => [
-  ITEMS_KEY,
-  ITEM_TAGS_KEY,
-  id,
-];
-export const RECYCLED_ITEMS_KEY = 'recycledItems';
+export const RECYCLED_ITEMS_DATA_KEY = 'recycledItemsData';
 export const buildItemThumbnailKey = ({
   id,
-  size = DEFAULT_THUMBNAIL_SIZES,
+  size = DEFAULT_THUMBNAIL_SIZE,
+  replyUrl,
 }: {
   id?: UUID;
   size?: string;
-}) => [ITEMS_KEY, id, 'thumbnails', size];
+  replyUrl?: boolean;
+}) => [ITEMS_KEY, id, 'thumbnails', size, replyUrl ? 'url' : 'blob'];
 export const buildAvatarKey = ({
   id,
-  size = DEFAULT_THUMBNAIL_SIZES,
+  replyUrl,
+  size = DEFAULT_THUMBNAIL_SIZE,
 }: {
   id?: UUID;
   size?: string;
-}) => [MEMBERS_KEY, id, 'avatars', size];
+  replyUrl: boolean;
+}) => [MEMBERS_KEY, id, 'avatars', size, replyUrl ? 'url' : 'blob'];
 
-export const buildGetLikedItemsKey = (id: UUID) => [
+export const buildGetLikesForMemberKey = (id?: UUID) => [
   MEMBERS_KEY,
-  id,
   'likedItems',
+  id,
 ];
-export const buildGetLikeCountKey = (id: UUID) => [ITEMS_KEY, id, 'likeCount'];
+export const buildGetLikesForItem = (id?: UUID) => [ITEMS_KEY, 'likes', id];
 
-export const ITEM_VALIDATION_REVIEWS_KEY = 'itemValidationReviews';
-export const ITEM_VALIDATION_STATUSES_KEY = 'itemValidationStatuses';
-export const ITEM_VALIDATION_REVIEW_STATUSES_KEY =
-  'itemValidationReviewStatuses';
+export const buildPublishedItemsKey = (categoryIds?: UUID[]) => [
+  ITEMS_KEY,
+  'collections',
+  hashItemsIds(categoryIds),
+];
+export const buildPublishedItemsForMemberKey = (memberId?: UUID) => [
+  ITEMS_KEY,
+  'collections',
+  MEMBERS_KEY,
+  memberId,
+];
+
+export const buildItemPublishedInformationKey = (id: UUID) => [
+  ITEMS_KEY,
+  'publishedInformation',
+  id,
+];
+
+export const buildManyItemPublishedInformationsKey = (ids: UUID[]) => [
+  ITEMS_KEY,
+  'publishedInformation',
+  ids,
+];
+
+export const buildLastItemValidationGroupKey = (id: UUID) => [
+  ITEMS_KEY,
+  'itemValidation',
+  'latest',
+  id,
+];
+
 export const buildItemValidationAndReviewKey = (id: UUID) => [
   ITEMS_KEY,
-  id,
   'itemValidationAndReview',
+  id,
 ];
 export const buildItemValidationGroupsKey = (id: UUID) => [
   ITEMS_KEY,
-  id,
   'itemValidationGroups',
+  id,
 ];
 
 export const buildActionsKey = (args: {
@@ -170,14 +204,14 @@ export const CARDS_KEY = [SUBSCRIPTION_KEY, 'cards'];
 export const buildPlanKey = (id: string) => [
   MEMBERS_KEY,
   SUBSCRIPTION_KEY,
-  id,
   'plans',
+  id,
 ];
 export const buildPlansKey = (id: string) => [
   MEMBERS_KEY,
   SUBSCRIPTION_KEY,
-  id,
   'plans',
+  id,
 ];
 export const CURRENT_CUSTOMER_KEY = [SUBSCRIPTION_KEY, 'currentCustomer'];
 
@@ -207,10 +241,7 @@ export const DATA_KEYS = {
   TAGS_KEY,
   ITEM_TAGS_KEY,
   itemTagsKeys,
-  buildItemTagsKey,
-  buildManyItemTagsKey,
   buildFileContentKey,
-  buildS3FileContentKey,
   ITEM_FLAGS_KEY,
   buildItemFlagsKey,
   CATEGORY_TYPES_KEY,
@@ -219,21 +250,19 @@ export const DATA_KEYS = {
   buildItemCategoriesKey,
   buildItemsByCategoriesKey,
   buildSearchByKeywordKey,
-  buildPublicItemsWithTagKey,
-  RECYCLED_ITEMS_KEY,
+  RECYCLED_ITEMS_DATA_KEY,
   buildItemThumbnailKey,
   buildAvatarKey,
-  buildGetLikedItemsKey,
-  buildGetLikeCountKey,
-  ITEM_VALIDATION_REVIEWS_KEY,
-  ITEM_VALIDATION_STATUSES_KEY,
-  ITEM_VALIDATION_REVIEW_STATUSES_KEY,
+  buildGetLikesForMemberKey,
+  buildGetLikesForItem,
   buildItemValidationAndReviewKey,
   buildItemValidationGroupsKey,
+  buildLastItemValidationGroupKey,
   buildInvitationKey,
   buildItemInvitationsKey,
   CARDS_KEY,
   buildPlanKey,
+  buildPublishedItemsKey,
   buildEtherpadKey,
 };
 
@@ -244,7 +273,6 @@ export const MUTATION_KEYS = {
   DELETE_ITEM: 'deleteItem',
   DELETE_ITEMS: 'deleteItems',
   COPY_ITEM: 'copyItem',
-  COPY_PUBLIC_ITEM: 'copyPublicItem',
   COPY_ITEMS: 'copyItems',
   MOVE_ITEM: 'moveItem',
   MOVE_ITEMS: 'moveItems',
@@ -256,7 +284,8 @@ export const MUTATION_KEYS = {
   POST_ITEM_LOGIN: 'postItemLoginSignIn',
   DELETE_ITEM_TAG: 'deleteItemTag',
   POST_ITEM_TAG: 'postItemTags',
-  PUT_ITEM_LOGIN: 'putItemLogin',
+  PUT_ITEM_LOGIN_SCHEMA: 'putItemLogin',
+  DELETE_ITEM_LOGIN_SCHEMA: 'deleteItemLoginSchema',
   EDIT_MEMBER: 'editMember',
   DELETE_MEMBER: 'deleteMember',
   POST_ITEM_FLAG: 'postItemFlag',
@@ -296,6 +325,7 @@ export const MUTATION_KEYS = {
   CREATE_SETUP_INTENT: 'subscriptionCreateSetupIntent',
   SET_DEFAULT_CARD: 'subscriptionSetDefaultCard',
   PUBLISH_ITEM: 'publishItem',
+  UNPUBLISH_ITEM: 'unpublishItem',
   SWITCH_MEMBER: 'switchMember',
   UPDATE_PASSWORD: 'updatePassword',
   SHARE_ITEM: 'shareItem',

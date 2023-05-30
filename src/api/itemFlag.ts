@@ -13,13 +13,11 @@ export const getFlags = async ({ API_HOST }: QueryClientConfig) =>
 
 // payload: flagId, itemId
 export const postItemFlag = async (
-  { flagId, itemId }: { flagId: UUID; itemId: string },
+  { type, itemId }: { type: UUID; itemId: string },
   { API_HOST }: QueryClientConfig,
 ) =>
-  verifyAuthentication(() =>
-    axios
-      .post(`${API_HOST}/${buildPostItemFlagRoute(itemId)}`, {
-        flagId,
-      })
-      .then(({ data }) => data),
-  );
+  axios
+    .post(`${API_HOST}/${buildPostItemFlagRoute(itemId)}`, {
+      type,
+    })
+    .then(({ data }) => data);

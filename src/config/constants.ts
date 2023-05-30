@@ -18,6 +18,6 @@ export const FALLBACK_TO_PUBLIC_FOR_STATUS_CODES = [
   StatusCodes.FORBIDDEN,
 ];
 
-export const DEFAULT_THUMBNAIL_SIZES = ThumbnailSize.Small;
+export const DEFAULT_THUMBNAIL_SIZE = ThumbnailSize.Small;
 
 export const PAGINATED_ITEMS_PER_PAGE = 8;

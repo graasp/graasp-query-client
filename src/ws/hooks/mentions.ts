@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
 import { ChatMention, UUID, convertJs } from '@graasp/sdk';
-import { ChatMentionRecord, MemberMentionsRecord } from '@graasp/sdk/frontend';
+import { ChatMentionRecord } from '@graasp/sdk/frontend';
 
 import { buildMentionKey } from '../../config/keys';
 import { OPS, TOPICS } from '../constants';
@@ -38,8 +38,8 @@ export const configureWsChatMentionsHooks = (
       };
 
       const handler = (event: MentionEvent): void => {
-        const mentionKey = buildMentionKey(memberId);
-        const current: MemberMentionsRecord | undefined =
+        const mentionKey = buildMentionKey();
+        const current: List<ChatMentionRecord> | undefined =
           queryClient.getQueryData(mentionKey);
 
         const mention: ChatMentionRecord = convertJs(event.mention);
@@ -47,31 +47,27 @@ export const configureWsChatMentionsHooks = (
         if (current) {
           switch (event.op) {
             case OPS.PUBLISH: {
-              const mutation = current.update('mentions', (mentions) =>
-                List([...mentions, mention]),
-              );
+              const mutation = current.push(mention);
               queryClient.setQueryData(mentionKey, mutation);
               break;
             }
             case OPS.UPDATE: {
-              const mutation = current.update('mentions', (mentions) => {
-                const index = mentions.findIndex(
-                  (m) => m.id === event.mention.id,
-                );
-                return mentions.setIn([index], mention);
-              });
+              const mutation = current.update(
+                current.findIndex((m) => m.id === mention.id),
+                () => mention,
+              );
               queryClient.setQueryData(mentionKey, mutation);
               break;
             }
             case OPS.DELETE: {
-              const mutation = current.update('mentions', (mentions) =>
-                mentions.filter((m) => m.id !== event.mention.id),
+              const mutation = current.delete(
+                current.findIndex((m) => m.id === mention.id),
               );
               queryClient.setQueryData(mentionKey, mutation);
               break;
             }
             case OPS.CLEAR: {
-              const mutation = current.update('mentions', () => List([]));
+              const mutation = current.clear();
               queryClient.setQueryData(mentionKey, mutation);
               break;
             }

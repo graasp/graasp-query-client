@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { List } from 'immutable';
 import { useEffect } from 'react';
 import { QueryClient } from 'react-query';
@@ -47,37 +48,38 @@ export const configureWsMembershipHooks = (
             const membership: ItemMembershipRecord = convertJs(
               event.membership,
             );
-
             // we handle only direct memberships
             // since we have only the item id information
-            const lastId = getIdsFromPath(membership.itemPath).pop();
-            if (current && lastId === itemId) {
-              let mutation;
-              switch (event.op) {
-                case OPS.CREATE: {
-                  if (!current.find((m) => m.id === membership.id)) {
-                    mutation = current.push(membership);
-                    queryClient.setQueryData(itemMembershipsKey, mutation);
+            if (membership.item) {
+              const lastId = getIdsFromPath(membership.item.path).pop();
+              if (current && lastId === itemId) {
+                let mutation;
+                switch (event.op) {
+                  case OPS.CREATE: {
+                    if (!current.find((m) => m.id === membership.id)) {
+                      mutation = current.push(membership);
+                      queryClient.setQueryData(itemMembershipsKey, mutation);
+                    }
+                    break;
                   }
-                  break;
+                  case OPS.UPDATE: {
+                    mutation = current.map((m) =>
+                      m.id === membership.id ? membership : m,
+                    );
+                    queryClient.setQueryData(itemMembershipsKey, mutation);
+                    break;
+                  }
+                  case OPS.DELETE: {
+                    mutation = current.filter((m) => m.id !== membership.id);
+                    queryClient.setQueryData(itemMembershipsKey, mutation);
+                    break;
+                  }
+                  default:
+                    console.error(
+                      'unhandled event for useItemsMembershipsUpdates',
+                    );
+                    break;
                 }
-                case OPS.UPDATE: {
-                  mutation = current.map((m) =>
-                    m.id === membership.id ? membership : m,
-                  );
-                  queryClient.setQueryData(itemMembershipsKey, mutation);
-                  break;
-                }
-                case OPS.DELETE: {
-                  mutation = current.filter((m) => m.id !== membership.id);
-                  queryClient.setQueryData(itemMembershipsKey, mutation);
-                  break;
-                }
-                default:
-                  console.error(
-                    'unhandled event for useItemsMembershipsUpdates',
-                  );
-                  break;
               }
             }
           }

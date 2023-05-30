@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
@@ -6,7 +5,7 @@ import nock from 'nock';
 
 import { ItemRecord } from '@graasp/sdk/frontend';
 
-import { ITEMS, Ranges, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import { ITEMS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildGetItemsByKeywordRoute } from '../api/routes';
 import { buildSearchByKeywordKey } from '../config/keys';
@@ -21,12 +20,11 @@ describe('Keyword Search Hook', () => {
   });
 
   describe('useKeywordSearch', () => {
-    const range = Ranges.All;
     const keywords = 'cat&dog';
-    const route = `/${buildGetItemsByKeywordRoute(range, keywords)}`;
-    const key = buildSearchByKeywordKey(range, keywords);
+    const route = `/${buildGetItemsByKeywordRoute({ keywords })}`;
+    const key = buildSearchByKeywordKey({ keywords });
 
-    const hook = () => hooks.useKeywordSearch(range, keywords);
+    const hook = () => hooks.useKeywordSearch({ keywords });
 
     it(`Receive search results`, async () => {
       const response = ITEMS;

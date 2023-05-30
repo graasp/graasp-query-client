@@ -1,20 +1,17 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { ItemLikeRecord } from '@graasp/sdk/frontend';
-
-import {
-  ITEMS,
-  ITEM_LIKES,
-  LIKE_COUNT,
-  UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
+import { ITEMS, ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
-import { buildGetLikeCountRoute, buildGetLikedItemsRoute } from '../api/routes';
-import { buildGetLikeCountKey, buildGetLikedItemsKey } from '../config/keys';
+import {
+  buildGetItemLikesRoute,
+  buildGetLikesForMemberRoute,
+} from '../api/routes';
+import {
+  buildGetLikesForItem,
+  buildGetLikesForMemberKey,
+} from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
@@ -25,19 +22,19 @@ describe('Item Like Hooks', () => {
     queryClient.clear();
   });
 
-  describe('useLikedItems', () => {
+  describe('useLikesForMember', () => {
     const memberId = 'member-id';
-    const route = `/${buildGetLikedItemsRoute(memberId)}`;
-    const key = buildGetLikedItemsKey(memberId);
+    const route = `/${buildGetLikesForMemberRoute(memberId)}`;
+    const key = buildGetLikesForMemberKey(memberId);
 
-    const hook = () => hooks.useLikedItems(memberId);
+    const hook = () => hooks.useLikesForMember(memberId);
 
     it(`Receive item likes`, async () => {
       const response = ITEM_LIKES;
-      const endpoints = [{ route, response }];
+      const endpoints = [{ route, response: response.toJS() }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<ItemLikeRecord>).toEqualImmutable(response);
+      expect(data).toEqualImmutable(response);
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqualImmutable(response);
@@ -64,22 +61,22 @@ describe('Item Like Hooks', () => {
     });
   });
 
-  describe('useLikeCount', () => {
+  describe('useLikesForItem', () => {
     const itemId = ITEMS.first()!.id;
-    const route = `/${buildGetLikeCountRoute(itemId)}`;
-    const key = buildGetLikeCountKey(itemId);
+    const route = `/${buildGetItemLikesRoute(itemId)}`;
+    const key = buildGetLikesForItem(itemId);
 
-    const hook = () => hooks.useLikeCount(itemId);
+    const hook = () => hooks.useLikesForItem(itemId);
 
-    it(`Receive item like count`, async () => {
-      const response = LIKE_COUNT;
-      const endpoints = [{ route, response }];
+    it(`Receive item's like entries`, async () => {
+      const response = ITEM_LIKES;
+      const endpoints = [{ route, response: response.toJS() }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as typeof LIKE_COUNT).toEqual(response);
+      expect(data).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(response);
+      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
     });
 
     it(`Unauthorized`, async () => {

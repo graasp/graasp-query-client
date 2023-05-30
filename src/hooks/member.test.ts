@@ -1,18 +1,24 @@
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { UseQueryResult } from 'react-query';
 
-import { MAX_TARGETS_FOR_READ_REQUEST, ThumbnailSize, UUID } from '@graasp/sdk';
+import {
+  MAX_TARGETS_FOR_READ_REQUEST,
+  ThumbnailSize,
+  UUID,
+  convertJs,
+} from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
 
 import {
   AVATAR_BLOB_RESPONSE,
+  AVATAR_URL_RESPONSE,
   FILE_NOT_FOUND_RESPONSE,
   MEMBERS_RESPONSE,
   MEMBER_RESPONSE,
   UNAUTHORIZED_RESPONSE,
+  buildResultOfData,
 } from '../../test/constants';
 import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils';
 import {
@@ -20,8 +26,6 @@ import {
   buildDownloadAvatarRoute,
   buildGetMember,
   buildGetMembersRoute,
-  buildGetPublicMember,
-  buildGetPublicMembersRoute,
 } from '../api/routes';
 import { SIGNED_OUT_USER } from '../config/constants';
 import {
@@ -124,32 +128,6 @@ describe('Member Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(buildMemberKey(id))).toBeFalsy();
     });
-
-    it(`Fallback to public`, async () => {
-      const hook = () => hooks.useMember(id);
-      const endpoints = [
-        {
-          route: `/${buildGetMember(id)}`,
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-        },
-        {
-          route: `/${buildGetPublicMember(id)}`,
-          response,
-        },
-      ];
-      const { data } = await mockHook({
-        hook,
-        wrapper,
-        endpoints,
-      });
-
-      expect(data as MemberRecord).toEqualImmutable(response);
-      // verify cache keys
-      expect(queryClient.getQueryData(buildMemberKey(id))).toEqualImmutable(
-        data,
-      );
-    });
   });
 
   describe('useMembers', () => {
@@ -178,8 +156,9 @@ describe('Member Hooks', () => {
     });
 
     it(`Receive one member`, async () => {
-      const oneMemberResponse = [response.first()!];
-      const oneMemberIds = [oneMemberResponse[0].id];
+      const m = response.first()!;
+      const oneMemberResponse = buildResultOfData([m.toJS()]);
+      const oneMemberIds = [m.id];
       const endpoints = [
         {
           route: `/${buildGetMembersRoute(oneMemberIds)}`,
@@ -187,51 +166,48 @@ describe('Member Hooks', () => {
         },
       ];
       const hook = () => hooks.useMembers(oneMemberIds);
-      const { data } = await mockHook({
+      const { data: members } = await mockHook({
         hook,
         wrapper,
         endpoints,
       });
 
-      const members = data as List<MemberRecord>;
-      expect(members).toEqualImmutable(List(oneMemberResponse));
+      expect(members).toEqualImmutable(convertJs(oneMemberResponse));
       // verify cache keys
       expect(
         queryClient.getQueryData(buildMembersKey(oneMemberIds)),
-      ).toEqualImmutable(data);
-      expect(
-        queryClient.getQueryData<MemberRecord>(buildMemberKey(oneMemberIds[0])),
-      ).toEqualImmutable(
-        members.find(({ id: thisId }) => thisId === oneMemberIds[0]),
+      ).toEqualImmutable(members);
+      expect(queryClient.getQueryData(buildMemberKey(m.id))).toEqualImmutable(
+        m,
       );
     });
 
     it(`Receive two members`, async () => {
-      const twoIds = ids.slice(0, 2);
-      const twoMembers = response.slice(0, 2);
+      const twoMembers = MEMBERS_RESPONSE.slice(0, 2);
+      const twoIds = twoMembers.map(({ id }) => id).toArray();
+      const endpointResponse = buildResultOfData(twoMembers.toJS());
       const endpoints = [
         {
           route: `/${buildGetMembersRoute(twoIds)}`,
-          response: twoMembers,
+          response: endpointResponse,
         },
       ];
       const hook = () => hooks.useMembers(twoIds);
-      const { data } = await mockHook({
+      const { data: members } = await mockHook({
         hook,
         wrapper,
         endpoints,
       });
 
-      const members = data as List<MemberRecord>;
-      expect(members).toEqualImmutable(twoMembers);
+      expect(members).toEqualImmutable(convertJs(endpointResponse));
       // verify cache keys
       expect(
         queryClient.getQueryData(buildMembersKey(twoIds)),
-      ).toEqualImmutable(data);
+      ).toEqualImmutable(convertJs(endpointResponse));
       for (const id of twoIds) {
         expect(
           queryClient.getQueryData<MemberRecord>(buildMemberKey(id)),
-        ).toEqualImmutable(members.find(({ id: thisId }) => thisId === id));
+        ).toEqualImmutable(twoMembers.find(({ id: thisId }) => thisId === id));
       }
     });
 
@@ -242,24 +218,26 @@ describe('Member Hooks', () => {
         (chunk) => `/${buildGetMembersRoute(chunk)}`,
         response.toJS(),
       );
+      const fullResponse = buildResultOfData(response.toJS());
 
       const hook = () => hooks.useMembers(ids);
-      const { data } = await mockHook({
+      const { data: members } = await mockHook({
         hook,
         wrapper,
         endpoints,
       });
 
-      const members = data as List<MemberRecord>;
-      expect(members).toEqualImmutable(response);
+      expect(members).toEqualImmutable(convertJs(fullResponse));
       // verify cache keys
       expect(queryClient.getQueryData(buildMembersKey(ids))).toEqualImmutable(
-        data,
+        convertJs(fullResponse),
       );
       for (const id of ids) {
         expect(
           queryClient.getQueryData<MemberRecord>(buildMemberKey(id)),
-        ).toEqualImmutable(members.find(({ id: thisId }) => thisId === id));
+        ).toEqualImmutable(
+          MEMBERS_RESPONSE.find(({ id: thisId }) => thisId === id),
+        );
       }
     });
 
@@ -289,48 +267,16 @@ describe('Member Hooks', () => {
       }
     });
 
-    it(`Fallback to public for two members`, async () => {
-      const twoMembers = response.slice(0, 2);
-      const twoIds = ids.slice(0, 2);
-      const endpoints = [
-        {
-          route: `/${buildGetMembersRoute(twoIds)}`,
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-        },
-        {
-          route: `/${buildGetPublicMembersRoute(twoIds)}`,
-          response: twoMembers,
-        },
-      ];
-      const hook = () => hooks.useMembers(twoIds);
-      const { data } = await mockHook({
-        hook,
-        wrapper,
-        endpoints,
-      });
-
-      const members = data as List<MemberRecord>;
-      expect(members).toEqualImmutable(twoMembers);
-      // verify cache keys
-      expect(
-        queryClient.getQueryData(buildMembersKey(twoIds)),
-      ).toEqualImmutable(data);
-      for (const id of twoIds) {
-        expect(
-          queryClient.getQueryData<MemberRecord>(buildMemberKey(id)),
-        ).toEqualImmutable(members.find(({ id: thisId }) => thisId === id));
-      }
-    });
+    // TODO: errors
   });
 
   describe('useAvatar', () => {
     const member = MEMBER_RESPONSE;
-
+    const replyUrl = false;
     const response = AVATAR_BLOB_RESPONSE;
-    const route = `/${buildDownloadAvatarRoute({ id: member.id })}`;
+    const route = `/${buildDownloadAvatarRoute({ id: member.id, replyUrl })}`;
     const hook = () => hooks.useAvatar({ id: member.id });
-    const key = buildAvatarKey({ id: member.id });
+    const key = buildAvatarKey({ id: member.id, replyUrl });
 
     it(`Receive default avatar`, async () => {
       const endpoints = [
@@ -347,10 +293,11 @@ describe('Member Hooks', () => {
       const size = ThumbnailSize.Large;
       const routeLarge = `/${buildDownloadAvatarRoute({
         id: member.id,
+        replyUrl,
         size,
       })}`;
       const hookLarge = () => hooks.useAvatar({ id: member.id, size });
-      const keyLarge = buildAvatarKey({ id: member.id, size });
+      const keyLarge = buildAvatarKey({ id: member.id, size, replyUrl });
 
       const endpoints = [
         {
@@ -406,7 +353,108 @@ describe('Member Hooks', () => {
 
       expect(data).toBeFalsy();
       expect(isFetched).toBeTruthy();
-      expect(isError).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({ endpoints, hook, wrapper });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+  });
+
+  describe('useAvatarUrl', () => {
+    const member = MEMBER_RESPONSE;
+    const replyUrl = true;
+    const response = AVATAR_URL_RESPONSE;
+    const route = `/${buildDownloadAvatarRoute({ id: member.id, replyUrl })}`;
+    const hook = () => hooks.useAvatarUrl({ id: member.id });
+    const key = buildAvatarKey({ id: member.id, replyUrl });
+
+    it(`Receive default avatar url`, async () => {
+      const endpoints = [{ route, response }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+      expect(data).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeTruthy();
+    });
+
+    it(`Receive large avatar url`, async () => {
+      const size = ThumbnailSize.Large;
+      const routeLarge = `/${buildDownloadAvatarRoute({
+        id: member.id,
+        replyUrl,
+        size,
+      })}`;
+      const hookLarge = () => hooks.useAvatarUrl({ id: member.id, size });
+      const keyLarge = buildAvatarKey({ id: member.id, size, replyUrl });
+
+      const endpoints = [
+        {
+          route: routeLarge,
+          response,
+        },
+      ];
+      const { data } = await mockHook({
+        endpoints,
+        hook: hookLarge,
+        wrapper,
+      });
+
+      expect(data).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(keyLarge)).toBeTruthy();
+    });
+
+    it(`Undefined id does not fetch`, async () => {
+      const endpoints = [
+        {
+          route,
+          response,
+        },
+      ];
+      const { data, isFetched } = await mockHook({
+        endpoints,
+        hook: () => hooks.useAvatar({ id: undefined }),
+        wrapper,
+        enabled: false,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isFetched).toBeFalsy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+
+    it(`Error fetching avatar`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: FILE_NOT_FOUND_RESPONSE,
+          statusCode: StatusCodes.NOT_FOUND,
+        },
+      ];
+      const { data, isFetched, isError } = await mockHook({
+        endpoints,
+        hook: () => hooks.useAvatar({ id: member.id }),
+        wrapper,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isFetched).toBeTruthy();
+      expect(isError).toBeTruthy();
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
     });
