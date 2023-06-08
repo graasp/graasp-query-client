@@ -191,6 +191,27 @@ export const buildActionsKey = (args: {
   },
 ];
 
+export const buildAggregateActionsKey = (args: {
+  itemId: UUID;
+  view: string;
+  requestedSampleSize: number;
+  type: string;
+  countGroupBy: string[];
+  aggregateFunction: string;
+  aggregateMetric: string;
+  aggregateBy: string[];
+}) => [
+  'aggregateActions',
+  args.itemId,
+  args.view,
+  args.requestedSampleSize,
+  args.type,
+  args.countGroupBy,
+  args.aggregateFunction,
+  args.aggregateMetric,
+  args.requestedSampleSize,
+];
+
 export const buildInvitationKey = (id?: UUID) => ['invitations', id];
 export const buildItemInvitationsKey = (id?: UUID) => [
   ITEMS_KEY,
