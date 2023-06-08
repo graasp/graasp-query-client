@@ -25,6 +25,7 @@ yarn-error.log*
 .jest-cache
 
 # testing and coverage
+.jest-cache
 cypress/screenshots
 cypress/videos
 /.nyc_output
