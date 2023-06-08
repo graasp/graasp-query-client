@@ -290,6 +290,31 @@ export const buildGetActions = (
       addQueryPrefix: true,
     },
   )}`;
+export const buildGetAggregateActions = (args: {
+  itemId: UUID;
+  requestedSampleSize: number;
+  view: string;
+  type: string;
+  countGroupBy: string[];
+  aggregateFunction: string;
+  aggregateMetric: string;
+  aggregateBy: string[];
+}) =>
+  `${ITEMS_ROUTE}/${args.itemId}/actions/aggregation${qs.stringify(
+    {
+      requestedSampleSize: args.requestedSampleSize,
+      view: args.view,
+      type: args.type,
+      countGroupBy: args.countGroupBy,
+      aggregateFunction: args.aggregateFunction,
+      aggregateMetric: args.aggregateMetric,
+      aggregateBy: args.aggregateBy,
+    },
+    {
+      addQueryPrefix: true,
+      arrayFormat: 'repeat',
+    },
+  )}`;
 export const buildExportActions = (itemId: UUID) =>
   `${ITEMS_ROUTE}/${itemId}/actions/export`;
 export const buildGetInvitationRoute = (id: UUID) =>
