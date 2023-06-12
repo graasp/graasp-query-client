@@ -91,7 +91,7 @@ export default (queryConfig: QueryClientConfig) => {
       return useQuery({
         queryKey: buildManyItemPublishedInformationsKey(args.itemIds),
         queryFn: (): Promise<ResultOfRecord<ItemPublished>> =>
-          splitRequestByIds(
+          splitRequestByIds<ItemPublished>(
             args.itemIds,
             MAX_TARGETS_FOR_READ_REQUEST,
             (chunk) => Api.getManyItemPublishedInformations(chunk, queryConfig),
