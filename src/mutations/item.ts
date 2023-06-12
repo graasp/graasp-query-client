@@ -360,50 +360,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const useRecycleItems = () =>
     useMutation<void, unknown, UUID[]>(RECYCLE_ITEMS);
 
-  // queryClient.setMutationDefaults(DELETE_ITEM, {
-  //   mutationFn: ([itemId]) => Api.deleteItem(itemId, queryConfig),
-
-  //   onMutate: async ([itemId]) => {
-  //     const key = RECYCLED_ITEMS_KEY;
-  //     const data = queryClient.getQueryData(key) as List<ItemRecord>;
-  //     queryClient.setQueryData(
-  //       key,
-  //       data?.filter(({ id }) => id !== itemId),
-  //     );
-  //     const previousItems = {
-  //       parent: data,
-  //       item: await mutateItem({ id: itemId, value: null }),
-  //     };
-  //     return previousItems;
-  //   },
-  //   onSuccess: () => {
-  //     notifier?.({
-  //       type: deleteItemRoutine.SUCCESS,
-  //       payload: { message: SUCCESS_MESSAGES.DELETE_ITEM },
-  //     });
-  //   },
-  //   onError: (error, [itemId], context) => {
-  //     const itemData = context.item;
-
-  //     if (itemData) {
-  //       const itemKey = buildItemKey(itemId);
-  //       queryClient.setQueryData(itemKey, context.item);
-  //       queryClient.setQueryData(RECYCLED_ITEMS_KEY, context.parent);
-  //     }
-  //     notifier?.({ type: deleteItemRoutine.FAILURE, payload: { error } });
-  //   },
-  //   onSettled: (_data, _error, [itemId], context) => {
-  //     const itemData = context.item;
-
-  //     if (itemData) {
-  //       const itemKey = buildItemKey(itemId);
-  //       queryClient.invalidateQueries(itemKey);
-  //       queryClient.invalidateQueries(RECYCLED_ITEMS_KEY);
-  //     }
-  //   },
-  // });
-  // const useDeleteItem = () => useMutation<void, unknown, UUID[]>(DELETE_ITEM);
-
   queryClient.setMutationDefaults(DELETE_ITEMS, {
     mutationFn: (itemIds) =>
       splitRequestByIds(itemIds, MAX_TARGETS_FOR_MODIFY_REQUEST, (chunk) =>
@@ -457,49 +413,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       notifier?.({ type: deleteItemsRoutine.FAILURE, payload: { error } });
     },
-    onSettled: (_data, _error, itemIds: UUID[], context) => {
-      const itemPath = context[itemIds[0]]?.path;
-
-      itemIds.forEach((id) => {
-        const itemKey = buildItemKey(id);
-        queryClient.invalidateQueries(itemKey);
-      });
-
-      if (itemPath) {
-        queryClient.invalidateQueries(RECYCLED_ITEMS_DATA_KEY);
-      }
-    },
   });
   const useDeleteItems = () => useMutation<void, unknown, UUID[]>(DELETE_ITEMS);
-
-  // queryClient.setMutationDefaults(COPY_ITEM, {
-  //   mutationFn: (payload) => Api.copyItem(payload, queryConfig),
-  //   // cannot mutate because it needs the id
-  //   onSuccess: () => {
-  //     notifier?.({
-  //       type: copyItemRoutine.REQUEST,
-  //       // TODO: CHANGE FOR PENDING TEXT
-  //       payload: { message: SUCCESS_MESSAGES.COPY_ITEM },
-  //     });
-  //   },
-  //   onError: (error) => {
-  //     console.log(error);
-  //     notifier?.({ type: copyItemRoutine.FAILURE, payload: { error } });
-  //   },
-  //   onSettled: (_newItem, _err, payload) => {
-  //     const parentKey = getKeyForParentId(payload.to);
-  //     queryClient.invalidateQueries(parentKey);
-  //   },
-  // });
-  // const useCopyItem = () =>
-  //   useMutation<
-  //     void,
-  //     unknown,
-  //     {
-  //       id: UUID;
-  //       to: UUID;
-  //     }
-  //   >(COPY_ITEM);
 
   queryClient.setMutationDefaults(COPY_ITEMS, {
     mutationFn: ({ ids, to }: { ids: UUID[]; to?: UUID }) =>
@@ -531,93 +446,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         to?: UUID;
       }
     >(COPY_ITEMS);
-
-  // queryClient.setMutationDefaults(MOVE_ITEM, {
-  //   mutationFn: (payload) => Api.moveItem(payload, queryConfig),
-  //   onMutate: async ({ id: itemId, to }) => {
-  //     const itemKey = buildItemKey(itemId);
-  //     const itemData = queryClient.getQueryData<ItemRecord>(itemKey);
-  //     const toData = queryClient.getQueryData<ItemRecord>(buildItemKey(to));
-
-  //     const context: {
-  //       targetParent?: unknown;
-  //       originalParent?: unknown;
-  //       item?: unknown;
-  //     } = {};
-
-  //     if (itemData?.has('path') && toData?.has('path')) {
-  //       const newPath = buildPath({
-  //         prefix: toData.path,
-  //         ids: [itemId],
-  //       });
-
-  //       // update item
-  //       context.item = itemData;
-  //       const updatedItem = itemData.set('path', newPath);
-  //       queryClient.setQueryData(itemKey, updatedItem);
-
-  //       // add item to target item children
-  //       context.targetParent = await mutateParentChildren({
-  //         id: to,
-  //         value: (old: List<Item>) => old?.push(updatedItem?.toJS() as Item),
-  //       });
-
-  //       // remove item from current parent children
-  //       const oldPath = itemData.path;
-  //       context.originalParent = await mutateParentChildren({
-  //         childPath: oldPath,
-  //         value: (old: List<ItemRecord>) =>
-  //           old?.filter(({ id }) => id !== itemId),
-  //       });
-  //     }
-  //     return context;
-  //   },
-  //   onSuccess: () => {
-  //     notifier?.({
-  //       type: moveItemRoutine.TRIGGER,
-  //       // TODO: CHANGE FOR PENDING TEXT
-  //       payload: { message: SUCCESS_MESSAGES.MOVE_ITEM },
-  //     });
-  //   },
-  //   // If the mutation fails, use the context returned from onMutate to roll back
-  //   onError: (error, { id, to }, context) => {
-  //     const itemKey = buildItemKey(id);
-  //     queryClient.setQueryData(itemKey, context.item);
-
-  //     const parentKey = getKeyForParentId(to);
-  //     queryClient.setQueryData(parentKey, context.targetParent);
-
-  //     const itemData = context.item;
-  //     if (itemData && context.originalParent) {
-  //       const pKey = getKeyForParentId(getDirectParentId(itemData.path));
-  //       queryClient.setQueryData(pKey, context.originalParent);
-  //     }
-  //     notifier?.({ type: moveItemRoutine.FAILURE, payload: { error } });
-  //   },
-  //   // Always refetch after error or success:
-  //   onSettled: (_newItem, _err, { id, to }, context) => {
-  //     // Invalidate new parent
-  //     const newParentKey = getKeyForParentId(to);
-  //     queryClient.invalidateQueries(newParentKey);
-
-  //     // Invalidate old parent
-  //     const oldParentKey = getKeyForParentId(context.originalParent.id);
-  //     queryClient.invalidateQueries(oldParentKey);
-
-  //     // Invalidate moved item
-  //     const itemKey = buildItemKey(id);
-  //     queryClient.invalidateQueries(itemKey);
-  //   },
-  // });
-  // const useMoveItem = () =>
-  //   useMutation<
-  //     void,
-  //     unknown,
-  //     {
-  //       id?: UUID;
-  //       to: UUID;
-  //     }
-  //   >(MOVE_ITEM);
 
   queryClient.setMutationDefaults(MOVE_ITEMS, {
     mutationFn: ({ ids, to }: { ids: UUID[]; to: UUID }) =>
@@ -696,23 +524,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         }
       });
       notifier?.({ type: moveItemsRoutine.FAILURE, payload: { error } });
-    },
-    // Always refetch after error or success:
-    onSettled: (_newItem, _err, { id, ids, to }, context) => {
-      const itemIds = id ?? ids;
-      // Invalidate new parent
-      const newParentKey = getKeyForParentId(to);
-      queryClient.invalidateQueries(newParentKey);
-
-      // Invalidate old parent
-      const oldParentKey = getKeyForParentId(context.originalParent.id);
-      queryClient.invalidateQueries(oldParentKey);
-
-      itemIds.forEach((itemId: UUID) => {
-        // Invalidate moved item
-        const itemKey = buildItemKey(itemId);
-        queryClient.invalidateQueries(itemKey);
-      });
     },
   });
   const useMoveItems = () =>

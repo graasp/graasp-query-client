@@ -1,7 +1,12 @@
 import { List } from 'immutable';
 import { useQuery, useQueryClient } from 'react-query';
 
-import { ItemPublished, UUID, convertJs } from '@graasp/sdk';
+import {
+  ItemPublished,
+  MAX_TARGETS_FOR_READ_REQUEST,
+  UUID,
+  convertJs,
+} from '@graasp/sdk';
 import {
   ItemPublishedRecord,
   ItemRecord,
@@ -9,6 +14,7 @@ import {
 } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
+import { splitRequestByIds } from '../api/axios';
 import { UndefinedArgument } from '../config/errors';
 import {
   buildItemPublishedInformationKey,
@@ -85,8 +91,11 @@ export default (queryConfig: QueryClientConfig) => {
       return useQuery({
         queryKey: buildManyItemPublishedInformationsKey(args.itemIds),
         queryFn: (): Promise<ResultOfRecord<ItemPublished>> =>
-          Api.getManyItemPublishedInformations(args.itemIds, queryConfig).then(
-            (data) => convertJs(data),
+          splitRequestByIds(
+            args.itemIds,
+            MAX_TARGETS_FOR_READ_REQUEST,
+            (chunk) => Api.getManyItemPublishedInformations(chunk, queryConfig),
+            true,
           ),
         onSuccess: async (publishedData) => {
           // save items in their own key
