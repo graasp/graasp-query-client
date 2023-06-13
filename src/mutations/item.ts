@@ -291,8 +291,19 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         queryClient.setQueryData(childrenKey, context.parent);
       }
       notifier?.({ type: recycleItemsRoutine.FAILURE, payload: { error } });
+
+      // invalidations
+      itemIds.forEach((id) => {
+        const iKey = buildItemKey(id);
+        queryClient.invalidateQueries(iKey);
+      });
+
+      if (itemPath) {
+        const childrenKey = getKeyForParentId(getDirectParentId(itemPath));
+        queryClient.invalidateQueries(childrenKey);
+      }
     },
-    // does not settled since endpoint is async
+    // settled only on error since endpoint is async
   });
   const useRecycleItems = () =>
     useMutation<void, unknown, UUID[]>(RECYCLE_ITEMS);
@@ -349,8 +360,18 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
 
       notifier?.({ type: deleteItemsRoutine.FAILURE, payload: { error } });
+
+      // invalidations
+      itemIds.forEach((id) => {
+        const itemKey = buildItemKey(id);
+        queryClient.invalidateQueries(itemKey);
+      });
+
+      if (itemPath) {
+        queryClient.invalidateQueries(RECYCLED_ITEMS_DATA_KEY);
+      }
     },
-    // does not settled since endpoint is async
+    // settled only on error since the endpoint is async
   });
   const useDeleteItems = () => useMutation<void, unknown, UUID[]>(DELETE_ITEMS);
 
@@ -459,9 +480,22 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         }
       });
       notifier?.({ type: moveItemsRoutine.FAILURE, payload: { error } });
-    },
 
-    // does not settled since endpoint is async
+      // Invalidate new parent
+      const newParentKey = getKeyForParentId(to);
+      queryClient.invalidateQueries(newParentKey);
+
+      // Invalidate old parent
+      const oldParentKey = getKeyForParentId(context.originalParent.id);
+      queryClient.invalidateQueries(oldParentKey);
+
+      itemIds.forEach((itemId: UUID) => {
+        // Invalidate moved items
+        const itemKey = buildItemKey(itemId);
+        queryClient.invalidateQueries(itemKey);
+      });
+    },
+    // invalidate only on error since endpoint is async
   });
   const useMoveItems = () =>
     useMutation<
@@ -622,10 +656,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onError: (error, _itemId, context) => {
       queryClient.setQueryData(RECYCLED_ITEMS_DATA_KEY, context);
       notifier?.({ type: restoreItemsRoutine.FAILURE, payload: { error } });
-    },
-    onSettled: () => {
       queryClient.invalidateQueries(RECYCLED_ITEMS_DATA_KEY);
     },
+    // invalidate only on error since endpoint is async
   });
   const useRestoreItems = () =>
     useMutation<void, unknown, UUID[]>(RESTORE_ITEMS);
