@@ -75,13 +75,13 @@ export const splitRequestByIds = <T>(
   ).then((responses) => {
     // only get request returns
     // todo: not ideal..
-    if (!responses[0] || !responses[0]?.data) {
+    if (responses.every((r: any) => !r?.data)) {
       return null;
     }
 
     const result = responses.reduce(
       (prev, d) => ({
-        data: { ...prev.data, ...d.data },
+        data: { ...prev.data, ...(d.data ?? {}) },
         errors: prev.errors.concat(d.errors),
       }),
       { data: {}, errors: [] },

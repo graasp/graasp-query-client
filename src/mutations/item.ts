@@ -332,10 +332,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return previousItems;
     },
     onSuccess: (result) => {
-      const errors = result.filter(
+      console.log(result);
+      const errors = result?.filter(
         (r: Item | GraaspError) => (r as GraaspError).statusCode,
       );
-      if (!errors.isEmpty()) {
+      if (errors && !errors.isEmpty()) {
         // todo: revert deleted items
         return notifier?.({
           type: deleteItemsRoutine.FAILURE,
@@ -631,10 +632,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onMutate: async (itemIds) => {
       const key = RECYCLED_ITEMS_DATA_KEY;
       const items = queryClient.getQueryData(key) as List<Item>;
-      queryClient.setQueryData(
-        key,
-        items.filter(({ id }) => !itemIds.includes(id)),
-      );
+      if (items) {
+        queryClient.setQueryData(
+          key,
+          items.filter(({ id }) => !itemIds.includes(id)),
+        );
+      }
       return items;
     },
     onSuccess: (_data, itemIds) => {

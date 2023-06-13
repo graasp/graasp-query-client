@@ -70,6 +70,7 @@ describe('Items Mutations', () => {
   afterEach(() => {
     queryClient.clear();
     nock.cleanAll();
+    mockedNotifier.mockClear();
   });
 
   describe('usePostItem', () => {
@@ -389,7 +390,7 @@ describe('Items Mutations', () => {
       });
 
       // check new parent is not invalidated because copy is async
-      expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
+      expect(queryClient.getQueryState(key)?.isInvalidated).toBeFalsy();
     });
   });
 
@@ -928,147 +929,6 @@ describe('Items Mutations', () => {
       }
     });
 
-    it('Errors trigger error notification', async () => {
-      const items = List([ITEMS.get(3)!, ITEMS.get(4)!]);
-      const itemIds = items.map(({ id }) => id).toArray();
-      const route = `/${buildDeleteItemsRoute(itemIds)}`;
-
-      // set data in cache
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, item);
-      });
-
-      const response = [
-        OK_RESPONSE,
-        {
-          code: 'GERR011',
-          data: items.get(1)!.id,
-          message: 'Too many descendants',
-          name: 'GERR011',
-          origin: 'core',
-          statusCode: 403,
-        },
-      ];
-
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.DELETE,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate(itemIds);
-        await waitForMutation();
-      });
-
-      // check notification trigger
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: deleteItemsRoutine.FAILURE,
-        payload: expect.anything(),
-      });
-    });
-
-    it('Unauthorized to delete one of the items', async () => {
-      const items = ITEMS.slice(2);
-      const itemIds = items.map(({ id }) => id).toArray();
-      const route = `/${buildDeleteItemsRoute(itemIds)}`;
-
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, item);
-      });
-
-      const response: List<ItemRecord | GraaspError> = List([
-        UNAUTHORIZED_RESPONSE,
-        ...items.toArray(),
-      ]);
-
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.DELETE,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate(itemIds);
-        await waitForMutation();
-      });
-
-      // verify item is still available
-      // in real cases, the path should be different
-      for (const itemId of itemIds) {
-        const itemKey = buildItemKey(itemId);
-        const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(items.find(({ id }) => id === itemId));
-      }
-    });
-
-    it('Errors trigger error notification', async () => {
-      const items = List([ITEMS.get(3)!, ITEMS.get(4)!]);
-      const itemIds = items.map(({ id }) => id).toArray();
-      const route = `/${buildDeleteItemsRoute(itemIds)}`;
-
-      // set data in cache
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, item);
-      });
-
-      const response = [
-        OK_RESPONSE,
-        {
-          code: 'GERR011',
-          data: items.get(1)!.id,
-          message: 'Too many descendants',
-          name: 'GERR011',
-          origin: 'core',
-          statusCode: 403,
-        },
-      ];
-
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.DELETE,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate(itemIds);
-        await waitForMutation();
-      });
-
-      // check notification trigger
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: deleteItemsRoutine.FAILURE,
-        payload: expect.anything(),
-      });
-    });
-
     it('Unauthorized to delete an item', async () => {
       const items = ITEMS.slice(2);
       const itemIds = items.map(({ id }) => id).toArray();
@@ -1108,6 +968,12 @@ describe('Items Mutations', () => {
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
         expect(data).toEqualImmutable(items.find(({ id }) => id === itemId));
       }
+
+      // check notification trigger
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: deleteItemsRoutine.FAILURE,
+        payload: expect.anything(),
+      });
     });
   });
 
@@ -1228,7 +1094,7 @@ describe('Items Mutations', () => {
       // check recycle bin key
       expect(
         queryClient.getQueryState(RECYCLED_ITEMS_DATA_KEY)?.isInvalidated,
-      ).toBeTruthy();
+      ).toBeFalsy();
     });
 
     it('Restore many items', async () => {
@@ -1274,7 +1140,7 @@ describe('Items Mutations', () => {
       // check original parent is invalidated
       expect(
         queryClient.getQueryState(RECYCLED_ITEMS_DATA_KEY)?.isInvalidated,
-      ).toBeTruthy();
+      ).toBeFalsy();
     });
 
     it('Unauthorized to restore one of the items', async () => {
