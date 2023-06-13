@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0-rc.2](https://github.com/graasp/graasp-query-client/compare/v1.0.0-rc1...v1.0.0-rc.2) (2023-06-13)
+
+
+### Bug Fixes
+
+* split get many publish info, no settled for many calls ([#278](https://github.com/graasp/graasp-query-client/issues/278)) ([adc09eb](https://github.com/graasp/graasp-query-client/commit/adc09ebce154d2632e2e8b3fb2cd6b1492698983))
+
+
+### chore
+
+* release 1.0.0-rc.2 ([cf4096f](https://github.com/graasp/graasp-query-client/commit/cf4096f95eb0bc011a626802c6bf66fc191509dc))
+
 ## [1.0.0-rc1](https://github.com/graasp/graasp-query-client/compare/v0.4.2...v1.0.0-rc1) (2023-05-30)
 
 
