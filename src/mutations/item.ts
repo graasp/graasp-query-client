@@ -11,7 +11,7 @@ import {
   UUID,
   convertJs,
 } from '@graasp/sdk';
-import { ItemRecord } from '@graasp/sdk/frontend';
+import { ItemRecord, RecycledItemDataRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
@@ -317,13 +317,14 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onMutate: async (itemIds: UUID[]) => {
       // get path from first item
       const itemKey = RECYCLED_ITEMS_DATA_KEY;
-      const items = queryClient.getQueryData(itemKey) as List<ItemRecord>;
+      const itemData =
+        queryClient.getQueryData<List<RecycledItemDataRecord>>(itemKey);
       queryClient.setQueryData(
-        RECYCLED_ITEMS_DATA_KEY,
-        items?.filter(({ id }) => !itemIds.includes(id)),
+        itemKey,
+        itemData?.filter(({ item: { id } }) => !itemIds.includes(id)),
       );
       const previousItems: any = {
-        parent: items,
+        parent: itemData,
       };
 
       itemIds.forEach(async (id) => {
@@ -332,7 +333,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       return previousItems;
     },
     onSuccess: (result) => {
-      console.log(result);
       const errors = result?.filter(
         (r: Item | GraaspError) => (r as GraaspError).statusCode,
       );

@@ -847,8 +847,12 @@ describe('Items Mutations', () => {
     const mutation = mutations.useDeleteItems;
 
     it('Delete root items', async () => {
-      const items = ITEMS.slice(0, 2);
-      const itemIds = items.map(({ id }) => id).toArray();
+      const itemIds = [
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        RECYCLED_ITEM_DATA.get(0)!.item.id,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        RECYCLED_ITEM_DATA.get(2)!.item.id,
+      ];
       const route = `/${buildDeleteItemsRoute(itemIds)}`;
 
       // set data in cache
@@ -886,6 +890,10 @@ describe('Items Mutations', () => {
         const state = queryClient.getQueryState<ItemRecord>(itemKey);
         expect(state?.isInvalidated).toBeFalsy();
       }
+
+      expect(
+        queryClient.getQueryData(RECYCLED_ITEMS_DATA_KEY),
+      ).toEqualImmutable(List([RECYCLED_ITEM_DATA.get(1)]));
     });
 
     it('Delete child items', async () => {
