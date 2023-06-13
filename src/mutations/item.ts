@@ -250,55 +250,6 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       Partial<DiscriminatedItem> & Pick<DiscriminatedItem, 'id'>
     >(EDIT_ITEM);
 
-  // queryClient.setMutationDefaults(RECYCLE_ITEM, {
-  //   mutationFn: (itemId) =>
-  //     Api.recycleItem(itemId, queryConfig).then(() => itemId),
-
-  //   onMutate: async (itemId) => {
-  //     const itemKey = buildItemKey(itemId);
-  //     const itemData = queryClient.getQueryData<ItemRecord>(itemKey);
-  //     const previousItems = {
-  //       ...(Boolean(itemData) && {
-  //         children: await mutateParentChildren({
-  //           childPath: itemData?.path || '',
-  //           value: (children: List<ItemRecord>) =>
-  //             children.filter((child) => child.id !== itemId),
-  //         }),
-  //         // item itself still exists but the path is different
-  //         item: itemData,
-  //       }),
-  //     };
-  //     return previousItems;
-  //   },
-  //   onSuccess: () => {
-  //     notifier?.({
-  //       type: recycleItemsRoutine.SUCCESS,
-  //       payload: { message: SUCCESS_MESSAGES.RECYCLE_ITEM },
-  //     });
-  //   },
-  //   onError: (error, _itemId, context) => {
-  //     const itemData = context.item;
-
-  //     if (itemData && context.children) {
-  //       const childrenKey = getKeyForParentId(getDirectParentId(itemData.path));
-  //       queryClient.setQueryData(childrenKey, context.children);
-  //     }
-  //     notifier?.({ type: recycleItemsRoutine.FAILURE, payload: { error } });
-  //   },
-  //   onSettled: (itemId, _error, _variables, context) => {
-  //     const itemData = context.item;
-
-  //     if (itemData) {
-  //       const itemKey = buildItemKey(itemId);
-  //       queryClient.invalidateQueries(itemKey);
-
-  //       const childrenKey = getKeyForParentId(getDirectParentId(itemData.path));
-  //       queryClient.invalidateQueries(childrenKey);
-  //     }
-  //   },
-  // });
-  // const useRecycleItem = () => useMutation<void, unknown, UUID>(RECYCLE_ITEM);
-
   queryClient.setMutationDefaults(RECYCLE_ITEMS, {
     mutationFn: (itemIds) =>
       splitRequestByIds(itemIds, MAX_TARGETS_FOR_MODIFY_REQUEST, (chunk) =>
@@ -341,21 +292,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       }
       notifier?.({ type: recycleItemsRoutine.FAILURE, payload: { error } });
     },
-    onSettled: (_data, _error, itemIds: UUID[], _variables) => {
-      const itemKey = buildItemKey(itemIds[0]);
-      const itemData = queryClient.getQueryData(itemKey) as ItemRecord;
-      const itemPath = itemData?.path;
-
-      itemIds.forEach((id) => {
-        const iKey = buildItemKey(id);
-        queryClient.invalidateQueries(iKey);
-      });
-
-      if (itemPath) {
-        const childrenKey = getKeyForParentId(getDirectParentId(itemPath));
-        queryClient.invalidateQueries(childrenKey);
-      }
-    },
+    // does not settled since endpoint is async
   });
   const useRecycleItems = () =>
     useMutation<void, unknown, UUID[]>(RECYCLE_ITEMS);
@@ -413,6 +350,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
       notifier?.({ type: deleteItemsRoutine.FAILURE, payload: { error } });
     },
+    // does not settled since endpoint is async
   });
   const useDeleteItems = () => useMutation<void, unknown, UUID[]>(DELETE_ITEMS);
 
@@ -432,10 +370,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     onError: (error) => {
       notifier?.({ type: copyItemsRoutine.FAILURE, payload: { error } });
     },
-    onSettled: (_newItems, _err, payload) => {
-      const parentKey = getKeyForParentId(payload.to);
-      queryClient.invalidateQueries(parentKey);
-    },
+    // does not settled since endpoint is async
   });
   const useCopyItems = () =>
     useMutation<
@@ -525,6 +460,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       });
       notifier?.({ type: moveItemsRoutine.FAILURE, payload: { error } });
     },
+
+    // does not settled since endpoint is async
   });
   const useMoveItems = () =>
     useMutation<
