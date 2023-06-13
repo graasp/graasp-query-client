@@ -196,10 +196,18 @@ export const ITEMS: List<ItemRecord> = convertJs(ITEMS_JS);
 
 export const MENTION_IDS = ['12345', '78945'];
 
-export const RECYCLED_ITEM_DATA: RecycledItemDataRecord = convertJs([
+export const RECYCLED_ITEM_DATA: List<RecycledItemDataRecord> = convertJs([
   {
     id: `recycle-item-id`,
     item: ITEM_1,
+  },
+  {
+    id: `recycle-item-id-1`,
+    item: ITEM_2,
+  },
+  {
+    id: `recycle-item-id-2`,
+    item: ITEM_3,
   },
 ]);
 

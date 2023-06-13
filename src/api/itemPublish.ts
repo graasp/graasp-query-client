@@ -1,4 +1,4 @@
-import { Item, UUID } from '@graasp/sdk';
+import { Item, ItemPublished, ResultOf, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
@@ -40,7 +40,7 @@ export const getItemPublishedInformation = async (
 export const getManyItemPublishedInformations = async (
   ids: UUID[],
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<ResultOf<ItemPublished>> =>
   axios
     .get(`${API_HOST}/${buildManyGetItemPublishedInformationsRoute(ids)}`)
     .then(({ data }) => data);
