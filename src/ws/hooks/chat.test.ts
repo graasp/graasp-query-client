@@ -181,7 +181,6 @@ describe('Ws Chat Hooks', () => {
       };
 
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
-      console.log(queryClient.getQueryData<ItemChatRecord>(chatKey));
       expect(
         queryClient
           .getQueryData<ItemChatRecord>(chatKey)

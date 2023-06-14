@@ -42,12 +42,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     useMutation<void, unknown, { email: string; captcha: string }>(SIGN_IN);
 
   queryClient.setMutationDefaults(SIGN_IN_WITH_PASSWORD, {
-    mutationFn: async (payload) => {
-      const d = await Api.signInWithPassword(payload, queryConfig);
-      // eslint-disable-next-line no-console
-      console.log(d);
-      return d;
-    },
+    mutationFn: (payload) => Api.signInWithPassword(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
         type: signInWithPasswordRoutine.SUCCESS,
