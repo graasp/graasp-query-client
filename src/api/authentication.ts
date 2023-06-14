@@ -33,7 +33,10 @@ export const signInWithPassword = async (
     responseType: 'json',
     // Resolve only if the status code is less than 500
     validateStatus: (status) => status >= 200 && status < 400,
-  }).then(({ data }) => data);
+  }).then((d) => {
+    console.log(d);
+    return d.data;
+  });
 
 export const signUp = async (
   payload: { name: string; email: string },

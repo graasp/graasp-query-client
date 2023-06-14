@@ -1,6 +1,6 @@
 import { QueryClient, useMutation } from 'react-query';
 
-import { UUID, convertJs, saveUrlForRedirection } from '@graasp/sdk';
+import { UUID, saveUrlForRedirection } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -42,7 +42,12 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     useMutation<void, unknown, { email: string; captcha: string }>(SIGN_IN);
 
   queryClient.setMutationDefaults(SIGN_IN_WITH_PASSWORD, {
-    mutationFn: (payload) => Api.signInWithPassword(payload, queryConfig),
+    mutationFn: async (payload) => {
+      const d = await Api.signInWithPassword(payload, queryConfig);
+      // eslint-disable-next-line no-console
+      console.log(d);
+      return d;
+    },
     onSuccess: () => {
       notifier?.({
         type: signInWithPasswordRoutine.SUCCESS,
