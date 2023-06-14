@@ -42,8 +42,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     useMutation<void, unknown, { email: string; captcha: string }>(SIGN_IN);
 
   queryClient.setMutationDefaults(SIGN_IN_WITH_PASSWORD, {
-    mutationFn: (payload) =>
-      Api.signInWithPassword(payload, queryConfig).then((d) => convertJs(d)),
+    mutationFn: (payload) => Api.signInWithPassword(payload, queryConfig),
     onSuccess: () => {
       notifier?.({
         type: signInWithPasswordRoutine.SUCCESS,
@@ -60,7 +59,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   });
   const useSignInWithPassword = () =>
     useMutation<
-      { data: { resource: string } },
+      { resource: string },
       unknown,
       { email: string; password: Password; captcha: string }
     >(SIGN_IN_WITH_PASSWORD);

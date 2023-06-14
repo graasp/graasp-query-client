@@ -30,6 +30,7 @@ export const signInWithPassword = async (
     method: HttpMethod.POST,
     url: `${API_HOST}/${SIGN_IN_WITH_PASSWORD_ROUTE}`,
     data: payload,
+    responseType: 'json',
     // Resolve only if the status code is less than 500
     validateStatus: (status) => status >= 200 && status < 400,
   }).then(({ data }) => data);
