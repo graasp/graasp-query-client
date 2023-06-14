@@ -1,4 +1,3 @@
-import { HttpMethod } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
 
 import { QueryClientConfig } from '../types';
