@@ -46,6 +46,7 @@ jest.mock('@graasp/sdk', () => {
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
+const captcha = 'captcha';
 const email = 'myemail@email.com';
 
 describe('Authentication Mutations', () => {
@@ -75,7 +76,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email });
+        await mockedMutation.mutate({ email, captcha });
         await waitForMutation();
       });
 
@@ -102,7 +103,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email });
+        await mockedMutation.mutate({ email, captcha });
         await waitForMutation();
       });
 
@@ -139,7 +140,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, password });
+        await mockedMutation.mutate({ email, password, captcha });
         await waitForMutation();
       });
 
@@ -169,7 +170,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email });
+        await mockedMutation.mutate({ email, captcha });
         await waitForMutation();
       });
 
@@ -262,7 +263,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, name });
+        await mockedMutation.mutate({ email, name, captcha });
         await waitForMutation();
       });
 
@@ -289,7 +290,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, name });
+        await mockedMutation.mutate({ email, name, captcha });
         await waitForMutation();
       });
 
