@@ -39,7 +39,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
   const useSignIn = () =>
-    useMutation<void, unknown, { email: string }>(SIGN_IN);
+    useMutation<void, unknown, { email: string; captcha: string }>(SIGN_IN);
 
   queryClient.setMutationDefaults(SIGN_IN_WITH_PASSWORD, {
     mutationFn: (payload) => Api.signInWithPassword(payload, queryConfig),
@@ -58,9 +58,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
   const useSignInWithPassword = () =>
-    useMutation<void, unknown, { email: string; password: Password }>(
-      SIGN_IN_WITH_PASSWORD,
-    );
+    useMutation<
+      { resource: string },
+      unknown,
+      { email: string; password: Password; captcha: string }
+    >(SIGN_IN_WITH_PASSWORD);
 
   /**  mutation to update member password. suppose only you can edit yourself
    * @param {Password} password new password that user wants to set
@@ -104,7 +106,11 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
   const useSignUp = () =>
-    useMutation<void, unknown, { name: string; email: string }>(SIGN_UP);
+    useMutation<
+      void,
+      unknown,
+      { name: string; email: string; captcha: string }
+    >(SIGN_UP);
 
   queryClient.setMutationDefaults(SIGN_OUT, {
     mutationFn: (_currentMemberId: UUID) => Api.signOut(queryConfig),
