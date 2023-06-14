@@ -1,3 +1,4 @@
+import { HttpMethod } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
 
 import { QueryClientConfig } from '../types';
@@ -25,20 +26,13 @@ export const signInWithPassword = async (
   payload: { email: string; password: Password },
   { API_HOST }: QueryClientConfig,
 ) =>
-  axios
-    .post(`${API_HOST}/${SIGN_IN_WITH_PASSWORD_ROUTE}`, payload)
-    .then((d) => {
-      console.log(d);
-      return d.data;
-    })
-    .catch((error) => {
-      if (error.response.status >= 200 && error.response.status < 400) {
-        console.log(error.response);
-        return error.response.data;
-      }
-
-      throw error;
-    });
+  axios({
+    method: HttpMethod.POST,
+    url: `${API_HOST}/${SIGN_IN_WITH_PASSWORD_ROUTE}`,
+    data: payload,
+    // Resolve only if the status code is less than 500
+    validateStatus: (status) => status >= 200 && status < 400,
+  }).then(({ data }) => JSON.parse(data));
 
 export const signUp = async (
   payload: { name: string; email: string },
