@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-rc.3](https://github.com/graasp/graasp-query-client/compare/v1.0.0-rc.2...v1.0.0-rc.3) (2023-06-14)
+
+
+### chore
+
+* release 1.0.0-rc.3 ([0557755](https://github.com/graasp/graasp-query-client/commit/055775586214139d240248ec57953de3d51d4cb7))
+
 ## [1.0.0-rc.2](https://github.com/graasp/graasp-query-client/compare/v1.0.0-rc1...v1.0.0-rc.2) (2023-06-13)
 
 
