@@ -1,5 +1,5 @@
+import { QueryClient, useMutation } from '@tanstack/react-query';
 import { List, Record } from 'immutable';
-import { QueryClient, useMutation } from 'react-query';
 
 import {
   DiscriminatedItem,

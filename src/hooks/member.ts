@@ -1,4 +1,4 @@
-import { QueryClient, UseQueryResult, useQuery } from 'react-query';
+import { QueryClient, UseQueryResult, useQuery } from '@tanstack/react-query';
 
 import {
   MAX_TARGETS_FOR_READ_REQUEST,

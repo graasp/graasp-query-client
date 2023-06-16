@@ -1,7 +1,7 @@
+import { UseQueryResult } from '@tanstack/react-query';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
-import { UseQueryResult } from 'react-query';
 
 import {
   MAX_TARGETS_FOR_READ_REQUEST,

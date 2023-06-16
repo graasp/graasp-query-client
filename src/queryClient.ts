@@ -1,15 +1,15 @@
-import { AxiosError } from 'axios';
-import { StatusCodes } from 'http-status-codes';
 import {
   Hydrate,
   QueryClient,
   QueryClientProvider,
   dehydrate,
   useMutation,
-} from 'react-query';
+} from '@tanstack/react-query';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { ReactQueryDevtools } from 'react-query/devtools';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { AxiosError } from 'axios';
+import { StatusCodes } from 'http-status-codes';
 
 import {
   CACHE_TIME_MILLISECONDS,
@@ -18,7 +18,7 @@ import {
 import configureHooks from './hooks';
 import configureMutations from './mutations';
 import type { QueryClientConfig } from './types';
-import { getHostname, isDataEqual } from './utils/util';
+import { getHostname, structuralSharing } from './utils/util';
 import { configureWebsocketClient } from './ws';
 
 /* istanbul ignore next */
@@ -80,13 +80,27 @@ export default (config: Partial<QueryClientConfig>) => {
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       notifyOnChangeProps: 'tracked',
-      isDataEqual,
+      structuralSharing,
       ...config?.defaultQueryOptions,
     },
   };
 
   // create queryclient
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    logger: {
+      log: (e) => {
+        // eslint-disable-next-line no-console
+        console.log(e);
+      },
+      warn: (e) => {
+        // eslint-disable-next-line no-console
+        console.warn(e);
+      },
+      error: (e) => {
+        console.error(e);
+      },
+    },
+  });
 
   // set up mutations given config
   // mutations are attached to queryClient

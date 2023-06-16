@@ -1,5 +1,5 @@
+import { QueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { QueryClient } from 'react-query';
 
 import { ChatMessage, UUID, convertJs } from '@graasp/sdk';
 import { ChatMessageRecord, ItemChatRecord } from '@graasp/sdk/frontend';

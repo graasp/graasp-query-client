@@ -1,5 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
 import { List } from 'immutable';
-import { useQuery } from 'react-query';
 
 import { UUID, convertJs } from '@graasp/sdk';
 import { InvitationRecord } from '@graasp/sdk/frontend';

@@ -1,5 +1,5 @@
+import { InfiniteData } from '@tanstack/react-query';
 import { List, is } from 'immutable';
-import { InfiniteData } from 'react-query';
 
 export const isObject = (value: unknown) =>
   typeof value === 'object' && !Array.isArray(value) && value !== null;
@@ -14,7 +14,7 @@ export const getHostname = () => {
   return window?.location?.hostname;
 };
 
-export const isDataEqual = <T>(
+export const structuralSharing = <T>(
   oldData:
     | T
     | List<T>
@@ -39,12 +39,12 @@ export const isPaginatedChildrenDataEqual = <T>(
   if (oldData?.pages.length === newData?.pages.length && oldData.pages.length) {
     for (const [idx, p] of oldData.pages.entries()) {
       if (!is(p, newData.pages[idx])) {
-        return false;
+        return newData;
       }
     }
-    return true;
+    return oldData;
   }
-  return false;
+  return newData;
 };
 
 export const paginate = <U, T extends List<U>>(

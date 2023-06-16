@@ -1,5 +1,5 @@
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { List } from 'immutable';
-import { useQuery, useQueryClient } from 'react-query';
 
 import {
   ItemPublished,
@@ -99,10 +99,12 @@ export default (queryConfig: QueryClientConfig) => {
           ),
         onSuccess: async (publishedData) => {
           // save items in their own key
-          publishedData?.data?.toSeq()?.forEach(async (p) => {
-            const { id } = p.item;
-            queryClient.setQueryData(buildItemPublishedInformationKey(id), p);
-          });
+          publishedData?.data
+            ?.toSeq()
+            ?.forEach(async (p: ItemPublishedRecord) => {
+              const { id } = p.item;
+              queryClient.setQueryData(buildItemPublishedInformationKey(id), p);
+            });
         },
         ...defaultQueryOptions,
         enabled,

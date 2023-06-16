@@ -1,5 +1,5 @@
+import { QueryClient, useQuery } from '@tanstack/react-query';
 import { List } from 'immutable';
-import { QueryClient, useQuery } from 'react-query';
 
 import { ItemTag, UUID, convertJs } from '@graasp/sdk';
 import { ItemTagRecord, ResultOfRecord } from '@graasp/sdk/frontend';

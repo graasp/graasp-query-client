@@ -1,4 +1,4 @@
-import { QueryClient, useMutation } from 'react-query';
+import { QueryClient, useMutation } from '@tanstack/react-query';
 
 import { ItemLoginSchemaType, UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';

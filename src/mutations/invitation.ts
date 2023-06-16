@@ -1,5 +1,5 @@
+import { QueryClient, useMutation } from '@tanstack/react-query';
 import { List } from 'immutable';
-import { QueryClient, useMutation } from 'react-query';
 
 import { PermissionLevel, UUID } from '@graasp/sdk';
 import { InvitationRecord, NewInvitation } from '@graasp/sdk/frontend';

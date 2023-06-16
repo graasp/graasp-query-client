@@ -1,4 +1,4 @@
-import { QueryClient, useQuery } from 'react-query';
+import { QueryClient, useQuery } from '@tanstack/react-query';
 
 import { UUID, convertJs } from '@graasp/sdk';
 import { ExportedItemChatRecord, ItemChatRecord } from '@graasp/sdk/frontend';

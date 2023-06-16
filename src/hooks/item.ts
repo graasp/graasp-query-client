@@ -1,10 +1,10 @@
-import { List } from 'immutable';
 import {
   QueryClient,
   UseQueryResult,
   useInfiniteQuery,
   useQuery,
-} from 'react-query';
+} from '@tanstack/react-query';
+import { List } from 'immutable';
 
 import {
   DiscriminatedItem,
@@ -143,7 +143,7 @@ export default (
       const childrenPaginatedOptions = {
         ...defaultQueryOptions,
         staleTime: STALE_TIME_CHILDREN_PAGINATED_MILLISECONDS,
-        isDataEqual: isPaginatedChildrenDataEqual,
+        structuralSharing: isPaginatedChildrenDataEqual,
       };
 
       return useInfiniteQuery(
@@ -157,7 +157,8 @@ export default (
           ),
         {
           enabled,
-          getNextPageParam: (lastPage) => {
+          // todo: fix type
+          getNextPageParam: (lastPage: any) => {
             const { pageNumber } = lastPage;
             if (pageNumber !== -1) {
               return pageNumber + 1;
@@ -391,7 +392,7 @@ export default (
         onSuccess: async (items) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
-          items?.forEach(async (item) => {
+          items?.forEach(async (item: RecycledItemDataRecord) => {
             const { item: recycledItem } = item;
             queryClient.setQueryData(
               buildItemKey(recycledItem.id),

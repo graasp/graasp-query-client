@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { QueryClient } from '@tanstack/react-query';
 import { List } from 'immutable';
 import { useEffect } from 'react';
-import { QueryClient } from 'react-query';
 
 import { ItemMembership, UUID, convertJs, getIdsFromPath } from '@graasp/sdk';
 import { ItemMembershipRecord } from '@graasp/sdk/frontend';

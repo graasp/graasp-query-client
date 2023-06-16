@@ -1,7 +1,7 @@
+import { QueryClient, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
-import { QueryClient, useMutation } from 'react-query';
 
 import {
   Invitation,

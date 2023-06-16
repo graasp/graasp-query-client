@@ -1,5 +1,3 @@
-import { isDataEqual } from './utils/util';
-
 export type Notifier = (e: {
   type: string;
   payload?: { error?: Error; message?: string; [key: string]: unknown };
@@ -25,7 +23,9 @@ export type QueryClientConfig = {
     keepPreviousData?: boolean;
     refetchOnMount?: boolean;
     notifyOnChangeProps?: any;
-    isDataEqual?: typeof isDataEqual;
+    structuralSharing:
+      | boolean
+      | ((oldData: any | undefined, newData: any) => any);
   };
 };
 

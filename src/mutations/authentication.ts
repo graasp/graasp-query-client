@@ -1,4 +1,4 @@
-import { QueryClient, useMutation } from 'react-query';
+import { QueryClient, useMutation } from '@tanstack/react-query';
 
 import { UUID, saveUrlForRedirection } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';

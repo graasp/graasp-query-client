@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { UUID, convertJs } from '@graasp/sdk';
 import { ActionDataRecord } from '@graasp/sdk/frontend';

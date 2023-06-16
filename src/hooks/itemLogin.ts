@@ -1,4 +1,4 @@
-import { UseQueryResult, useQuery } from 'react-query';
+import { UseQueryResult, useQuery } from '@tanstack/react-query';
 
 import { ItemLoginSchemaType, UUID, convertJs } from '@graasp/sdk';
 import { ItemLoginSchemaRecord } from '@graasp/sdk/frontend';

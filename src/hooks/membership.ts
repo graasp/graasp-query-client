@@ -1,5 +1,5 @@
+import { QueryClient, UseQueryResult, useQuery } from '@tanstack/react-query';
 import { List } from 'immutable';
-import { QueryClient, UseQueryResult, useQuery } from 'react-query';
 
 import {
   ItemMembership,

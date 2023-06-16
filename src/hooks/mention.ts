@@ -1,5 +1,5 @@
+import { QueryClient, UseQueryResult, useQuery } from '@tanstack/react-query';
 import { List, Record } from 'immutable';
-import { QueryClient, UseQueryResult, useQuery } from 'react-query';
 
 import { Member, convertJs } from '@graasp/sdk';
 import { ChatMentionRecord } from '@graasp/sdk/frontend';

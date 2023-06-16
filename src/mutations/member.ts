@@ -1,4 +1,4 @@
-import { QueryClient, useMutation } from 'react-query';
+import { QueryClient, useMutation } from '@tanstack/react-query';
 
 import { MemberExtra, ThumbnailSize, UUID, convertJs } from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
