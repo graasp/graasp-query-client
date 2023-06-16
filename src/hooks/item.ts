@@ -385,9 +385,9 @@ export default (
       }),
 
     useRecycledItemsData: () =>
-      useQuery({
+      useQuery<void, unknown, List<RecycledItemDataRecord>>({
         queryKey: RECYCLED_ITEMS_DATA_KEY,
-        queryFn: (): Promise<List<RecycledItemDataRecord>> =>
+        queryFn: () =>
           Api.getRecycledItemsData(queryConfig).then((data) => convertJs(data)),
         onSuccess: async (items) => {
           // save items in their own key

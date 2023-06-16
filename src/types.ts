@@ -15,15 +15,12 @@ export type QueryClientConfig = {
     staleTime: number;
     // time before cache labeled as inactive to be garbage collected
     cacheTime: number;
-    retry?:
-      | number
-      | boolean
-      | ((failureCount: number, error: Error) => boolean);
+    retry?: boolean | number | ((failureCount: number, error: any) => boolean);
     refetchOnWindowFocus?: boolean;
     keepPreviousData?: boolean;
     refetchOnMount?: boolean;
     notifyOnChangeProps?: any;
-    structuralSharing:
+    structuralSharing?:
       | boolean
       | ((oldData: any | undefined, newData: any) => any);
   };

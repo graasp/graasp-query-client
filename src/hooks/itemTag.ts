@@ -13,9 +13,9 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
   const { defaultQueryOptions } = queryConfig;
 
   const useItemTags = (id?: UUID) =>
-    useQuery({
+    useQuery<void, unknown, List<ItemTagRecord>>({
       queryKey: itemTagsKeys.singleId(id),
-      queryFn: (): Promise<List<ItemTagRecord>> => {
+      queryFn: () => {
         if (!id) {
           throw new UndefinedArgument();
         }
@@ -26,9 +26,9 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
     });
 
   const useItemsTags = (ids?: UUID[]) =>
-    useQuery({
+    useQuery<void, unknown, ResultOfRecord<ItemTag[]>>({
       queryKey: itemTagsKeys.manyIds(ids),
-      queryFn: (): Promise<ResultOfRecord<ItemTag[]>> => {
+      queryFn: () => {
         if (!ids || ids?.length === 0) {
           throw new UndefinedArgument();
         }

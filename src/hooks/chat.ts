@@ -27,9 +27,9 @@ export default (
 
       wsHooks?.useItemChatUpdates(getUpdates ? itemId : null);
 
-      return useQuery({
+      return useQuery<void, unknown, ItemChatRecord>({
         queryKey: buildItemChatKey(itemId),
-        queryFn: (): Promise<ItemChatRecord> =>
+        queryFn: () =>
           Api.getItemChat(itemId, queryConfig).then((data) => convertJs(data)),
         ...defaultQueryOptions,
         enabled: Boolean(itemId),
@@ -39,9 +39,9 @@ export default (
       itemId: UUID,
       options: { enabled: boolean } = { enabled: true },
     ) =>
-      useQuery({
+      useQuery<void, unknown, ExportedItemChatRecord>({
         queryKey: buildExportItemChatKey(itemId),
-        queryFn: (): Promise<ExportedItemChatRecord> =>
+        queryFn: () =>
           Api.exportItemChat(itemId, queryConfig).then((data) =>
             convertJs(data),
           ),

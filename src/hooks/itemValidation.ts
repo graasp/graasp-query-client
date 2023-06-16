@@ -12,9 +12,9 @@ export default (queryConfig: QueryClientConfig) => {
 
   // get last validation joined with review records of given item
   const useLastItemValidationGroup = (itemId: UUID) =>
-    useQuery({
+    useQuery<void, unknown, ItemValidationGroupRecord>({
       queryKey: buildLastItemValidationGroupKey(itemId),
-      queryFn: (): Promise<ItemValidationGroupRecord> =>
+      queryFn: () =>
         Api.getLastItemValidationGroup(queryConfig, itemId).then((data) =>
           convertJs(data),
         ),
