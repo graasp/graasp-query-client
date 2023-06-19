@@ -1,49 +1,57 @@
-import { QueryClient, useMutation } from 'react-query';
+import { QueryClient, useMutation, useQueryClient } from 'react-query';
 
-import { UUID } from '@graasp/sdk';
+import { ItemLike, UUID } from '@graasp/sdk';
 
 import * as Api from '../api';
-import { MUTATION_KEYS, buildGetLikesForMemberKey } from '../config/keys';
+import { buildGetLikesForMemberKey } from '../config/keys';
 import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
-const { POST_ITEM_LIKE, DELETE_ITEM_LIKE } = MUTATION_KEYS;
-
-export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
+export default (_queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_LIKE, {
-    mutationFn: ({ itemId }) => Api.postItemLike(itemId, queryConfig),
-    onSuccess: () => {
-      notifier?.({ type: postItemLikeRoutine.SUCCESS });
-    },
-    onError: (error) => {
-      notifier?.({ type: postItemLikeRoutine.FAILURE, payload: { error } });
-    },
-    onSettled: (_data, _error, { memberId }) => {
-      queryClient.invalidateQueries(buildGetLikesForMemberKey(memberId));
-    },
-  });
-  const usePostItemLike = () =>
-    useMutation<void, unknown, { itemId: UUID }>(POST_ITEM_LIKE);
+  const usePostItemLike = () => {
+    const queryClient = useQueryClient();
+    return useMutation<ItemLike, Error, { itemId: UUID }>(
+      ({ itemId }) => Api.postItemLike(itemId, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({ type: postItemLikeRoutine.SUCCESS });
+        },
+        onError: (error) => {
+          notifier?.({ type: postItemLikeRoutine.FAILURE, payload: { error } });
+        },
+        onSettled: (data, _error) => {
+          queryClient.invalidateQueries(
+            buildGetLikesForMemberKey(data?.creator.id),
+          );
+        },
+      },
+    );
+  };
 
-  queryClient.setMutationDefaults(DELETE_ITEM_LIKE, {
-    mutationFn: ({ itemId }) => Api.deleteItemLike(itemId, queryConfig),
-    onSuccess: () => {
-      notifier?.({ type: deleteItemLikeRoutine.SUCCESS });
-    },
-    onError: (error) => {
-      notifier?.({
-        type: deleteItemLikeRoutine.FAILURE,
-        payload: { error },
-      });
-    },
-    onSettled: (_data, _error, { memberId }) => {
-      queryClient.invalidateQueries(buildGetLikesForMemberKey(memberId));
-    },
-  });
-  const useDeleteItemLike = () =>
-    useMutation<void, unknown, { itemId: UUID }>(DELETE_ITEM_LIKE);
+  const useDeleteItemLike = () => {
+    const queryClient = useQueryClient();
+    return useMutation<ItemLike, Error, { itemId: UUID }>(
+      ({ itemId }) => Api.deleteItemLike(itemId, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({ type: deleteItemLikeRoutine.SUCCESS });
+        },
+        onError: (error) => {
+          notifier?.({
+            type: deleteItemLikeRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+        onSettled: (data, _error) => {
+          queryClient.invalidateQueries(
+            buildGetLikesForMemberKey(data?.creator.id),
+          );
+        },
+      },
+    );
+  };
 
   return {
     usePostItemLike,
