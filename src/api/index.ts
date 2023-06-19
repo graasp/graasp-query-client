@@ -17,4 +17,4 @@ export * from './action';
 export * from './invitation';
 export * from './subscription';
 export * from './itemPublish';
-export * from './itemFavorite'
+export * from './itemFavorite';

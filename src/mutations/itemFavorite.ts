@@ -4,17 +4,14 @@ import { UUID } from '@graasp/sdk';
 
 import * as Api from '../api';
 import { FAVORITE_ITEMS_KEY, MUTATION_KEYS } from '../config/keys';
-import {
-  addFavoriteItemRoutine,
-  deleteFavoriteItemRoutine
-} from '../routines';
+import { addFavoriteItemRoutine, deleteFavoriteItemRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.FAVORITE_ITEM, {
-    mutationFn: (itemId) => Api.favoriteItem(itemId, queryConfig),
+  queryClient.setMutationDefaults(MUTATION_KEYS.ADD_FAVORITE_ITEM, {
+    mutationFn: (itemId) => Api.addFavoriteItem(itemId, queryConfig),
     onSuccess: () => {
       notifier?.({ type: addFavoriteItemRoutine.SUCCESS });
     },
@@ -25,26 +22,29 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       queryClient.invalidateQueries(FAVORITE_ITEMS_KEY);
     },
   });
-  const useFavoriteItem = () =>
-    useMutation<void, unknown, UUID>(MUTATION_KEYS.FAVORITE_ITEM);
+  const useAddFavoriteItem = () =>
+    useMutation<void, unknown, UUID>(MUTATION_KEYS.ADD_FAVORITE_ITEM);
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.UNFAVORITE_ITEM, {
-    mutationFn: (itemId) => Api.unfavoriteItem(itemId, queryConfig),
+  queryClient.setMutationDefaults(MUTATION_KEYS.REMOVE_FAVORITE_ITEM, {
+    mutationFn: (itemId) => Api.removeFavoriteItem(itemId, queryConfig),
     onSuccess: () => {
       notifier?.({ type: deleteFavoriteItemRoutine.SUCCESS });
     },
     onError: (error) => {
-      notifier?.({ type: deleteFavoriteItemRoutine.FAILURE, payload: { error } });
+      notifier?.({
+        type: deleteFavoriteItemRoutine.FAILURE,
+        payload: { error },
+      });
     },
     onSettled: () => {
       queryClient.invalidateQueries(FAVORITE_ITEMS_KEY);
     },
   });
-  const useUnfavoriteItem = () =>
-    useMutation<void, unknown, UUID>(MUTATION_KEYS.UNFAVORITE_ITEM);
+  const useRemoveFavoriteItem = () =>
+    useMutation<void, unknown, UUID>(MUTATION_KEYS.REMOVE_FAVORITE_ITEM);
 
   return {
-    useFavoriteItem,
-    useUnfavoriteItem
+    useAddFavoriteItem,
+    useRemoveFavoriteItem,
   };
 };

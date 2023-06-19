@@ -18,11 +18,7 @@ import {
 } from '../routines';
 import { QueryClientConfig } from '../types';
 
-const {
-  DELETE_MEMBER,
-  EDIT_MEMBER,
-  UPLOAD_AVATAR,
-} = MUTATION_KEYS;
+const { DELETE_MEMBER, EDIT_MEMBER, UPLOAD_AVATAR } = MUTATION_KEYS;
 
 export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

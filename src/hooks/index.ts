@@ -8,13 +8,13 @@ import configureCategoryHooks from './category';
 import configureChatHooks from './chat';
 import configureInvitationHooks from './invitation';
 import configureItemHooks from './item';
+import configureItemFavoriteHooks from './itemFavorite';
 import configureItemFlagHooks from './itemFlag';
 import configureItemLikeHooks from './itemLike';
 import configureItemLoginHooks from './itemLogin';
 import configureItemPublishedHooks from './itemPublish';
 import configureItemTagHooks from './itemTag';
 import configureItemValidationHooks from './itemValidation';
-import configureItemFavoriteHooks from './itemFavorite'
 import configureMemberHooks from './member';
 import configureMembershipHooks from './membership';
 import configureMentionsHooks from './mention';

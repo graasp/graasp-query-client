@@ -5,9 +5,7 @@ import { convertJs } from '@graasp/sdk';
 import { ItemFavoriteRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
-import {
-  FAVORITE_ITEMS_KEY,
-} from '../config/keys';
+import { FAVORITE_ITEMS_KEY } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
@@ -22,6 +20,6 @@ export default (queryConfig: QueryClientConfig) => {
     });
 
   return {
-    useFavoriteItems
+    useFavoriteItems,
   };
 };

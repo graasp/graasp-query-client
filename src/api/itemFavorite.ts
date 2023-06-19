@@ -1,22 +1,21 @@
-import {Item, UUID} from '@graasp/sdk';
+import { Item, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
-import {
-  GET_FAVORITE_ITEMS_ROUTE, buildFavoriteItemRoute
-} from './routes';
+import { GET_FAVORITE_ITEMS_ROUTE, buildFavoriteItemRoute } from './routes';
 
 const axios = configureAxios();
 
-
-export const getFavoriteItems = async ({ API_HOST }: QueryClientConfig): Promise<Item[]> =>
+export const getFavoriteItems = async ({
+  API_HOST,
+}: QueryClientConfig): Promise<Item[]> =>
   verifyAuthentication(() =>
     axios
       .get(`${API_HOST}/${GET_FAVORITE_ITEMS_ROUTE}`)
       .then(({ data }) => data),
   );
 
-export const favoriteItem = async (
+export const addFavoriteItem = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,
 ) =>
@@ -26,7 +25,7 @@ export const favoriteItem = async (
       .then(({ data }) => data),
   );
 
-export const unfavoriteItem = async (
+export const removeFavoriteItem = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,
 ) =>
