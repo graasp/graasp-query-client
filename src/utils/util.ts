@@ -14,23 +14,18 @@ export const getHostname = () => {
   return window?.location?.hostname;
 };
 
+type GeneralType<T> =
+  | T
+  | List<T>
+  | List<List<T>>
+  // necessary for download avatar, thumbnail
+  // might be removed if we only use links
+  | Blob;
+
 export const structuralSharing = <T>(
-  oldData:
-    | T
-    | List<T>
-    | List<List<T>>
-    // necessary for download avatar, thumbnail
-    // might be removed if we only use links
-    | Blob
-    | undefined,
-  newData:
-    | T
-    | List<T>
-    | List<List<T>>
-    // necessary for download avatar, thumbnail
-    // might be removed if we only use links
-    | Blob,
-): boolean => is(oldData, newData);
+  oldData: GeneralType<T> | undefined,
+  newData: GeneralType<T>,
+): GeneralType<T> | undefined => (is(oldData, newData) ? oldData : newData);
 
 export const isPaginatedChildrenDataEqual = <T>(
   oldData: InfiniteData<T> | undefined,
