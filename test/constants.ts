@@ -19,6 +19,7 @@ import {
   Invitation,
   Item,
   ItemCategory,
+  ItemLike,
   ItemLoginSchemaType,
   ItemMembership,
   ItemTag,
@@ -578,20 +579,25 @@ export const ITEM_CATEGORIES: List<ItemCategoryRecord> = List([
   ITEM_CATEGORY_1,
   ITEM_CATEGORY_2,
 ]);
-export const ITEM_LIKES: List<ItemLikeRecord> = convertJs([
-  {
-    id: 'id1',
-    item: MOCK_ITEM,
-    member: MOCK_MEMBER,
-    createdAt: new Date(),
-  },
-  {
-    id: 'id2',
-    item: MOCK_ITEM,
-    member: MOCK_MEMBER,
-    createdAt: new Date(),
-  },
-]);
+
+const buildItemLikes = (): List<ItemLikeRecord> => {
+  const data: ItemLike[] = [
+    {
+      id: 'id1',
+      item: MOCK_ITEM,
+      creator: MOCK_MEMBER,
+      createdAt: new Date(),
+    },
+    {
+      id: 'id2',
+      item: MOCK_ITEM,
+      creator: MOCK_MEMBER,
+      createdAt: new Date(),
+    },
+  ];
+  return convertJs(data);
+};
+export const ITEM_LIKES: List<ItemLikeRecord> = buildItemLikes();
 
 export const ITEM_VALIDATION_GROUP: ItemValidationGroupRecord = convertJs({
   id: 'id-1',
