@@ -127,7 +127,7 @@ describe('Item Like Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId });
+        await mockedMutation.mutate({ itemId, memberId });
         await waitForMutation();
       });
 
