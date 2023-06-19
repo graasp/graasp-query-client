@@ -47,7 +47,7 @@ const retry = (failureCount: number, error: Error): boolean => {
   return false;
 };
 
-export default (config: Partial<QueryClientConfig>) => {
+const configurate = (config: Partial<QueryClientConfig>) => {
   const baseConfig = {
     API_HOST:
       config?.API_HOST ||
@@ -124,3 +124,5 @@ export default (config: Partial<QueryClientConfig>) => {
     mutations,
   };
 };
+
+export default configurate;
