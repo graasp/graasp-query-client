@@ -43,7 +43,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
     },
   });
   const useDeleteItemLike = () =>
-    useMutation<void, unknown, { id: UUID }>(DELETE_ITEM_LIKE);
+    useMutation<void, unknown, { itemId: UUID }>(DELETE_ITEM_LIKE);
 
   return {
     usePostItemLike,
