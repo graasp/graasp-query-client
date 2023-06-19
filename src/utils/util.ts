@@ -25,7 +25,10 @@ type GeneralType<T> =
 export const structuralSharing = <T>(
   oldData: GeneralType<T> | undefined,
   newData: GeneralType<T>,
-): GeneralType<T> | undefined => (is(oldData, newData) ? oldData : newData);
+): GeneralType<T> | undefined => {
+  console.log(is(oldData, newData), is(oldData, newData) ? oldData : newData);
+  return is(oldData, newData) ? oldData : newData;
+};
 
 export const isPaginatedChildrenDataEqual = <T>(
   oldData: InfiniteData<T> | undefined,

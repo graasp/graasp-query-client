@@ -36,6 +36,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
             console.log(data);
             return convertJs(data);
           });
+          console.log(d);
           return d;
         },
         ...defaultQueryOptions,

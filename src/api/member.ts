@@ -45,10 +45,7 @@ export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) =>
   verifyAuthentication(() =>
     axios
       .get(`${API_HOST}/${GET_CURRENT_MEMBER_ROUTE}`)
-      .then(({ data }) => {
-        console.log(data);
-        return data;
-      })
+      .then(({ data }) => data)
       .catch((error) => {
         if (error.response) {
           // return valid response for unauthorized requests
