@@ -29,10 +29,15 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
 
   return {
     useCurrentMember: () =>
-      useQuery({
+      useQuery<void, unknown, MemberRecord>({
         queryKey: CURRENT_MEMBER_KEY,
-        queryFn: (): Promise<MemberRecord> =>
-          Api.getCurrentMember(queryConfig).then((data) => convertJs(data)),
+        queryFn: async () => {
+          const d = await Api.getCurrentMember(queryConfig).then((data) => {
+            console.log(data);
+            return convertJs(data);
+          });
+          return d;
+        },
         ...defaultQueryOptions,
       }),
 
