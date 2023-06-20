@@ -1,6 +1,8 @@
+import { List } from 'immutable';
 import { useQuery } from 'react-query';
 
 import { convertJs } from '@graasp/sdk';
+import { ItemRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
 import { buildSearchByKeywordKey } from '../config/keys';
@@ -14,7 +16,7 @@ export default (queryConfig: QueryClientConfig) => {
     useKeywordSearch: (fields: SearchFields) =>
       useQuery({
         queryKey: buildSearchByKeywordKey(fields),
-        queryFn: () =>
+        queryFn: (): Promise<List<ItemRecord>> =>
           Api.getItemsByKeywords(fields, queryConfig).then((data) =>
             convertJs(data),
           ),
