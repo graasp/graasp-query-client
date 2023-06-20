@@ -21,7 +21,7 @@ export default (queryConfig: QueryClientConfig) => {
             convertJs(data),
           ),
         ...defaultQueryOptions,
-        enabled: Boolean(fields),
+        enabled: Object.values(fields).some((v) => v),
       }),
   };
 };
