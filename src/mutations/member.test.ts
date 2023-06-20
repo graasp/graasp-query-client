@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { HttpMethod, ThumbnailSize, convertJs } from '@graasp/sdk';
+import { HttpMethod, ThumbnailSize } from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -21,7 +21,7 @@ import {
   buildUploadAvatarRoute,
 } from '../api/routes';
 import { CURRENT_MEMBER_KEY, buildAvatarKey } from '../config/keys';
-import { addFavoriteItemRoutine, uploadAvatarRoutine } from '../routines';
+import { uploadAvatarRoutine } from '../routines';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -306,198 +306,6 @@ describe('Member Mutations', () => {
         type: uploadAvatarRoutine.FAILURE,
         payload: { error: StatusCodes.UNAUTHORIZED },
       });
-    });
-  });
-
-  describe('useAddFavoriteItem', () => {
-    const id = 'member-id';
-    const itemId = 'item-id';
-    const extra = {
-      favoriteItems: [],
-    };
-    const route = `/${buildPatchMember(id)}`;
-    const mutation = mutations.useAddFavoriteItem;
-
-    it(`Successfully add favorite item`, async () => {
-      const response = MEMBER_RESPONSE.set(
-        'extra',
-        convertJs({ favoriteItems: ['item-id'] }),
-      );
-      // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.PATCH,
-          route,
-        },
-      ];
-      const mockedMutation = await mockMutation({
-        mutation,
-        wrapper,
-        endpoints,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({ memberId: id, itemId, extra });
-        await waitForMutation();
-      });
-
-      expect(
-        queryClient.getQueryState(CURRENT_MEMBER_KEY)?.isInvalidated,
-      ).toBeTruthy();
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: addFavoriteItemRoutine.SUCCESS,
-      });
-
-      // verify cache keys
-      const newData = queryClient.getQueryData(
-        CURRENT_MEMBER_KEY,
-      ) as MemberRecord;
-      expect(newData).toEqualImmutable(response);
-    });
-
-    it(`Adding duplicated favorite item should dedupe`, async () => {
-      const response = MEMBER_RESPONSE.set(
-        'extra',
-        convertJs({ favoriteItems: ['item-id'] }),
-      );
-      // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, response);
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.PATCH,
-          route,
-        },
-      ];
-      const mockedMutation = await mockMutation({
-        mutation,
-        wrapper,
-        endpoints,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({
-          memberId: id,
-          itemId,
-          extra: { favoriteItems: ['item-id'] },
-        });
-        await waitForMutation();
-      });
-
-      expect(
-        queryClient.getQueryState(CURRENT_MEMBER_KEY)?.isInvalidated,
-      ).toBeTruthy();
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: addFavoriteItemRoutine.SUCCESS,
-      });
-
-      // verify cache keys
-      const newData = queryClient.getQueryData(
-        CURRENT_MEMBER_KEY,
-      ) as MemberRecord;
-      expect(newData).toEqualImmutable(response);
-    });
-
-    it(`Unauthorized`, async () => {
-      // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
-      const endpoints = [
-        {
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.PATCH,
-          route,
-        },
-      ];
-      const mockedMutation = await mockMutation({
-        mutation,
-        wrapper,
-        endpoints,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({ memberId: id, itemId, extra });
-        await waitForMutation();
-      });
-
-      // verify cache keys
-      const oldData = queryClient.getQueryData(
-        CURRENT_MEMBER_KEY,
-      ) as MemberRecord;
-      expect(oldData).toEqualImmutable(MEMBER_RESPONSE);
-    });
-  });
-
-  describe('useDeleteFavoriteItem', () => {
-    const id = 'member-id';
-    const route = `/${buildPatchMember(id)}`;
-    const itemId = 'item-id';
-    const extra = {
-      favoriteItems: ['item-id', 'item-id2'],
-    };
-    const mutation = mutations.useDeleteFavoriteItem;
-
-    it(`Successfully delete favorite item`, async () => {
-      const response = MEMBER_RESPONSE.set(
-        'extra',
-        convertJs({ favoriteItems: ['item-id2'] }),
-      );
-      // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.PATCH,
-          route,
-        },
-      ];
-      const mockedMutation = await mockMutation({
-        mutation,
-        wrapper,
-        endpoints,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({ memberId: id, itemId, extra });
-        await waitForMutation();
-      });
-
-      // verify cache keys
-      const newData = queryClient.getQueryData(
-        CURRENT_MEMBER_KEY,
-      ) as MemberRecord;
-      expect(newData).toEqualImmutable(response);
-    });
-
-    it(`Unauthorized`, async () => {
-      // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
-      const endpoints = [
-        {
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.PATCH,
-          route,
-        },
-      ];
-      const mockedMutation = await mockMutation({
-        mutation,
-        wrapper,
-        endpoints,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({ memberId: id, itemId, extra });
-        await waitForMutation();
-      });
-
-      // verify cache keys
-      const oldData = queryClient.getQueryData(
-        CURRENT_MEMBER_KEY,
-      ) as MemberRecord;
-      expect(oldData).toEqualImmutable(MEMBER_RESPONSE);
     });
   });
 });

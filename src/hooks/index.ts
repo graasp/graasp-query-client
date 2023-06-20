@@ -8,6 +8,7 @@ import configureCategoryHooks from './category';
 import configureChatHooks from './chat';
 import configureInvitationHooks from './invitation';
 import configureItemHooks from './item';
+import configureItemFavoriteHooks from './itemFavorite';
 import configureItemFlagHooks from './itemFlag';
 import configureItemLikeHooks from './itemLike';
 import configureItemLoginHooks from './itemLogin';
@@ -50,6 +51,7 @@ export default (
     ...configureItemLoginHooks(queryConfig),
     ...configureItemPublishedHooks(queryConfig),
     ...configureItemValidationHooks(queryConfig),
+    ...configureItemFavoriteHooks(queryConfig),
     ...configureAppsHooks(queryConfig),
     ...configureActionHooks(queryConfig),
     ...configureInvitationHooks(queryConfig),
