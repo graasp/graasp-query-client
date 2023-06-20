@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0](https://github.com/graasp/graasp-query-client/compare/v1.0.0-rc.3...v1.0.0) (2023-06-20)
+
+
+### Features
+
+* handle favorite queries ([#275](https://github.com/graasp/graasp-query-client/issues/275)) ([ac63c4b](https://github.com/graasp/graasp-query-client/commit/ac63c4bf02e2ab2e5f9dda4edc1fa185e582cf43))
+
+
+### chore
+
+* update release-as ([2e9335a](https://github.com/graasp/graasp-query-client/commit/2e9335a9e3006a9e4fa42b3bfcbda23214649fa8))
+
 ## [1.0.0-rc.3](https://github.com/graasp/graasp-query-client/compare/v1.0.0-rc.2...v1.0.0-rc.3) (2023-06-14)
 
 
