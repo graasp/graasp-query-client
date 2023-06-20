@@ -33,7 +33,7 @@ const configureMutations = (
   ...chatMutations(queryClient, queryConfig),
   ...mentionMutations(queryClient, queryConfig),
   ...itemCategoryMutations(queryClient, queryConfig),
-  ...itemFavoriteMutations(queryClient, queryConfig),
+  ...itemFavoriteMutations(queryConfig),
   ...itemExportMutations(queryClient, queryConfig),
   ...itemLikeMutations(queryClient, queryConfig),
   ...itemValidationMutations(queryClient, queryConfig),

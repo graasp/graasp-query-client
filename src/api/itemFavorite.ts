@@ -1,4 +1,4 @@
-import { Item, UUID } from '@graasp/sdk';
+import { Item, ItemFavorite, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
@@ -18,7 +18,7 @@ export const getFavoriteItems = async ({
 export const addFavoriteItem = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<ItemFavorite> =>
   verifyAuthentication(() =>
     axios
       .post(`${API_HOST}/${buildFavoriteItemRoute(id)}`)
@@ -28,7 +28,7 @@ export const addFavoriteItem = async (
 export const removeFavoriteItem = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<UUID> =>
   verifyAuthentication(() =>
     axios
       .delete(`${API_HOST}/${buildFavoriteItemRoute(id)}`)
