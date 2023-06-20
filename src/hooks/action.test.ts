@@ -3,14 +3,17 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
+import { convertJs } from '@graasp/sdk';
+
 import {
   ACTIONS_DATA,
+  AGGREGATE_ACTIONS_DATA,
   ITEMS,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
-import { buildGetActions } from '../api/routes';
-import { buildActionsKey } from '../config/keys';
+import { buildGetActions, buildGetAggregateActions } from '../api/routes';
+import { buildActionsKey, buildAggregateActionsKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 const itemId = ITEMS.first()!.id;
@@ -75,6 +78,55 @@ describe('Action Hooks', () => {
 
     it(`Unauthorized`, async () => {
       const hook = () => hooks.useActions(args);
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+  });
+
+  describe('useAggregateActions', () => {
+    const args = {
+      itemId,
+      view: 'builder',
+      requestedSampleSize: 5,
+      type: 'update',
+      countGroupBy: ['createdDay', 'user'],
+      aggregateFunction: 'avg',
+      aggregateMetric: 'actionCount',
+      aggregateBy: ['createdDay'],
+    };
+    const route = `/${buildGetAggregateActions(args)}`;
+    const key = buildAggregateActionsKey(args);
+    const response = AGGREGATE_ACTIONS_DATA;
+
+    it(`Receive aggregate actions for item id`, async () => {
+      const hook = () => hooks.useAggregateActions(args);
+      const endpoints = [{ route, response }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+      expect(data).toEqualImmutable(convertJs(response));
+
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toEqualImmutable(
+        convertJs(response),
+      );
+    });
+
+    it(`Unauthorized`, async () => {
+      const hook = () => hooks.useAggregateActions(args);
       const endpoints = [
         {
           route,
