@@ -13,14 +13,16 @@ export default (queryConfig: QueryClientConfig) => {
   const useAddFavoriteItem = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (itemId: UUID) =>
-        Api.addFavoriteItem(itemId, queryConfig),
+      (itemId: UUID) => Api.addFavoriteItem(itemId, queryConfig),
       {
         onSuccess: () => {
           notifier?.({ type: addFavoriteItemRoutine.SUCCESS });
         },
         onError: (error: Error) => {
-          notifier?.({ type: addFavoriteItemRoutine.FAILURE, payload: { error } });
+          notifier?.({
+            type: addFavoriteItemRoutine.FAILURE,
+            payload: { error },
+          });
         },
         onSettled: () => {
           queryClient.invalidateQueries(FAVORITE_ITEMS_KEY);
@@ -32,8 +34,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useRemoveFavoriteItem = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (itemId: UUID) =>
-        Api.removeFavoriteItem(itemId, queryConfig),
+      (itemId: UUID) => Api.removeFavoriteItem(itemId, queryConfig),
       {
         onSuccess: () => {
           notifier?.({ type: deleteFavoriteItemRoutine.SUCCESS });

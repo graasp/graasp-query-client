@@ -5,7 +5,12 @@ import { act } from 'react-test-renderer';
 
 import { HttpMethod } from '@graasp/sdk';
 
-import { ITEMS, ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import {
+  ITEMS,
+  ITEM_LIKES,
+  MOCK_MEMBER,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
   buildDeleteItemLikeRoute,
@@ -29,7 +34,7 @@ describe('Item Like Mutations', () => {
 
   describe('usePostItemLike', () => {
     const itemId = ITEMS.first()!.id;
-    const memberId = 'member-id';
+    const memberId = MOCK_MEMBER.id;
     const likedItemsKey = buildGetLikesForMemberKey(memberId);
     const route = `/${buildPostItemLikeRoute(itemId)}`;
     const mutation = mutations.usePostItemLike;
@@ -97,7 +102,7 @@ describe('Item Like Mutations', () => {
 
   describe('useDeleteItemLike', () => {
     const itemId = ITEMS.first()!.id;
-    const memberId = 'member-id';
+    const memberId = MOCK_MEMBER.id;
     const likedItemsKey = buildGetLikesForMemberKey(memberId);
     const route = `/${buildDeleteItemLikeRoute(itemId)}`;
     const mutation = mutations.useDeleteItemLike;
