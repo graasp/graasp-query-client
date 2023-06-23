@@ -170,7 +170,7 @@ describe('Ws Item Hooks', () => {
       expect(
         queryClient
           .getQueryData<List<ItemRecord>>(childrenKey)
-          ?.find(({ id }) => id === targetItem.id),
+          ?.find(({ id }: ItemRecord) => id === targetItem.id),
       ).toBeFalsy();
     });
 

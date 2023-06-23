@@ -36,7 +36,7 @@ export const buildMembersKey = (ids: UUID[]) => [
   MEMBERS_KEY,
   hashItemsIds(ids),
 ];
-export const buildItemParentsKey = (id: UUID) => [ITEMS_KEY, 'parents', id];
+export const buildItemParentsKey = (id?: UUID) => [ITEMS_KEY, 'parents', id];
 export const CHATS_KEY = 'chats';
 export const buildItemChatKey = (id: UUID) => [CHATS_KEY, id];
 export const EXPORT_CHATS_KEY = 'exportChats';
@@ -182,7 +182,7 @@ export const buildItemValidationGroupsKey = (id: UUID) => [
 ];
 
 export const buildActionsKey = (args: {
-  itemId: UUID;
+  itemId?: UUID;
   view: string;
   requestedSampleSize: number;
 }) => [

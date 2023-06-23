@@ -63,13 +63,6 @@ export const postItem = async (
       .then(({ data }) => data),
   );
 
-// export const deleteItem = async (id: UUID, { API_HOST }: QueryClientConfig) =>
-//   verifyAuthentication(() =>
-//     axios
-//       .delete(`${API_HOST}/${buildDeleteItemRoute(id)}`)
-//       .then(({ data }) => data),
-//   );
-
 export const deleteItems = async (
   ids: UUID[],
   { API_HOST }: QueryClientConfig,
@@ -107,16 +100,19 @@ export const getChildren = async (
     .then(({ data }) => data);
 
 export const getParents = async (
-  { id, path }: { id: UUID; path: string },
+  { id, path }: { id: UUID; path?: string },
   { API_HOST }: QueryClientConfig,
 ): Promise<Item[]> => {
-  const parentIds = getParentsIdsFromPath(path, { ignoreSelf: true });
-  if (parentIds.length) {
-    return axios
-      .get(`${API_HOST}/${buildGetItemParents(id)}`)
-      .then(({ data }) => data);
+  // shortcut to prevent fetching parents if path shows that item is a root
+  if (path) {
+    const parentIds = getParentsIdsFromPath(path, { ignoreSelf: true });
+    if (!parentIds.length) {
+      return [];
+    }
   }
-  return [];
+  return axios
+    .get(`${API_HOST}/${buildGetItemParents(id)}`)
+    .then(({ data }) => data);
 };
 
 export const getDescendants = async (
@@ -126,18 +122,6 @@ export const getDescendants = async (
   axios
     .get(`${API_HOST}/${buildGetItemDescendants(id)}`)
     .then(({ data }) => data);
-
-// export const moveItem = async (
-//   { to, id }: { id: UUID; to: UUID },
-//   { API_HOST }: QueryClientConfig,
-// ) =>
-//   verifyAuthentication(() => {
-//     // send parentId if defined
-//     const body = { ...(to && { parentId: to }) };
-//     return axios.post(`${API_HOST}/${buildMoveItemRoute(id)}`, {
-//       ...body,
-//     });
-//   });
 
 export const moveItems = async (
   {
@@ -156,18 +140,6 @@ export const moveItems = async (
       ...body,
     });
   });
-
-// export const copyItem = async (
-//   { id, to }: { id: UUID; to: UUID },
-//   { API_HOST }: QueryClientConfig,
-// ) =>
-//   verifyAuthentication(() => {
-//     // send parentId if defined
-//     const body = { ...(to && { parentId: to }) };
-//     return axios.post(`${API_HOST}/${buildCopyItemRoute(id)}`, {
-//       ...body,
-//     });
-//   });
 
 export const copyItems = async (
   {
@@ -222,13 +194,6 @@ export const getRecycledItemsData = async ({ API_HOST }: QueryClientConfig) =>
       .get<Item[]>(`${API_HOST}/${GET_RECYCLED_ITEMS_DATA_ROUTE}`)
       .then(({ data }) => data),
   );
-
-// export const recycleItem = async (id: UUID, { API_HOST }: QueryClientConfig) =>
-//   verifyAuthentication(() =>
-//     axios
-//       .post(`${API_HOST}/${buildRecycleItemRoute(id)}`)
-//       .then(({ data }) => data),
-//   );
 
 export const recycleItems = async (
   ids: UUID[],

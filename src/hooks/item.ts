@@ -169,67 +169,32 @@ export default (
       );
     },
 
-    // TODO: GET ITEMS WITH TAGS -> used to get pinned items
-    // useItemsChildren: (
-    //   ids: UUID[],
-    //   options?: {
-    //     enabled?: boolean;
-    //     ordered?: boolean;
-    //     getUpdates?: boolean;
-    //     placeholderData?: List<List<ItemRecord>>;
-    //   },
-    // ) => {
-    //   const enabled = options?.enabled ?? true;
-    //   const ordered = options?.ordered ?? true;
-
-    //   return useQuery({
-    //     queryKey: buildItemsChildrenKey(ids),
-    //     queryFn: (): Promise<ResultOfRecord<Item[]>> =>
-    //       Promise.all(
-    //         ids.map((id) =>
-    //           Api.getChildren(id, ordered, queryConfig).then((data) =>
-    //             convertJs(data),
-    //           ),
-    //         ),
-    //       ).then((items) => List(items)),
-    //     onSuccess: async (items) => {
-    //       /* Because the query function loops over the ids, this returns an array
-    //       of immutable list of items, each list correspond to an item and contains
-    //       their children */
-    //       if (items.size) {
-    //         // For each item, get the list of its childrens
-    //         items.forEach((item) => {
-    //           // If the item has children, save them in query client
-    //           if (item.size) {
-    //             item.forEach((child) => {
-    //               const { id } = child;
-    //               queryClient.setQueryData(buildItemKey(id), child);
-    //             });
-    //           }
-    //         });
-    //       }
-    //     },
-    //     ...defaultQueryOptions,
-    //     enabled: Boolean(ids) && enabled,
-    //     placeholderData: options?.placeholderData,
-    //   });
-    // },
-
+    /**
+     * return parents for given item id
+     * @param id {string} item id
+     * @param path {string} item path, used to prevent fetching if no parent is defined
+     * @returns immutable list of parent items
+     */
     useParents: ({
       id,
       path,
       enabled,
     }: {
-      id: UUID;
-      path: string;
+      id?: UUID;
+      path?: string;
       enabled?: boolean;
     }) =>
       useQuery({
         queryKey: buildItemParentsKey(id),
-        queryFn: (): Promise<List<ItemRecord>> =>
-          Api.getParents({ id, path }, queryConfig).then((items) =>
+        queryFn: (): Promise<List<ItemRecord>> => {
+          if (!id) {
+            throw new UndefinedArgument();
+          }
+
+          return Api.getParents({ id, path }, queryConfig).then((items) =>
             convertJs(items),
-          ),
+          );
+        },
         onSuccess: async (items: List<ItemRecord>) => {
           if (items?.size) {
             // save items in their own key
@@ -401,36 +366,6 @@ export default (
         },
         ...defaultQueryOptions,
       }),
-
-    // useItemsWithTag: (
-    //   tagId?: UUID,
-    //   options?: { placeholderData?: List<ItemRecord> },
-    // ) => {
-    //   const placeholderData = options?.placeholderData;
-    //   return useQuery({
-    //     queryKey: buildPublicItemsWithTagKey(tagId),
-    //     queryFn: (): Promise<List<ItemRecord>> => {
-    //       if (!tagId) {
-    //         throw new UndefinedArgument();
-    //       }
-
-    //       return Api.getPublicItemsWithTag({ tagId }, queryConfig).then(
-    //         (data) => convertJs(data),
-    //       );
-    //     },
-    //     onSuccess: async (items: List<ItemRecord>) => {
-    //       // save items in their own key
-    //       // eslint-disable-next-line no-unused-expressions
-    //       items?.forEach(async (item) => {
-    //         const { id } = item;
-    //         queryClient.setQueryData(buildItemKey(id), item);
-    //       });
-    //     },
-    //     ...defaultQueryOptions,
-    //     placeholderData,
-    //     enabled: Boolean(tagId),
-    //   });
-    // },
 
     useItemThumbnail: ({
       id,

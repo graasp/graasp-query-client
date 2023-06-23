@@ -1,10 +1,13 @@
 import { StatusCodes } from 'http-status-codes';
-import { Map } from 'immutable';
+import { List, Map } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
+  FolderItemType,
+  ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
+  Member,
   ThumbnailSize,
   convertJs,
 } from '@graasp/sdk';
@@ -30,6 +33,7 @@ import {
   buildDownloadFilesRoute,
   buildDownloadItemThumbnailRoute,
   buildGetChildrenRoute,
+  buildGetItemParents,
   buildGetItemRoute,
   buildGetItemsRoute,
 } from '../api/routes';
@@ -39,6 +43,7 @@ import {
   buildFileContentKey,
   buildItemChildrenKey,
   buildItemKey,
+  buildItemParentsKey,
   buildItemThumbnailKey,
   buildItemsKey,
 } from '../config/keys';
@@ -201,147 +206,112 @@ describe('Items Hooks', () => {
     });
   });
 
-  // describe('useParents', () => {
-  //   const childItem: FolderItemType = {
-  //     id: 'child-item-id',
-  //     path: [...ITEMS.map(({ id }) => id), 'child_item_id'].join('.'),
-  //     name: 'child-item-id',
-  //     type: ItemType.FOLDER,
-  //     description: '',
-  //     extra: {
-  //       folder: { childrenOrder: [] },
-  //     },
-  //     settings: {},
-  //     updatedAt: new Date().toISOString(),
-  //     createdAt: new Date().toISOString(),
-  //     creator: 'creator',
-  //   };
-  //   const response = ITEMS;
-  //   it(`Receive parents of item by id`, async () => {
-  //     const hook = () => hooks.useParents({ ...childItem, enabled: true });
+  describe('useParents', () => {
+    const childItem: FolderItemType = {
+      id: 'child-item-id',
+      path: [...ITEMS.map(({ id }) => id), 'child_item_id'].join('.'),
+      name: 'child-item-id',
+      type: ItemType.FOLDER,
+      description: '',
+      extra: {
+        folder: { childrenOrder: [] },
+      },
+      settings: {},
+      updatedAt: new Date(),
+      createdAt: new Date(),
+      creator: { id: 'creator' } as Member,
+    };
+    const response = ITEMS;
+    it(`Receive parents of item by id`, async () => {
+      const hook = () => hooks.useParents({ id: childItem.id, enabled: true });
 
-  //     // build endpoint for each item
-  //     const endpoints: Endpoint[] = [];
-  //     for (const i of response) {
-  //       endpoints.push({ route: `/${buildGetItemRoute(i.id)}`, response: i });
-  //     }
-  //     const { data } = await mockHook({ endpoints, hook, wrapper });
+      // build endpoint for each item
+      const endpoints = [
+        {
+          route: `/${buildGetItemParents(childItem.id)}`,
+          response: response.toJS(),
+        },
+      ];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
 
-  //     expect(data as ItemRecord).toEqualImmutable(response);
-  //     // verify cache keys
-  //     expect(
-  //       queryClient.getQueryData(buildItemParentsKey(childItem.id)),
-  //     ).toEqualImmutable(response);
-  //     for (const i of response) {
-  //       expect(queryClient.getQueryData(buildItemKey(i.id))).toEqualImmutable(
-  //         i,
-  //       );
-  //     }
-  //   });
+      expect(data as ItemRecord).toEqualImmutable(response);
+      // verify cache keys
+      expect(
+        queryClient.getQueryData(buildItemParentsKey(childItem.id)),
+      ).toEqualImmutable(response);
+      for (const i of response) {
+        expect(queryClient.getQueryData(buildItemKey(i.id))).toEqualImmutable(
+          i,
+        );
+      }
+    });
 
-  //   it(`enabled=false does not fetch parents`, async () => {
-  //     // build endpoint for each item
-  //     const endpoints: Endpoint[] = [];
-  //     for (const i of response) {
-  //       endpoints.push({ route: `/${buildGetItemRoute(i.id)}`, response: i });
-  //     }
-  //     const { data, isFetched } = await mockHook({
-  //       hook: () => hooks.useParents({ ...childItem, enabled: false }),
-  //       endpoints,
-  //       wrapper,
-  //       enabled: false,
-  //     });
+    it(`enabled=false does not fetch parents`, async () => {
+      // build endpoint for each item
+      const endpoints = [
+        {
+          route: `/${buildGetItemParents(childItem.id)}`,
+          response: response.toJS(),
+        },
+      ];
+      const { data, isFetched } = await mockHook({
+        hook: () => hooks.useParents({ id: childItem.id, enabled: false }),
+        endpoints,
+        wrapper,
+        enabled: false,
+      });
 
-  //     expect(data).toBeFalsy();
-  //     expect(isFetched).toBeFalsy();
-  //     expect(
-  //       queryClient.getQueryData(buildItemParentsKey(childItem.id)),
-  //     ).toBeFalsy();
-  //     // verify cache keys
-  //     for (const i of response) {
-  //       expect(queryClient.getQueryData(buildItemKey(i.id))).toBeFalsy();
-  //     }
-  //   });
+      expect(data).toBeFalsy();
+      expect(isFetched).toBeFalsy();
+      expect(
+        queryClient.getQueryData(buildItemParentsKey(childItem.id)),
+      ).toBeFalsy();
+      // verify cache keys
+      for (const i of response) {
+        expect(queryClient.getQueryData(buildItemKey(i.id))).toBeFalsy();
+      }
+    });
 
-  //   it(`Unauthorized`, async () => {
-  //     // build endpoint for each item
-  //     const endpoints: Endpoint[] = [];
-  //     for (const i of response) {
-  //       endpoints.push({
-  //         route: `/${buildGetItemRoute(i.id)}`,
-  //         response: UNAUTHORIZED_RESPONSE,
-  //         statusCode: StatusCodes.UNAUTHORIZED,
-  //       });
-  //     }
-  //     const { data, isError } = await mockHook({
-  //       hook: () => hooks.useParents({ ...childItem, enabled: true }),
-  //       endpoints,
-  //       wrapper,
-  //     });
+    it(`providing path can deduce empty array`, async () => {
+      const { data, isFetched } = await mockHook({
+        hook: () => hooks.useParents({ id: childItem.id, path: 'some-id' }),
+        endpoints: [],
+        wrapper,
+      });
 
-  //     expect(data).toBeFalsy();
-  //     expect(isError).toBeTruthy();
-  //     expect(
-  //       queryClient.getQueryData(buildItemParentsKey(childItem.id)),
-  //     ).toBeFalsy();
-  //     // verify cache keys
-  //     for (const i of response) {
-  //       expect(queryClient.getQueryData(buildItemKey(i.id))).toBeFalsy();
-  //     }
-  //   });
+      expect(data).toEqualImmutable(List());
+      expect(isFetched).toBeTruthy();
+      expect(
+        queryClient.getQueryData(buildItemParentsKey(childItem.id)),
+      ).toEqualImmutable(List());
+    });
 
-  //   it(`Return successfully and filter out rejected item`, async () => {
-  //     // build endpoint for each item
-  //     const endpoints: Endpoint[] = [];
-  //     const failedItem = response.first();
-  //     for (const i of response.slice(1)) {
-  //       endpoints.push({ route: `/${buildGetItemRoute(i.id)}`, response: i });
-  //     }
-  //     // error for one item
-  //     endpoints.push({
-  //       route: `/${buildGetItemRoute(failedItem!.id)}`,
-  //       response: UNAUTHORIZED_RESPONSE,
-  //       statusCode: StatusCodes.UNAUTHORIZED,
-  //     });
+    it(`Unauthorized`, async () => {
+      // build endpoint for each item
+      const endpoints = [
+        {
+          route: `/${buildGetItemParents(childItem.id)}`,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook: () => hooks.useParents({ id: childItem.id, enabled: true }),
+        endpoints,
+        wrapper,
+      });
 
-  //     const { data, isSuccess } = await mockHook({
-  //       hook: () => hooks.useParents({ ...childItem, enabled: true }),
-  //       endpoints,
-  //       wrapper,
-  //     });
-
-  //     expect(data).toBeTruthy();
-  //     expect(isSuccess).toBeTruthy();
-  //     const list = data as List<ItemRecord>;
-  //     const parentQueryData = queryClient.getQueryData<List<ItemRecord>>(
-  //       buildItemParentsKey(childItem.id),
-  //     );
-  //     // verify cache keys
-  //     for (const i of response) {
-  //       const itemQueryData = queryClient.getQueryData(buildItemKey(i.id));
-  //       const parentQueryDataItem = parentQueryData!.find(
-  //         ({ id }) => id === i.id,
-  //       );
-  //       const resultItem = list.find(({ id }) => id === i.id);
-  //       // should not contain failed item
-  //       if (failedItem!.id === i.id) {
-  //         // returned value
-  //         expect(resultItem).toBeFalsy();
-  //         // query data
-  //         expect(itemQueryData).not.toEqualImmutable(i);
-  //         expect(parentQueryDataItem).toBeFalsy();
-  //       }
-  //       // but should contain all the other items
-  //       else {
-  //         // returned value
-  //         expect(resultItem).toEqualImmutable(i);
-  //         // query data
-  //         expect(itemQueryData).toEqualImmutable(i);
-  //         expect(parentQueryDataItem).toEqualImmutable(i);
-  //       }
-  //     }
-  //   });
-  // });
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      expect(
+        queryClient.getQueryData(buildItemParentsKey(childItem.id)),
+      ).toBeFalsy();
+      // verify cache keys
+      for (const i of response) {
+        expect(queryClient.getQueryData(buildItemKey(i.id))).toBeFalsy();
+      }
+    });
+  });
 
   describe('useSharedItems', () => {
     const route = `/${SHARED_ITEM_WITH_ROUTE}`;
