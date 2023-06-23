@@ -4,6 +4,7 @@ import { UUID, convertJs } from '@graasp/sdk';
 import { ActionDataRecord } from '@graasp/sdk/frontend';
 
 import * as Api from '../api';
+import { UndefinedArgument } from '../config/errors';
 import { buildActionsKey } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
@@ -13,7 +14,7 @@ export default (queryConfig: QueryClientConfig) => {
   return {
     useActions: (
       args: {
-        itemId: UUID;
+        itemId?: UUID;
         view: string;
         requestedSampleSize: number;
       },
@@ -25,10 +26,20 @@ export default (queryConfig: QueryClientConfig) => {
         Boolean(args.requestedSampleSize);
       return useQuery({
         queryKey: buildActionsKey(args),
-        queryFn: () =>
-          Api.getActions(args, queryConfig).then(
-            (data) => convertJs(data) as ActionDataRecord,
-          ),
+        queryFn: () => {
+          const { itemId } = args;
+          if (!itemId) {
+            throw new UndefinedArgument();
+          }
+          return Api.getActions(
+            {
+              itemId,
+              view: args.view,
+              requestedSampleSize: args.requestedSampleSize,
+            },
+            queryConfig,
+          ).then((data) => convertJs(data) as ActionDataRecord);
+        },
         ...defaultQueryOptions,
         enabled: enabledValue,
       });

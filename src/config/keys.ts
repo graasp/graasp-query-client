@@ -182,7 +182,7 @@ export const buildItemValidationGroupsKey = (id: UUID) => [
 ];
 
 export const buildActionsKey = (args: {
-  itemId: UUID;
+  itemId?: UUID;
   view: string;
   requestedSampleSize: number;
 }) => [
