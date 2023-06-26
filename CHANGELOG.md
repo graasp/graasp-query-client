@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.1](https://github.com/graasp/graasp-query-client/compare/v1.0.0...v1.0.1) (2023-06-26)
+
+
+### Bug Fixes
+
+* add invalidation of itemLikeForItem ([2623486](https://github.com/graasp/graasp-query-client/commit/26234860bdc03d9ae1a912b598b57cc9ce5dc7a7))
+* argument in useDeleteItemLike and refactor to use custom mutation hook ([#284](https://github.com/graasp/graasp-query-client/issues/284)) ([2623486](https://github.com/graasp/graasp-query-client/commit/26234860bdc03d9ae1a912b598b57cc9ce5dc7a7))
+* type useKeywordSearch hook and enable query when the fields have a value ([2623486](https://github.com/graasp/graasp-query-client/commit/26234860bdc03d9ae1a912b598b57cc9ce5dc7a7))
+
+
+### chore
+
+* release 1.0.1 ([e536bad](https://github.com/graasp/graasp-query-client/commit/e536bad7b9c0b4b0a3be5ed9344b8ea9b5d730a6))
+
 ## [1.0.0](https://github.com/graasp/graasp-query-client/compare/v1.0.0-rc.3...v1.0.0) (2023-06-20)
 
 
