@@ -6,7 +6,11 @@ import {
 import { StatusCodes } from 'http-status-codes';
 import nock, { InterceptFunction, ReplyHeaders, Scope } from 'nock';
 import React from 'react';
-import { MutationObserverResult, QueryObserverBaseResult } from 'react-query';
+import {
+  MutationObserverResult,
+  QueryClient,
+  QueryObserverBaseResult,
+} from 'react-query';
 
 import { HttpMethod, spliceIntoChunks } from '@graasp/sdk';
 
@@ -40,12 +44,12 @@ export const setUpTest = (args?: Args) => {
     WS_HOST,
   };
 
-  const { queryClient, QueryClientProvider, mutations } =
-    configureQueryClient(queryConfig);
+  const { QueryClientProvider, mutations } = configureQueryClient(queryConfig);
 
   // configure hooks
-  const hooks = configureHooks(queryClient, queryConfig);
+  const hooks = configureHooks(queryConfig);
 
+  const queryClient = new QueryClient();
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
