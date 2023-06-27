@@ -12,7 +12,7 @@ yarn add github:graasp/graasp-query-client.git
 
 The package exposes the following properties:
 
-- `MUTATION_KEYS` and `DATA_KEYS`: keys used to refer to defined mutations or invalidate data
+- `DATA_KEYS`: keys used to refer to invalidate data
 - `routines`: message types used for notifications
 - `API_ROUTES`: object containing all endpoint routes
 - `Api`: api endpoints collection
