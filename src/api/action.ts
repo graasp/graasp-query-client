@@ -1,6 +1,7 @@
 import { ActionData, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
+import { AggregateActionsArgs } from '../utils/action';
 import configureAxios from './axios';
 import {
   buildExportActions,
@@ -19,16 +20,7 @@ export const getActions = async (
     .then(({ data }) => data);
 
 export const getAggregateActions = async (
-  args: {
-    itemId: UUID;
-    requestedSampleSize: number;
-    view: string;
-    type: string;
-    countGroupBy: string[];
-    aggregateFunction: string;
-    aggregateMetric: string;
-    aggregateBy: string[];
-  },
+  args: AggregateActionsArgs,
   { API_HOST }: QueryClientConfig,
 ) =>
   axios

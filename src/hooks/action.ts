@@ -6,6 +6,7 @@ import { ActionDataRecord } from '@graasp/sdk/frontend';
 import * as Api from '../api';
 import { buildActionsKey, buildAggregateActionsKey } from '../config/keys';
 import { QueryClientConfig } from '../types';
+import { AggregateActionsArgs } from '../utils/action';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -34,16 +35,7 @@ export default (queryConfig: QueryClientConfig) => {
   };
 
   const useAggregateActions = (
-    args: {
-      itemId: UUID;
-      view: string;
-      requestedSampleSize: number;
-      type: string;
-      countGroupBy: string[];
-      aggregateFunction: string;
-      aggregateMetric: string;
-      aggregateBy: string[];
-    },
+    args: AggregateActionsArgs,
     options?: { enabled?: boolean },
   ) => {
     const enabledValue =

@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { convertJs } from '@graasp/sdk';
+import { Context, convertJs } from '@graasp/sdk';
 
 import {
   ACTIONS_DATA,
@@ -14,6 +14,7 @@ import {
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildGetActions, buildGetAggregateActions } from '../api/routes';
 import { buildActionsKey, buildAggregateActionsKey } from '../config/keys';
+import { AggregateFunction } from '../utils/action';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 const itemId = ITEMS.first()!.id;
@@ -101,11 +102,11 @@ describe('Action Hooks', () => {
   describe('useAggregateActions', () => {
     const args = {
       itemId,
-      view: 'builder',
+      view: Context.Builder,
       requestedSampleSize: 5,
       type: 'update',
       countGroupBy: ['createdDay', 'user'],
-      aggregateFunction: 'avg',
+      aggregateFunction: AggregateFunction.Avg,
       aggregateMetric: 'actionCount',
       aggregateBy: ['createdDay'],
     };
