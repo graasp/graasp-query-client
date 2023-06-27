@@ -1,4 +1,4 @@
-import { QueryClient, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 
 import { UUID, convertJs } from '@graasp/sdk';
 import { ExportedItemChatRecord, ItemChatRecord } from '@graasp/sdk/frontend';
@@ -10,7 +10,6 @@ import { configureWsChatHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
 export default (
-  queryClient: QueryClient,
   queryConfig: QueryClientConfig,
   websocketClient?: WebsocketClient,
 ) => {
@@ -18,7 +17,7 @@ export default (
 
   const wsHooks =
     enableWebsocket && websocketClient
-      ? configureWsChatHooks(queryClient, websocketClient)
+      ? configureWsChatHooks(websocketClient)
       : undefined;
 
   return {

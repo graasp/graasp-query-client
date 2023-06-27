@@ -1,5 +1,3 @@
-import { QueryClient } from 'react-query';
-
 import { QueryClientConfig } from '../types';
 import actionMutations from './action';
 import authenticationMutations from './authentication';
@@ -20,28 +18,25 @@ import itemMembershipMutations from './membership';
 import mentionMutations from './mention';
 import subscriptionMutations from './plan';
 
-const configureMutations = (
-  queryClient: QueryClient,
-  queryConfig: QueryClientConfig,
-) => ({
-  ...itemMutations(queryClient, queryConfig),
-  ...itemMembershipMutations(queryClient, queryConfig),
-  ...memberMutations(queryClient, queryConfig),
-  ...tagsMutations(queryClient, queryConfig),
-  ...flagsMutations(queryClient, queryConfig),
-  ...itemLoginMutations(queryClient, queryConfig),
-  ...chatMutations(queryClient, queryConfig),
-  ...mentionMutations(queryClient, queryConfig),
-  ...itemCategoryMutations(queryClient, queryConfig),
+const configureMutations = (queryConfig: QueryClientConfig) => ({
+  ...itemMutations(queryConfig),
+  ...itemMembershipMutations(queryConfig),
+  ...memberMutations(queryConfig),
+  ...tagsMutations(queryConfig),
+  ...flagsMutations(queryConfig),
+  ...itemLoginMutations(queryConfig),
+  ...chatMutations(queryConfig),
+  ...mentionMutations(queryConfig),
+  ...itemCategoryMutations(queryConfig),
   ...itemFavoriteMutations(queryConfig),
-  ...itemExportMutations(queryClient, queryConfig),
-  ...itemLikeMutations(queryClient, queryConfig),
-  ...itemValidationMutations(queryClient, queryConfig),
-  ...actionMutations(queryClient, queryConfig),
-  ...invitationMutations(queryClient, queryConfig),
-  ...authenticationMutations(queryClient, queryConfig),
-  ...subscriptionMutations(queryClient, queryConfig),
-  ...itemPublishMutations(queryClient, queryConfig),
+  ...itemExportMutations(queryConfig),
+  ...itemLikeMutations(queryConfig),
+  ...itemValidationMutations(queryConfig),
+  ...actionMutations(queryConfig),
+  ...invitationMutations(queryConfig),
+  ...authenticationMutations(queryConfig),
+  ...subscriptionMutations(queryConfig),
+  ...itemPublishMutations(queryConfig),
 });
 
 export default configureMutations;

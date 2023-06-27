@@ -86,7 +86,7 @@ export const deleteItemChatMessage = async (
 export const clearItemChat = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<void> =>
   verifyAuthentication(() =>
     axios
       .delete(`${API_HOST}/${buildClearItemChatRoute(id)}`)

@@ -1,4 +1,4 @@
-import { UUID } from '@graasp/sdk';
+import { ItemFlag, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
@@ -15,7 +15,7 @@ export const getFlags = async ({ API_HOST }: QueryClientConfig) =>
 export const postItemFlag = async (
   { type, itemId }: { type: UUID; itemId: string },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<ItemFlag> =>
   axios
     .post(`${API_HOST}/${buildPostItemFlagRoute(itemId)}`, {
       type,

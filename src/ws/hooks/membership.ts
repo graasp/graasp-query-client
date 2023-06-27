@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { List } from 'immutable';
 import { useEffect } from 'react';
-import { QueryClient } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import { ItemMembership, UUID, convertJs, getIdsFromPath } from '@graasp/sdk';
 import { ItemMembershipRecord } from '@graasp/sdk/frontend';
@@ -19,7 +18,6 @@ interface MembershipEvent {
 
 // eslint-disable-next-line import/prefer-default-export
 export const configureWsMembershipHooks = (
-  queryClient: QueryClient,
   websocketClient: WebsocketClient,
 ): { useItemsMembershipsUpdates: (itemIds?: UUID[] | null) => void } => ({
   /**
@@ -27,6 +25,7 @@ export const configureWsMembershipHooks = (
    * @param itemIds The IDs of the items of which to observe memberships updates
    */
   useItemsMembershipsUpdates: (itemIds?: UUID[] | null) => {
+    const queryClient = useQueryClient();
     useEffect(() => {
       if (!itemIds?.length) {
         return;

@@ -7,7 +7,10 @@ import { buildExportItemRoute } from './routes';
 const axios = configureAxios();
 
 /* eslint-disable import/prefer-default-export */
-export const exportItem = async (id: UUID, { API_HOST }: QueryClientConfig) =>
+export const exportItem = async (
+  id: UUID,
+  { API_HOST }: QueryClientConfig,
+): Promise<Blob> =>
   // options?: { public: boolean },
   axios({
     url: `${API_HOST}/${buildExportItemRoute(id)}`,

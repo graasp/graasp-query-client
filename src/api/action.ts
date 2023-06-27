@@ -17,4 +17,5 @@ export const getActions = async (
 export const exportActions = async (
   args: { itemId: UUID },
   { API_HOST }: QueryClientConfig,
-) => axios.post(`${API_HOST}/${buildExportActions(args.itemId)}`);
+): Promise<void> =>
+  axios.post(`${API_HOST}/${buildExportActions(args.itemId)}`);

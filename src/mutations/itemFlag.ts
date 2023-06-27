@@ -1,36 +1,38 @@
-import { QueryClient, useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 import { FlagType, UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
-import { MUTATION_KEYS, buildItemFlagsKey } from '../config/keys';
+import { buildItemFlagsKey } from '../config/keys';
 import { postItemFlagRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
-export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
+export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  queryClient.setMutationDefaults(MUTATION_KEYS.POST_ITEM_FLAG, {
-    mutationFn: (payload) => Api.postItemFlag(payload, queryConfig),
-    onSuccess: () => {
-      notifier?.({
-        type: postItemFlagRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.POST_ITEM_FLAG },
-      });
-    },
-    onError: (error) => {
-      console.error(error);
-      notifier?.({ type: postItemFlagRoutine.FAILURE, payload: { error } });
-    },
-    onSettled: (_data, _error, { itemId }) => {
-      queryClient.invalidateQueries(buildItemFlagsKey(itemId));
-    },
-  });
-  const usePostItemFlag = () =>
-    useMutation<void, unknown, { type: FlagType; itemId: UUID }>(
-      MUTATION_KEYS.POST_ITEM_FLAG,
+  const usePostItemFlag = () => {
+    const queryClient = useQueryClient();
+    return useMutation(
+      (payload: { type: FlagType; itemId: UUID }) =>
+        Api.postItemFlag(payload, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: postItemFlagRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.POST_ITEM_FLAG },
+          });
+        },
+        onError: (error: Error) => {
+          console.error(error);
+          notifier?.({ type: postItemFlagRoutine.FAILURE, payload: { error } });
+        },
+        onSettled: (_data, _error, { itemId }) => {
+          queryClient.invalidateQueries(buildItemFlagsKey(itemId));
+        },
+      },
     );
+  };
 
   return {
     usePostItemFlag,

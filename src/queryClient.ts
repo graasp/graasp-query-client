@@ -6,6 +6,7 @@ import {
   QueryClientProvider,
   dehydrate,
   useMutation,
+  useQueryClient,
 } from 'react-query';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -90,17 +91,19 @@ export default (config: Partial<QueryClientConfig>) => {
 
   // set up mutations given config
   // mutations are attached to queryClient
-  const mutations = configureMutations(queryClient, queryConfig);
+  const mutations = configureMutations(queryConfig);
 
   // set up hooks given config
   const websocketClient = queryConfig.enableWebsocket
     ? configureWebsocketClient(queryConfig)
     : undefined;
-  const hooks = configureHooks(queryClient, queryConfig, websocketClient);
+  const hooks = configureHooks(queryConfig, websocketClient);
 
   // returns the queryClient and relative instances
   return {
+    /** @deprecated use useQueryClient */
     queryClient,
+    useQueryClient,
     QueryClientProvider,
     hooks,
     useMutation,
