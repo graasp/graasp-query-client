@@ -135,7 +135,7 @@ export const moveItems = async (
     ids,
   }: {
     ids: UUID[];
-    to: UUID;
+    to?: UUID;
   },
   { API_HOST }: QueryClientConfig,
 ): Promise<void> =>

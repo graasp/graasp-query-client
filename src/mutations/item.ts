@@ -404,7 +404,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useMoveItems = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      ({ ids, to }: { ids: UUID[]; to: UUID }) =>
+      ({ ids, to }: { ids: UUID[]; to?: UUID }) =>
         splitRequestByIds<DiscriminatedItem>(
           ids,
           MAX_TARGETS_FOR_MODIFY_REQUEST,
