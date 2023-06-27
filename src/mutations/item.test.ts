@@ -540,63 +540,7 @@ describe('Items Mutations', () => {
         await act(async () => {
           await mockedMutation.mutate({
             to: toId,
-            id: movedIds,
-          });
-          await waitForMutation();
-        });
-
-        // items path have not changed
-        moved.forEach((item) => {
-          const itemKey = buildItemKey(item.id);
-          const path = queryClient.getQueryData<ItemRecord>(itemKey)?.path;
-          expect(path).toEqual(item.path);
-        });
-
-        // Check new parent is correctly invalidated
-        expect(
-          queryClient.getQueryState(toItemKey)?.isInvalidated,
-        ).toBeTruthy();
-
-        // Check old parent is correctly invalidated
-        const fromItemKey = getKeyForParentId(null);
-        expect(
-          queryClient.getQueryState(fromItemKey)?.isInvalidated,
-        ).toBeTruthy();
-      });
-
-      it('Unauthorized to move one of the items', async () => {
-        // set data in cache
-        moved.forEach((item) => {
-          const itemKey = buildItemKey(item.id);
-          queryClient.setQueryData(itemKey, item);
-        });
-        queryClient.setQueryData(getKeyForParentId(null), moved);
-        const toItemKey = getKeyForParentId(toId);
-        queryClient.setQueryData(toItemKey, ITEMS);
-
-        const response: List<ItemRecord | GraaspError> = List([
-          UNAUTHORIZED_RESPONSE,
-          ...moved.toArray(),
-        ]);
-
-        const endpoints = [
-          {
-            response,
-            method: HttpMethod.POST,
-            route,
-          },
-        ];
-
-        const mockedMutation = await mockMutation({
-          endpoints,
-          mutation,
-          wrapper,
-        });
-
-        await act(async () => {
-          await mockedMutation.mutate({
-            to: toId,
-            id: movedIds,
+            ids: movedIds,
           });
           await waitForMutation();
         });

@@ -59,7 +59,7 @@ export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) =>
   );
 
 export const editMember = async (
-  payload: { id: UUID; extra: MemberExtra },
+  payload: { id: UUID; extra?: MemberExtra; name?: string },
   { API_HOST }: QueryClientConfig,
 ): Promise<Member> =>
   verifyAuthentication(() =>

@@ -56,7 +56,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useEditMember = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (payload: { id: string; extra: MemberExtra }) =>
+      (payload: { id: string; name?: string; extra?: MemberExtra }) =>
         Api.editMember(payload, queryConfig),
       {
         onMutate: async (member) => {
@@ -68,11 +68,16 @@ export default (queryConfig: QueryClientConfig) => {
             queryClient.getQueryData<MemberRecord>(CURRENT_MEMBER_KEY);
 
           // Optimistically update to the new value
-          const newMember = previousMember?.set(
-            'extra',
-            convertJs(member?.extra),
-          );
-          queryClient.setQueryData(CURRENT_MEMBER_KEY, newMember);
+          let newMember = previousMember;
+          if (newMember) {
+            if (member.name) {
+              newMember = newMember.set('name', member.name);
+            }
+            if (member.extra) {
+              newMember = newMember.set('extra', convertJs(member.extra));
+            }
+            queryClient.setQueryData(CURRENT_MEMBER_KEY, newMember);
+          }
 
           // Return a context object with the snapshotted value
           return { previousMember };

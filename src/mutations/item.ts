@@ -344,20 +344,11 @@ export default (queryConfig: QueryClientConfig) => {
           });
           return previousItems;
         },
-        onSuccess: (result) => {
-          const { errors } = result;
-          if (errors && !errors.isEmpty()) {
-            // todo: revert deleted items
-            return notifier?.({
-              type: deleteItemsRoutine.FAILURE,
-              payload: { error: errors.first() },
-            });
-          }
-          return notifier?.({
+        onSuccess: () =>
+          notifier?.({
             type: deleteItemsRoutine.SUCCESS,
             payload: { message: SUCCESS_MESSAGES.DELETE_ITEMS },
-          });
-        },
+          }),
         onError: (error: Error, itemIds: UUID[], context) => {
           const itemPath = context[itemIds[0]]?.path;
 
@@ -431,7 +422,6 @@ export default (queryConfig: QueryClientConfig) => {
             .filter(Boolean);
 
           const { path } = itemsData[0] as ItemRecord;
-
           const context: any = {
             ...(Boolean(itemsData) && {
               // add item in target item
@@ -485,6 +475,7 @@ export default (queryConfig: QueryClientConfig) => {
         },
         // If the mutation fails, use the context returned from onMutate to roll back
         onError: (error: Error, { ids, to }, context) => {
+          console.log(error);
           const itemIds = ids;
           const parentKey = getKeyForParentId(to);
           if (context.targetParent) {

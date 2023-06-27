@@ -32,7 +32,6 @@ jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Chat Mutations', () => {
   const itemId = ITEMS_JS[0].id;
-  const chatId = itemId;
   const chatKey = buildItemChatKey(itemId);
   const messageId = MESSAGE_IDS[0];
 
@@ -65,7 +64,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ chatId, body: 'new message' });
+          await mockedMutation.mutate({ itemId, body: 'new message' });
           await waitForMutation();
         });
 
@@ -92,7 +91,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ chatId, body: 'new message' });
+          await mockedMutation.mutate({ itemId, body: 'new message' });
           await waitForMutation();
         });
 
@@ -125,7 +124,7 @@ describe('Chat Mutations', () => {
 
         await act(async () => {
           await mockedMutation.mutate({
-            chatId,
+            itemId,
             messageId,
             body: 'Updated message',
           });
@@ -156,7 +155,7 @@ describe('Chat Mutations', () => {
 
         await act(async () => {
           await mockedMutation.mutate({
-            chatId,
+            itemId,
             messageId,
             body: 'Updated message',
           });
@@ -192,7 +191,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ chatId, messageId });
+          await mockedMutation.mutate({ itemId, messageId });
           await waitForMutation();
         });
 
@@ -219,7 +218,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ chatId, messageId });
+          await mockedMutation.mutate({ itemId, messageId });
           await waitForMutation();
         });
 
@@ -251,7 +250,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate(chatId);
+          await mockedMutation.mutate(itemId);
           await waitForMutation();
         });
 
@@ -278,7 +277,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate(chatId);
+          await mockedMutation.mutate(itemId);
           await waitForMutation();
         });
 
@@ -320,7 +319,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ chatId, body: 'new message' });
+          await mockedMutation.mutate({ itemId, body: 'new message' });
           await waitForMutation();
         });
 
@@ -347,7 +346,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ chatId, body: 'new message content' });
+          await mockedMutation.mutate({ itemId, body: 'new message content' });
           await waitForMutation();
         });
 
@@ -374,7 +373,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ chatId, body: 'message to remove' });
+          await mockedMutation.mutate({ itemId, body: 'message to remove' });
           await waitForMutation();
         });
 

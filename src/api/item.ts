@@ -142,9 +142,11 @@ export const moveItems = async (
   verifyAuthentication(() => {
     // send parentId if defined
     const body = { ...(to && { parentId: to }) };
-    return axios.post(`${API_HOST}/${buildMoveItemsRoute(ids)}`, {
-      ...body,
-    });
+    return axios
+      .post(`${API_HOST}/${buildMoveItemsRoute(ids)}`, {
+        ...body,
+      })
+      .then(({ data }) => data);
   });
 
 export const copyItems = async (
