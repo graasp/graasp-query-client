@@ -341,7 +341,7 @@ export const buildGetAllPublishedItemsRoute = (categoryIds?: UUID[]) =>
   `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}${
     categoryIds?.length
       ? qs.stringify(
-          { categoryIds },
+          { categoryId: categoryIds },
           {
             arrayFormat: 'repeat',
             addQueryPrefix: true,
