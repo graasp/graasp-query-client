@@ -3363,7 +3363,7 @@ __metadata:
     "@commitlint/cli": 17.6.1
     "@commitlint/config-conventional": 17.6.1
     "@graasp/sdk": 1.1.1
-    "@graasp/translations": 1.13.0
+    "@graasp/translations": 1.15.0
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
     "@testing-library/react-hooks": 8.0.1
@@ -3437,12 +3437,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.13.0":
-  version: 1.13.0
-  resolution: "@graasp/translations@npm:1.13.0"
+"@graasp/translations@npm:1.15.0":
+  version: 1.15.0
+  resolution: "@graasp/translations@npm:1.15.0"
   dependencies:
     i18next: 22.4.15
-  checksum: 319a62cf134e7427f31ba8fb7e9e91b536b9e97b05f773f0d459c42ab933a54c9175af3aa5017b82fcfdf91b934e5faf0f6a7c6dfb98e0b788698ebf2a9a64e1
+  checksum: e073b83374462f2d108f1d697b7aa14460d05f4ec2e10757db0e0a0a72574bff4721f997851d8e88e871f3704c8bcf887533590dd7acdcbf9d607109bae25c8a
   languageName: node
   linkType: hard
 
@@ -19152,11 +19152,11 @@ __metadata:
 
 "typescript@patch:typescript@npm%3A5.1.5#~builtin<compat/typescript>":
   version: 5.1.5
-  resolution: "typescript@patch:typescript@npm%3A5.1.5#~builtin<compat/typescript>::version=5.1.5&hash=77c9e2"
+  resolution: "typescript@patch:typescript@npm%3A5.1.5#~builtin<compat/typescript>::version=5.1.5&hash=5da071"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 33020c886b1aa2e948b557aad4986cf6448b30c58915b12cac873bd35dc2260d93f71af8a661d2c9f352b5d099d9df13a59688e222e79276099b9c5d86d847be
+  checksum: 12ff5d14888805f24479e54bc8a3f83647107a6345f6c29dffcd429fb345be55f584a37e262cca58a0105203e41d4cb4e31b1b9096c9abeca0e2ace8eb00935e
   languageName: node
   linkType: hard
 
