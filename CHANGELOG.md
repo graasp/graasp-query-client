@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/graasp/graasp-query-client/compare/v1.0.1...v1.1.0) (2023-06-28)
+
+
+### Features
+
+* use usequeryClient ([#300](https://github.com/graasp/graasp-query-client/issues/300)) ([3bdc12b](https://github.com/graasp/graasp-query-client/commit/3bdc12b59b7316e6d16842166bc602cd64ca3c97))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @graasp/sdk to v1.1.1 ([#309](https://github.com/graasp/graasp-query-client/issues/309)) ([0ddb9ec](https://github.com/graasp/graasp-query-client/commit/0ddb9ecd5362d92ee65173373510397e6e7459eb))
+* **deps:** update dependency @graasp/translations to v1.15.0 ([#310](https://github.com/graasp/graasp-query-client/issues/310)) ([1c0294f](https://github.com/graasp/graasp-query-client/commit/1c0294ffff76e1a33aa3cc2daa7fbeaa1be2583e))
+* use `categoryId` instead of `categoryIds` ([#302](https://github.com/graasp/graasp-query-client/issues/302)) ([6e3e77d](https://github.com/graasp/graasp-query-client/commit/6e3e77d777cceb9131aa1908458847b92f244b91))
+
 ## [1.0.1](https://github.com/graasp/graasp-query-client/compare/v1.0.0...v1.0.1) (2023-06-26)
 
 
