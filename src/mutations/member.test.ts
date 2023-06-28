@@ -160,7 +160,6 @@ describe('Member Mutations', () => {
 
     it(`Successfully edit member id = ${id}`, async () => {
       const response = MEMBER_RESPONSE.set('name', newMember.name);
-
       // set random data in cache
       queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
       const endpoints = [
@@ -177,7 +176,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id, member: newMember });
+        await mockedMutation.mutate({ id, ...newMember });
         await waitForMutation();
       });
 

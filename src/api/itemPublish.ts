@@ -49,7 +49,7 @@ export const publishItem = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,
   notification?: boolean,
-) =>
+): Promise<ItemPublished> =>
   verifyAuthentication(() =>
     axios
       .post(`${API_HOST}/${buildItemPublishRoute(id, notification)}`)
@@ -59,7 +59,7 @@ export const publishItem = async (
 export const unpublishItem = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<ItemPublished> =>
   verifyAuthentication(() =>
     axios
       .post(`${API_HOST}/${buildItemUnpublishRoute(id)}`)

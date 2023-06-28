@@ -1,4 +1,4 @@
-import { QueryClient, useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 import { ItemLike, Member, UUID } from '@graasp/sdk';
 
@@ -10,7 +10,7 @@ import {
 import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
-export default (_queryClient: QueryClient, queryConfig: QueryClientConfig) => {
+export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   const usePostItemLike = () => {

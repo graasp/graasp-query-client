@@ -1,9 +1,9 @@
 import { List } from 'immutable';
 import {
-  QueryClient,
   UseQueryResult,
   useInfiniteQuery,
   useQuery,
+  useQueryClient,
 } from 'react-query';
 
 import {
@@ -51,7 +51,6 @@ import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
 export default (
-  queryClient: QueryClient,
   queryConfig: QueryClientConfig,
   useCurrentMember: () => UseQueryResult<MemberRecord>,
   websocketClient?: WebsocketClient,
@@ -60,11 +59,12 @@ export default (
 
   const itemWsHooks =
     enableWebsocket && websocketClient // required to type-check non-null
-      ? configureWsItemHooks(queryClient, websocketClient)
+      ? configureWsItemHooks(websocketClient)
       : undefined;
 
   return {
     useOwnItems: (options?: { getUpdates?: boolean }) => {
+      const queryClient = useQueryClient();
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       const { data: currentMember } = useCurrentMember();
@@ -103,6 +103,7 @@ export default (
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       itemWsHooks?.useChildrenUpdates(enabled && getUpdates ? id : null);
+      const queryClient = useQueryClient();
 
       return useQuery({
         queryKey: buildItemChildrenKey(id),
@@ -183,8 +184,9 @@ export default (
       id?: UUID;
       path?: string;
       enabled?: boolean;
-    }) =>
-      useQuery({
+    }) => {
+      const queryClient = useQueryClient();
+      return useQuery({
         queryKey: buildItemParentsKey(id),
         queryFn: (): Promise<List<ItemRecord>> => {
           if (!id) {
@@ -206,10 +208,12 @@ export default (
         },
         ...defaultQueryOptions,
         enabled: enabled && Boolean(id),
-      }),
+      });
+    },
 
-    useDescendants: ({ id, enabled }: { id: UUID; enabled?: boolean }) =>
-      useQuery({
+    useDescendants: ({ id, enabled }: { id: UUID; enabled?: boolean }) => {
+      const queryClient = useQueryClient();
+      return useQuery({
         queryKey: buildItemDescendantsKey(id),
         queryFn: (): Promise<List<ItemRecord>> =>
           Api.getDescendants({ id }, queryConfig).then((items) =>
@@ -226,7 +230,8 @@ export default (
         },
         ...defaultQueryOptions,
         enabled: enabled && Boolean(id),
-      }),
+      });
+    },
 
     useSharedItems: (options?: { getUpdates?: boolean }) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
@@ -234,6 +239,7 @@ export default (
       const { data: currentMember } = useCurrentMember();
       itemWsHooks?.useSharedItemsUpdates(getUpdates ? currentMember?.id : null);
 
+      const queryClient = useQueryClient();
       return useQuery({
         queryKey: SHARED_ITEMS_KEY,
         queryFn: (): Promise<List<ItemRecord>> =>
@@ -284,6 +290,7 @@ export default (
 
       itemWsHooks?.useItemsUpdates(getUpdates ? ids : null);
 
+      const queryClient = useQueryClient();
       return useQuery({
         queryKey: buildItemsKey(ids),
         queryFn: () => {
@@ -348,8 +355,9 @@ export default (
         cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
       }),
 
-    useRecycledItemsData: () =>
-      useQuery({
+    useRecycledItemsData: () => {
+      const queryClient = useQueryClient();
+      return useQuery({
         queryKey: RECYCLED_ITEMS_DATA_KEY,
         queryFn: (): Promise<List<RecycledItemDataRecord>> =>
           Api.getRecycledItemsData(queryConfig).then((data) => convertJs(data)),
@@ -365,7 +373,8 @@ export default (
           });
         },
         ...defaultQueryOptions,
-      }),
+      });
+    },
 
     useItemThumbnail: ({
       id,
@@ -374,6 +383,7 @@ export default (
       id?: UUID;
       size?: string;
     }) => {
+      const queryClient = useQueryClient();
       let shouldFetch = true;
       if (id) {
         shouldFetch =
@@ -402,6 +412,7 @@ export default (
       id?: UUID;
       size?: string;
     }) => {
+      const queryClient = useQueryClient();
       let shouldFetch = true;
       if (id) {
         shouldFetch =

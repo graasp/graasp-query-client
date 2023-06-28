@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import React from 'react';
+import { QueryClient } from 'react-query';
 
 import configureQueryClient from '../src/queryClient';
 import { Notifier, QueryClientConfig } from '../src/types';
@@ -46,14 +47,16 @@ export const setUpWsTest = (args?: {
     WS_HOST,
   };
 
-  const { queryClient, QueryClientProvider, useMutation } =
+  const { QueryClientProvider, useMutation } =
     configureQueryClient(queryConfig);
 
   const handlers: Handler[] = [];
   const websocketClient = MockedWebsocket(handlers);
 
   // configure hooks
-  const hooks = configureWsHooks(queryClient, websocketClient);
+  const hooks = configureWsHooks(websocketClient);
+
+  const queryClient = new QueryClient();
 
   const wrapper = ({
     children,

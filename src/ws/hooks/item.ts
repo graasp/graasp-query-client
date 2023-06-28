@@ -4,7 +4,7 @@
  */
 import { List } from 'immutable';
 import { useEffect } from 'react';
-import { QueryClient } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import { UUID, convertJs } from '@graasp/sdk';
 import { ItemRecord } from '@graasp/sdk/frontend';
@@ -26,15 +26,13 @@ interface ItemEvent {
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export const configureWsItemHooks = (
-  queryClient: QueryClient,
-  websocketClient: WebsocketClient,
-) => ({
+export const configureWsItemHooks = (websocketClient: WebsocketClient) => ({
   /**
    * React hook to subscribe to the updates of the given item ID
    * @param itemId The ID of the item of which to observe updates
    */
   useItemUpdates: (itemId?: UUID | null) => {
+    const queryClient = useQueryClient();
     useEffect(() => {
       if (!itemId) {
         return () => {
@@ -82,6 +80,7 @@ export const configureWsItemHooks = (
    * @param itemId The ID of the item of which to observe updates
    */
   useItemsUpdates: (itemIds?: UUID[] | null) => {
+    const queryClient = useQueryClient();
     useEffect(() => {
       if (!itemIds?.length) {
         return;
@@ -134,6 +133,7 @@ export const configureWsItemHooks = (
    * @param parentId The ID of the parent on which to observe children updates
    */
   useChildrenUpdates: (parentId?: UUID | null) => {
+    const queryClient = useQueryClient();
     useEffect(() => {
       if (!parentId) {
         return () => {
@@ -197,6 +197,7 @@ export const configureWsItemHooks = (
    * @param userId The ID of the user on which to observe owned items updates
    */
   useOwnItemsUpdates: (userId?: UUID | null) => {
+    const queryClient = useQueryClient();
     useEffect(() => {
       if (!userId) {
         return () => {
@@ -259,6 +260,7 @@ export const configureWsItemHooks = (
    * @param parentId The ID of the user on which to observe shared items updates
    */
   useSharedItemsUpdates: (userId?: UUID | null) => {
+    const queryClient = useQueryClient();
     useEffect(() => {
       if (!userId) {
         return () => {

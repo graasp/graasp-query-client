@@ -1,4 +1,10 @@
-import { DiscriminatedItem, Item, ResultOf, UUID } from '@graasp/sdk';
+import {
+  DiscriminatedItem,
+  EtherpadItemType,
+  Item,
+  ResultOf,
+  UUID,
+} from '@graasp/sdk';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
 import { QueryClientConfig } from '../types';
@@ -51,7 +57,7 @@ export type PostItemPayloadType = Partial<DiscriminatedItem> &
 export const postItem = async (
   { name, type, description, extra, parentId }: PostItemPayloadType,
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<DiscriminatedItem> =>
   verifyAuthentication(() =>
     axios
       .post(`${API_HOST}/${buildPostItemRoute(parentId)}`, {
@@ -66,7 +72,7 @@ export const postItem = async (
 export const deleteItems = async (
   ids: UUID[],
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<void> =>
   verifyAuthentication(() =>
     axios
       .delete(`${API_HOST}/${buildDeleteItemsRoute(ids)}`)
@@ -79,7 +85,7 @@ export const editItem = async (
   id: UUID,
   item: Partial<Item>,
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<DiscriminatedItem> =>
   verifyAuthentication(() =>
     axios
       .patch(`${API_HOST}/${buildEditItemRoute(id)}`, {
@@ -129,16 +135,18 @@ export const moveItems = async (
     ids,
   }: {
     ids: UUID[];
-    to: UUID;
+    to?: UUID;
   },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<void> =>
   verifyAuthentication(() => {
     // send parentId if defined
     const body = { ...(to && { parentId: to }) };
-    return axios.post(`${API_HOST}/${buildMoveItemsRoute(ids)}`, {
-      ...body,
-    });
+    return axios
+      .post(`${API_HOST}/${buildMoveItemsRoute(ids)}`, {
+        ...body,
+      })
+      .then(({ data }) => data);
   });
 
 export const copyItems = async (
@@ -150,7 +158,7 @@ export const copyItems = async (
     to?: UUID;
   },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<void> =>
   verifyAuthentication(() => {
     // send parentId if defined
     const body = { ...(to && { parentId: to }) };
@@ -254,7 +262,7 @@ export const postEtherpad = async (
     parentId?: UUID;
   },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<EtherpadItemType> =>
   verifyAuthentication(() =>
     axios
       .post(`${API_HOST}/${buildPostEtherpadRoute(parentId)}`, {

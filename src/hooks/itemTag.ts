@@ -1,5 +1,5 @@
 import { List } from 'immutable';
-import { QueryClient, useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 
 import { ItemTag, UUID, convertJs } from '@graasp/sdk';
 import { ItemTagRecord, ResultOfRecord } from '@graasp/sdk/frontend';
@@ -9,7 +9,7 @@ import { UndefinedArgument } from '../config/errors';
 import { itemTagsKeys } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
-export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
+export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
 
   const useItemTags = (id?: UUID) =>
@@ -25,8 +25,9 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
       ...defaultQueryOptions,
     });
 
-  const useItemsTags = (ids?: UUID[]) =>
-    useQuery({
+  const useItemsTags = (ids?: UUID[]) => {
+    const queryClient = useQueryClient();
+    return useQuery({
       queryKey: itemTagsKeys.manyIds(ids),
       queryFn: (): Promise<ResultOfRecord<ItemTag[]>> => {
         if (!ids || ids?.length === 0) {
@@ -51,6 +52,7 @@ export default (queryConfig: QueryClientConfig, queryClient: QueryClient) => {
       enabled: Boolean(ids && ids.length),
       ...defaultQueryOptions,
     });
+  };
 
   return { useItemTags, useItemsTags };
 };

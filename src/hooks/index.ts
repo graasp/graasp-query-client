@@ -1,5 +1,3 @@
-import { QueryClient } from 'react-query';
-
 import { QueryClientConfig } from '../types';
 import { WebsocketClient } from '../ws/ws-client';
 import configureActionHooks from './action';
@@ -22,28 +20,25 @@ import configurePlanHooks from './plan';
 import configureKeywordSearchHooks from './search';
 
 export default (
-  queryClient: QueryClient,
   queryConfig: QueryClientConfig,
   websocketClient?: WebsocketClient,
 ) => {
-  const memberHooks = configureMemberHooks(queryClient, queryConfig);
+  const memberHooks = configureMemberHooks(queryConfig);
 
   return {
-    ...configureChatHooks(queryClient, queryConfig, websocketClient),
+    ...configureChatHooks(queryConfig, websocketClient),
     ...configureMentionsHooks(
-      queryClient,
       queryConfig,
       memberHooks.useCurrentMember,
       websocketClient,
     ),
-    ...configureMembershipHooks(queryClient, queryConfig, websocketClient),
+    ...configureMembershipHooks(queryConfig, websocketClient),
     ...configureItemHooks(
-      queryClient,
       queryConfig,
       memberHooks.useCurrentMember,
       websocketClient,
     ),
-    ...configureItemTagHooks(queryConfig, queryClient),
+    ...configureItemTagHooks(queryConfig),
     ...configureItemFlagHooks(queryConfig),
     ...configureCategoryHooks(queryConfig),
     ...configureKeywordSearchHooks(queryConfig),

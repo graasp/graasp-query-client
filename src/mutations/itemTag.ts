@@ -1,5 +1,5 @@
 import { List } from 'immutable';
-import { QueryClient, useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 import { ItemTagType, UUID } from '@graasp/sdk';
 import { ItemTagRecord } from '@graasp/sdk/frontend';
@@ -10,7 +10,7 @@ import { itemTagsKeys } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
-export default (_queryClient: QueryClient, queryConfig: QueryClientConfig) => {
+export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   const usePostItemTag = () => {

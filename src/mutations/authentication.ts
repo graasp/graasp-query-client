@@ -1,11 +1,11 @@
-import { QueryClient, useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 import { UUID, saveUrlForRedirection } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import * as Api from '../api';
-import { CURRENT_MEMBER_KEY, MUTATION_KEYS } from '../config/keys';
+import { CURRENT_MEMBER_KEY } from '../config/keys';
 import {
   signInRoutine,
   signInWithPasswordRoutine,
@@ -16,132 +16,130 @@ import {
 import { QueryClientConfig } from '../types';
 import { isServer } from '../utils/util';
 
-const { SIGN_IN, SIGN_OUT, UPDATE_PASSWORD, SIGN_IN_WITH_PASSWORD, SIGN_UP } =
-  MUTATION_KEYS;
-
-export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
+export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  queryClient.setMutationDefaults(SIGN_IN, {
-    mutationFn: (payload) => Api.signIn(payload, queryConfig),
-    onSuccess: () => {
-      notifier?.({
-        type: signInRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.SIGN_IN },
-      });
-      queryClient.resetQueries();
-    },
-    onError: (error) => {
-      notifier?.({
-        type: signInRoutine.FAILURE,
-        payload: { error },
-      });
-    },
-  });
-  const useSignIn = () =>
-    useMutation<void, unknown, { email: string; captcha: string }>(SIGN_IN);
+  const useSignIn = () => {
+    const queryClient = useQueryClient();
+    return useMutation(
+      (payload: { email: string; captcha: string }) =>
+        Api.signIn(payload, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: signInRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.SIGN_IN },
+          });
+          queryClient.resetQueries();
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: signInRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
+  };
 
-  queryClient.setMutationDefaults(SIGN_IN_WITH_PASSWORD, {
-    mutationFn: (payload) => Api.signInWithPassword(payload, queryConfig),
-    onSuccess: () => {
-      notifier?.({
-        type: signInWithPasswordRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.SIGN_IN_WITH_PASSWORD },
-      });
-      queryClient.resetQueries();
-    },
-    onError: (error) => {
-      notifier?.({
-        type: signInWithPasswordRoutine.FAILURE,
-        payload: { error },
-      });
-    },
-  });
-  const useSignInWithPassword = () =>
-    useMutation<
-      { resource: string },
-      unknown,
-      { email: string; password: Password; captcha: string }
-    >(SIGN_IN_WITH_PASSWORD);
+  const useSignInWithPassword = () => {
+    const queryClient = useQueryClient();
+    return useMutation(
+      (payload: { email: string; password: Password; captcha: string }) =>
+        Api.signInWithPassword(payload, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: signInWithPasswordRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.SIGN_IN_WITH_PASSWORD },
+          });
+          queryClient.resetQueries();
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: signInWithPasswordRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
+  };
 
   /**  mutation to update member password. suppose only you can edit yourself
    * @param {Password} password new password that user wants to set
    * @param {Password} currentPassword current password already stored
    */
-  queryClient.setMutationDefaults(UPDATE_PASSWORD, {
-    mutationFn: (payload) => Api.updatePassword(payload, queryConfig),
-    onSuccess: () => {
-      notifier?.({
-        type: updatePasswordRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
-      });
-    },
-    onError: (error) => {
-      notifier?.({
-        type: updatePasswordRoutine.FAILURE,
-        payload: { error },
-      });
-    },
-  });
   const useUpdatePassword = () =>
-    useMutation<
-      void,
-      unknown,
-      { password: Password; currentPassword: Password }
-    >(UPDATE_PASSWORD);
+    useMutation(
+      (payload: { password: Password; currentPassword: Password }) =>
+        Api.updatePassword(payload, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: updatePasswordRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
+          });
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: updatePasswordRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
 
-  queryClient.setMutationDefaults(SIGN_UP, {
-    mutationFn: (payload) => Api.signUp(payload, queryConfig),
-    onSuccess: () => {
-      notifier?.({
-        type: signUpRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.SIGN_UP },
-      });
-    },
-    onError: (error) => {
-      notifier?.({
-        type: signUpRoutine.FAILURE,
-        payload: { error },
-      });
-    },
-  });
   const useSignUp = () =>
-    useMutation<
-      void,
-      unknown,
-      { name: string; email: string; captcha: string }
-    >(SIGN_UP);
+    useMutation(
+      (payload: { name: string; email: string; captcha: string }) =>
+        Api.signUp(payload, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: signUpRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.SIGN_UP },
+          });
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: signUpRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
 
-  queryClient.setMutationDefaults(SIGN_OUT, {
-    mutationFn: (_currentMemberId: UUID) => Api.signOut(queryConfig),
-    onSuccess: (_res, _currentMemberId) => {
-      notifier?.({
-        type: signOutRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
-      });
-      queryClient.resetQueries();
+  const useSignOut = () => {
+    const queryClient = useQueryClient();
+    return useMutation((_currentMemberId: UUID) => Api.signOut(queryConfig), {
+      onSuccess: (_res, _currentMemberId) => {
+        notifier?.({
+          type: signOutRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
+        });
+        queryClient.resetQueries();
 
-      // cookie operations only if window is defined (operation happens in the frontend)
-      if (!isServer() && queryConfig.DOMAIN) {
-        // save current page for further redirection
-        saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
-        // remove cookie and stored session from browser when the logout is confirmed
-        // todo: find a way to do something equivalent but with httpOnly cookies
-        // setCurrentSession(null, queryConfig.DOMAIN);
-        // removeSession(currentMemberId, queryConfig.DOMAIN);
-      }
-      // Update when the server confirmed the logout, instead optimistically updating the member
-      // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, undefined);
-    },
-    onError: (error) => {
-      notifier?.({
-        type: signOutRoutine.FAILURE,
-        payload: { error },
-      });
-    },
-  });
-  const useSignOut = () => useMutation<void, unknown, UUID>(SIGN_OUT);
+        // cookie operations only if window is defined (operation happens in the frontend)
+        if (!isServer() && queryConfig.DOMAIN) {
+          // save current page for further redirection
+          saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
+          // remove cookie and stored session from browser when the logout is confirmed
+          // todo: find a way to do something equivalent but with httpOnly cookies
+          // setCurrentSession(null, queryConfig.DOMAIN);
+          // removeSession(currentMemberId, queryConfig.DOMAIN);
+        }
+        // Update when the server confirmed the logout, instead optimistically updating the member
+        // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
+        queryClient.setQueryData(CURRENT_MEMBER_KEY, undefined);
+      },
+      onError: (error: Error) => {
+        notifier?.({
+          type: signOutRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
+  };
 
   // disable feature: session should't be store in cookie and available to js
   // queryClient.setMutationDefaults(SWITCH_MEMBER, {

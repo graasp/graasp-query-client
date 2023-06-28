@@ -1,5 +1,5 @@
 import { List } from 'immutable';
-import { QueryClient, UseQueryResult, useQuery } from 'react-query';
+import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
 
 import {
   ItemMembership,
@@ -21,7 +21,6 @@ import { configureWsMembershipHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
 
 export default (
-  queryClient: QueryClient,
   queryConfig: QueryClientConfig,
   websocketClient?: WebsocketClient,
 ): {
@@ -38,7 +37,7 @@ export default (
 
   const membershipWsHooks =
     enableWebsocket && websocketClient // required to type-check non-null
-      ? configureWsMembershipHooks(queryClient, websocketClient)
+      ? configureWsMembershipHooks(websocketClient)
       : undefined;
 
   return {
@@ -72,6 +71,7 @@ export default (
       ids?: UUID[],
       options?: { getUpdates?: boolean },
     ): UseQueryResult<ResultOfRecord<ItemMembership[]>> => {
+      const queryClient = useQueryClient();
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       membershipWsHooks?.useItemsMembershipsUpdates(getUpdates ? ids : null);

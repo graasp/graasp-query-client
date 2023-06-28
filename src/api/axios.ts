@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import {
   ResultOf,
@@ -66,7 +66,7 @@ export default configureAxios;
 export const splitRequestByIds = <T>(
   ids: string[],
   chunkSize: number,
-  buildRequest: (ids: string[]) => Promise<ResultOf<T>>,
+  buildRequest: (ids: string[]) => Promise<ResultOf<T> | void>,
   ignoreErrors = false,
 ): Promise<ResultOfRecord<T>> => {
   const shunkedIds = spliceIntoChunks(ids, chunkSize);
@@ -79,7 +79,7 @@ export const splitRequestByIds = <T>(
       return null;
     }
 
-    const result = responses.reduce(
+    const result = (responses as ResultOf<T>[]).reduce(
       (prev, d) => ({
         data: { ...prev.data, ...(d.data ?? {}) },
         errors: prev.errors.concat(d.errors),
@@ -92,22 +92,4 @@ export const splitRequestByIds = <T>(
     }
     return convertJs(result);
   });
-};
-
-/**
- * Split a given request in multiple smallest requests, so it conforms to the backend limitations
- * The endpoint returns empty result, so do the splitted requests
- * @param {string[]} ids elements' id
- * @param {number} chunkSize maximum number of ids per request
- * @param {function} buildRequest builder for the request given the chunk ids
- * @param {boolean} [ignoreErrors=false] whether we ignore errors
- * @returns {Promise} all requests returning their data merged
- */
-export const splitAsyncRequestByIds = (
-  ids: string[],
-  chunkSize: number,
-  buildRequest: (ids: string[]) => Promise<AxiosResponse<any, any>>,
-) => {
-  const shunkedIds = spliceIntoChunks(ids, chunkSize);
-  return Promise.all(shunkedIds.map((groupedIds) => buildRequest(groupedIds)));
 };

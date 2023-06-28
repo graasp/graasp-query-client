@@ -59,9 +59,9 @@ export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) =>
   );
 
 export const editMember = async (
-  payload: { id: UUID; extra: MemberExtra },
+  payload: { id: UUID; extra?: MemberExtra; name?: string },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<Member> =>
   verifyAuthentication(() =>
     axios
       .patch(`${API_HOST}/${buildPatchMember(payload.id)}`, {
@@ -83,7 +83,7 @@ export const deleteMember = async (
 export const updatePassword = async (
   payload: { password: Password; currentPassword: Password },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<void> =>
   verifyAuthentication(() =>
     axios
       .patch(`${API_HOST}/${buildUpdateMemberPasswordRoute()}`, {

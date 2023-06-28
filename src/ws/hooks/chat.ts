@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { QueryClient } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import { ChatMessage, UUID, convertJs } from '@graasp/sdk';
 import { ChatMessageRecord, ItemChatRecord } from '@graasp/sdk/frontend';
@@ -16,15 +16,13 @@ interface ChatEvent {
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export const configureWsChatHooks = (
-  queryClient: QueryClient,
-  websocketClient: WebsocketClient,
-) => ({
+export const configureWsChatHooks = (websocketClient: WebsocketClient) => ({
   /**
    * React hook to subscribe to the updates of the given chat ID
    * @param chatId The ID of the chat of which to observe updates
    */
   useItemChatUpdates: (chatId: UUID | null) => {
+    const queryClient = useQueryClient();
     useEffect(() => {
       if (!chatId) {
         return () => {

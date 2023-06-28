@@ -1,5 +1,5 @@
 import { List, Record } from 'immutable';
-import { QueryClient, UseQueryResult, useQuery } from 'react-query';
+import { UseQueryResult, useQuery } from 'react-query';
 
 import { Member, convertJs } from '@graasp/sdk';
 import { ChatMentionRecord } from '@graasp/sdk/frontend';
@@ -11,7 +11,6 @@ import { configureWsChatMentionsHooks } from '../ws/index';
 import { WebsocketClient } from '../ws/ws-client';
 
 export default (
-  queryClient: QueryClient,
   queryConfig: QueryClientConfig,
   useCurrentMember: () => UseQueryResult,
   websocketClient?: WebsocketClient,
@@ -20,7 +19,7 @@ export default (
 
   const wsHooks =
     enableWebsocket && websocketClient
-      ? configureWsChatMentionsHooks(queryClient, websocketClient)
+      ? configureWsChatMentionsHooks(websocketClient)
       : undefined;
 
   return {

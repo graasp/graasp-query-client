@@ -47,7 +47,7 @@ export const postItemMembership = async (
     permission,
   }: { id: UUID; email: string; permission: PermissionLevel },
   config: QueryClientConfig,
-) => {
+): Promise<ItemMembership> => {
   const { API_HOST } = config;
   const member = await getMembersBy({ emails: [email] }, config);
 
@@ -69,7 +69,7 @@ export const postItemMembership = async (
 export const editItemMembership = async (
   { id, permission }: { id: UUID; permission: PermissionLevel },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<ItemMembership> =>
   verifyAuthentication(() =>
     axios
       .patch(`${API_HOST}/${buildEditItemMembershipRoute(id)}`, {
@@ -81,7 +81,7 @@ export const editItemMembership = async (
 export const deleteItemMembership = async (
   { id }: { id: UUID },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<ItemMembership> =>
   verifyAuthentication(() =>
     axios
       .delete(`${API_HOST}/${buildDeleteItemMembershipRoute(id)}`)

@@ -1,4 +1,4 @@
-import { QueryClient, UseQueryResult, useQuery } from 'react-query';
+import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
 
 import {
   MAX_TARGETS_FOR_READ_REQUEST,
@@ -24,7 +24,7 @@ import {
 import { getMembersRoutine } from '../routines/member';
 import { QueryClientConfig } from '../types';
 
-export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
+export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions, notifier } = queryConfig;
 
   return {
@@ -51,8 +51,9 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         ...defaultQueryOptions,
       }),
 
-    useMembers: (ids: UUID[]): UseQueryResult<ResultOfRecord<Member>> =>
-      useQuery({
+    useMembers: (ids: UUID[]): UseQueryResult<ResultOfRecord<Member>> => {
+      const queryClient = useQueryClient();
+      return useQuery({
         queryKey: buildMembersKey(ids),
         queryFn: async () =>
           splitRequestByIds(ids, MAX_TARGETS_FOR_READ_REQUEST, (chunk) =>
@@ -70,7 +71,8 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
         },
         enabled: Boolean(ids?.length),
         ...defaultQueryOptions,
-      }),
+      });
+    },
 
     useAvatar: ({
       id,
@@ -79,6 +81,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       id?: UUID;
       size?: string;
     }) => {
+      const queryClient = useQueryClient();
       let shouldFetch = true;
       if (id) {
         shouldFetch =
@@ -107,6 +110,7 @@ export default (queryClient: QueryClient, queryConfig: QueryClientConfig) => {
       id?: UUID;
       size?: string;
     }) => {
+      const queryClient = useQueryClient();
       let shouldFetch = true;
       if (id) {
         shouldFetch =

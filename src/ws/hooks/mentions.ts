@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 import { useEffect } from 'react';
-import { QueryClient } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import { ChatMention, UUID, convertJs } from '@graasp/sdk';
 import { ChatMentionRecord } from '@graasp/sdk/frontend';
@@ -17,7 +17,6 @@ interface MentionEvent {
 
 // eslint-disable-next-line import/prefer-default-export
 export const configureWsChatMentionsHooks = (
-  queryClient: QueryClient,
   websocketClient: WebsocketClient,
 ): { useMentionsUpdates: (memberId: UUID | null) => void } => ({
   /**
@@ -25,6 +24,7 @@ export const configureWsChatMentionsHooks = (
    * @param memberId The ID of the member for which to observe updates
    */
   useMentionsUpdates: (memberId: UUID | null) => {
+    const queryClient = useQueryClient();
     useEffect(() => {
       if (!memberId) {
         return () => {

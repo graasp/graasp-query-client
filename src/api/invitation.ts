@@ -1,4 +1,4 @@
-import { Invitation, UUID } from '@graasp/sdk';
+import { Invitation, ResultOf, UUID } from '@graasp/sdk';
 import { NewInvitation } from '@graasp/sdk/frontend';
 
 import { QueryClientConfig } from '../types';
@@ -26,7 +26,7 @@ export const getInvitation = async (
 export const postInvitations = async (
   { itemId, invitations }: { itemId: UUID; invitations: NewInvitation[] },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<ResultOf<Invitation>> =>
   verifyAuthentication(() =>
     axios
       .post(`${API_HOST}/${buildPostInvitationsRoute(itemId)}`, { invitations })
@@ -36,7 +36,7 @@ export const postInvitations = async (
 export const getInvitationsForItem = async (
   id: UUID,
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<Invitation[]> =>
   verifyAuthentication(() =>
     axios
       .get(`${API_HOST}/${buildGetItemInvitationsForItemRoute(id)}`)
@@ -47,7 +47,7 @@ export const patchInvitation = async (
   payload: { itemId: UUID; id: UUID },
   body: Partial<Invitation>,
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<Invitation> =>
   verifyAuthentication(() =>
     axios
       .patch(`${API_HOST}/${buildPatchInvitationRoute(payload)}`, body)
@@ -57,7 +57,7 @@ export const patchInvitation = async (
 export const deleteInvitation = async (
   payload: { itemId: UUID; id: UUID },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<Invitation> =>
   verifyAuthentication(() =>
     axios
       .delete(`${API_HOST}/${buildDeleteInvitationRoute(payload)}`)
@@ -67,7 +67,7 @@ export const deleteInvitation = async (
 export const resendInvitation = async (
   payload: { itemId: UUID; id: UUID },
   { API_HOST }: QueryClientConfig,
-) =>
+): Promise<void> =>
   verifyAuthentication(() =>
     axios.post(`${API_HOST}/${buildResendInvitationRoute(payload)}`),
   );
