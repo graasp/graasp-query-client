@@ -169,7 +169,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useEditItem = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (item: Partial<Item> & Pick<Item, 'id'>) =>
+      (item: Partial<DiscriminatedItem> & Pick<Item, 'id'>) =>
         Api.editItem(item.id, item, queryConfig),
       // newItem contains only changed values
       {

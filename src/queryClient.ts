@@ -101,7 +101,6 @@ export default (config: Partial<QueryClientConfig>) => {
 
   // returns the queryClient and relative instances
   return {
-    /** @deprecated use useQueryClient */
     queryClient,
     useQueryClient,
     QueryClientProvider,
