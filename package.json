@@ -43,7 +43,7 @@
     "@types/crypto-js": "4.1.1",
     "@types/jest": "29.5.2",
     "@types/js-cookie": "3.0.3",
-    "@types/jsdom": "16.2.15",
+    "@types/jsdom": "21.1.1",
     "@types/node": "18.16.18",
     "@types/qs": "6.9.7",
     "@types/react": "17.0.62",
