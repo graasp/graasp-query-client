@@ -3370,15 +3370,15 @@ __metadata:
     "@testing-library/user-event": 14.4.3
     "@trivago/prettier-plugin-sort-imports": 4.1.1
     "@types/crypto-js": 4.1.1
-    "@types/jest": 29.5.1
+    "@types/jest": 29.5.2
     "@types/js-cookie": 3.0.3
     "@types/jsdom": 16.2.15
-    "@types/node": 18.16.3
+    "@types/node": 18.16.18
     "@types/qs": 6.9.7
-    "@types/react": 17.0.58
-    "@types/react-dom": 17.0.16
-    "@types/react-test-renderer": 17.0.1
-    "@types/uuid": 9.0.1
+    "@types/react": 17.0.62
+    "@types/react-dom": 17.0.20
+    "@types/react-test-renderer": 17.0.2
+    "@types/uuid": 9.0.2
     "@typescript-eslint/eslint-plugin": 5.60.1
     "@typescript-eslint/parser": 5.60.1
     axios: 0.27.2
@@ -3399,7 +3399,7 @@ __metadata:
     jest: 29.5.0
     jest-environment-jsdom: 28.1.3
     jest-immutable-matchers: 3.0.0
-    js-cookie: 3.0.1
+    js-cookie: 3.0.5
     microbundle-crl: 0.13.11
     mock-socket: 9.2.1
     nock: 13.3.1
@@ -3410,7 +3410,7 @@ __metadata:
     standard-version: 9.5.0
     ts-jest: 29.1.0
     ts-node: 10.9.1
-    typescript: 5.1.5
+    typescript: 5.1.6
     uuid: 9.0.0
     wait-on: 7.0.1
   peerDependencies:
@@ -4997,23 +4997,13 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@types/jest@npm:*":
+"@types/jest@npm:*, @types/jest@npm:29.5.2":
   version: 29.5.2
   resolution: "@types/jest@npm:29.5.2"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
   checksum: 7d205599ea3cccc262bad5cc173d3242d6bf8138c99458509230e4ecef07a52d6ddcde5a1dbd49ace655c0af51d2dbadef3748697292ea4d86da19d9e03e19c0
-  languageName: node
-  linkType: hard
-
-"@types/jest@npm:29.5.1":
-  version: 29.5.1
-  resolution: "@types/jest@npm:29.5.1"
-  dependencies:
-    expect: ^29.0.0
-    pretty-format: ^29.0.0
-  checksum: 0a22491dec86333c0e92b897be2c809c922a7b2b0aa5604ac369810d6b2360908b4a3f2c6892e8a237a54fa1f10ecefe0e823ec5fcb7915195af4dfe88d2197e
   languageName: node
   linkType: hard
 
@@ -5083,10 +5073,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.16.3":
-  version: 18.16.3
-  resolution: "@types/node@npm:18.16.3"
-  checksum: 816b39d45b05ebdc6f362b630970df3f6d82f71d418a2555353522f4eeeb078fa201de5299f02c09a09faa975e43b2745fe19c263d44069f87ddf37d6c37b717
+"@types/node@npm:18.16.18":
+  version: 18.16.18
+  resolution: "@types/node@npm:18.16.18"
+  checksum: d32d8a0a04cd3f5ecb361bcb42f3a07623881ac90d680e06bf626defb3c663a94860d11690babe607cfe67265eceeb8a59ba5fe40c0e49f5a1b01e0088640469
   languageName: node
   linkType: hard
 
@@ -5152,12 +5142,12 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@types/react-dom@npm:17.0.16":
-  version: 17.0.16
-  resolution: "@types/react-dom@npm:17.0.16"
+"@types/react-dom@npm:17.0.20":
+  version: 17.0.20
+  resolution: "@types/react-dom@npm:17.0.20"
   dependencies:
     "@types/react": ^17
-  checksum: 2f41a45ef955c8f68a7bcd22343715f15e1560a5e5ba941568b3c970d9151f78fe0975ecf4df7f691339af546555e0f23fa423a0a5bcd7ea4dd4f9c245509936
+  checksum: 525439fb14a033fc5dbe74711ecc50ec82273a528df9656594066a6219401e975101dafffd15d9a1a57a9442d52ea0c92eaacae09554dde27cd792e773f67467
   languageName: node
   linkType: hard
 
@@ -5170,12 +5160,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-test-renderer@npm:17.0.1":
-  version: 17.0.1
-  resolution: "@types/react-test-renderer@npm:17.0.1"
+"@types/react-test-renderer@npm:17.0.2":
+  version: 17.0.2
+  resolution: "@types/react-test-renderer@npm:17.0.2"
   dependencies:
-    "@types/react": "*"
-  checksum: ecaae8df36cd8cfeb89080d52534856acc3789bad9a6e369ff5119426377c827b4e5b5daa638507f2c1c2fd6c994bf45de288a698143178cd4049c2cd8b77b35
+    "@types/react": ^17
+  checksum: 0be325798b6b38cc31fbb11f2f1e1a5578cc3b23eddf1ddd1ab58ccf50966e8f779383084d8bc3a7db3108ad815af8fbae5c0f54329a88d52200e01547d85c33
   languageName: node
   linkType: hard
 
@@ -5196,18 +5186,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:17.0.58":
-  version: 17.0.58
-  resolution: "@types/react@npm:17.0.58"
-  dependencies:
-    "@types/prop-types": "*"
-    "@types/scheduler": "*"
-    csstype: ^3.0.2
-  checksum: 4eaf32b86c43f388c681e34a00921c508dd88a1d1022aebfadc5fe802b7c5bed863de1a17eed31e43ca2d65222952dfe79a022055a0e6e4e1ad89fc5a42ec05e
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:^17":
+"@types/react@npm:17.0.62, @types/react@npm:^17":
   version: 17.0.62
   resolution: "@types/react@npm:17.0.62"
   dependencies:
@@ -5335,10 +5314,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:9.0.1":
-  version: 9.0.1
-  resolution: "@types/uuid@npm:9.0.1"
-  checksum: c472b8a77cbeded4bc529220b8611afa39bd64677f507838f8083d8aac8033b1f88cb9ddaa2f8589e0dcd2317291d0f6e1379f82d5ceebd6f74f3b4825288e00
+"@types/uuid@npm:9.0.2":
+  version: 9.0.2
+  resolution: "@types/uuid@npm:9.0.2"
+  checksum: 1754bcf3444e1e3aeadd6e774fc328eb53bc956665e2e8fb6ec127aa8e1f43d9a224c3d22a9a6233dca8dd81a12dc7fed4d84b8876dd5ec82d40f574f7ff8b68
   languageName: node
   linkType: hard
 
@@ -12960,13 +12939,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-cookie@npm:3.0.1":
-  version: 3.0.1
-  resolution: "js-cookie@npm:3.0.1"
-  checksum: bb48de67e2a6bd1ae3dfd6b2d5a167c33dd0c5a37e909206161eb0358c98f17cb55acd55827a58e9eea3630d89444e7479f7938ef4420dda443218b8c434a4c3
-  languageName: node
-  linkType: hard
-
 "js-cookie@npm:3.0.5":
   version: 3.0.5
   resolution: "js-cookie@npm:3.0.5"
@@ -19140,23 +19112,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.1.5":
-  version: 5.1.5
-  resolution: "typescript@npm:5.1.5"
+"typescript@npm:5.1.6":
+  version: 5.1.6
+  resolution: "typescript@npm:5.1.6"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 0eef8699e05ae767096924dbed633c340b4d36e953bb8ed87fb12e9dd9dcea5055ceac7182c614a556dbd346a8a82df799d330e1e286ae66e17c84e1710f6a6f
+  checksum: b2f2c35096035fe1f5facd1e38922ccb8558996331405eb00a5111cc948b2e733163cc22fab5db46992aba7dd520fff637f2c1df4996ff0e134e77d3249a7350
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.1.5#~builtin<compat/typescript>":
-  version: 5.1.5
-  resolution: "typescript@patch:typescript@npm%3A5.1.5#~builtin<compat/typescript>::version=5.1.5&hash=5da071"
+"typescript@patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>":
+  version: 5.1.6
+  resolution: "typescript@patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 12ff5d14888805f24479e54bc8a3f83647107a6345f6c29dffcd429fb345be55f584a37e262cca58a0105203e41d4cb4e31b1b9096c9abeca0e2ace8eb00935e
+  checksum: f53bfe97f7c8b2b6d23cf572750d4e7d1e0c5fff1c36d859d0ec84556a827b8785077bc27676bf7e71fae538e517c3ecc0f37e7f593be913d884805d931bc8be
   languageName: node
   linkType: hard
 
