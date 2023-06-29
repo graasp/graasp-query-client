@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/graasp/graasp-query-client/compare/v1.1.0...v1.1.1) (2023-06-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency typescript to v5.1.6 ([#311](https://github.com/graasp/graasp-query-client/issues/311)) ([d082382](https://github.com/graasp/graasp-query-client/commit/d08238205f32dbfee742bed6c85924e58c866a51))
+
 ## [1.1.0](https://github.com/graasp/graasp-query-client/compare/v1.0.1...v1.1.0) (2023-06-28)
 
 
