@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.4](https://github.com/graasp/graasp-query-client/compare/v1.1.3...v1.1.4) (2023-06-29)
+
+
+### Bug Fixes
+
+* action may be undefined ([#325](https://github.com/graasp/graasp-query-client/issues/325)) ([1bc993e](https://github.com/graasp/graasp-query-client/commit/1bc993e7de2967029bc0505f459a1c4437185433))
+* **deps:** update dependency qs to v6.11.2 ([#299](https://github.com/graasp/graasp-query-client/issues/299)) ([cdc1014](https://github.com/graasp/graasp-query-client/commit/cdc1014528b792b8ca18e10a2c41ddc0e18315c5))
+
 ## [1.1.3](https://github.com/graasp/graasp-query-client/compare/v1.1.2...v1.1.3) (2023-06-29)
 
 
