@@ -22,6 +22,7 @@ yarn-error.log*
 
 # cache
 .eslintcache
+.jest-cache
 
 # testing and coverage
 cypress/screenshots

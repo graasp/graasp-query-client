@@ -11,7 +11,7 @@ export default {
   // bail: 0,
 
   // The directory where Jest should store its cached dependency information
-  // cacheDirectory: "/private/var/folders/8n/0bjjpkw94_97_lywdtll_d0r0000gn/T/jest_dx",
+  cacheDirectory: '.jest-cache',
 
   // Automatically clear mock calls and instances between every test
   // clearMocks: false,
