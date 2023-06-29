@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/graasp/graasp-query-client/compare/v1.1.2...v1.1.3) (2023-06-29)
+
+
+### Bug Fixes
+
+* add mock websockets client ([#321](https://github.com/graasp/graasp-query-client/issues/321)) ([b8734b8](https://github.com/graasp/graasp-query-client/commit/b8734b867bb26c8a4ad2ccb48e026b9c2d1090d5))
+
 ## [1.1.2](https://github.com/graasp/graasp-query-client/compare/v1.1.1...v1.1.2) (2023-06-29)
 
 
