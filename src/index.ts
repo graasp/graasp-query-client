@@ -5,3 +5,4 @@ export { DATA_KEYS } from './config/keys';
 export { API_ROUTES } from './api/routes';
 
 export * from './types';
+export { MockWebSocket } from './ws';
