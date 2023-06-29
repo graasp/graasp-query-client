@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/graasp/graasp-query-client/compare/v1.1.1...v1.1.2) (2023-06-29)
+
+
+### Bug Fixes
+
+* extract etherpad object from api response ([#322](https://github.com/graasp/graasp-query-client/issues/322)) ([09a900a](https://github.com/graasp/graasp-query-client/commit/09a900a96edfb6aca39fff9f83dba9fa0b5cde67))
+
 ## [1.1.1](https://github.com/graasp/graasp-query-client/compare/v1.1.0...v1.1.1) (2023-06-29)
 
 
