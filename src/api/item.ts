@@ -275,6 +275,8 @@ export const getEtherpad = (
   { itemId, mode }: { itemId: UUID; mode: 'read' | 'write' },
   { API_HOST }: QueryClientConfig,
 ) =>
-  axios.get(`${API_HOST}/${buildGetEtherpadRoute(itemId)}`, {
-    params: { mode },
-  });
+  axios
+    .get(`${API_HOST}/${buildGetEtherpadRoute(itemId)}`, {
+      params: { mode },
+    })
+    .then(({ data }) => data);
