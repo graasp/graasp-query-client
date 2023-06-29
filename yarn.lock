@@ -10604,7 +10604,7 @@ __metadata:
     react-dom: 17.0.2
     react-query: 3.39.3
     react-scripts: 5.0.1
-    typescript: 5.0.4
+    typescript: 5.1.6
   languageName: unknown
   linkType: soft
 
