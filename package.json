@@ -25,7 +25,7 @@
     "crypto-js": "4.1.1",
     "http-status-codes": "2.2.0",
     "immutable": "4.3.0",
-    "qs": "6.11.1",
+    "qs": "6.11.2",
     "react-query": "3.39.3",
     "uuid": "9.0.0"
   },
