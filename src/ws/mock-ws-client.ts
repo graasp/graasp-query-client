@@ -27,7 +27,7 @@ export default class MockWebSocket {
   send(msg: string) {
     const req = JSON.parse(msg);
     // acknowledge request
-    if (req.action.includes('subscribe')) {
+    if (req.action?.includes('subscribe')) {
       const res = {
         data: JSON.stringify({
           realm: 'notif',
