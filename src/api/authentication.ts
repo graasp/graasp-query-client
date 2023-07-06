@@ -4,6 +4,8 @@ import { Password } from '@graasp/sdk/frontend';
 import { QueryClientConfig } from '../types';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
+  MOBILE_SIGN_IN_ROUTE,
+  MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
@@ -18,12 +20,17 @@ export const signOut = ({ API_HOST }: QueryClientConfig): Promise<void> =>
   );
 
 export const signIn = async (
-  payload: { email: string },
+  payload: { email: string; captcha: string },
   { API_HOST }: QueryClientConfig,
 ): Promise<void> => axios.post(`${API_HOST}/${SIGN_IN_ROUTE}`, payload);
 
+export const mobileSignIn = async (
+  payload: { email: string; challenge: string; captcha: string },
+  { API_HOST }: QueryClientConfig,
+): Promise<void> => axios.post(`${API_HOST}/${MOBILE_SIGN_IN_ROUTE}`, payload);
+
 export const signInWithPassword = async (
-  payload: { email: string; password: Password },
+  payload: { email: string; password: Password; captcha: string },
   { API_HOST }: QueryClientConfig,
 ): Promise<{ resource: string }> =>
   axios({
@@ -33,6 +40,17 @@ export const signInWithPassword = async (
     // Resolve only if the status code is less than 500
     validateStatus: (status) => status >= 200 && status < 400,
   }).then(({ data }) => data);
+
+export const mobileSignInWithPassword = async (
+  payload: {
+    email: string;
+    password: Password;
+    challenge: string;
+    captcha: string;
+  },
+  { API_HOST }: QueryClientConfig,
+): Promise<void> =>
+  axios.post(`${API_HOST}/${MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE}`, payload);
 
 export const signUp = async (
   payload: { name: string; email: string },

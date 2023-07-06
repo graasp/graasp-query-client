@@ -42,11 +42,61 @@ export default (queryConfig: QueryClientConfig) => {
     );
   };
 
+  const useMobileSignIn = () => {
+    const queryClient = useQueryClient();
+    return useMutation(
+      (payload: { email: string; captcha: string; challenge: string }) =>
+        Api.mobileSignIn(payload, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: signInRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.SIGN_IN },
+          });
+          queryClient.resetQueries();
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: signInRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
+  };
+
   const useSignInWithPassword = () => {
     const queryClient = useQueryClient();
     return useMutation(
       (payload: { email: string; password: Password; captcha: string }) =>
         Api.signInWithPassword(payload, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: signInWithPasswordRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.SIGN_IN_WITH_PASSWORD },
+          });
+          queryClient.resetQueries();
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: signInWithPasswordRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
+  };
+
+  const useMobileSignInWithPassword = () => {
+    const queryClient = useQueryClient();
+    return useMutation(
+      (payload: {
+        email: string;
+        password: Password;
+        captcha: string;
+        challenge: string;
+      }) => Api.mobileSignInWithPassword(payload, queryConfig),
       {
         onSuccess: () => {
           notifier?.({
@@ -178,5 +228,7 @@ export default (queryConfig: QueryClientConfig) => {
     useSignOut,
     useSignUp,
     useUpdatePassword,
+    useMobileSignIn,
+    useMobileSignInWithPassword,
   };
 };
