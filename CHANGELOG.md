@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.5](https://github.com/graasp/graasp-query-client/compare/v1.1.4...v1.1.5) (2023-07-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @graasp/sdk to v1.1.2 ([#341](https://github.com/graasp/graasp-query-client/issues/341)) ([a2a3df3](https://github.com/graasp/graasp-query-client/commit/a2a3df3ec6407e28b9b53e87fc1cc9400cabaf86))
+* export public getAllPublishedItems route ([#337](https://github.com/graasp/graasp-query-client/issues/337)) ([115d578](https://github.com/graasp/graasp-query-client/commit/115d578ef4ac03a63e729312ddc5d1df0140917f))
+* revert prettier to 2.x until plugins migrate to v3 ([115d578](https://github.com/graasp/graasp-query-client/commit/115d578ef4ac03a63e729312ddc5d1df0140917f))
+
 ## [1.1.4](https://github.com/graasp/graasp-query-client/compare/v1.1.3...v1.1.4) (2023-06-29)
 
 
