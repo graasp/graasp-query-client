@@ -409,6 +409,7 @@ export const API_ROUTES = {
   buildGetMembersBy,
   buildGetMembersRoute,
   buildGetPlanRoute,
+  buildGetAllPublishedItemsRoute,
   buildGetPublishedItemsForMemberRoute,
   buildImportH5PRoute,
   buildImportZipRoute,
