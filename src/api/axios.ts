@@ -82,7 +82,7 @@ export const splitRequestByIds = <T>(
     const result = (responses as ResultOf<T>[]).reduce(
       (prev, d) => ({
         data: { ...prev.data, ...(d.data ?? {}) },
-        errors: prev.errors.concat(d.errors),
+        errors: d.errors ? prev.errors.concat(d.errors) : prev.errors,
       }),
       { data: {}, errors: [] },
     );
