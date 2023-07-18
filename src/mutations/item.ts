@@ -61,21 +61,21 @@ export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   // Utils functions to mutate react query data
-  const mutateItem = async ({
+  const mutateItem = async <T extends object | null>({
     id,
     value,
     queryClient,
   }: {
     id: UUID;
-    value: unknown;
+    value: T;
     queryClient: QueryClient;
-  }): Promise<unknown> => {
+  }): Promise<T | undefined> => {
     const itemKey = buildItemKey(id);
 
     await queryClient.cancelQueries(itemKey);
 
     // Snapshot the previous value
-    const prevValue = queryClient.getQueryData(itemKey);
+    const prevValue = queryClient.getQueryData<T>(itemKey);
 
     queryClient.setQueryData(itemKey, value);
 
@@ -218,20 +218,21 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { message: SUCCESS_MESSAGES.EDIT_ITEM },
           });
         },
-        // todo: fix type
-        onError: (error: Error, newItem, context: any) => {
-          const { item: prevItem } = context;
-          const parentKey = getKeyForParentId(getDirectParentId(prevItem.path));
-          if (context.parent) {
+        onError: (error: Error, newItem, context) => {
+          if (context?.parent && context?.item) {
+            const prevItem = context?.item;
+            const parentKey = getKeyForParentId(
+              getDirectParentId(prevItem?.path),
+            );
             queryClient.setQueryData(parentKey, context.parent);
           }
 
           const itemKey = buildItemKey(newItem.id);
-          queryClient.setQueryData(itemKey, context.item);
+          queryClient.setQueryData(itemKey, context?.item);
           notifier?.({ type: editItemRoutine.FAILURE, payload: { error } });
         },
         onSettled: (_newItem, _error, { id }, context) => {
-          const { item: prevItem } = context;
+          const prevItem = context?.item;
           if (prevItem) {
             const parentKey = getKeyForParentId(
               getDirectParentId(prevItem.path),
@@ -283,13 +284,12 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { message: SUCCESS_MESSAGES.RECYCLE_ITEMS },
           });
         },
-        // todo: fix type
-        onError: (error: Error, itemIds: UUID[], context: any) => {
+        onError: (error: Error, itemIds: UUID[], context) => {
           const itemKey = buildItemKey(itemIds[0]);
           const itemData = queryClient.getQueryData(itemKey) as ItemRecord;
           const itemPath = itemData?.path;
 
-          if (itemPath && context.parent) {
+          if (itemPath && context?.parent) {
             const childrenKey = getKeyForParentId(getDirectParentId(itemPath));
             queryClient.setQueryData(childrenKey, context.parent);
           }
@@ -331,7 +331,13 @@ export default (queryConfig: QueryClientConfig) => {
             itemKey,
             itemData?.filter(({ item: { id } }) => !itemIds.includes(id)),
           );
-          const previousItems: any = {
+          const previousItems: {
+            [key: string]:
+              | List<RecycledItemDataRecord>
+              | ItemRecord
+              | undefined
+              | null;
+          } = {
             parent: itemData,
           };
 
@@ -350,7 +356,7 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { message: SUCCESS_MESSAGES.DELETE_ITEMS },
           }),
         onError: (error: Error, itemIds: UUID[], context) => {
-          const itemPath = context[itemIds[0]]?.path;
+          const itemPath = context?.[itemIds[0]]?.path;
 
           if (itemPath) {
             queryClient.setQueryData(RECYCLED_ITEMS_DATA_KEY, context.parent);
@@ -358,7 +364,7 @@ export default (queryConfig: QueryClientConfig) => {
 
           itemIds.forEach((id) => {
             const itemKey = buildItemKey(id);
-            queryClient.setQueryData(itemKey, context[id]);
+            queryClient.setQueryData(itemKey, context?.[id]);
           });
 
           notifier?.({ type: deleteItemsRoutine.FAILURE, payload: { error } });

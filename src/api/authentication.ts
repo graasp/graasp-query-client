@@ -49,8 +49,13 @@ export const mobileSignInWithPassword = async (
     captcha: string;
   },
   { API_HOST }: QueryClientConfig,
-): Promise<void> =>
-  axios.post(`${API_HOST}/${MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE}`, payload);
+): Promise<{ resource: string }> =>
+  axios
+    .post(`${API_HOST}/${MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE}`, payload, {
+      // Resolve only if the status code is less than 500
+      validateStatus: (status) => status >= 200 && status < 400,
+    })
+    .then(({ data }) => data);
 
 export const signUp = async (
   payload: { name: string; email: string },

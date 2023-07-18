@@ -15,6 +15,9 @@ jobs:
       - name: install packages
         run: yarn
 
+      - name: Check code style, lint and type-check code
+        run: yarn check
+
       - name: build
         run: yarn build
 
