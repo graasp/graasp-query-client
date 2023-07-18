@@ -331,13 +331,8 @@ export default (queryConfig: QueryClientConfig) => {
             itemKey,
             itemData?.filter(({ item: { id } }) => !itemIds.includes(id)),
           );
-          const previousItems: {
-            [key: string]:
-              | List<RecycledItemDataRecord>
-              | ItemRecord
-              | undefined
-              | null;
-          } = {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const previousItems: any = {
             parent: itemData,
           };
 
@@ -428,6 +423,7 @@ export default (queryConfig: QueryClientConfig) => {
             .filter(Boolean);
 
           const { path } = itemsData[0] as ItemRecord;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const context: any = {
             ...(Boolean(itemsData) && {
               // add item in target item
@@ -481,7 +477,6 @@ export default (queryConfig: QueryClientConfig) => {
         },
         // If the mutation fails, use the context returned from onMutate to roll back
         onError: (error: Error, { ids, to }, context) => {
-          console.log(error);
           const itemIds = ids;
           const parentKey = getKeyForParentId(to);
           if (context.targetParent) {
@@ -526,7 +521,8 @@ export default (queryConfig: QueryClientConfig) => {
   const useUploadFiles = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      async ({ error, data }: { error?: any; data?: any; id?: string }) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      async ({ error, data }: { error?: Error; data?: any; id?: string }) => {
         throwIfArrayContainsErrorOrReturn(data);
         if (error) throw new Error(JSON.stringify(error));
       },
@@ -537,7 +533,7 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
           });
         },
-        onError: (axiosError, { error }) => {
+        onError: (axiosError: Error, { error }) => {
           notifier?.({
             type: uploadFileRoutine.FAILURE,
             payload: { error: error ?? axiosError },
@@ -553,13 +549,14 @@ export default (queryConfig: QueryClientConfig) => {
 
   /**
    * this mutation is used for its callback and invalidate the keys
-   * @param {UUID} id parent item id wher the file is uploaded in
-   * @param {error} [error] error occured during the file uploading
+   * @param {UUID} id parent item id where the file is uploaded in
+   * @param {error} [error] error occurred during the file uploading
    */
   const useUploadItemThumbnail = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      async ({ error }: { id: string; error?: any; data?: any }) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      async ({ error }: { id: string; error?: Error; data?: any }) => {
         if (error) throw new Error(JSON.stringify(error));
       },
       {
@@ -592,7 +589,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useImportZip = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      async ({ error }: { error?: any; id: string }) => {
+      async ({ error }: { error?: Error; id: string }) => {
         if (error) {
           throw new Error(JSON.stringify(error));
         }
@@ -618,7 +615,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useImportH5P = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      async ({ error }: { error?: any; id: string }) => {
+      async ({ error }: { error?: Error; id: string }) => {
         if (error) {
           throw new Error(JSON.stringify(error));
         }

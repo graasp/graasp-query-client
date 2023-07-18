@@ -6,7 +6,7 @@ import { List } from 'immutable';
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 
-import { UUID, convertJs } from '@graasp/sdk';
+import { DiscriminatedItem, UUID, convertJs } from '@graasp/sdk';
 import { ItemRecord } from '@graasp/sdk/frontend';
 
 import {
@@ -18,11 +18,10 @@ import {
 import { KINDS, OPS, TOPICS } from '../constants';
 import { Channel, WebsocketClient } from '../ws-client';
 
-// TODO: use graasp-types?
 interface ItemEvent {
   kind: string;
   op: string;
-  item: any;
+  item: DiscriminatedItem;
 }
 
 // eslint-disable-next-line import/prefer-default-export

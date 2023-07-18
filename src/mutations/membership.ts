@@ -128,10 +128,9 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_MEMBERSHIP },
           });
         },
-        // todo: fix type
-        onError: (error: Error, { itemId }, context: any) => {
+        onError: (error: Error, { itemId }, context) => {
           const membershipsKey = buildItemMembershipsKey(itemId);
-          queryClient.setQueryData(membershipsKey, context.memberships);
+          queryClient.setQueryData(membershipsKey, context?.memberships);
           notifier?.({
             type: deleteItemMembershipRoutine.FAILURE,
             payload: { error },

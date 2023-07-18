@@ -1,10 +1,13 @@
+// yes this bad, but we do not really have a choice...
+
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
-import { HttpMethod, PermissionLevel } from '@graasp/sdk';
+import { HttpMethod, ItemMembership, PermissionLevel } from '@graasp/sdk';
 import { ItemMembershipRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -397,8 +400,8 @@ describe('Membership Mutations', () => {
         },
         {
           response: buildResultOfData(
-            [ITEM_MEMBERSHIPS_RESPONSE.toJS()[0]],
-            (d) => (d as any).item.id,
+            [ITEM_MEMBERSHIPS_RESPONSE.toJS()[0] as ItemMembership],
+            (d: ItemMembership) => d.item.id,
             [UNAUTHORIZED_RESPONSE],
           ),
           method: HttpMethod.POST,
@@ -407,7 +410,7 @@ describe('Membership Mutations', () => {
         {
           response: buildResultOfData(
             [initialInvitations.toJS()[0]],
-            (d) => (d as any).email,
+            (d) => d.email,
             [UNAUTHORIZED_RESPONSE],
           ),
           method: HttpMethod.POST,
@@ -439,6 +442,7 @@ describe('Membership Mutations', () => {
       expect(param.payload.toJS()).toMatchObject(
         buildResultOfData(
           [ITEM_MEMBERSHIPS_RESPONSE.toJS()[0], initialInvitations.toJS()[0]],
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (d) => (d as any)?.member?.email || (d as any)?.email,
           [UNAUTHORIZED_RESPONSE, UNAUTHORIZED_RESPONSE],
         ),
