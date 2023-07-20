@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.2.0](https://github.com/graasp/graasp-query-client/compare/v1.1.5...v1.2.0) (2023-07-20)
+
+
+### Features
+
+* add mobile auth queries ([#333](https://github.com/graasp/graasp-query-client/issues/333)) ([0566e10](https://github.com/graasp/graasp-query-client/commit/0566e1008227a41ca2e19ede783df7d4dfb95d67))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @graasp/translations to v1.15.1 ([#346](https://github.com/graasp/graasp-query-client/issues/346)) ([e3f1661](https://github.com/graasp/graasp-query-client/commit/e3f1661a4e17c39cc3f9c125b6442cdf3ebe4f23))
+* use delete instead of post for unpublish ([#351](https://github.com/graasp/graasp-query-client/issues/351)) ([22a5e3d](https://github.com/graasp/graasp-query-client/commit/22a5e3d1bd85905d17811d8086f88279fa407743))
+
 ## [1.1.5](https://github.com/graasp/graasp-query-client/compare/v1.1.4...v1.1.5) (2023-07-12)
 
 
