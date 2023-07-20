@@ -62,6 +62,6 @@ export const unpublishItem = async (
 ): Promise<ItemPublished> =>
   verifyAuthentication(() =>
     axios
-      .post(`${API_HOST}/${buildItemUnpublishRoute(id)}`)
+      .delete(`${API_HOST}/${buildItemUnpublishRoute(id)}`)
       .then(({ data }) => data),
   );
