@@ -164,7 +164,9 @@ export const splitEndpointByIds = (
   ids: string[],
   chunkSize: number,
   buildRoute: (ids: string[]) => string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   response: any[],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getKey?: (d: any) => string,
   method?: HttpMethod,
 ) =>

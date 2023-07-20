@@ -39,7 +39,7 @@ export function verifyAuthentication<R>(request: () => R) {
 
 // this function is used to purposely trigger an error for react-query
 // especially when the request returns positively with an array of errors (ie: copy many items)
-export const throwIfArrayContainsErrorOrReturn = (data: ResultOf<any>) => {
+export const throwIfArrayContainsErrorOrReturn = (data: ResultOf<unknown>) => {
   const { errors } = data;
   if (errors?.length) {
     // assume all errors are the same
@@ -75,7 +75,7 @@ export const splitRequestByIds = <T>(
   ).then((responses) => {
     // only get request returns
     // todo: not ideal..
-    if (responses.every((r: any) => !r?.data)) {
+    if (responses.every((r) => !r?.data)) {
       return null;
     }
 

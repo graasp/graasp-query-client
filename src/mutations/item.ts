@@ -61,21 +61,21 @@ export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   // Utils functions to mutate react query data
-  const mutateItem = async ({
+  const mutateItem = async <T extends object | null>({
     id,
     value,
     queryClient,
   }: {
     id: UUID;
-    value: unknown;
+    value: T;
     queryClient: QueryClient;
-  }): Promise<unknown> => {
+  }): Promise<T | undefined> => {
     const itemKey = buildItemKey(id);
 
     await queryClient.cancelQueries(itemKey);
 
     // Snapshot the previous value
-    const prevValue = queryClient.getQueryData(itemKey);
+    const prevValue = queryClient.getQueryData<T>(itemKey);
 
     queryClient.setQueryData(itemKey, value);
 
@@ -218,20 +218,21 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { message: SUCCESS_MESSAGES.EDIT_ITEM },
           });
         },
-        // todo: fix type
-        onError: (error: Error, newItem, context: any) => {
-          const { item: prevItem } = context;
-          const parentKey = getKeyForParentId(getDirectParentId(prevItem.path));
-          if (context.parent) {
+        onError: (error: Error, newItem, context) => {
+          if (context?.parent && context?.item) {
+            const prevItem = context?.item;
+            const parentKey = getKeyForParentId(
+              getDirectParentId(prevItem?.path),
+            );
             queryClient.setQueryData(parentKey, context.parent);
           }
 
           const itemKey = buildItemKey(newItem.id);
-          queryClient.setQueryData(itemKey, context.item);
+          queryClient.setQueryData(itemKey, context?.item);
           notifier?.({ type: editItemRoutine.FAILURE, payload: { error } });
         },
         onSettled: (_newItem, _error, { id }, context) => {
-          const { item: prevItem } = context;
+          const prevItem = context?.item;
           if (prevItem) {
             const parentKey = getKeyForParentId(
               getDirectParentId(prevItem.path),
@@ -283,13 +284,12 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { message: SUCCESS_MESSAGES.RECYCLE_ITEMS },
           });
         },
-        // todo: fix type
-        onError: (error: Error, itemIds: UUID[], context: any) => {
+        onError: (error: Error, itemIds: UUID[], context) => {
           const itemKey = buildItemKey(itemIds[0]);
           const itemData = queryClient.getQueryData(itemKey) as ItemRecord;
           const itemPath = itemData?.path;
 
-          if (itemPath && context.parent) {
+          if (itemPath && context?.parent) {
             const childrenKey = getKeyForParentId(getDirectParentId(itemPath));
             queryClient.setQueryData(childrenKey, context.parent);
           }
@@ -331,6 +331,7 @@ export default (queryConfig: QueryClientConfig) => {
             itemKey,
             itemData?.filter(({ item: { id } }) => !itemIds.includes(id)),
           );
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const previousItems: any = {
             parent: itemData,
           };
@@ -350,7 +351,7 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { message: SUCCESS_MESSAGES.DELETE_ITEMS },
           }),
         onError: (error: Error, itemIds: UUID[], context) => {
-          const itemPath = context[itemIds[0]]?.path;
+          const itemPath = context?.[itemIds[0]]?.path;
 
           if (itemPath) {
             queryClient.setQueryData(RECYCLED_ITEMS_DATA_KEY, context.parent);
@@ -358,7 +359,7 @@ export default (queryConfig: QueryClientConfig) => {
 
           itemIds.forEach((id) => {
             const itemKey = buildItemKey(id);
-            queryClient.setQueryData(itemKey, context[id]);
+            queryClient.setQueryData(itemKey, context?.[id]);
           });
 
           notifier?.({ type: deleteItemsRoutine.FAILURE, payload: { error } });
@@ -422,6 +423,7 @@ export default (queryConfig: QueryClientConfig) => {
             .filter(Boolean);
 
           const { path } = itemsData[0] as ItemRecord;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const context: any = {
             ...(Boolean(itemsData) && {
               // add item in target item
@@ -475,7 +477,6 @@ export default (queryConfig: QueryClientConfig) => {
         },
         // If the mutation fails, use the context returned from onMutate to roll back
         onError: (error: Error, { ids, to }, context) => {
-          console.log(error);
           const itemIds = ids;
           const parentKey = getKeyForParentId(to);
           if (context.targetParent) {
@@ -520,7 +521,8 @@ export default (queryConfig: QueryClientConfig) => {
   const useUploadFiles = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      async ({ error, data }: { error?: any; data?: any; id?: string }) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      async ({ error, data }: { error?: Error; data?: any; id?: string }) => {
         throwIfArrayContainsErrorOrReturn(data);
         if (error) throw new Error(JSON.stringify(error));
       },
@@ -531,7 +533,7 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
           });
         },
-        onError: (axiosError, { error }) => {
+        onError: (axiosError: Error, { error }) => {
           notifier?.({
             type: uploadFileRoutine.FAILURE,
             payload: { error: error ?? axiosError },
@@ -547,13 +549,14 @@ export default (queryConfig: QueryClientConfig) => {
 
   /**
    * this mutation is used for its callback and invalidate the keys
-   * @param {UUID} id parent item id wher the file is uploaded in
-   * @param {error} [error] error occured during the file uploading
+   * @param {UUID} id parent item id where the file is uploaded in
+   * @param {error} [error] error occurred during the file uploading
    */
   const useUploadItemThumbnail = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      async ({ error }: { id: string; error?: any; data?: any }) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      async ({ error }: { id: string; error?: Error; data?: any }) => {
         if (error) throw new Error(JSON.stringify(error));
       },
       {
@@ -586,7 +589,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useImportZip = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      async ({ error }: { error?: any; id: string }) => {
+      async ({ error }: { error?: Error; id: string }) => {
         if (error) {
           throw new Error(JSON.stringify(error));
         }
@@ -612,7 +615,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useImportH5P = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      async ({ error }: { error?: any; id: string }) => {
+      async ({ error }: { error?: Error; id: string }) => {
         if (error) {
           throw new Error(JSON.stringify(error));
         }

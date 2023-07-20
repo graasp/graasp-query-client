@@ -88,7 +88,8 @@ export const buildResultOfData = <T>(
   const buildGetKey = getKey ?? getById;
   return {
     data: data
-      // TODO
+      // TODO: use a better generic type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .map((d: any) => ({ [buildGetKey(d)]: d }))
       .reduce((prev, curr) => ({ ...prev, ...curr }), {}),
     errors: errors ?? [],
@@ -264,7 +265,6 @@ const MEMBERSHIP_1: ItemMembershipRecord = createMockMembership({
 const MEMBERSHIP_2: ItemMembershipRecord = createMockMembership({
   id: 'membership-id1',
   member: MOCK_MEMBER,
-
   permission: PermissionLevel.Admin,
 });
 

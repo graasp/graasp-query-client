@@ -89,14 +89,9 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         // If the mutation fails, use the context returned from onMutate to roll back
-        onError: (
-          error: Error,
-          _,
-          // todo: fix type
-          context: any,
-        ) => {
+        onError: (error: Error, _, context) => {
           notifier?.({ type: editMemberRoutine.FAILURE, payload: { error } });
-          queryClient.setQueryData(CURRENT_MEMBER_KEY, context.previousMember);
+          queryClient.setQueryData(CURRENT_MEMBER_KEY, context?.previousMember);
         },
         // Always refetch after error or success:
         onSettled: () => {
@@ -115,6 +110,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useUploadAvatar = () => {
     const queryClient = useQueryClient();
     return useMutation(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async ({ error, data }: { error?: any; data?: any; id: UUID }) => {
         throwIfArrayContainsErrorOrReturn(data);
         if (error) throw new Error(JSON.stringify(error));

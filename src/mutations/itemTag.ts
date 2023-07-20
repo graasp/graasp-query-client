@@ -80,7 +80,7 @@ export default (queryConfig: QueryClientConfig) => {
       },
       onError: (error, { itemId }, context) => {
         const itemKey = itemTagsKeys.singleId(itemId);
-        queryClient.setQueryData(itemKey, (context as any).itemTags);
+        queryClient.setQueryData(itemKey, context?.itemTags);
         notifier?.({ type: deleteItemTagRoutine.FAILURE, payload: { error } });
       },
       onSettled: (_data, _error, { itemId }) => {

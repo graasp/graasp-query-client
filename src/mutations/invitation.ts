@@ -130,10 +130,9 @@ export default (queryConfig: QueryClientConfig) => {
             type: deleteInvitationRoutine.SUCCESS,
           });
         },
-        // todo: fix type problem
-        onError: (error: Error, { itemId }: { itemId: UUID }, context: any) => {
+        onError: (error: Error, { itemId }, context) => {
           const key = buildItemInvitationsKey(itemId);
-          queryClient.setQueryData(key, context.invitations);
+          queryClient.setQueryData(key, context?.invitations);
           queryConfig.notifier?.({
             type: deleteInvitationRoutine.FAILURE,
             payload: { error },

@@ -472,7 +472,7 @@ describe('Items Mutations', () => {
         MAX_TARGETS_FOR_MODIFY_REQUEST,
         (chunk) => `/${buildMoveItemsRoute(chunk)}`,
         response.toJS(),
-        (el) => el.id,
+        (el) => el,
         HttpMethod.POST,
       );
 
