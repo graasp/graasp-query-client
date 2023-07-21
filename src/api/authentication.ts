@@ -6,6 +6,7 @@ import configureAxios, { verifyAuthentication } from './axios';
 import {
   MOBILE_SIGN_IN_ROUTE,
   MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE,
+  MOBILE_SIGN_UP_ROUTE,
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
@@ -58,6 +59,11 @@ export const mobileSignInWithPassword = async (
     .then(({ data }) => data);
 
 export const signUp = async (
-  payload: { name: string; email: string },
+  payload: { name: string; email: string; captcha: string },
   { API_HOST }: QueryClientConfig,
 ): Promise<void> => axios.post(`${API_HOST}/${SIGN_UP_ROUTE}`, payload);
+
+export const mobileSignUp = async (
+  payload: { name: string; email: string; challenge: string; captcha: string },
+  { API_HOST }: QueryClientConfig,
+): Promise<void> => axios.post(`${API_HOST}/${MOBILE_SIGN_UP_ROUTE}`, payload);

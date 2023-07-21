@@ -11,6 +11,8 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
+  MOBILE_SIGN_IN_ROUTE,
+  MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
@@ -48,6 +50,7 @@ jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 const captcha = 'captcha';
 const email = 'myemail@email.com';
+const challenge = '1234';
 
 describe('Authentication Mutations', () => {
   const mockedNotifier = jest.fn();
@@ -115,6 +118,61 @@ describe('Authentication Mutations', () => {
     });
   });
 
+  describe('useMobileSignIn', () => {
+    const route = `/${MOBILE_SIGN_IN_ROUTE}`;
+    const mutation = mutations.useMobileSignIn;
+
+    it(`Sign in`, async () => {
+      const endpoints = [
+        { route, response: OK_RESPONSE, method: HttpMethod.POST },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ email, captcha, challenge });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: signInRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.SIGN_IN },
+      });
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          method: HttpMethod.POST,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ email, captcha });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: signInRoutine.FAILURE,
+        }),
+      );
+    });
+  });
+
   describe('useSignInWithPassword', () => {
     const route = `/${SIGN_IN_WITH_PASSWORD_ROUTE}`;
     const mutation = mutations.useSignInWithPassword;
@@ -141,6 +199,73 @@ describe('Authentication Mutations', () => {
 
       await act(async () => {
         await mockedMutation.mutate({ email, password, captcha });
+        await waitForMutation();
+      });
+
+      // verify cache keys
+      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: signInWithPasswordRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.SIGN_IN_WITH_PASSWORD },
+      });
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          method: HttpMethod.POST,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ email, captcha });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: signInWithPasswordRoutine.FAILURE,
+        }),
+      );
+    });
+  });
+
+  describe('useMobileSignInWithPassword', () => {
+    const route = `/${MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE}`;
+    const mutation = mutations.useMobileSignInWithPassword;
+    const password = 'password';
+    const link = 'mylink';
+
+    it(`Sign in with password`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: { resource: link },
+          statusCode: StatusCodes.SEE_OTHER,
+          method: HttpMethod.POST,
+        },
+      ];
+      // set random data in cache
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, 'somevalue');
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ email, password, captcha, challenge });
         await waitForMutation();
       });
 
@@ -264,6 +389,61 @@ describe('Authentication Mutations', () => {
 
       await act(async () => {
         await mockedMutation.mutate({ email, name, captcha });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: signUpRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.SIGN_UP },
+      });
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          method: HttpMethod.POST,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ email, name, captcha });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: signUpRoutine.FAILURE,
+        }),
+      );
+    });
+  });
+  describe('useMobileSignUp', () => {
+    const route = `/${SIGN_UP_ROUTE}`;
+    const mutation = mutations.useMobileSignUp;
+    const name = 'name';
+
+    it(`Sign up`, async () => {
+      const endpoints = [
+        { route, response: OK_RESPONSE, method: HttpMethod.POST },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ email, name, captcha, challenge });
         await waitForMutation();
       });
 

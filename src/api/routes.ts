@@ -156,6 +156,7 @@ export const buildDownloadItemThumbnailRoute = ({
   )}`;
 
 export const GET_CURRENT_MEMBER_ROUTE = `${MEMBERS_ROUTE}/current`;
+export const MOBILE_SIGN_UP_ROUTE = `m/register`;
 export const MOBILE_SIGN_IN_ROUTE = `m/login`;
 export const MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE = `m/login-password`;
 export const SIGN_IN_ROUTE = `login`;
