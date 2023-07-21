@@ -17,6 +17,7 @@ import * as Api from '../api';
 import { splitRequestByIds } from '../api/axios';
 import { UndefinedArgument } from '../config/errors';
 import {
+  buildGetMostLikedPublishedItems,
   buildItemPublishedInformationKey,
   buildManyItemPublishedInformationsKey,
   buildPublishedItemsForMemberKey,
@@ -39,6 +40,23 @@ export default (queryConfig: QueryClientConfig) => {
         queryKey: buildPublishedItemsKey(args?.categoryIds),
         queryFn: (): Promise<List<ItemRecord>> =>
           Api.getAllPublishedItems(args ?? {}, queryConfig).then((data) =>
+            convertJs(data),
+          ),
+        ...defaultQueryOptions,
+        enabled: enabledValue,
+      });
+    },
+    useMostLikedPublishedItems: (
+      args?: {
+        limit?: number;
+      },
+      options?: { enabled?: boolean },
+    ) => {
+      const enabledValue = options?.enabled ?? true;
+      return useQuery({
+        queryKey: buildGetMostLikedPublishedItems(args?.limit),
+        queryFn: (): Promise<List<ItemRecord>> =>
+          Api.getMostLikedPublishedItems(args ?? {}, queryConfig).then((data) =>
             convertJs(data),
           ),
         ...defaultQueryOptions,
