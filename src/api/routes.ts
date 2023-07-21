@@ -355,6 +355,10 @@ export const buildGetMostLikedPublishedItemsRoute = (limit?: number) =>
   `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/liked${
     limit ? qs.stringify({ limit }, { addQueryPrefix: true }) : ''
   }`;
+export const buildGetMostRecentPublishedItemsRoute = (limit?: number) =>
+  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/recent${
+    limit ? qs.stringify({ limit }, { addQueryPrefix: true }) : ''
+  }`;
 export const buildGetPublishedItemsForMemberRoute = (memberId: UUID) =>
   `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/members/${memberId}`;
 
@@ -417,6 +421,7 @@ export const API_ROUTES = {
   buildGetPlanRoute,
   buildGetAllPublishedItemsRoute,
   buildGetMostLikedPublishedItemsRoute,
+  buildGetMostRecentPublishedItemsRoute,
   buildGetPublishedItemsForMemberRoute,
   buildImportH5PRoute,
   buildImportZipRoute,

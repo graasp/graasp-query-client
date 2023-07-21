@@ -6,6 +6,7 @@ import {
   buildGetAllPublishedItemsRoute,
   buildGetItemPublishedInformationRoute,
   buildGetMostLikedPublishedItemsRoute,
+  buildGetMostRecentPublishedItemsRoute,
   buildGetPublishedItemsForMemberRoute,
   buildItemPublishRoute,
   buildItemUnpublishRoute,
@@ -28,6 +29,14 @@ export const getMostLikedPublishedItems = async (
 ): Promise<Item[]> =>
   axios
     .get(`${API_HOST}/${buildGetMostLikedPublishedItemsRoute(args?.limit)}`)
+    .then(({ data }) => data);
+
+export const getMostRecentPublishedItems = async (
+  args: { limit?: number },
+  { API_HOST }: QueryClientConfig,
+): Promise<Item[]> =>
+  axios
+    .get(`${API_HOST}/${buildGetMostRecentPublishedItemsRoute(args?.limit)}`)
     .then(({ data }) => data);
 
 export const getPublishedItemsForMember = async (

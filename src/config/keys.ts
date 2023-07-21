@@ -144,6 +144,12 @@ export const buildGetMostLikedPublishedItems = (limit?: number) => [
   'liked',
   limit,
 ];
+export const buildGetMostRecentPublishedItems = (limit?: number) => [
+  ITEMS_KEY,
+  'collections',
+  'recent',
+  limit,
+];
 
 export const buildPublishedItemsKey = (categoryIds?: UUID[]) => [
   ITEMS_KEY,
