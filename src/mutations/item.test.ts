@@ -257,6 +257,45 @@ describe('Items Mutations', () => {
       expect(queryClient.getQueryState(parentKey)?.isInvalidated).toBeTruthy();
     });
 
+    it.only('Edit item extra children order invalidate children key', async () => {
+      // set default data
+      const editedItem = ITEMS.get(3)!;
+      const editedItemKey = buildItemKey(editedItem.id);
+      const editPayload = {
+        id: editedItem.id,
+        extra: {folder: {childrenOrder: [1,2]}},
+      };
+      const childrenKey = buildItemChildrenKey(editedItem.id)
+      queryClient.setQueryData(childrenKey, List([ITEMS.get(1)!]));
+      queryClient.setQueryData(editedItemKey, editedItem);
+
+      const route = `/${buildEditItemRoute(editedItem.id)}`;
+      const response = item;
+      const endpoints = [
+        {
+          response,
+          method: HttpMethod.PATCH,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate(editPayload);
+        await waitForMutation();
+      });
+
+      expect(
+        queryClient.getQueryState(editedItemKey)?.isInvalidated,
+      ).toBeTruthy();
+      expect(queryClient.getQueryState(childrenKey)?.isInvalidated).toBeTruthy();
+    });
+
     it('Unauthorized', async () => {
       const route = `/${buildEditItemRoute(item.id)}`;
       queryClient.setQueryData(itemKey, item);

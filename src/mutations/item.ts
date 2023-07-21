@@ -3,8 +3,10 @@ import { QueryClient, useMutation, useQueryClient } from 'react-query';
 
 import {
   DiscriminatedItem,
+  FolderItemExtra,
   Item,
   ItemSettings,
+  ItemType,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
   ThumbnailSize,
   UUID,
@@ -231,13 +233,19 @@ export default (queryConfig: QueryClientConfig) => {
           queryClient.setQueryData(itemKey, context?.item);
           notifier?.({ type: editItemRoutine.FAILURE, payload: { error } });
         },
-        onSettled: (_newItem, _error, { id }, context) => {
+        onSettled: (_newItem, _error, { id , extra}, context) => {
           const prevItem = context?.item;
           if (prevItem) {
             const parentKey = getKeyForParentId(
               getDirectParentId(prevItem.path),
             );
             queryClient.invalidateQueries(parentKey);
+          }
+
+          // reorder affect children to change
+          if(((extra as FolderItemExtra)?.[ItemType.FOLDER])?.childrenOrder) {
+            console.log('woirfjkm')
+            queryClient.invalidateQueries(buildItemChildrenKey(id))
           }
 
           const itemKey = buildItemKey(id);
