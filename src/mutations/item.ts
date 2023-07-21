@@ -233,7 +233,7 @@ export default (queryConfig: QueryClientConfig) => {
           queryClient.setQueryData(itemKey, context?.item);
           notifier?.({ type: editItemRoutine.FAILURE, payload: { error } });
         },
-        onSettled: (_newItem, _error, { id , extra}, context) => {
+        onSettled: (_newItem, _error, { id, extra }, context) => {
           const prevItem = context?.item;
           if (prevItem) {
             const parentKey = getKeyForParentId(
@@ -243,9 +243,9 @@ export default (queryConfig: QueryClientConfig) => {
           }
 
           // reorder affect children to change
-          if(((extra as FolderItemExtra)?.[ItemType.FOLDER])?.childrenOrder) {
-            console.log('woirfjkm')
-            queryClient.invalidateQueries(buildItemChildrenKey(id))
+          if ((extra as FolderItemExtra)?.[ItemType.FOLDER]?.childrenOrder) {
+            console.log('woirfjkm');
+            queryClient.invalidateQueries(buildItemChildrenKey(id));
           }
 
           const itemKey = buildItemKey(id);

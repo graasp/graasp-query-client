@@ -263,9 +263,9 @@ describe('Items Mutations', () => {
       const editedItemKey = buildItemKey(editedItem.id);
       const editPayload = {
         id: editedItem.id,
-        extra: {folder: {childrenOrder: [1,2]}},
+        extra: { folder: { childrenOrder: [1, 2] } },
       };
-      const childrenKey = buildItemChildrenKey(editedItem.id)
+      const childrenKey = buildItemChildrenKey(editedItem.id);
       queryClient.setQueryData(childrenKey, List([ITEMS.get(1)!]));
       queryClient.setQueryData(editedItemKey, editedItem);
 
@@ -293,7 +293,9 @@ describe('Items Mutations', () => {
       expect(
         queryClient.getQueryState(editedItemKey)?.isInvalidated,
       ).toBeTruthy();
-      expect(queryClient.getQueryState(childrenKey)?.isInvalidated).toBeTruthy();
+      expect(
+        queryClient.getQueryState(childrenKey)?.isInvalidated,
+      ).toBeTruthy();
     });
 
     it('Unauthorized', async () => {
