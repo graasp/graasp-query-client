@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/graasp/graasp-query-client/compare/v1.2.0...v1.3.0) (2023-07-21)
+
+
+### Features
+
+* add mobile sign up hooks ([#354](https://github.com/graasp/graasp-query-client/issues/354)) ([6e83809](https://github.com/graasp/graasp-query-client/commit/6e838094d05363370bde5b7f100fdc066e350383))
+* add most liked and most recent collections  ([#357](https://github.com/graasp/graasp-query-client/issues/357)) ([e451953](https://github.com/graasp/graasp-query-client/commit/e451953c08e0916ec05ba7b1f5cefe702b381603))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @graasp/sdk to v1.1.3 ([#349](https://github.com/graasp/graasp-query-client/issues/349)) ([474e272](https://github.com/graasp/graasp-query-client/commit/474e2722e41729b491ea395de2eb253fab4cab3e))
+
 ## [1.2.0](https://github.com/graasp/graasp-query-client/compare/v1.1.5...v1.2.0) (2023-07-20)
 
 
