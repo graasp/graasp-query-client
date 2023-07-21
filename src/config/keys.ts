@@ -138,6 +138,18 @@ export const buildGetLikesForMemberKey = (id?: UUID) => [
   id,
 ];
 export const buildGetLikesForItem = (id?: UUID) => [ITEMS_KEY, 'likes', id];
+export const buildGetMostLikedPublishedItems = (limit?: number) => [
+  ITEMS_KEY,
+  'collections',
+  'liked',
+  limit,
+];
+export const buildGetMostRecentPublishedItems = (limit?: number) => [
+  ITEMS_KEY,
+  'collections',
+  'recent',
+  limit,
+];
 
 export const buildPublishedItemsKey = (categoryIds?: UUID[]) => [
   ITEMS_KEY,
