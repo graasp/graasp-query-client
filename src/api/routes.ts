@@ -351,6 +351,10 @@ export const buildGetAllPublishedItemsRoute = (categoryIds?: UUID[]) =>
         )
       : ''
   }`;
+export const buildGetMostLikedPublishedItemsRoute = (limit?: number) =>
+  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/liked${
+    limit ? qs.stringify({ limit }, { addQueryPrefix: true }) : ''
+  }`;
 export const buildGetPublishedItemsForMemberRoute = (memberId: UUID) =>
   `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/members/${memberId}`;
 
@@ -412,6 +416,7 @@ export const API_ROUTES = {
   buildGetMembersRoute,
   buildGetPlanRoute,
   buildGetAllPublishedItemsRoute,
+  buildGetMostLikedPublishedItemsRoute,
   buildGetPublishedItemsForMemberRoute,
   buildImportH5PRoute,
   buildImportZipRoute,

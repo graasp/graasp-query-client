@@ -5,6 +5,7 @@ import configureAxios, { verifyAuthentication } from './axios';
 import {
   buildGetAllPublishedItemsRoute,
   buildGetItemPublishedInformationRoute,
+  buildGetMostLikedPublishedItemsRoute,
   buildGetPublishedItemsForMemberRoute,
   buildItemPublishRoute,
   buildItemUnpublishRoute,
@@ -19,6 +20,14 @@ export const getAllPublishedItems = async (
 ): Promise<Item[]> =>
   axios
     .get(`${API_HOST}/${buildGetAllPublishedItemsRoute(args?.categoryIds)}`)
+    .then(({ data }) => data);
+
+export const getMostLikedPublishedItems = async (
+  args: { limit?: number },
+  { API_HOST }: QueryClientConfig,
+): Promise<Item[]> =>
+  axios
+    .get(`${API_HOST}/${buildGetMostLikedPublishedItemsRoute(args?.limit)}`)
     .then(({ data }) => data);
 
 export const getPublishedItemsForMember = async (
