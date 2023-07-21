@@ -159,6 +159,30 @@ export default (queryConfig: QueryClientConfig) => {
       },
     );
 
+  const useMobileSignUp = () =>
+    useMutation(
+      (payload: {
+        name: string;
+        email: string;
+        challenge: string;
+        captcha: string;
+      }) => Api.mobileSignUp(payload, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: signUpRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.SIGN_UP },
+          });
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: signUpRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
+
   const useSignOut = () => {
     const queryClient = useQueryClient();
     return useMutation((_currentMemberId: UUID) => Api.signOut(queryConfig), {
@@ -227,6 +251,7 @@ export default (queryConfig: QueryClientConfig) => {
     useSignInWithPassword,
     useSignOut,
     useSignUp,
+    useMobileSignUp,
     useUpdatePassword,
     useMobileSignIn,
     useMobileSignInWithPassword,
