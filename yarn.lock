@@ -3028,7 +3028,7 @@ __metadata:
     eslint-plugin-react-hooks: 4.6.0
     http-status-codes: 2.2.0
     husky: 8.0.3
-    immutable: 4.3.0
+    immutable: 4.3.1
     jest: 29.6.1
     jest-environment-jsdom: 29.6.1
     jest-immutable-matchers: 3.0.0
@@ -11364,13 +11364,6 @@ __metadata:
   version: 9.0.21
   resolution: "immer@npm:9.0.21"
   checksum: 70e3c274165995352f6936695f0ef4723c52c92c92dd0e9afdfe008175af39fa28e76aafb3a2ca9d57d1fb8f796efc4dd1e1cc36f18d33fa5b74f3dfb0375432
-  languageName: node
-  linkType: hard
-
-"immutable@npm:4.3.0":
-  version: 4.3.0
-  resolution: "immutable@npm:4.3.0"
-  checksum: bbd7ea99e2752e053323543d6ff1cc71a4b4614fa6121f321ca766db2bd2092f3f1e0a90784c5431350b7344a4f792fa002eac227062d59b9377b6c09063b58b
   languageName: node
   linkType: hard
 
