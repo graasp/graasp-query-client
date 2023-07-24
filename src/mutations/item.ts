@@ -244,7 +244,6 @@ export default (queryConfig: QueryClientConfig) => {
 
           // reorder affect children to change
           if ((extra as FolderItemExtra)?.[ItemType.FOLDER]?.childrenOrder) {
-            console.log('woirfjkm');
             queryClient.invalidateQueries(buildItemChildrenKey(id));
           }
 

@@ -257,7 +257,7 @@ describe('Items Mutations', () => {
       expect(queryClient.getQueryState(parentKey)?.isInvalidated).toBeTruthy();
     });
 
-    it.only('Edit item extra children order invalidate children key', async () => {
+    it('Edit item extra children order invalidate children key', async () => {
       // set default data
       const editedItem = ITEMS.get(3)!;
       const editedItemKey = buildItemKey(editedItem.id);
