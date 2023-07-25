@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/graasp/graasp-query-client/compare/v1.3.0...v1.3.1) (2023-07-25)
+
+
+### Bug Fixes
+
+* invalidate children key on reorder ([#359](https://github.com/graasp/graasp-query-client/issues/359)) ([15005b9](https://github.com/graasp/graasp-query-client/commit/15005b9af07d02c6767344f54e01a909e645d694))
+
 ## [1.3.0](https://github.com/graasp/graasp-query-client/compare/v1.2.0...v1.3.0) (2023-07-21)
 
 
