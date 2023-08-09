@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/graasp/graasp-query-client/compare/v1.3.2...v1.4.0) (2023-08-09)
+
+
+### Features
+
+* add aggregateActions hook ([#370](https://github.com/graasp/graasp-query-client/issues/370)) ([df4a76c](https://github.com/graasp/graasp-query-client/commit/df4a76cb8cc0a556cef452519ecd4494a55abb37))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @graasp/sdk to v1.2.0 ([#372](https://github.com/graasp/graasp-query-client/issues/372)) ([198eb52](https://github.com/graasp/graasp-query-client/commit/198eb5216deac46b5579e385db7968aacb019b0e))
+
 ## [1.3.2](https://github.com/graasp/graasp-query-client/compare/v1.3.1...v1.3.2) (2023-07-28)
 
 
