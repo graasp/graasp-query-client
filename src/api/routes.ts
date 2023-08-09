@@ -4,6 +4,7 @@ import { DiscriminatedItem, ItemTag, ItemTagType, UUID } from '@graasp/sdk';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
 import { SearchFields } from '../types';
+import { AggregateActionsArgs } from '../utils/action';
 
 export const APPS_ROUTE = 'app-items';
 export const ITEMS_ROUTE = 'items';
@@ -296,6 +297,22 @@ export const buildGetActions = (
     },
     {
       addQueryPrefix: true,
+    },
+  )}`;
+export const buildGetAggregateActions = (args: AggregateActionsArgs) =>
+  `${ITEMS_ROUTE}/${args.itemId}/actions/aggregation${qs.stringify(
+    {
+      requestedSampleSize: args.requestedSampleSize,
+      view: args.view,
+      type: args.type,
+      countGroupBy: args.countGroupBy,
+      aggregateFunction: args.aggregateFunction,
+      aggregateMetric: args.aggregateMetric,
+      aggregateBy: args.aggregateBy,
+    },
+    {
+      addQueryPrefix: true,
+      arrayFormat: 'repeat',
     },
   )}`;
 export const buildExportActions = (itemId: UUID) =>

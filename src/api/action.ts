@@ -1,8 +1,13 @@
 import { ActionData, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
+import { AggregateActionsArgs } from '../utils/action';
 import configureAxios from './axios';
-import { buildExportActions, buildGetActions } from './routes';
+import {
+  buildExportActions,
+  buildGetActions,
+  buildGetAggregateActions,
+} from './routes';
 
 const axios = configureAxios();
 
@@ -12,6 +17,14 @@ export const getActions = async (
 ) =>
   axios
     .get<ActionData>(`${API_HOST}/${buildGetActions(args.itemId, args)}`)
+    .then(({ data }) => data);
+
+export const getAggregateActions = async (
+  args: AggregateActionsArgs,
+  { API_HOST }: QueryClientConfig,
+) =>
+  axios
+    .get(`${API_HOST}/${buildGetAggregateActions(args)}`)
     .then(({ data }) => data);
 
 export const exportActions = async (

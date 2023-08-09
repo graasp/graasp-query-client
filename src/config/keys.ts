@@ -1,6 +1,7 @@
 import { UUID } from '@graasp/sdk';
 
 import { SearchFields } from '../types';
+import { AggregateActionsArgs } from '../utils/action';
 import { hashItemsIds } from '../utils/item';
 import { DEFAULT_THUMBNAIL_SIZE } from './constants';
 
@@ -205,6 +206,11 @@ export const buildActionsKey = (args: {
     size: args.requestedSampleSize,
   },
 ];
+
+export const buildAggregateActionsKey = (
+  args: Omit<AggregateActionsArgs, 'itemId'> &
+    Partial<Pick<AggregateActionsArgs, 'itemId'>>,
+) => ['aggregateActions', args];
 
 export const buildInvitationKey = (id?: UUID) => ['invitations', id];
 export const buildItemInvitationsKey = (id?: UUID) => [

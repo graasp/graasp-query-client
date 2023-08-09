@@ -649,6 +649,12 @@ export const ACTIONS_DATA: ActionDataRecord = createMockActionData({
   },
 });
 
+export const AGGREGATE_ACTIONS_DATA = [
+  { aggregateResult: 1.5, createdDay: '01-01-2023' },
+  { aggregateResult: 2, createdDay: '02-01-2023' },
+  { aggregateResult: 4, createdDay: '03-01-2023' },
+];
+
 export const buildInvitation = (values: Partial<Invitation>): Invitation => ({
   id: 'id',
   name: 'member-name',
