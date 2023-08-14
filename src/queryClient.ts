@@ -50,14 +50,8 @@ const retry = (failureCount: number, error: Error): boolean => {
 
 export default (config: Partial<QueryClientConfig>) => {
   const baseConfig = {
-    API_HOST:
-      config?.API_HOST ||
-      process.env.REACT_APP_API_HOST ||
-      'http://localhost:3000',
-    SHOW_NOTIFICATIONS:
-      config?.SHOW_NOTIFICATIONS ||
-      process.env.REACT_APP_SHOW_NOTIFICATIONS === 'true' ||
-      false,
+    API_HOST: config?.API_HOST || 'http://localhost:3000',
+    SHOW_NOTIFICATIONS: config?.SHOW_NOTIFICATIONS || false,
     DOMAIN: config.DOMAIN ?? getHostname(),
   };
 
@@ -66,9 +60,7 @@ export default (config: Partial<QueryClientConfig>) => {
     ...baseConfig,
     // derive WS_HOST from API_HOST if needed
     WS_HOST:
-      config?.WS_HOST ||
-      process.env.REACT_APP_WS_HOST ||
-      `${baseConfig.API_HOST.replace('http', 'ws')}/ws`,
+      config?.WS_HOST || `${baseConfig.API_HOST.replace('http', 'ws')}/ws`,
     // whether websocket support should be enabled
     enableWebsocket: config?.enableWebsocket || false,
     notifier: config?.notifier,
