@@ -1,8 +1,3 @@
-import { StatusCodes } from 'http-status-codes';
-import { List, Map } from 'immutable';
-import Cookies from 'js-cookie';
-import nock from 'nock';
-
 import {
   FolderItemType,
   ItemType,
@@ -12,6 +7,11 @@ import {
   convertJs,
 } from '@graasp/sdk';
 import { ItemRecord } from '@graasp/sdk/frontend';
+
+import { StatusCodes } from 'http-status-codes';
+import { List, Map } from 'immutable';
+import Cookies from 'js-cookie';
+import nock from 'nock';
 
 import {
   FILE_RESPONSE,

@@ -1,7 +1,3 @@
-import { StatusCodes } from 'http-status-codes';
-import { List, Record } from 'immutable';
-import { v4 } from 'uuid';
-
 import {
   Action,
   ActionData,
@@ -59,6 +55,10 @@ import {
   MemberRecord,
   RecycledItemDataRecord,
 } from '@graasp/sdk/frontend';
+
+import { StatusCodes } from 'http-status-codes';
+import { List, Record } from 'immutable';
+import { v4 } from 'uuid';
 
 export const WS_HOST = 'ws://localhost:3000';
 export const API_HOST = 'http://localhost:3000';

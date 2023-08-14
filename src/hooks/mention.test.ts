@@ -1,9 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import { ChatMentionRecord } from '@graasp/sdk/frontend';
+
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
-
-import { ChatMentionRecord } from '@graasp/sdk/frontend';
 
 import { MEMBER_RESPONSE, buildMemberMentions } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';

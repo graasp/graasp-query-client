@@ -1,15 +1,15 @@
 // yes this bad, but we do not really have a choice...
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { HttpMethod, ItemMembership, PermissionLevel } from '@graasp/sdk';
+import { ItemMembershipRecord } from '@graasp/sdk/frontend';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
+
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
-
-import { HttpMethod, ItemMembership, PermissionLevel } from '@graasp/sdk';
-import { ItemMembershipRecord } from '@graasp/sdk/frontend';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
   ITEMS,

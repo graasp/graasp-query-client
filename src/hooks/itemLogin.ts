@@ -1,7 +1,7 @@
-import { UseQueryResult, useQuery } from 'react-query';
-
 import { ItemLoginSchemaType, UUID, convertJs } from '@graasp/sdk';
 import { ItemLoginSchemaRecord } from '@graasp/sdk/frontend';
+
+import { UseQueryResult, useQuery } from 'react-query';
 
 import * as Api from '../api';
 import { UndefinedArgument } from '../config/errors';

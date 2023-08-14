@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from 'react-query';
-
 import { ItemLike, Member, UUID } from '@graasp/sdk';
+
+import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
 import {

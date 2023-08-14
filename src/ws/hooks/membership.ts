@@ -1,9 +1,9 @@
+import { ItemMembership, UUID, convertJs, getIdsFromPath } from '@graasp/sdk';
+import { ItemMembershipRecord } from '@graasp/sdk/frontend';
+
 import { List } from 'immutable';
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
-
-import { ItemMembership, UUID, convertJs, getIdsFromPath } from '@graasp/sdk';
-import { ItemMembershipRecord } from '@graasp/sdk/frontend';
 
 import { buildItemMembershipsKey } from '../../config/keys';
 import { KINDS, OPS, TOPICS } from '../constants';

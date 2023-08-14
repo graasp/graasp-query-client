@@ -1,9 +1,9 @@
+import { ChatMention, HttpMethod, Member, MentionStatus } from '@graasp/sdk';
+
 import { act } from '@testing-library/react-hooks';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
-
-import { ChatMention, HttpMethod, Member, MentionStatus } from '@graasp/sdk';
 
 import {
   MEMBER_RESPONSE,

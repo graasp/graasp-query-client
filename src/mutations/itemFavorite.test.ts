@@ -1,8 +1,8 @@
+import { HttpMethod } from '@graasp/sdk';
+
 import { act } from '@testing-library/react-hooks';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
-
-import { HttpMethod } from '@graasp/sdk';
 
 import { UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';

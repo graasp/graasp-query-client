@@ -1,5 +1,3 @@
-import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
-
 import {
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
@@ -7,6 +5,8 @@ import {
   convertJs,
 } from '@graasp/sdk';
 import { MemberRecord, ResultOfRecord } from '@graasp/sdk/frontend';
+
+import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
 import { splitRequestByIds } from '../api/axios';

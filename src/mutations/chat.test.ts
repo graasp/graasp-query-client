@@ -1,10 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import { HttpMethod } from '@graasp/sdk';
+
 import { act } from '@testing-library/react-hooks';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
-
-import { HttpMethod } from '@graasp/sdk';
 
 import {
   ITEMS_JS,

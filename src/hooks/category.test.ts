@@ -1,10 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import { CategoryRecord, ItemCategoryRecord } from '@graasp/sdk/frontend';
+
 import { StatusCodes } from 'http-status-codes';
 import { List, Record, RecordOf } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
-
-import { CategoryRecord, ItemCategoryRecord } from '@graasp/sdk/frontend';
 
 import {
   CATEGORIES,

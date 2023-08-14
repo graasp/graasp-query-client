@@ -1,8 +1,8 @@
-import { List } from 'immutable';
-import { useQuery } from 'react-query';
-
 import { convertJs } from '@graasp/sdk';
 import { ItemFavoriteRecord } from '@graasp/sdk/frontend';
+
+import { List } from 'immutable';
+import { useQuery } from 'react-query';
 
 import * as Api from '../api';
 import { FAVORITE_ITEMS_KEY } from '../config/keys';

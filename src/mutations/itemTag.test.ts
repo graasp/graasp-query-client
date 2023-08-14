@@ -1,12 +1,12 @@
+import { HttpMethod, ItemTagType } from '@graasp/sdk';
+import { ItemTagRecord } from '@graasp/sdk/frontend';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
+
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
-
-import { HttpMethod, ItemTagType } from '@graasp/sdk';
-import { ItemTagRecord } from '@graasp/sdk/frontend';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
   ITEMS_JS,

@@ -1,9 +1,9 @@
-import { List } from 'immutable';
-import { useMutation, useQueryClient } from 'react-query';
-
 import { ItemTagType, UUID } from '@graasp/sdk';
 import { ItemTagRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
+
+import { List } from 'immutable';
+import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
 import { itemTagsKeys } from '../config/keys';

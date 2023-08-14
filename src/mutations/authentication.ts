@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from 'react-query';
-
 import { UUID, saveUrlForRedirection } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
+
+import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
 import { CURRENT_MEMBER_KEY } from '../config/keys';

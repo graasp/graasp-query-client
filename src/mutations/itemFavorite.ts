@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from 'react-query';
-
 import { UUID } from '@graasp/sdk';
+
+import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
 import { FAVORITE_ITEMS_KEY } from '../config/keys';

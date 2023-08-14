@@ -1,8 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
-import nock from 'nock';
-
 import {
   AggregateBy,
   AggregateFunction,
@@ -11,6 +7,10 @@ import {
   CountGroupBy,
   convertJs,
 } from '@graasp/sdk';
+
+import { StatusCodes } from 'http-status-codes';
+import Cookies from 'js-cookie';
+import nock from 'nock';
 
 import {
   ACTIONS_DATA,

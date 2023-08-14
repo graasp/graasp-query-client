@@ -1,11 +1,11 @@
-import { useMutation, useQueryClient } from 'react-query';
-
 import {
   DeleteChatMessageParamType,
   PatchChatMessageParamType,
   PostChatMessageParamType,
   UUID,
 } from '@graasp/sdk';
+
+import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
 import { buildItemChatKey } from '../config/keys';

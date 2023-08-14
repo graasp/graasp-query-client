@@ -1,10 +1,15 @@
+import { AxiosError } from 'axios';
 import { QueryObserverOptions } from 'react-query';
 
 import { isDataEqual } from './utils/util';
 
 export type Notifier = (e: {
   type: string;
-  payload?: { error?: Error; message?: string; [key: string]: unknown };
+  payload?: {
+    error?: Error | AxiosError;
+    message?: string;
+    [key: string]: unknown;
+  };
 }) => void;
 
 export type QueryClientConfig = {

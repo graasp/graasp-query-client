@@ -1,8 +1,8 @@
 /** Utils functions
  * todo: use utils from a dedicated repo */
-import CryptoJS from 'crypto-js';
-
 import { UUID } from '@graasp/sdk';
+
+import CryptoJS from 'crypto-js';
 
 // eslint-disable-next-line no-useless-escape
 export const transformIdForPath = (id: UUID) => id.replace(/\-/g, '_');

@@ -1,9 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import { HttpMethod } from '@graasp/sdk';
+
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
-
-import { HttpMethod } from '@graasp/sdk';
 
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildExportItemRoute } from '../api/routes';

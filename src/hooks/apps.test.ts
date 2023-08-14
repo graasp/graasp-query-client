@@ -1,10 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import { AppRecord } from '@graasp/sdk/frontend';
+
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
-
-import { AppRecord } from '@graasp/sdk/frontend';
 
 import { APPS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';

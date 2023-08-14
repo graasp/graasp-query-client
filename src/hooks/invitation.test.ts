@@ -1,11 +1,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import { Item } from '@graasp/sdk';
+import { InvitationRecord } from '@graasp/sdk/frontend';
+
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
-
-import { Item } from '@graasp/sdk';
-import { InvitationRecord } from '@graasp/sdk/frontend';
 
 import {
   ITEMS,

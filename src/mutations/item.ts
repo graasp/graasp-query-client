@@ -1,6 +1,3 @@
-import { List, Record } from 'immutable';
-import { QueryClient, useMutation, useQueryClient } from 'react-query';
-
 import {
   DiscriminatedItem,
   FolderItemExtra,
@@ -14,6 +11,9 @@ import {
 } from '@graasp/sdk';
 import { ItemRecord, RecycledItemDataRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
+
+import { List, Record } from 'immutable';
+import { QueryClient, useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
 import {

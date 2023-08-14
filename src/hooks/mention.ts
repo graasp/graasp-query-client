@@ -1,8 +1,8 @@
-import { List, Record } from 'immutable';
-import { UseQueryResult, useQuery } from 'react-query';
-
 import { Member, convertJs } from '@graasp/sdk';
 import { ChatMentionRecord } from '@graasp/sdk/frontend';
+
+import { List, Record } from 'immutable';
+import { UseQueryResult, useQuery } from 'react-query';
 
 import * as Api from '../api/index';
 import { buildMentionKey } from '../config/keys';

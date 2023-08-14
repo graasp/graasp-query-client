@@ -1,3 +1,5 @@
+import { HttpMethod, spliceIntoChunks } from '@graasp/sdk';
+
 import {
   RenderResult,
   WaitFor,
@@ -11,8 +13,6 @@ import {
   QueryClient,
   QueryObserverBaseResult,
 } from 'react-query';
-
-import { HttpMethod, spliceIntoChunks } from '@graasp/sdk';
 
 import configureHooks from '../src/hooks';
 import configureQueryClient from '../src/queryClient';

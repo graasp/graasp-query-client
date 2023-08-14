@@ -1,6 +1,3 @@
-import { List } from 'immutable';
-import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
-
 import {
   ItemMembership,
   MAX_TARGETS_FOR_READ_REQUEST,
@@ -8,6 +5,9 @@ import {
   convertJs,
 } from '@graasp/sdk';
 import { ItemMembershipRecord, ResultOfRecord } from '@graasp/sdk/frontend';
+
+import { List } from 'immutable';
+import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
 import { splitRequestByIds } from '../api/axios';

@@ -1,11 +1,3 @@
-import { List } from 'immutable';
-import {
-  UseQueryResult,
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from 'react-query';
-
 import {
   DiscriminatedItem,
   ItemType,
@@ -20,6 +12,14 @@ import {
   RecycledItemDataRecord,
   ResultOfRecord,
 } from '@graasp/sdk/frontend';
+
+import { List } from 'immutable';
+import {
+  UseQueryResult,
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from 'react-query';
 
 import * as Api from '../api';
 import { splitRequestByIds } from '../api/axios';

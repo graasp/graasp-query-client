@@ -3,7 +3,8 @@
   "tabWidth": 2,
   "semi": true,
   "singleQuote": true,
-  "importOrder": ["^@?graasp", "^[./]"],
+  "importOrder": ["^@?graasp", "<THIRD_PARTY_MODULES>", "^@/", "^[./]"],
   "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true
+  "importOrderSortSpecifiers": true,
+  "plugins": ["@trivago/prettier-plugin-sort-imports"]
 }

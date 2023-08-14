@@ -1,6 +1,6 @@
-import qs from 'qs';
-
 import { DiscriminatedItem, ItemTag, ItemTagType, UUID } from '@graasp/sdk';
+
+import qs from 'qs';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
 import { SearchFields } from '../types';

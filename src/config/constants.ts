@@ -1,6 +1,6 @@
-import { StatusCodes } from 'http-status-codes';
-
 import { ThumbnailSize } from '@graasp/sdk';
+
+import { StatusCodes } from 'http-status-codes';
 
 // React Query Configs
 

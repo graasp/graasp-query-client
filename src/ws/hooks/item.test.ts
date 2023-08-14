@@ -1,8 +1,8 @@
-import { List } from 'immutable';
-import Cookies from 'js-cookie';
-
 import { Item } from '@graasp/sdk';
 import { ItemRecord } from '@graasp/sdk/frontend';
+
+import { List } from 'immutable';
+import Cookies from 'js-cookie';
 
 import { ITEMS } from '../../../test/constants';
 import {

@@ -1,7 +1,7 @@
-import { List } from 'immutable';
-
 import { Member, MentionStatus } from '@graasp/sdk';
 import { ChatMentionRecord } from '@graasp/sdk/frontend';
+
+import { List } from 'immutable';
 
 import {
   MEMBER_RESPONSE,

@@ -1,5 +1,3 @@
-import axios, { AxiosError } from 'axios';
-
 import {
   ResultOf,
   convertJs,
@@ -7,6 +5,8 @@ import {
   spliceIntoChunks,
 } from '@graasp/sdk';
 import { ResultOfRecord } from '@graasp/sdk/frontend';
+
+import axios, { AxiosError } from 'axios';
 
 const configureAxios = () => {
   axios.defaults.withCredentials = true;
