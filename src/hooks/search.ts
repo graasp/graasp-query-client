@@ -1,8 +1,8 @@
-import { List } from 'immutable';
-import { useQuery } from 'react-query';
-
 import { convertJs } from '@graasp/sdk';
 import { ItemRecord } from '@graasp/sdk/frontend';
+
+import { List } from 'immutable';
+import { useQuery } from 'react-query';
 
 import * as Api from '../api';
 import { buildSearchByKeywordKey } from '../config/keys';

@@ -1,8 +1,8 @@
-import { List } from 'immutable';
-import { useQuery, useQueryClient } from 'react-query';
-
 import { ItemTag, UUID, convertJs } from '@graasp/sdk';
 import { ItemTagRecord, ResultOfRecord } from '@graasp/sdk/frontend';
+
+import { List } from 'immutable';
+import { useQuery, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
 import { UndefinedArgument } from '../config/errors';

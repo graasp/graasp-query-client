@@ -1,8 +1,8 @@
-import { List } from 'immutable';
-import { useMutation, useQueryClient } from 'react-query';
-
 import { PermissionLevel, UUID } from '@graasp/sdk';
 import { InvitationRecord, NewInvitation } from '@graasp/sdk/frontend';
+
+import { List } from 'immutable';
+import { useMutation, useQueryClient } from 'react-query';
 
 import {
   deleteInvitation,

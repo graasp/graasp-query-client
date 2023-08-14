@@ -1,10 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import { ChatMessage } from '@graasp/sdk';
+import { ExportedItemChatRecord, ItemChatRecord } from '@graasp/sdk/frontend';
+
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
-
-import { ChatMessage } from '@graasp/sdk';
-import { ExportedItemChatRecord, ItemChatRecord } from '@graasp/sdk/frontend';
 
 import {
   ITEMS_JS,

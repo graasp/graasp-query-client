@@ -1,8 +1,3 @@
-import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
-import nock from 'nock';
-import { UseQueryResult } from 'react-query';
-
 import {
   MAX_TARGETS_FOR_READ_REQUEST,
   ThumbnailSize,
@@ -10,6 +5,11 @@ import {
   convertJs,
 } from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
+
+import { StatusCodes } from 'http-status-codes';
+import Cookies from 'js-cookie';
+import nock from 'nock';
+import { UseQueryResult } from 'react-query';
 
 import {
   AVATAR_BLOB_RESPONSE,

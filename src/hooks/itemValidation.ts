@@ -1,7 +1,7 @@
-import { useQuery } from 'react-query';
-
 import { UUID, convertJs } from '@graasp/sdk';
 import { ItemValidationGroupRecord } from '@graasp/sdk/frontend';
+
+import { useQuery } from 'react-query';
 
 import * as Api from '../api';
 import { buildLastItemValidationGroupKey } from '../config/keys';

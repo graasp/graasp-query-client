@@ -1,9 +1,9 @@
+import { ChatMention, UUID, convertJs } from '@graasp/sdk';
+import { ChatMentionRecord } from '@graasp/sdk/frontend';
+
 import { List } from 'immutable';
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
-
-import { ChatMention, UUID, convertJs } from '@graasp/sdk';
-import { ChatMentionRecord } from '@graasp/sdk/frontend';
 
 import { buildMentionKey } from '../../config/keys';
 import { OPS, TOPICS } from '../constants';

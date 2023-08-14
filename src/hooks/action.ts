@@ -1,7 +1,7 @@
-import { useQuery } from 'react-query';
-
 import { UUID, convertJs } from '@graasp/sdk';
 import { ActionDataRecord } from '@graasp/sdk/frontend';
+
+import { useQuery } from 'react-query';
 
 import * as Api from '../api';
 import { UndefinedArgument } from '../config/errors';

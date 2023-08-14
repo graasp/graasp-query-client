@@ -1,8 +1,8 @@
+import { FlagType } from '@graasp/sdk';
+
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
-
-import { FlagType } from '@graasp/sdk';
 
 import { Endpoint, mockHook, setUpTest } from '../../test/utils';
 import { GET_FLAGS_ROUTE } from '../api/routes';

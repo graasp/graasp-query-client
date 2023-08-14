@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from 'react-query';
-
 import { FlagType, UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
+
+import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
 import { buildItemFlagsKey } from '../config/keys';

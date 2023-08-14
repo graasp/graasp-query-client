@@ -1,11 +1,11 @@
+import { HttpMethod, ThumbnailSize } from '@graasp/sdk';
+import { MemberRecord } from '@graasp/sdk/frontend';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
+
 import { act } from '@testing-library/react-hooks';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
-
-import { HttpMethod, ThumbnailSize } from '@graasp/sdk';
-import { MemberRecord } from '@graasp/sdk/frontend';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
   AVATAR_BLOB_RESPONSE,

@@ -2,12 +2,12 @@
  * Graasp websocket client
  * React effect hooks to subscribe to real-time updates and mutate query client
  */
+import { DiscriminatedItem, UUID, convertJs } from '@graasp/sdk';
+import { ItemRecord } from '@graasp/sdk/frontend';
+
 import { List } from 'immutable';
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
-
-import { DiscriminatedItem, UUID, convertJs } from '@graasp/sdk';
-import { ItemRecord } from '@graasp/sdk/frontend';
 
 import {
   OWN_ITEMS_KEY,

@@ -1,8 +1,8 @@
+import { Item, ItemTag, ItemTagType, Member, convertJs } from '@graasp/sdk';
+
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
-
-import { Item, ItemTag, ItemTagType, Member, convertJs } from '@graasp/sdk';
 
 import {
   ITEMS,

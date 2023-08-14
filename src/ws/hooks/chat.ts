@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import { useQueryClient } from 'react-query';
-
 import { ChatMessage, UUID, convertJs } from '@graasp/sdk';
 import { ChatMessageRecord, ItemChatRecord } from '@graasp/sdk/frontend';
+
+import { useEffect } from 'react';
+import { useQueryClient } from 'react-query';
 
 import { buildItemChatKey } from '../../config/keys';
 import { KINDS, OPS, TOPICS } from '../constants';

@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from 'react-query';
-
 import { MemberExtra, ThumbnailSize, UUID, convertJs } from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
+
+import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios';

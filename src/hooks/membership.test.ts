@@ -1,9 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
+
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
-
-import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
 
 import {
   ITEMS,

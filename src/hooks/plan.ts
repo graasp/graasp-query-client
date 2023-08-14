@@ -1,6 +1,6 @@
-import { useQuery } from 'react-query';
-
 import { convertJs } from '@graasp/sdk';
+
+import { useQuery } from 'react-query';
 
 import * as Api from '../api';
 import {

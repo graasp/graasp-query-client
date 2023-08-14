@@ -1,7 +1,7 @@
-import { StatusCodes } from 'http-status-codes';
-
 import { Member, MemberExtra, ResultOf, UUID } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
+
+import { StatusCodes } from 'http-status-codes';
 
 import { DEFAULT_THUMBNAIL_SIZE, SIGNED_OUT_USER } from '../config/constants';
 import { QueryClientConfig } from '../types';

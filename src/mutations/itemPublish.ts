@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from 'react-query';
-
 import { UUID } from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
+
+import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
 import {

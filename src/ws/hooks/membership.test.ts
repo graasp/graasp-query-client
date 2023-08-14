@@ -1,8 +1,8 @@
-import { List } from 'immutable';
-import Cookies from 'js-cookie';
-
 import { ItemMembership, PermissionLevel } from '@graasp/sdk';
 import { ItemMembershipRecord } from '@graasp/sdk/frontend';
+
+import { List } from 'immutable';
+import Cookies from 'js-cookie';
 
 import { ITEMS, ITEM_MEMBERSHIPS_RESPONSE } from '../../../test/constants';
 import {
