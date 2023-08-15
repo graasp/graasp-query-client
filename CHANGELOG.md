@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/graasp/graasp-query-client/compare/v1.4.0...v1.4.1) (2023-08-15)
+
+
+### Bug Fixes
+
+* remove default dependency on process.env for configuration ([#385](https://github.com/graasp/graasp-query-client/issues/385)) ([f0ca845](https://github.com/graasp/graasp-query-client/commit/f0ca8456d899cf0f2e407e114080c8bb189459d2))
+
 ## [1.4.0](https://github.com/graasp/graasp-query-client/compare/v1.3.2...v1.4.0) (2023-08-09)
 
 
