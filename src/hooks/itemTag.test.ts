@@ -1,4 +1,11 @@
-import { Item, ItemTag, ItemTagType, Member, convertJs } from '@graasp/sdk';
+import {
+  Item,
+  ItemTag,
+  ItemTagType,
+  MAX_TARGETS_FOR_READ_REQUEST,
+  Member,
+  convertJs,
+} from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
@@ -10,7 +17,12 @@ import {
   UNAUTHORIZED_RESPONSE,
   buildResultOfData,
 } from '../../test/constants';
-import { mockHook, setUpTest } from '../../test/utils';
+import {
+  mockHook,
+  setUpTest,
+  splitEndpointByIds,
+  splitEndpointByIdsForErrors,
+} from '../../test/utils';
 import { buildGetItemTagsRoute, buildGetItemsTagsRoute } from '../api/routes';
 import { itemTagsKeys } from '../config/keys';
 
@@ -66,7 +78,7 @@ describe('Item Tags Hooks', () => {
 
   describe('useItemsTags', () => {
     const itemsIds = ITEMS.map(({ id }) => id).toArray();
-    const route = `/${buildGetItemsTagsRoute(itemsIds)}`;
+
     const keys = itemsIds.map((itemId) => itemTagsKeys.singleId(itemId));
     const tags = itemsIds.map((id) => [
       {
@@ -82,9 +94,15 @@ describe('Item Tags Hooks', () => {
 
     it(`Receive tags of given items`, async () => {
       const response = buildResultOfData(tags, (t: ItemTag[]) => t[0].item.id);
-      const endpoints = [{ route, response }];
-      const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
 
+      const endpoints = splitEndpointByIds(
+        itemsIds,
+        MAX_TARGETS_FOR_READ_REQUEST,
+        (chunk) => `/${buildGetItemsTagsRoute(chunk)}`,
+        tags,
+        (t: ItemTag[]) => t[0].item.id,
+      );
+      const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
       expect(data).toEqualImmutable(convertJs(response));
 
       // verify cache keys
@@ -105,34 +123,42 @@ describe('Item Tags Hooks', () => {
           stack: '',
         },
       ];
+      const id = itemsIds[0];
+      const tagsForItem = [
+        {
+          id: 'some id',
+          createdAt: new Date(),
+          creator: {} as Member,
+          item: { id } as Item,
+          type: ItemTagType.Hidden,
+        },
+      ];
       const response = buildResultOfData(
-        tags,
+        [tagsForItem],
         (t: ItemTag[]) => t[0].item.id,
         errors,
       );
       const idWithError = 'some-id';
-      const routeWithError = `/${buildGetItemsTagsRoute([
-        ...itemsIds,
-        idWithError,
-      ])}`;
-      const hookWithError = () =>
-        hooks.useItemsTags([...itemsIds, idWithError]);
+      const ids = [id, idWithError];
+      const endpoints = splitEndpointByIdsForErrors(
+        ids,
+        MAX_TARGETS_FOR_READ_REQUEST,
+        (chunk) => `/${buildGetItemsTagsRoute(chunk)}`,
+        { response, statusCode: StatusCodes.OK },
+      );
 
-      const endpoints = [{ route: routeWithError, response }];
       const { data, isSuccess } = await mockHook({
         endpoints,
-        hook: hookWithError,
+        hook: () => hooks.useItemsTags(ids),
         wrapper,
       });
 
       expect(data).toEqualImmutable(convertJs(response));
 
       // verify cache keys
-      keys.forEach((key, idx) =>
-        expect(queryClient.getQueryData(key)).toEqualImmutable(
-          convertJs(tags[idx]),
-        ),
-      );
+      expect(
+        queryClient.getQueryData(itemTagsKeys.singleId(ids[0])),
+      ).toEqualImmutable(convertJs(tagsForItem));
       expect(
         queryClient.getQueryData(itemTagsKeys.singleId(idWithError)),
       ).toBeFalsy();
@@ -143,7 +169,7 @@ describe('Item Tags Hooks', () => {
     it(`Unauthorized`, async () => {
       const endpoints = [
         {
-          route,
+          route: `/${buildGetItemsTagsRoute(['some-id'])}`,
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
