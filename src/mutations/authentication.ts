@@ -1,7 +1,9 @@
 import { UUID, saveUrlForRedirection } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
+import { FAILURE_MESSAGES, SUCCESS_MESSAGES } from '@graasp/translations';
 
+import { AxiosError } from 'axios';
+import { StatusCodes } from 'http-status-codes';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
@@ -79,6 +81,20 @@ export default (queryConfig: QueryClientConfig) => {
           queryClient.resetQueries();
         },
         onError: (error: Error) => {
+          if (
+            error instanceof AxiosError &&
+            error.response?.data.statusCode === StatusCodes.NOT_ACCEPTABLE
+          ) {
+            // deep copy the error
+            const newError = JSON.parse(JSON.stringify(error));
+            newError.message = FAILURE_MESSAGES.MEMBER_WITHOUT_PASSWORD;
+            notifier?.({
+              type: signInWithPasswordRoutine.FAILURE,
+              payload: {
+                error: newError,
+              },
+            });
+          }
           notifier?.({
             type: signInWithPasswordRoutine.FAILURE,
             payload: { error },
