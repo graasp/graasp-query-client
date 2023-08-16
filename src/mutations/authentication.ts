@@ -94,11 +94,12 @@ export default (queryConfig: QueryClientConfig) => {
                 error: newError,
               },
             });
+          } else {
+            notifier?.({
+              type: signInWithPasswordRoutine.FAILURE,
+              payload: { error },
+            });
           }
-          notifier?.({
-            type: signInWithPasswordRoutine.FAILURE,
-            payload: { error },
-          });
         },
       },
     );
