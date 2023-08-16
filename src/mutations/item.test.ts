@@ -7,7 +7,7 @@ import {
   MAX_TARGETS_FOR_MODIFY_REQUEST,
   ThumbnailSize,
 } from '@graasp/sdk';
-import { ItemRecord } from '@graasp/sdk/frontend';
+import { ItemRecord, RecycledItemDataRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { act } from '@testing-library/react-hooks';
@@ -1043,19 +1043,24 @@ describe('Items Mutations', () => {
     const mutation = mutations.useRestoreItems;
 
     it('Restore items', async () => {
-      const items = ITEMS.slice(0, 2);
+      const items = RECYCLED_ITEM_DATA.map(({ item }) => item);
       const itemIds = items.map(({ id }) => id).toArray();
       const route = `/${buildRestoreItemsRoute(itemIds)}`;
+      const response = RECYCLED_ITEM_DATA;
 
       // set data in cache
-      ITEMS.forEach((item) => {
+      items.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
         const parentKey = getKeyForParentId(getDirectParentId(item.path));
         queryClient.setQueryData(parentKey, List([item]));
       });
-
-      const response = items;
+      queryClient.setQueryData(RECYCLED_ITEMS_DATA_KEY, response);
+      expect(
+        queryClient.getQueryData<List<RecycledItemDataRecord>>(
+          RECYCLED_ITEMS_DATA_KEY,
+        )!.size,
+      ).not.toEqual(0);
 
       const endpoints = [
         {
@@ -1088,11 +1093,17 @@ describe('Items Mutations', () => {
       expect(
         queryClient.getQueryState(RECYCLED_ITEMS_DATA_KEY)?.isInvalidated,
       ).toBeFalsy();
+      expect(
+        queryClient.getQueryData<List<RecycledItemDataRecord>>(
+          RECYCLED_ITEMS_DATA_KEY,
+        )!.size,
+      ).toEqual(0);
     });
 
     it('Restore many items', async () => {
       const items = ITEMS;
       const itemIds = items.map(({ id }) => id).toArray();
+      const response = RECYCLED_ITEM_DATA;
 
       // set data in cache
       ITEMS.forEach((item) => {
@@ -1101,6 +1112,12 @@ describe('Items Mutations', () => {
         const parentKey = getKeyForParentId(getDirectParentId(item.path));
         queryClient.setQueryData(parentKey, List([item]));
       });
+      queryClient.setQueryData(RECYCLED_ITEMS_DATA_KEY, response);
+      expect(
+        queryClient.getQueryData<List<RecycledItemDataRecord>>(
+          RECYCLED_ITEMS_DATA_KEY,
+        )!.size,
+      ).not.toEqual(0);
 
       const endpoints = splitEndpointByIds(
         itemIds,
@@ -1134,50 +1151,11 @@ describe('Items Mutations', () => {
       expect(
         queryClient.getQueryState(RECYCLED_ITEMS_DATA_KEY)?.isInvalidated,
       ).toBeFalsy();
-    });
-
-    it('Unauthorized to restore one of the items', async () => {
-      const items = ITEMS.slice(2);
-      const itemIds = items.map(({ id }) => id).toArray();
-      const route = `/${buildRestoreItemsRoute(itemIds)}`;
-
-      ITEMS.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
-        queryClient.setQueryData(itemKey, item);
-      });
-
-      const response: List<ItemRecord | GraaspError> = List([
-        UNAUTHORIZED_RESPONSE,
-        ...items.toArray(),
-      ]);
-
-      const endpoints = [
-        {
-          response,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate(itemIds);
-        await waitForMutation();
-      });
-
-      // verify item is still available
-      // in real cases, the path should be different
-      for (const item of items) {
-        const itemKey = buildItemKey(item.id);
-        const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(item);
-      }
+      expect(
+        queryClient.getQueryData<List<RecycledItemDataRecord>>(
+          RECYCLED_ITEMS_DATA_KEY,
+        )!.size,
+      ).toEqual(0);
     });
 
     it('Unauthorized to restore items', async () => {
@@ -1189,12 +1167,16 @@ describe('Items Mutations', () => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
-
-      const response = UNAUTHORIZED_RESPONSE;
+      queryClient.setQueryData(RECYCLED_ITEMS_DATA_KEY, RECYCLED_ITEM_DATA);
+      expect(
+        queryClient.getQueryData<List<RecycledItemDataRecord>>(
+          RECYCLED_ITEMS_DATA_KEY,
+        )!.size,
+      ).not.toEqual(0);
 
       const endpoints = [
         {
-          response,
+          response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
           method: HttpMethod.POST,
           route,
@@ -1219,6 +1201,9 @@ describe('Items Mutations', () => {
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
         expect(data).toEqualImmutable(item);
       }
+      expect(
+        queryClient.getQueryState(RECYCLED_ITEMS_DATA_KEY)?.isInvalidated,
+      ).toBeTruthy();
     });
   });
 
