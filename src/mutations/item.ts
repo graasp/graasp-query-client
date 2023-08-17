@@ -652,18 +652,20 @@ export default (queryConfig: QueryClientConfig) => {
         splitRequestByIds(itemIds, MAX_TARGETS_FOR_MODIFY_REQUEST, (chunk) =>
           Api.restoreItems(chunk, queryConfig),
         ),
-
       {
         onMutate: async (itemIds) => {
           const key = RECYCLED_ITEMS_DATA_KEY;
-          const items = queryClient.getQueryData(key) as List<Item>;
-          if (items) {
+          const recycleItemData =
+            queryClient.getQueryData<List<RecycledItemDataRecord>>(key);
+          if (recycleItemData) {
             queryClient.setQueryData(
               key,
-              items.filter(({ id }) => !itemIds.includes(id)),
+              recycleItemData.filter(
+                ({ item: { id } }) => !itemIds.includes(id),
+              ),
             );
           }
-          return items;
+          return recycleItemData;
         },
         onSuccess: (_data, itemIds) => {
           // invalidate parents' children to now get the restored items
