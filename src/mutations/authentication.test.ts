@@ -13,6 +13,7 @@ import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
   MOBILE_SIGN_IN_ROUTE,
   MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE,
+  MOBILE_SIGN_UP_ROUTE,
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
@@ -61,6 +62,7 @@ describe('Authentication Mutations', () => {
   afterEach(() => {
     queryClient.clear();
     nock.cleanAll();
+    jest.clearAllMocks();
   });
 
   describe('useSignIn', () => {
@@ -427,7 +429,7 @@ describe('Authentication Mutations', () => {
     });
   });
   describe('useMobileSignUp', () => {
-    const route = `/${SIGN_UP_ROUTE}`;
+    const route = `/${MOBILE_SIGN_UP_ROUTE}`;
     const mutation = mutations.useMobileSignUp;
     const name = 'name';
 

@@ -80,10 +80,10 @@ export default (queryConfig: QueryClientConfig) => {
           });
           queryClient.resetQueries();
         },
-        onError: (error: Error) => {
+        onError: (error: Error | AxiosError) => {
           if (
             error instanceof AxiosError &&
-            error.response?.data.statusCode === StatusCodes.NOT_ACCEPTABLE
+            error.response?.status === StatusCodes.NOT_ACCEPTABLE
           ) {
             // deep copy the error
             const newError = JSON.parse(JSON.stringify(error));
@@ -123,10 +123,25 @@ export default (queryConfig: QueryClientConfig) => {
           queryClient.resetQueries();
         },
         onError: (error: Error) => {
-          notifier?.({
-            type: signInWithPasswordRoutine.FAILURE,
-            payload: { error },
-          });
+          if (
+            error instanceof AxiosError &&
+            error.response?.status === StatusCodes.NOT_ACCEPTABLE
+          ) {
+            // deep copy the error
+            const newError = JSON.parse(JSON.stringify(error));
+            newError.message = FAILURE_MESSAGES.MEMBER_WITHOUT_PASSWORD;
+            notifier?.({
+              type: signInWithPasswordRoutine.FAILURE,
+              payload: {
+                error: newError,
+              },
+            });
+          } else {
+            notifier?.({
+              type: signInWithPasswordRoutine.FAILURE,
+              payload: { error },
+            });
+          }
         },
       },
     );
