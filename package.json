@@ -131,5 +131,5 @@
     "postcss": "8.4.28",
     "nth-check": "2.1.1"
   },
-  "packageManager": "yarn@3.6.1"
+  "packageManager": "yarn@3.6.2"
 }
