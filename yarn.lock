@@ -3010,7 +3010,7 @@ __metadata:
     "@commitlint/cli": 17.7.1
     "@commitlint/config-conventional": 17.7.0
     "@graasp/sdk": 1.2.1
-    "@graasp/translations": 1.18.1
+    "@graasp/translations": 1.18.2
     "@testing-library/jest-dom": 5.17.0
     "@testing-library/react": 14.0.0
     "@testing-library/react-hooks": 8.0.1
@@ -3084,12 +3084,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.18.1":
-  version: 1.18.1
-  resolution: "@graasp/translations@npm:1.18.1"
+"@graasp/translations@npm:1.18.2":
+  version: 1.18.2
+  resolution: "@graasp/translations@npm:1.18.2"
   dependencies:
     i18next: 22.4.15
-  checksum: 84ca62be4646649469df867dcf9ab9dc8f8ad11eb3b4720d434eb63d544e15f3cd89cb971170b73703324780b4277ed8fe6e89a948ae6e1672173726a0d24ad5
+  checksum: 656b50e08f02606c7d2dba1172374cb28c62b7653365cfe953c9922cf421235c96615dc9ae5ccd05af0f0fed59abfe4eedcc7b28fd238109914720fe86d2ec68
   languageName: node
   linkType: hard
 
