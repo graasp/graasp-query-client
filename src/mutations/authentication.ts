@@ -1,9 +1,7 @@
 import { UUID, saveUrlForRedirection } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
-import { FAILURE_MESSAGES, SUCCESS_MESSAGES } from '@graasp/translations';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { AxiosError } from 'axios';
-import { StatusCodes } from 'http-status-codes';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
@@ -80,26 +78,11 @@ export default (queryConfig: QueryClientConfig) => {
           });
           queryClient.resetQueries();
         },
-        onError: (error: Error | AxiosError) => {
-          if (
-            error instanceof AxiosError &&
-            error.response?.status === StatusCodes.NOT_ACCEPTABLE
-          ) {
-            // deep copy the error
-            const newError = JSON.parse(JSON.stringify(error));
-            newError.message = FAILURE_MESSAGES.MEMBER_WITHOUT_PASSWORD;
-            notifier?.({
-              type: signInWithPasswordRoutine.FAILURE,
-              payload: {
-                error: newError,
-              },
-            });
-          } else {
-            notifier?.({
-              type: signInWithPasswordRoutine.FAILURE,
-              payload: { error },
-            });
-          }
+        onError: (error: Error) => {
+          notifier?.({
+            type: signInWithPasswordRoutine.FAILURE,
+            payload: { error },
+          });
         },
       },
     );
@@ -123,25 +106,10 @@ export default (queryConfig: QueryClientConfig) => {
           queryClient.resetQueries();
         },
         onError: (error: Error) => {
-          if (
-            error instanceof AxiosError &&
-            error.response?.status === StatusCodes.NOT_ACCEPTABLE
-          ) {
-            // deep copy the error
-            const newError = JSON.parse(JSON.stringify(error));
-            newError.message = FAILURE_MESSAGES.MEMBER_WITHOUT_PASSWORD;
-            notifier?.({
-              type: signInWithPasswordRoutine.FAILURE,
-              payload: {
-                error: newError,
-              },
-            });
-          } else {
-            notifier?.({
-              type: signInWithPasswordRoutine.FAILURE,
-              payload: { error },
-            });
-          }
+          notifier?.({
+            type: signInWithPasswordRoutine.FAILURE,
+            payload: { error },
+          });
         },
       },
     );
