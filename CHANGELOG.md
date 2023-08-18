@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.2](https://github.com/graasp/graasp-query-client/compare/v1.4.1...v1.4.2) (2023-08-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @graasp/translations to v1.18.2 ([#395](https://github.com/graasp/graasp-query-client/issues/395)) ([1579dda](https://github.com/graasp/graasp-query-client/commit/1579ddad0264164863c40c3b49bc06bbc0db0312))
+* **deps:** update dependency immutable to v4.3.2 ([#371](https://github.com/graasp/graasp-query-client/issues/371)) ([194a101](https://github.com/graasp/graasp-query-client/commit/194a101c7da7d9d4127d0a201827f5afea9bb60a))
+* update recycle bin depending on recycle item data ([#391](https://github.com/graasp/graasp-query-client/issues/391)) ([8ce1b6d](https://github.com/graasp/graasp-query-client/commit/8ce1b6dc655bef28dd4088261f6b88a667beca21))
+
 ## [1.4.1](https://github.com/graasp/graasp-query-client/compare/v1.4.0...v1.4.1) (2023-08-15)
 
 
