@@ -19,7 +19,7 @@
     "Alexandre Chau"
   ],
   "dependencies": {
-    "@graasp/sdk": "1.2.1",
+    "@graasp/sdk": "1.4.0",
     "@graasp/translations": "1.19.0",
     "axios": "0.27.2",
     "crypto-js": "4.1.1",
