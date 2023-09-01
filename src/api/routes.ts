@@ -104,6 +104,8 @@ export const buildGetMembersBy = (emails: string[]) =>
 export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildGetMembersRoute = (ids: UUID[]) =>
   `${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
+export const buildGetMemberStorage = () => `${MEMBERS_ROUTE}/current/storage`;
+
 export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildDeleteMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildUpdateMemberPasswordRoute = () =>
