@@ -14,14 +14,20 @@ export const getApps = async ({
   );
 
 export const requestApiAccessToken = async (
-  args: { id: UUID; key: string; origin: string },
+  args: {
+    id: UUID;
+    key: string;
+    origin: string;
+    /** @deprecated use key instead */
+    app?: string;
+  },
   { API_HOST }: Pick<QueryClientConfig, 'API_HOST'>,
 ): Promise<{ token: string }> => {
-  const { id, key, origin } = args;
+  const { id, key, origin, app } = args;
   return axios
     .post(`${API_HOST}/${buildGetApiAccessTokenRoute(id)}`, {
       origin,
-      key,
+      key: key ?? app,
     })
     .then(({ data }) => data);
 };
