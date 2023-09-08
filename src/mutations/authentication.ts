@@ -22,7 +22,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useSignIn = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (payload: { email: string; captcha: string }) =>
+      (payload: { email: string; captcha: string; url?: string }) =>
         Api.signIn(payload, queryConfig),
       {
         onSuccess: () => {
@@ -68,8 +68,12 @@ export default (queryConfig: QueryClientConfig) => {
   const useSignInWithPassword = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (payload: { email: string; password: Password; captcha: string }) =>
-        Api.signInWithPassword(payload, queryConfig),
+      (payload: {
+        email: string;
+        password: Password;
+        captcha: string;
+        url?: string;
+      }) => Api.signInWithPassword(payload, queryConfig),
       {
         onSuccess: () => {
           notifier?.({
@@ -141,8 +145,12 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useSignUp = () =>
     useMutation(
-      (payload: { name: string; email: string; captcha: string }) =>
-        Api.signUp(payload, queryConfig),
+      (payload: {
+        name: string;
+        email: string;
+        captcha: string;
+        url?: string;
+      }) => Api.signUp(payload, queryConfig),
       {
         onSuccess: () => {
           notifier?.({

@@ -21,7 +21,7 @@ export const signOut = ({ API_HOST }: QueryClientConfig): Promise<void> =>
   );
 
 export const signIn = async (
-  payload: { email: string; captcha: string },
+  payload: { email: string; captcha: string; url?: string },
   { API_HOST }: QueryClientConfig,
 ): Promise<void> => axios.post(`${API_HOST}/${SIGN_IN_ROUTE}`, payload);
 
@@ -31,7 +31,7 @@ export const mobileSignIn = async (
 ): Promise<void> => axios.post(`${API_HOST}/${MOBILE_SIGN_IN_ROUTE}`, payload);
 
 export const signInWithPassword = async (
-  payload: { email: string; password: Password; captcha: string },
+  payload: { email: string; password: Password; captcha: string; url?: string },
   { API_HOST }: QueryClientConfig,
 ): Promise<{ resource: string }> =>
   axios({
@@ -59,7 +59,7 @@ export const mobileSignInWithPassword = async (
     .then(({ data }) => data);
 
 export const signUp = async (
-  payload: { name: string; email: string; captcha: string },
+  payload: { name: string; email: string; captcha: string; url?: string },
   { API_HOST }: QueryClientConfig,
 ): Promise<void> => axios.post(`${API_HOST}/${SIGN_UP_ROUTE}`, payload);
 
