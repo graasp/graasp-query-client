@@ -1,12 +1,11 @@
 import { Category, convertJs } from '@graasp/sdk';
 
-import debounce from 'lodash.debounce';
-import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
 import { buildSearchPublishedItemsKey } from '../config/keys';
 import { QueryClientConfig } from '../types';
+import useDebounce from './useDebounce';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -20,21 +19,17 @@ export default (queryConfig: QueryClientConfig) => {
       query?: string;
       categories?: Category['id'][][];
     }) => {
-      const [newQuery, setNewQuery] = useState(query);
-
-      useEffect(() => {
-        debounce(() => setNewQuery(query), 1000);
-      }, [query]);
+      const debouncedQuery = useDebounce(query, 500);
 
       return useQuery({
-        queryKey: buildSearchPublishedItemsKey(newQuery, categories),
+        queryKey: buildSearchPublishedItemsKey(debouncedQuery, categories),
         queryFn: (): Promise<unknown> =>
           Api.searchPublishedItems(
-            { query: newQuery, categories },
+            { query: debouncedQuery, categories },
             queryConfig,
           ).then((data) => convertJs(data)),
         ...defaultQueryOptions,
-        enabled: Boolean(newQuery) || Boolean(categories?.length),
+        enabled: Boolean(debouncedQuery) || Boolean(categories?.length),
       });
     },
   };
