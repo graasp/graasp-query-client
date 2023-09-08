@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/graasp/graasp-query-client/compare/v1.5.0...v1.6.0) (2023-09-08)
+
+
+### Features
+
+* expose url parameter for auth redirection ([#420](https://github.com/graasp/graasp-query-client/issues/420)) ([e33f1b6](https://github.com/graasp/graasp-query-client/commit/e33f1b6b043e812343246458fd3426a847fcb5fd))
+
+
+### Bug Fixes
+
+* use app id if key does not exist for requestApiAccessToken ([#417](https://github.com/graasp/graasp-query-client/issues/417)) ([8435c1e](https://github.com/graasp/graasp-query-client/commit/8435c1ee0d0d30d139021018a632a37909f925f2))
+
 ## [1.5.0](https://github.com/graasp/graasp-query-client/compare/v1.4.3...v1.5.0) (2023-09-01)
 
 
