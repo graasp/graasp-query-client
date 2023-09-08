@@ -19,23 +19,23 @@ export default (queryConfig: QueryClientConfig) => {
     }: {
       query?: string;
       categories?: Category['id'][][];
-    }) =>
-      useQuery({
-        queryKey: buildSearchPublishedItemsKey(query, categories),
-        queryFn: (): Promise<unknown> => {
-          const [newQuery, setNewQuery] = useState(query);
+    }) => {
+      const [newQuery, setNewQuery] = useState(query);
 
-          useEffect(() => {
-            debounce(() => setNewQuery(query), 1000);
-          }, [query]);
+      useEffect(() => {
+        debounce(() => setNewQuery(query), 1000);
+      }, [query]);
 
-          return Api.searchPublishedItems(
+      return useQuery({
+        queryKey: buildSearchPublishedItemsKey(newQuery, categories),
+        queryFn: (): Promise<unknown> =>
+          Api.searchPublishedItems(
             { query: newQuery, categories },
             queryConfig,
-          ).then((data) => convertJs(data));
-        },
+          ).then((data) => convertJs(data)),
         ...defaultQueryOptions,
-        enabled: Boolean(query) || Boolean(categories?.length),
-      }),
+        enabled: Boolean(newQuery) || Boolean(categories?.length),
+      });
+    },
   };
 };
