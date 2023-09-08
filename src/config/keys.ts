@@ -1,6 +1,5 @@
-import { UUID } from '@graasp/sdk';
+import { Category, UUID } from '@graasp/sdk';
 
-import { SearchFields } from '../types';
 import { AggregateActionsArgs } from '../utils/action';
 import { hashItemsIds } from '../utils/item';
 import { DEFAULT_THUMBNAIL_SIZE } from './constants';
@@ -103,11 +102,6 @@ export const buildItemCategoriesKey = (id?: UUID) => [
 export const buildItemsByCategoriesKey = (ids: UUID[]) => [
   'itemsInCategories',
   hashItemsIds(ids),
-];
-
-export const buildSearchByKeywordKey = (fields: SearchFields) => [
-  'keywordSearch',
-  fields,
 ];
 
 export const RECYCLED_ITEMS_DATA_KEY = 'recycledItemsData';
@@ -238,6 +232,11 @@ export const CURRENT_CUSTOMER_KEY = [SUBSCRIPTION_KEY, 'currentCustomer'];
 
 export const buildEtherpadKey = (itemId?: UUID) => [ETHERPADS_KEY, itemId];
 
+export const buildSearchPublishedItemsKey = (
+  query?: string,
+  categories?: Category['id'][][],
+) => [ITEMS_KEY, 'search', { query, categories }];
+
 export const DATA_KEYS = {
   APPS_KEY,
   ITEMS_KEY,
@@ -270,7 +269,6 @@ export const DATA_KEYS = {
   buildCategoriesKey,
   buildItemCategoriesKey,
   buildItemsByCategoriesKey,
-  buildSearchByKeywordKey,
   RECYCLED_ITEMS_DATA_KEY,
   FAVORITE_ITEMS_KEY,
   buildItemThumbnailKey,
@@ -286,4 +284,5 @@ export const DATA_KEYS = {
   buildPlanKey,
   buildPublishedItemsKey,
   buildEtherpadKey,
+  buildSearchPublishedItemsKey,
 };

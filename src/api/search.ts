@@ -1,22 +1,37 @@
-import { DiscriminatedItem } from '@graasp/sdk';
+import { Category, DiscriminatedItem } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import configureAxios from './axios';
-import { buildGetItemsByKeywordRoute } from './routes';
+import { SEARCH_PUBLISHED_ITEMS_ROUTE } from './routes';
 
 const axios = configureAxios();
 
 /* eslint-disable import/prefer-default-export */
-export const getItemsByKeywords = async (
-  fields: {
-    keywords?: string;
-    tags?: string[];
-    parentId?: string;
-    name?: string;
-    creator?: string;
-  },
+export const searchPublishedItems = async (
+  { query: q, categories }: { query?: string; categories?: Category['id'][][] },
   { API_HOST }: QueryClientConfig,
-): Promise<DiscriminatedItem[]> =>
-  axios
-    .get(`${API_HOST}/${buildGetItemsByKeywordRoute(fields)}`)
+): Promise<DiscriminatedItem[]> => {
+  const categoriesFilter = categories
+    ?.map(
+      (categoriesForType) => `categories IN [${categoriesForType.join(',')}]`,
+    )
+    ?.join(' AND ');
+
+  const query: {
+    indexUid: string;
+    attributesToHighlight: string[];
+    q?: string;
+    filter?: string;
+  } = {
+    indexUid: 'itemIndex',
+    attributesToHighlight: ['name', 'description', 'content'],
+    q,
+    filter: categoriesFilter,
+  };
+
+  return axios
+    .post(`${API_HOST}/${SEARCH_PUBLISHED_ITEMS_ROUTE}`, {
+      queries: [query],
+    })
     .then(({ data }) => data);
+};

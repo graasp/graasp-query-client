@@ -1,27 +1,31 @@
-import { convertJs } from '@graasp/sdk';
-import { ItemRecord } from '@graasp/sdk/frontend';
+import { Category, convertJs } from '@graasp/sdk';
 
-import { List } from 'immutable';
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
-import { buildSearchByKeywordKey } from '../config/keys';
-import { QueryClientConfig, SearchFields } from '../types';
+import { buildSearchPublishedItemsKey } from '../config/keys';
+import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
 
   // get search results
   return {
-    useKeywordSearch: (fields: SearchFields) =>
+    useSearchPublishedItems: ({
+      query,
+      categories,
+    }: {
+      query?: string;
+      categories?: Category['id'][][];
+    }) =>
       useQuery({
-        queryKey: buildSearchByKeywordKey(fields),
-        queryFn: (): Promise<List<ItemRecord>> =>
-          Api.getItemsByKeywords(fields, queryConfig).then((data) =>
-            convertJs(data),
+        queryKey: buildSearchPublishedItemsKey(query, categories),
+        queryFn: (): Promise<unknown> =>
+          Api.searchPublishedItems({ query, categories }, queryConfig).then(
+            (data) => convertJs(data),
           ),
         ...defaultQueryOptions,
-        enabled: Object.values(fields).some((v) => v),
+        enabled: Boolean(query) || Boolean(categories?.length),
       }),
   };
 };

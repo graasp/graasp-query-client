@@ -35,11 +35,3 @@ export type QueryClientConfig = {
     isDataEqual?: typeof isDataEqual;
   };
 };
-
-export type SearchFields = {
-  keywords?: string;
-  tags?: string[];
-  parentId?: string;
-  name?: string;
-  creator?: string;
-};

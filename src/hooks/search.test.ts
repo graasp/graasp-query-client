@@ -1,58 +1,111 @@
-import { ItemRecord } from '@graasp/sdk/frontend';
+import { convertJs } from '@graasp/sdk';
 
-import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
-import { ITEMS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
-import { buildGetItemsByKeywordRoute } from '../api/routes';
-import { buildSearchByKeywordKey } from '../config/keys';
+import { SEARCH_PUBLISHED_ITEMS_ROUTE } from '../api/routes';
+import { buildSearchPublishedItemsKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
-describe('Keyword Search Hook', () => {
+const RESPONSE = {
+  results: [
+    {
+      indexUid: 'itemIndex',
+      hits: [
+        {
+          name: 'lettre',
+          description: '',
+          content: '',
+          id: '4ad19906-a3e2-47ed-b5c9-e7764889a980',
+          type: 'folder',
+          categories: [],
+          isPublishedRoot: true,
+          createdAt: '2023-09-06T11:50:32.894Z',
+          updatedAt: '2023-09-06T11:50:32.894Z',
+          _formatted: {
+            name: '<em>lettre</em>',
+            description: '',
+            content: '',
+            id: '4ad19906-a3e2-47ed-b5c9-e7764889a980',
+            type: 'folder',
+            categories: [],
+            isPublishedRoot: true,
+            createdAt: '2023-09-06T11:50:32.894Z',
+            updatedAt: '2023-09-06T11:50:32.894Z',
+          },
+        },
+        {
+          name: 'name',
+          description: 'my lettre is for oyu to sijefk',
+          content: '',
+          id: '0bac7f97-9c06-437a-9db4-c46f97bc8605',
+          type: 'folder',
+          categories: [],
+          isPublishedRoot: true,
+          createdAt: '2023-09-06T13:17:12.568Z',
+          updatedAt: '2023-09-06T13:17:12.568Z',
+          _formatted: {
+            name: 'name',
+            description: 'my <em>lettre</em> is for oyu to sijefk',
+            content: '',
+            id: '0bac7f97-9c06-437a-9db4-c46f97bc8605',
+            type: 'folder',
+            categories: [],
+            isPublishedRoot: true,
+            createdAt: '2023-09-06T13:17:12.568Z',
+            updatedAt: '2023-09-06T13:17:12.568Z',
+          },
+        },
+      ],
+      query: 'lettre',
+      processingTimeMs: 13,
+      limit: 20,
+      offset: 0,
+      estimatedTotalHits: 2,
+    },
+  ],
+};
+
+describe('Published Search Hook', () => {
   afterEach(() => {
     nock.cleanAll();
     queryClient.clear();
   });
 
-  describe('useKeywordSearch', () => {
-    const keywords = 'cat&dog';
-    const route = `/${buildGetItemsByKeywordRoute({ keywords })}`;
-    const key = buildSearchByKeywordKey({ keywords });
+  describe('useSearchPublishedItems', () => {
+    const query = 'some string';
+    const categories = [['mycategoryid']];
 
-    const hook = () => hooks.useKeywordSearch({ keywords });
+    const route = `/${SEARCH_PUBLISHED_ITEMS_ROUTE}`;
+    const key = buildSearchPublishedItemsKey(query, categories);
 
     it(`Receive search results`, async () => {
-      const response = ITEMS;
+      const hook = () => hooks.useSearchPublishedItems({ query, categories });
+      const response = RESPONSE;
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<ItemRecord>).toEqualImmutable(response);
+      expect(data).toEqualImmutable(convertJs(response));
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(queryClient.getQueryData(key)).toEqualImmutable(
+        convertJs(response),
+      );
     });
 
-    it(`Unauthorized`, async () => {
-      const endpoints = [
-        {
-          route,
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-        },
-      ];
-      const { data, isError } = await mockHook({
+    it(`does not fetch if no query nor categories is provided`, async () => {
+      const hook = () => hooks.useSearchPublishedItems({});
+      const endpoints = [{ route, response: RESPONSE }];
+      const { data, isFetched } = await mockHook({
+        endpoints,
         hook,
         wrapper,
-        endpoints,
+        enabled: false,
       });
 
+      expect(isFetched).toBeFalsy();
       expect(data).toBeFalsy();
-      expect(isError).toBeTruthy();
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
     });
