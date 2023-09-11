@@ -15,9 +15,11 @@ export default (queryConfig: QueryClientConfig) => {
     useSearchPublishedItems: ({
       query,
       categories,
+      isPublishedRoot = false,
     }: {
       query?: string;
       categories?: Category['id'][][];
+      isPublishedRoot?: boolean;
     }) => {
       const debouncedQuery = useDebounce(query, 500);
 
@@ -25,7 +27,7 @@ export default (queryConfig: QueryClientConfig) => {
         queryKey: buildSearchPublishedItemsKey(debouncedQuery, categories),
         queryFn: (): Promise<unknown> =>
           Api.searchPublishedItems(
-            { query: debouncedQuery, categories },
+            { query: debouncedQuery, categories, isPublishedRoot },
             queryConfig,
           ).then((data) => convertJs(data)),
         ...defaultQueryOptions,

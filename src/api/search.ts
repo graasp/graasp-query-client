@@ -8,7 +8,15 @@ const axios = configureAxios();
 
 /* eslint-disable import/prefer-default-export */
 export const searchPublishedItems = async (
-  { query: q, categories }: { query?: string; categories?: Category['id'][][] },
+  {
+    query: q,
+    categories,
+    isPublishedRoot,
+  }: {
+    query?: string;
+    categories?: Category['id'][][];
+    isPublishedRoot?: boolean;
+  },
   { API_HOST }: QueryClientConfig,
 ): Promise<DiscriminatedItem[]> => {
   const categoriesFilter = categories
@@ -16,6 +24,10 @@ export const searchPublishedItems = async (
       (categoriesForType) => `categories IN [${categoriesForType.join(',')}]`,
     )
     ?.join(' AND ');
+
+  const isPublishedFilter = isPublishedRoot
+    ? `isPublishedRoot = ${isPublishedRoot}`
+    : '';
 
   const query: {
     indexUid: string;
@@ -26,7 +38,9 @@ export const searchPublishedItems = async (
     indexUid: 'itemIndex',
     attributesToHighlight: ['name', 'description', 'content'],
     q,
-    filter: categoriesFilter,
+    filter: [categoriesFilter, isPublishedFilter]
+      .filter((v) => v)
+      .join(' AND '),
   };
 
   return axios

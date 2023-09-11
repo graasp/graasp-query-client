@@ -1,5 +1,6 @@
 import { convertJs } from '@graasp/sdk';
 
+import axios from 'axios';
 import nock from 'nock';
 
 import { mockHook, setUpTest } from '../../test/utils';
@@ -57,6 +58,28 @@ const RESPONSE = {
             updatedAt: '2023-09-06T13:17:12.568Z',
           },
         },
+        {
+          name: 'child of name',
+          description: 'some description',
+          content: '',
+          id: '1bac7f97-9c06-437a-9db4-c46f97bc8605',
+          type: 'folder',
+          categories: [],
+          isPublishedRoot: false,
+          createdAt: '2023-09-06T13:17:12.568Z',
+          updatedAt: '2023-09-06T13:17:12.568Z',
+          _formatted: {
+            name: 'name',
+            description: 'some description',
+            content: '',
+            id: '1bac7f97-9c06-437a-9db4-c46f97bc8605',
+            type: 'folder',
+            categories: [],
+            isPublishedRoot: false,
+            createdAt: '2023-09-06T13:17:12.568Z',
+            updatedAt: '2023-09-06T13:17:12.568Z',
+          },
+        },
       ],
       query: 'lettre',
       processingTimeMs: 13,
@@ -108,6 +131,37 @@ describe('Published Search Hook', () => {
       expect(data).toBeFalsy();
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+
+    it(`search for categories and published root = true`, async () => {
+      const spy = jest.spyOn(axios, 'post');
+      const hook = () =>
+        hooks.useSearchPublishedItems({
+          query,
+          categories,
+          isPublishedRoot: true,
+        });
+      const response = RESPONSE;
+      const endpoints = [{ route, response }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+
+      expect(spy).toHaveBeenCalledWith(expect.stringContaining(route), {
+        queries: [
+          {
+            indexUid: 'itemIndex',
+            attributesToHighlight: ['name', 'description', 'content'],
+            q: query,
+            filter: 'categories IN [mycategoryid] AND isPublishedRoot = true',
+          },
+        ],
+      });
+
+      expect(data).toEqualImmutable(convertJs(response));
+
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toEqualImmutable(
+        convertJs(response),
+      );
     });
   });
 });
