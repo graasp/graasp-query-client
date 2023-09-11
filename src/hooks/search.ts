@@ -24,7 +24,11 @@ export default (queryConfig: QueryClientConfig) => {
       const debouncedQuery = useDebounce(query, 500);
 
       return useQuery({
-        queryKey: buildSearchPublishedItemsKey(debouncedQuery, categories),
+        queryKey: buildSearchPublishedItemsKey({
+          query: debouncedQuery,
+          categories,
+          isPublishedRoot,
+        }),
         queryFn: (): Promise<unknown> =>
           Api.searchPublishedItems(
             { query: debouncedQuery, categories, isPublishedRoot },

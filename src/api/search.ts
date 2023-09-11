@@ -38,10 +38,15 @@ export const searchPublishedItems = async (
     indexUid: 'itemIndex',
     attributesToHighlight: ['name', 'description', 'content'],
     q,
-    filter: [categoriesFilter, isPublishedFilter]
-      .filter((v) => v)
-      .join(' AND '),
   };
+
+  const filters = [categoriesFilter, isPublishedFilter]
+    .filter((v) => v)
+    .join(' AND ');
+
+  if (filters) {
+    query.filter = filters;
+  }
 
   return axios
     .post(`${API_HOST}/${SEARCH_PUBLISHED_ITEMS_ROUTE}`, {

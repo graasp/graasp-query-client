@@ -232,10 +232,11 @@ export const CURRENT_CUSTOMER_KEY = [SUBSCRIPTION_KEY, 'currentCustomer'];
 
 export const buildEtherpadKey = (itemId?: UUID) => [ETHERPADS_KEY, itemId];
 
-export const buildSearchPublishedItemsKey = (
-  query?: string,
-  categories?: Category['id'][][],
-) => [ITEMS_KEY, 'search', { query, categories }];
+export const buildSearchPublishedItemsKey = (args: {
+  query?: string;
+  categories?: Category['id'][][];
+  isPublishedRoot?: boolean;
+}) => [ITEMS_KEY, 'search', { ...args, isPublishedRoot: false }];
 
 export const DATA_KEYS = {
   APPS_KEY,

@@ -101,7 +101,7 @@ describe('Published Search Hook', () => {
     const categories = [['mycategoryid']];
 
     const route = `/${SEARCH_PUBLISHED_ITEMS_ROUTE}`;
-    const key = buildSearchPublishedItemsKey(query, categories);
+    const key = buildSearchPublishedItemsKey({ query, categories });
 
     it(`Receive search results`, async () => {
       const hook = () => hooks.useSearchPublishedItems({ query, categories });
