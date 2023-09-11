@@ -16,10 +16,14 @@ export default (queryConfig: QueryClientConfig) => {
       query,
       categories,
       isPublishedRoot = false,
+      limit,
+      sort,
     }: {
       query?: string;
       categories?: Category['id'][][];
       isPublishedRoot?: boolean;
+      limit?: number;
+      sort?: string[];
     }) => {
       const debouncedQuery = useDebounce(query, 500);
 
@@ -28,14 +32,16 @@ export default (queryConfig: QueryClientConfig) => {
           query: debouncedQuery,
           categories,
           isPublishedRoot,
+          limit,
+          sort,
         }),
+        // todo: improve type
         queryFn: (): Promise<unknown> =>
           Api.searchPublishedItems(
-            { query: debouncedQuery, categories, isPublishedRoot },
+            { query: debouncedQuery, categories, isPublishedRoot, limit, sort },
             queryConfig,
           ).then((data) => convertJs(data)),
         ...defaultQueryOptions,
-        enabled: Boolean(debouncedQuery) || Boolean(categories?.length),
       });
     },
   };

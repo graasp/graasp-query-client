@@ -12,13 +12,33 @@ export const searchPublishedItems = async (
     query: q,
     categories,
     isPublishedRoot,
+    limit,
+    sort,
   }: {
     query?: string;
     categories?: Category['id'][][];
     isPublishedRoot?: boolean;
+    limit?: number;
+    sort?: string[];
   },
   { API_HOST }: QueryClientConfig,
 ): Promise<DiscriminatedItem[]> => {
+  const query: {
+    indexUid: string;
+    attributesToHighlight: string[];
+    q?: string;
+    filter?: string;
+    limit?: number;
+    sort?: string[];
+  } = {
+    indexUid: 'itemIndex',
+    attributesToHighlight: ['name', 'description', 'content'],
+    q,
+    limit,
+    sort,
+  };
+
+  // handle filters
   const categoriesFilter = categories
     ?.map(
       (categoriesForType) => `categories IN [${categoriesForType.join(',')}]`,
@@ -28,18 +48,6 @@ export const searchPublishedItems = async (
   const isPublishedFilter = isPublishedRoot
     ? `isPublishedRoot = ${isPublishedRoot}`
     : '';
-
-  const query: {
-    indexUid: string;
-    attributesToHighlight: string[];
-    q?: string;
-    filter?: string;
-  } = {
-    indexUid: 'itemIndex',
-    attributesToHighlight: ['name', 'description', 'content'],
-    q,
-  };
-
   const filters = [categoriesFilter, isPublishedFilter]
     .filter((v) => v)
     .join(' AND ');
