@@ -236,7 +236,7 @@ export const buildSearchPublishedItemsKey = (args: {
   query?: string;
   categories?: Category['id'][][];
   isPublishedRoot?: boolean;
-}) => [ITEMS_KEY, 'search', { ...args, isPublishedRoot: false }];
+}) => [ITEMS_KEY, 'search', { isPublishedRoot: false, ...args }];
 
 export const DATA_KEYS = {
   APPS_KEY,

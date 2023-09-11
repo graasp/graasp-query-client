@@ -97,14 +97,13 @@ describe('Published Search Hook', () => {
   });
 
   describe('useSearchPublishedItems', () => {
-    const query = 'some string';
-    const categories = [['mycategoryid']];
-
     const route = `/${SEARCH_PUBLISHED_ITEMS_ROUTE}`;
-    const key = buildSearchPublishedItemsKey({ query, categories });
 
     it(`Receive search results`, async () => {
+      const query = 'some string';
+      const categories = [['mycategoryid']];
       const hook = () => hooks.useSearchPublishedItems({ query, categories });
+      const key = buildSearchPublishedItemsKey({ query, categories });
       const response = RESPONSE;
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
@@ -119,6 +118,7 @@ describe('Published Search Hook', () => {
 
     it(`does not fetch if no query nor categories is provided`, async () => {
       const hook = () => hooks.useSearchPublishedItems({});
+      const key = buildSearchPublishedItemsKey({});
       const endpoints = [{ route, response: RESPONSE }];
       const { data, isFetched } = await mockHook({
         endpoints,
@@ -134,12 +134,20 @@ describe('Published Search Hook', () => {
     });
 
     it(`search for categories and published root = true`, async () => {
+      const query = 'some string';
+      const categories = [['mycategoryid']];
+      const isPublishedRoot = true;
       const spy = jest.spyOn(axios, 'post');
+      const key = buildSearchPublishedItemsKey({
+        isPublishedRoot,
+        query,
+        categories,
+      });
       const hook = () =>
         hooks.useSearchPublishedItems({
           query,
           categories,
-          isPublishedRoot: true,
+          isPublishedRoot,
         });
       const response = RESPONSE;
       const endpoints = [{ route, response }];
