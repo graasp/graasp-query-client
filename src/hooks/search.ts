@@ -18,13 +18,13 @@ export default (queryConfig: QueryClientConfig) => {
       isPublishedRoot = false,
       limit,
       sort,
+      enabled = true,
     }: {
       query?: string;
       categories?: Category['id'][][];
       isPublishedRoot?: boolean;
-      limit?: number;
-      sort?: string[];
-    }) => {
+      enabled?: boolean;
+    } & Api.MeiliSearchProps) => {
       const debouncedQuery = useDebounce(query, 500);
 
       return useQuery({
@@ -41,6 +41,7 @@ export default (queryConfig: QueryClientConfig) => {
             { query: debouncedQuery, categories, isPublishedRoot, limit, sort },
             queryConfig,
           ).then((data) => convertJs(data)),
+        enabled,
         ...defaultQueryOptions,
       });
     },

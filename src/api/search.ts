@@ -6,6 +6,13 @@ import { SEARCH_PUBLISHED_ITEMS_ROUTE } from './routes';
 
 const axios = configureAxios();
 
+export type MeiliSearchProps = {
+  limit?: number;
+  sort?: string[];
+  attributesToCrop?: string[];
+  cropLength?: number;
+};
+
 /* eslint-disable import/prefer-default-export */
 export const searchPublishedItems = async (
   {
@@ -14,13 +21,13 @@ export const searchPublishedItems = async (
     isPublishedRoot,
     limit,
     sort,
+    attributesToCrop,
+    cropLength,
   }: {
     query?: string;
     categories?: Category['id'][][];
     isPublishedRoot?: boolean;
-    limit?: number;
-    sort?: string[];
-  },
+  } & MeiliSearchProps,
   { API_HOST }: QueryClientConfig,
 ): Promise<DiscriminatedItem[]> => {
   const query: {
@@ -28,11 +35,11 @@ export const searchPublishedItems = async (
     attributesToHighlight: string[];
     q?: string;
     filter?: string;
-    limit?: number;
-    sort?: string[];
-  } = {
+  } & MeiliSearchProps = {
     indexUid: 'itemIndex',
-    attributesToHighlight: ['name', 'description', 'content'],
+    attributesToHighlight: ['name', 'description', 'content', 'creator'],
+    attributesToCrop,
+    cropLength,
     q,
     limit,
     sort,
