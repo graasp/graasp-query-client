@@ -13,17 +13,19 @@ export default (queryConfig: QueryClientConfig) => {
   // get search results
   return {
     useSearchPublishedItems: ({
-      query,
+      attributesToCrop,
       categories,
-      isPublishedRoot = false,
-      limit,
-      sort,
+      cropLength,
       enabled = true,
+      isPublishedRoot = true,
+      limit,
+      query,
+      sort,
     }: {
-      query?: string;
       categories?: Category['id'][][];
-      isPublishedRoot?: boolean;
       enabled?: boolean;
+      isPublishedRoot?: boolean;
+      query?: string;
     } & Api.MeiliSearchProps) => {
       const debouncedQuery = useDebounce(query, 500);
 
@@ -38,7 +40,15 @@ export default (queryConfig: QueryClientConfig) => {
         // todo: improve type
         queryFn: (): Promise<unknown> =>
           Api.searchPublishedItems(
-            { query: debouncedQuery, categories, isPublishedRoot, limit, sort },
+            {
+              attributesToCrop,
+              categories,
+              cropLength,
+              isPublishedRoot,
+              limit,
+              query: debouncedQuery,
+              sort,
+            },
             queryConfig,
           ).then((data) => convertJs(data)),
         enabled,

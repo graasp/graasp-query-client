@@ -18,7 +18,7 @@ export const searchPublishedItems = async (
   {
     query: q,
     categories,
-    isPublishedRoot,
+    isPublishedRoot = true,
     limit,
     sort,
     attributesToCrop,
