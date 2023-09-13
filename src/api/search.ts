@@ -25,6 +25,8 @@ export const searchPublishedItems = async (
     sort,
     attributesToCrop,
     cropLength,
+    highlightPreTag,
+    highlightPostTag,
   }: {
     query?: string;
     categories?: Category['id'][][];
@@ -45,6 +47,8 @@ export const searchPublishedItems = async (
     q,
     limit,
     sort,
+    highlightPreTag,
+    highlightPostTag,
   };
 
   // handle filters
