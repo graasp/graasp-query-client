@@ -26,7 +26,9 @@ describe('Search API', () => {
 
       const call = (spy.mock.calls[0][1] as SearchQuery).queries[0];
       expect(call.q).toEqual(query);
-      expect(call.filter).toEqual('categories IN [id1]');
+      expect(call.filter).toEqual(
+        'categories IN [id1] AND isPublishedRoot = true',
+      );
     });
     it('correctly send request without query string', async () => {
       const categories = [['id1']];
@@ -37,12 +39,25 @@ describe('Search API', () => {
 
       const call = (spy.mock.calls[0][1] as SearchQuery).queries[0];
       expect(call.q).toBeUndefined();
-      expect(call.filter).toEqual('categories IN [id1]');
+      expect(call.filter).toEqual(
+        'categories IN [id1] AND isPublishedRoot = true',
+      );
     });
     it('correctly send request without categories', async () => {
       const query = 'query';
 
       await searchPublishedItems({ query }, {
+        API_HOST: 'apihost',
+      } as QueryClientConfig);
+
+      const call = (spy.mock.calls[0][1] as SearchQuery).queries[0];
+      expect(call.q).toEqual(query);
+      expect(call.filter).toEqual('isPublishedRoot = true');
+    });
+    it('correctly send request without categories and publishedRoot false', async () => {
+      const query = 'query';
+
+      await searchPublishedItems({ query, isPublishedRoot: false }, {
         API_HOST: 'apihost',
       } as QueryClientConfig);
 
@@ -61,7 +76,7 @@ describe('Search API', () => {
       const call = (spy.mock.calls[0][1] as SearchQuery).queries[0];
       expect(call.q).toEqual(query);
       expect(call.filter).toEqual(
-        'categories IN [id1,id2] AND categories IN [id3,id4] AND categories IN [id5]',
+        'categories IN [id1,id2] AND categories IN [id3,id4] AND categories IN [id5] AND isPublishedRoot = true',
       );
     });
   });
