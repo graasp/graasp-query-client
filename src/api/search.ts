@@ -1,4 +1,4 @@
-import { Category, DiscriminatedItem } from '@graasp/sdk';
+import { Category, DiscriminatedItem, INDEX_NAME } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import configureAxios from './axios';
@@ -40,7 +40,7 @@ export const searchPublishedItems = async (
     q?: string;
     filter?: string;
   } & MeiliSearchProps = {
-    indexUid: 'itemIndex',
+    indexUid: INDEX_NAME,
     attributesToHighlight: ['name', 'description', 'content', 'creator'],
     attributesToCrop,
     cropLength,

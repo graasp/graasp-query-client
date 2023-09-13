@@ -1,4 +1,5 @@
 import { Category, convertJs } from '@graasp/sdk';
+import { MeiliSearchResultsRecord } from '@graasp/sdk/frontend';
 
 import { useQuery } from 'react-query';
 
@@ -42,7 +43,7 @@ export default (queryConfig: QueryClientConfig) => {
           highlightPostTag,
         }),
         // todo: improve type
-        queryFn: (): Promise<unknown> =>
+        queryFn: () =>
           Api.searchPublishedItems(
             {
               attributesToCrop,
@@ -56,7 +57,7 @@ export default (queryConfig: QueryClientConfig) => {
               highlightPostTag,
             },
             queryConfig,
-          ).then((data) => convertJs(data)),
+          ).then((data) => convertJs(data) as MeiliSearchResultsRecord),
         enabled,
         ...defaultQueryOptions,
       });
