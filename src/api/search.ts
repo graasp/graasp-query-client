@@ -11,6 +11,8 @@ export type MeiliSearchProps = {
   sort?: string[];
   attributesToCrop?: string[];
   cropLength?: number;
+  highlightPreTag?: string;
+  highlightPostTag?: string;
 };
 
 /* eslint-disable import/prefer-default-export */

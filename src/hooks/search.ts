@@ -21,6 +21,8 @@ export default (queryConfig: QueryClientConfig) => {
       limit,
       query,
       sort,
+      highlightPreTag,
+      highlightPostTag,
     }: {
       categories?: Category['id'][][];
       enabled?: boolean;
@@ -36,6 +38,8 @@ export default (queryConfig: QueryClientConfig) => {
           isPublishedRoot,
           limit,
           sort,
+          highlightPreTag,
+          highlightPostTag,
         }),
         // todo: improve type
         queryFn: (): Promise<unknown> =>
@@ -48,6 +52,8 @@ export default (queryConfig: QueryClientConfig) => {
               limit,
               query: debouncedQuery,
               sort,
+              highlightPreTag,
+              highlightPostTag,
             },
             queryConfig,
           ).then((data) => convertJs(data)),

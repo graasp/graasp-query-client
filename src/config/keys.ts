@@ -238,6 +238,8 @@ export const buildSearchPublishedItemsKey = (args: {
   isPublishedRoot?: boolean;
   limit?: number;
   sort?: string[];
+  highlightPreTag?: string;
+  highlightPostTag?: string;
 }) => [ITEMS_KEY, 'search', { isPublishedRoot: false, ...args }];
 
 export const DATA_KEYS = {
