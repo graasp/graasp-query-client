@@ -35,9 +35,12 @@ class EtherpadQueue {
         .then(({ data }) => data);
     // The queue is implicitly managed by the nested promises call stack
     // We simply schedule this request after the last one that was set
-    const nextPromise = this.lastPromise.finally(doFetch);
+    // We CANNOT use this.lastPromise.finally(doFetch)! The finally semantics will return the previous return value, even if failing!
+    // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/finally#description
+    // instead we use .then(onResolve, onRejected) with both arguments set to doFetch
+    const nextPromise = this.lastPromise.then(doFetch, doFetch);
     this.lastPromise = nextPromise;
-    // Retuning the previous reference allows multiple then calls
+    // Retuning the previous reference allows multiple then / catch calls
     return nextPromise;
   }
 }
