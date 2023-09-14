@@ -59,7 +59,7 @@ describe('Items Hooks', () => {
 
   describe('useOwnItems', () => {
     const route = `/${GET_OWN_ITEMS_ROUTE}`;
-    const hook = () => hooks.useOwnItems();
+    const hook = () => hooks.useOwnItems(1);
 
     it(`Receive own items`, async () => {
       const response = ITEMS;
