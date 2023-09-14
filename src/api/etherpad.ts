@@ -35,7 +35,7 @@ class EtherpadQueue {
         .then(({ data }) => data);
     // The queue is implicitly managed by the nested promises call stack
     // We simply schedule this request after the last one that was set
-    const nextPromise = this.lastPromise.then(doFetch);
+    const nextPromise = this.lastPromise.finally(doFetch);
     this.lastPromise = nextPromise;
     // Retuning the previous reference allows multiple then calls
     return nextPromise;
