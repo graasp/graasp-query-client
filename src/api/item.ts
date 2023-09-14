@@ -43,9 +43,14 @@ export const getItems = async (
 ): Promise<ResultOf<Item>> =>
   axios.get(`${API_HOST}/${buildGetItemsRoute(ids)}`).then(({ data }) => data);
 
-export const getOwnItems = async ({ API_HOST }: QueryClientConfig) =>
+export const getOwnItems = async (
+  { API_HOST }: QueryClientConfig,
+  page: number = 1,
+) =>
   verifyAuthentication(() =>
-    axios.get(`${API_HOST}/${GET_OWN_ITEMS_ROUTE}`).then(({ data }) => data),
+    axios
+      .get(`${API_HOST}/${GET_OWN_ITEMS_ROUTE}?page=${page}`)
+      .then(({ data }) => data),
   );
 
 export type PostItemPayloadType = Partial<DiscriminatedItem> &

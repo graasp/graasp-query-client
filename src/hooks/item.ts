@@ -63,7 +63,7 @@ export default (
       : undefined;
 
   return {
-    useOwnItems: (options?: { getUpdates?: boolean }) => {
+    useOwnItems: (page: number, options?: { getUpdates?: boolean }) => {
       const queryClient = useQueryClient();
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
@@ -73,11 +73,11 @@ export default (
       return useQuery({
         queryKey: OWN_ITEMS_KEY,
         queryFn: (): Promise<List<ItemRecord>> =>
-          Api.getOwnItems(queryConfig).then((data) => convertJs(data)),
-        onSuccess: async (items: List<ItemRecord>) => {
+          Api.getOwnItems(queryConfig, page).then((data) => convertJs(data)),
+        onSuccess: async ({ data }: { data: List<ItemRecord> }) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
-          items?.forEach(async (item) => {
+          data?.forEach(async (item) => {
             const { id } = item;
             queryClient.setQueryData(buildItemKey(id), item);
           });
