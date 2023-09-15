@@ -46,10 +46,11 @@ export const getItems = async (
 export const getOwnItems = async (
   { API_HOST }: QueryClientConfig,
   page: number = 1,
+  name: string = "",
 ) =>
   verifyAuthentication(() =>
     axios
-      .get(`${API_HOST}/${GET_OWN_ITEMS_ROUTE}?page=${page}`)
+      .get(`${API_HOST}/${GET_OWN_ITEMS_ROUTE}?page=${page}&name=${name}`)
       .then(({ data }) => data),
   );
 

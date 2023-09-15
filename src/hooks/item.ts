@@ -63,7 +63,7 @@ export default (
       : undefined;
 
   return {
-    useOwnItems: (page: number, options?: { getUpdates?: boolean }) => {
+    useOwnItems: (page: number, name:string, options?: { getUpdates?: boolean }) => {
       const queryClient = useQueryClient();
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
@@ -71,9 +71,9 @@ export default (
       itemWsHooks?.useOwnItemsUpdates(getUpdates ? currentMember?.id : null);
 
       return useQuery({
-        queryKey: buildOwnItemsKey(page),
+        queryKey: buildOwnItemsKey(page, name),
         queryFn: (): Promise<List<ItemRecord>> =>
-          Api.getOwnItems(queryConfig, page).then((data) => convertJs(data)),
+          Api.getOwnItems(queryConfig, page, name).then((data) => convertJs(data)),
         onSuccess: async ({ data }: { data: List<ItemRecord>, totalCount: number }) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
