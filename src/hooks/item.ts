@@ -31,7 +31,6 @@ import {
 } from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
 import {
-  OWN_ITEMS_KEY,
   RECYCLED_ITEMS_DATA_KEY,
   SHARED_ITEMS_KEY,
   buildEtherpadKey,
@@ -43,6 +42,7 @@ import {
   buildItemParentsKey,
   buildItemThumbnailKey,
   buildItemsKey,
+  buildOwnItemsKey,
 } from '../config/keys';
 import { getOwnItemsRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
@@ -71,10 +71,10 @@ export default (
       itemWsHooks?.useOwnItemsUpdates(getUpdates ? currentMember?.id : null);
 
       return useQuery({
-        queryKey: OWN_ITEMS_KEY,
+        queryKey: buildOwnItemsKey(page),
         queryFn: (): Promise<List<ItemRecord>> =>
           Api.getOwnItems(queryConfig, page).then((data) => convertJs(data)),
-        onSuccess: async ({ data }: { data: List<ItemRecord> }) => {
+        onSuccess: async ({ data }: { data: List<ItemRecord>, totalCount: number }) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
           data?.forEach(async (item) => {

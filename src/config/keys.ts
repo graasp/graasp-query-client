@@ -8,6 +8,7 @@ import { DEFAULT_THUMBNAIL_SIZE } from './constants';
 export const APPS_KEY = 'apps';
 export const ITEMS_KEY = 'items';
 export const OWN_ITEMS_KEY = [ITEMS_KEY, 'own'];
+export const buildOwnItemsKey = (page: number) => [ITEMS_KEY, 'own', page]
 export const ETHERPADS_KEY = 'etherpads';
 export const SUBSCRIPTION_KEY = 'subscriptions';
 
@@ -286,4 +287,5 @@ export const DATA_KEYS = {
   buildPlanKey,
   buildPublishedItemsKey,
   buildEtherpadKey,
+  buildOwnItemsKey,
 };
