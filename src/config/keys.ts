@@ -240,7 +240,8 @@ export const buildSearchPublishedItemsKey = (args: {
   sort?: string[];
   highlightPreTag?: string;
   highlightPostTag?: string;
-}) => [ITEMS_KEY, 'search', { isPublishedRoot: false, ...args }];
+  page: number;
+}) => [ITEMS_KEY, 'search', { isPublishedRoot: false, ...args }, args.page];
 
 export const DATA_KEYS = {
   APPS_KEY,

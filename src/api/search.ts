@@ -13,6 +13,7 @@ export type MeiliSearchProps = {
   cropLength?: number;
   highlightPreTag?: string;
   highlightPostTag?: string;
+  page?: number;
 };
 
 /* eslint-disable import/prefer-default-export */
@@ -27,6 +28,7 @@ export const searchPublishedItems = async (
     cropLength,
     highlightPreTag,
     highlightPostTag,
+    page,
   }: {
     query?: string;
     categories?: Category['id'][][];
@@ -49,6 +51,7 @@ export const searchPublishedItems = async (
     sort,
     highlightPreTag,
     highlightPostTag,
+    page,
   };
 
   // handle filters

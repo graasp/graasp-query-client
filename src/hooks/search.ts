@@ -24,6 +24,7 @@ export default (queryConfig: QueryClientConfig) => {
       sort,
       highlightPreTag,
       highlightPostTag,
+      page = 1,
     }: {
       categories?: Category['id'][][];
       enabled?: boolean;
@@ -41,6 +42,7 @@ export default (queryConfig: QueryClientConfig) => {
           sort,
           highlightPreTag,
           highlightPostTag,
+          page,
         }),
         // todo: improve type
         queryFn: () =>
@@ -55,6 +57,7 @@ export default (queryConfig: QueryClientConfig) => {
               sort,
               highlightPreTag,
               highlightPostTag,
+              page,
             },
             queryConfig,
           ).then((data) => convertJs(data) as MeiliSearchResultsRecord),
