@@ -84,7 +84,7 @@ export default (
           }
 
           return splitRequestByIds(ids, MAX_TARGETS_FOR_READ_REQUEST, (chunk) =>
-            Api.getMembershipsForItems(chunk, queryConfig),
+            Api.getMembershipsForItems(chunk, queryConfig), true
           );
         },
         onSuccess: async (memberships) => {
