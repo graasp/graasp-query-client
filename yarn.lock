@@ -3259,7 +3259,7 @@ __metadata:
 
 "@graasp/sdk@https://github.com/graasp/graasp-sdk#351-search":
   version: 1.5.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=42537345fac7ead45b0eb04134cc950514a625ef"
+  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=0439941adb1ccfbe2a29868972498e3e75edab34"
   dependencies:
     "@aws-sdk/client-s3": 3.370.0
     "@fastify/secure-session": 6.1.0
@@ -3273,7 +3273,7 @@ __metadata:
     typeorm: 0.3.17
     uuid: 9.0.0
     validator: 13.11.0
-  checksum: 5f525773cad80210f41096f836bf35376710197594de25a9711c65356743044e250cd42c443a3907e15a33d6d47ed819d2b67d3e57d833c1c7116c3d71f26cbb
+  checksum: 8b53f0a58f015e8d048249d3ff19ae7ed1e39fdf339568f8c72101d59dc3824b11ca99a91489857ae9c92248b7d923d7a541ba5ed985cf4910d480d4d6b51d25
   languageName: node
   linkType: hard
 
