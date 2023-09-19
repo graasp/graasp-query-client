@@ -45,7 +45,7 @@ import {
   buildOwnItemsKey,
 } from '../config/keys';
 import { getOwnItemsRoutine } from '../routines';
-import { QueryClientConfig } from '../types';
+import { OwnItemsQuery, QueryClientConfig } from '../types';
 import { isPaginatedChildrenDataEqual, paginate } from '../utils/util';
 import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
@@ -63,7 +63,10 @@ export default (
       : undefined;
 
   return {
-    useOwnItems: (page: number, name:string, options?: { getUpdates?: boolean }) => {
+    useOwnItems: (
+      { page, all, name }: OwnItemsQuery,
+      options?: { getUpdates?: boolean },
+    ) => {
       const queryClient = useQueryClient();
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
@@ -71,10 +74,17 @@ export default (
       itemWsHooks?.useOwnItemsUpdates(getUpdates ? currentMember?.id : null);
 
       return useQuery({
-        queryKey: buildOwnItemsKey(page, name),
+        queryKey: buildOwnItemsKey(page, name, all),
         queryFn: (): Promise<List<ItemRecord>> =>
-          Api.getOwnItems(queryConfig, page, name).then((data) => convertJs(data)),
-        onSuccess: async ({ data }: { data: List<ItemRecord>, totalCount: number }) => {
+          Api.getOwnItems(queryConfig, page, name, all).then((data) =>
+            convertJs(data),
+          ),
+        onSuccess: async ({
+          data,
+        }: {
+          data: List<ItemRecord>;
+          totalCount: number;
+        }) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
           data?.forEach(async (item) => {

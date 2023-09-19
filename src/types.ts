@@ -43,3 +43,9 @@ export type SearchFields = {
   name?: string;
   creator?: string;
 };
+
+export type OwnItemsQuery = {
+  page?: number;
+  name?: string;
+  all?: boolean;
+};
