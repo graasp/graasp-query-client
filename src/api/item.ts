@@ -11,7 +11,6 @@ import { OwnItemsQuery, QueryClientConfig } from '../types';
 import { getParentsIdsFromPath } from '../utils/item';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
-  GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_DATA_ROUTE,
   SHARED_ITEM_WITH_ROUTE,
   buildCopyItemsRoute,
@@ -25,6 +24,7 @@ import {
   buildGetItemParents,
   buildGetItemRoute,
   buildGetItemsRoute,
+  buildGetOwnItemsRoute,
   buildMoveItemsRoute,
   buildPostEtherpadRoute,
   buildPostItemRoute,
@@ -49,11 +49,7 @@ export const getOwnItems = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .get(
-        `${API_HOST}/${GET_OWN_ITEMS_ROUTE}?page=${page}&name=${name}${
-          all ? `&all=${all}` : ''
-        }${limit ? `&limit=${limit}` : ''}`,
-      )
+      .get(`${API_HOST}/${buildGetOwnItemsRoute({ page, name, all, limit })}`)
       .then(({ data }) => data),
   );
 

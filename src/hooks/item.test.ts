@@ -28,7 +28,6 @@ import {
   splitEndpointByIds,
 } from '../../test/utils';
 import {
-  GET_OWN_ITEMS_ROUTE,
   SHARED_ITEM_WITH_ROUTE,
   buildDownloadFilesRoute,
   buildDownloadItemThumbnailRoute,
@@ -36,6 +35,7 @@ import {
   buildGetItemParents,
   buildGetItemRoute,
   buildGetItemsRoute,
+  buildGetOwnItemsRoute,
 } from '../api/routes';
 import {
   OWN_ITEMS_KEY,
@@ -58,7 +58,7 @@ describe('Items Hooks', () => {
   });
 
   describe('useOwnItems', () => {
-    const route = `/${GET_OWN_ITEMS_ROUTE}`;
+    const route = `/${buildGetOwnItemsRoute({ page: 1, name: '' })}`;
     const hook = () => hooks.useOwnItems({ page: 1, name: '' });
 
     it(`Receive own items`, async () => {

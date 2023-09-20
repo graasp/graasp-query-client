@@ -3,7 +3,7 @@ import { DiscriminatedItem, ItemTag, ItemTagType, UUID } from '@graasp/sdk';
 import qs from 'qs';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
-import { SearchFields } from '../types';
+import { OwnItemsQuery, SearchFields } from '../types';
 import { AggregateActionsArgs } from '../utils/action';
 
 export const APPS_ROUTE = 'app-items';
@@ -20,6 +20,27 @@ export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
 export const ETHERPAD_ROUTE = `${ITEMS_ROUTE}/etherpad`;
 export const COLLECTIONS_ROUTE = `collections`;
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
+
+export const buildGetOwnItemsRoute = ({
+  page,
+  all,
+  name,
+  limit,
+}: OwnItemsQuery) => {
+  let url = `${GET_OWN_ITEMS_ROUTE}?page=${page}`;
+
+  if (all) {
+    url += `&all=${all}`;
+  }
+  if (name) {
+    url += `&name=${name}`;
+  }
+  if (limit) {
+    url += `&limit=${limit}`;
+  }
+
+  return url;
+};
 
 export const buildPostItemRoute = (parentId?: UUID) => {
   let url = ITEMS_ROUTE;
@@ -490,4 +511,5 @@ export const API_ROUTES = {
   SIGN_OUT_ROUTE,
   SIGN_UP_ROUTE,
   VALIDATION_ROUTE,
+  buildGetOwnItemsRoute,
 };
