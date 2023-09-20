@@ -14,7 +14,7 @@ import { buildGetEtherpadRoute, buildPostEtherpadRoute } from './routes';
  */
 class EtherpadQueue {
   /** Ensure singleton with a single instance */
-  static instance = new EtherpadQueue();
+  static readonly instance = new EtherpadQueue();
 
   /** A reference to the last promise added to the queue */
   private lastPromise = Promise.resolve();
