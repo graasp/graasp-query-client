@@ -83,8 +83,11 @@ export default (
             throw new UndefinedArgument();
           }
 
-          return splitRequestByIds(ids, MAX_TARGETS_FOR_READ_REQUEST, (chunk) =>
-            Api.getMembershipsForItems(chunk, queryConfig), true
+          return splitRequestByIds(
+            ids,
+            MAX_TARGETS_FOR_READ_REQUEST,
+            (chunk) => Api.getMembershipsForItems(chunk, queryConfig),
+            true,
           );
         },
         onSuccess: async (memberships) => {
