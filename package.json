@@ -19,7 +19,7 @@
     "Alexandre Chau"
   ],
   "dependencies": {
-    "@graasp/sdk": "https://github.com/graasp/graasp-sdk#351-search",
+    "@graasp/sdk": "1.6.0",
     "@graasp/translations": "1.19.0",
     "axios": "0.27.2",
     "crypto-js": "4.1.1",
