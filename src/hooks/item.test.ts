@@ -46,6 +46,7 @@ import {
   buildItemParentsKey,
   buildItemThumbnailKey,
   buildItemsKey,
+  buildOwnItemsKey,
 } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
@@ -64,14 +65,16 @@ describe('Items Hooks', () => {
     it(`Receive own items`, async () => {
       const response = ITEMS;
       const endpoints = [{ route, response }];
-      const { data } = await mockHook({ endpoints, hook, wrapper });
-
-      expect(data).toEqualImmutable(response);
+      const data = await mockHook({ endpoints, hook, wrapper });
+      console.log(data, 'of test itself');
+      expect(data.data).toEqualImmutable(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(OWN_ITEMS_KEY)).toEqualImmutable(
-        response,
-      );
+      expect(
+        queryClient.getQueryData(
+          buildOwnItemsKey({ page: 1, name: '', all: false, limit: 12 }),
+        ),
+      ).toEqualImmutable(response);
       for (const item of response) {
         expect(
           queryClient.getQueryData(buildItemKey(item.id)),

@@ -123,6 +123,7 @@ export const mockHook = async <T,>({
 
   await waitFor(() => result.current.isSuccess || result.current.isError);
 
+  console.log(result, 'from mock data');
   // return hook data
   return result.current as QueryObserverBaseResult<T>;
 };
