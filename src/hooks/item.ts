@@ -64,7 +64,7 @@ export default (
 
   return {
     useOwnItems: (
-      { page, all, name }: OwnItemsQuery,
+      { page, all, name, limit }: OwnItemsQuery,
       options?: { getUpdates?: boolean },
     ) => {
       const queryClient = useQueryClient();
@@ -74,10 +74,10 @@ export default (
       itemWsHooks?.useOwnItemsUpdates(getUpdates ? currentMember?.id : null);
 
       return useQuery({
-        queryKey: buildOwnItemsKey(page, name, all),
+        queryKey: buildOwnItemsKey({ page, name, all, limit }),
         queryFn: (): Promise<List<ItemRecord>> =>
-          Api.getOwnItems(queryConfig, page, name, all).then((data) =>
-            convertJs(data),
+          Api.getOwnItems(queryConfig, { page, name, all, limit }).then(
+            (data) => convertJs(data),
           ),
         onSuccess: async ({
           data,

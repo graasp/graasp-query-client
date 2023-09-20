@@ -7,7 +7,7 @@ import {
 } from '@graasp/sdk';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
-import { QueryClientConfig } from '../types';
+import { OwnItemsQuery, QueryClientConfig } from '../types';
 import { getParentsIdsFromPath } from '../utils/item';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
@@ -45,16 +45,14 @@ export const getItems = async (
 
 export const getOwnItems = async (
   { API_HOST }: QueryClientConfig,
-  page: number = 1,
-  name: string = '',
-  all: boolean = false,
+  { page = 1, all = false, name = '', limit }: OwnItemsQuery,
 ) =>
   verifyAuthentication(() =>
     axios
       .get(
         `${API_HOST}/${GET_OWN_ITEMS_ROUTE}?page=${page}&name=${name}${
           all ? `&all=${all}` : ''
-        }`,
+        }${limit ? `&limit=${limit}` : ''}`,
       )
       .then(({ data }) => data),
   );

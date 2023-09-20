@@ -48,4 +48,5 @@ export type OwnItemsQuery = {
   page?: number;
   name?: string;
   all?: boolean;
+  limit?: number;
 };

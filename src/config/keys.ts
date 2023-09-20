@@ -1,6 +1,6 @@
 import { UUID } from '@graasp/sdk';
 
-import { SearchFields } from '../types';
+import { OwnItemsQuery, SearchFields } from '../types';
 import { AggregateActionsArgs } from '../utils/action';
 import { hashItemsIds } from '../utils/item';
 import { DEFAULT_THUMBNAIL_SIZE } from './constants';
@@ -8,7 +8,14 @@ import { DEFAULT_THUMBNAIL_SIZE } from './constants';
 export const APPS_KEY = 'apps';
 export const ITEMS_KEY = 'items';
 export const OWN_ITEMS_KEY = [ITEMS_KEY, 'own'];
-export const buildOwnItemsKey = (page?: number, name?: string, all?: boolean) => [ITEMS_KEY, 'own', page, name, all]
+export const buildOwnItemsKey = ({ page, name, all, limit }: OwnItemsQuery) => [
+  ITEMS_KEY,
+  'own',
+  page,
+  name,
+  all,
+  limit,
+];
 export const ETHERPADS_KEY = 'etherpads';
 export const SUBSCRIPTION_KEY = 'subscriptions';
 
