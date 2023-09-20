@@ -32,7 +32,6 @@ export default (queryConfig: QueryClientConfig) => {
       query?: string;
     } & Api.MeiliSearchProps) => {
       const debouncedQuery = useDebounce(query, 500);
-
       return useQuery({
         queryKey: buildSearchPublishedItemsKey({
           query: debouncedQuery,
@@ -61,6 +60,7 @@ export default (queryConfig: QueryClientConfig) => {
             },
             queryConfig,
           ).then((data) => convertJs(data) as MeiliSearchResultsRecord),
+        // we could add data in success, but not sure the data will be consistent with GET /item
         enabled,
         ...defaultQueryOptions,
       });

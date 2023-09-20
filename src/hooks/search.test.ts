@@ -1,4 +1,5 @@
-import { convertJs } from '@graasp/sdk';
+import { HttpMethod } from '@graasp/sdk';
+import { MeiliSearchResultsRecord } from '@graasp/sdk/frontend';
 
 import axios from 'axios';
 import nock from 'nock';
@@ -22,8 +23,8 @@ const RESPONSE = {
           type: 'folder',
           categories: [],
           isPublishedRoot: true,
-          createdAt: '2023-09-06T11:50:32.894Z',
-          updatedAt: '2023-09-06T11:50:32.894Z',
+          createdAt: new Date('2023-09-06T11:50:32.894Z'),
+          updatedAt: new Date('2023-09-06T11:50:32.894Z'),
           _formatted: {
             name: '<em>lettre</em>',
             description: '',
@@ -32,8 +33,8 @@ const RESPONSE = {
             type: 'folder',
             categories: [],
             isPublishedRoot: true,
-            createdAt: '2023-09-06T11:50:32.894Z',
-            updatedAt: '2023-09-06T11:50:32.894Z',
+            createdAt: new Date('2023-09-06T11:50:32.894Z'),
+            updatedAt: new Date('2023-09-06T11:50:32.894Z'),
           },
         },
         {
@@ -44,8 +45,8 @@ const RESPONSE = {
           type: 'folder',
           categories: [],
           isPublishedRoot: true,
-          createdAt: '2023-09-06T13:17:12.568Z',
-          updatedAt: '2023-09-06T13:17:12.568Z',
+          createdAt: new Date('2023-09-06T11:50:32.894Z'),
+          updatedAt: new Date('2023-09-06T11:50:32.894Z'),
           _formatted: {
             name: 'name',
             description: 'my <em>lettre</em> is for oyu to sijefk',
@@ -54,8 +55,8 @@ const RESPONSE = {
             type: 'folder',
             categories: [],
             isPublishedRoot: true,
-            createdAt: '2023-09-06T13:17:12.568Z',
-            updatedAt: '2023-09-06T13:17:12.568Z',
+            createdAt: new Date('2023-09-06T11:50:32.894Z'),
+            updatedAt: new Date('2023-09-06T11:50:32.894Z'),
           },
         },
         {
@@ -66,8 +67,8 @@ const RESPONSE = {
           type: 'folder',
           categories: [],
           isPublishedRoot: false,
-          createdAt: '2023-09-06T13:17:12.568Z',
-          updatedAt: '2023-09-06T13:17:12.568Z',
+          createdAt: new Date('2023-09-06T11:50:32.894Z'),
+          updatedAt: new Date('2023-09-06T11:50:32.894Z'),
           _formatted: {
             name: 'name',
             description: 'some description',
@@ -76,8 +77,8 @@ const RESPONSE = {
             type: 'folder',
             categories: [],
             isPublishedRoot: false,
-            createdAt: '2023-09-06T13:17:12.568Z',
-            updatedAt: '2023-09-06T13:17:12.568Z',
+            createdAt: new Date('2023-09-06T11:50:32.894Z'),
+            updatedAt: new Date('2023-09-06T11:50:32.894Z'),
           },
         },
       ],
@@ -102,23 +103,32 @@ describe('Published Search Hook', () => {
     it(`Receive search results`, async () => {
       const query = 'some string';
       const categories = [['mycategoryid']];
-      const hook = () => hooks.useSearchPublishedItems({ query, categories });
-      const key = buildSearchPublishedItemsKey({ query, categories });
+      const hook = () =>
+        hooks.useSearchPublishedItems({ query, categories, page: 1 });
+      const key = buildSearchPublishedItemsKey({
+        query,
+        categories,
+        page: 1,
+        isPublishedRoot: true,
+      });
       const response = RESPONSE;
-      const endpoints = [{ route, response }];
-      const { data } = await mockHook({ endpoints, hook, wrapper });
-
-      expect(data).toEqualImmutable(convertJs(response));
+      const endpoints = [{ route, response, method: HttpMethod.POST }];
+      const { data } = await mockHook({
+        endpoints,
+        hook,
+        wrapper,
+      });
+      expect((data as MeiliSearchResultsRecord).toJS()).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(
-        convertJs(response),
-      );
+      expect(
+        (queryClient.getQueryData(key) as MeiliSearchResultsRecord).toJS(),
+      ).toEqual(response);
     });
 
     it(`does not fetch if no query nor categories is provided`, async () => {
       const hook = () => hooks.useSearchPublishedItems({});
-      const key = buildSearchPublishedItemsKey({});
+      const key = buildSearchPublishedItemsKey({ page: 1 });
       const endpoints = [{ route, response: RESPONSE }];
       const { data, isFetched } = await mockHook({
         endpoints,
@@ -142,6 +152,7 @@ describe('Published Search Hook', () => {
         isPublishedRoot,
         query,
         categories,
+        page: 1,
       });
       const hook = () =>
         hooks.useSearchPublishedItems({
@@ -150,26 +161,121 @@ describe('Published Search Hook', () => {
           isPublishedRoot,
         });
       const response = RESPONSE;
-      const endpoints = [{ route, response }];
+      const endpoints = [{ route, response, method: HttpMethod.POST }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
       expect(spy).toHaveBeenCalledWith(expect.stringContaining(route), {
         queries: [
           {
             indexUid: 'itemIndex',
-            attributesToHighlight: ['name', 'description', 'content'],
+            attributesToHighlight: [
+              'name',
+              'description',
+              'content',
+              'creator',
+            ],
             q: query,
             filter: 'categories IN [mycategoryid] AND isPublishedRoot = true',
+            attributesToCrop: undefined,
+            highlightPostTag: undefined,
+            highlightPreTag: undefined,
+            limit: undefined,
+            page: 1,
+            sort: undefined,
           },
         ],
       });
 
-      expect(data).toEqualImmutable(convertJs(response));
+      expect((data as MeiliSearchResultsRecord).toJS()).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(
-        convertJs(response),
-      );
+      expect(
+        (queryClient.getQueryData(key) as MeiliSearchResultsRecord).toJS(),
+      ).toEqual(response);
+    });
+
+    it(`search for page 3`, async () => {
+      const query = 'some string';
+      const categories = [['mycategoryid']];
+      const isPublishedRoot = true;
+      const page = 3;
+      const spy = jest.spyOn(axios, 'post');
+      const key = buildSearchPublishedItemsKey({
+        isPublishedRoot,
+        query,
+        categories,
+        page,
+      });
+      const hook = () =>
+        hooks.useSearchPublishedItems({
+          query,
+          categories,
+          isPublishedRoot,
+          page,
+        });
+      const response = RESPONSE;
+      const endpoints = [{ route, response, method: HttpMethod.POST }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+
+      expect(spy).toHaveBeenCalledWith(expect.stringContaining(route), {
+        queries: [
+          {
+            indexUid: 'itemIndex',
+            attributesToHighlight: [
+              'name',
+              'description',
+              'content',
+              'creator',
+            ],
+            q: query,
+            filter: 'categories IN [mycategoryid] AND isPublishedRoot = true',
+            page: 3,
+            attributesToCrop: undefined,
+            highlightPostTag: undefined,
+            highlightPreTag: undefined,
+            limit: undefined,
+            sort: undefined,
+          },
+        ],
+      });
+
+      expect((data as MeiliSearchResultsRecord).toJS()).toEqual(response);
+
+      // verify cache keys
+      expect(
+        (queryClient.getQueryData(key) as MeiliSearchResultsRecord).toJS(),
+      ).toEqual(response);
+    });
+
+    it(`does not fetch for enabled = false`, async () => {
+      const query = 'some string';
+      const categories = [['mycategoryid']];
+      const isPublishedRoot = true;
+      const key = buildSearchPublishedItemsKey({
+        isPublishedRoot,
+        query,
+        categories,
+        page: 1,
+      });
+      const hook = () =>
+        hooks.useSearchPublishedItems({
+          query,
+          categories,
+          isPublishedRoot,
+          enabled: false,
+        });
+      const response = RESPONSE;
+      const endpoints = [{ route, response, method: HttpMethod.POST }];
+      const { data, isFetched } = await mockHook({
+        endpoints,
+        hook,
+        wrapper,
+        enabled: false,
+      });
+
+      expect(isFetched).toBeFalsy();
+      expect(data).toBeFalsy();
+      expect(queryClient.getQueryData(key)).toBeFalsy();
     });
   });
 });
