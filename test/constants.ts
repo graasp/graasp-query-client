@@ -33,7 +33,6 @@ import {
   convertJs,
 } from '@graasp/sdk';
 import {
-  ActionDataRecord,
   AppRecord,
   CategoryRecord,
   ChatMentionRecord,
@@ -627,18 +626,18 @@ const ACTION_1: Action = {
 
 export const ACTIONS_LIST: Action[] = [ACTION_1];
 
-const createMockActionData = (
-  actionData: Partial<ActionData>,
-): ActionDataRecord =>
-  convertJs({
-    actions: [],
-    members: [],
-    descendants: [],
-    itemMemberships: [],
-    ...actionData,
-  });
+// todo: need to fix the type of item to DiscriminatedItem instead of Item
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const createMockActionData = (actionData: Partial<ActionData>): ActionData => ({
+  actions: [],
+  members: [],
+  descendants: [],
+  itemMemberships: [],
+  ...actionData,
+});
 
-export const ACTIONS_DATA: ActionDataRecord = createMockActionData({
+export const ACTIONS_DATA: ActionData = createMockActionData({
   actions: ACTIONS_LIST,
   members: [MEMBER_RESPONSE.toJS() as Member],
   item: ITEM_1,

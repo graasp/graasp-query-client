@@ -7,6 +7,7 @@ import {
   CountGroupBy,
   convertJs,
 } from '@graasp/sdk';
+import { ActionDataRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
@@ -44,12 +45,14 @@ describe('Action Hooks', () => {
 
     it(`Receive actions for item id`, async () => {
       const hook = () => hooks.useActions(args);
-      const endpoints = [{ route, response: response.toJS() }];
+      const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect(data).toEqualImmutable(response);
+      expect((data as ActionDataRecord).toJS()).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(queryClient.getQueryData<ActionDataRecord>(key)?.toJS()).toEqual(
+        response,
+      );
     });
 
     it(`Sample size = 0 does not fetch`, async () => {

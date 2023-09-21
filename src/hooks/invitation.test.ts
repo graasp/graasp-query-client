@@ -3,7 +3,7 @@ import { Item } from '@graasp/sdk';
 import { InvitationRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
+import Immutable, { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -42,10 +42,12 @@ describe('Invitation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as InvitationRecord).toEqualImmutable(response);
+      expect(Immutable.is(data as InvitationRecord, response)).toBeTruthy();
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        Immutable.is(queryClient.getQueryData(key), response),
+      ).toBeTruthy();
     });
 
     it(`Undefined id does not fetch`, async () => {
@@ -102,10 +104,14 @@ describe('Invitation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<InvitationRecord>).toEqualImmutable(response);
+      expect(
+        Immutable.is(data as List<InvitationRecord>, response),
+      ).toBeTruthy();
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        Immutable.is(queryClient.getQueryData(key), response),
+      ).toBeTruthy();
     });
 
     it(`Undefined id does not fetch`, async () => {

@@ -2,7 +2,7 @@
 import { CategoryRecord, ItemCategoryRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
-import { List, Record, RecordOf } from 'immutable';
+import Immutable, { List, Record, RecordOf } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -90,10 +90,12 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<CategoryRecord>).toEqualImmutable(response);
+      expect(Immutable.is(data as List<CategoryRecord>, response)).toBeTruthy();
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        Immutable.is(queryClient.getQueryData(key), response),
+      ).toBeTruthy();
     });
     it(`Unauthorized`, async () => {
       const endpoints = [
@@ -128,10 +130,12 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as CategoryRecord).toEqualImmutable(response);
+      expect(Immutable.is(data as CategoryRecord, response)).toBeTruthy();
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        Immutable.is(queryClient.getQueryData(key), response),
+      ).toBeTruthy();
     });
     it(`Unauthorized`, async () => {
       const endpoints = [
@@ -166,12 +170,17 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<ItemCategoryRecord>).toEqualImmutable(response);
+      expect(
+        Immutable.is(data as List<ItemCategoryRecord>, response),
+      ).toBeTruthy();
 
       // verify cache keys
       expect(
-        queryClient.getQueryData(key) as List<ItemCategoryRecord>,
-      ).toEqualImmutable(response);
+        Immutable.is(
+          queryClient.getQueryData(key) as List<ItemCategoryRecord>,
+          response,
+        ),
+      ).toBeTruthy();
     });
 
     it(`Unauthorized`, async () => {
@@ -212,12 +221,15 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<ItemIdRecord>).toEqualImmutable(response);
+      expect(Immutable.is(data as List<ItemIdRecord>, response)).toBeTruthy();
 
       // verify cache keys
       expect(
-        queryClient.getQueryData(key) as List<ItemIdRecord>,
-      ).toEqualImmutable(response);
+        Immutable.is(
+          queryClient.getQueryData(key) as List<ItemIdRecord>,
+          response,
+        ),
+      ).toBeTruthy();
     });
     it(`Unauthorized`, async () => {
       const endpoints = [

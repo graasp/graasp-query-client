@@ -1,7 +1,14 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { MAX_TARGETS_FOR_READ_REQUEST, convertJs } from '@graasp/sdk';
+import {
+  ItemMembership,
+  MAX_TARGETS_FOR_READ_REQUEST,
+  ResultOf,
+  convertJs,
+} from '@graasp/sdk';
+import { ImmutableCast, ItemMembershipRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
+import Immutable from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -39,11 +46,13 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toEqualImmutable(convertJs(response.data[id]));
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(
-        convertJs(response.data[id]),
+      expect((data as ItemMembershipRecord | undefined)?.toJS()).toEqual(
+        response.data[id],
       );
+      // verify cache keys
+      expect(
+        queryClient.getQueryData<ItemMembershipRecord>(key)?.toJS(),
+      ).toEqual(response.data[id]);
     });
 
     it(`Undefined ids does not fetch`, async () => {
@@ -102,11 +111,11 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route: oneRoute, response: oneResponse }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toEqualImmutable(convertJs(oneResponse));
+      expect((data as ItemMembershipRecord).toJS()).toEqual(oneResponse);
       // verify cache keys
-      expect(queryClient.getQueryData(oneKey)).toEqualImmutable(
-        convertJs(oneResponse),
-      );
+      expect(
+        queryClient.getQueryData<ItemMembershipRecord>(oneKey)?.toJS(),
+      ).toEqual(oneResponse);
     });
 
     it(`Receive two item memberships`, async () => {
@@ -114,11 +123,13 @@ describe('Membership Hooks', () => {
       const hook = () => hooks.useManyItemMemberships(ids);
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toEqualImmutable(convertJs(response));
+      expect(Immutable.is(data, convertJs(response))).toBeTruthy();
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(
-        convertJs(response),
-      );
+      expect(
+        queryClient
+          .getQueryData<ImmutableCast<ResultOf<ItemMembership>>>(key)
+          ?.toJS(),
+      ).toEqual(response);
     });
 
     it(`Receive lots of item memberships`, async () => {
@@ -135,11 +146,14 @@ describe('Membership Hooks', () => {
       );
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toEqualImmutable(convertJs(manyResponse));
+      expect(Immutable.is(data, convertJs(manyResponse))).toBeTruthy();
       // verify cache keys
-      expect(queryClient.getQueryData(manyKey)).toEqualImmutable(
-        convertJs(manyResponse),
-      );
+      expect(
+        Immutable.is(
+          queryClient.getQueryData(manyKey),
+          convertJs(manyResponse),
+        ),
+      ).toBeTruthy();
     });
 
     it(`Undefined ids does not fetch`, async () => {

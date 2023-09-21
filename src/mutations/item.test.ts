@@ -12,7 +12,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { act } from '@testing-library/react-hooks';
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
+import Immutable, { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -323,9 +323,9 @@ describe('Items Mutations', () => {
       });
 
       // item key should not be changed and should be invalidated
-      expect(queryClient.getQueryData(itemKey) as ItemRecord).toEqualImmutable(
-        item,
-      );
+      expect(
+        Immutable.is(queryClient.getQueryData(itemKey) as ItemRecord, item),
+      ).toBeTruthy();
       expect(queryClient.getQueryState(itemKey)?.isInvalidated).toBeTruthy();
     });
   });
@@ -648,7 +648,12 @@ describe('Items Mutations', () => {
       for (const itemId of itemIds) {
         const itemKey = buildItemKey(itemId);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(ITEMS.find(({ id }) => id === itemId));
+        expect(
+          Immutable.is(
+            data,
+            ITEMS.find(({ id }) => id === itemId),
+          ),
+        ).toBeTruthy();
       }
 
       // Check parent's children key is correctly invalidated
@@ -703,7 +708,12 @@ describe('Items Mutations', () => {
       for (const itemId of itemIds) {
         const itemKey = buildItemKey(itemId);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(ITEMS.find(({ id }) => id === itemId));
+        expect(
+          Immutable.is(
+            data,
+            ITEMS.find(({ id }) => id === itemId),
+          ),
+        ).toBeTruthy();
       }
 
       // Check parent's children key is not invalidated
@@ -758,7 +768,12 @@ describe('Items Mutations', () => {
       for (const itemId of itemIds) {
         const itemKey = buildItemKey(itemId);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(items.find(({ id }) => id === itemId));
+        expect(
+          Immutable.is(
+            data,
+            items.find(({ id }) => id === itemId),
+          ),
+        ).toBeTruthy();
       }
 
       // Check parent's children key is correctly invalidated
@@ -812,7 +827,12 @@ describe('Items Mutations', () => {
       for (const itemId of itemIds) {
         const itemKey = buildItemKey(itemId);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(items.find(({ id }) => id === itemId));
+        expect(
+          Immutable.is(
+            data,
+            items.find(({ id }) => id === itemId),
+          ),
+        ).toBeTruthy();
       }
 
       // Check parent's children key is correctly invalidated
@@ -877,8 +897,11 @@ describe('Items Mutations', () => {
       }
 
       expect(
-        queryClient.getQueryData(RECYCLED_ITEMS_DATA_KEY),
-      ).toEqualImmutable(List([RECYCLED_ITEM_DATA.get(1)]));
+        Immutable.is(
+          queryClient.getQueryData(RECYCLED_ITEMS_DATA_KEY),
+          List([RECYCLED_ITEM_DATA.get(1)]),
+        ),
+      ).toBeTruthy();
     });
 
     it('Delete child items', async () => {
@@ -959,7 +982,12 @@ describe('Items Mutations', () => {
       for (const itemId of itemIds) {
         const itemKey = buildItemKey(itemId);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(items.find(({ id }) => id === itemId));
+        expect(
+          Immutable.is(
+            data,
+            items.find(({ id }) => id === itemId),
+          ),
+        ).toBeTruthy();
       }
 
       // check notification trigger
@@ -1086,7 +1114,7 @@ describe('Items Mutations', () => {
       for (const item of items) {
         const itemKey = buildItemKey(item.id);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(item);
+        expect(Immutable.is(data, item)).toBeTruthy();
       }
 
       // check recycle bin key
@@ -1144,7 +1172,7 @@ describe('Items Mutations', () => {
       for (const item of items) {
         const itemKey = buildItemKey(item.id);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(item);
+        expect(Immutable.is(data, item)).toBeTruthy();
       }
 
       // check original parent is invalidated
@@ -1199,7 +1227,7 @@ describe('Items Mutations', () => {
       for (const item of items) {
         const itemKey = buildItemKey(item.id);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(item);
+        expect(Immutable.is(data, item)).toBeTruthy();
       }
       expect(
         queryClient.getQueryState(RECYCLED_ITEMS_DATA_KEY)?.isInvalidated,

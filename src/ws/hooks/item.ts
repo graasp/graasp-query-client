@@ -51,7 +51,9 @@ export const configureWsItemHooks = (websocketClient: WebsocketClient) => ({
         if (event.kind === KINDS.SELF) {
           const current: ItemRecord | undefined =
             queryClient.getQueryData(itemKey);
+          console.log('before', event.item);
           const item: ItemRecord = convertJs(parseStringToDate(event.item));
+          console.log('after', item.toJS());
 
           if (current?.id === item.id) {
             switch (event.op) {
