@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/graasp/graasp-query-client/compare/v1.7.0...v1.8.0) (2023-09-21)
+
+
+### Features
+
+* add meilisearch hook ([#422](https://github.com/graasp/graasp-query-client/issues/422)) ([efddbaf](https://github.com/graasp/graasp-query-client/commit/efddbaf791adeee7572c5bf69fc3e5ea4741fd31))
+
 ## [1.7.0](https://github.com/graasp/graasp-query-client/compare/v1.6.0...v1.7.0) (2023-09-21)
 
 
