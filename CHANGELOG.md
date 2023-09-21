@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/graasp/graasp-query-client/compare/v1.6.0...v1.7.0) (2023-09-21)
+
+
+### Features
+
+* add etherpad fetch queue ([#424](https://github.com/graasp/graasp-query-client/issues/424)) ([2b339f8](https://github.com/graasp/graasp-query-client/commit/2b339f80111fd80f9410035aa303cb1cef64a284))
+
 ## [1.6.0](https://github.com/graasp/graasp-query-client/compare/v1.5.0...v1.6.0) (2023-09-08)
 
 
