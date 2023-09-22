@@ -1,4 +1,7 @@
+import { ItemLikeRecord } from '@graasp/sdk/frontend';
+
 import { StatusCodes } from 'http-status-codes';
+import { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -31,13 +34,15 @@ describe('Item Like Hooks', () => {
 
     it(`Receive item likes`, async () => {
       const response = ITEM_LIKES;
-      const endpoints = [{ route, response: response.toJS() }];
+      const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toEqualImmutable(response);
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        queryClient.getQueryData<List<ItemLikeRecord>>(key)?.toJS(),
+      ).toEqual(response);
     });
 
     it(`Unauthorized`, async () => {
@@ -70,13 +75,15 @@ describe('Item Like Hooks', () => {
 
     it(`Receive item's like entries`, async () => {
       const response = ITEM_LIKES;
-      const endpoints = [{ route, response: response.toJS() }];
+      const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toEqualImmutable(response);
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        queryClient.getQueryData<List<ItemLikeRecord>>(key)?.toJS(),
+      ).toEqual(response);
     });
 
     it(`Unauthorized`, async () => {

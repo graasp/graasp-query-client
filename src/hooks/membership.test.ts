@@ -111,7 +111,7 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route: oneRoute, response: oneResponse }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as ItemMembershipRecord).toJS()).toEqual(oneResponse);
+      expect(data?.toJS()).toEqual(oneResponse);
       // verify cache keys
       expect(
         queryClient.getQueryData<ItemMembershipRecord>(oneKey)?.toJS(),

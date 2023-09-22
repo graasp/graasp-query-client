@@ -263,7 +263,8 @@ describe('Items Mutations', () => {
       const editedItemKey = buildItemKey(editedItem.id);
       const editPayload = {
         id: editedItem.id,
-        extra: { folder: { childrenOrder: [1, 2] } },
+        // these are dummy ids, in reality they should be UUIDs
+        extra: { folder: { childrenOrder: ['1', '2'] } },
       };
       const childrenKey = buildItemChildrenKey(editedItem.id);
       queryClient.setQueryData(childrenKey, List([ITEMS.get(1)!]));
@@ -370,7 +371,7 @@ describe('Items Mutations', () => {
       await act(async () => {
         await mockedMutation.mutate({
           to,
-          id: copiedIds,
+          ids: copiedIds,
         });
         await waitForMutation();
       });
@@ -418,7 +419,7 @@ describe('Items Mutations', () => {
       await act(async () => {
         await mockedMutation.mutate({
           to,
-          id: copiedIds,
+          ids: copiedIds,
         });
         await waitForMutation();
       });
@@ -1048,7 +1049,7 @@ describe('Items Mutations', () => {
         wrapper,
       });
 
-      const error = 'an error';
+      const error = new Error('an error');
 
       await act(async () => {
         await mockedMutation.mutate({ id, error });
@@ -1307,8 +1308,13 @@ describe('Items Mutations', () => {
         wrapper,
       });
 
+      const error = new Error(`${StatusCodes.UNAUTHORIZED}`);
+
       await act(async () => {
-        await mockedMutation.mutate({ id, error: StatusCodes.UNAUTHORIZED });
+        await mockedMutation.mutate({
+          id,
+          error,
+        });
         await waitForMutation();
       });
 
@@ -1321,7 +1327,9 @@ describe('Items Mutations', () => {
       }
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: uploadItemThumbnailRoutine.FAILURE,
-        payload: { error: StatusCodes.UNAUTHORIZED },
+        payload: {
+          error,
+        },
       });
     });
   });

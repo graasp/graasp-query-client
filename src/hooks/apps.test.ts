@@ -31,10 +31,12 @@ describe('Apps Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as List<AppRecord>).toEqualImmutable(response);
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(queryClient.getQueryData<List<AppRecord>>(key)?.toJS()).toEqual(
+        response,
+      );
     });
 
     it(`Unauthorized`, async () => {

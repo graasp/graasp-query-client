@@ -171,8 +171,10 @@ export default (queryConfig: QueryClientConfig) => {
   const useEditItem = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (item: Partial<DiscriminatedItem> & Pick<Item, 'id'>) =>
-        Api.editItem(item.id, item, queryConfig),
+      (
+        item: Pick<DiscriminatedItem, 'id'> &
+          Partial<Pick<DiscriminatedItem, 'extra' | 'name' | 'settings'>>,
+      ) => Api.editItem(item.id, item, queryConfig),
       // newItem contains only changed values
       {
         onMutate: async (newItem: Partial<Item> & Pick<Item, 'id'>) => {

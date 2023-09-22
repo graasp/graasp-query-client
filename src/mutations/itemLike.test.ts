@@ -1,4 +1,4 @@
-import { HttpMethod } from '@graasp/sdk';
+import { HttpMethod, convertJs } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
@@ -40,9 +40,9 @@ describe('Item Like Mutations', () => {
     const mutation = mutations.usePostItemLike;
 
     it('Post item like', async () => {
-      queryClient.setQueryData(likedItemsKey, ITEM_LIKES);
+      queryClient.setQueryData(likedItemsKey, convertJs(ITEM_LIKES));
 
-      const response = ITEM_LIKES.get(1)!;
+      const response = ITEM_LIKES.at(1);
 
       const endpoints = [
         {
@@ -88,7 +88,7 @@ describe('Item Like Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId });
+        await mockedMutation.mutate({ itemId, memberId });
         await waitForMutation();
       });
 
@@ -108,13 +108,13 @@ describe('Item Like Mutations', () => {
     const mutation = mutations.useDeleteItemLike;
 
     it('Delete item like', async () => {
-      queryClient.setQueryData(likedItemsKey, ITEM_LIKES);
+      queryClient.setQueryData(likedItemsKey, convertJs(ITEM_LIKES));
 
-      const response = ITEM_LIKES.get(1)!;
+      const response = ITEM_LIKES.at(1);
 
       const endpoints = [
         {
-          response: response.toJS(),
+          response,
           method: HttpMethod.DELETE,
           route,
         },

@@ -68,16 +68,16 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toEqualImmutable(response);
+      expect(Immutable.is(data, response)).toBeTruthy();
 
       // verify cache keys
-      expect(queryClient.getQueryData(OWN_ITEMS_KEY)).toEqualImmutable(
-        response,
-      );
+      expect(
+        Immutable.is(queryClient.getQueryData(OWN_ITEMS_KEY), response),
+      ).toBeTruthy();
       for (const item of response) {
         expect(
-          queryClient.getQueryData(buildItemKey(item.id)),
-        ).toEqualImmutable(item);
+          Immutable.is(queryClient.getQueryData(buildItemKey(item.id)), item),
+        ).toBeTruthy();
       }
     });
 
@@ -117,14 +117,16 @@ describe('Items Hooks', () => {
         wrapper,
       });
 
-      expect(data).toEqualImmutable(response);
+      expect(Immutable.is(data, response)).toBeTruthy();
       expect(isSuccess).toBeTruthy();
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        Immutable.is(queryClient.getQueryData(key), response),
+      ).toBeTruthy();
       for (const item of response) {
         expect(
-          queryClient.getQueryData(buildItemKey(item.id)),
-        ).toEqualImmutable(item);
+          Immutable.is(queryClient.getQueryData(buildItemKey(item.id)), item),
+        ).toBeTruthy();
       }
     });
 
@@ -177,13 +179,15 @@ describe('Items Hooks', () => {
       });
 
       expect(isSuccess).toBeTruthy();
-      expect(data).toEqualImmutable(response);
+      expect(Immutable.is(data, response)).toBeTruthy();
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        Immutable.is(queryClient.getQueryData(key), response),
+      ).toBeTruthy();
       for (const item of response) {
         expect(
-          queryClient.getQueryData(buildItemKey(item.id)),
-        ).toEqualImmutable(item);
+          Immutable.is(queryClient.getQueryData(buildItemKey(item.id)), item),
+        ).toBeTruthy();
       }
     });
 
@@ -236,15 +240,18 @@ describe('Items Hooks', () => {
       ];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data as ItemRecord).toEqualImmutable(response);
+      expect(Immutable.is(data, response)).toBeTruthy();
       // verify cache keys
       expect(
-        queryClient.getQueryData(buildItemParentsKey(childItem.id)),
-      ).toEqualImmutable(response);
+        Immutable.is(
+          queryClient.getQueryData(buildItemParentsKey(childItem.id)),
+          response,
+        ),
+      ).toBeTruthy();
       for (const i of response) {
-        expect(queryClient.getQueryData(buildItemKey(i.id))).toEqualImmutable(
-          i,
-        );
+        expect(
+          Immutable.is(queryClient.getQueryData(buildItemKey(i.id)), i),
+        ).toBeTruthy();
       }
     });
 
@@ -281,11 +288,14 @@ describe('Items Hooks', () => {
         wrapper,
       });
 
-      expect(data).toEqualImmutable(List());
+      expect(Immutable.is(data, List())).toBeTruthy();
       expect(isFetched).toBeTruthy();
       expect(
-        queryClient.getQueryData(buildItemParentsKey(childItem.id)),
-      ).toEqualImmutable(List());
+        Immutable.is(
+          queryClient.getQueryData(buildItemParentsKey(childItem.id)),
+          List(),
+        ),
+      ).toBeTruthy();
     });
 
     it(`Unauthorized`, async () => {

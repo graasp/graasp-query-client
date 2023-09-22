@@ -140,7 +140,7 @@ describe('Item Login Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, loginSchema: newLoginSchema });
+        await mockedMutation.mutate({ itemId, type: newLoginSchema });
         await waitForMutation();
       });
 
@@ -173,7 +173,10 @@ describe('Item Login Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, loginSchema: newLoginSchema });
+        await mockedMutation.mutate({
+          itemId,
+          type: newLoginSchema,
+        });
         await waitForMutation();
       });
 

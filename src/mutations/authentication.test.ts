@@ -163,7 +163,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, captcha });
+        await mockedMutation.mutate({ email, captcha, challenge });
         await waitForMutation();
       });
 
@@ -230,7 +230,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, captcha });
+        await mockedMutation.mutate({ email, password, captcha });
         await waitForMutation();
       });
 
@@ -297,7 +297,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, captcha });
+        await mockedMutation.mutate({ email, password, captcha, challenge });
         await waitForMutation();
       });
 
@@ -361,7 +361,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ password });
+        await mockedMutation.mutate({ password, currentPassword });
         await waitForMutation();
       });
 
@@ -472,7 +472,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, name, captcha });
+        await mockedMutation.mutate({ email, name, captcha, challenge });
         await waitForMutation();
       });
 
@@ -535,7 +535,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({});
+        await mockedMutation.mutate(undefined);
         await waitForMutation();
       });
 

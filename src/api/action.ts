@@ -24,7 +24,9 @@ export const getAggregateActions = async (
   { API_HOST }: QueryClientConfig,
 ) =>
   axios
-    .get(`${API_HOST}/${buildGetAggregateActions(args)}`)
+    .get<{ aggregateResult: number; createdDay: string }[]>(
+      `${API_HOST}/${buildGetAggregateActions(args)}`,
+    )
     .then(({ data }) => data);
 
 export const exportActions = async (

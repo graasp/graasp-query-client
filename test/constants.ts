@@ -33,7 +33,6 @@ import {
   convertJs,
 } from '@graasp/sdk';
 import {
-  AppRecord,
   CategoryRecord,
   ChatMentionRecord,
   ChatMessageRecord,
@@ -44,7 +43,6 @@ import {
   ItemChatRecord,
   ItemFavoriteRecord,
   ItemFlagRecord,
-  ItemLikeRecord,
   ItemLoginSchemaRecord,
   ItemMembershipRecord,
   ItemPublishedRecord,
@@ -331,22 +329,22 @@ const defaultAppValues: App = {
   updatedAt: new Date(),
 };
 
-const APP_1: AppRecord = convertJs({
+const APP_1: App = {
   ...defaultAppValues,
   name: 'Code App',
   url: 'http://codeapp.com',
   description: 'description',
-});
+};
 
-const APP_2: AppRecord = convertJs({
+const APP_2: App = {
   ...defaultAppValues,
   name: 'File App',
   description: 'description',
   url: 'http://fileapp.com',
-  extra: { url: 'http://fileapp.com/logo.png' },
-});
+  extra: { image: 'http://fileapp.com/logo.png' },
+};
 
-export const APPS: List<AppRecord> = List([APP_1, APP_2]);
+export const APPS = [APP_1, APP_2];
 
 export const createMockChatMessage = (
   message?: Partial<ChatMessage>,
@@ -579,24 +577,21 @@ export const ITEM_CATEGORIES: List<ItemCategoryRecord> = List([
   ITEM_CATEGORY_2,
 ]);
 
-const buildItemLikes = (): List<ItemLikeRecord> => {
-  const data: ItemLike[] = [
-    {
-      id: 'id1',
-      item: MOCK_ITEM,
-      creator: MOCK_MEMBER,
-      createdAt: new Date(),
-    },
-    {
-      id: 'id2',
-      item: MOCK_ITEM,
-      creator: MOCK_MEMBER,
-      createdAt: new Date(),
-    },
-  ];
-  return convertJs(data);
-};
-export const ITEM_LIKES: List<ItemLikeRecord> = buildItemLikes();
+const buildItemLikes = (): ItemLike[] => [
+  {
+    id: 'id1',
+    item: MOCK_ITEM,
+    creator: MOCK_MEMBER,
+    createdAt: new Date(),
+  },
+  {
+    id: 'id2',
+    item: MOCK_ITEM,
+    creator: MOCK_MEMBER,
+    createdAt: new Date(),
+  },
+];
+export const ITEM_LIKES: ItemLike[] = buildItemLikes();
 
 export const ITEM_VALIDATION_GROUP: ItemValidationGroupRecord = convertJs({
   id: 'id-1',
