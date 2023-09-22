@@ -45,20 +45,6 @@ import {
 import type { QueryClientConfig } from '../types';
 import { buildPath, getDirectParentId } from '../utils/item';
 
-interface Value {
-  value: unknown;
-}
-
-interface IdAndValue extends Value {
-  id?: UUID;
-}
-
-interface PathAndValue extends Value {
-  childPath: string;
-}
-
-type IdOrPathWithValue = IdAndValue | PathAndValue;
-
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
@@ -86,13 +72,12 @@ export default (queryConfig: QueryClientConfig) => {
   };
 
   const mutateParentChildren = async (
-    args: IdOrPathWithValue,
+    args: ({ id?: string } | { childPath: string }) & { value: unknown },
     queryClient: QueryClient,
   ): Promise<unknown> => {
     const { value } = args;
     const parentId =
-      (args as IdAndValue).id ||
-      getDirectParentId((args as PathAndValue).childPath);
+      'childPath' in args ? getDirectParentId(args.childPath) : args.id;
 
     // get parent key
     const childrenKey = !parentId
@@ -189,7 +174,7 @@ export default (queryConfig: QueryClientConfig) => {
           await queryClient.cancelQueries(itemKey);
 
           // build full item with new values
-          const prevItem = queryClient.getQueryData(itemKey) as ItemRecord;
+          const prevItem = queryClient.getQueryData<ItemRecord>(itemKey);
 
           const newFullItem = prevItem ? prevItem.merge(trimmed) : prevItem;
 
@@ -199,14 +184,16 @@ export default (queryConfig: QueryClientConfig) => {
             ...(Boolean(prevItem) && {
               parent: await mutateParentChildren(
                 {
-                  childPath: prevItem.path,
+                  childPath: prevItem?.path,
                   value: (old: List<ItemRecord>) => {
                     if (!old || old.isEmpty()) {
                       return old;
                     }
                     const idx = old.findIndex(({ id }) => id === newItem.id);
-                    // todo: remove toJS when moving to List<Map<Item>>
-                    return old.set(idx, newFullItem);
+                    if (newFullItem) {
+                      old.set(idx, newFullItem);
+                    }
+                    return old;
                   },
                 },
                 queryClient,
@@ -295,7 +282,7 @@ export default (queryConfig: QueryClientConfig) => {
         },
         onError: (error: Error, itemIds: UUID[], context) => {
           const itemKey = buildItemKey(itemIds[0]);
-          const itemData = queryClient.getQueryData(itemKey) as ItemRecord;
+          const itemData = queryClient.getQueryData<ItemRecord>(itemKey);
           const itemPath = itemData?.path;
 
           if (itemPath && context?.parent) {
@@ -427,11 +414,11 @@ export default (queryConfig: QueryClientConfig) => {
             .map((itemId: UUID) => {
               const itemKey = buildItemKey(itemId);
               const itemData = queryClient.getQueryData<ItemRecord>(itemKey);
-              return itemData?.toJS();
+              return itemData?.toJS() as DiscriminatedItem;
             })
             .filter(Boolean);
 
-          const { path } = itemsData[0] as ItemRecord;
+          const { path } = itemsData[0];
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const context: any = {
             ...(Boolean(itemsData) && {

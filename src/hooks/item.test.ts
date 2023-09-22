@@ -1,14 +1,12 @@
 import {
-  DiscriminatedItem,
   FolderItemType,
   ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
-  ResultOf,
   ThumbnailSize,
   convertJs,
 } from '@graasp/sdk';
-import { ImmutableCast, ItemRecord } from '@graasp/sdk/frontend';
+import { ItemRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
 import Immutable, { List, Map } from 'immutable';
@@ -425,11 +423,7 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const hook = () => hooks.useItems([id]);
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect(
-        (
-          data as ImmutableCast<ResultOf<DiscriminatedItem>> | undefined
-        )?.toJS(),
-      ).toEqual(response);
+      expect(data?.toJS()).toEqual(response);
       // verify cache keys
       const item = queryClient.getQueryData<ItemRecord>(buildItemKey(id));
       expect(item?.toJS()).toEqual(response.data[id]);
@@ -448,11 +442,7 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(
-        (
-          data as ImmutableCast<ResultOf<DiscriminatedItem>> | undefined
-        )?.toJS(),
-      ).toEqual(response);
+      expect(data?.toJS()).toEqual(response);
       // verify cache keys
       expect(
         Immutable.is(queryClient.getQueryData(buildItemsKey(ids)), data),
@@ -480,11 +470,7 @@ describe('Items Hooks', () => {
         items.toJS(),
       );
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect(
-        (
-          data as ImmutableCast<ResultOf<DiscriminatedItem>> | undefined
-        )?.toJS(),
-      ).toEqual(response);
+      expect(data?.toJS()).toEqual(response);
       // verify cache keys
       expect(
         Immutable.is(queryClient.getQueryData(buildItemsKey(ids)), data),

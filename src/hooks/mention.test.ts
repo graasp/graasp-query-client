@@ -1,7 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { ChatMentionRecord } from '@graasp/sdk/frontend';
-
-import Immutable, { List } from 'immutable';
+import Immutable from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -48,9 +46,7 @@ describe('Chat Mention Hooks', () => {
         wrapper,
       });
 
-      expect(
-        Immutable.is(data as List<ChatMentionRecord>, response),
-      ).toBeTruthy();
+      expect(Immutable.is(data, response)).toBeTruthy();
 
       // verify cache keys
       expect(

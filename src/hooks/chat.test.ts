@@ -58,7 +58,7 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(Immutable.is(data as ItemChatRecord, response)).toBeTruthy();
+      expect(Immutable.is(data, response)).toBeTruthy();
 
       // verify cache keys
       expect(
@@ -182,9 +182,7 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(
-        Immutable.is(data as ExportedItemChatRecord, response),
-      ).toBeTruthy();
+      expect(Immutable.is(data, response)).toBeTruthy();
 
       // verify cache keys
       expect(

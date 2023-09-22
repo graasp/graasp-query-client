@@ -106,7 +106,7 @@ describe('Item Tags Hooks', () => {
         (t: ItemTag[]) => t[0].item.id,
       );
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
-      expect((data as ItemTagRecord | undefined)?.toJS()).toEqual(response);
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
       keys.forEach((key, idx) =>
@@ -156,7 +156,7 @@ describe('Item Tags Hooks', () => {
         wrapper,
       });
 
-      expect((data as ItemTagRecord | undefined)?.toJS()).toEqual(response);
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
       expect(

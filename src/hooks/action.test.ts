@@ -50,7 +50,7 @@ describe('Action Hooks', () => {
       const hook = () => hooks.useActions(args);
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect((data as ActionDataRecord).toJS()).toEqual(response);
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
       expect(queryClient.getQueryData<ActionDataRecord>(key)?.toJS()).toEqual(

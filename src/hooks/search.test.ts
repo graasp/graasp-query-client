@@ -118,11 +118,11 @@ describe('Published Search Hook', () => {
         hook,
         wrapper,
       });
-      expect((data as MeiliSearchResultsRecord).toJS()).toEqual(response);
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
       expect(
-        (queryClient.getQueryData(key) as MeiliSearchResultsRecord).toJS(),
+        queryClient.getQueryData<MeiliSearchResultsRecord>(key)?.toJS(),
       ).toEqual(response);
     });
 
@@ -186,11 +186,11 @@ describe('Published Search Hook', () => {
         ],
       });
 
-      expect((data as MeiliSearchResultsRecord).toJS()).toEqual(response);
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
       expect(
-        (queryClient.getQueryData(key) as MeiliSearchResultsRecord).toJS(),
+        queryClient.getQueryData<MeiliSearchResultsRecord>(key)?.toJS(),
       ).toEqual(response);
     });
 
@@ -239,11 +239,11 @@ describe('Published Search Hook', () => {
         ],
       });
 
-      expect((data as MeiliSearchResultsRecord).toJS()).toEqual(response);
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
       expect(
-        (queryClient.getQueryData(key) as MeiliSearchResultsRecord).toJS(),
+        queryClient.getQueryData<MeiliSearchResultsRecord>(key)?.toJS(),
       ).toEqual(response);
     });
 

@@ -46,9 +46,7 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect((data as ItemMembershipRecord | undefined)?.toJS()).toEqual(
-        response.data[id],
-      );
+      expect(data?.toJS()).toEqual(response.data[id]);
       // verify cache keys
       expect(
         queryClient.getQueryData<ItemMembershipRecord>(key)?.toJS(),

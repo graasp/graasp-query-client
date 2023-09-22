@@ -51,10 +51,7 @@ export default (queryConfig: QueryClientConfig) => {
         ids?.forEach(async (id) => {
           const itemTags = tags?.data?.get(id);
           if (itemTags?.size) {
-            queryClient.setQueryData(
-              itemTagsKeys.singleId(id),
-              itemTags as List<ItemTagRecord>,
-            );
+            queryClient.setQueryData(itemTagsKeys.singleId(id), itemTags);
           }
         });
       },

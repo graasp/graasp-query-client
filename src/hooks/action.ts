@@ -26,7 +26,7 @@ export default (queryConfig: QueryClientConfig) => {
       Boolean(args.requestedSampleSize);
     return useQuery({
       queryKey: buildActionsKey(args),
-      queryFn: () => {
+      queryFn: (): Promise<ActionDataRecord> => {
         const { itemId } = args;
         if (!itemId) {
           throw new UndefinedArgument();
@@ -38,7 +38,7 @@ export default (queryConfig: QueryClientConfig) => {
             requestedSampleSize: args.requestedSampleSize,
           },
           queryConfig,
-        ).then((data) => convertJs(data) as ActionDataRecord);
+        ).then((data) => convertJs(data));
       },
       ...defaultQueryOptions,
       enabled: enabledValue,

@@ -325,7 +325,7 @@ describe('Items Mutations', () => {
 
       // item key should not be changed and should be invalidated
       expect(
-        Immutable.is(queryClient.getQueryData(itemKey) as ItemRecord, item),
+        Immutable.is(queryClient.getQueryData<ItemRecord>(itemKey), item),
       ).toBeTruthy();
       expect(queryClient.getQueryState(itemKey)?.isInvalidated).toBeTruthy();
     });

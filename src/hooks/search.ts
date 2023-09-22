@@ -43,8 +43,7 @@ export default (queryConfig: QueryClientConfig) => {
           highlightPostTag,
           page,
         }),
-        // todo: improve type
-        queryFn: () =>
+        queryFn: (): Promise<MeiliSearchResultsRecord> =>
           Api.searchPublishedItems(
             {
               attributesToCrop,
@@ -59,7 +58,7 @@ export default (queryConfig: QueryClientConfig) => {
               page,
             },
             queryConfig,
-          ).then((data) => convertJs(data) as MeiliSearchResultsRecord),
+          ).then((data) => convertJs(data)),
         // we could add data in success, but not sure the data will be consistent with GET /item
         enabled,
         ...defaultQueryOptions,

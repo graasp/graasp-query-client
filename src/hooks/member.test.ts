@@ -76,7 +76,7 @@ describe('Member Hooks', () => {
       });
 
       // unauthorized request are translated to signed out user
-      expect((data as MemberRecord).toJS()).toEqual(SIGNED_OUT_USER);
+      expect(data?.toJS()).toEqual(SIGNED_OUT_USER);
       expect(isSuccess).toBeTruthy();
       // verify cache keys
       expect(
@@ -174,9 +174,7 @@ describe('Member Hooks', () => {
         endpoints,
       });
 
-      expect(
-        (members as ImmutableCast<ResultOf<Member>> | undefined)?.toJS(),
-      ).toEqual(oneMemberResponse);
+      expect(members?.toJS()).toEqual(oneMemberResponse);
       // verify cache keys
       expect(
         Immutable.is(
@@ -206,9 +204,7 @@ describe('Member Hooks', () => {
         endpoints,
       });
 
-      expect(
-        (members as ImmutableCast<ResultOf<Member>> | undefined)?.toJS(),
-      ).toEqual(endpointResponse);
+      expect(members?.toJS()).toEqual(endpointResponse);
       // verify cache keys
       expect(
         queryClient
@@ -243,9 +239,7 @@ describe('Member Hooks', () => {
         endpoints,
       });
 
-      expect(
-        (members as ImmutableCast<ResultOf<Member>> | undefined)?.toJS(),
-      ).toEqual(fullResponse);
+      expect(members?.toJS()).toEqual(fullResponse);
       // verify cache keys
       expect(
         queryClient

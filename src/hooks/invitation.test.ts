@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { Item } from '@graasp/sdk';
-import { InvitationRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
 import Immutable, { List } from 'immutable';
@@ -42,7 +41,7 @@ describe('Invitation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data as InvitationRecord, response)).toBeTruthy();
+      expect(Immutable.is(data, response)).toBeTruthy();
 
       // verify cache keys
       expect(
@@ -104,9 +103,7 @@ describe('Invitation Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(
-        Immutable.is(data as List<InvitationRecord>, response),
-      ).toBeTruthy();
+      expect(Immutable.is(data, response)).toBeTruthy();
 
       // verify cache keys
       expect(

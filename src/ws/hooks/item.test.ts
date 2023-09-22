@@ -1,4 +1,3 @@
-import { Item } from '@graasp/sdk';
 import { ItemRecord } from '@graasp/sdk/frontend';
 
 import Immutable, { List } from 'immutable';
@@ -281,7 +280,7 @@ describe('Ws Item Hooks', () => {
       // check own items key does not contain deleted item
       const children = queryClient
         .getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY)
-        ?.toJS() as Item[];
+        ?.toJS();
       expect(children?.find(({ id }) => id === itemId)).toBeFalsy();
     });
 
@@ -389,7 +388,7 @@ describe('Ws Item Hooks', () => {
       // check own items key does not contain deleted item
       const shared = queryClient
         .getQueryData<List<ItemRecord>>(SHARED_ITEMS_KEY)
-        ?.toJS() as Item[];
+        ?.toJS();
       expect(shared?.find(({ id }) => id === itemId)).toBeFalsy();
     });
 

@@ -1,9 +1,8 @@
 import { HttpMethod, ItemTagType } from '@graasp/sdk';
-import { ItemTagRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { StatusCodes } from 'http-status-codes';
-import Immutable, { List } from 'immutable';
+import Immutable from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
@@ -143,7 +142,7 @@ describe('Item Tag Mutations', () => {
       expect(data?.isInvalidated).toBeTruthy();
       expect(
         Immutable.is(
-          data?.data as List<ItemTagRecord>,
+          data?.data,
           ITEM_TAGS.filter(({ type }) => type !== tagType),
         ),
       ).toBeTruthy();
@@ -178,9 +177,7 @@ describe('Item Tag Mutations', () => {
 
       const data = queryClient.getQueryState(itemTagKey);
       expect(data?.isInvalidated).toBeTruthy();
-      expect(
-        Immutable.is(data?.data as List<ItemTagRecord>, ITEM_TAGS),
-      ).toBeTruthy();
+      expect(Immutable.is(data?.data, ITEM_TAGS)).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: deleteItemTagRoutine.FAILURE,
