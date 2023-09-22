@@ -1,4 +1,4 @@
-import { UUID, saveUrlForRedirection } from '@graasp/sdk';
+import { MemberExtra, UUID, saveUrlForRedirection } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -150,6 +150,7 @@ export default (queryConfig: QueryClientConfig) => {
         email: string;
         captcha: string;
         url?: string;
+        extra?: MemberExtra;
       }) => Api.signUp(payload, queryConfig),
       {
         onSuccess: () => {
@@ -174,6 +175,7 @@ export default (queryConfig: QueryClientConfig) => {
         email: string;
         challenge: string;
         captcha: string;
+        extra?: MemberExtra;
       }) => Api.mobileSignUp(payload, queryConfig),
       {
         onSuccess: () => {

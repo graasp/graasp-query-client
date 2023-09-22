@@ -1,4 +1,4 @@
-import { HttpMethod } from '@graasp/sdk';
+import { HttpMethod, MemberExtra } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
 
 import { QueryClientConfig } from '../types';
@@ -59,11 +59,23 @@ export const mobileSignInWithPassword = async (
     .then(({ data }) => data);
 
 export const signUp = async (
-  payload: { name: string; email: string; captcha: string; url?: string },
+  payload: {
+    name: string;
+    email: string;
+    captcha: string;
+    url?: string;
+    extra?: MemberExtra;
+  },
   { API_HOST }: QueryClientConfig,
 ): Promise<void> => axios.post(`${API_HOST}/${SIGN_UP_ROUTE}`, payload);
 
 export const mobileSignUp = async (
-  payload: { name: string; email: string; challenge: string; captcha: string },
+  payload: {
+    name: string;
+    email: string;
+    challenge: string;
+    captcha: string;
+    extra?: MemberExtra;
+  },
   { API_HOST }: QueryClientConfig,
 ): Promise<void> => axios.post(`${API_HOST}/${MOBILE_SIGN_UP_ROUTE}`, payload);
