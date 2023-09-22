@@ -193,7 +193,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useSignOut = () => {
     const queryClient = useQueryClient();
-    return useMutation((_currentMemberId: UUID) => Api.signOut(queryConfig), {
+    return useMutation((_currentMemberId?: UUID) => Api.signOut(queryConfig), {
       onSuccess: (_res, _currentMemberId) => {
         notifier?.({
           type: signOutRoutine.SUCCESS,

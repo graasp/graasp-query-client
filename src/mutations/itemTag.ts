@@ -49,7 +49,7 @@ export default (queryConfig: QueryClientConfig) => {
     return useMutation<
       void,
       Error,
-      { itemId: UUID; type: ItemTagType },
+      { itemId: UUID; type: `${ItemTagType}` | ItemTagType },
       { itemTags?: List<ItemTagRecord> }
     >((payload) => Api.deleteItemTag(payload, queryConfig), {
       onMutate: async ({ itemId, type }) => {

@@ -1,7 +1,7 @@
-import { Member, convertJs } from '@graasp/sdk';
-import { ChatMentionRecord } from '@graasp/sdk/frontend';
+import { convertJs } from '@graasp/sdk';
+import { ChatMentionRecord, MemberRecord } from '@graasp/sdk/frontend';
 
-import { List, Record } from 'immutable';
+import { List } from 'immutable';
 import { UseQueryResult, useQuery } from 'react-query';
 
 import * as Api from '../api/index';
@@ -12,7 +12,7 @@ import { WebsocketClient } from '../ws/ws-client';
 
 export default (
   queryConfig: QueryClientConfig,
-  useCurrentMember: () => UseQueryResult,
+  useCurrentMember: () => UseQueryResult<MemberRecord>,
   websocketClient?: WebsocketClient,
 ) => {
   const { enableWebsocket, defaultQueryOptions } = queryConfig;
@@ -27,7 +27,7 @@ export default (
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       const { data: currentMember } = useCurrentMember();
-      const memberId = (currentMember as Record<Member>)?.get('id');
+      const memberId = currentMember?.id || '';
       wsHooks?.useMentionsUpdates(getUpdates ? memberId : null);
 
       return useQuery({

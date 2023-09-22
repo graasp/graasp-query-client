@@ -3,6 +3,7 @@ import { ChatMessage } from '@graasp/sdk';
 import { ExportedItemChatRecord, ItemChatRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
+import Immutable from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -57,10 +58,12 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(data as ItemChatRecord).toEqualImmutable(response);
+      expect(Immutable.is(data, response)).toBeTruthy();
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        Immutable.is(queryClient.getQueryData(key), response),
+      ).toBeTruthy();
     });
 
     it(`Unauthorized`, async () => {
@@ -113,10 +116,12 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(data).toEqualImmutable(response);
+      expect(Immutable.is(data, response)).toBeTruthy();
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        Immutable.is(queryClient.getQueryData(key), response),
+      ).toBeTruthy();
     });
 
     it(`getUpdates = false`, async () => {
@@ -134,10 +139,12 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(data).toEqualImmutable(response);
+      expect(Immutable.is(data, response)).toBeTruthy();
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        Immutable.is(queryClient.getQueryData(key), response),
+      ).toBeTruthy();
     });
   });
 
@@ -175,10 +182,12 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(data as ExportedItemChatRecord).toEqualImmutable(response);
+      expect(Immutable.is(data, response)).toBeTruthy();
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        Immutable.is(queryClient.getQueryData(key), response),
+      ).toBeTruthy();
     });
 
     it(`Unauthorized`, async () => {

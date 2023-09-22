@@ -3237,7 +3237,6 @@ __metadata:
     immutable: 4.3.2
     jest: 29.6.1
     jest-environment-jsdom: 29.6.1
-    jest-immutable-matchers: 3.0.0
     js-cookie: 3.0.5
     microbundle-crl: 0.13.11
     mock-socket: 9.2.1
@@ -13024,16 +13023,6 @@ __metadata:
     fsevents:
       optional: true
   checksum: 4f720fd3813bb38400b7a9a094e55664cbddd907ba1769457ed746f6c870c615167647a5b697a788183d832b1dcb1b66143e52990a6f4403283f6686077fa868
-  languageName: node
-  linkType: hard
-
-"jest-immutable-matchers@npm:3.0.0":
-  version: 3.0.0
-  resolution: "jest-immutable-matchers@npm:3.0.0"
-  peerDependencies:
-    immutable: ">=3.0.0"
-    jest: ">=21.0.0"
-  checksum: 28c30e0bdb1637e3e1bf4a2b6f02cbc66ba6f3b4cb2c204968d13c591e0fabfdd0b68ee5fc1af49ba23ad702c0543676d7e70a6d19100193d2fafb1e7eb5621f
   languageName: node
   linkType: hard
 

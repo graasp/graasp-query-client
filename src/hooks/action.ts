@@ -1,5 +1,5 @@
 import { UUID, convertJs } from '@graasp/sdk';
-import { ActionDataRecord } from '@graasp/sdk/frontend';
+import { ActionDataRecord, ImmutableCast } from '@graasp/sdk/frontend';
 
 import { useQuery } from 'react-query';
 
@@ -26,7 +26,7 @@ export default (queryConfig: QueryClientConfig) => {
       Boolean(args.requestedSampleSize);
     return useQuery({
       queryKey: buildActionsKey(args),
-      queryFn: () => {
+      queryFn: (): Promise<ActionDataRecord> => {
         const { itemId } = args;
         if (!itemId) {
           throw new UndefinedArgument();
@@ -38,7 +38,7 @@ export default (queryConfig: QueryClientConfig) => {
             requestedSampleSize: args.requestedSampleSize,
           },
           queryConfig,
-        ).then((data) => convertJs(data) as ActionDataRecord);
+        ).then((data) => convertJs(data));
       },
       ...defaultQueryOptions,
       enabled: enabledValue,
@@ -56,7 +56,9 @@ export default (queryConfig: QueryClientConfig) => {
       Boolean(args.requestedSampleSize);
     return useQuery({
       queryKey: buildAggregateActionsKey(args),
-      queryFn: () => {
+      queryFn: (): Promise<
+        ImmutableCast<{ aggregateResult: number; createdDay: string }[]>
+      > => {
         const { itemId } = args;
         if (!itemId) {
           throw new UndefinedArgument();

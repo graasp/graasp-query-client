@@ -12,7 +12,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { act } from '@testing-library/react-hooks';
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
+import Immutable, { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -263,7 +263,8 @@ describe('Items Mutations', () => {
       const editedItemKey = buildItemKey(editedItem.id);
       const editPayload = {
         id: editedItem.id,
-        extra: { folder: { childrenOrder: [1, 2] } },
+        // these are dummy ids, in reality they should be UUIDs
+        extra: { folder: { childrenOrder: ['1', '2'] } },
       };
       const childrenKey = buildItemChildrenKey(editedItem.id);
       queryClient.setQueryData(childrenKey, List([ITEMS.get(1)!]));
@@ -323,9 +324,9 @@ describe('Items Mutations', () => {
       });
 
       // item key should not be changed and should be invalidated
-      expect(queryClient.getQueryData(itemKey) as ItemRecord).toEqualImmutable(
-        item,
-      );
+      expect(
+        Immutable.is(queryClient.getQueryData<ItemRecord>(itemKey), item),
+      ).toBeTruthy();
       expect(queryClient.getQueryState(itemKey)?.isInvalidated).toBeTruthy();
     });
   });
@@ -370,7 +371,7 @@ describe('Items Mutations', () => {
       await act(async () => {
         await mockedMutation.mutate({
           to,
-          id: copiedIds,
+          ids: copiedIds,
         });
         await waitForMutation();
       });
@@ -418,7 +419,7 @@ describe('Items Mutations', () => {
       await act(async () => {
         await mockedMutation.mutate({
           to,
-          id: copiedIds,
+          ids: copiedIds,
         });
         await waitForMutation();
       });
@@ -648,7 +649,12 @@ describe('Items Mutations', () => {
       for (const itemId of itemIds) {
         const itemKey = buildItemKey(itemId);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(ITEMS.find(({ id }) => id === itemId));
+        expect(
+          Immutable.is(
+            data,
+            ITEMS.find(({ id }) => id === itemId),
+          ),
+        ).toBeTruthy();
       }
 
       // Check parent's children key is correctly invalidated
@@ -703,7 +709,12 @@ describe('Items Mutations', () => {
       for (const itemId of itemIds) {
         const itemKey = buildItemKey(itemId);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(ITEMS.find(({ id }) => id === itemId));
+        expect(
+          Immutable.is(
+            data,
+            ITEMS.find(({ id }) => id === itemId),
+          ),
+        ).toBeTruthy();
       }
 
       // Check parent's children key is not invalidated
@@ -758,7 +769,12 @@ describe('Items Mutations', () => {
       for (const itemId of itemIds) {
         const itemKey = buildItemKey(itemId);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(items.find(({ id }) => id === itemId));
+        expect(
+          Immutable.is(
+            data,
+            items.find(({ id }) => id === itemId),
+          ),
+        ).toBeTruthy();
       }
 
       // Check parent's children key is correctly invalidated
@@ -812,7 +828,12 @@ describe('Items Mutations', () => {
       for (const itemId of itemIds) {
         const itemKey = buildItemKey(itemId);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(items.find(({ id }) => id === itemId));
+        expect(
+          Immutable.is(
+            data,
+            items.find(({ id }) => id === itemId),
+          ),
+        ).toBeTruthy();
       }
 
       // Check parent's children key is correctly invalidated
@@ -877,8 +898,11 @@ describe('Items Mutations', () => {
       }
 
       expect(
-        queryClient.getQueryData(RECYCLED_ITEMS_DATA_KEY),
-      ).toEqualImmutable(List([RECYCLED_ITEM_DATA.get(1)]));
+        Immutable.is(
+          queryClient.getQueryData(RECYCLED_ITEMS_DATA_KEY),
+          List([RECYCLED_ITEM_DATA.get(1)]),
+        ),
+      ).toBeTruthy();
     });
 
     it('Delete child items', async () => {
@@ -959,7 +983,12 @@ describe('Items Mutations', () => {
       for (const itemId of itemIds) {
         const itemKey = buildItemKey(itemId);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(items.find(({ id }) => id === itemId));
+        expect(
+          Immutable.is(
+            data,
+            items.find(({ id }) => id === itemId),
+          ),
+        ).toBeTruthy();
       }
 
       // check notification trigger
@@ -1020,7 +1049,7 @@ describe('Items Mutations', () => {
         wrapper,
       });
 
-      const error = 'an error';
+      const error = new Error('an error');
 
       await act(async () => {
         await mockedMutation.mutate({ id, error });
@@ -1086,7 +1115,7 @@ describe('Items Mutations', () => {
       for (const item of items) {
         const itemKey = buildItemKey(item.id);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(item);
+        expect(Immutable.is(data, item)).toBeTruthy();
       }
 
       // check recycle bin key
@@ -1144,7 +1173,7 @@ describe('Items Mutations', () => {
       for (const item of items) {
         const itemKey = buildItemKey(item.id);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(item);
+        expect(Immutable.is(data, item)).toBeTruthy();
       }
 
       // check original parent is invalidated
@@ -1199,7 +1228,7 @@ describe('Items Mutations', () => {
       for (const item of items) {
         const itemKey = buildItemKey(item.id);
         const data = queryClient.getQueryData<ItemRecord>(itemKey);
-        expect(data).toEqualImmutable(item);
+        expect(Immutable.is(data, item)).toBeTruthy();
       }
       expect(
         queryClient.getQueryState(RECYCLED_ITEMS_DATA_KEY)?.isInvalidated,
@@ -1279,8 +1308,13 @@ describe('Items Mutations', () => {
         wrapper,
       });
 
+      const error = new Error(`${StatusCodes.UNAUTHORIZED}`);
+
       await act(async () => {
-        await mockedMutation.mutate({ id, error: StatusCodes.UNAUTHORIZED });
+        await mockedMutation.mutate({
+          id,
+          error,
+        });
         await waitForMutation();
       });
 
@@ -1293,7 +1327,9 @@ describe('Items Mutations', () => {
       }
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: uploadItemThumbnailRoutine.FAILURE,
-        payload: { error: StatusCodes.UNAUTHORIZED },
+        payload: {
+          error,
+        },
       });
     });
   });

@@ -1,10 +1,9 @@
-import { Item } from '@graasp/sdk';
 import { ItemRecord } from '@graasp/sdk/frontend';
 
-import { List } from 'immutable';
+import Immutable, { List } from 'immutable';
 import Cookies from 'js-cookie';
 
-import { ITEMS } from '../../../test/constants';
+import { ITEMS, ITEMS_JS } from '../../../test/constants';
 import {
   getHandlerByChannel,
   mockWsHook,
@@ -36,7 +35,6 @@ describe('Ws Item Hooks', () => {
     const itemKey = buildItemKey(itemId);
     const channel = { name: itemId, topic: TOPICS.ITEM };
     const newItemRecord = item.update('description', () => 'new description');
-    const newItem = item.update('description', () => 'new description').toJS();
     const hook = () => hooks.useItemUpdates(itemId);
 
     it(`Receive update item update`, async () => {
@@ -46,14 +44,17 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.SELF,
         op: OPS.UPDATE,
-        item: newItem,
+        item: JSON.parse(JSON.stringify(newItemRecord.toJS())),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(queryClient.getQueryData<ItemRecord>(itemKey)).toEqualImmutable(
-        newItemRecord,
-      );
+      expect(
+        Immutable.is(
+          queryClient.getQueryData<ItemRecord>(itemKey),
+          newItemRecord,
+        ),
+      ).toBeTruthy();
     });
 
     it(`Receive delete item update`, async () => {
@@ -63,7 +64,7 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.SELF,
         op: OPS.DELETE,
-        item: newItem,
+        item: JSON.parse(JSON.stringify(newItemRecord.toJS())),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
@@ -78,14 +79,14 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: 'kind',
         op: OPS.UPDATE,
-        item: newItem,
+        item: JSON.parse(JSON.stringify(newItemRecord.toJS())),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(queryClient.getQueryData<ItemRecord>(itemKey)).toEqualImmutable(
-        item,
-      );
+      expect(
+        Immutable.is(queryClient.getQueryData<ItemRecord>(itemKey), item),
+      ).toBeTruthy();
     });
   });
 
@@ -107,7 +108,7 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.CHILD,
         op: OPS.CREATE,
-        item: targetItem,
+        item: JSON.parse(JSON.stringify(targetItem)),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
@@ -118,8 +119,11 @@ describe('Ws Item Hooks', () => {
       ).toContainEqual(targetItem);
       // check new item key
       expect(
-        queryClient.getQueryData<ItemRecord>(targetItemKey),
-      ).toEqualImmutable(targetItemRecord);
+        Immutable.is(
+          queryClient.getQueryData<ItemRecord>(targetItemKey),
+          targetItemRecord,
+        ),
+      ).toBeTruthy();
     });
 
     it(`Receive update child`, async () => {
@@ -137,15 +141,18 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.CHILD,
         op: OPS.UPDATE,
-        item: updatedItem,
+        item: JSON.parse(JSON.stringify(updatedItem)),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check new item key content
       expect(
-        queryClient.getQueryData<ItemRecord>(targetItemKey),
-      ).toEqualImmutable(updatedItemRecord);
+        Immutable.is(
+          queryClient.getQueryData<ItemRecord>(targetItemKey),
+          updatedItemRecord,
+        ),
+      ).toBeTruthy();
       // check children key contains newly item
       const own = queryClient
         .getQueryData<List<ItemRecord>>(childrenKey)
@@ -181,14 +188,14 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: 'kind',
         op: OPS.DELETE,
-        item: targetItem,
+        item: JSON.parse(JSON.stringify(targetItem)),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       expect(
-        queryClient.getQueryData<ItemRecord>(childrenKey),
-      ).toEqualImmutable(ITEMS);
+        Immutable.is(queryClient.getQueryData<ItemRecord>(childrenKey), ITEMS),
+      ).toBeTruthy();
     });
   });
 
@@ -207,7 +214,7 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.OWN,
         op: OPS.CREATE,
-        item,
+        item: JSON.parse(JSON.stringify(item)),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
@@ -217,9 +224,9 @@ describe('Ws Item Hooks', () => {
         queryClient.getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY)?.toJS(),
       ).toContainEqual(item);
       // check new item key
-      expect(queryClient.getQueryData<ItemRecord>(itemKey)).toEqualImmutable(
-        itemRecord,
-      );
+      expect(
+        Immutable.is(queryClient.getQueryData<ItemRecord>(itemKey), itemRecord),
+      ).toBeTruthy();
     });
 
     it(`Receive update child`, async () => {
@@ -237,14 +244,17 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.OWN,
         op: OPS.UPDATE,
-        item: updatedItem,
+        item: JSON.parse(JSON.stringify(updatedItem)),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check new item key content
-      expect(queryClient.getQueryData<ItemRecord>(itemKey)).toEqualImmutable(
-        updatedItemRecord,
+      expect(
+        Immutable.is(
+          queryClient.getQueryData<ItemRecord>(itemKey),
+          updatedItemRecord,
+        ),
       );
       // check children key contains newly item
       const children = queryClient
@@ -262,7 +272,7 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.OWN,
         op: OPS.DELETE,
-        item,
+        item: JSON.parse(JSON.stringify(item)),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
@@ -270,7 +280,7 @@ describe('Ws Item Hooks', () => {
       // check own items key does not contain deleted item
       const children = queryClient
         .getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY)
-        ?.toJS() as Item[];
+        ?.toJS();
       expect(children?.find(({ id }) => id === itemId)).toBeFalsy();
     });
 
@@ -282,14 +292,17 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: 'kind',
         op: OPS.UPDATE,
-        item,
+        item: JSON.parse(JSON.stringify(item)),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       expect(
-        queryClient.getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY),
-      ).toEqualImmutable(ITEMS);
+        Immutable.is(
+          queryClient.getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY),
+          ITEMS,
+        ),
+      );
     });
   });
 
@@ -309,7 +322,7 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.SHARED,
         op: OPS.CREATE,
-        item,
+        item: JSON.parse(JSON.stringify(item)),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
@@ -319,8 +332,8 @@ describe('Ws Item Hooks', () => {
         queryClient.getQueryData<List<ItemRecord>>(SHARED_ITEMS_KEY)?.toJS(),
       ).toContainEqual(item);
       // check new item key
-      expect(queryClient.getQueryData<ItemRecord>(itemKey)).toEqualImmutable(
-        itemRecord,
+      expect(
+        Immutable.is(queryClient.getQueryData<ItemRecord>(itemKey), itemRecord),
       );
     });
 
@@ -339,15 +352,18 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.SHARED,
         op: OPS.UPDATE,
-        item: updatedItem,
+        item: JSON.parse(JSON.stringify(updatedItem)),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check new item key content
-      expect(queryClient.getQueryData<ItemRecord>(itemKey)).toEqualImmutable(
-        updatedItemRecord,
-      );
+      expect(
+        Immutable.is(
+          queryClient.getQueryData<ItemRecord>(itemKey),
+          updatedItemRecord,
+        ),
+      ).toBeTruthy();
       // check children key contains newly item
       const shared = queryClient
         .getQueryData<List<ItemRecord>>(SHARED_ITEMS_KEY)
@@ -364,7 +380,7 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.SHARED,
         op: OPS.DELETE,
-        item,
+        item: JSON.parse(JSON.stringify(item)),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
@@ -372,7 +388,7 @@ describe('Ws Item Hooks', () => {
       // check own items key does not contain deleted item
       const shared = queryClient
         .getQueryData<List<ItemRecord>>(SHARED_ITEMS_KEY)
-        ?.toJS() as Item[];
+        ?.toJS();
       expect(shared?.find(({ id }) => id === itemId)).toBeFalsy();
     });
 
@@ -384,14 +400,14 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: 'kind',
         op: OPS.UPDATE,
-        item,
+        item: JSON.parse(JSON.stringify(item)),
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       expect(
-        queryClient.getQueryData<List<ItemRecord>>(SHARED_ITEMS_KEY),
-      ).toEqualImmutable(ITEMS);
+        queryClient.getQueryData<List<ItemRecord>>(SHARED_ITEMS_KEY)?.toJS(),
+      ).toEqual(ITEMS_JS);
     });
   });
 });

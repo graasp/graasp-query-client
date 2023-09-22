@@ -6,7 +6,7 @@ import { ItemMembershipRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
+import Immutable, { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
@@ -266,8 +266,11 @@ describe('Membership Mutations', () => {
         queryClient.getQueryState(membershipsKey)?.isInvalidated,
       ).toBeTruthy();
       expect(
-        queryClient.getQueryData<List<ItemMembershipRecord>>(membershipsKey),
-      ).toEqualImmutable(memberships.filter(({ id }) => id !== membershipId));
+        Immutable.is(
+          queryClient.getQueryData<List<ItemMembershipRecord>>(membershipsKey),
+          memberships.filter(({ id }) => id !== membershipId),
+        ),
+      ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: deleteItemMembershipRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_MEMBERSHIP },
@@ -301,8 +304,11 @@ describe('Membership Mutations', () => {
         queryClient.getQueryState(membershipsKey)?.isInvalidated,
       ).toBeTruthy();
       expect(
-        queryClient.getQueryData<List<ItemMembershipRecord>>(membershipsKey),
-      ).toEqualImmutable(memberships);
+        Immutable.is(
+          queryClient.getQueryData<List<ItemMembershipRecord>>(membershipsKey),
+          memberships,
+        ),
+      ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: deleteItemMembershipRoutine.FAILURE,

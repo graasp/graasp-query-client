@@ -144,7 +144,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, invitations: newInvitation });
+        await mockedMutation.mutate({ itemId, invitations: [newInvitation] });
         await waitForMutation();
       });
 
@@ -178,7 +178,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, invitations: newInvitation });
+        await mockedMutation.mutate({ itemId, invitations: [newInvitation] });
         await waitForMutation();
       });
 

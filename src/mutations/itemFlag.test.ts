@@ -88,7 +88,7 @@ describe('Item Flag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ flagType, itemId });
+        await mockedMutation.mutate({ type: flagType, itemId });
         await waitForMutation();
       });
 

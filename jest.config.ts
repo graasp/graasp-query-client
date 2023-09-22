@@ -68,7 +68,7 @@ export default {
   // ],
 
   // An array of file extensions your modules use
-  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
+  moduleFileExtensions: ['cjs', 'js', 'jsx', 'ts', 'tsx', 'json', 'node'],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
@@ -102,7 +102,7 @@ export default {
   // resetModules: false,
 
   // A path to a custom resolver
-  resolver: `${__dirname}/test/resolver.js`,
+  resolver: `${__dirname}/test/resolver.cjs`,
 
   // Automatically restore mock state between every test
   // restoreMocks: false,
@@ -122,7 +122,7 @@ export default {
   setupFiles: ['<rootDir>/test/setupTests.ts'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  setupFilesAfterEnv: ['<rootDir>/test/setupTestsAfterEnv.ts'],
+  // setupFilesAfterEnv: ['<rootDir>/test/setupTestsAfterEnv.ts'],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,
@@ -167,7 +167,7 @@ export default {
     '^.+\\.(ts|tsx)?$': [
       'ts-jest',
       {
-        tsconfig: 'tsconfig.json',
+        tsconfig: 'tsconfig.test.json',
       },
     ],
   },
