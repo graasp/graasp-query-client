@@ -1,6 +1,7 @@
 import { QueryClientConfig } from '../types';
 import actionMutations from './action';
 import authenticationMutations from './authentication';
+import bugMutation from './bug';
 import chatMutations from './chat';
 import invitationMutations from './invitation';
 import itemMutations from './item';
@@ -37,6 +38,7 @@ const configureMutations = (queryConfig: QueryClientConfig) => ({
   ...authenticationMutations(queryConfig),
   ...subscriptionMutations(queryConfig),
   ...itemPublishMutations(queryConfig),
+  ...bugMutation(queryConfig),
 });
 
 export default configureMutations;

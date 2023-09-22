@@ -19,6 +19,7 @@ export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
 export const ETHERPAD_ROUTE = `${ITEMS_ROUTE}/etherpad`;
 export const COLLECTIONS_ROUTE = `collections`;
+export const BUGS_ROUTE = `bug`;
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
 
 export const buildPostItemRoute = (parentId?: UUID) => {
