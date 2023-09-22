@@ -68,7 +68,7 @@ export default {
   // ],
 
   // An array of file extensions your modules use
-  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
+  moduleFileExtensions: ['cjs', 'js', 'jsx', 'ts', 'tsx', 'json', 'node'],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
@@ -102,7 +102,7 @@ export default {
   // resetModules: false,
 
   // A path to a custom resolver
-  resolver: `${__dirname}/test/resolver.js`,
+  resolver: `${__dirname}/test/resolver.cjs`,
 
   // Automatically restore mock state between every test
   // restoreMocks: false,
@@ -167,7 +167,7 @@ export default {
     '^.+\\.(ts|tsx)?$': [
       'ts-jest',
       {
-        tsconfig: 'tsconfig.json',
+        tsconfig: 'tsconfig.test.json',
       },
     ],
   },

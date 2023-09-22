@@ -33,5 +33,4 @@ Object.defineProperty(window, 'location', {
 
 global.document = window.document;
 global.window = global.document.defaultView as Window & typeof globalThis;
-
 global.WebSocket = WebSocket;

@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "module": "NodeNext",
+    "module": "ESNext",
     "lib": ["dom", "esnext"],
-    "moduleResolution": "NodeNext",
     "jsx": "react",
     "sourceMap": true,
     "declaration": true,
@@ -20,7 +19,6 @@
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true
   },
