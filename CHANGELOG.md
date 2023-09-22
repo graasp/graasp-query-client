@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.8.1](https://github.com/graasp/graasp-query-client/compare/v1.8.0...v1.8.1) (2023-09-22)
+
+
+### Bug Fixes
+
+* build and tsconfig for tests ([c6517df](https://github.com/graasp/graasp-query-client/commit/c6517dfb4b955fe0b573e67cc0d62919d05b9f9e))
+* convert date string in websocket data ([#430](https://github.com/graasp/graasp-query-client/issues/430)) ([c6517df](https://github.com/graasp/graasp-query-client/commit/c6517dfb4b955fe0b573e67cc0d62919d05b9f9e))
+* **deps:** update dependency @graasp/translations to v1.19.1 ([#432](https://github.com/graasp/graasp-query-client/issues/432)) ([9e5e8b6](https://github.com/graasp/graasp-query-client/commit/9e5e8b6ddac7040a55112540f1bba50fa6dae6e3))
+* **refactor:** useless casts ([c6517df](https://github.com/graasp/graasp-query-client/commit/c6517dfb4b955fe0b573e67cc0d62919d05b9f9e))
+* remove immutable matchers ([c6517df](https://github.com/graasp/graasp-query-client/commit/c6517dfb4b955fe0b573e67cc0d62919d05b9f9e))
+* use generics for mockedMutations and mockedHook ([c6517df](https://github.com/graasp/graasp-query-client/commit/c6517dfb4b955fe0b573e67cc0d62919d05b9f9e))
+
 ## [1.8.0](https://github.com/graasp/graasp-query-client/compare/v1.7.0...v1.8.0) (2023-09-21)
 
 
