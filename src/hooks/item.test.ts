@@ -10,7 +10,7 @@ import {
 import { ItemRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
-import Immutable, { List } from 'immutable';
+import Immutable, { List, Map } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -23,8 +23,9 @@ import {
   buildResultOfData,
 } from '../../test/constants';
 import {
+  Endpoint,
   mockHook,
-  setUpTest, // Endpoint,
+  setUpTest,
   splitEndpointByIds,
 } from '../../test/utils';
 import {
@@ -38,7 +39,8 @@ import {
   buildGetOwnItemsRoute,
 } from '../api/routes';
 import {
-  OWN_ITEMS_KEY, // SHARED_ITEMS_KEY,
+  OWN_ITEMS_KEY,
+  SHARED_ITEMS_KEY,
   buildFileContentKey,
   buildItemChildrenKey,
   buildItemKey,
