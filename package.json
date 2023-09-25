@@ -1,13 +1,12 @@
 {
   "name": "@graasp/query-client",
   "version": "1.8.1",
-  "type": "commonjs",
+  "type": "module",
   "workspaces": [
     "example"
   ],
   "repository": "graasp/graasp-query-client",
-  "main": "./dist/index.js",
-  "module": "./dist/index.modern.js",
+  "module": "./dist/index.js",
   "source": "./src/index.ts",
   "types": "./dist/index.d.ts",
   "author": "Graasp",
@@ -86,7 +85,8 @@
     "react-dom": "./example/node_modules/react-dom"
   },
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
+    "build": "tsc",
+    "build:bundle": "microbundle-crl --no-compress --format modern,cjs",
     "start": "microbundle-crl watch --no-compress --format modern,cjs",
     "start:example": "yarn workspace graasp-query-client-example start",
     "prepack": "yarn build",
