@@ -1,6 +1,5 @@
 import {
   DiscriminatedItem,
-  Item,
   ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
   UUID,
@@ -84,7 +83,6 @@ export default (
             convertJs(data),
           ),
         onSuccess: async ({ data }: Paginated<ItemRecord>) => {
-          console.log(data, 'from hook')
           data.forEach(async (item) => {
             const { id } = item;
             queryClient.setQueryData(buildItemKey(id), item);
