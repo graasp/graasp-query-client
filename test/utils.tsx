@@ -1,6 +1,6 @@
 import { HttpMethod, spliceIntoChunks } from '@graasp/sdk';
 
-import { RenderHookOptions, renderHook } from '@testing-library/react-hooks';
+import { RenderHookOptions, renderHook, waitFor } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock, { InterceptFunction, ReplyHeaders, Scope } from 'nock';
 import React from 'react';
@@ -107,14 +107,16 @@ export const mockHook = async <
     mockEndpoints(endpoints);
   }
   // wait for rendering hook
-  const { result, waitFor } = renderHook(hook, { wrapper });
+  const { result } = renderHook(hook, { wrapper });
 
   // this hook is disabled, it will never fetch
   if (enabled === false) {
     return result.current;
   }
 
-  await waitFor(() => result.current.isSuccess || result.current.isError);
+  await waitFor(() =>
+    expect(result.current.isSuccess || result.current.isError).toBe(true),
+  );
 
   // return hook data
   return result.current;
@@ -136,8 +138,8 @@ export const mockMutation = async <
   }
 
   // wait for rendering hook
-  const { result, waitFor } = renderHook(mutation, { wrapper });
-  await waitFor(() => result.current.isIdle);
+  const { result } = renderHook(mutation, { wrapper });
+  await waitFor(() => expect(result.current.isIdle).toBe(true));
 
   // return mutation data
   return result.current;

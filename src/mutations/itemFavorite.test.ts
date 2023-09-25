@@ -1,6 +1,6 @@
 import { HttpMethod } from '@graasp/sdk';
 
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 

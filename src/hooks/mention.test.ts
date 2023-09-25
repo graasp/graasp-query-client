@@ -45,6 +45,7 @@ describe('Chat Mention Hooks', () => {
         hook,
         wrapper,
       });
+      console.log(data?.toJS(), response.toJS());
 
       expect(Immutable.is(data, response)).toBeTruthy();
 
