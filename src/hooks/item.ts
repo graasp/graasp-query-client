@@ -1,6 +1,5 @@
 import {
   DiscriminatedItem,
-  Item,
   ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
   UUID,
@@ -79,11 +78,11 @@ export default (
 
       return useQuery({
         queryKey: buildOwnItemsKey(args, searchArgs),
-        queryFn: (): Promise<Paginated<Item>> =>
+        queryFn: (): Promise<Paginated<ItemRecord>> =>
           Api.getOwnItems(queryConfig, args, searchArgs).then((data) =>
             convertJs(data),
           ),
-        onSuccess: async ({ data }: Paginated<Item>) => {
+        onSuccess: async ({ data }: Paginated<ItemRecord>) => {
           data.forEach(async (item) => {
             const { id } = item;
             queryClient.setQueryData(buildItemKey(id), item);
