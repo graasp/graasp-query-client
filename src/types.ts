@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios';
+import { List } from 'immutable';
 import { QueryObserverOptions } from 'react-query';
 
 import { isDataEqual } from './utils/util';
@@ -57,5 +58,5 @@ export type PaginationArgs = {
 
 export type Paginated<T> = {
   totalCount: number;
-  data: T[];
+  data: List<T>;
 };
