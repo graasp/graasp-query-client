@@ -63,14 +63,22 @@ describe('Items Hooks', () => {
     const hook = () => hooks.useOwnItems({});
 
     it(`Receive own items`, async () => {
-      const response = ITEMS;
+      const response = { data: ITEMS };
       const endpoints = [{ route, response }];
-      const { data } = await mockHook({ endpoints, hook, wrapper });
-
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data }: { data: any } = await mockHook({
+        endpoints,
+        hook,
+        wrapper,
+      });
       // verify cache keys
-      const res = await queryClient.getQueryData(buildOwnItemsKey({ page: 1 }));
-      expect(Immutable.is(data, response)).toBeTruthy();
-      expect(Immutable.is(res, response)).toBeTruthy();
+      const res: { data: List<Item> } | undefined =
+        await queryClient.getQueryData(
+          buildOwnItemsKey({ page: 1, limit: 10 }),
+        );
+
+      expect(Immutable.is(res?.data, response.data)).toBeTruthy();
+      expect(Immutable.is(data?.data, response.data)).toBeTruthy();
     });
 
     it(`Unauthorized`, async () => {
