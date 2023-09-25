@@ -8,8 +8,6 @@ import {
   useMutation,
   useQueryClient,
 } from 'react-query';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 import {

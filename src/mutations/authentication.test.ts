@@ -3,7 +3,7 @@ import { HttpMethod } from '@graasp/sdk';
 import * as utils from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';

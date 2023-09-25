@@ -10,7 +10,7 @@ import {
 import { ItemRecord, RecycledItemDataRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import Immutable, { List } from 'immutable';
 import Cookies from 'js-cookie';

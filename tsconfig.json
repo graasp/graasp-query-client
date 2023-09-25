@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "module": "ESNext",
+    "module": "CommonJS",
     "lib": ["dom", "esnext"],
     "jsx": "react",
     "sourceMap": true,
@@ -16,12 +16,12 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
     "target": "esnext",
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": false
   },
   "include": ["src"],
   "files": ["src/types.ts"], // allows to have the types.d.ts file under /dist
