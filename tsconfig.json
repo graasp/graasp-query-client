@@ -16,7 +16,7 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
     "target": "esnext",
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
