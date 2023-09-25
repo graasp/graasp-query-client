@@ -79,11 +79,12 @@ export default (
 
       return useQuery({
         queryKey: buildOwnItemsKey(args, searchArgs),
-        queryFn: (): Promise<Paginated<Item>> =>
+        queryFn: (): Promise<Paginated<ItemRecord>> =>
           Api.getOwnItems(queryConfig, args, searchArgs).then((data) =>
             convertJs(data),
           ),
-        onSuccess: async ({ data }: Paginated<Item>) => {
+        onSuccess: async ({ data }: Paginated<ItemRecord>) => {
+          console.log(data, 'from hook')
           data.forEach(async (item) => {
             const { id } = item;
             queryClient.setQueryData(buildItemKey(id), item);

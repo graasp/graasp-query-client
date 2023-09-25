@@ -1,6 +1,5 @@
 import {
   FolderItemType,
-  Item,
   ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
@@ -73,7 +72,7 @@ describe('Items Hooks', () => {
         wrapper,
       });
       // verify cache keys
-      const res: { data: List<Item> } | undefined =
+      const res: { data: List<ItemRecord> } | undefined =
         await queryClient.getQueryData(
           buildOwnItemsKey({ page: 1, limit: 10 }),
         );
