@@ -7,7 +7,7 @@ import {
 } from '@graasp/sdk';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
-import { OwnItemsQuery, QueryClientConfig } from '../types';
+import { PaginationArgs, QueryClientConfig } from '../types';
 import { getParentsIdsFromPath } from '../utils/item';
 import configureAxios, { verifyAuthentication } from './axios';
 import {
@@ -45,13 +45,24 @@ export const getItems = async (
 
 export const getOwnItems = async (
   { API_HOST }: QueryClientConfig,
-  { page = 1, all = false, name = '', limit }: OwnItemsQuery,
-) =>
-  verifyAuthentication(() =>
+  args: PaginationArgs,
+  searchArgs?: {
+    name: string;
+  },
+) => {
+  const { page = 1, limit } = args;
+  return verifyAuthentication(() =>
     axios
-      .get(`${API_HOST}/${buildGetOwnItemsRoute({ page, name, all, limit })}`)
+      .get(
+        `${API_HOST}/${buildGetOwnItemsRoute({
+          page,
+          name: searchArgs?.name,
+          limit,
+        })}`,
+      )
       .then(({ data }) => data),
   );
+};
 
 export type PostItemPayloadType = Partial<DiscriminatedItem> &
   Pick<DiscriminatedItem, 'type' | 'name'> & {

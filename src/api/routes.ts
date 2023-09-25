@@ -11,7 +11,6 @@ export const ITEMS_ROUTE = 'items';
 export const ITEM_MEMBERSHIPS_ROUTE = 'item-memberships';
 export const MEMBERS_ROUTE = `members`;
 export const SUBSCRIPTION_ROUTE = 'subscriptions';
-export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const INVITATIONS_ROUTE = `invitations`;
 export const GET_RECYCLED_ITEMS_DATA_ROUTE = `${ITEMS_ROUTE}/recycled`;
 export const GET_FAVORITE_ITEMS_ROUTE = `${ITEMS_ROUTE}/favorite`;
@@ -21,24 +20,16 @@ export const ETHERPAD_ROUTE = `${ITEMS_ROUTE}/etherpad`;
 export const COLLECTIONS_ROUTE = `collections`;
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
 
+export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const buildGetOwnItemsRoute = ({
-  page,
-  all,
+  page = 1,
   name,
   limit,
 }: OwnItemsQuery) => {
-  let url = `${GET_OWN_ITEMS_ROUTE}?page=${page}`;
-
-  if (all) {
-    url += `&all=${all}`;
-  }
-  if (name) {
-    url += `&name=${name}`;
-  }
-  if (limit) {
-    url += `&limit=${limit}`;
-  }
-
+  const url = `${GET_OWN_ITEMS_ROUTE}${qs.stringify(
+    { page, name, limit },
+    { addQueryPrefix: true },
+  )}`;
   return url;
 };
 

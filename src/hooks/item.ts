@@ -1,5 +1,6 @@
 import {
   DiscriminatedItem,
+  Item,
   ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
   UUID,
@@ -45,7 +46,7 @@ import {
   buildOwnItemsKey,
 } from '../config/keys';
 import { getOwnItemsRoutine } from '../routines';
-import { OwnItemsQuery, QueryClientConfig } from '../types';
+import { Paginated, PaginationArgs, QueryClientConfig } from '../types';
 import { isPaginatedChildrenDataEqual, paginate } from '../utils/util';
 import { configureWsItemHooks } from '../ws';
 import { WebsocketClient } from '../ws/ws-client';
@@ -64,7 +65,10 @@ export default (
 
   return {
     useOwnItems: (
-      { page, all, name, limit }: OwnItemsQuery,
+      args: PaginationArgs,
+      searchArgs?: {
+        name: string;
+      },
       options?: { getUpdates?: boolean },
     ) => {
       const queryClient = useQueryClient();
@@ -74,20 +78,13 @@ export default (
       itemWsHooks?.useOwnItemsUpdates(getUpdates ? currentMember?.id : null);
 
       return useQuery({
-        queryKey: buildOwnItemsKey({ page, name, all, limit }),
-        queryFn: (): Promise<List<ItemRecord>> =>
-          Api.getOwnItems(queryConfig, { page, name, all, limit }).then(
-            (data) => convertJs(data),
+        queryKey: buildOwnItemsKey(args, searchArgs),
+        queryFn: (): Promise<Paginated<Item>> =>
+          Api.getOwnItems(queryConfig, args, searchArgs).then((data) =>
+            convertJs(data),
           ),
-        onSuccess: async ({
-          data,
-        }: {
-          data: List<ItemRecord>;
-          totalCount: number;
-        }) => {
-          // save items in their own key
-          // eslint-disable-next-line no-unused-expressions
-          data?.forEach(async (item) => {
+        onSuccess: async ({ data }: Paginated<Item>) => {
+          data.forEach(async (item) => {
             const { id } = item;
             queryClient.setQueryData(buildItemKey(id), item);
           });

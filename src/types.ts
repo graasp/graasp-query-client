@@ -47,6 +47,15 @@ export type SearchFields = {
 export type OwnItemsQuery = {
   page?: number;
   name?: string;
-  all?: boolean;
   limit?: number;
 };
+
+export type PaginationArgs = {
+  page?: number;
+  limit?: number;
+};
+
+export type Paginated<T> = {
+  totalCount: number, 
+  data: T[]
+}

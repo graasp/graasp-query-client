@@ -9,7 +9,7 @@ import {
 import { ItemRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
-import { List, Map } from 'immutable';
+import Immutable, { List, Map } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -59,20 +59,18 @@ describe('Items Hooks', () => {
   });
 
   describe('useOwnItems', () => {
-    const route = `/${buildGetOwnItemsRoute({ page: 1, name: '' })}`;
-    const hook = () => hooks.useOwnItems({ page: 1, name: '' });
+    const route = `/${buildGetOwnItemsRoute({})}`;
+    const hook = () => hooks.useOwnItems({});
 
     it(`Receive own items`, async () => {
       const response = ITEMS;
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect(JSON.stringify(data)).toEqual(JSON.stringify(response));
 
       // verify cache keys
-      const res = await queryClient.getQueryData(
-        buildOwnItemsKey({ page: 1, name: '' }),
-      );
-      expect(JSON.stringify(res)).toEqual(JSON.stringify(response));
+      const res = await queryClient.getQueryData(buildOwnItemsKey({ page: 1 }));
+      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(Immutable.is(res, response)).toBeTruthy();
     });
 
     it(`Unauthorized`, async () => {
