@@ -56,6 +56,6 @@ export type PaginationArgs = {
 };
 
 export type Paginated<T> = {
-  totalCount: number, 
-  data: T[]
-}
+  totalCount: number;
+  data: T[];
+};
