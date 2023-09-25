@@ -10,7 +10,7 @@ import {
 import { ItemRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
-import Immutable, { List, Map } from 'immutable';
+import Immutable, { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -23,9 +23,8 @@ import {
   buildResultOfData,
 } from '../../test/constants';
 import {
-  Endpoint,
   mockHook,
-  setUpTest,
+  setUpTest, // Endpoint,
   splitEndpointByIds,
 } from '../../test/utils';
 import {
@@ -39,8 +38,7 @@ import {
   buildGetOwnItemsRoute,
 } from '../api/routes';
 import {
-  OWN_ITEMS_KEY,
-  SHARED_ITEMS_KEY,
+  OWN_ITEMS_KEY, // SHARED_ITEMS_KEY,
   buildFileContentKey,
   buildItemChildrenKey,
   buildItemKey,
@@ -60,8 +58,8 @@ describe('Items Hooks', () => {
   });
 
   describe('useOwnItems', () => {
-    const route = `/${buildGetOwnItemsRoute({})}`;
-    const hook = () => hooks.useOwnItems({});
+    const route = `/${buildGetOwnItemsRoute({ page: 1, limit: 10 })}`;
+    const hook = () => hooks.useOwnItems({ page: 1, limit: 10 });
 
     it(`Receive own items`, async () => {
       const response = { data: ITEMS };
