@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.8.2](https://github.com/graasp/graasp-query-client/compare/v1.8.1...v1.8.2) (2023-09-25)
+
+
+### Bug Fixes
+
+* **build:** remove microbundle-crl and expose as ts package in commonjs ([853338b](https://github.com/graasp/graasp-query-client/commit/853338b8ba432a2d47de63f3969facccb6c381cb))
+* **deps:** update dependency uuid to v9.0.1 ([#440](https://github.com/graasp/graasp-query-client/issues/440)) ([b998517](https://github.com/graasp/graasp-query-client/commit/b9985174fb16ec4d1c65e7bc361d3fc51b3648ea))
+* **test:** migrate to react18 and remove example project ([853338b](https://github.com/graasp/graasp-query-client/commit/853338b8ba432a2d47de63f3969facccb6c381cb))
+* webpack import error ([#441](https://github.com/graasp/graasp-query-client/issues/441)) ([853338b](https://github.com/graasp/graasp-query-client/commit/853338b8ba432a2d47de63f3969facccb6c381cb))
+
 ## [1.8.1](https://github.com/graasp/graasp-query-client/compare/v1.8.0...v1.8.1) (2023-09-22)
 
 
