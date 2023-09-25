@@ -1,5 +1,6 @@
 import {
   FolderItemType,
+  Item,
   ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
