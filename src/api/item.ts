@@ -1,10 +1,4 @@
-import {
-  DiscriminatedItem,
-  EtherpadItemType,
-  Item,
-  ResultOf,
-  UUID,
-} from '@graasp/sdk';
+import { DiscriminatedItem, Item, ResultOf, UUID } from '@graasp/sdk';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
 import { PaginationArgs, QueryClientConfig } from '../types';
@@ -19,14 +13,12 @@ import {
   buildDownloadItemThumbnailRoute,
   buildEditItemRoute,
   buildGetChildrenRoute,
-  buildGetEtherpadRoute,
   buildGetItemDescendants,
   buildGetItemParents,
   buildGetItemRoute,
   buildGetItemsRoute,
   buildGetOwnItemsRoute,
   buildMoveItemsRoute,
-  buildPostEtherpadRoute,
   buildPostItemRoute,
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
@@ -268,31 +260,4 @@ export const downloadItemThumbnailUrl = async (
         replyUrl: true,
       })}`,
     )
-    .then(({ data }) => data);
-
-export const postEtherpad = async (
-  {
-    name,
-    parentId,
-  }: Pick<Item, 'name'> & {
-    parentId?: UUID;
-  },
-  { API_HOST }: QueryClientConfig,
-): Promise<EtherpadItemType> =>
-  verifyAuthentication(() =>
-    axios
-      .post(`${API_HOST}/${buildPostEtherpadRoute(parentId)}`, {
-        name: name.trim(),
-      })
-      .then(({ data }) => data),
-  );
-
-export const getEtherpad = (
-  { itemId, mode }: { itemId: UUID; mode: 'read' | 'write' },
-  { API_HOST }: QueryClientConfig,
-) =>
-  axios
-    .get(`${API_HOST}/${buildGetEtherpadRoute(itemId)}`, {
-      params: { mode },
-    })
     .then(({ data }) => data);

@@ -1,17 +1,13 @@
 import { HttpMethod, spliceIntoChunks } from '@graasp/sdk';
 
-import {
-  RenderResult,
-  WaitFor,
-  renderHook,
-} from '@testing-library/react-hooks';
+import { RenderHookOptions, renderHook, waitFor } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock, { InterceptFunction, ReplyHeaders, Scope } from 'nock';
 import React from 'react';
 import {
-  MutationObserverResult,
   QueryClient,
   QueryObserverBaseResult,
+  UseMutationResult,
 } from 'react-query';
 
 import configureHooks from '../src/hooks';
@@ -66,19 +62,19 @@ export type Endpoint = {
   headers?: ReplyHeaders;
 };
 
-interface MockArguments {
+interface MockArguments<TProps> {
   endpoints?: Endpoint[];
-  wrapper: (args: { children: React.ReactNode }) => JSX.Element;
+  wrapper: RenderHookOptions<TProps>['wrapper'];
 }
 
-interface MockHookArguments extends MockArguments {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  hook: () => any;
+interface MockHookArguments<TProps, TResult extends QueryObserverBaseResult>
+  extends MockArguments<TProps> {
+  hook: (props: TProps) => TResult;
   enabled?: boolean;
 }
-interface MockMutationArguments extends MockArguments {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mutation: () => any;
+interface MockMutationArguments<TProps, TData, TError, TVariables, TContext>
+  extends MockArguments<TProps> {
+  mutation: () => UseMutationResult<TData, TError, TVariables, TContext>;
 }
 
 type NockMethodType = {
@@ -98,55 +94,52 @@ export const mockEndpoints = (endpoints: Endpoint[]) => {
   return server;
 };
 
-export const mockHook = async <T,>({
+export const mockHook = async <
+  TProps,
+  TResult extends QueryObserverBaseResult,
+>({
   endpoints,
   hook,
   wrapper,
   enabled,
-}: MockHookArguments) => {
+}: MockHookArguments<TProps, TResult>): Promise<TResult> => {
   if (endpoints) {
     mockEndpoints(endpoints);
   }
   // wait for rendering hook
-  const {
-    result,
-    waitFor,
-  }: {
-    result: RenderResult<QueryObserverBaseResult>;
-    waitFor: WaitFor;
-  } = renderHook(hook, { wrapper });
+  const { result } = renderHook(hook, { wrapper });
 
   // this hook is disabled, it will never fetch
   if (enabled === false) {
     return result.current;
   }
 
-  await waitFor(() => result.current.isSuccess || result.current.isError);
+  await waitFor(() =>
+    expect(result.current.isSuccess || result.current.isError).toBe(true),
+  );
 
   // return hook data
-  return result.current as QueryObserverBaseResult<T>;
+  return result.current;
 };
 
-export const mockMutation = async ({
+export const mockMutation = async <
+  TData,
+  TError,
+  TVariables,
+  TContext,
+  TProps,
+>({
   mutation,
   wrapper,
   endpoints,
-}: MockMutationArguments) => {
+}: MockMutationArguments<TProps, TData, TError, TVariables, TContext>) => {
   if (endpoints) {
     mockEndpoints(endpoints);
   }
 
   // wait for rendering hook
-  const {
-    result,
-    waitFor,
-  }: {
-    // data, error and variables types are always different
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    result: RenderResult<MutationObserverResult<any, any, any>>;
-    waitFor: WaitFor;
-  } = renderHook(mutation, { wrapper });
-  await waitFor(() => result.current.isIdle);
+  const { result } = renderHook(mutation, { wrapper });
+  await waitFor(() => expect(result.current.isIdle).toBe(true));
 
   // return mutation data
   return result.current;

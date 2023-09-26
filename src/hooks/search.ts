@@ -1,27 +1,68 @@
-import { convertJs } from '@graasp/sdk';
-import { ItemRecord } from '@graasp/sdk/frontend';
+import { Category, convertJs } from '@graasp/sdk';
+import { MeiliSearchResultsRecord } from '@graasp/sdk/frontend';
 
-import { List } from 'immutable';
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
-import { buildSearchByKeywordKey } from '../config/keys';
-import { QueryClientConfig, SearchFields } from '../types';
+import { buildSearchPublishedItemsKey } from '../config/keys';
+import { QueryClientConfig } from '../types';
+import useDebounce from './useDebounce';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
 
   // get search results
   return {
-    useKeywordSearch: (fields: SearchFields) =>
-      useQuery({
-        queryKey: buildSearchByKeywordKey(fields),
-        queryFn: (): Promise<List<ItemRecord>> =>
-          Api.getItemsByKeywords(fields, queryConfig).then((data) =>
-            convertJs(data),
-          ),
+    useSearchPublishedItems: ({
+      attributesToCrop,
+      categories,
+      cropLength,
+      enabled = true,
+      isPublishedRoot = true,
+      limit,
+      query,
+      sort,
+      highlightPreTag,
+      highlightPostTag,
+      page = 1,
+    }: {
+      categories?: Category['id'][][];
+      enabled?: boolean;
+      isPublishedRoot?: boolean;
+      query?: string;
+    } & Api.MeiliSearchProps) => {
+      const debouncedQuery = useDebounce(query, 500);
+      return useQuery({
+        queryKey: buildSearchPublishedItemsKey({
+          query: debouncedQuery,
+          categories,
+          isPublishedRoot,
+          limit,
+          sort,
+          highlightPreTag,
+          highlightPostTag,
+          page,
+        }),
+        queryFn: (): Promise<MeiliSearchResultsRecord> =>
+          Api.searchPublishedItems(
+            {
+              attributesToCrop,
+              categories,
+              cropLength,
+              isPublishedRoot,
+              limit,
+              query: debouncedQuery,
+              sort,
+              highlightPreTag,
+              highlightPostTag,
+              page,
+            },
+            queryConfig,
+          ).then((data) => convertJs(data)),
+        // we could add data in success, but not sure the data will be consistent with GET /item
+        enabled,
         ...defaultQueryOptions,
-        enabled: Object.values(fields).some((v) => v),
-      }),
+      });
+    },
   };
 };

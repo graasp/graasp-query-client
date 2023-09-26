@@ -2,7 +2,12 @@
  * Graasp websocket client
  * React effect hooks to subscribe to real-time updates and mutate query client
  */
-import { DiscriminatedItem, UUID, convertJs } from '@graasp/sdk';
+import {
+  DiscriminatedItem,
+  UUID,
+  convertJs,
+  parseStringToDate,
+} from '@graasp/sdk';
 import { ItemRecord } from '@graasp/sdk/frontend';
 
 import { List } from 'immutable';
@@ -46,7 +51,7 @@ export const configureWsItemHooks = (websocketClient: WebsocketClient) => ({
         if (event.kind === KINDS.SELF) {
           const current: ItemRecord | undefined =
             queryClient.getQueryData(itemKey);
-          const item: ItemRecord = convertJs(event.item);
+          const item: ItemRecord = convertJs(parseStringToDate(event.item));
 
           if (current?.id === item.id) {
             switch (event.op) {
@@ -93,7 +98,7 @@ export const configureWsItemHooks = (websocketClient: WebsocketClient) => ({
           if (event.kind === KINDS.SELF) {
             const current: ItemRecord | undefined =
               queryClient.getQueryData(itemKey);
-            const item: ItemRecord = convertJs(event.item);
+            const item: ItemRecord = convertJs(parseStringToDate(event.item));
 
             if (current?.id === item.id) {
               switch (event.op) {
@@ -149,7 +154,7 @@ export const configureWsItemHooks = (websocketClient: WebsocketClient) => ({
             queryClient.getQueryData<List<ItemRecord>>(parentChildrenKey);
 
           if (current) {
-            const item: ItemRecord = convertJs(event.item);
+            const item: ItemRecord = convertJs(parseStringToDate(event.item));
             let mutation;
 
             switch (event.op) {
@@ -212,7 +217,7 @@ export const configureWsItemHooks = (websocketClient: WebsocketClient) => ({
             queryClient.getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY);
 
           if (current) {
-            const item: ItemRecord = convertJs(event.item);
+            const item: ItemRecord = convertJs(parseStringToDate(event.item));
             let mutation;
 
             switch (event.op) {
@@ -275,7 +280,7 @@ export const configureWsItemHooks = (websocketClient: WebsocketClient) => ({
             queryClient.getQueryData(SHARED_ITEMS_KEY);
 
           if (current) {
-            const item: ItemRecord = convertJs(event.item);
+            const item: ItemRecord = convertJs(parseStringToDate(event.item));
             let mutation;
 
             switch (event.op) {

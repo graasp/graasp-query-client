@@ -4,10 +4,11 @@ import {
   ItemTagType,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
-  convertJs,
 } from '@graasp/sdk';
+import { ItemTagRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
+import Immutable from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -48,10 +49,12 @@ describe('Item Tags Hooks', () => {
       const endpoints = [{ route, response }];
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toEqualImmutable(response);
+      expect(Immutable.is(data, response)).toBeTruthy();
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        Immutable.is(queryClient.getQueryData(key), response),
+      ).toBeTruthy();
       expect(isSuccess).toBeTruthy();
     });
 
@@ -103,12 +106,12 @@ describe('Item Tags Hooks', () => {
         (t: ItemTag[]) => t[0].item.id,
       );
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
-      expect(data).toEqualImmutable(convertJs(response));
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
       keys.forEach((key, idx) =>
-        expect(queryClient.getQueryData(key)).toEqualImmutable(
-          convertJs(tags[idx]),
+        expect(queryClient.getQueryData<ItemTagRecord>(key)?.toJS()).toEqual(
+          tags[idx],
         ),
       );
 
@@ -153,12 +156,14 @@ describe('Item Tags Hooks', () => {
         wrapper,
       });
 
-      expect(data).toEqualImmutable(convertJs(response));
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
       expect(
-        queryClient.getQueryData(itemTagsKeys.singleId(ids[0])),
-      ).toEqualImmutable(convertJs(tagsForItem));
+        queryClient
+          .getQueryData<ItemTagRecord>(itemTagsKeys.singleId(ids[0]))
+          ?.toJS(),
+      ).toEqual(tagsForItem);
       expect(
         queryClient.getQueryData(itemTagsKeys.singleId(idWithError)),
       ).toBeFalsy();

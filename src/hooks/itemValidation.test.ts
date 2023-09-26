@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
+import Immutable from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -32,10 +33,12 @@ describe('Item Validation Hooks', () => {
       const endpoints = [{ route, response: response.toJS() }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toEqualImmutable(response);
+      expect(Immutable.is(data, response)).toBeTruthy();
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        Immutable.is(queryClient.getQueryData(key), response),
+      ).toBeTruthy();
     });
     it(`Unauthorized`, async () => {
       const endpoints = [

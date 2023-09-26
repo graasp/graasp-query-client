@@ -40,7 +40,7 @@ export const postItemTag = async (
   );
 
 export const deleteItemTag = async (
-  { itemId, type }: { itemId: UUID; type: ItemTagType },
+  { itemId, type }: { itemId: UUID; type: `${ItemTagType}` | ItemTagType },
   { API_HOST }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>

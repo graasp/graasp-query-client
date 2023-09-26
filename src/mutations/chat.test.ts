@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { HttpMethod } from '@graasp/sdk';
 
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
@@ -346,7 +346,11 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ itemId, body: 'new message content' });
+          await mockedMutation.mutate({
+            itemId,
+            messageId,
+            body: 'new message content',
+          });
           await waitForMutation();
         });
 
@@ -373,7 +377,10 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ itemId, body: 'message to remove' });
+          await mockedMutation.mutate({
+            itemId,
+            messageId,
+          });
           await waitForMutation();
         });
 

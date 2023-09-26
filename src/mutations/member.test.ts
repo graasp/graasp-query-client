@@ -2,8 +2,9 @@ import { HttpMethod, ThumbnailSize } from '@graasp/sdk';
 import { MemberRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
+import Immutable from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -51,7 +52,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(null);
+        await mockedMutation.mutate(undefined);
         await waitForMutation();
       });
 
@@ -77,14 +78,17 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(null);
+        await mockedMutation.mutate(undefined);
         await waitForMutation();
       });
 
       // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqualImmutable(
-        MEMBER_RESPONSE,
-      );
+      expect(
+        Immutable.is(
+          queryClient.getQueryData(CURRENT_MEMBER_KEY),
+          MEMBER_RESPONSE,
+        ),
+      ).toBeTruthy();
     });
   });
 
@@ -146,9 +150,12 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqualImmutable(
-        MEMBER_RESPONSE,
-      );
+      expect(
+        Immutable.is(
+          queryClient.getQueryData(CURRENT_MEMBER_KEY),
+          MEMBER_RESPONSE,
+        ),
+      ).toBeTruthy();
     });
   });
 
@@ -183,7 +190,7 @@ describe('Member Mutations', () => {
       // verify cache keys
       const newData =
         queryClient.getQueryData<MemberRecord>(CURRENT_MEMBER_KEY);
-      expect(newData).toEqualImmutable(response);
+      expect(Immutable.is(newData, response)).toBeTruthy();
     });
 
     it(`Unauthorized`, async () => {
@@ -204,14 +211,14 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id, member: newMember });
+        await mockedMutation.mutate({ id, ...newMember });
         await waitForMutation();
       });
 
       // verify cache keys
       const oldData =
         queryClient.getQueryData<MemberRecord>(CURRENT_MEMBER_KEY);
-      expect(oldData).toEqualImmutable(MEMBER_RESPONSE);
+      expect(Immutable.is(oldData, MEMBER_RESPONSE)).toBeTruthy();
     });
   });
 

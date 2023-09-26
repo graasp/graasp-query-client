@@ -5,8 +5,8 @@ import {
   AggregateMetric,
   Context,
   CountGroupBy,
-  convertJs,
 } from '@graasp/sdk';
+import { ActionDataRecord, ImmutableCast } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
@@ -21,6 +21,10 @@ import {
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildGetActions, buildGetAggregateActions } from '../api/routes';
 import { buildActionsKey, buildAggregateActionsKey } from '../config/keys';
+
+type AggregateActionsResponse = ImmutableCast<
+  { aggregateResult: number; createdDay: string }[]
+>;
 
 const { hooks, wrapper, queryClient } = setUpTest();
 const itemId = ITEMS.first()!.id;
@@ -44,12 +48,14 @@ describe('Action Hooks', () => {
 
     it(`Receive actions for item id`, async () => {
       const hook = () => hooks.useActions(args);
-      const endpoints = [{ route, response: response.toJS() }];
+      const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect(data).toEqualImmutable(response);
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(queryClient.getQueryData<ActionDataRecord>(key)?.toJS()).toEqual(
+        response,
+      );
     });
 
     it(`Sample size = 0 does not fetch`, async () => {
@@ -124,23 +130,23 @@ describe('Action Hooks', () => {
       const hook = () => hooks.useAggregateActions(args);
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect(data).toEqualImmutable(convertJs(response));
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(
-        convertJs(response),
-      );
+      expect(
+        queryClient.getQueryData<AggregateActionsResponse>(key)?.toJS(),
+      ).toEqual(response);
     });
     it(`Receive aggregate actions for item id`, async () => {
       const hook = () => hooks.useAggregateActions(args);
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect(data).toEqualImmutable(convertJs(response));
+      expect(data?.toJS()).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(
-        convertJs(response),
-      );
+      expect(
+        queryClient.getQueryData<AggregateActionsResponse>(key)?.toJS(),
+      ).toEqual(response);
     });
 
     it(`Unauthorized`, async () => {

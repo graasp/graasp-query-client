@@ -1,7 +1,7 @@
 import { Member, MentionStatus } from '@graasp/sdk';
 import { ChatMentionRecord } from '@graasp/sdk/frontend';
 
-import { List } from 'immutable';
+import Immutable, { List } from 'immutable';
 
 import {
   MEMBER_RESPONSE,
@@ -53,8 +53,11 @@ describe('Ws Mention Hooks', () => {
 
       // expect no change
       expect(
-        queryClient.getQueryData<List<ChatMentionRecord>>(mentionKey),
-      ).toEqualImmutable(MENTIONS_QUERY_DATA);
+        Immutable.is(
+          queryClient.getQueryData<List<ChatMentionRecord>>(mentionKey),
+          MENTIONS_QUERY_DATA,
+        ),
+      ).toBeTruthy();
     });
   });
 
@@ -85,10 +88,13 @@ describe('Ws Mention Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(mentionEvent);
 
       expect(
-        queryClient
-          .getQueryData<List<ChatMentionRecord>>(mentionKey)
-          ?.find(({ id }: { id: string }) => id === newMention.id),
-      ).toEqualImmutable(newMention);
+        Immutable.is(
+          queryClient
+            .getQueryData<List<ChatMentionRecord>>(mentionKey)
+            ?.find(({ id }: { id: string }) => id === newMention.id),
+          newMention,
+        ),
+      ).toBeTruthy();
     });
 
     it(`Receive mention edit update`, async () => {
@@ -130,12 +136,14 @@ describe('Ws Mention Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(mentionEvent);
 
       expect(
-        queryClient.getQueryData<List<ChatMentionRecord>>(mentionKey),
-      ).toEqualImmutable(
-        MENTIONS_QUERY_DATA.filter(
-          ({ id }: { id: string }) => id !== deletedMention.id,
+        Immutable.is(
+          queryClient.getQueryData<List<ChatMentionRecord>>(mentionKey),
+
+          MENTIONS_QUERY_DATA.filter(
+            ({ id }: { id: string }) => id !== deletedMention.id,
+          ),
         ),
-      );
+      ).toBeTruthy();
     });
 
     it(`Receive member mentions clear update`, async () => {

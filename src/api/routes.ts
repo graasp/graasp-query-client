@@ -3,7 +3,7 @@ import { DiscriminatedItem, ItemTag, ItemTagType, UUID } from '@graasp/sdk';
 import qs from 'qs';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
-import { OwnItemsQuery, SearchFields } from '../types';
+import { OwnItemsQuery } from '../types';
 import { AggregateActionsArgs } from '../utils/action';
 
 export const APPS_ROUTE = 'app-items';
@@ -265,11 +265,6 @@ export const buildDeleteItemCategoryRoute = (args: {
 export const buildGetApiAccessTokenRoute = (id: UUID) =>
   `${APPS_ROUTE}/${id}/api-access-token`;
 
-export const buildGetItemsByKeywordRoute = (fields: SearchFields) =>
-  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/search${qs.stringify(fields, {
-    addQueryPrefix: true,
-  })}`;
-
 export const buildGetLikesForMemberRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/liked${qs.stringify(
     { memberId: id },
@@ -400,6 +395,8 @@ export const buildPostEtherpadRoute = (parentId?: UUID) =>
 export const buildGetEtherpadRoute = (itemId: UUID) =>
   `${ETHERPAD_ROUTE}/view/${itemId}`;
 
+export const SEARCH_PUBLISHED_ITEMS_ROUTE = `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/search`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   buildAppListRoute,
@@ -440,7 +437,7 @@ export const API_ROUTES = {
   buildGetItemMembershipsForItemsRoute,
   buildGetItemPublishedInformationRoute,
   buildGetItemRoute,
-  buildGetItemsByKeywordRoute,
+  SEARCH_PUBLISHED_ITEMS_ROUTE,
   buildGetItemsInCategoryRoute,
   buildGetItemTagsRoute,
   buildGetLastItemValidationGroupRoute,

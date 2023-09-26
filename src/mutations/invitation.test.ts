@@ -2,7 +2,7 @@
 import { HttpMethod, Item } from '@graasp/sdk';
 import { InvitationRecord } from '@graasp/sdk/frontend';
 
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import { List } from 'immutable';
 import Cookies from 'js-cookie';
@@ -144,7 +144,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, invitations: newInvitation });
+        await mockedMutation.mutate({ itemId, invitations: [newInvitation] });
         await waitForMutation();
       });
 
@@ -178,7 +178,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, invitations: newInvitation });
+        await mockedMutation.mutate({ itemId, invitations: [newInvitation] });
         await waitForMutation();
       });
 

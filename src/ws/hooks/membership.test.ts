@@ -1,4 +1,4 @@
-import { ItemMembership, PermissionLevel } from '@graasp/sdk';
+import { PermissionLevel } from '@graasp/sdk';
 import { ItemMembershipRecord } from '@graasp/sdk/frontend';
 
 import { List } from 'immutable';
@@ -93,7 +93,7 @@ describe('Ws Membership Hooks', () => {
 
       const membershipsData = queryClient
         .getQueryData<List<ItemMembershipRecord>>(membershipsKey)
-        ?.toJS() as ItemMembership[];
+        ?.toJS();
       expect(
         membershipsData?.find(({ id }) => id === memberships.get(0)?.id),
       ).toBeFalsy();

@@ -1,6 +1,6 @@
 import { ChatMention, HttpMethod, Member, MentionStatus } from '@graasp/sdk';
 
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import Cookies from 'js-cookie';
 import nock from 'nock';
@@ -159,10 +159,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({
-            memberId,
-            mentionId,
-          });
+          await mockedMutation.mutate(mentionId);
           await waitForMutation();
         });
 
@@ -193,10 +190,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({
-            memberId,
-            mentionId,
-          });
+          await mockedMutation.mutate(mentionId);
           await waitForMutation();
         });
 
@@ -236,7 +230,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ memberId });
+          await mockedMutation.mutate();
           await waitForMutation();
         });
 
@@ -263,7 +257,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ memberId });
+          await mockedMutation.mutate();
           await waitForMutation();
         });
 
@@ -351,10 +345,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({
-            memberId,
-            mentionId,
-          });
+          await mockedMutation.mutate(mentionId);
           await waitForMutation();
         });
 
@@ -388,7 +379,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ memberId });
+          await mockedMutation.mutate();
           await waitForMutation();
         });
 

@@ -1,7 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { ChatMentionRecord } from '@graasp/sdk/frontend';
-
-import { List } from 'immutable';
+import Immutable from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -48,10 +46,12 @@ describe('Chat Mention Hooks', () => {
         wrapper,
       });
 
-      expect(data as List<ChatMentionRecord>).toEqualImmutable(response);
+      expect(Immutable.is(data, response)).toBeTruthy();
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqualImmutable(response);
+      expect(
+        Immutable.is(queryClient.getQueryData(key), response),
+      ).toBeTruthy();
     });
   });
 });

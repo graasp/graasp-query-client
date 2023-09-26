@@ -37,14 +37,6 @@ export type QueryClientConfig = {
   };
 };
 
-export type SearchFields = {
-  keywords?: string;
-  tags?: string[];
-  parentId?: string;
-  name?: string;
-  creator?: string;
-};
-
 export type OwnItemsQuery = {
   page?: number;
   name?: string;

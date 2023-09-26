@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.8.2](https://github.com/graasp/graasp-query-client/compare/v1.8.1...v1.8.2) (2023-09-25)
+
+
+### Bug Fixes
+
+* **build:** remove microbundle-crl and expose as ts package in commonjs ([853338b](https://github.com/graasp/graasp-query-client/commit/853338b8ba432a2d47de63f3969facccb6c381cb))
+* **deps:** update dependency uuid to v9.0.1 ([#440](https://github.com/graasp/graasp-query-client/issues/440)) ([b998517](https://github.com/graasp/graasp-query-client/commit/b9985174fb16ec4d1c65e7bc361d3fc51b3648ea))
+* **test:** migrate to react18 and remove example project ([853338b](https://github.com/graasp/graasp-query-client/commit/853338b8ba432a2d47de63f3969facccb6c381cb))
+* webpack import error ([#441](https://github.com/graasp/graasp-query-client/issues/441)) ([853338b](https://github.com/graasp/graasp-query-client/commit/853338b8ba432a2d47de63f3969facccb6c381cb))
+
+## [1.8.1](https://github.com/graasp/graasp-query-client/compare/v1.8.0...v1.8.1) (2023-09-22)
+
+
+### Bug Fixes
+
+* build and tsconfig for tests ([c6517df](https://github.com/graasp/graasp-query-client/commit/c6517dfb4b955fe0b573e67cc0d62919d05b9f9e))
+* convert date string in websocket data ([#430](https://github.com/graasp/graasp-query-client/issues/430)) ([c6517df](https://github.com/graasp/graasp-query-client/commit/c6517dfb4b955fe0b573e67cc0d62919d05b9f9e))
+* **deps:** update dependency @graasp/translations to v1.19.1 ([#432](https://github.com/graasp/graasp-query-client/issues/432)) ([9e5e8b6](https://github.com/graasp/graasp-query-client/commit/9e5e8b6ddac7040a55112540f1bba50fa6dae6e3))
+* **refactor:** useless casts ([c6517df](https://github.com/graasp/graasp-query-client/commit/c6517dfb4b955fe0b573e67cc0d62919d05b9f9e))
+* remove immutable matchers ([c6517df](https://github.com/graasp/graasp-query-client/commit/c6517dfb4b955fe0b573e67cc0d62919d05b9f9e))
+* use generics for mockedMutations and mockedHook ([c6517df](https://github.com/graasp/graasp-query-client/commit/c6517dfb4b955fe0b573e67cc0d62919d05b9f9e))
+
+## [1.8.0](https://github.com/graasp/graasp-query-client/compare/v1.7.0...v1.8.0) (2023-09-21)
+
+
+### Features
+
+* add meilisearch hook ([#422](https://github.com/graasp/graasp-query-client/issues/422)) ([efddbaf](https://github.com/graasp/graasp-query-client/commit/efddbaf791adeee7572c5bf69fc3e5ea4741fd31))
+
+## [1.7.0](https://github.com/graasp/graasp-query-client/compare/v1.6.0...v1.7.0) (2023-09-21)
+
+
+### Features
+
+* add etherpad fetch queue ([#424](https://github.com/graasp/graasp-query-client/issues/424)) ([2b339f8](https://github.com/graasp/graasp-query-client/commit/2b339f80111fd80f9410035aa303cb1cef64a284))
+
 ## [1.6.0](https://github.com/graasp/graasp-query-client/compare/v1.5.0...v1.6.0) (2023-09-08)
 
 
