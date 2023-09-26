@@ -11,6 +11,7 @@ import {
   parseStringToDate,
 } from '@graasp/sdk';
 import { Channel, ItemRecord, WebsocketClient } from '@graasp/sdk/frontend';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { List } from 'immutable';
 import { useEffect } from 'react';
@@ -429,44 +430,57 @@ export const configureWsItemHooks = (
 
           if (current) {
             let routine: ReturnType<typeof createRoutine> | undefined;
+            let message: string | undefined;
             switch (event.op) {
               case 'update':
                 routine = editItemRoutine;
+                message = SUCCESS_MESSAGES.EDIT_ITEM;
                 break;
               case 'delete':
                 routine = deleteItemRoutine;
+                message = SUCCESS_MESSAGES.DELETE_ITEM;
                 break;
               case 'move':
                 routine = moveItemRoutine;
+                message = SUCCESS_MESSAGES.MOVE_ITEM;
                 break;
               case 'copy':
                 routine = copyItemRoutine;
+                message = SUCCESS_MESSAGES.COPY_ITEM;
                 break;
               case 'export':
                 routine = exportItemRoutine;
+                message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
                 break;
               case 'recycle':
                 routine = recycleItemsRoutine;
+                message = SUCCESS_MESSAGES.RECYCLE_ITEM;
                 break;
               case 'restore':
                 routine = restoreItemsRoutine;
+                message = SUCCESS_MESSAGES.RESTORE_ITEMS;
                 break;
               case 'validate':
                 routine = postItemValidationRoutine;
+                message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
                 break;
               default: {
                 console.error('unhandled event for useItemFeedbackUpdates');
                 break;
               }
             }
-            if (routine) {
+            if (routine && message) {
               if ('error' in event.result) {
                 notifier?.({
                   type: routine.FAILURE,
+                  payload: {
+                    error: event.result.error,
+                  },
                 });
               } else {
                 notifier?.({
                   type: routine.SUCCESS,
+                  payload: { message },
                 });
               }
             }
