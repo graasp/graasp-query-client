@@ -1,23 +1,30 @@
 export const KINDS = {
-  ITEM: 'item',
-  SELF: 'self',
   CHILD: 'child',
+  FEEDBACK: 'feedback',
+  ITEM: 'item',
   OWN: 'own',
+  RECYCLEBIN: 'recyclebin',
+  SELF: 'self',
   SHARED: 'shared',
 };
 
 export const OPS = {
-  PUBLISH: 'publish',
-  UPDATE: 'update',
-  DELETE: 'delete',
   CLEAR: 'clear',
+  COPY: 'copy',
   CREATE: 'create',
+  DELETE: 'delete',
+  EXPORT: 'export',
+  MOVE: 'move',
+  PUBLISH: 'publish',
+  RESTORE: 'restore',
+  UPDATE: 'update',
+  VALIDATE: 'validate',
 };
 
 export const TOPICS = {
-  MENTIONS: 'mentions',
   CHAT_ITEM: 'chat/item',
-  ITEM: 'item',
   ITEM_MEMBER: 'item/member',
+  ITEM: 'item',
   MEMBERSHIPS_ITEM: 'memberships/item',
+  MENTIONS: 'mentions',
 };

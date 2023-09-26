@@ -4,6 +4,8 @@
  */
 import {
   DiscriminatedItem,
+  Item,
+  ResultOf,
   UUID,
   convertJs,
   parseStringToDate,
@@ -16,10 +18,23 @@ import { useQueryClient } from 'react-query';
 
 import {
   OWN_ITEMS_KEY,
+  RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
   buildItemChildrenKey,
   buildItemKey,
 } from '../../config/keys';
+import {
+  copyItemRoutine,
+  deleteItemRoutine,
+  editItemRoutine,
+  exportItemRoutine,
+  moveItemRoutine,
+  postItemValidationRoutine,
+  recycleItemsRoutine,
+  restoreItemsRoutine,
+} from '../../routines';
+import createRoutine from '../../routines/utils';
+import { Notifier } from '../../types';
 import { KINDS, OPS, TOPICS } from '../constants';
 
 interface ItemEvent {
@@ -28,8 +43,30 @@ interface ItemEvent {
   item: DiscriminatedItem;
 }
 
+interface ItemOpFeedbackEvent {
+  kind: 'feedback';
+  op:
+    | 'update'
+    | 'delete'
+    | 'move'
+    | 'copy'
+    | 'export'
+    | 'recycle'
+    | 'restore'
+    | 'validate';
+  resource: Item['id'][];
+  result:
+    | {
+        error: Error;
+      }
+    | ResultOf<Item>;
+}
+
 // eslint-disable-next-line import/prefer-default-export
-export const configureWsItemHooks = (websocketClient: WebsocketClient) => ({
+export const configureWsItemHooks = (
+  websocketClient: WebsocketClient,
+  notifier?: Notifier,
+) => ({
   /**
    * React hook to subscribe to the updates of the given item ID
    * @param itemId The ID of the item of which to observe updates
@@ -307,6 +344,131 @@ export const configureWsItemHooks = (websocketClient: WebsocketClient) => ({
               }
               default:
                 break;
+            }
+          }
+        }
+      };
+
+      websocketClient.subscribe(channel, handler);
+
+      return function cleanup() {
+        websocketClient.unsubscribe(channel, handler);
+      };
+    }, [userId]);
+  },
+
+  useRecycledItemsUpdates: (userId?: UUID | null) => {
+    const queryClient = useQueryClient();
+    useEffect(() => {
+      if (!userId) {
+        return () => {
+          // do nothing
+        };
+      }
+
+      const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
+
+      const handler = (event: ItemEvent) => {
+        if (event.kind === KINDS.RECYCLEBIN) {
+          const current =
+            queryClient.getQueryData<List<ItemRecord>>(RECYCLED_ITEMS_KEY);
+
+          if (current) {
+            const item: ItemRecord = convertJs(parseStringToDate(event.item));
+            let mutation;
+
+            switch (event.op) {
+              case OPS.CREATE: {
+                if (!current.find((i) => i.id === item.id)) {
+                  mutation = current.push(item);
+                  queryClient.setQueryData(RECYCLED_ITEMS_KEY, mutation);
+                  queryClient.setQueryData(buildItemKey(item.id), item);
+                }
+                break;
+              }
+              case OPS.DELETE: {
+                mutation = current.filter((i) => i.id !== item.id);
+                queryClient.setQueryData(RECYCLED_ITEMS_KEY, mutation);
+                break;
+              }
+              default:
+                console.error('unhandled event for useRecyledItemsUpdates');
+                break;
+            }
+          }
+        }
+      };
+
+      websocketClient.subscribe(channel, handler);
+
+      return function cleanup() {
+        websocketClient.unsubscribe(channel, handler);
+      };
+    }, [userId]);
+  },
+
+  /**
+   * React hook to subscribe to the feedback of async operations performed by the given user ID
+   * @param userId The ID of the user on which to observe item feedback updates
+   */
+  useItemFeedbackUpdates: (userId?: UUID | null) => {
+    const queryClient = useQueryClient();
+    useEffect(() => {
+      if (!userId) {
+        return () => {
+          // do nothing
+        };
+      }
+
+      const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
+
+      const handler = (event: ItemOpFeedbackEvent) => {
+        if (event.kind === KINDS.FEEDBACK) {
+          const current =
+            queryClient.getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY);
+
+          if (current) {
+            let routine: ReturnType<typeof createRoutine> | undefined;
+            switch (event.op) {
+              case 'update':
+                routine = editItemRoutine;
+                break;
+              case 'delete':
+                routine = deleteItemRoutine;
+                break;
+              case 'move':
+                routine = moveItemRoutine;
+                break;
+              case 'copy':
+                routine = copyItemRoutine;
+                break;
+              case 'export':
+                routine = exportItemRoutine;
+                break;
+              case 'recycle':
+                routine = recycleItemsRoutine;
+                break;
+              case 'restore':
+                routine = restoreItemsRoutine;
+                break;
+              case 'validate':
+                routine = postItemValidationRoutine;
+                break;
+              default: {
+                console.error('unhandled event for useItemFeedbackUpdates');
+                break;
+              }
+            }
+            if (routine) {
+              if ('error' in event.result) {
+                notifier?.({
+                  type: routine.FAILURE,
+                });
+              } else {
+                notifier?.({
+                  type: routine.SUCCESS,
+                });
+              }
             }
           }
         }

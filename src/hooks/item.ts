@@ -34,6 +34,7 @@ import { UndefinedArgument } from '../config/errors';
 import {
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_DATA_KEY,
+  RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
   buildEtherpadKey,
   buildFileContentKey,
@@ -59,7 +60,7 @@ export default (
 
   const itemWsHooks =
     enableWebsocket && websocketClient // required to type-check non-null
-      ? configureWsItemHooks(websocketClient)
+      ? configureWsItemHooks(websocketClient, notifier)
       : undefined;
 
   return {
@@ -354,6 +355,33 @@ export default (
         ...defaultQueryOptions,
         cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
       }),
+
+    useRecycledItems: (options?: { getUpdates?: boolean }) => {
+      const queryClient = useQueryClient();
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
+      const { data: currentMember } = useCurrentMember();
+      itemWsHooks?.useRecycledItemsUpdates(
+        getUpdates ? currentMember?.id : null,
+      );
+
+      return useQuery({
+        queryKey: RECYCLED_ITEMS_KEY,
+        queryFn: (): Promise<List<ItemRecord>> =>
+          Api.getRecycledItemsData(queryConfig).then(
+            (data) =>
+              convertJs(data)?.map(({ item }: RecycledItemDataRecord) => item),
+          ),
+        onSuccess: async (items) => {
+          // save items in their own key
+          // eslint-disable-next-line no-unused-expressions
+          items?.forEach(async (item) => {
+            queryClient.setQueryData(buildItemKey(item.id), item);
+          });
+        },
+        ...defaultQueryOptions,
+      });
+    },
 
     useRecycledItemsData: () => {
       const queryClient = useQueryClient();
