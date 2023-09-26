@@ -482,5 +482,7 @@ export default (
         enabled: Boolean(item?.id),
         ...defaultQueryOptions,
       }),
+
+    useItemFeedbackUpdates: itemWsHooks?.useItemFeedbackUpdates,
   };
 };
