@@ -8,7 +8,7 @@ import {
   convertJs,
   parseStringToDate,
 } from '@graasp/sdk';
-import { ItemRecord } from '@graasp/sdk/frontend';
+import { Channel, ItemRecord, WebsocketClient } from '@graasp/sdk/frontend';
 
 import { List } from 'immutable';
 import { useEffect } from 'react';
@@ -21,7 +21,6 @@ import {
   buildItemKey,
 } from '../../config/keys';
 import { KINDS, OPS, TOPICS } from '../constants';
-import { Channel, WebsocketClient } from '../ws-client';
 
 interface ItemEvent {
   kind: string;

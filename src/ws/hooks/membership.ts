@@ -1,5 +1,9 @@
 import { ItemMembership, UUID, convertJs, getIdsFromPath } from '@graasp/sdk';
-import { ItemMembershipRecord } from '@graasp/sdk/frontend';
+import {
+  Channel,
+  ItemMembershipRecord,
+  WebsocketClient,
+} from '@graasp/sdk/frontend';
 
 import { List } from 'immutable';
 import { useEffect } from 'react';
@@ -7,7 +11,6 @@ import { useQueryClient } from 'react-query';
 
 import { buildItemMembershipsKey } from '../../config/keys';
 import { KINDS, OPS, TOPICS } from '../constants';
-import { Channel, WebsocketClient } from '../ws-client';
 
 // todo: use graasp-types?
 interface MembershipEvent {

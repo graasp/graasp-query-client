@@ -11,6 +11,7 @@ import {
   MemberRecord,
   RecycledItemDataRecord,
   ResultOfRecord,
+  WebsocketClient,
 } from '@graasp/sdk/frontend';
 
 import { List } from 'immutable';
@@ -48,7 +49,6 @@ import { getOwnItemsRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 import { isPaginatedChildrenDataEqual, paginate } from '../utils/util';
 import { configureWsItemHooks } from '../ws';
-import { WebsocketClient } from '../ws/ws-client';
 
 export default (
   queryConfig: QueryClientConfig,

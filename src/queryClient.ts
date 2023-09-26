@@ -1,3 +1,5 @@
+import { configureWebsocketClient } from '@graasp/sdk/frontend';
+
 import { AxiosError } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import {
@@ -18,7 +20,6 @@ import configureHooks from './hooks';
 import configureMutations from './mutations';
 import type { QueryClientConfig } from './types';
 import { getHostname, isDataEqual } from './utils/util';
-import { configureWebsocketClient } from './ws';
 
 /* istanbul ignore next */
 // Query client retry function decides when and how many times a request should be retried
@@ -85,7 +86,7 @@ export default (config: Partial<QueryClientConfig>) => {
 
   // set up hooks given config
   const websocketClient = queryConfig.enableWebsocket
-    ? configureWebsocketClient(queryConfig)
+    ? configureWebsocketClient(queryConfig.WS_HOST)
     : undefined;
   const hooks = configureHooks(queryConfig, websocketClient);
 

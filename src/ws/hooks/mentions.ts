@@ -1,5 +1,9 @@
 import { ChatMention, UUID, convertJs } from '@graasp/sdk';
-import { ChatMentionRecord } from '@graasp/sdk/frontend';
+import {
+  Channel,
+  ChatMentionRecord,
+  WebsocketClient,
+} from '@graasp/sdk/frontend';
 
 import { List } from 'immutable';
 import { useEffect } from 'react';
@@ -7,7 +11,6 @@ import { useQueryClient } from 'react-query';
 
 import { buildMentionKey } from '../../config/keys';
 import { OPS, TOPICS } from '../constants';
-import { Channel, WebsocketClient } from '../ws-client';
 
 // todo: use graasp-types?
 interface MentionEvent {
