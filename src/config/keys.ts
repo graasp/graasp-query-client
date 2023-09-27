@@ -13,7 +13,7 @@ export const buildOwnItemsKey = (
   searchArgs?: {
     name: string;
   },
-) => [ITEMS_KEY, 'own', args.page, args.limit, searchArgs?.name];
+) => [ITEMS_KEY, 'own', args, searchArgs];
 export const ETHERPADS_KEY = 'etherpads';
 export const SUBSCRIPTION_KEY = 'subscriptions';
 
