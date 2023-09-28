@@ -8,12 +8,14 @@ const axios = configureAxios();
 
 export type MeiliSearchProps = {
   limit?: number;
+  offset?: number;
   sort?: string[];
   attributesToCrop?: string[];
   cropLength?: number;
   highlightPreTag?: string;
   highlightPostTag?: string;
   page?: number;
+  elementsPerPage?: number;
 };
 
 /* eslint-disable import/prefer-default-export */
@@ -23,12 +25,12 @@ export const searchPublishedItems = async (
     categories,
     isPublishedRoot = true,
     limit,
+    offset,
     sort,
     attributesToCrop,
     cropLength,
     highlightPreTag,
     highlightPostTag,
-    page,
   }: {
     query?: string;
     categories?: Category['id'][][];
@@ -48,10 +50,10 @@ export const searchPublishedItems = async (
     cropLength,
     q,
     limit,
+    offset,
     sort,
     highlightPreTag,
     highlightPostTag,
-    page,
   };
 
   // handle filters

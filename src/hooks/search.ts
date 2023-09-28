@@ -19,12 +19,12 @@ export default (queryConfig: QueryClientConfig) => {
       cropLength,
       enabled = true,
       isPublishedRoot = true,
-      limit,
       query,
       sort,
       highlightPreTag,
       highlightPostTag,
       page = 1,
+      elementsPerPage = 24,
     }: {
       categories?: Category['id'][][];
       enabled?: boolean;
@@ -37,28 +37,29 @@ export default (queryConfig: QueryClientConfig) => {
           query: debouncedQuery,
           categories,
           isPublishedRoot,
-          limit,
           sort,
           highlightPreTag,
           highlightPostTag,
           page,
         }),
-        queryFn: (): Promise<MeiliSearchResultsRecord> =>
-          Api.searchPublishedItems(
+        queryFn: (): Promise<MeiliSearchResultsRecord> => {
+          const offset = elementsPerPage * (page - 1);
+          return Api.searchPublishedItems(
             {
               attributesToCrop,
               categories,
               cropLength,
               isPublishedRoot,
-              limit,
+              limit: elementsPerPage,
+              offset,
               query: debouncedQuery,
               sort,
               highlightPreTag,
               highlightPostTag,
-              page,
             },
             queryConfig,
-          ).then((data) => convertJs(data)),
+          ).then((data) => convertJs(data));
+        },
         // we could add data in success, but not sure the data will be consistent with GET /item
         enabled,
         ...defaultQueryOptions,
