@@ -4,7 +4,11 @@ import {
   UUID,
   convertJs,
 } from '@graasp/sdk';
-import { MemberRecord, ResultOfRecord } from '@graasp/sdk/frontend';
+import {
+  MemberRecord,
+  MemberStorageRecord,
+  ResultOfRecord,
+} from '@graasp/sdk/frontend';
 
 import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
 
@@ -17,6 +21,7 @@ import {
 import { UndefinedArgument } from '../config/errors';
 import {
   CURRENT_MEMBER_KEY,
+  CURRENT_MEMBER_STORAGE_KEY,
   buildAvatarKey,
   buildMemberKey,
   buildMembersKey,
@@ -130,5 +135,13 @@ export default (queryConfig: QueryClientConfig) => {
         cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
       });
     },
+
+    useMemberStorage: () =>
+      useQuery({
+        queryKey: CURRENT_MEMBER_STORAGE_KEY,
+        queryFn: (): Promise<MemberStorageRecord> =>
+          Api.getMemberStorage(queryConfig).then((data) => convertJs(data)),
+        ...defaultQueryOptions,
+      }),
   };
 };

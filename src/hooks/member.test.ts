@@ -1,6 +1,7 @@
 import {
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
+  MemberStorage,
   ResultOf,
   ThumbnailSize,
   UUID,
@@ -27,11 +28,13 @@ import {
   GET_CURRENT_MEMBER_ROUTE,
   buildDownloadAvatarRoute,
   buildGetMember,
+  buildGetMemberStorage,
   buildGetMembersRoute,
 } from '../api/routes';
 import { SIGNED_OUT_USER } from '../config/constants';
 import {
   CURRENT_MEMBER_KEY,
+  CURRENT_MEMBER_STORAGE_KEY,
   buildAvatarKey,
   buildMemberKey,
   buildMembersKey,
@@ -464,6 +467,58 @@ describe('Member Hooks', () => {
       const { data, isFetched, isError } = await mockHook({
         endpoints,
         hook: () => hooks.useAvatar({ id: member.id }),
+        wrapper,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isFetched).toBeTruthy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({ endpoints, hook, wrapper });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+  });
+
+  describe('useMemberStorage', () => {
+    const response: MemberStorage = { current: 123, maximum: 123 };
+    const route = `/${buildGetMemberStorage()}`;
+    const hook = () => hooks.useMemberStorage();
+    const key = CURRENT_MEMBER_STORAGE_KEY;
+
+    it(`Receive member storage`, async () => {
+      const endpoints = [{ route, response }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+      expect(data).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeTruthy();
+    });
+
+    it(`Error getting storage`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: { error: 'error' },
+          statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+        },
+      ];
+      const { data, isFetched, isError } = await mockHook({
+        endpoints,
+        hook: () => hooks.useMemberStorage(),
         wrapper,
       });
 
