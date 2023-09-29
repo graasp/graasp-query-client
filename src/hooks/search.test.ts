@@ -94,6 +94,7 @@ const RESPONSE = {
 describe('Published Search Hook', () => {
   afterEach(() => {
     nock.cleanAll();
+    jest.clearAllMocks();
     queryClient.clear();
   });
 
@@ -159,6 +160,7 @@ describe('Published Search Hook', () => {
           query,
           categories,
           isPublishedRoot,
+          page: 1,
         });
       const response = RESPONSE;
       const endpoints = [{ route, response, method: HttpMethod.POST }];
@@ -179,8 +181,8 @@ describe('Published Search Hook', () => {
             attributesToCrop: undefined,
             highlightPostTag: undefined,
             highlightPreTag: undefined,
-            limit: undefined,
-            page: 1,
+            limit: 24,
+            offset: 0,
             sort: undefined,
           },
         ],
@@ -229,11 +231,11 @@ describe('Published Search Hook', () => {
             ],
             q: query,
             filter: 'categories IN [mycategoryid] AND isPublishedRoot = true',
-            page: 3,
+            limit: 24,
+            offset: 48, // (3 - 1) * 24
             attributesToCrop: undefined,
             highlightPostTag: undefined,
             highlightPreTag: undefined,
-            limit: undefined,
             sort: undefined,
           },
         ],
