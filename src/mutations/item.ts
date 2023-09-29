@@ -157,10 +157,13 @@ export default (queryConfig: QueryClientConfig) => {
     const queryClient = useQueryClient();
     return useMutation(
       (
-        item: Pick<
-          DiscriminatedItem,
-          'id' | 'name' | 'description' | 'extra' | 'settings'
-        >,
+        item: Pick<DiscriminatedItem, 'id'> &
+          Partial<
+            Pick<
+              DiscriminatedItem,
+              'name' | 'description' | 'extra' | 'settings'
+            >
+          >,
       ) => Api.editItem(item.id, item, queryConfig),
       // newItem contains all updatable properties
       {
