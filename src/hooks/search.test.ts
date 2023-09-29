@@ -160,6 +160,7 @@ describe('Published Search Hook', () => {
           query,
           categories,
           isPublishedRoot,
+          page: 1,
         });
       const response = RESPONSE;
       const endpoints = [{ route, response, method: HttpMethod.POST }];
