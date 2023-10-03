@@ -158,9 +158,14 @@ export default (queryConfig: QueryClientConfig) => {
     return useMutation(
       (
         item: Pick<DiscriminatedItem, 'id'> &
-          Partial<Pick<DiscriminatedItem, 'extra' | 'name' | 'settings'>>,
+          Partial<
+            Pick<
+              DiscriminatedItem,
+              'name' | 'description' | 'extra' | 'settings'
+            >
+          >,
       ) => Api.editItem(item.id, item, queryConfig),
-      // newItem contains only changed values
+      // newItem contains all updatable properties
       {
         onMutate: async (newItem: Partial<Item> & Pick<Item, 'id'>) => {
           const trimmed: ItemRecord = convertJs({
