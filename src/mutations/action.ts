@@ -2,11 +2,32 @@ import { UUID } from '@graasp/sdk';
 
 import { useMutation } from 'react-query';
 
-import { exportActions } from '../api';
-import { exportActionsRoutine } from '../routines';
+import { exportActions, postItemAction } from '../api';
+import { exportActionsRoutine, postActionRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
+  const usePostItemAction = () =>
+    useMutation(
+      (args: {
+        itemId: UUID;
+        payload: { type: string; extra?: { [key: string]: unknown } };
+      }) => postItemAction(args.itemId, args.payload, queryConfig),
+      {
+        onSuccess: () => {
+          queryConfig.notifier?.({
+            type: postActionRoutine.SUCCESS,
+          });
+        },
+        onError: (error: Error) => {
+          queryConfig.notifier?.({
+            type: postActionRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
+
   const useExportActions = () =>
     useMutation((itemId: UUID) => exportActions({ itemId }, queryConfig), {
       onSuccess: () => {
@@ -23,6 +44,7 @@ export default (queryConfig: QueryClientConfig) => {
     });
 
   return {
+    usePostItemAction,
     useExportActions,
   };
 };

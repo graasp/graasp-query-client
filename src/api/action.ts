@@ -1,4 +1,4 @@
-import { ActionData, UUID } from '@graasp/sdk';
+import { Action, ActionData, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import { AggregateActionsArgs } from '../utils/action';
@@ -7,6 +7,7 @@ import {
   buildExportActions,
   buildGetActions,
   buildGetAggregateActions,
+  buildPostItemAction,
 } from './routes';
 
 const axios = configureAxios();
@@ -34,3 +35,10 @@ export const exportActions = async (
   { API_HOST }: QueryClientConfig,
 ): Promise<void> =>
   axios.post(`${API_HOST}/${buildExportActions(args.itemId)}`);
+
+export const postItemAction = async (
+  itemId: UUID,
+  payload: { type: string; extra?: { [key: string]: unknown } },
+  { API_HOST }: QueryClientConfig,
+): Promise<Action> =>
+  axios.post(`${API_HOST}/${buildPostItemAction(itemId)}`, payload);

@@ -313,6 +313,8 @@ export const buildGetAggregateActions = (args: AggregateActionsArgs) =>
   )}`;
 export const buildExportActions = (itemId: UUID) =>
   `${ITEMS_ROUTE}/${itemId}/actions/export`;
+export const buildPostItemAction = (itemId: UUID) =>
+  `${ITEMS_ROUTE}/${itemId}/actions`;
 export const buildGetInvitationRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${INVITATIONS_ROUTE}/${id}`;
 export const buildPatchInvitationRoute = (args: { itemId: UUID; id: UUID }) =>
@@ -410,7 +412,9 @@ export const API_ROUTES = {
   buildExportActions,
   buildExportItemChatRoute,
   buildExportItemRoute,
+  buildFavoriteItemRoute,
   buildGetActions,
+  buildGetAllPublishedItemsRoute,
   buildGetApiAccessTokenRoute,
   buildGetCategoriesRoute,
   buildGetCategoryRoute,
@@ -426,7 +430,6 @@ export const API_ROUTES = {
   buildGetItemMembershipsForItemsRoute,
   buildGetItemPublishedInformationRoute,
   buildGetItemRoute,
-  SEARCH_PUBLISHED_ITEMS_ROUTE,
   buildGetItemsInCategoryRoute,
   buildGetItemTagsRoute,
   buildGetLastItemValidationGroupRoute,
@@ -434,15 +437,15 @@ export const API_ROUTES = {
   buildGetMember,
   buildGetMembersBy,
   buildGetMembersRoute,
-  buildGetPlanRoute,
-  buildGetAllPublishedItemsRoute,
   buildGetMostLikedPublishedItemsRoute,
   buildGetMostRecentPublishedItemsRoute,
+  buildGetPlanRoute,
   buildGetPublishedItemsForMemberRoute,
   buildImportH5PRoute,
   buildImportZipRoute,
   buildItemPublishRoute,
   buildItemUnpublishRoute,
+  buildManyGetItemPublishedInformationsRoute,
   buildMoveItemRoute,
   buildMoveItemsRoute,
   buildPatchInvitationRoute,
@@ -450,6 +453,7 @@ export const API_ROUTES = {
   buildPatchMember,
   buildPostEtherpadRoute,
   buildPostInvitationsRoute,
+  buildPostItemAction,
   buildPostItemCategoryRoute,
   buildPostItemChatMessageRoute,
   buildPostItemFlagRoute,
@@ -470,18 +474,17 @@ export const API_ROUTES = {
   buildUploadAvatarRoute,
   buildUploadFilesRoute,
   buildUploadItemThumbnailRoute,
-  buildManyGetItemPublishedInformationsRoute,
   GET_CATEGORY_TYPES_ROUTE,
   GET_CURRENT_MEMBER_ROUTE,
+  GET_FAVORITE_ITEMS_ROUTE,
   GET_FLAGS_ROUTE,
   GET_ITEM_VALIDATION_REVIEWS_ROUTE,
   GET_ITEM_VALIDATION_STATUSES_ROUTE,
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_DATA_ROUTE,
-  GET_FAVORITE_ITEMS_ROUTE,
-  buildFavoriteItemRoute,
   GET_TAGS_ROUTE,
   ITEMS_ROUTE,
+  SEARCH_PUBLISHED_ITEMS_ROUTE,
   SHARED_ITEM_WITH_ROUTE,
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
