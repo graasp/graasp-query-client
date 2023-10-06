@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.10.0](https://github.com/graasp/graasp-query-client/compare/v1.9.0...v1.10.0) (2023-10-06)
+
+
+### Features
+
+* add post item action mutation ([#457](https://github.com/graasp/graasp-query-client/issues/457)) ([c8d6f53](https://github.com/graasp/graasp-query-client/commit/c8d6f53222c9a6a6ff113ef25ad982107f2ecfb4))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @graasp/translations to v1.19.3 ([#463](https://github.com/graasp/graasp-query-client/issues/463)) ([dc0d433](https://github.com/graasp/graasp-query-client/commit/dc0d433bd0aeb4c4ad020369bb0cf97cc2a7d870))
+* **deps:** update dependency http-status-codes to v2.3.0 ([#461](https://github.com/graasp/graasp-query-client/issues/461)) ([3c14997](https://github.com/graasp/graasp-query-client/commit/3c1499716280573e9b98cf562f8f54720bdde359))
+
 ## [1.9.0](https://github.com/graasp/graasp-query-client/compare/v1.8.2...v1.9.0) (2023-10-04)
 
 
