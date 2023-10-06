@@ -313,6 +313,8 @@ export const buildGetAggregateActions = (args: AggregateActionsArgs) =>
   )}`;
 export const buildExportActions = (itemId: UUID) =>
   `${ITEMS_ROUTE}/${itemId}/actions/export`;
+export const buildPostAction = (itemId: UUID) =>
+  `${ITEMS_ROUTE}/${itemId}/actions`;
 export const buildGetInvitationRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${INVITATIONS_ROUTE}/${id}`;
 export const buildPatchInvitationRoute = (args: { itemId: UUID; id: UUID }) =>

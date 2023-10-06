@@ -7,6 +7,7 @@ import {
   buildExportActions,
   buildGetActions,
   buildGetAggregateActions,
+  buildPostAction,
 } from './routes';
 
 const axios = configureAxios();
@@ -34,3 +35,9 @@ export const exportActions = async (
   { API_HOST }: QueryClientConfig,
 ): Promise<void> =>
   axios.post(`${API_HOST}/${buildExportActions(args.itemId)}`);
+
+export const postAction = async (
+  { type, itemId }: { type: string; itemId: UUID },
+  { API_HOST }: QueryClientConfig,
+): Promise<void> =>
+  axios.post(`${API_HOST}/${buildPostAction(itemId)}`, { type });
