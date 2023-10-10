@@ -132,7 +132,7 @@ export default (queryConfig: QueryClientConfig) => {
         },
         ...defaultQueryOptions,
         enabled: Boolean(id) && shouldFetch,
-        cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
+        // cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
       });
     },
 
