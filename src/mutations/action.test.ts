@@ -11,8 +11,8 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { buildExportActions } from '../api/routes';
-import { exportActionsRoutine } from '../routines';
+import { buildExportActions, buildPostItemAction } from '../api/routes';
+import { exportActionsRoutine, postActionRoutine } from '../routines';
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -80,6 +80,63 @@ describe('Action Mutations', () => {
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: exportActionsRoutine.FAILURE,
+        }),
+      );
+    });
+  });
+
+  describe('usePostItemAction', () => {
+    const route = `/${buildPostItemAction(itemId)}`;
+    const mutation = mutations.usePostItemAction;
+    const payload = { type: 'hello', extra: { to: 'me' } };
+
+    it(`Post Item Action`, async () => {
+      const endpoints = [
+        { route, response: OK_RESPONSE, method: HttpMethod.POST },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ itemId, payload });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: postActionRoutine.SUCCESS,
+        }),
+      );
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          method: HttpMethod.POST,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({ itemId, payload });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: postActionRoutine.FAILURE,
         }),
       );
     });

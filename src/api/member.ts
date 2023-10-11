@@ -11,6 +11,7 @@ import {
   buildDeleteMemberRoute,
   buildDownloadAvatarRoute,
   buildGetMember,
+  buildGetMemberStorage,
   buildGetMembersBy,
   buildGetMembersRoute,
   buildPatchMember,
@@ -56,6 +57,13 @@ export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) =>
         }
         throw error;
       }),
+  );
+
+export const getMemberStorage = async ({ API_HOST }: QueryClientConfig) =>
+  verifyAuthentication(() =>
+    axios
+      .get(`${API_HOST}/${buildGetMemberStorage()}`)
+      .then(({ data }) => data),
   );
 
 export const editMember = async (

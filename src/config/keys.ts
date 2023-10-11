@@ -238,11 +238,14 @@ export const buildSearchPublishedItemsKey = (args: {
   categories?: Category['id'][][];
   isPublishedRoot?: boolean;
   limit?: number;
+  offset?: number;
   sort?: string[];
   highlightPreTag?: string;
   highlightPostTag?: string;
-  page: number;
-}) => [ITEMS_KEY, 'search', { isPublishedRoot: false, ...args }, args.page];
+  page?: number;
+}) => [ITEMS_KEY, 'search', { isPublishedRoot: false, ...args }];
+
+export const CURRENT_MEMBER_STORAGE_KEY = [MEMBERS_KEY, 'current', 'storage'];
 
 export const DATA_KEYS = {
   APPS_KEY,
@@ -279,6 +282,7 @@ export const DATA_KEYS = {
   RECYCLED_ITEMS_DATA_KEY,
   FAVORITE_ITEMS_KEY,
   buildItemThumbnailKey,
+  CURRENT_MEMBER_STORAGE_KEY,
   buildAvatarKey,
   buildGetLikesForMemberKey,
   buildGetLikesForItem,

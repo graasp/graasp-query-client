@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.10.0](https://github.com/graasp/graasp-query-client/compare/v1.9.0...v1.10.0) (2023-10-06)
+
+
+### Features
+
+* add post item action mutation ([#457](https://github.com/graasp/graasp-query-client/issues/457)) ([c8d6f53](https://github.com/graasp/graasp-query-client/commit/c8d6f53222c9a6a6ff113ef25ad982107f2ecfb4))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @graasp/translations to v1.19.3 ([#463](https://github.com/graasp/graasp-query-client/issues/463)) ([dc0d433](https://github.com/graasp/graasp-query-client/commit/dc0d433bd0aeb4c4ad020369bb0cf97cc2a7d870))
+* **deps:** update dependency http-status-codes to v2.3.0 ([#461](https://github.com/graasp/graasp-query-client/issues/461)) ([3c14997](https://github.com/graasp/graasp-query-client/commit/3c1499716280573e9b98cf562f8f54720bdde359))
+
+## [1.9.0](https://github.com/graasp/graasp-query-client/compare/v1.8.2...v1.9.0) (2023-10-04)
+
+
+### Features
+
+* add get member storage hook ([#415](https://github.com/graasp/graasp-query-client/issues/415)) ([ae1dd88](https://github.com/graasp/graasp-query-client/commit/ae1dd8881a3610e8018d8b9dcb18913b1fc0ec80))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @graasp/translations to v1.19.2 ([#445](https://github.com/graasp/graasp-query-client/issues/445)) ([bb4f6af](https://github.com/graasp/graasp-query-client/commit/bb4f6af6c4f0b7006a750cdf05f756c31b445a23))
+* **type:** allow description in editItem input type ([#455](https://github.com/graasp/graasp-query-client/issues/455)) ([383a5e6](https://github.com/graasp/graasp-query-client/commit/383a5e6cc7dd7ce62ad0e980a56efd0ea02c47e8))
+* use limit and offset ([#450](https://github.com/graasp/graasp-query-client/issues/450)) ([7cd8608](https://github.com/graasp/graasp-query-client/commit/7cd8608c354ec6953f347ea9c18a9c64f3a093de))
+
 ## [1.8.2](https://github.com/graasp/graasp-query-client/compare/v1.8.1...v1.8.2) (2023-09-25)
 
 
