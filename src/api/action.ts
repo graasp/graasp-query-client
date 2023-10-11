@@ -1,4 +1,4 @@
-import { Action, ActionData, UUID } from '@graasp/sdk';
+import { Action, ActionData, AggregateBy, UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types';
 import { AggregateActionsArgs } from '../utils/action';
@@ -17,14 +17,12 @@ export const getActions = async (
     .get<ActionData>(`${API_HOST}/${buildGetActions(args.itemId, args)}`)
     .then(({ data }) => data);
 
-export const getAggregateActions = async (
-  args: AggregateActionsArgs,
+export const getAggregateActions = async <K extends AggregateBy[]>(
+  args: AggregateActionsArgs<K>,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<{ aggregateResult: number; createdDay: Date }[]>(
-      `${API_HOST}/${buildGetAggregateActions(args)}`,
-    )
+    .get(`${API_HOST}/${buildGetAggregateActions(args)}`)
     .then(({ data }) => data);
 
 export const exportActions = async (

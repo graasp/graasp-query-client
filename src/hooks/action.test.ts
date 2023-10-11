@@ -113,7 +113,6 @@ describe('Action Hooks', () => {
 
   describe('useAggregateActions', () => {
     const args = {
-      itemId,
       view: Context.Builder,
       requestedSampleSize: 5,
       type: ['update'],
@@ -122,12 +121,12 @@ describe('Action Hooks', () => {
       aggregateMetric: AggregateMetric.ActionCount,
       aggregateBy: [AggregateBy.CreatedDay],
     };
-    const route = `/${buildGetAggregateActions(args)}`;
-    const key = buildAggregateActionsKey(args);
+    const route = `/${buildGetAggregateActions({ itemId, ...args })}`;
+    const key = buildAggregateActionsKey(itemId, args);
     const response = AGGREGATE_ACTIONS_DATA;
 
     it(`Receive aggregate actions for item id`, async () => {
-      const hook = () => hooks.useAggregateActions(args);
+      const hook = () => hooks.useAggregateActions(itemId, args);
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
       expect(data?.toJS()).toEqual(response);
@@ -138,7 +137,7 @@ describe('Action Hooks', () => {
       ).toEqual(response);
     });
     it(`Receive aggregate actions for item id`, async () => {
-      const hook = () => hooks.useAggregateActions(args);
+      const hook = () => hooks.useAggregateActions(itemId, args);
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
       expect(data?.toJS()).toEqual(response);
@@ -150,7 +149,7 @@ describe('Action Hooks', () => {
     });
 
     it(`Unauthorized`, async () => {
-      const hook = () => hooks.useAggregateActions(args);
+      const hook = () => hooks.useAggregateActions(itemId, args);
       const endpoints = [
         {
           route,

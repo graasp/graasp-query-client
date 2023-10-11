@@ -7,7 +7,7 @@ import {
   Item,
 } from '@graasp/sdk';
 
-export type AggregateActionsArgs = {
+export type AggregateActionsArgs<K extends AggregateBy[]> = {
   itemId: Item['id'];
   view: Context;
   requestedSampleSize: number;
@@ -15,5 +15,17 @@ export type AggregateActionsArgs = {
   countGroupBy: CountGroupBy[];
   aggregateFunction: AggregateFunction;
   aggregateMetric: AggregateMetric;
-  aggregateBy: AggregateBy[];
+  aggregateBy: K;
+};
+
+export type MappedAggregateBy = {
+  [AggregateBy.CreatedDay]: Date;
+  // todo: this should maybe be returned by the backend as a number directly ?
+  [AggregateBy.CreatedDayOfWeek]: string;
+  // todo: same as above, this should be returned as a number by the backend
+  [AggregateBy.CreatedTimeOfDay]: string;
+  [AggregateBy.ItemId]: string;
+  [AggregateBy.ActionType]: string;
+  [AggregateBy.ActionCount]: number;
+  [AggregateBy.ActionLocation]: string;
 };
