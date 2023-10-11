@@ -3,7 +3,7 @@ export const KINDS = {
   FEEDBACK: 'feedback',
   ITEM: 'item',
   OWN: 'own',
-  RECYCLEBIN: 'recyclebin',
+  RECYCLE_BIN: 'recycle_bin',
   SELF: 'self',
   SHARED: 'shared',
 };

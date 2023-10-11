@@ -370,25 +370,23 @@ export const configureWsItemHooks = (
       const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
 
       const handler = (event: ItemEvent) => {
-        if (event.kind === KINDS.RECYCLEBIN) {
+        if (event.kind === KINDS.RECYCLE_BIN) {
           const current =
             queryClient.getQueryData<List<ItemRecord>>(RECYCLED_ITEMS_KEY);
 
           if (current) {
             const item: ItemRecord = convertJs(parseStringToDate(event.item));
-            let mutation;
 
             switch (event.op) {
               case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
-                  mutation = current.push(item);
+                  const mutation = current.push(item);
                   queryClient.setQueryData(RECYCLED_ITEMS_KEY, mutation);
-                  queryClient.setQueryData(buildItemKey(item.id), item);
                 }
                 break;
               }
               case OPS.DELETE: {
-                mutation = current.filter((i) => i.id !== item.id);
+                const mutation = current.filter((i) => i.id !== item.id);
                 queryClient.setQueryData(RECYCLED_ITEMS_KEY, mutation);
                 break;
               }
@@ -438,15 +436,15 @@ export const configureWsItemHooks = (
                 break;
               case 'delete':
                 routine = deleteItemRoutine;
-                message = SUCCESS_MESSAGES.DELETE_ITEM;
+                message = SUCCESS_MESSAGES.DELETE_ITEMS;
                 break;
               case 'move':
                 routine = moveItemRoutine;
-                message = SUCCESS_MESSAGES.MOVE_ITEM;
+                message = SUCCESS_MESSAGES.MOVE_ITEMS;
                 break;
               case 'copy':
                 routine = copyItemRoutine;
-                message = SUCCESS_MESSAGES.COPY_ITEM;
+                message = SUCCESS_MESSAGES.COPY_ITEMS;
                 break;
               case 'export':
                 routine = exportItemRoutine;
@@ -454,7 +452,7 @@ export const configureWsItemHooks = (
                 break;
               case 'recycle':
                 routine = recycleItemsRoutine;
-                message = SUCCESS_MESSAGES.RECYCLE_ITEM;
+                message = SUCCESS_MESSAGES.RECYCLE_ITEMS;
                 break;
               case 'restore':
                 routine = restoreItemsRoutine;
