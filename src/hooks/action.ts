@@ -57,7 +57,7 @@ export default (queryConfig: QueryClientConfig) => {
     return useQuery({
       queryKey: buildAggregateActionsKey(args),
       queryFn: (): Promise<
-        ImmutableCast<{ aggregateResult: number; createdDay: string }[]>
+        ImmutableCast<{ aggregateResult: number; createdDay: Date }[]>
       > => {
         const { itemId } = args;
         if (!itemId) {
