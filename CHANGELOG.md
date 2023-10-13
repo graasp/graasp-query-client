@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/graasp/graasp-query-client/compare/v1.10.0...v1.11.0) (2023-10-13)
+
+
+### Features
+
+* extract websocket client to sdk, improve websockets feedback ([#447](https://github.com/graasp/graasp-query-client/issues/447)) ([b202ab5](https://github.com/graasp/graasp-query-client/commit/b202ab5e60fec6040bfbc1d60674395daa42fa84))
+
 ## [1.10.0](https://github.com/graasp/graasp-query-client/compare/v1.9.0...v1.10.0) (2023-10-06)
 
 
