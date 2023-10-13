@@ -4,11 +4,14 @@
  */
 import {
   DiscriminatedItem,
+  Item,
+  ResultOf,
   UUID,
   convertJs,
   parseStringToDate,
 } from '@graasp/sdk';
-import { ItemRecord } from '@graasp/sdk/frontend';
+import { Channel, ItemRecord, WebsocketClient } from '@graasp/sdk/frontend';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { List } from 'immutable';
 import { useEffect } from 'react';
@@ -16,12 +19,24 @@ import { useQueryClient } from 'react-query';
 
 import {
   OWN_ITEMS_KEY,
+  RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
   buildItemChildrenKey,
   buildItemKey,
 } from '../../config/keys';
+import {
+  copyItemRoutine,
+  deleteItemRoutine,
+  editItemRoutine,
+  exportItemRoutine,
+  moveItemRoutine,
+  postItemValidationRoutine,
+  recycleItemsRoutine,
+  restoreItemsRoutine,
+} from '../../routines';
+import createRoutine from '../../routines/utils';
+import { Notifier } from '../../types';
 import { KINDS, OPS, TOPICS } from '../constants';
-import { Channel, WebsocketClient } from '../ws-client';
 
 interface ItemEvent {
   kind: string;
@@ -29,8 +44,30 @@ interface ItemEvent {
   item: DiscriminatedItem;
 }
 
+interface ItemOpFeedbackEvent {
+  kind: 'feedback';
+  op:
+    | 'update'
+    | 'delete'
+    | 'move'
+    | 'copy'
+    | 'export'
+    | 'recycle'
+    | 'restore'
+    | 'validate';
+  resource: Item['id'][];
+  result:
+    | {
+        error: Error;
+      }
+    | ResultOf<Item>;
+}
+
 // eslint-disable-next-line import/prefer-default-export
-export const configureWsItemHooks = (websocketClient: WebsocketClient) => ({
+export const configureWsItemHooks = (
+  websocketClient: WebsocketClient,
+  notifier?: Notifier,
+) => ({
   /**
    * React hook to subscribe to the updates of the given item ID
    * @param itemId The ID of the item of which to observe updates
@@ -308,6 +345,142 @@ export const configureWsItemHooks = (websocketClient: WebsocketClient) => ({
               }
               default:
                 break;
+            }
+          }
+        }
+      };
+
+      websocketClient.subscribe(channel, handler);
+
+      return function cleanup() {
+        websocketClient.unsubscribe(channel, handler);
+      };
+    }, [userId]);
+  },
+
+  useRecycledItemsUpdates: (userId?: UUID | null) => {
+    const queryClient = useQueryClient();
+    useEffect(() => {
+      if (!userId) {
+        return () => {
+          // do nothing
+        };
+      }
+
+      const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
+
+      const handler = (event: ItemEvent) => {
+        if (event.kind === KINDS.RECYCLE_BIN) {
+          const current =
+            queryClient.getQueryData<List<ItemRecord>>(RECYCLED_ITEMS_KEY);
+
+          if (current) {
+            const item: ItemRecord = convertJs(parseStringToDate(event.item));
+
+            switch (event.op) {
+              case OPS.CREATE: {
+                if (!current.find((i) => i.id === item.id)) {
+                  const mutation = current.push(item);
+                  queryClient.setQueryData(RECYCLED_ITEMS_KEY, mutation);
+                }
+                break;
+              }
+              case OPS.DELETE: {
+                const mutation = current.filter((i) => i.id !== item.id);
+                queryClient.setQueryData(RECYCLED_ITEMS_KEY, mutation);
+                break;
+              }
+              default:
+                console.error('unhandled event for useRecyledItemsUpdates');
+                break;
+            }
+          }
+        }
+      };
+
+      websocketClient.subscribe(channel, handler);
+
+      return function cleanup() {
+        websocketClient.unsubscribe(channel, handler);
+      };
+    }, [userId]);
+  },
+
+  /**
+   * React hook to subscribe to the feedback of async operations performed by the given user ID
+   * @param userId The ID of the user on which to observe item feedback updates
+   */
+  useItemFeedbackUpdates: (userId?: UUID | null) => {
+    const queryClient = useQueryClient();
+    useEffect(() => {
+      if (!userId) {
+        return () => {
+          // do nothing
+        };
+      }
+
+      const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
+
+      const handler = (event: ItemOpFeedbackEvent) => {
+        if (event.kind === KINDS.FEEDBACK) {
+          const current =
+            queryClient.getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY);
+
+          if (current) {
+            let routine: ReturnType<typeof createRoutine> | undefined;
+            let message: string | undefined;
+            switch (event.op) {
+              case 'update':
+                routine = editItemRoutine;
+                message = SUCCESS_MESSAGES.EDIT_ITEM;
+                break;
+              case 'delete':
+                routine = deleteItemRoutine;
+                message = SUCCESS_MESSAGES.DELETE_ITEMS;
+                break;
+              case 'move':
+                routine = moveItemRoutine;
+                message = SUCCESS_MESSAGES.MOVE_ITEMS;
+                break;
+              case 'copy':
+                routine = copyItemRoutine;
+                message = SUCCESS_MESSAGES.COPY_ITEMS;
+                break;
+              case 'export':
+                routine = exportItemRoutine;
+                message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
+                break;
+              case 'recycle':
+                routine = recycleItemsRoutine;
+                message = SUCCESS_MESSAGES.RECYCLE_ITEMS;
+                break;
+              case 'restore':
+                routine = restoreItemsRoutine;
+                message = SUCCESS_MESSAGES.RESTORE_ITEMS;
+                break;
+              case 'validate':
+                routine = postItemValidationRoutine;
+                message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
+                break;
+              default: {
+                console.error('unhandled event for useItemFeedbackUpdates');
+                break;
+              }
+            }
+            if (routine && message) {
+              if ('error' in event.result) {
+                notifier?.({
+                  type: routine.FAILURE,
+                  payload: {
+                    error: event.result.error,
+                  },
+                });
+              } else {
+                notifier?.({
+                  type: routine.SUCCESS,
+                  payload: { message },
+                });
+              }
             }
           }
         }

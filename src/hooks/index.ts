@@ -1,5 +1,6 @@
+import { WebsocketClient } from '@graasp/sdk/frontend';
+
 import { QueryClientConfig } from '../types';
-import { WebsocketClient } from '../ws/ws-client';
 import configureActionHooks from './action';
 import configureAppsHooks from './apps';
 import configureCategoryHooks from './category';
