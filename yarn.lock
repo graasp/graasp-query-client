@@ -2699,7 +2699,7 @@ __metadata:
     "@babel/preset-typescript": 7.22.15
     "@commitlint/cli": 17.7.2
     "@commitlint/config-conventional": 17.7.0
-    "@graasp/sdk": 1.7.0
+    "@graasp/sdk": "https://github.com/graasp/graasp-sdk.git#292-fix-itempublish-type"
     "@graasp/translations": 1.19.3
     "@testing-library/dom": 9.3.3
     "@testing-library/jest-dom": 6.0.1
@@ -2755,9 +2755,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@npm:1.7.0":
+"@graasp/sdk@https://github.com/graasp/graasp-sdk.git#292-fix-itempublish-type":
   version: 1.7.0
-  resolution: "@graasp/sdk@npm:1.7.0"
+  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=5264a090b01696645208633865675dda005d2d51"
   dependencies:
     "@aws-sdk/client-s3": 3.417.0
     "@fastify/secure-session": 6.1.0
@@ -2769,9 +2769,9 @@ __metadata:
     js-cookie: 3.0.5
     qs: 6.11.2
     typeorm: 0.3.17
-    uuid: 9.0.0
+    uuid: 9.0.1
     validator: 13.11.0
-  checksum: bcb31ac2b1965739aa63395b9946a6bee53ef575f2f8d9e3e50316c51310dbf2f58bad60ae71d4bec6b477eaa698eb1d6971f100ad95afc36e5d5b1b520d8f69
+  checksum: da678fa47f4a7489b899f08bb46f96cf8251c86ef7afca2e7dd49aa5c955016b500a6719c99f34790721aa9ee9076365fce04efd904afd0f4bc48bc76c495c33
   languageName: node
   linkType: hard
 
@@ -12279,15 +12279,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:9.0.0, uuid@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "uuid@npm:9.0.0"
-  bin:
-    uuid: dist/bin/uuid
-  checksum: 8dd2c83c43ddc7e1c71e36b60aea40030a6505139af6bee0f382ebcd1a56f6cd3028f7f06ffb07f8cf6ced320b76aea275284b224b002b289f89fe89c389b028
-  languageName: node
-  linkType: hard
-
 "uuid@npm:9.0.1":
   version: 9.0.1
   resolution: "uuid@npm:9.0.1"
@@ -12303,6 +12294,15 @@ __metadata:
   bin:
     uuid: dist/bin/uuid
   checksum: 5575a8a75c13120e2f10e6ddc801b2c7ed7d8f3c8ac22c7ed0c7b2ba6383ec0abda88c905085d630e251719e0777045ae3236f04c812184b7c765f63a70e58df
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "uuid@npm:9.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 8dd2c83c43ddc7e1c71e36b60aea40030a6505139af6bee0f382ebcd1a56f6cd3028f7f06ffb07f8cf6ced320b76aea275284b224b002b289f89fe89c389b028
   languageName: node
   linkType: hard
 
