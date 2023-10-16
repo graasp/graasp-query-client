@@ -1,12 +1,16 @@
 import { ChatMessage, UUID, convertJs } from '@graasp/sdk';
-import { ChatMessageRecord, ItemChatRecord } from '@graasp/sdk/frontend';
+import {
+  Channel,
+  ChatMessageRecord,
+  ItemChatRecord,
+  WebsocketClient,
+} from '@graasp/sdk/frontend';
 
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 
 import { buildItemChatKey } from '../../config/keys';
 import { KINDS, OPS, TOPICS } from '../constants';
-import { Channel, WebsocketClient } from '../ws-client';
 
 // todo: use graasp-types?
 interface ChatEvent {

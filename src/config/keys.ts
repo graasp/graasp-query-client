@@ -104,6 +104,7 @@ export const buildItemsByCategoriesKey = (ids: UUID[]) => [
   hashItemsIds(ids),
 ];
 
+export const RECYCLED_ITEMS_KEY = 'recycledItems';
 export const RECYCLED_ITEMS_DATA_KEY = 'recycledItemsData';
 
 export const FAVORITE_ITEMS_KEY = 'favoriteItems';

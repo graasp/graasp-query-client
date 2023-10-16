@@ -1,3 +1,5 @@
+import { Channel } from '@graasp/sdk/frontend';
+
 import { renderHook } from '@testing-library/react';
 import React from 'react';
 import { QueryClient } from 'react-query';
@@ -5,7 +7,6 @@ import { QueryClient } from 'react-query';
 import configureQueryClient from '../src/queryClient';
 import { Notifier, QueryClientConfig } from '../src/types';
 import { isDataEqual } from '../src/utils/util';
-import { Channel } from '../src/ws/ws-client';
 import { API_HOST, DOMAIN, WS_HOST } from './constants';
 
 export type Handler = { channel: Channel; handler: (event: unknown) => void };

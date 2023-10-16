@@ -4,7 +4,11 @@ import {
   UUID,
   convertJs,
 } from '@graasp/sdk';
-import { ItemMembershipRecord, ResultOfRecord } from '@graasp/sdk/frontend';
+import {
+  ItemMembershipRecord,
+  ResultOfRecord,
+  WebsocketClient,
+} from '@graasp/sdk/frontend';
 
 import { List } from 'immutable';
 import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
@@ -18,7 +22,6 @@ import {
 } from '../config/keys';
 import { QueryClientConfig } from '../types';
 import { configureWsMembershipHooks } from '../ws';
-import { WebsocketClient } from '../ws/ws-client';
 
 export default (
   queryConfig: QueryClientConfig,

@@ -11,6 +11,7 @@ import {
   MemberRecord,
   RecycledItemDataRecord,
   ResultOfRecord,
+  WebsocketClient,
 } from '@graasp/sdk/frontend';
 
 import { List } from 'immutable';
@@ -33,6 +34,7 @@ import { UndefinedArgument } from '../config/errors';
 import {
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_DATA_KEY,
+  RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
   buildEtherpadKey,
   buildFileContentKey,
@@ -48,7 +50,6 @@ import { getOwnItemsRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 import { isPaginatedChildrenDataEqual, paginate } from '../utils/util';
 import { configureWsItemHooks } from '../ws';
-import { WebsocketClient } from '../ws/ws-client';
 
 export default (
   queryConfig: QueryClientConfig,
@@ -59,7 +60,7 @@ export default (
 
   const itemWsHooks =
     enableWebsocket && websocketClient // required to type-check non-null
-      ? configureWsItemHooks(websocketClient)
+      ? configureWsItemHooks(websocketClient, notifier)
       : undefined;
 
   return {
@@ -355,6 +356,25 @@ export default (
         cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
       }),
 
+    useRecycledItems: (options?: { getUpdates?: boolean }) => {
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
+      const { data: currentMember } = useCurrentMember();
+      itemWsHooks?.useRecycledItemsUpdates(
+        getUpdates ? currentMember?.id : null,
+      );
+
+      return useQuery({
+        queryKey: RECYCLED_ITEMS_KEY,
+        queryFn: (): Promise<List<ItemRecord>> =>
+          Api.getRecycledItemsData(queryConfig).then(
+            (data) =>
+              convertJs(data)?.map(({ item }: RecycledItemDataRecord) => item),
+          ),
+        ...defaultQueryOptions,
+      });
+    },
+
     useRecycledItemsData: () => {
       const queryClient = useQueryClient();
       return useQuery({
@@ -454,5 +474,7 @@ export default (
         enabled: Boolean(item?.id),
         ...defaultQueryOptions,
       }),
+
+    useItemFeedbackUpdates: itemWsHooks?.useItemFeedbackUpdates,
   };
 };

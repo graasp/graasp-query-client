@@ -1,5 +1,9 @@
 import { convertJs } from '@graasp/sdk';
-import { ChatMentionRecord, MemberRecord } from '@graasp/sdk/frontend';
+import {
+  ChatMentionRecord,
+  MemberRecord,
+  WebsocketClient,
+} from '@graasp/sdk/frontend';
 
 import { List } from 'immutable';
 import { UseQueryResult, useQuery } from 'react-query';
@@ -8,7 +12,6 @@ import * as Api from '../api/index';
 import { buildMentionKey } from '../config/keys';
 import { QueryClientConfig } from '../types';
 import { configureWsChatMentionsHooks } from '../ws/index';
-import { WebsocketClient } from '../ws/ws-client';
 
 export default (
   queryConfig: QueryClientConfig,
