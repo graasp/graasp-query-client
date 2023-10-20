@@ -64,7 +64,7 @@
     "jest-environment-jsdom": "29.7.0",
     "js-cookie": "3.0.5",
     "mock-socket": "9.3.1",
-    "nock": "13.3.4",
+    "nock": "13.3.6",
     "prettier": "3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
