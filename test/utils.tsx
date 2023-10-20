@@ -77,11 +77,15 @@ interface MockMutationArguments<TProps, TData, TError, TVariables, TContext>
   mutation: () => UseMutationResult<TData, TError, TVariables, TContext>;
 }
 
-type NockMethodType = {
-  [MethodName in keyof Scope]: Scope[MethodName] extends InterceptFunction
-    ? MethodName
-    : never;
-}[keyof Scope];
+type NockMethodType = Exclude<
+  {
+    [MethodName in keyof Scope]: Scope[MethodName] extends InterceptFunction
+      ? MethodName
+      : never;
+  }[keyof Scope],
+  // remove undefined
+  undefined
+>;
 
 export const mockEndpoints = (endpoints: Endpoint[]) => {
   // mock endpoint with given response
