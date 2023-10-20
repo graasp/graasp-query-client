@@ -12,9 +12,9 @@ export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
 
   const useFavoriteItems = () =>
-    useQuery<List<ItemFavoriteRecord>, Error>({
+    useQuery({
       queryKey: FAVORITE_ITEMS_KEY,
-      queryFn: () =>
+      queryFn: (): Promise<List<ItemFavoriteRecord>> =>
         Api.getFavoriteItems(queryConfig).then((data) => convertJs(data)),
       ...defaultQueryOptions,
     });
