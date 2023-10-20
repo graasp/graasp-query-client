@@ -2408,7 +2408,7 @@ __metadata:
     "@babel/preset-typescript": 7.23.2
     "@commitlint/cli": 17.8.0
     "@commitlint/config-conventional": 17.8.0
-    "@graasp/sdk": 1.9.1
+    "@graasp/sdk": "github:graasp/graasp-sdk#remove-unknown-extra"
     "@graasp/translations": 1.19.3
     "@testing-library/dom": 9.3.3
     "@testing-library/jest-dom": 6.1.4
@@ -2464,9 +2464,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@npm:1.9.1":
+"@graasp/sdk@github:graasp/graasp-sdk#remove-unknown-extra":
   version: 1.9.1
-  resolution: "@graasp/sdk@npm:1.9.1"
+  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=8e9e2c879c907a8c0c8559e3a2e4cb6ff2fb6265"
   dependencies:
     "@aws-sdk/client-s3": 3.427.0
     "@fastify/secure-session": 6.1.0
@@ -2480,7 +2480,7 @@ __metadata:
     typeorm: 0.3.17
     uuid: 9.0.1
     validator: 13.11.0
-  checksum: 4143baa1ba7f2d95cb05e99757ebb8e0f9a466fe7b3c138f7db93080574824fd7315c5f89cec481273ff948ecec71ff323af53a64b2acc7a7f20b06cd8ae7457
+  checksum: 427144a36523e476f46763b6a1acae9e8370522a6664803b74cfdcce19eee989c8030274fd3ec9ead9245ae1fc117a27088de86ef74ee0c757db2dfabedabe38
   languageName: node
   linkType: hard
 
