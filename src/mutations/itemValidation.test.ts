@@ -38,7 +38,7 @@ describe('Item Validation Mutations', () => {
 
       const endpoints = [
         {
-          response: ITEM_VALIDATION_GROUP.toJS(),
+          response: ITEM_VALIDATION_GROUP,
           method: HttpMethod.POST,
           route,
         },

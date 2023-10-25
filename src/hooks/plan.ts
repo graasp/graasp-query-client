@@ -1,5 +1,3 @@
-import { convertJs } from '@graasp/sdk';
-
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
@@ -18,38 +16,35 @@ export default (queryConfig: QueryClientConfig) => {
   const usePlan = ({ planId }: { planId: string }) =>
     useQuery({
       queryKey: buildPlanKey(planId),
-      queryFn: () =>
-        Api.getPlan({ planId }, queryConfig).then((data) => convertJs(data)),
+      queryFn: () => Api.getPlan({ planId }, queryConfig).then((data) => data),
       ...defaultOptions,
     });
 
   const usePlans = () =>
     useQuery({
       queryKey: PLANS_KEY,
-      queryFn: () => Api.getPlans(queryConfig).then((data) => convertJs(data)),
+      queryFn: () => Api.getPlans(queryConfig).then((data) => data),
       ...defaultOptions,
     });
 
   const useOwnPlan = () =>
     useQuery({
       queryKey: OWN_PLAN_KEY,
-      queryFn: () =>
-        Api.getOwnPlan(queryConfig).then((data) => convertJs(data)),
+      queryFn: () => Api.getOwnPlan(queryConfig).then((data) => data),
       ...defaultOptions,
     });
 
   const useCards = () =>
     useQuery({
       queryKey: CARDS_KEY,
-      queryFn: () => Api.getCards(queryConfig).then((data) => convertJs(data)),
+      queryFn: () => Api.getCards(queryConfig).then((data) => data),
       ...defaultOptions,
     });
 
   const useCurrentCustomer = () =>
     useQuery({
       queryKey: CURRENT_CUSTOMER_KEY,
-      queryFn: () =>
-        Api.getCurrentCustomer(queryConfig).then((data) => convertJs(data)),
+      queryFn: () => Api.getCurrentCustomer(queryConfig).then((data) => data),
       ...defaultOptions,
     });
 

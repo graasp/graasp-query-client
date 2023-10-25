@@ -1,7 +1,7 @@
 import { Action, ActionData, AggregateBy, UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types';
-import { AggregateActionsArgs } from '../utils/action';
+import { AggregateActionsArgs, MappedAggregateBy } from '../utils/action';
 import {
   buildExportActions,
   buildGetActions,
@@ -22,7 +22,12 @@ export const getAggregateActions = async <K extends AggregateBy[]>(
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get(`${API_HOST}/${buildGetAggregateActions(args)}`)
+    .get<
+      ({ aggregateResult: number } & {
+        // this adds a key for each element in the aggregation array and sets it to the relevant type
+        [Key in K[number]]: MappedAggregateBy[Key];
+      })[]
+    >(`${API_HOST}/${buildGetAggregateActions(args)}`)
     .then(({ data }) => data);
 
 export const exportActions = async (

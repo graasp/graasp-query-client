@@ -1,11 +1,6 @@
-import { ItemMembership, UUID, convertJs, getIdsFromPath } from '@graasp/sdk';
-import {
-  Channel,
-  ItemMembershipRecord,
-  WebsocketClient,
-} from '@graasp/sdk/frontend';
+import { ItemMembership, UUID, getIdsFromPath } from '@graasp/sdk';
+import { Channel, WebsocketClient } from '@graasp/sdk/frontend';
 
-import { List } from 'immutable';
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 
@@ -44,12 +39,8 @@ export const configureWsMembershipHooks = (
         const handler = (event: MembershipEvent): void => {
           if (event.kind === KINDS.ITEM) {
             const current =
-              queryClient.getQueryData<List<ItemMembershipRecord>>(
-                itemMembershipsKey,
-              );
-            const membership: ItemMembershipRecord = convertJs(
-              event.membership,
-            );
+              queryClient.getQueryData<ItemMembership[]>(itemMembershipsKey);
+            const { membership } = event;
             // we handle only direct memberships
             // since we have only the item id information
             if (membership.item) {

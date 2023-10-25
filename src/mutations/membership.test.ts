@@ -2,11 +2,9 @@
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { HttpMethod, ItemMembership, PermissionLevel } from '@graasp/sdk';
-import { ItemMembershipRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { StatusCodes } from 'http-status-codes';
-import Immutable, { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
@@ -61,11 +59,11 @@ describe('Membership Mutations', () => {
     jest.clearAllMocks();
   });
 
-  const item = ITEMS.first()!;
+  const item = ITEMS[0];
   const itemId = item.id;
   const memberships = ITEM_MEMBERSHIPS_RESPONSE;
   const membershipsKey = buildItemMembershipsKey(itemId);
-  const membershipId = memberships.first()!.id;
+  const membershipId = memberships[0].id;
   const permission = PermissionLevel.Read;
 
   describe('usePostItemMembership', () => {
@@ -266,11 +264,8 @@ describe('Membership Mutations', () => {
         queryClient.getQueryState(membershipsKey)?.isInvalidated,
       ).toBeTruthy();
       expect(
-        Immutable.is(
-          queryClient.getQueryData<List<ItemMembershipRecord>>(membershipsKey),
-          memberships.filter(({ id }) => id !== membershipId),
-        ),
-      ).toBeTruthy();
+        queryClient.getQueryData<ItemMembership[]>(membershipsKey),
+      ).toEqual(memberships.filter(({ id }) => id !== membershipId));
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: deleteItemMembershipRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_MEMBERSHIP },
@@ -304,11 +299,8 @@ describe('Membership Mutations', () => {
         queryClient.getQueryState(membershipsKey)?.isInvalidated,
       ).toBeTruthy();
       expect(
-        Immutable.is(
-          queryClient.getQueryData<List<ItemMembershipRecord>>(membershipsKey),
-          memberships,
-        ),
-      ).toBeTruthy();
+        queryClient.getQueryData<ItemMembership[]>(membershipsKey),
+      ).toEqual(memberships);
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: deleteItemMembershipRoutine.FAILURE,
@@ -341,7 +333,7 @@ describe('Membership Mutations', () => {
 
       const endpoints = [
         {
-          response: buildResultOfData(MEMBERS_RESPONSE.toJS()),
+          response: buildResultOfData(MEMBERS_RESPONSE),
           method: HttpMethod.GET,
           route: `/${buildGetMembersBy(emails)}`,
         },
@@ -406,7 +398,7 @@ describe('Membership Mutations', () => {
         },
         {
           response: buildResultOfData(
-            [ITEM_MEMBERSHIPS_RESPONSE.toJS()[0] as ItemMembership],
+            [ITEM_MEMBERSHIPS_RESPONSE[0] as ItemMembership],
             (d: ItemMembership) => d.item.id,
             [UNAUTHORIZED_RESPONSE],
           ),
@@ -414,11 +406,9 @@ describe('Membership Mutations', () => {
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
         {
-          response: buildResultOfData(
-            [initialInvitations.toJS()[0]],
-            (d) => d.email,
-            [UNAUTHORIZED_RESPONSE],
-          ),
+          response: buildResultOfData([initialInvitations[0]], (d) => d.email, [
+            UNAUTHORIZED_RESPONSE,
+          ]),
           method: HttpMethod.POST,
           route: `/${buildPostInvitationsRoute(itemId)}`,
         },
@@ -445,9 +435,9 @@ describe('Membership Mutations', () => {
       // check notification trigger
       const param = mockedNotifier.mock.calls[0][0];
       expect(param.type).toEqual(shareItemRoutine.SUCCESS);
-      expect(param.payload.toJS()).toMatchObject(
+      expect(param.payload).toMatchObject(
         buildResultOfData(
-          [ITEM_MEMBERSHIPS_RESPONSE.toJS()[0], initialInvitations.toJS()[0]],
+          [ITEM_MEMBERSHIPS_RESPONSE[0], initialInvitations[0]],
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (d) => (d as any)?.member?.email || (d as any)?.email,
           [UNAUTHORIZED_RESPONSE, UNAUTHORIZED_RESPONSE],
@@ -534,7 +524,7 @@ describe('Membership Mutations', () => {
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
         {
-          response: buildResultOfData(initialInvitations.toJS()),
+          response: buildResultOfData(initialInvitations),
           method: HttpMethod.POST,
           route: `/${buildPostInvitationsRoute(itemId)}`,
         },
@@ -561,7 +551,7 @@ describe('Membership Mutations', () => {
       // check notification trigger
       const param = mockedNotifier.mock.calls[0][0];
       expect(param.type).toEqual(shareItemRoutine.SUCCESS);
-      expect(param.payload.errors.toJS()).toHaveLength(1);
+      expect(param.payload.errors).toHaveLength(1);
     });
 
     it('Unauthorized to post invitations', async () => {
@@ -587,7 +577,7 @@ describe('Membership Mutations', () => {
           route: `/${buildGetMembersBy(emails)}`,
         },
         {
-          response: buildResultOfData(ITEM_MEMBERSHIPS_RESPONSE.toJS()),
+          response: buildResultOfData(ITEM_MEMBERSHIPS_RESPONSE),
           method: HttpMethod.POST,
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
@@ -619,7 +609,7 @@ describe('Membership Mutations', () => {
 
       // check notification trigger
       const param = mockedNotifier.mock.calls[0][0];
-      expect(param.payload.errors.toJS()).toHaveLength(1);
+      expect(param.payload.errors).toHaveLength(1);
     });
   });
 });

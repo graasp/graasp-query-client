@@ -1,4 +1,4 @@
-import { ItemLoginSchemaType, UUID, convertJs } from '@graasp/sdk';
+import { ItemLoginSchemaType, UUID } from '@graasp/sdk';
 import { ItemLoginSchemaRecord } from '@graasp/sdk/frontend';
 
 import { UseQueryResult, useQuery } from 'react-query';
@@ -25,9 +25,7 @@ export default (queryConfig: QueryClientConfig) => {
       return useQuery({
         queryKey: buildItemLoginSchemaKey(args.itemId),
         queryFn: (): Promise<ItemLoginSchemaRecord> =>
-          Api.getItemLoginSchema(args.itemId, queryConfig).then((data) =>
-            convertJs(data),
-          ),
+          Api.getItemLoginSchema(args.itemId, queryConfig).then((data) => data),
         ...defaultQueryOptions,
         enabled: enabledValue,
       });
@@ -47,7 +45,7 @@ export default (queryConfig: QueryClientConfig) => {
             throw new UndefinedArgument();
           }
           return Api.getItemLoginSchemaType(args.itemId, queryConfig).then(
-            (data) => convertJs(data),
+            (data) => data,
           );
         },
         ...defaultQueryOptions,

@@ -5,14 +5,12 @@ import {
   ItemSettings,
   ItemType,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
+  RecycledItemData,
   ThumbnailSize,
   UUID,
-  convertJs,
 } from '@graasp/sdk';
-import { ItemRecord, RecycledItemDataRecord } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { List, Record } from 'immutable';
 import { QueryClient, useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
@@ -168,21 +166,16 @@ export default (queryConfig: QueryClientConfig) => {
       // newItem contains all updatable properties
       {
         onMutate: async (newItem: Partial<Item> & Pick<Item, 'id'>) => {
-          const trimmed: ItemRecord = convertJs({
-            ...newItem,
-            name: newItem.name?.trim(),
-          });
-
           const itemKey = buildItemKey(newItem.id);
 
           // invalidate key
           await queryClient.cancelQueries(itemKey);
 
           // build full item with new values
-          const prevItem = queryClient.getQueryData<ItemRecord>(itemKey);
+          const prevItem = queryClient.getQueryData<Item>(itemKey);
 
-          const newFullItem = prevItem ? prevItem.merge(trimmed) : prevItem;
-
+          const newFullItem = { ...prevItem };
+          newFullItem.name = newFullItem.name?.trim();
           queryClient.setQueryData(itemKey, newFullItem);
 
           const previousItems = {
@@ -190,13 +183,14 @@ export default (queryConfig: QueryClientConfig) => {
               parent: await mutateParentChildren(
                 {
                   childPath: prevItem?.path,
-                  value: (old: List<ItemRecord>) => {
-                    if (!old || old.isEmpty()) {
+                  value: (old: Item[]) => {
+                    if (!old?.length) {
                       return old;
                     }
                     const idx = old.findIndex(({ id }) => id === newItem.id);
                     if (newFullItem) {
-                      old.set(idx, newFullItem);
+                      // eslint-disable-next-line no-param-reassign
+                      old[idx] = newFullItem; // TODO !!!!! check
                     }
                     return old;
                   },
@@ -259,14 +253,14 @@ export default (queryConfig: QueryClientConfig) => {
         onMutate: async (itemIds: UUID[]) => {
           // get path from first item and invalidate parent's children
           const itemKey = buildItemKey(itemIds[0]);
-          const itemData = queryClient.getQueryData<ItemRecord>(itemKey);
+          const itemData = queryClient.getQueryData<Item>(itemKey);
           const itemPath = itemData?.path;
           const newParent = itemPath
             ? {
                 parent: await mutateParentChildren(
                   {
                     childPath: itemPath,
-                    value: (old: List<ItemRecord>) =>
+                    value: (old: Item[]) =>
                       old.filter(({ id }) => !itemIds.includes(id)),
                   },
                   queryClient,
@@ -287,7 +281,7 @@ export default (queryConfig: QueryClientConfig) => {
         },
         onError: (error: Error, itemIds: UUID[], context) => {
           const itemKey = buildItemKey(itemIds[0]);
-          const itemData = queryClient.getQueryData<ItemRecord>(itemKey);
+          const itemData = queryClient.getQueryData<Item>(itemKey);
           const itemPath = itemData?.path;
 
           if (itemPath && context?.parent) {
@@ -327,7 +321,7 @@ export default (queryConfig: QueryClientConfig) => {
           // get path from first item
           const itemKey = RECYCLED_ITEMS_DATA_KEY;
           const itemData =
-            queryClient.getQueryData<List<RecycledItemDataRecord>>(itemKey);
+            queryClient.getQueryData<RecycledItemData[]>(itemKey);
           queryClient.setQueryData(
             itemKey,
             itemData?.filter(({ item: { id } }) => !itemIds.includes(id)),
@@ -418,8 +412,8 @@ export default (queryConfig: QueryClientConfig) => {
           const itemsData = itemIds
             .map((itemId: UUID) => {
               const itemKey = buildItemKey(itemId);
-              const itemData = queryClient.getQueryData<ItemRecord>(itemKey);
-              return itemData?.toJS() as DiscriminatedItem;
+              const itemData = queryClient.getQueryData<Item>(itemKey);
+              return itemData as DiscriminatedItem;
             })
             .filter(Boolean);
 
@@ -431,7 +425,7 @@ export default (queryConfig: QueryClientConfig) => {
               targetParent: await mutateParentChildren(
                 {
                   id: to,
-                  value: (old: List<Item>) => old?.concat(itemsData),
+                  value: (old: Item[]) => old?.concat(itemsData),
                 },
                 queryClient,
               ),
@@ -440,7 +434,7 @@ export default (queryConfig: QueryClientConfig) => {
               originalParent: await mutateParentChildren(
                 {
                   childPath: path,
-                  value: (old: List<Item>) =>
+                  value: (old: Item[]) =>
                     old?.filter(({ id: oldId }) => !itemIds.includes(oldId)),
                 },
                 queryClient,
@@ -448,22 +442,21 @@ export default (queryConfig: QueryClientConfig) => {
             }),
           };
 
-          const toData = queryClient.getQueryData<ItemRecord>(buildItemKey(to));
-          if (toData?.has('path')) {
+          const toData = queryClient.getQueryData<Item>(buildItemKey(to));
+          if (toData?.path) {
             const toDataPath = toData.path;
             // update item's path
             itemIds.forEach(async (itemId: UUID) => {
               context[itemId] = await mutateItem({
                 queryClient,
                 id: itemId,
-                value: (item: Record<Item>) =>
-                  item.set(
-                    'path',
-                    buildPath({
-                      prefix: toDataPath,
-                      ids: [itemId],
-                    }),
-                  ),
+                value: (item: Item) => ({
+                  ...item,
+                  path: buildPath({
+                    prefix: toDataPath,
+                    ids: [itemId],
+                  }),
+                }),
               });
             });
           }
@@ -650,7 +643,7 @@ export default (queryConfig: QueryClientConfig) => {
         onMutate: async (itemIds) => {
           const key = RECYCLED_ITEMS_DATA_KEY;
           const recycleItemData =
-            queryClient.getQueryData<List<RecycledItemDataRecord>>(key);
+            queryClient.getQueryData<RecycledItemData[]>(key);
           if (recycleItemData) {
             queryClient.setQueryData(
               key,
@@ -664,12 +657,10 @@ export default (queryConfig: QueryClientConfig) => {
         onSuccess: (_data, itemIds) => {
           // invalidate parents' children to now get the restored items
           for (const id of itemIds) {
-            const item = queryClient.getQueryData<Record<Item>>(
-              buildItemKey(id),
-            );
+            const item = queryClient.getQueryData<Item>(buildItemKey(id));
             if (item) {
               const key = getKeyForParentId(
-                getDirectParentId(item?.get('path')) ?? null,
+                getDirectParentId(item?.path) ?? null,
               );
               queryClient.invalidateQueries(key);
             }

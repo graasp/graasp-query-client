@@ -1,12 +1,10 @@
 import {
   ItemTag,
   MAX_TARGETS_FOR_READ_REQUEST,
+  ResultOf,
   UUID,
-  convertJs,
 } from '@graasp/sdk';
-import { ItemTagRecord, ResultOfRecord } from '@graasp/sdk/frontend';
 
-import { List } from 'immutable';
 import { useQuery, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
@@ -21,11 +19,11 @@ export default (queryConfig: QueryClientConfig) => {
   const useItemTags = (id?: UUID) =>
     useQuery({
       queryKey: itemTagsKeys.singleId(id),
-      queryFn: (): Promise<List<ItemTagRecord>> => {
+      queryFn: (): Promise<ItemTag[]> => {
         if (!id) {
           throw new UndefinedArgument();
         }
-        return Api.getItemTags(id, queryConfig).then((data) => convertJs(data));
+        return Api.getItemTags(id, queryConfig).then((data) => data);
       },
       enabled: Boolean(id),
       ...defaultQueryOptions,
@@ -35,7 +33,7 @@ export default (queryConfig: QueryClientConfig) => {
     const queryClient = useQueryClient();
     return useQuery({
       queryKey: itemTagsKeys.manyIds(ids),
-      queryFn: (): Promise<ResultOfRecord<ItemTag[]>> => {
+      queryFn: (): Promise<ResultOf<ItemTag[]>> => {
         if (!ids || ids?.length === 0) {
           throw new UndefinedArgument();
         }
@@ -49,8 +47,8 @@ export default (queryConfig: QueryClientConfig) => {
       onSuccess: async (tags) => {
         // save tags in their own key
         ids?.forEach(async (id) => {
-          const itemTags = tags?.data?.get(id);
-          if (itemTags?.size) {
+          const itemTags = tags?.data?.[id];
+          if (itemTags?.length) {
             queryClient.setQueryData(itemTagsKeys.singleId(id), itemTags);
           }
         });

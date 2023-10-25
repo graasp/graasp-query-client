@@ -2,15 +2,10 @@ import {
   CompleteMember,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
+  MemberStorage,
+  ResultOf,
   UUID,
-  convertJs,
 } from '@graasp/sdk';
-import {
-  ImmutableCast,
-  MemberRecord,
-  MemberStorageRecord,
-  ResultOfRecord,
-} from '@graasp/sdk/frontend';
 
 import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
 
@@ -38,27 +33,25 @@ export default (queryConfig: QueryClientConfig) => {
     useCurrentMember: () =>
       useQuery({
         queryKey: CURRENT_MEMBER_KEY,
-        queryFn: (): Promise<MemberRecord> =>
-          Api.getCurrentMember(queryConfig).then((data) => convertJs(data)),
+        queryFn: (): Promise<Member> =>
+          Api.getCurrentMember(queryConfig).then((data) => data),
         ...defaultQueryOptions,
       }),
 
     useMember: (id?: UUID) =>
       useQuery({
         queryKey: buildMemberKey(id),
-        queryFn: (): Promise<MemberRecord> => {
+        queryFn: (): Promise<Member> => {
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getMember({ id }, queryConfig).then((data) =>
-            convertJs(data),
-          );
+          return Api.getMember({ id }, queryConfig).then((data) => data);
         },
         enabled: Boolean(id),
         ...defaultQueryOptions,
       }),
 
-    useMembers: (ids: UUID[]): UseQueryResult<ResultOfRecord<Member>> => {
+    useMembers: (ids: UUID[]): UseQueryResult<ResultOf<Member>> => {
       const queryClient = useQueryClient();
       return useQuery({
         queryKey: buildMembersKey(ids),
@@ -68,7 +61,7 @@ export default (queryConfig: QueryClientConfig) => {
           ),
         onSuccess: async (members) => {
           // save members in their own key
-          members?.data?.toSeq().forEach(async (member) => {
+          Object.values(members?.data).forEach(async (member) => {
             const { id } = member;
             queryClient.setQueryData(buildMemberKey(id), member);
           });
@@ -92,9 +85,8 @@ export default (queryConfig: QueryClientConfig) => {
       let shouldFetch = true;
       if (id) {
         shouldFetch =
-          queryClient.getQueryData<ImmutableCast<CompleteMember>>(
-            buildMemberKey(id),
-          )?.extra?.hasAvatar ?? true;
+          queryClient.getQueryData<Member>(buildMemberKey(id))?.extra
+            ?.hasAvatar ?? true;
       }
       return useQuery({
         queryKey: buildAvatarKey({ id, size, replyUrl: false }),
@@ -122,9 +114,8 @@ export default (queryConfig: QueryClientConfig) => {
       let shouldFetch = true;
       if (id) {
         shouldFetch =
-          queryClient.getQueryData<ImmutableCast<CompleteMember>>(
-            buildMemberKey(id),
-          )?.extra?.hasAvatar ?? true;
+          queryClient.getQueryData<Member>(buildMemberKey(id))?.extra
+            ?.hasAvatar ?? true;
       }
       return useQuery({
         queryKey: buildAvatarKey({ id, size, replyUrl: true }),
@@ -143,8 +134,8 @@ export default (queryConfig: QueryClientConfig) => {
     useMemberStorage: () =>
       useQuery({
         queryKey: CURRENT_MEMBER_STORAGE_KEY,
-        queryFn: (): Promise<MemberStorageRecord> =>
-          Api.getMemberStorage(queryConfig).then((data) => convertJs(data)),
+        queryFn: (): Promise<MemberStorage> =>
+          Api.getMemberStorage(queryConfig).then((data) => data),
         ...defaultQueryOptions,
       }),
   };

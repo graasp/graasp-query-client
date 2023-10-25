@@ -1,5 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import Immutable from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -46,12 +45,10 @@ describe('Chat Mention Hooks', () => {
         wrapper,
       });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
   });
 });

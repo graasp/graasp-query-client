@@ -1,6 +1,5 @@
 import { FlagType } from '@graasp/sdk';
 
-import Immutable, { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -32,12 +31,10 @@ describe('Item Flag Hooks', () => {
       ];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, List(response))).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), List(response)),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
   });
 });

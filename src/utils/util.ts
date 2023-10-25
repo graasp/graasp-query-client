@@ -1,4 +1,3 @@
-import { List, is } from 'immutable';
 import { InfiniteData } from 'react-query';
 
 export const isObject = (value: unknown) =>
@@ -17,20 +16,20 @@ export const getHostname = () => {
 export const isDataEqual = <T>(
   oldData:
     | T
-    | List<T>
-    | List<List<T>>
+    | T[]
+    | T[][]
     // necessary for download avatar, thumbnail
     // might be removed if we only use links
     | Blob
     | undefined,
   newData:
     | T
-    | List<T>
-    | List<List<T>>
+    | T[]
+    | T[][]
     // necessary for download avatar, thumbnail
     // might be removed if we only use links
     | Blob,
-): boolean => is(oldData, newData);
+): boolean => oldData === newData; // TODO !!!!!!!!!!!!
 
 export const isPaginatedChildrenDataEqual = <T>(
   oldData: InfiniteData<T> | undefined,
@@ -47,7 +46,7 @@ export const isPaginatedChildrenDataEqual = <T>(
   return false;
 };
 
-export const paginate = <U, T extends List<U>>(
+export const paginate = <U, T extends U[]>(
   list: T,
   pageSize: number,
   pageNumber: number,
@@ -56,13 +55,13 @@ export const paginate = <U, T extends List<U>>(
   new Promise((resolve, reject) => {
     try {
       // apply some filtering to the elements provided
-      let data: T = filterFunction ? filterFunction(list) : list;
+      let data = filterFunction ? filterFunction(list) : list;
       // get data from current page
       data = data.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
       // compute next page number, set at -1 if it's the end of the list
       const nextPageNumber =
-        data.isEmpty() || list.size <= pageNumber * pageSize ? -1 : pageNumber;
+        !data.length || list.length <= pageNumber * pageSize ? -1 : pageNumber;
       resolve({
         data,
         pageNumber: nextPageNumber,

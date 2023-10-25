@@ -119,12 +119,12 @@ describe('Published Search Hook', () => {
         hook,
         wrapper,
       });
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
-      expect(
-        queryClient.getQueryData<MeiliSearchResultsRecord>(key)?.toJS(),
-      ).toEqual(response);
+      expect(queryClient.getQueryData<MeiliSearchResultsRecord>(key)).toEqual(
+        response,
+      );
     });
 
     it(`does not fetch if no query nor categories is provided`, async () => {
@@ -188,12 +188,12 @@ describe('Published Search Hook', () => {
         ],
       });
 
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
-      expect(
-        queryClient.getQueryData<MeiliSearchResultsRecord>(key)?.toJS(),
-      ).toEqual(response);
+      expect(queryClient.getQueryData<MeiliSearchResultsRecord>(key)).toEqual(
+        response,
+      );
     });
 
     it(`search for page 3`, async () => {
@@ -241,12 +241,12 @@ describe('Published Search Hook', () => {
         ],
       });
 
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
-      expect(
-        queryClient.getQueryData<MeiliSearchResultsRecord>(key)?.toJS(),
-      ).toEqual(response);
+      expect(queryClient.getQueryData<MeiliSearchResultsRecord>(key)).toEqual(
+        response,
+      );
     });
 
     it(`does not fetch for enabled = false`, async () => {

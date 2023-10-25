@@ -1,16 +1,11 @@
 import {
   ItemMembership,
   MAX_TARGETS_FOR_READ_REQUEST,
+  ResultOf,
   UUID,
-  convertJs,
 } from '@graasp/sdk';
-import {
-  ItemMembershipRecord,
-  ResultOfRecord,
-  WebsocketClient,
-} from '@graasp/sdk/frontend';
+import { WebsocketClient } from '@graasp/sdk/frontend';
 
-import { List } from 'immutable';
 import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
@@ -30,11 +25,11 @@ export default (
   useItemMemberships: (
     id?: UUID,
     options?: { getUpdates?: boolean },
-  ) => UseQueryResult<List<ItemMembershipRecord>>;
+  ) => UseQueryResult<ItemMembership[]>;
   useManyItemMemberships: (
     ids?: UUID[],
     options?: { getUpdates?: boolean },
-  ) => UseQueryResult<ResultOfRecord<ItemMembership[]>>;
+  ) => UseQueryResult<ResultOf<ItemMembership[]>>;
 } => {
   const { enableWebsocket, defaultQueryOptions } = queryConfig;
 
@@ -47,7 +42,7 @@ export default (
     useItemMemberships: (
       id?: UUID,
       options?: { getUpdates?: boolean },
-    ): UseQueryResult<List<ItemMembershipRecord>> => {
+    ): UseQueryResult<ItemMembership[]> => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       membershipWsHooks?.useItemsMembershipsUpdates(
@@ -56,13 +51,13 @@ export default (
 
       return useQuery({
         queryKey: buildItemMembershipsKey(id),
-        queryFn: (): Promise<List<ItemMembershipRecord>> => {
+        queryFn: (): Promise<ItemMembership[]> => {
           if (!id) {
             throw new UndefinedArgument();
           }
 
-          return Api.getMembershipsForItems([id], queryConfig).then((data) =>
-            convertJs(data.data[id]),
+          return Api.getMembershipsForItems([id], queryConfig).then(
+            (data) => data.data[id],
           );
         },
         enabled: Boolean(id),
@@ -73,7 +68,7 @@ export default (
     useManyItemMemberships: (
       ids?: UUID[],
       options?: { getUpdates?: boolean },
-    ): UseQueryResult<ResultOfRecord<ItemMembership[]>> => {
+    ): UseQueryResult<ResultOf<ItemMembership[]>> => {
       const queryClient = useQueryClient();
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
@@ -81,7 +76,7 @@ export default (
 
       return useQuery({
         queryKey: buildManyItemMembershipsKey(ids),
-        queryFn: (): Promise<ResultOfRecord<ItemMembership[]>> => {
+        queryFn: (): Promise<ResultOf<ItemMembership[]>> => {
           if (!ids) {
             throw new UndefinedArgument();
           }

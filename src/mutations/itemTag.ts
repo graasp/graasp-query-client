@@ -1,8 +1,6 @@
-import { ItemTagType, UUID } from '@graasp/sdk';
-import { ItemTagRecord } from '@graasp/sdk/frontend';
+import { ItemTag, ItemTagType, UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { List } from 'immutable';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
@@ -50,15 +48,14 @@ export default (queryConfig: QueryClientConfig) => {
       void,
       Error,
       { itemId: UUID; type: `${ItemTagType}` | ItemTagType },
-      { itemTags?: List<ItemTagRecord> }
+      { itemTags?: ItemTag[] }
     >((payload) => Api.deleteItemTag(payload, queryConfig), {
       onMutate: async ({ itemId, type }) => {
         const itemTagKey = itemTagsKeys.singleId(itemId);
         await queryClient.cancelQueries(itemTagKey);
 
         // Snapshot the previous value
-        const prevValue =
-          queryClient.getQueryData<List<ItemTagRecord>>(itemTagKey);
+        const prevValue = queryClient.getQueryData<ItemTag[]>(itemTagKey);
 
         // remove tag from list
         if (prevValue) {

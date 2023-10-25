@@ -1,5 +1,5 @@
 import { UUID } from '@graasp/sdk';
-import { MemberRecord } from '@graasp/sdk/frontend';
+import { Member } from '@graasp/sdk/frontend';
 
 import { useMutation, useQueryClient } from 'react-query';
 
@@ -34,7 +34,7 @@ export default (queryConfig: QueryClientConfig) => {
         onSettled: (_data, _error, { id }) => {
           queryClient.invalidateQueries(buildItemPublishedInformationKey(id));
           const currentMemberId =
-            queryClient.getQueryData<MemberRecord>(CURRENT_MEMBER_KEY)?.id;
+            queryClient.getQueryData<Member>(CURRENT_MEMBER_KEY)?.id;
           if (currentMemberId) {
             queryClient.invalidateQueries(
               buildPublishedItemsForMemberKey(currentMemberId),
@@ -63,7 +63,7 @@ export default (queryConfig: QueryClientConfig) => {
         onSettled: (_data, _error, { id }) => {
           queryClient.invalidateQueries(buildItemPublishedInformationKey(id));
           const currentMemberId =
-            queryClient.getQueryData<MemberRecord>(CURRENT_MEMBER_KEY)?.id;
+            queryClient.getQueryData<Member>(CURRENT_MEMBER_KEY)?.id;
           if (currentMemberId) {
             queryClient.invalidateQueries(
               buildPublishedItemsForMemberKey(currentMemberId),

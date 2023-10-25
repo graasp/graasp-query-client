@@ -1,11 +1,6 @@
-import { ChatMention, UUID, convertJs } from '@graasp/sdk';
-import {
-  Channel,
-  ChatMentionRecord,
-  WebsocketClient,
-} from '@graasp/sdk/frontend';
+import { ChatMention, UUID } from '@graasp/sdk';
+import { Channel, WebsocketClient } from '@graasp/sdk/frontend';
 
-import { List } from 'immutable';
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 
@@ -42,10 +37,10 @@ export const configureWsChatMentionsHooks = (
 
       const handler = (event: MentionEvent): void => {
         const mentionKey = buildMentionKey();
-        const current: List<ChatMentionRecord> | undefined =
+        const current: ChatMention[] | undefined =
           queryClient.getQueryData(mentionKey);
 
-        const mention: ChatMentionRecord = convertJs(event.mention);
+        const { mention } = event;
 
         if (current) {
           switch (event.op) {
@@ -55,23 +50,22 @@ export const configureWsChatMentionsHooks = (
               break;
             }
             case OPS.UPDATE: {
-              const mutation = current.update(
-                current.findIndex((m) => m.id === mention.id),
-                () => mention,
-              );
-              queryClient.setQueryData(mentionKey, mutation);
+              // TODO !!!!! check
+              current[current.findIndex((m) => m.id === mention.id)] = mention;
+              queryClient.setQueryData(mentionKey, current);
               break;
             }
             case OPS.DELETE: {
-              const mutation = current.delete(
-                current.findIndex((m) => m.id === mention.id),
-              );
+              const index = current.findIndex((m) => m.id === mention.id);
+              const mutation = current
+                .slice(0, index)
+                .concat([mention])
+                .concat(current.slice(index + 1));
               queryClient.setQueryData(mentionKey, mutation);
               break;
             }
             case OPS.CLEAR: {
-              const mutation = current.clear();
-              queryClient.setQueryData(mentionKey, mutation);
+              queryClient.setQueryData(mentionKey, []);
               break;
             }
             default:

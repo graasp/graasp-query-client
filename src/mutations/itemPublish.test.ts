@@ -58,7 +58,7 @@ describe('Publish Item', () => {
 
       const endpoints = [
         {
-          response: ITEM_PUBLISHED_DATA.toJS(),
+          response: ITEM_PUBLISHED_DATA,
           method: HttpMethod.POST,
           route,
         },
@@ -113,7 +113,7 @@ describe('Publish Item', () => {
 
       const endpoints = [
         {
-          response: ITEM_PUBLISHED_DATA.toJS(),
+          response: ITEM_PUBLISHED_DATA,
           method: HttpMethod.POST,
           route,
         },

@@ -1,11 +1,4 @@
-import {
-  CompleteMember,
-  MemberExtra,
-  ThumbnailSize,
-  UUID,
-  convertJs,
-} from '@graasp/sdk';
-import { ImmutableCast } from '@graasp/sdk/frontend';
+import { CompleteMember, MemberExtra, ThumbnailSize, UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from 'react-query';
@@ -71,18 +64,16 @@ export default (queryConfig: QueryClientConfig) => {
 
           // Snapshot the previous value
           const previousMember =
-            queryClient.getQueryData<ImmutableCast<CompleteMember>>(
-              CURRENT_MEMBER_KEY,
-            );
+            queryClient.getQueryData<CompleteMember>(CURRENT_MEMBER_KEY);
 
           // Optimistically update to the new value
-          let newMember = previousMember;
+          const newMember = previousMember;
           if (newMember) {
             if (member.name) {
-              newMember = newMember.set('name', member.name);
+              newMember.name = member.name;
             }
             if (member.extra) {
-              newMember = newMember.set('extra', convertJs(member.extra));
+              newMember.extra = member.extra;
             }
             queryClient.setQueryData(CURRENT_MEMBER_KEY, newMember);
           }

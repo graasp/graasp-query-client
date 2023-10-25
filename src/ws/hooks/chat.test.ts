@@ -44,14 +44,14 @@ describe('Ws Chat Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       // expect no change
-      expect(queryClient.getQueryData<ItemChatRecord>(chatKey)?.toJS()).toEqual(
-        ITEM_CHAT.toJS(),
+      expect(queryClient.getQueryData<ItemChatRecord>(chatKey)).toEqual(
+        ITEM_CHAT,
       );
     });
   });
 
   describe('useItemChatUpdates', () => {
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS[0].id;
     const chatId = itemId;
     const chatKey = buildItemChatKey(chatId);
     const newMessage = { body: 'new content message' };
@@ -76,9 +76,9 @@ describe('Ws Chat Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
-      expect(
-        queryClient.getQueryData<ItemChatRecord>(chatKey)?.toJS(),
-      ).toContainEqual(newMessage);
+      expect(queryClient.getQueryData<ItemChatRecord>(chatKey)).toContainEqual(
+        newMessage,
+      );
     });
 
     it(`Receive chat messages edit update`, async () => {
@@ -100,9 +100,9 @@ describe('Ws Chat Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
-      expect(
-        queryClient.getQueryData<ItemChatRecord>(chatKey)?.toJS(),
-      ).toContainEqual(updatedMessage);
+      expect(queryClient.getQueryData<ItemChatRecord>(chatKey)).toContainEqual(
+        updatedMessage,
+      );
     });
 
     it(`Receive chat messages delete update`, async () => {
@@ -122,8 +122,8 @@ describe('Ws Chat Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       expect(
-        queryClient.getQueryData<ItemChatRecord>(chatKey)?.toJS(),
-      ).not.toContainEqual(ITEM_CHAT.first()!.toJS());
+        queryClient.getQueryData<ItemChatRecord>(chatKey),
+      ).not.toContainEqual(ITEM_CHAT[0]);
     });
 
     it(`Receive chat messages clear update`, async () => {
@@ -140,9 +140,7 @@ describe('Ws Chat Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
-      expect(queryClient.getQueryData<ItemChatRecord>(chatKey)?.toJS()).toEqual(
-        [],
-      );
+      expect(queryClient.getQueryData<ItemChatRecord>(chatKey)).toEqual([]);
     });
 
     it(`Does not update chat messages with wrong chat event`, async () => {

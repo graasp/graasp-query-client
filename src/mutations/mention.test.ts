@@ -32,7 +32,7 @@ jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Mention Mutations', () => {
   const mentionId = MENTION_IDS[0];
-  const member = MEMBER_RESPONSE.toJS() as Member;
+  const member = MEMBER_RESPONSE as Member;
   const memberId = member.id;
   const currentMemberRoute = `/${GET_CURRENT_MEMBER_ROUTE}`;
   const key = buildMentionKey();
@@ -63,7 +63,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: buildMentionResponse(
-              MENTIONS.toJS()[0] as ChatMention,
+              MENTIONS[0] as ChatMention,
               HttpMethod.PATCH,
               MentionStatus.Read,
             ),

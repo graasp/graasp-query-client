@@ -5,10 +5,8 @@ import {
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
 } from '@graasp/sdk';
-import { ItemTagRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
-import Immutable from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -38,7 +36,7 @@ describe('Item Tags Hooks', () => {
   });
 
   describe('useItemTags', () => {
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS[0].id;
     const route = `/${buildGetItemTagsRoute(itemId)}`;
     const key = itemTagsKeys.singleId(itemId);
 
@@ -49,12 +47,10 @@ describe('Item Tags Hooks', () => {
       const endpoints = [{ route, response }];
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
       expect(isSuccess).toBeTruthy();
     });
 
@@ -80,7 +76,7 @@ describe('Item Tags Hooks', () => {
   });
 
   describe('useItemsTags', () => {
-    const itemsIds = ITEMS.map(({ id }) => id).toArray();
+    const itemsIds = ITEMS.map(({ id }) => id);
 
     const keys = itemsIds.map((itemId) => itemTagsKeys.singleId(itemId));
     const tags = itemsIds.map((id) => [
@@ -106,13 +102,11 @@ describe('Item Tags Hooks', () => {
         (t: ItemTag[]) => t[0].item.id,
       );
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
       keys.forEach((key, idx) =>
-        expect(queryClient.getQueryData<ItemTagRecord>(key)?.toJS()).toEqual(
-          tags[idx],
-        ),
+        expect(queryClient.getQueryData<ItemTag>(key)).toEqual(tags[idx]),
       );
 
       expect(isSuccess).toBeTruthy();
@@ -156,13 +150,11 @@ describe('Item Tags Hooks', () => {
         wrapper,
       });
 
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
       expect(
-        queryClient
-          .getQueryData<ItemTagRecord>(itemTagsKeys.singleId(ids[0]))
-          ?.toJS(),
+        queryClient.getQueryData<ItemTag>(itemTagsKeys.singleId(ids[0])),
       ).toEqual(tagsForItem);
       expect(
         queryClient.getQueryData(itemTagsKeys.singleId(idWithError)),

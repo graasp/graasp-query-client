@@ -1,10 +1,4 @@
-import {
-  ResultOf,
-  convertJs,
-  parseStringToDate,
-  spliceIntoChunks,
-} from '@graasp/sdk';
-import { ResultOfRecord } from '@graasp/sdk/frontend';
+import { ResultOf, parseStringToDate, spliceIntoChunks } from '@graasp/sdk';
 
 import axios, { AxiosError } from 'axios';
 
@@ -68,7 +62,7 @@ export const splitRequestByIds = <T>(
   chunkSize: number,
   buildRequest: (ids: string[]) => Promise<ResultOf<T> | void>,
   ignoreErrors = false,
-): Promise<ResultOfRecord<T>> => {
+): Promise<ResultOf<T>> => {
   const shunkedIds = spliceIntoChunks(ids, chunkSize);
   return Promise.all(
     shunkedIds.map((groupedIds) => buildRequest(groupedIds)),
@@ -90,6 +84,6 @@ export const splitRequestByIds = <T>(
     if (!ignoreErrors) {
       throwIfArrayContainsErrorOrReturn(result);
     }
-    return convertJs(result);
+    return result;
   });
 };

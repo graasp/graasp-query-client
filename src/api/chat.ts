@@ -1,7 +1,8 @@
 import {
   ChatMessage,
   DeleteChatMessageParamType,
-  ExportedChatMessage,
+  ExportedItemChat,
+  ItemChat,
   PatchChatMessageParamType,
   PostChatMessageParamType,
   UUID,
@@ -21,7 +22,7 @@ import {
 export const getItemChat = async (
   id: UUID,
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<ChatMessage[]> =>
+): Promise<ItemChat> =>
   axios
     .get(`${API_HOST}/${buildGetItemChatRoute(id)}`)
     .then(({ data }) => data);
@@ -31,7 +32,7 @@ export const exportItemChat = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(
-    (): Promise<ExportedChatMessage> =>
+    (): Promise<ExportedItemChat> =>
       axios
         .get(`${API_HOST}/${buildExportItemChatRoute(id)}`)
         .then(({ data }) => data),

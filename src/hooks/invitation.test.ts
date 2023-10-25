@@ -1,15 +1,11 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import { DiscriminatedItem } from '@graasp/sdk';
-
 import { StatusCodes } from 'http-status-codes';
-import Immutable, { List } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
   ITEMS,
   UNAUTHORIZED_RESPONSE,
-  buildInvitationRecord,
+  buildInvitation,
 } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import {
@@ -19,7 +15,7 @@ import {
 import { buildInvitationKey, buildItemInvitationsKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-const item = ITEMS.first()!.toJS() as DiscriminatedItem;
+const item = ITEMS[0];
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
@@ -37,20 +33,18 @@ describe('Invitation Hooks', () => {
     const hook = () => hooks.useInvitation(invId);
 
     it(`Receive invitation`, async () => {
-      const response = buildInvitationRecord({ item });
+      const response = buildInvitation({ item });
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
 
     it(`Undefined id does not fetch`, async () => {
-      const response = buildInvitationRecord({ item });
+      const response = buildInvitation({ item });
       const endpoints = [{ route, response }];
       const { data, isFetched } = await mockHook({
         endpoints,
@@ -88,31 +82,29 @@ describe('Invitation Hooks', () => {
   });
 
   describe('useItemInvitations', () => {
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS[0].id;
     const route = `/${buildGetItemInvitationsForItemRoute(itemId)}`;
     const key = buildItemInvitationsKey(itemId);
 
     const hook = () => hooks.useItemInvitations(itemId);
 
     it(`Receive invitations for item`, async () => {
-      const response = List([
-        buildInvitationRecord({ item }),
-        buildInvitationRecord({ item }),
-        buildInvitationRecord({ item }),
-      ]);
+      const response = [
+        buildInvitation({ item }),
+        buildInvitation({ item }),
+        buildInvitation({ item }),
+      ];
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect((queryClient.getQueryData(key), response)).toBeTruthy();
     });
 
     it(`Undefined id does not fetch`, async () => {
-      const response = buildInvitationRecord({ item });
+      const response = buildInvitation({ item });
       const endpoints = [{ route, response }];
       const { data, isFetched } = await mockHook({
         endpoints,

@@ -1,5 +1,3 @@
-import { convertJs } from '@graasp/sdk';
-
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
@@ -13,7 +11,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useFlags = () =>
     useQuery({
       queryKey: ITEM_FLAGS_KEY,
-      queryFn: () => Api.getFlags(queryConfig).then((data) => convertJs(data)),
+      queryFn: () => Api.getFlags(queryConfig).then((data) => data),
       ...defaultQueryOptions,
       cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });

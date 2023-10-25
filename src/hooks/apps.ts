@@ -1,7 +1,5 @@
-import { convertJs } from '@graasp/sdk';
-import { AppRecord } from '@graasp/sdk/frontend';
+import { App } from '@graasp/sdk';
 
-import { List } from 'immutable';
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
@@ -14,9 +12,9 @@ export default (queryConfig: QueryClientConfig) => {
 
   return {
     useApps: () =>
-      useQuery<List<AppRecord>, Error>({
+      useQuery<App[], Error>({
         queryKey: APPS_KEY,
-        queryFn: () => Api.getApps(queryConfig).then((data) => convertJs(data)),
+        queryFn: () => Api.getApps(queryConfig).then((data) => data),
         ...defaultQueryOptions,
         cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
       }),

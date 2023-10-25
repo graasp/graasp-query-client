@@ -2,7 +2,6 @@ import { HttpMethod, ItemTagType } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { StatusCodes } from 'http-status-codes';
-import Immutable from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
@@ -109,7 +108,7 @@ describe('Item Tag Mutations', () => {
   });
 
   describe('useDeleteItemTag', () => {
-    const tag = ITEM_TAGS.first()!;
+    const tag = ITEM_TAGS[0];
     const { item, type: tagType } = tag;
     const itemId = item.id;
     const route = `/${buildDeleteItemTagRoute({ itemId, type: tagType })}`;
@@ -140,12 +139,9 @@ describe('Item Tag Mutations', () => {
 
       const data = queryClient.getQueryState(itemTagKey);
       expect(data?.isInvalidated).toBeTruthy();
-      expect(
-        Immutable.is(
-          data?.data,
-          ITEM_TAGS.filter(({ type }) => type !== tagType),
-        ),
-      ).toBeTruthy();
+      expect(data?.data).toMatchObject(
+        ITEM_TAGS.filter(({ type }) => type !== tagType),
+      );
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: deleteItemTagRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_TAG },
@@ -177,7 +173,7 @@ describe('Item Tag Mutations', () => {
 
       const data = queryClient.getQueryState(itemTagKey);
       expect(data?.isInvalidated).toBeTruthy();
-      expect(Immutable.is(data?.data, ITEM_TAGS)).toBeTruthy();
+      expect(data?.data).toEqual(ITEM_TAGS);
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: deleteItemTagRoutine.FAILURE,

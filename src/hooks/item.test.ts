@@ -1,15 +1,13 @@
 import {
   FolderItemType,
+  Item,
   ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
   ThumbnailSize,
-  convertJs,
 } from '@graasp/sdk';
-import { ItemRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
-import Immutable, { List, Map } from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -66,15 +64,13 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(OWN_ITEMS_KEY), response),
-      ).toBeTruthy();
+      expect((queryClient.getQueryData(OWN_ITEMS_KEY), response)).toBeTruthy();
       for (const item of response) {
         expect(
-          Immutable.is(queryClient.getQueryData(buildItemKey(item.id)), item),
+          (queryClient.getQueryData(buildItemKey(item.id)), item),
         ).toBeTruthy();
       }
     });
@@ -115,15 +111,13 @@ describe('Items Hooks', () => {
         wrapper,
       });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
       expect(isSuccess).toBeTruthy();
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect((queryClient.getQueryData(key), response)).toBeTruthy();
       for (const item of response) {
         expect(
-          Immutable.is(queryClient.getQueryData(buildItemKey(item.id)), item),
+          (queryClient.getQueryData(buildItemKey(item.id)), item),
         ).toBeTruthy();
       }
     });
@@ -177,15 +171,13 @@ describe('Items Hooks', () => {
       });
 
       expect(isSuccess).toBeTruthy();
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
       for (const item of response) {
-        expect(
-          Immutable.is(queryClient.getQueryData(buildItemKey(item.id)), item),
-        ).toBeTruthy();
+        expect(queryClient.getQueryData(buildItemKey(item.id))).toMatchObject(
+          item,
+        );
       }
     });
 
@@ -233,23 +225,18 @@ describe('Items Hooks', () => {
       const endpoints = [
         {
           route: `/${buildGetItemParents(childItem.id)}`,
-          response: response.toJS(),
+          response,
         },
       ];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
       // verify cache keys
       expect(
-        Immutable.is(
-          queryClient.getQueryData(buildItemParentsKey(childItem.id)),
-          response,
-        ),
-      ).toBeTruthy();
+        queryClient.getQueryData(buildItemParentsKey(childItem.id)),
+      ).toMatchObject(response);
       for (const i of response) {
-        expect(
-          Immutable.is(queryClient.getQueryData(buildItemKey(i.id)), i),
-        ).toBeTruthy();
+        expect(queryClient.getQueryData(buildItemKey(i.id))).toMatchObject(i);
       }
     });
 
@@ -258,7 +245,7 @@ describe('Items Hooks', () => {
       const endpoints = [
         {
           route: `/${buildGetItemParents(childItem.id)}`,
-          response: response.toJS(),
+          response,
         },
       ];
       const { data, isFetched } = await mockHook({
@@ -286,14 +273,11 @@ describe('Items Hooks', () => {
         wrapper,
       });
 
-      expect(Immutable.is(data, List())).toBeTruthy();
+      expect(data).toHaveLength(0);
       expect(isFetched).toBeTruthy();
       expect(
-        Immutable.is(
-          queryClient.getQueryData(buildItemParentsKey(childItem.id)),
-          List(),
-        ),
-      ).toBeTruthy();
+        queryClient.getQueryData(buildItemParentsKey(childItem.id)),
+      ).toHaveLength(0);
     });
 
     it(`Unauthorized`, async () => {
@@ -331,11 +315,11 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(SHARED_ITEMS_KEY), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(SHARED_ITEMS_KEY)).toMatchObject(
+        response,
+      );
     });
 
     it(`Unauthorized`, async () => {
@@ -360,7 +344,7 @@ describe('Items Hooks', () => {
   });
 
   describe('useItem', () => {
-    const response = ITEMS.first()!;
+    const response = ITEMS[0];
     const { id } = response;
     const route = `/${buildGetItemRoute(id)}`;
     const hook = () => hooks.useItem(id);
@@ -370,11 +354,9 @@ describe('Items Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
 
     it(`Undefined id does not fetch`, async () => {
@@ -415,80 +397,68 @@ describe('Items Hooks', () => {
 
   describe('useItems', () => {
     it(`Receive one item`, async () => {
-      const oneItem = ITEMS.first()!;
+      const oneItem = ITEMS[0];
       const { id } = oneItem;
-      const response = buildResultOfData([oneItem.toJS()]);
+      const response = buildResultOfData([oneItem]);
       // use single item call
       const route = `/${buildGetItemsRoute([id])}`;
       const endpoints = [{ route, response }];
       const hook = () => hooks.useItems([id]);
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
       // verify cache keys
-      const item = queryClient.getQueryData<ItemRecord>(buildItemKey(id));
-      expect(item?.toJS()).toEqual(response.data[id]);
-      const items = queryClient.getQueryData<List<ItemRecord>>(
-        buildItemsKey([id]),
-      );
-      expect(items?.toJS()).toEqual(response);
+      const item = queryClient.getQueryData<Item>(buildItemKey(id));
+      expect(item).toEqual(response.data[id]);
+      const items = queryClient.getQueryData<Item[]>(buildItemsKey([id]));
+      expect(items).toEqual(response);
     });
 
     it(`Receive two items`, async () => {
       const items = ITEMS.slice(0, 2);
-      const response = buildResultOfData(items.toJS());
-      const ids: string[] = items.map(({ id }) => id).toArray();
+      const response = buildResultOfData(items);
+      const ids: string[] = items.map(({ id }) => id);
       const hook = () => hooks.useItems(ids);
       const route = `/${buildGetItemsRoute(ids)}`;
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(buildItemsKey(ids)), data),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(buildItemsKey(ids))).toMatchObject(data!);
       for (const item of items) {
-        const itemById = items.find(({ id }) => id === item.id) as ItemRecord;
-        expect(
-          Immutable.is(
-            queryClient.getQueryData(buildItemKey(item.id)),
-            itemById,
-          ),
-        ).toBeTruthy();
+        const itemById = items.find(({ id }) => id === item.id) as Item;
+        expect(queryClient.getQueryData(buildItemKey(item.id))).toMatchObject(
+          itemById,
+        );
       }
     });
 
     it(`Receive many items`, async () => {
       const items = ITEMS;
-      const response = buildResultOfData(items.toJS());
-      const ids: string[] = items.map(({ id }) => id).toArray();
+      const response = buildResultOfData(items);
+      const ids: string[] = items.map(({ id }) => id);
       const hook = () => hooks.useItems(ids);
       const endpoints = splitEndpointByIds(
         ids,
         MAX_TARGETS_FOR_READ_REQUEST,
         (chunk) => `/${buildGetItemsRoute(chunk)}`,
-        items.toJS(),
+        items,
       );
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(buildItemsKey(ids)), data),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(buildItemsKey(ids))).toMatchObject(data!);
       for (const item of items) {
         const itemById = items.find(({ id }) => id === item.id);
-        expect(
-          Immutable.is(
-            queryClient.getQueryData(buildItemKey(item.id)),
-            itemById,
-          ),
-        ).toBeTruthy();
+        expect(queryClient.getQueryData(buildItemKey(item.id))).toMatchObject(
+          itemById!,
+        );
       }
     });
 
     it(`Unauthorized`, async () => {
       const requestedItems = ITEMS;
-      const ids: string[] = requestedItems.map(({ id }) => id).toArray();
+      const ids: string[] = requestedItems.map(({ id }) => id);
       const hook = () => hooks.useItems(ids);
       const route = `/${buildGetItemsRoute(ids)}`;
       const endpoints = [
@@ -514,7 +484,7 @@ describe('Items Hooks', () => {
   });
 
   // describe('useItemLogin', () => {
-  //   const response = ITEMS.first()!;
+  //   const response = ITEMS[0];
   //   const { id } = response;
   //   const route = `/${buildGetItemLoginRoute(id)}`;
   //   const hook = () => hooks.useItemLogin(id);
@@ -567,7 +537,7 @@ describe('Items Hooks', () => {
 
   describe('useFileContent', () => {
     const response = FILE_RESPONSE;
-    const { id } = ITEMS.first()!;
+    const { id } = ITEMS[0];
     const route = `/${buildDownloadFilesRoute(id)}`;
     const hook = () => hooks.useFileContent(id);
     const key = buildFileContentKey({ id });
@@ -642,7 +612,7 @@ describe('Items Hooks', () => {
   //     const response = ITEMS;
   //     const endpoints = [{ route, response }];
   //     const { data } = await mockHook({ endpoints, hook, wrapper });
-  //     expect(data as ItemRecord).toEqualImmutable(response);
+  //     expect(data as Item).toEqualImmutable(response);
 
   //     // verify cache keys
   //     expect(queryClient.getQueryData(recycleBinKey)).toEqualImmutable(
@@ -678,7 +648,7 @@ describe('Items Hooks', () => {
 
   // describe('usePublicItemsWithTag', () => {
   //   const response = ITEMS;
-  //   const { id } = TAGS.first()!;
+  //   const { id } = TAGS[0];
   //   const route = `/${buildGetPublicItemsWithTag({ tagId: id })}`;
   //   const hook = () => hooks.usePublicItemsWithTag(id);
   //   const key = buildPublicItemsWithTagKey(id);
@@ -687,7 +657,7 @@ describe('Items Hooks', () => {
   //     const endpoints = [{ route, response }];
   //     const { data } = await mockHook({ endpoints, hook, wrapper });
 
-  //     expect(data as List<ItemRecord>).toEqualImmutable(response);
+  //     expect(data as List<Item>).toEqualImmutable(response);
   //     // verify cache keys
   //     expect(queryClient.getQueryData(key)).toEqualImmutable(response);
   //   });
@@ -730,7 +700,7 @@ describe('Items Hooks', () => {
   // });
 
   describe('useItemThumbnail', () => {
-    const item = ITEMS.first()!;
+    const item = ITEMS[0];
     const replyUrl = false;
     const key = buildItemThumbnailKey({ id: item.id, replyUrl });
     const response = THUMBNAIL_BLOB_RESPONSE;
@@ -808,13 +778,13 @@ describe('Items Hooks', () => {
     });
 
     it(`Does not fetch if item has no thumbnail`, async () => {
-      const itemWithoutThumbnail = convertJs({
-        ...item.toJS(),
+      const itemWithoutThumbnail = {
+        ...item,
         settings: { hasThumbnail: false },
-      });
+      };
       queryClient.setQueryData(
         buildItemKey(itemWithoutThumbnail.id),
-        Map(itemWithoutThumbnail),
+        itemWithoutThumbnail,
       );
       const endpoints = [
         {
@@ -853,7 +823,7 @@ describe('Items Hooks', () => {
   });
 
   describe('useItemThumbnailUrl', () => {
-    const item = ITEMS.first()!;
+    const item = ITEMS[0];
     const replyUrl = true;
     const key = buildItemThumbnailKey({ id: item.id, replyUrl });
     const response = THUMBNAIL_URL_RESPONSE;
@@ -925,13 +895,13 @@ describe('Items Hooks', () => {
     });
 
     it(`Does not fetch if item has no thumbnail`, async () => {
-      const itemWithoutThumbnail = convertJs({
-        ...item.toJS(),
+      const itemWithoutThumbnail = {
+        ...item,
         settings: { hasThumbnail: false },
-      });
+      };
       queryClient.setQueryData(
         buildItemKey(itemWithoutThumbnail.id),
-        Map(itemWithoutThumbnail),
+        itemWithoutThumbnail,
       );
       const endpoints = [
         {

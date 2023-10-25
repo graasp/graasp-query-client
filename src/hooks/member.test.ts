@@ -6,10 +6,8 @@ import {
   ThumbnailSize,
   UUID,
 } from '@graasp/sdk';
-import { ImmutableCast, MemberRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
-import Immutable from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 import { UseQueryResult } from 'react-query';
@@ -50,18 +48,16 @@ describe('Member Hooks', () => {
 
   describe('useCurrentMember', () => {
     const route = `/${GET_CURRENT_MEMBER_ROUTE}`;
-    const hook = (): UseQueryResult<MemberRecord> => hooks.useCurrentMember();
+    const hook = (): UseQueryResult<Member> => hooks.useCurrentMember();
 
     it(`Receive current member`, async () => {
       const response = MEMBER_RESPONSE;
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(CURRENT_MEMBER_KEY), data),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toMatchObject(data!);
     });
 
     it(`Unauthorized`, async () => {
@@ -79,12 +75,10 @@ describe('Member Hooks', () => {
       });
 
       // unauthorized request are translated to signed out user
-      expect(data?.toJS()).toEqual(SIGNED_OUT_USER);
+      expect(data).toEqual(SIGNED_OUT_USER);
       expect(isSuccess).toBeTruthy();
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(CURRENT_MEMBER_KEY), data),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toMatchObject(data!);
     });
   });
 
@@ -106,11 +100,9 @@ describe('Member Hooks', () => {
         endpoints,
       });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(buildMemberKey(id)), data),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(buildMemberKey(id))).toMatchObject(data!);
     });
 
     it(`Unauthorized`, async () => {
@@ -137,7 +129,7 @@ describe('Member Hooks', () => {
 
   describe('useMembers', () => {
     const response = MEMBERS_RESPONSE;
-    const ids = response.map(({ id }) => id).toArray();
+    const ids = response.map(({ id }) => id);
 
     it(`Does not run for empty ids`, async () => {
       const emptyIds: UUID[] = [];
@@ -161,8 +153,8 @@ describe('Member Hooks', () => {
     });
 
     it(`Receive one member`, async () => {
-      const m = response.first()!;
-      const oneMemberResponse = buildResultOfData([m.toJS()]);
+      const m = response[0];
+      const oneMemberResponse = buildResultOfData([m]);
       const oneMemberIds = [m.id];
       const endpoints = [
         {
@@ -177,23 +169,18 @@ describe('Member Hooks', () => {
         endpoints,
       });
 
-      expect(members?.toJS()).toEqual(oneMemberResponse);
+      expect(members).toEqual(oneMemberResponse);
       // verify cache keys
-      expect(
-        Immutable.is(
-          queryClient.getQueryData(buildMembersKey(oneMemberIds)),
-          members,
-        ),
-      ).toBeTruthy();
-      expect(
-        Immutable.is(queryClient.getQueryData(buildMemberKey(m.id)), m),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(buildMembersKey(oneMemberIds))).toEqual(
+        members,
+      );
+      expect(queryClient.getQueryData(buildMemberKey(m.id))).toMatchObject(m);
     });
 
     it(`Receive two members`, async () => {
       const twoMembers = MEMBERS_RESPONSE.slice(0, 2);
-      const twoIds = twoMembers.map(({ id }) => id).toArray();
-      const endpointResponse = buildResultOfData(twoMembers.toJS());
+      const twoIds = twoMembers.map(({ id }) => id);
+      const endpointResponse = buildResultOfData(twoMembers);
       const endpoints = [
         {
           route: `/${buildGetMembersRoute(twoIds)}`,
@@ -207,22 +194,15 @@ describe('Member Hooks', () => {
         endpoints,
       });
 
-      expect(members?.toJS()).toEqual(endpointResponse);
+      expect(members).toEqual(endpointResponse);
       // verify cache keys
       expect(
-        queryClient
-          .getQueryData<ImmutableCast<ResultOf<Member>>>(
-            buildMembersKey(twoIds),
-          )
-          ?.toJS(),
+        queryClient.getQueryData<ResultOf<Member>>(buildMembersKey(twoIds)),
       ).toEqual(endpointResponse);
       for (const id of twoIds) {
         expect(
-          Immutable.is(
-            queryClient.getQueryData<MemberRecord>(buildMemberKey(id)),
-            twoMembers.find(({ id: thisId }) => thisId === id),
-          ),
-        ).toBeTruthy();
+          queryClient.getQueryData<Member>(buildMemberKey(id)),
+        ).toMatchObject(twoMembers.find(({ id: thisId }) => thisId === id)!);
       }
     });
 
@@ -231,9 +211,9 @@ describe('Member Hooks', () => {
         ids,
         MAX_TARGETS_FOR_READ_REQUEST,
         (chunk) => `/${buildGetMembersRoute(chunk)}`,
-        response.toJS(),
+        response,
       );
-      const fullResponse = buildResultOfData(response.toJS());
+      const fullResponse = buildResultOfData(response);
 
       const hook = () => hooks.useMembers(ids);
       const { data: members } = await mockHook({
@@ -242,20 +222,17 @@ describe('Member Hooks', () => {
         endpoints,
       });
 
-      expect(members?.toJS()).toEqual(fullResponse);
+      expect(members).toEqual(fullResponse);
       // verify cache keys
       expect(
-        queryClient
-          .getQueryData<ImmutableCast<ResultOf<Member>>>(buildMembersKey(ids))
-          ?.toJS(),
+        queryClient.getQueryData<ResultOf<Member>>(buildMembersKey(ids)),
       ).toEqual(fullResponse);
       for (const id of ids) {
         expect(
-          Immutable.is(
-            queryClient.getQueryData<MemberRecord>(buildMemberKey(id)),
-            MEMBERS_RESPONSE.find(({ id: thisId }) => thisId === id),
-          ),
-        ).toBeTruthy();
+          queryClient.getQueryData<Member>(buildMemberKey(id)),
+        ).toMatchObject(
+          MEMBERS_RESPONSE.find(({ id: thisId }) => thisId === id)!,
+        );
       }
     });
 
@@ -280,7 +257,7 @@ describe('Member Hooks', () => {
       expect(queryClient.getQueryData(buildMembersKey(ids))).toBeFalsy();
       for (const id of ids) {
         expect(
-          queryClient.getQueryData<MemberRecord>(buildMemberKey(id))?.toJS(),
+          queryClient.getQueryData<Member>(buildMemberKey(id)),
         ).toBeFalsy();
       }
     });

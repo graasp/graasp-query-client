@@ -1,16 +1,11 @@
 import {
+  Item,
   ItemPublished,
   MAX_TARGETS_FOR_READ_REQUEST,
+  ResultOf,
   UUID,
-  convertJs,
 } from '@graasp/sdk';
-import {
-  ItemPublishedRecord,
-  ItemRecord,
-  ResultOfRecord,
-} from '@graasp/sdk/frontend';
 
-import { List } from 'immutable';
 import { useQuery, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
@@ -39,9 +34,9 @@ export default (queryConfig: QueryClientConfig) => {
       const enabledValue = options?.enabled ?? true;
       return useQuery({
         queryKey: buildPublishedItemsKey(args?.categoryIds),
-        queryFn: (): Promise<List<ItemRecord>> =>
-          Api.getAllPublishedItems(args ?? {}, queryConfig).then((data) =>
-            convertJs(data),
+        queryFn: (): Promise<Item[]> =>
+          Api.getAllPublishedItems(args ?? {}, queryConfig).then(
+            (data) => data,
           ),
         ...defaultQueryOptions,
         enabled: enabledValue,
@@ -56,9 +51,9 @@ export default (queryConfig: QueryClientConfig) => {
       const enabledValue = options?.enabled ?? true;
       return useQuery({
         queryKey: buildGetMostLikedPublishedItems(args?.limit),
-        queryFn: (): Promise<List<ItemRecord>> =>
-          Api.getMostLikedPublishedItems(args ?? {}, queryConfig).then((data) =>
-            convertJs(data),
+        queryFn: (): Promise<Item[]> =>
+          Api.getMostLikedPublishedItems(args ?? {}, queryConfig).then(
+            (data) => data,
           ),
         ...defaultQueryOptions,
         enabled: enabledValue,
@@ -73,9 +68,9 @@ export default (queryConfig: QueryClientConfig) => {
       const enabledValue = options?.enabled ?? true;
       return useQuery({
         queryKey: buildGetMostRecentPublishedItems(args?.limit),
-        queryFn: (): Promise<List<ItemRecord>> =>
+        queryFn: (): Promise<Item[]> =>
           Api.getMostRecentPublishedItems(args ?? {}, queryConfig).then(
-            (data) => convertJs(data),
+            (data) => data,
           ),
         ...defaultQueryOptions,
         enabled: enabledValue,
@@ -87,12 +82,12 @@ export default (queryConfig: QueryClientConfig) => {
     ) =>
       useQuery({
         queryKey: buildPublishedItemsForMemberKey(memberId),
-        queryFn: (): Promise<List<ItemRecord>> => {
+        queryFn: (): Promise<Item[]> => {
           if (!memberId) {
             throw new UndefinedArgument();
           }
           return Api.getPublishedItemsForMember(memberId, queryConfig).then(
-            (data) => convertJs(data),
+            (data) => data,
           );
         },
         ...defaultQueryOptions,
@@ -107,9 +102,9 @@ export default (queryConfig: QueryClientConfig) => {
       const enabledValue = (options?.enabled ?? true) && Boolean(args.itemId);
       return useQuery({
         queryKey: buildItemPublishedInformationKey(args.itemId),
-        queryFn: (): Promise<ItemPublishedRecord> =>
+        queryFn: (): Promise<ItemPublished> =>
           Api.getItemPublishedInformation(args.itemId, queryConfig).then(
-            (data) => convertJs(data),
+            (data) => data,
           ),
         ...defaultQueryOptions,
         enabled: enabledValue,
@@ -126,7 +121,7 @@ export default (queryConfig: QueryClientConfig) => {
       const queryClient = useQueryClient();
       return useQuery({
         queryKey: buildManyItemPublishedInformationsKey(args.itemIds),
-        queryFn: (): Promise<ResultOfRecord<ItemPublished>> =>
+        queryFn: (): Promise<ResultOf<ItemPublished>> =>
           splitRequestByIds<ItemPublished>(
             args.itemIds,
             MAX_TARGETS_FOR_READ_REQUEST,
@@ -135,7 +130,7 @@ export default (queryConfig: QueryClientConfig) => {
           ),
         onSuccess: async (publishedData) => {
           // save items in their own key
-          publishedData?.data?.toSeq()?.forEach(async (p) => {
+          Object.values(publishedData?.data)?.forEach(async (p) => {
             const { id } = p.item;
             queryClient.setQueryData(buildItemPublishedInformationKey(id), p);
           });

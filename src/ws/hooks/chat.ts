@@ -1,10 +1,5 @@
-import { ChatMessage, UUID, convertJs } from '@graasp/sdk';
-import {
-  Channel,
-  ChatMessageRecord,
-  ItemChatRecord,
-  WebsocketClient,
-} from '@graasp/sdk/frontend';
+import { ChatMessage, ItemChat, UUID } from '@graasp/sdk';
+import { Channel, WebsocketClient } from '@graasp/sdk/frontend';
 
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
@@ -42,36 +37,45 @@ export const configureWsChatHooks = (websocketClient: WebsocketClient) => ({
       const handler = (event: ChatEvent) => {
         if (event.kind === KINDS.ITEM) {
           const chatKey = buildItemChatKey(chatId);
-          const current = queryClient.getQueryData<ItemChatRecord>(chatKey);
+          const current = queryClient.getQueryData<ItemChat>(chatKey);
 
-          const message: ChatMessageRecord = convertJs(event.message);
+          const { message } = event;
 
           if (current) {
             switch (event.op) {
               case OPS.PUBLISH: {
-                const mutation = current.push(message);
+                const mutation = { ...current, message };
                 queryClient.setQueryData(chatKey, mutation);
                 break;
               }
               case OPS.UPDATE: {
-                const mutation = current.update(
-                  current.findIndex((m) => m.id === event.message.id),
-                  () => message,
+                const index = current.messages.findIndex(
+                  (m) => m.id === event.message.id,
                 );
-                queryClient.setQueryData(chatKey, mutation);
+                // TODO CHECK !!!!!!!!!
+                current.messages
+                  .slice(0, index)
+                  .concat([message])
+                  .concat(current.messages.slice(index + 1));
+
+                queryClient.setQueryData(chatKey, current);
                 break;
               }
               case OPS.DELETE: {
-                const mutation = current.delete(
-                  current.findIndex((m) => m.id === message.id),
+                // TODO CHECK !!!!!!!!!
+                const index = current.messages.findIndex(
+                  (m) => m.id === message.id,
                 );
-                console.error(mutation.toJS());
-                queryClient.setQueryData(chatKey, mutation);
+                current.messages
+                  .slice(0, index)
+                  .concat(current.messages.slice(index + 1));
+                queryClient.setQueryData(chatKey, current);
                 break;
               }
               case OPS.CLEAR: {
-                const mutation = current.clear();
-                queryClient.setQueryData(chatKey, mutation);
+                // TODO CHECK !!!!!!!!!
+                current.messages = [];
+                queryClient.setQueryData(chatKey, current);
                 break;
               }
               default:

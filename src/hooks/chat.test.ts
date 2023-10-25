@@ -1,9 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { ChatMessage } from '@graasp/sdk';
-import { ExportedItemChatRecord, ItemChatRecord } from '@graasp/sdk/frontend';
+import { ChatMessage, ExportedItemChat, ItemChat } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import Immutable from 'immutable';
 import Cookies from 'js-cookie';
 import nock from 'nock';
 
@@ -45,7 +43,7 @@ describe('Chat Hooks', () => {
     const hook = () => hooks.useItemChat(itemId);
 
     it(`Receive chat messages`, async () => {
-      const response: ItemChatRecord = createMockItemChat([mockMessage]);
+      const response: ItemChat = createMockItemChat([mockMessage]);
       const endpoints = [
         {
           route,
@@ -58,12 +56,10 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
 
     it(`Unauthorized`, async () => {
@@ -116,12 +112,10 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
 
     it(`getUpdates = false`, async () => {
@@ -139,12 +133,10 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
   });
 
@@ -156,20 +148,17 @@ describe('Chat Hooks', () => {
     const hook = () => hooks.useExportItemChat(itemId);
 
     it(`Receive exported chat`, async () => {
-      const response: ExportedItemChatRecord = createMockExportedItemChat(
-        itemId,
-        [
-          {
-            id: 'some-id',
-            chatId: itemId,
-            body: 'some content',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            creator: MOCK_MEMBER,
-            creatorName: 'A user name',
-          },
-        ],
-      );
+      const response: ExportedItemChat = createMockExportedItemChat(itemId, [
+        {
+          id: 'some-id',
+          chatId: itemId,
+          body: 'some content',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          creator: MOCK_MEMBER,
+          creatorName: 'A user name',
+        },
+      ]);
       const endpoints = [
         {
           route,
@@ -182,12 +171,10 @@ describe('Chat Hooks', () => {
         wrapper,
       });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
 
     it(`Unauthorized`, async () => {

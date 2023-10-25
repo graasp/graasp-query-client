@@ -1,7 +1,5 @@
-import { UUID, convertJs } from '@graasp/sdk';
-import { InvitationRecord } from '@graasp/sdk/frontend';
+import { Invitation, UUID } from '@graasp/sdk';
 
-import { List } from 'immutable';
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
@@ -16,13 +14,11 @@ export default (queryConfig: QueryClientConfig) => {
   const useInvitation = (id?: UUID) =>
     useQuery({
       queryKey: buildInvitationKey(id),
-      queryFn: (): Promise<InvitationRecord> => {
+      queryFn: (): Promise<Invitation> => {
         if (!id) {
           throw new UndefinedArgument();
         }
-        return Api.getInvitation(queryConfig, id).then((data) =>
-          convertJs(data),
-        );
+        return Api.getInvitation(queryConfig, id).then((data) => data);
       },
       ...defaultQueryOptions,
       enabled: Boolean(id),
@@ -34,14 +30,12 @@ export default (queryConfig: QueryClientConfig) => {
   const useItemInvitations = (id?: UUID) =>
     useQuery({
       queryKey: buildItemInvitationsKey(id),
-      queryFn: (): Promise<List<InvitationRecord>> => {
+      queryFn: (): Promise<Invitation[]> => {
         if (!id) {
           throw new UndefinedArgument();
         }
 
-        return Api.getInvitationsForItem(id, queryConfig).then((data) =>
-          convertJs(data),
-        );
+        return Api.getInvitationsForItem(id, queryConfig).then((data) => data);
       },
       enabled: Boolean(id),
       ...defaultQueryOptions,

@@ -1,4 +1,10 @@
-import { DiscriminatedItem, Item, ResultOf, UUID } from '@graasp/sdk';
+import {
+  DiscriminatedItem,
+  Item,
+  RecycledItemData,
+  ResultOf,
+  UUID,
+} from '@graasp/sdk';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
 import { PartialQueryConfigForApi } from '../types';
@@ -200,7 +206,7 @@ export const getRecycledItemsData = async ({
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
-      .get<Item[]>(`${API_HOST}/${GET_RECYCLED_ITEMS_DATA_ROUTE}`)
+      .get<RecycledItemData[]>(`${API_HOST}/${GET_RECYCLED_ITEMS_DATA_ROUTE}`)
       .then(({ data }) => data),
   );
 
