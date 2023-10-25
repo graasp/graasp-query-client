@@ -5,8 +5,8 @@ import {
   UUID,
 } from '@graasp/sdk';
 
-import { QueryClientConfig } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types';
+import { verifyAuthentication } from './axios';
 import {
   buildDeleteItemLoginSchemaRoute, // buildGetItemLoginRoute,
   buildGetItemLoginSchemaRoute,
@@ -15,8 +15,6 @@ import {
   buildPutItemLoginSchemaRoute,
 } from './routes';
 
-const axios = configureAxios();
-
 export const postItemLoginSignIn = async (
   {
     itemId,
@@ -24,7 +22,7 @@ export const postItemLoginSignIn = async (
     memberId,
     password,
   }: { itemId: UUID; username?: string; memberId?: UUID; password?: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Member> =>
   axios
     .post(`${API_HOST}/${buildPostItemLoginSignInRoute(itemId)}`, {
@@ -36,7 +34,7 @@ export const postItemLoginSignIn = async (
 
 export const getItemLoginSchema = async (
   id: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get(`${API_HOST}/${buildGetItemLoginSchemaRoute(id)}`)
@@ -44,7 +42,7 @@ export const getItemLoginSchema = async (
 
 export const getItemLoginSchemaType = async (
   id: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<ItemLoginSchemaType> =>
   axios
     .get(`${API_HOST}/${buildGetItemLoginSchemaTypeRoute(id)}`)
@@ -52,7 +50,7 @@ export const getItemLoginSchemaType = async (
 
 export const putItemLoginSchema = async (
   { itemId, type }: { itemId: UUID; type: ItemLoginSchemaType },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<ItemLoginSchema> =>
   verifyAuthentication(() =>
     axios
@@ -64,7 +62,7 @@ export const putItemLoginSchema = async (
 
 export const deleteItemLoginSchema = async (
   { itemId }: { itemId: UUID },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<void> =>
   verifyAuthentication(() =>
     axios.delete(`${API_HOST}/${buildDeleteItemLoginSchemaRoute(itemId)}`),

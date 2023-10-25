@@ -1,9 +1,9 @@
 import { DiscriminatedItem, Item, ResultOf, UUID } from '@graasp/sdk';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
-import { QueryClientConfig } from '../types';
+import { PartialQueryConfigForApi } from '../types';
 import { getParentsIdsFromPath } from '../utils/item';
-import configureAxios, { verifyAuthentication } from './axios';
+import { verifyAuthentication } from './axios';
 import {
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_DATA_ROUTE,
@@ -24,18 +24,21 @@ import {
   buildRestoreItemsRoute,
 } from './routes';
 
-const axios = configureAxios();
-
-export const getItem = (id: UUID, { API_HOST }: QueryClientConfig) =>
-  axios.get(`${API_HOST}/${buildGetItemRoute(id)}`).then(({ data }) => data);
+export const getItem = (
+  id: UUID,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) => axios.get(`${API_HOST}/${buildGetItemRoute(id)}`).then(({ data }) => data);
 
 export const getItems = async (
   ids: UUID[],
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<ResultOf<Item>> =>
   axios.get(`${API_HOST}/${buildGetItemsRoute(ids)}`).then(({ data }) => data);
 
-export const getOwnItems = async ({ API_HOST }: QueryClientConfig) =>
+export const getOwnItems = async ({
+  API_HOST,
+  axios,
+}: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios.get(`${API_HOST}/${GET_OWN_ITEMS_ROUTE}`).then(({ data }) => data),
   );
@@ -48,7 +51,7 @@ export type PostItemPayloadType = Partial<DiscriminatedItem> &
 // querystring = {parentId}
 export const postItem = async (
   { name, type, description, extra, parentId }: PostItemPayloadType,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<DiscriminatedItem> =>
   verifyAuthentication(() =>
     axios
@@ -63,7 +66,7 @@ export const postItem = async (
 
 export const deleteItems = async (
   ids: UUID[],
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<void> =>
   verifyAuthentication(() =>
     axios
@@ -76,7 +79,7 @@ export const deleteItems = async (
 export const editItem = async (
   id: UUID,
   item: Partial<Item>,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<DiscriminatedItem> =>
   verifyAuthentication(() =>
     axios
@@ -91,7 +94,7 @@ export const getChildren = async (
   id: UUID,
   // eslint-disable-next-line default-param-last
   ordered = true,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get(`${API_HOST}/${buildGetChildrenRoute(id, ordered)}`)
@@ -99,7 +102,7 @@ export const getChildren = async (
 
 export const getParents = async (
   { id, path }: { id: UUID; path?: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Item[]> => {
   // shortcut to prevent fetching parents if path shows that item is a root
   if (path) {
@@ -115,7 +118,7 @@ export const getParents = async (
 
 export const getDescendants = async (
   { id }: { id: UUID },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Item[]> =>
   axios
     .get(`${API_HOST}/${buildGetItemDescendants(id)}`)
@@ -129,7 +132,7 @@ export const moveItems = async (
     ids: UUID[];
     to?: UUID;
   },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<void> =>
   verifyAuthentication(() => {
     // send parentId if defined
@@ -149,7 +152,7 @@ export const copyItems = async (
     ids: UUID[];
     to?: UUID;
   },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<void> =>
   verifyAuthentication(() => {
     // send parentId if defined
@@ -159,7 +162,10 @@ export const copyItems = async (
     });
   });
 
-export const getSharedItems = async ({ API_HOST }: QueryClientConfig) =>
+export const getSharedItems = async ({
+  API_HOST,
+  axios,
+}: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
       .get<Item[]>(`${API_HOST}/${SHARED_ITEM_WITH_ROUTE}`, {})
@@ -168,7 +174,7 @@ export const getSharedItems = async ({ API_HOST }: QueryClientConfig) =>
 
 export const getFileContent = async (
   id: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get(`${API_HOST}/${buildDownloadFilesRoute(id)}`, {
@@ -178,7 +184,7 @@ export const getFileContent = async (
 
 export const getFileContentUrl = async (
   id: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get(`${API_HOST}/${buildDownloadFilesRoute(id)}`, {
@@ -188,7 +194,10 @@ export const getFileContentUrl = async (
     })
     .then(({ data }) => data);
 
-export const getRecycledItemsData = async ({ API_HOST }: QueryClientConfig) =>
+export const getRecycledItemsData = async ({
+  API_HOST,
+  axios,
+}: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
       .get<Item[]>(`${API_HOST}/${GET_RECYCLED_ITEMS_DATA_ROUTE}`)
@@ -197,7 +206,7 @@ export const getRecycledItemsData = async ({ API_HOST }: QueryClientConfig) =>
 
 export const recycleItems = async (
   ids: UUID[],
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
@@ -207,7 +216,7 @@ export const recycleItems = async (
 
 export const restoreItems = async (
   itemIds: UUID[],
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
@@ -217,7 +226,7 @@ export const restoreItems = async (
 
 export const downloadItemThumbnail = async (
   { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get(
@@ -234,7 +243,7 @@ export const downloadItemThumbnail = async (
 
 export const downloadItemThumbnailUrl = async (
   { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get(

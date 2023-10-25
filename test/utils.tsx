@@ -10,6 +10,7 @@ import {
   UseMutationResult,
 } from 'react-query';
 
+import configureAxios from '../src/api/axios';
 import configureHooks from '../src/hooks';
 import configureQueryClient from '../src/queryClient';
 import { Notifier, QueryClientConfig } from '../src/types';
@@ -28,6 +29,7 @@ export const setUpTest = (args?: Args) => {
   const queryConfig: QueryClientConfig = {
     API_HOST,
     DOMAIN,
+    axios: configureAxios(),
     defaultQueryOptions: {
       retry: 0,
       cacheTime: 0,

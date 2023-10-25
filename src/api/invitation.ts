@@ -1,8 +1,8 @@
 import { Invitation, ResultOf, UUID } from '@graasp/sdk';
 import { NewInvitation } from '@graasp/sdk/frontend';
 
-import { QueryClientConfig } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types';
+import { verifyAuthentication } from './axios';
 import {
   buildDeleteInvitationRoute,
   buildGetInvitationRoute,
@@ -12,11 +12,9 @@ import {
   buildResendInvitationRoute,
 } from './routes';
 
-const axios = configureAxios();
-
 // eslint-disable-next-line import/prefer-default-export
 export const getInvitation = async (
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
   id: UUID,
 ) =>
   axios
@@ -25,7 +23,7 @@ export const getInvitation = async (
 
 export const postInvitations = async (
   { itemId, invitations }: { itemId: UUID; invitations: NewInvitation[] },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<ResultOf<Invitation>> =>
   verifyAuthentication(() =>
     axios
@@ -35,7 +33,7 @@ export const postInvitations = async (
 
 export const getInvitationsForItem = async (
   id: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Invitation[]> =>
   verifyAuthentication(() =>
     axios
@@ -46,7 +44,7 @@ export const getInvitationsForItem = async (
 export const patchInvitation = async (
   payload: { itemId: UUID; id: UUID },
   body: Partial<Invitation>,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Invitation> =>
   verifyAuthentication(() =>
     axios
@@ -56,7 +54,7 @@ export const patchInvitation = async (
 
 export const deleteInvitation = async (
   payload: { itemId: UUID; id: UUID },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Invitation> =>
   verifyAuthentication(() =>
     axios
@@ -66,7 +64,7 @@ export const deleteInvitation = async (
 
 export const resendInvitation = async (
   payload: { itemId: UUID; id: UUID },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<void> =>
   verifyAuthentication(() =>
     axios.post(`${API_HOST}/${buildResendInvitationRoute(payload)}`),

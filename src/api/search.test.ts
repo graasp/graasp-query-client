@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { QueryClientConfig } from '../types';
+import configureAxios from './axios';
 import { searchPublishedItems } from './search';
 
 type SearchQuery = { queries: { q: string; filter: string }[] };
@@ -8,6 +8,8 @@ type SearchQuery = { queries: { q: string; filter: string }[] };
 describe('Search API', () => {
   describe('searchPublishedItems', () => {
     let spy: jest.SpyInstance;
+    const axiosInstance = configureAxios();
+
     beforeEach(() => {
       spy = jest.spyOn(axios, 'post').mockImplementation(async () => true);
     });
@@ -20,9 +22,13 @@ describe('Search API', () => {
       const query = 'query';
       const categories = [['id1']];
 
-      await searchPublishedItems({ query, categories }, {
-        API_HOST: 'apihost',
-      } as QueryClientConfig);
+      await searchPublishedItems(
+        { query, categories },
+        {
+          API_HOST: 'apihost',
+          axios: axiosInstance,
+        },
+      );
 
       const call = (spy.mock.calls[0][1] as SearchQuery).queries[0];
       expect(call.q).toEqual(query);
@@ -33,9 +39,13 @@ describe('Search API', () => {
     it('correctly send request without query string', async () => {
       const categories = [['id1']];
 
-      await searchPublishedItems({ categories }, {
-        API_HOST: 'apihost',
-      } as QueryClientConfig);
+      await searchPublishedItems(
+        { categories },
+        {
+          API_HOST: 'apihost',
+          axios: axiosInstance,
+        },
+      );
 
       const call = (spy.mock.calls[0][1] as SearchQuery).queries[0];
       expect(call.q).toBeUndefined();
@@ -46,9 +56,13 @@ describe('Search API', () => {
     it('correctly send request without categories', async () => {
       const query = 'query';
 
-      await searchPublishedItems({ query }, {
-        API_HOST: 'apihost',
-      } as QueryClientConfig);
+      await searchPublishedItems(
+        { query },
+        {
+          API_HOST: 'apihost',
+          axios: axiosInstance,
+        },
+      );
 
       const call = (spy.mock.calls[0][1] as SearchQuery).queries[0];
       expect(call.q).toEqual(query);
@@ -57,9 +71,13 @@ describe('Search API', () => {
     it('correctly send request without categories and publishedRoot false', async () => {
       const query = 'query';
 
-      await searchPublishedItems({ query, isPublishedRoot: false }, {
-        API_HOST: 'apihost',
-      } as QueryClientConfig);
+      await searchPublishedItems(
+        { query, isPublishedRoot: false },
+        {
+          API_HOST: 'apihost',
+          axios: axiosInstance,
+        },
+      );
 
       const call = (spy.mock.calls[0][1] as SearchQuery).queries[0];
       expect(call.q).toEqual(query);
@@ -69,9 +87,13 @@ describe('Search API', () => {
       const query = 'query';
       const categories = [['id1', 'id2'], ['id3', 'id4'], ['id5']];
 
-      await searchPublishedItems({ query, categories }, {
-        API_HOST: 'apihost',
-      } as QueryClientConfig);
+      await searchPublishedItems(
+        { query, categories },
+        {
+          API_HOST: 'apihost',
+          axios: axiosInstance,
+        },
+      );
 
       const call = (spy.mock.calls[0][1] as SearchQuery).queries[0];
       expect(call.q).toEqual(query);

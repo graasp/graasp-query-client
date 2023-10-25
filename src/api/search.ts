@@ -1,10 +1,7 @@
 import { Category, DiscriminatedItem, INDEX_NAME } from '@graasp/sdk';
 
-import { QueryClientConfig } from '../types';
-import configureAxios from './axios';
+import { PartialQueryConfigForApi } from '../types';
 import { SEARCH_PUBLISHED_ITEMS_ROUTE } from './routes';
-
-const axios = configureAxios();
 
 export type MeiliSearchProps = {
   limit?: number;
@@ -36,7 +33,7 @@ export const searchPublishedItems = async (
     categories?: Category['id'][][];
     isPublishedRoot?: boolean;
   } & MeiliSearchProps,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<DiscriminatedItem[]> => {
   const query: {
     indexUid: string;

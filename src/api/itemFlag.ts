@@ -1,12 +1,10 @@
 import { ItemFlag, UUID } from '@graasp/sdk';
 
-import { QueryClientConfig } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types';
+import { verifyAuthentication } from './axios';
 import { GET_FLAGS_ROUTE, buildPostItemFlagRoute } from './routes';
 
-const axios = configureAxios();
-
-export const getFlags = async ({ API_HOST }: QueryClientConfig) =>
+export const getFlags = async ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios.get(`${API_HOST}/${GET_FLAGS_ROUTE}`).then(({ data }) => data),
   );
@@ -14,7 +12,7 @@ export const getFlags = async ({ API_HOST }: QueryClientConfig) =>
 // payload: flagId, itemId
 export const postItemFlag = async (
   { type, itemId }: { type: UUID; itemId: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<ItemFlag> =>
   axios
     .post(`${API_HOST}/${buildPostItemFlagRoute(itemId)}`, {

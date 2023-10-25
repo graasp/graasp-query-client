@@ -12,6 +12,7 @@ import {
 } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
+import configureAxios from './api/axios';
 import {
   CACHE_TIME_MILLISECONDS,
   STALE_TIME_MILLISECONDS,
@@ -54,9 +55,15 @@ export default (config: Partial<QueryClientConfig>) => {
     DOMAIN: config.DOMAIN ?? getHostname(),
   };
 
+  const axios = configureAxios();
+
+  // apply in place changes on axios
+  config.onConfigAxios?.(axios);
+
   // define config for query client
   const queryConfig: QueryClientConfig = {
     ...baseConfig,
+    axios,
     // derive WS_HOST from API_HOST if needed
     WS_HOST:
       config?.WS_HOST || `${baseConfig.API_HOST.replace('http', 'ws')}/ws`,
@@ -101,5 +108,6 @@ export default (config: Partial<QueryClientConfig>) => {
     dehydrate,
     Hydrate,
     mutations,
+    axios,
   };
 };

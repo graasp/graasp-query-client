@@ -1,14 +1,13 @@
 import { App, UUID } from '@graasp/sdk';
 
-import { QueryClientConfig } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types';
+import { verifyAuthentication } from './axios';
 import { buildAppListRoute, buildGetApiAccessTokenRoute } from './routes';
-
-const axios = configureAxios();
 
 export const getApps = async ({
   API_HOST,
-}: Pick<QueryClientConfig, 'API_HOST'>): Promise<App[]> =>
+  axios,
+}: PartialQueryConfigForApi): Promise<App[]> =>
   verifyAuthentication(() =>
     axios.get(`${API_HOST}/${buildAppListRoute}`).then(({ data }) => data),
   );
@@ -21,7 +20,7 @@ export const requestApiAccessToken = async (
     /** @deprecated use key instead */
     app?: string;
   },
-  { API_HOST }: Pick<QueryClientConfig, 'API_HOST'>,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<{ token: string }> => {
   const { id, key, origin, app } = args;
   return axios

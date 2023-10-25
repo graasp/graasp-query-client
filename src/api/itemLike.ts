@@ -1,7 +1,7 @@
 import { UUID } from '@graasp/sdk';
 
-import { QueryClientConfig } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types';
+import { verifyAuthentication } from './axios';
 import {
   buildDeleteItemLikeRoute,
   buildGetItemLikesRoute,
@@ -9,11 +9,9 @@ import {
   buildPostItemLikeRoute,
 } from './routes';
 
-const axios = configureAxios();
-
 export const getLikedItems = async (
   memberId: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
@@ -21,14 +19,17 @@ export const getLikedItems = async (
       .then(({ data }) => data),
   );
 
-export const getItemLikes = async (id: UUID, { API_HOST }: QueryClientConfig) =>
+export const getItemLikes = async (
+  id: UUID,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
   axios
     .get(`${API_HOST}/${buildGetItemLikesRoute(id)}`)
     .then(({ data }) => data);
 
 export const postItemLike = async (
   itemId: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
@@ -38,7 +39,7 @@ export const postItemLike = async (
 
 export const deleteItemLike = async (
   itemId: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
