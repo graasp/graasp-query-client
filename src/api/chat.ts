@@ -7,8 +7,8 @@ import {
   UUID,
 } from '@graasp/sdk';
 
-import { QueryClientConfig } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types';
+import { verifyAuthentication } from './axios';
 import {
   buildClearItemChatRoute,
   buildDeleteItemChatMessageRoute,
@@ -18,11 +18,9 @@ import {
   buildPostItemChatMessageRoute,
 } from './routes';
 
-const axios = configureAxios();
-
 export const getItemChat = async (
   id: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<ChatMessage[]> =>
   axios
     .get(`${API_HOST}/${buildGetItemChatRoute(id)}`)
@@ -30,7 +28,7 @@ export const getItemChat = async (
 
 export const exportItemChat = async (
   id: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(
     (): Promise<ExportedChatMessage> =>
@@ -41,7 +39,7 @@ export const exportItemChat = async (
 
 export const postItemChatMessage = async (
   { itemId, body, mentions }: PostChatMessageParamType,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(
     (): Promise<ChatMessage> =>
@@ -55,7 +53,7 @@ export const postItemChatMessage = async (
 
 export const patchItemChatMessage = async (
   { itemId, messageId, body, mentions }: PatchChatMessageParamType,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(
     (): Promise<ChatMessage> =>
@@ -72,7 +70,7 @@ export const patchItemChatMessage = async (
 
 export const deleteItemChatMessage = async (
   { itemId, messageId }: DeleteChatMessageParamType,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(
     (): Promise<ChatMessage> =>
@@ -85,7 +83,7 @@ export const deleteItemChatMessage = async (
 
 export const clearItemChat = async (
   id: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<void> =>
   verifyAuthentication(() =>
     axios

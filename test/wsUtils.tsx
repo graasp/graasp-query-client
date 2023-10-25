@@ -4,6 +4,7 @@ import { renderHook } from '@testing-library/react';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
+import configureAxios from '../src/api/axios';
 import configureQueryClient from '../src/queryClient';
 import { Notifier, QueryClientConfig } from '../src/types';
 import { isDataEqual } from '../src/utils/util';
@@ -33,9 +34,11 @@ export const setUpWsTest = (args?: {
       // do nothing
     },
   } = args ?? {};
+  const axios = configureAxios();
   const queryConfig: QueryClientConfig = {
     API_HOST,
     DOMAIN,
+    axios,
     defaultQueryOptions: {
       retry: 0,
       cacheTime: 0,
