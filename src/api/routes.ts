@@ -54,8 +54,15 @@ export const buildCopyItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/copy`;
 export const buildCopyItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/copy?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
 export const buildEditItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
-export const buildExportItemRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/zip-export/${id}`;
+export const buildExportItemRoute = (args: { itemId: UUID; type?: string }) =>
+  `${ITEMS_ROUTE}/zip-export/${args.itemId}${qs.stringify(
+    {
+      type: args.type,
+    },
+    {
+      addQueryPrefix: true,
+    },
+  )}`;
 export const buildPostItemMembershipRoute = (id: UUID) =>
   `item-memberships?itemId=${id}`;
 export const buildPostManyItemMembershipsRoute = (id: UUID) =>

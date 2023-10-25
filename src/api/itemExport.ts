@@ -8,12 +8,12 @@ const axios = configureAxios();
 
 /* eslint-disable import/prefer-default-export */
 export const exportItem = async (
-  id: UUID,
+  args: { itemId: UUID; type?: string },
   { API_HOST }: QueryClientConfig,
 ): Promise<Blob> =>
   // options?: { public: boolean },
   axios({
-    url: `${API_HOST}/${buildExportItemRoute(id)}`,
+    url: `${API_HOST}/${buildExportItemRoute(args)}`,
     method: 'GET',
     responseType: 'blob',
   }).then(({ data }) => data);
