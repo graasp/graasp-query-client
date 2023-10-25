@@ -1,5 +1,5 @@
-import { QueryClientConfig } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types';
+import { verifyAuthentication } from './axios';
 import {
   CREATE_SETUP_INTENT_ROUTE,
   GET_CARDS_ROUTE,
@@ -11,10 +11,9 @@ import {
   buildSetDefaultCardRoute,
 } from './routes';
 
-const axios = configureAxios();
 export const getPlan = async (
   { planId }: { planId: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
@@ -22,12 +21,15 @@ export const getPlan = async (
       .then(({ data }) => data),
   );
 
-export const getPlans = async ({ API_HOST }: QueryClientConfig) =>
+export const getPlans = async ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios.get(`${API_HOST}/${GET_PLANS_ROUTE}`).then(({ data }) => data),
   );
 
-export const getOwnPlan = async ({ API_HOST }: QueryClientConfig) =>
+export const getOwnPlan = async ({
+  API_HOST,
+  axios,
+}: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios.get(`${API_HOST}/${GET_OWN_PLAN_ROUTE}`).then(({ data }) => data),
   );
@@ -35,7 +37,7 @@ export const getOwnPlan = async ({ API_HOST }: QueryClientConfig) =>
 // payload: planId
 export const changePlan = async (
   { planId, cardId }: { planId: string; cardId?: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
@@ -43,14 +45,14 @@ export const changePlan = async (
       .then(({ data }) => data),
   );
 
-export const getCards = async ({ API_HOST }: QueryClientConfig) =>
+export const getCards = async ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios.get(`${API_HOST}/${GET_CARDS_ROUTE}`).then(({ data }) => data),
   );
 
 export const setDefaultCard = async (
   { cardId }: { cardId: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
@@ -58,14 +60,20 @@ export const setDefaultCard = async (
       .then(({ data }) => data),
   );
 
-export const createSetupIntent = async ({ API_HOST }: QueryClientConfig) =>
+export const createSetupIntent = async ({
+  API_HOST,
+  axios,
+}: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
       .post(`${API_HOST}/${CREATE_SETUP_INTENT_ROUTE}`)
       .then(({ data }) => data),
   );
 
-export const getCurrentCustomer = async ({ API_HOST }: QueryClientConfig) =>
+export const getCurrentCustomer = async ({
+  API_HOST,
+  axios,
+}: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios.get(`${API_HOST}/${GET_CURRENT_CUSTOMER}`).then(({ data }) => data),
   );

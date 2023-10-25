@@ -4,6 +4,7 @@
   "type": "commonjs",
   "repository": "graasp/graasp-query-client",
   "module": "./dist/index.js",
+  "main": "./dist/index.js",
   "source": "./src/index.ts",
   "types": "./dist/index.d.ts",
   "author": "Graasp",

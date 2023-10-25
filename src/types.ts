@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosInstance } from 'axios';
 import { QueryObserverOptions } from 'react-query';
 
 import { isDataEqual } from './utils/util';
@@ -19,6 +19,8 @@ export type QueryClientConfig = {
   DOMAIN?: string;
   enableWebsocket: boolean;
   notifier?: Notifier;
+  axios: AxiosInstance;
+  onConfigAxios?: (axios: AxiosInstance) => void;
   defaultQueryOptions: {
     // time until data in cache considered stale if cache not invalidated
     staleTime: number;
@@ -35,3 +37,8 @@ export type QueryClientConfig = {
     isDataEqual?: typeof isDataEqual;
   };
 };
+
+export type PartialQueryConfigForApi = Pick<
+  QueryClientConfig,
+  'API_HOST' | 'axios'
+>;

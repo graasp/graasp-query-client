@@ -1,8 +1,8 @@
 import { HttpMethod } from '@graasp/sdk';
 import { Password } from '@graasp/sdk/frontend';
 
-import { QueryClientConfig } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types';
+import { verifyAuthentication } from './axios';
 import {
   MOBILE_SIGN_IN_ROUTE,
   MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE,
@@ -13,26 +13,27 @@ import {
   SIGN_UP_ROUTE,
 } from './routes';
 
-const axios = configureAxios();
-
-export const signOut = ({ API_HOST }: QueryClientConfig): Promise<void> =>
+export const signOut = ({
+  API_HOST,
+  axios,
+}: PartialQueryConfigForApi): Promise<void> =>
   verifyAuthentication(() =>
     axios.get(`${API_HOST}/${SIGN_OUT_ROUTE}`).then(({ data }) => data),
   );
 
 export const signIn = async (
   payload: { email: string; captcha: string; url?: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<void> => axios.post(`${API_HOST}/${SIGN_IN_ROUTE}`, payload);
 
 export const mobileSignIn = async (
   payload: { email: string; challenge: string; captcha: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<void> => axios.post(`${API_HOST}/${MOBILE_SIGN_IN_ROUTE}`, payload);
 
 export const signInWithPassword = async (
   payload: { email: string; password: Password; captcha: string; url?: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<{ resource: string }> =>
   axios({
     method: HttpMethod.POST,
@@ -49,7 +50,7 @@ export const mobileSignInWithPassword = async (
     challenge: string;
     captcha: string;
   },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<{ resource: string }> =>
   axios
     .post(`${API_HOST}/${MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE}`, payload, {
@@ -60,10 +61,10 @@ export const mobileSignInWithPassword = async (
 
 export const signUp = async (
   payload: { name: string; email: string; captcha: string; url?: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<void> => axios.post(`${API_HOST}/${SIGN_UP_ROUTE}`, payload);
 
 export const mobileSignUp = async (
   payload: { name: string; email: string; challenge: string; captcha: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<void> => axios.post(`${API_HOST}/${MOBILE_SIGN_UP_ROUTE}`, payload);

@@ -1,7 +1,7 @@
 import { ItemTagType, UUID } from '@graasp/sdk';
 
-import { QueryClientConfig } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types';
+import { verifyAuthentication } from './axios';
 import {
   GET_TAGS_ROUTE,
   buildDeleteItemTagRoute,
@@ -10,19 +10,20 @@ import {
   buildPostItemTagRoute,
 } from './routes';
 
-const axios = configureAxios();
-
-export const getTags = async ({ API_HOST }: QueryClientConfig) =>
+export const getTags = async ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   axios.get(`${API_HOST}/${GET_TAGS_ROUTE}`).then(({ data }) => data);
 
-export const getItemTags = async (id: UUID, { API_HOST }: QueryClientConfig) =>
+export const getItemTags = async (
+  id: UUID,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
   axios
     .get(`${API_HOST}/${buildGetItemTagsRoute(id)}`)
     .then(({ data }) => data);
 
 export const getItemsTags = async (
   ids: UUID[],
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get(`${API_HOST}/${buildGetItemsTagsRoute(ids)}`)
@@ -31,7 +32,7 @@ export const getItemsTags = async (
 // payload: tagId, itemPath, creator
 export const postItemTag = async (
   { itemId, type }: { itemId: UUID; type: ItemTagType },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
@@ -41,7 +42,7 @@ export const postItemTag = async (
 
 export const deleteItemTag = async (
   { itemId, type }: { itemId: UUID; type: `${ItemTagType}` | ItemTagType },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios

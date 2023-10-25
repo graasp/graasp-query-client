@@ -1,7 +1,7 @@
 import { UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import { verifyAuthentication } from './axios';
 import {
   GET_ITEM_VALIDATION_REVIEWS_ROUTE,
   GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE,
@@ -13,10 +13,9 @@ import {
   buildUpdateItemValidationReviewRoute,
 } from './routes';
 
-const axios = configureAxios();
-
 export const getItemValidationReviews = async ({
   API_HOST,
+  axios,
 }: QueryClientConfig) =>
   axios
     .get(`${API_HOST}/${GET_ITEM_VALIDATION_REVIEWS_ROUTE}`)
@@ -24,6 +23,7 @@ export const getItemValidationReviews = async ({
 
 export const getItemValidationStatuses = async ({
   API_HOST,
+  axios,
 }: QueryClientConfig) =>
   axios
     .get(`${API_HOST}/${GET_ITEM_VALIDATION_STATUSES_ROUTE}`)
@@ -31,13 +31,14 @@ export const getItemValidationStatuses = async ({
 
 export const getItemValidationReviewStatuses = async ({
   API_HOST,
+  axios,
 }: QueryClientConfig) =>
   axios
     .get(`${API_HOST}/${GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE}`)
     .then(({ data }) => data);
 
 export const getLastItemValidationGroup = async (
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: QueryClientConfig,
   itemId: UUID,
 ) =>
   verifyAuthentication(() =>
@@ -46,7 +47,7 @@ export const getLastItemValidationGroup = async (
       .then(({ data }) => data),
   );
 export const getItemValidationAndReview = async (
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: QueryClientConfig,
   itemId: UUID,
 ) =>
   verifyAuthentication(() =>
@@ -56,7 +57,7 @@ export const getItemValidationAndReview = async (
   );
 
 export const getItemValidationGroups = async (
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: QueryClientConfig,
   iVId: UUID,
 ) =>
   verifyAuthentication(() =>
@@ -67,7 +68,7 @@ export const getItemValidationGroups = async (
 
 export const postItemValidation = async (
   { itemId }: { itemId: UUID },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
     axios
@@ -78,7 +79,7 @@ export const postItemValidation = async (
 // payload: status, reason ("" if not provided)
 export const updateItemValidationReview = async (
   { id, status, reason }: { id: UUID; status: string; reason?: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: QueryClientConfig,
 ) =>
   verifyAuthentication(() =>
     axios

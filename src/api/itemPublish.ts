@@ -1,7 +1,7 @@
 import { Item, ItemPublished, ResultOf, UUID } from '@graasp/sdk';
 
-import { QueryClientConfig } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types';
+import { verifyAuthentication } from './axios';
 import {
   buildGetAllPublishedItemsRoute,
   buildGetItemPublishedInformationRoute,
@@ -13,11 +13,9 @@ import {
   buildManyGetItemPublishedInformationsRoute,
 } from './routes';
 
-const axios = configureAxios();
-
 export const getAllPublishedItems = async (
   args: { categoryIds?: UUID[] },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Item[]> =>
   axios
     .get(`${API_HOST}/${buildGetAllPublishedItemsRoute(args?.categoryIds)}`)
@@ -25,7 +23,7 @@ export const getAllPublishedItems = async (
 
 export const getMostLikedPublishedItems = async (
   args: { limit?: number },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Item[]> =>
   axios
     .get(`${API_HOST}/${buildGetMostLikedPublishedItemsRoute(args?.limit)}`)
@@ -33,7 +31,7 @@ export const getMostLikedPublishedItems = async (
 
 export const getMostRecentPublishedItems = async (
   args: { limit?: number },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Item[]> =>
   axios
     .get(`${API_HOST}/${buildGetMostRecentPublishedItemsRoute(args?.limit)}`)
@@ -41,7 +39,7 @@ export const getMostRecentPublishedItems = async (
 
 export const getPublishedItemsForMember = async (
   memberId: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Item[]> =>
   axios
     .get(`${API_HOST}/${buildGetPublishedItemsForMemberRoute(memberId)}`)
@@ -49,7 +47,7 @@ export const getPublishedItemsForMember = async (
 
 export const getItemPublishedInformation = async (
   id: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get(`${API_HOST}/${buildGetItemPublishedInformationRoute(id)}`)
@@ -57,7 +55,7 @@ export const getItemPublishedInformation = async (
 
 export const getManyItemPublishedInformations = async (
   ids: UUID[],
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<ResultOf<ItemPublished>> =>
   axios
     .get(`${API_HOST}/${buildManyGetItemPublishedInformationsRoute(ids)}`)
@@ -65,7 +63,7 @@ export const getManyItemPublishedInformations = async (
 
 export const publishItem = async (
   id: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
   notification?: boolean,
 ): Promise<ItemPublished> =>
   verifyAuthentication(() =>
@@ -76,7 +74,7 @@ export const publishItem = async (
 
 export const unpublishItem = async (
   id: UUID,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<ItemPublished> =>
   verifyAuthentication(() =>
     axios

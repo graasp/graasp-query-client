@@ -1,15 +1,12 @@
 import { UUID } from '@graasp/sdk';
 
-import { QueryClientConfig } from '../types';
-import configureAxios from './axios';
+import { PartialQueryConfigForApi } from '../types';
 import { buildExportItemRoute } from './routes';
-
-const axios = configureAxios();
 
 /* eslint-disable import/prefer-default-export */
 export const exportItem = async (
   args: { itemId: UUID; type?: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Blob> =>
   // options?: { public: boolean },
   axios({

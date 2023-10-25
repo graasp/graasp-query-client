@@ -1,8 +1,8 @@
 import { ItemMembership, PermissionLevel, ResultOf, UUID } from '@graasp/sdk';
 import { FAILURE_MESSAGES } from '@graasp/translations';
 
-import { QueryClientConfig } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types';
+import { verifyAuthentication } from './axios';
 import { getMembersBy } from './member';
 import {
   buildDeleteItemMembershipRoute,
@@ -12,11 +12,9 @@ import {
   buildPostManyItemMembershipsRoute,
 } from './routes';
 
-const axios = configureAxios();
-
 export const getMembershipsForItems = async (
   ids: UUID[],
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<ResultOf<ItemMembership[]>> =>
   axios
     .get(`${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`)
@@ -27,18 +25,15 @@ export const postManyItemMemberships = async (
     memberships,
     itemId,
   }: { itemId: UUID; memberships: Partial<ItemMembership>[] },
-  config: QueryClientConfig,
-): Promise<ResultOf<ItemMembership>> => {
-  const { API_HOST } = config;
-
-  return verifyAuthentication(() =>
+  { API_HOST, axios }: PartialQueryConfigForApi,
+): Promise<ResultOf<ItemMembership>> =>
+  verifyAuthentication(() =>
     axios
       .post(`${API_HOST}/${buildPostManyItemMembershipsRoute(itemId)}`, {
         memberships,
       })
       .then(({ data }) => data),
   );
-};
 
 export const postItemMembership = async (
   {
@@ -46,9 +41,9 @@ export const postItemMembership = async (
     email,
     permission,
   }: { id: UUID; email: string; permission: PermissionLevel },
-  config: QueryClientConfig,
+  config: PartialQueryConfigForApi,
 ): Promise<ItemMembership> => {
-  const { API_HOST } = config;
+  const { API_HOST, axios } = config;
   const member = await getMembersBy({ emails: [email] }, config);
 
   if (!member || !Object.values(member.data).length) {
@@ -68,7 +63,7 @@ export const postItemMembership = async (
 
 export const editItemMembership = async (
   { id, permission }: { id: UUID; permission: PermissionLevel },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<ItemMembership> =>
   verifyAuthentication(() =>
     axios
@@ -80,7 +75,7 @@ export const editItemMembership = async (
 
 export const deleteItemMembership = async (
   { id }: { id: UUID },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<ItemMembership> =>
   verifyAuthentication(() =>
     axios

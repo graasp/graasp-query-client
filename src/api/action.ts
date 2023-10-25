@@ -1,8 +1,7 @@
 import { Action, ActionData, UUID } from '@graasp/sdk';
 
-import { QueryClientConfig } from '../types';
+import { PartialQueryConfigForApi } from '../types';
 import { AggregateActionsArgs } from '../utils/action';
-import configureAxios from './axios';
 import {
   buildExportActions,
   buildGetActions,
@@ -10,11 +9,9 @@ import {
   buildPostItemAction,
 } from './routes';
 
-const axios = configureAxios();
-
 export const getActions = async (
   args: { itemId: UUID; requestedSampleSize: number; view: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get<ActionData>(`${API_HOST}/${buildGetActions(args.itemId, args)}`)
@@ -22,7 +19,7 @@ export const getActions = async (
 
 export const getAggregateActions = async (
   args: AggregateActionsArgs,
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get<{ aggregateResult: number; createdDay: string }[]>(
@@ -32,13 +29,13 @@ export const getAggregateActions = async (
 
 export const exportActions = async (
   args: { itemId: UUID },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<void> =>
   axios.post(`${API_HOST}/${buildExportActions(args.itemId)}`);
 
 export const postItemAction = async (
   itemId: UUID,
   payload: { type: string; extra?: { [key: string]: unknown } },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Action> =>
   axios.post(`${API_HOST}/${buildPostItemAction(itemId)}`, payload);

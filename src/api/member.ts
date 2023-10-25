@@ -4,8 +4,8 @@ import { Password } from '@graasp/sdk/frontend';
 import { StatusCodes } from 'http-status-codes';
 
 import { DEFAULT_THUMBNAIL_SIZE, SIGNED_OUT_USER } from '../config/constants';
-import { QueryClientConfig } from '../types';
-import configureAxios, { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types';
+import { verifyAuthentication } from './axios';
 import {
   GET_CURRENT_MEMBER_ROUTE,
   buildDeleteMemberRoute,
@@ -19,11 +19,9 @@ import {
   buildUploadAvatarRoute,
 } from './routes';
 
-const axios = configureAxios();
-
 export const getMembersBy = async (
   { emails }: { emails: string[] },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<ResultOf<Member>> =>
   axios
     .get(`${API_HOST}/${buildGetMembersBy(emails)}`)
@@ -31,18 +29,21 @@ export const getMembersBy = async (
 
 export const getMember = async (
   { id }: { id: UUID },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) => axios.get(`${API_HOST}/${buildGetMember(id)}`).then(({ data }) => data);
 
 export const getMembers = (
   { ids }: { ids: UUID[] },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get<ResultOf<Member[]>>(`${API_HOST}/${buildGetMembersRoute(ids)}`)
     .then(({ data }) => data);
 
-export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) =>
+export const getCurrentMember = async ({
+  API_HOST,
+  axios,
+}: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
       .get(`${API_HOST}/${GET_CURRENT_MEMBER_ROUTE}`)
@@ -59,7 +60,10 @@ export const getCurrentMember = async ({ API_HOST }: QueryClientConfig) =>
       }),
   );
 
-export const getMemberStorage = async ({ API_HOST }: QueryClientConfig) =>
+export const getMemberStorage = async ({
+  API_HOST,
+  axios,
+}: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
       .get(`${API_HOST}/${buildGetMemberStorage()}`)
@@ -68,7 +72,7 @@ export const getMemberStorage = async ({ API_HOST }: QueryClientConfig) =>
 
 export const editMember = async (
   payload: { id: UUID; extra?: MemberExtra; name?: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Member> =>
   verifyAuthentication(() =>
     axios
@@ -80,7 +84,7 @@ export const editMember = async (
 
 export const deleteMember = async (
   { id }: { id: UUID },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
@@ -90,7 +94,7 @@ export const deleteMember = async (
 
 export const updatePassword = async (
   payload: { password: Password; currentPassword: Password },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<void> =>
   verifyAuthentication(() =>
     axios
@@ -106,7 +110,7 @@ export const uploadAvatar = async (
     filename,
     contentType,
   }: { itemId: UUID; filename: string; contentType: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
@@ -124,7 +128,7 @@ export const uploadAvatar = async (
 
 export const downloadAvatar = async (
   { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<Blob> =>
   axios
     .get(
@@ -137,7 +141,7 @@ export const downloadAvatar = async (
 
 export const downloadAvatarUrl = async (
   { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
-  { API_HOST }: QueryClientConfig,
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<string> =>
   axios
     .get(
