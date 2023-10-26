@@ -24,7 +24,7 @@ describe('Export Zip', () => {
 
   describe('useExportZip', () => {
     const itemId = 'item-id';
-    const route = `/${buildExportItemRoute(itemId)}`;
+    const route = `/${buildExportItemRoute({ itemId })}`;
     const mutation = mutations.useExportZip;
 
     it('Export zip', async () => {
@@ -43,7 +43,7 @@ describe('Export Zip', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: itemId });
+        await mockedMutation.mutate({ itemId });
         await waitForMutation();
       });
 
