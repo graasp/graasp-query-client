@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { HttpMethod, Item } from '@graasp/sdk';
+import { DiscriminatedItem, HttpMethod } from '@graasp/sdk';
 import { InvitationRecord } from '@graasp/sdk/frontend';
 
 import { act } from '@testing-library/react';
@@ -33,7 +33,7 @@ import {
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
-const item = ITEMS.first()!.toJS() as Item;
+const item = ITEMS.first()!.toJS() as DiscriminatedItem;
 const itemId = item.id;
 
 const defaultInvitations = buildMockInvitations(itemId);

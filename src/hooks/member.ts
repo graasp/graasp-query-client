@@ -1,10 +1,12 @@
 import {
+  CompleteMember,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
   UUID,
   convertJs,
 } from '@graasp/sdk';
 import {
+  ImmutableCast,
   MemberRecord,
   MemberStorageRecord,
   ResultOfRecord,
@@ -90,8 +92,9 @@ export default (queryConfig: QueryClientConfig) => {
       let shouldFetch = true;
       if (id) {
         shouldFetch =
-          queryClient.getQueryData<MemberRecord>(buildMemberKey(id))?.extra
-            ?.hasAvatar ?? true;
+          queryClient.getQueryData<ImmutableCast<CompleteMember>>(
+            buildMemberKey(id),
+          )?.extra?.hasAvatar ?? true;
       }
       return useQuery({
         queryKey: buildAvatarKey({ id, size, replyUrl: false }),
@@ -119,8 +122,9 @@ export default (queryConfig: QueryClientConfig) => {
       let shouldFetch = true;
       if (id) {
         shouldFetch =
-          queryClient.getQueryData<MemberRecord>(buildMemberKey(id))?.extra
-            ?.hasAvatar ?? true;
+          queryClient.getQueryData<ImmutableCast<CompleteMember>>(
+            buildMemberKey(id),
+          )?.extra?.hasAvatar ?? true;
       }
       return useQuery({
         queryKey: buildAvatarKey({ id, size, replyUrl: true }),

@@ -6,6 +6,7 @@ import {
   CategoryType,
   ChatMention,
   ChatMessage,
+  CompleteMember,
   Context,
   ExportedChatMessage,
   FlagType,
@@ -99,6 +100,10 @@ export const MOCK_MEMBER: Member = {
   id: '42',
   name: 'username',
   email: 'username@graasp.org',
+};
+
+export const MOCK_COMPLETE_MEMBER: CompleteMember = {
+  ...MOCK_MEMBER,
   type: MemberType.Individual,
   extra: {},
   updatedAt: new Date(),
@@ -581,13 +586,11 @@ const buildItemLikes = (): ItemLike[] => [
   {
     id: 'id1',
     item: MOCK_ITEM,
-    creator: MOCK_MEMBER,
     createdAt: new Date(),
   },
   {
     id: 'id2',
     item: MOCK_ITEM,
-    creator: MOCK_MEMBER,
     createdAt: new Date(),
   },
 ];
