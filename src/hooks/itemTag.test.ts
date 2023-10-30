@@ -1,5 +1,5 @@
 import {
-  Item,
+  DiscriminatedItem,
   ItemTag,
   ItemTagType,
   MAX_TARGETS_FOR_READ_REQUEST,
@@ -88,7 +88,7 @@ describe('Item Tags Hooks', () => {
         id: 'some id',
         createdAt: new Date(),
         creator: {} as Member,
-        item: { id } as Item,
+        item: { id } as DiscriminatedItem,
         type: ItemTagType.Hidden,
       },
     ]);
@@ -132,7 +132,7 @@ describe('Item Tags Hooks', () => {
           id: 'some id',
           createdAt: new Date(),
           creator: {} as Member,
-          item: { id } as Item,
+          item: { id } as DiscriminatedItem,
           type: ItemTagType.Hidden,
         },
       ];

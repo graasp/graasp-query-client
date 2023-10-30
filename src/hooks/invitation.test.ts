@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { Item } from '@graasp/sdk';
+import { DiscriminatedItem } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import Immutable, { List } from 'immutable';
@@ -19,7 +19,7 @@ import {
 import { buildInvitationKey, buildItemInvitationsKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-const item = ITEMS.first()!.toJS() as Item;
+const item = ITEMS.first()!.toJS() as DiscriminatedItem;
 
 jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
