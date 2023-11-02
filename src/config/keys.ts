@@ -1,4 +1,4 @@
-import { Category, UUID } from '@graasp/sdk';
+import { AggregateBy, Category, UUID } from '@graasp/sdk';
 
 import { AggregateActionsArgs } from '../utils/action';
 import { hashItemsIds } from '../utils/item';
@@ -202,10 +202,10 @@ export const buildActionsKey = (args: {
   },
 ];
 
-export const buildAggregateActionsKey = (
-  args: Omit<AggregateActionsArgs, 'itemId'> &
-    Partial<Pick<AggregateActionsArgs, 'itemId'>>,
-) => ['aggregateActions', args];
+export const buildAggregateActionsKey = <K extends AggregateBy[]>(
+  itemId: string | undefined,
+  args: Omit<AggregateActionsArgs<K>, 'itemId'>,
+) => ['aggregateActions', itemId, args];
 
 export const buildInvitationKey = (id?: UUID) => ['invitations', id];
 export const buildItemInvitationsKey = (id?: UUID) => [
