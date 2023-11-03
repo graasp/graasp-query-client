@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/graasp/graasp-query-client/compare/v2.0.0...v2.0.1) (2023-11-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency crypto-js to v4.2.0 [security] ([#499](https://github.com/graasp/graasp-query-client/issues/499)) ([cd09f87](https://github.com/graasp/graasp-query-client/commit/cd09f873bdfce998713e1f787a7ccbbbb9bc721c))
+* fix aggregate type date ([#509](https://github.com/graasp/graasp-query-client/issues/509)) ([7d5e2c7](https://github.com/graasp/graasp-query-client/commit/7d5e2c74a046f49620237059c2a67ee3b3fddee4))
+
 ## [2.0.0](https://github.com/graasp/graasp-query-client/compare/v1.11.1...v2.0.0) (2023-11-03)
 
 
