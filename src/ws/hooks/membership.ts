@@ -1,5 +1,10 @@
-import { ItemMembership, UUID, getIdsFromPath } from '@graasp/sdk';
-import { Channel, WebsocketClient } from '@graasp/sdk/frontend';
+import {
+  Channel,
+  ItemMembership,
+  UUID,
+  WebsocketClient,
+  getIdsFromPath,
+} from '@graasp/sdk';
 
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
@@ -46,24 +51,25 @@ export const configureWsMembershipHooks = (
             if (membership.item) {
               const lastId = getIdsFromPath(membership.item.path).pop();
               if (current && lastId === itemId) {
-                let mutation;
                 switch (event.op) {
                   case OPS.CREATE: {
                     if (!current.find((m) => m.id === membership.id)) {
-                      mutation = current.push(membership);
+                      const mutation = [...current, membership];
                       queryClient.setQueryData(itemMembershipsKey, mutation);
                     }
                     break;
                   }
                   case OPS.UPDATE: {
-                    mutation = current.map((m) =>
+                    const mutation = current.map((m) =>
                       m.id === membership.id ? membership : m,
                     );
                     queryClient.setQueryData(itemMembershipsKey, mutation);
                     break;
                   }
                   case OPS.DELETE: {
-                    mutation = current.filter((m) => m.id !== membership.id);
+                    const mutation = current.filter(
+                      (m) => m.id !== membership.id,
+                    );
                     queryClient.setQueryData(itemMembershipsKey, mutation);
                     break;
                   }

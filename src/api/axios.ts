@@ -1,20 +1,9 @@
-import { ResultOf, parseStringToDate, spliceIntoChunks } from '@graasp/sdk';
+import { ResultOf, spliceIntoChunks } from '@graasp/sdk';
 
 import axios, { AxiosError } from 'axios';
 
 const configureAxios = () => {
   axios.defaults.withCredentials = true;
-  axios.defaults.transformResponse = [
-    (data) => {
-      try {
-        const content = JSON.parse(data);
-        return parseStringToDate(content);
-      } catch (e) {
-        // the data was a normal string and we return it
-        return data;
-      }
-    },
-  ];
 
   return axios;
 };
@@ -50,27 +39,40 @@ export default configureAxios;
 
 /**
  * Split a given request in multiple smallest requests, so it conforms to the backend limitations
- * The response is parsed to detect errors, and is transformed into a deep immutable data
+ * @param {string[]} ids elements' id
+ * @param {number} chunkSize maximum number of ids per request
+ * @param {function} buildRequest builder for the request given the chunk ids
+ * @param {boolean} [ignoreErrors=false] whether we ignore errors
+ */
+export const splitRequestByIds = async <T>(
+  ids: string[],
+  chunkSize: number,
+  buildRequest: (ids: string[]) => Promise<ResultOf<T> | void>,
+) => {
+  const shunkedIds = spliceIntoChunks(ids, chunkSize);
+  return Promise.all(shunkedIds.map((groupedIds) => buildRequest(groupedIds)));
+};
+
+/**
+ * Split a given request in multiple smallest requests, so it conforms to the backend limitations
+ * The response is parsed to detect errors, and is transformed into a deep data
  * @param {string[]} ids elements' id
  * @param {number} chunkSize maximum number of ids per request
  * @param {function} buildRequest builder for the request given the chunk ids
  * @param {boolean} [ignoreErrors=false] whether we ignore errors
  * @returns {Promise} all requests returning their data merged
  */
-export const splitRequestByIds = <T>(
+export const splitRequestByIdsAndReturn = <T>(
   ids: string[],
   chunkSize: number,
   buildRequest: (ids: string[]) => Promise<ResultOf<T> | void>,
   ignoreErrors = false,
-): Promise<ResultOf<T>> => {
-  const shunkedIds = spliceIntoChunks(ids, chunkSize);
-  return Promise.all(
-    shunkedIds.map((groupedIds) => buildRequest(groupedIds)),
-  ).then((responses) => {
+) =>
+  splitRequestByIds(ids, chunkSize, buildRequest).then((responses) => {
     // only get request returns
     // todo: not ideal..
     if (responses.every((r) => !r?.data)) {
-      return null;
+      throw new Error('responses is empty');
     }
 
     const result = (responses as ResultOf<T>[]).reduce(
@@ -86,4 +88,3 @@ export const splitRequestByIds = <T>(
     }
     return result;
   });
-};

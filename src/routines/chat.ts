@@ -1,15 +1,15 @@
 import createRoutine from './utils';
 
 export const postItemChatMessageRoutine = createRoutine(
-  'POST_ITEM_CHAT_MESSAGE',
+  'POST_CHAT_MESSAGES_MESSAGE',
 );
 
 export const patchItemChatMessageRoutine = createRoutine(
-  'PATCH_ITEM_CHAT_MESSAGE',
+  'PATCH_CHAT_MESSAGES_MESSAGE',
 );
 
 export const deleteItemChatMessageRoutine = createRoutine(
-  'DELETE_ITEM_CHAT_MESSAGE',
+  'DELETE_CHAT_MESSAGES_MESSAGE',
 );
 
-export const clearItemChatRoutine = createRoutine('CLEAR_ITEM_CHAT');
+export const clearItemChatRoutine = createRoutine('CLEAR_CHAT_MESSAGES');

@@ -1,8 +1,6 @@
-import { Item } from '@graasp/sdk';
+import { DiscriminatedItem } from '@graasp/sdk';
 
-import Cookies from 'js-cookie';
-
-import { ITEMS, ITEMS_JS } from '../../../test/constants';
+import { ITEMS } from '../../../test/constants';
 import {
   getHandlerByChannel,
   mockWsHook,
@@ -20,8 +18,6 @@ import { configureWsItemHooks } from './item';
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsItemHooks,
 });
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Ws Item Hooks', () => {
   afterEach(() => {
@@ -43,12 +39,14 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.SELF,
         op: OPS.UPDATE,
-        item: JSON.parse(JSON.stringify(newItem)),
+        item: newItem,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(queryClient.getQueryData<Item>(itemKey)).toMatchObject(newItem);
+      expect(
+        queryClient.getQueryData<DiscriminatedItem>(itemKey),
+      ).toMatchObject(newItem);
     });
 
     it(`Receive delete item update`, async () => {
@@ -58,12 +56,12 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.SELF,
         op: OPS.DELETE,
-        item: JSON.parse(JSON.stringify(newItem)),
+        item: newItem,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(queryClient.getQueryData<Item>(itemKey)).toBeFalsy();
+      expect(queryClient.getQueryData<DiscriminatedItem>(itemKey)).toBeFalsy();
     });
 
     it(`Does not update on other events`, async () => {
@@ -73,12 +71,14 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: 'kind',
         op: OPS.UPDATE,
-        item: JSON.parse(JSON.stringify(newItem)),
+        item: newItem,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(queryClient.getQueryData<Item>(itemKey)).toMatchObject(item);
+      expect(
+        queryClient.getQueryData<DiscriminatedItem>(itemKey),
+      ).toMatchObject(item);
     });
   });
 
@@ -99,19 +99,19 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.CHILD,
         op: OPS.CREATE,
-        item: JSON.parse(JSON.stringify(targetItem)),
+        item: targetItem,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check children key contains new item
-      expect(queryClient.getQueryData<Item[]>(childrenKey)).toContainEqual(
-        targetItem,
-      );
+      expect(
+        queryClient.getQueryData<DiscriminatedItem[]>(childrenKey),
+      ).toContainEqual(targetItem);
       // check new item key
-      expect(queryClient.getQueryData<Item>(targetItemKey)).toMatchObject(
-        targetItem,
-      );
+      expect(
+        queryClient.getQueryData<DiscriminatedItem>(targetItemKey),
+      ).toMatchObject(targetItem);
     });
 
     it(`Receive update child`, async () => {
@@ -124,17 +124,17 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.CHILD,
         op: OPS.UPDATE,
-        item: JSON.parse(JSON.stringify(updatedItem)),
+        item: updatedItem,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check new item key content
-      expect(queryClient.getQueryData<Item>(targetItemKey)).toMatchObject(
-        updatedItem,
-      );
+      expect(
+        queryClient.getQueryData<DiscriminatedItem>(targetItemKey),
+      ).toMatchObject(updatedItem);
       // check children key contains newly item
-      const own = queryClient.getQueryData<Item[]>(childrenKey);
+      const own = queryClient.getQueryData<DiscriminatedItem[]>(childrenKey);
       expect(own).toContainEqual(updatedItem);
       expect(own?.length).toBe(ITEMS.length);
     });
@@ -154,8 +154,8 @@ describe('Ws Item Hooks', () => {
 
       expect(
         queryClient
-          .getQueryData<Item[]>(childrenKey)
-          ?.find(({ id }: Item) => id === targetItem.id),
+          .getQueryData<DiscriminatedItem[]>(childrenKey)
+          ?.find(({ id }) => id === targetItem.id),
       ).toBeFalsy();
     });
 
@@ -166,12 +166,14 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: 'kind',
         op: OPS.DELETE,
-        item: JSON.parse(JSON.stringify(targetItem)),
+        item: targetItem,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(queryClient.getQueryData<Item>(childrenKey)).toEqual(ITEMS);
+      expect(queryClient.getQueryData<DiscriminatedItem>(childrenKey)).toEqual(
+        ITEMS,
+      );
     });
   });
 
@@ -189,17 +191,19 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.OWN,
         op: OPS.CREATE,
-        item: JSON.parse(JSON.stringify(item)),
+        item,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check own items key contains new item
-      expect(queryClient.getQueryData<Item[]>(OWN_ITEMS_KEY)).toContainEqual(
-        item,
-      );
+      expect(
+        queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY),
+      ).toContainEqual(item);
       // check new item key
-      expect(queryClient.getQueryData<Item>(itemKey)).toMatchObject(item);
+      expect(
+        queryClient.getQueryData<DiscriminatedItem>(itemKey),
+      ).toMatchObject(item);
     });
 
     it(`Receive update child`, async () => {
@@ -211,17 +215,18 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.OWN,
         op: OPS.UPDATE,
-        item: JSON.parse(JSON.stringify(updatedItem)),
+        item: updatedItem,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check new item key content
-      expect(queryClient.getQueryData<Item>(itemKey)).toMatchObject(
-        updatedItem,
-      );
+      expect(
+        queryClient.getQueryData<DiscriminatedItem>(itemKey),
+      ).toMatchObject(updatedItem);
       // check children key contains newly item
-      const children = queryClient.getQueryData<Item[]>(OWN_ITEMS_KEY);
+      const children =
+        queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY);
       expect(children).toContainEqual(updatedItem);
       expect(children?.length).toBe(ITEMS.length);
     });
@@ -234,13 +239,14 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.OWN,
         op: OPS.DELETE,
-        item: JSON.parse(JSON.stringify(item)),
+        item,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check own items key does not contain deleted item
-      const children = queryClient.getQueryData<Item[]>(OWN_ITEMS_KEY);
+      const children =
+        queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY);
       expect(children?.find(({ id }) => id === itemId)).toBeFalsy();
     });
 
@@ -252,14 +258,14 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: 'kind',
         op: OPS.UPDATE,
-        item: JSON.parse(JSON.stringify(item)),
+        item,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(queryClient.getQueryData<Item[]>(OWN_ITEMS_KEY)).toMatchObject(
-        ITEMS,
-      );
+      expect(
+        queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY),
+      ).toMatchObject(ITEMS);
     });
   });
 
@@ -278,17 +284,19 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.SHARED,
         op: OPS.CREATE,
-        item: JSON.parse(JSON.stringify(item)),
+        item,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check own items key contains new item
-      expect(queryClient.getQueryData<Item[]>(SHARED_ITEMS_KEY)).toContainEqual(
-        item,
-      );
+      expect(
+        queryClient.getQueryData<DiscriminatedItem[]>(SHARED_ITEMS_KEY),
+      ).toContainEqual(item);
       // check new item key
-      expect(queryClient.getQueryData<Item>(itemKey)).toMatchObject(item);
+      expect(
+        queryClient.getQueryData<DiscriminatedItem>(itemKey),
+      ).toMatchObject(item);
     });
 
     it(`Receive update child`, async () => {
@@ -300,17 +308,18 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.SHARED,
         op: OPS.UPDATE,
-        item: JSON.parse(JSON.stringify(updatedItem)),
+        item: updatedItem,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check new item key content
-      expect(queryClient.getQueryData<Item>(itemKey)).toMatchObject(
-        updatedItem,
-      );
+      expect(
+        queryClient.getQueryData<DiscriminatedItem>(itemKey),
+      ).toMatchObject(updatedItem);
       // check children key contains newly item
-      const shared = queryClient.getQueryData<Item[]>(SHARED_ITEMS_KEY);
+      const shared =
+        queryClient.getQueryData<DiscriminatedItem[]>(SHARED_ITEMS_KEY);
       expect(shared).toContainEqual(updatedItem);
       expect(shared?.length).toBe(ITEMS.length);
     });
@@ -323,13 +332,14 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: KINDS.SHARED,
         op: OPS.DELETE,
-        item: JSON.parse(JSON.stringify(item)),
+        item,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check own items key does not contain deleted item
-      const shared = queryClient.getQueryData<Item[]>(SHARED_ITEMS_KEY);
+      const shared =
+        queryClient.getQueryData<DiscriminatedItem[]>(SHARED_ITEMS_KEY);
       expect(shared?.find(({ id }) => id === itemId)).toBeFalsy();
     });
 
@@ -341,14 +351,14 @@ describe('Ws Item Hooks', () => {
       const itemEvent = {
         kind: 'kind',
         op: OPS.UPDATE,
-        item: JSON.parse(JSON.stringify(item)),
+        item,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(queryClient.getQueryData<Item[]>(SHARED_ITEMS_KEY)).toEqual(
-        ITEMS_JS,
-      );
+      expect(
+        queryClient.getQueryData<DiscriminatedItem[]>(SHARED_ITEMS_KEY),
+      ).toEqual(ITEMS);
     });
   });
 });

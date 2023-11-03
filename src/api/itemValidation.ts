@@ -1,4 +1,4 @@
-import { UUID } from '@graasp/sdk';
+import { ItemValidationGroup, UUID } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import { verifyAuthentication } from './axios';
@@ -43,7 +43,9 @@ export const getLastItemValidationGroup = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .get(`${API_HOST}/${buildGetLastItemValidationGroupRoute(itemId)}`)
+      .get<ItemValidationGroup>(
+        `${API_HOST}/${buildGetLastItemValidationGroupRoute(itemId)}`,
+      )
       .then(({ data }) => data),
   );
 export const getItemValidationAndReview = async (

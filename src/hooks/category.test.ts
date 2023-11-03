@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -23,8 +22,6 @@ import {
 } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Category Hooks', () => {
   afterEach(() => {

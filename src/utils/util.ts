@@ -37,7 +37,7 @@ export const isPaginatedChildrenDataEqual = <T>(
 ) => {
   if (oldData?.pages.length === newData?.pages.length && oldData.pages.length) {
     for (const [idx, p] of oldData.pages.entries()) {
-      if (!is(p, newData.pages[idx])) {
+      if (p !== newData.pages[idx]) {
         return false;
       }
     }
@@ -46,12 +46,12 @@ export const isPaginatedChildrenDataEqual = <T>(
   return false;
 };
 
-export const paginate = <U, T extends U[]>(
-  list: T,
+export const paginate = <U>(
+  list: U[],
   pageSize: number,
   pageNumber: number,
-  filterFunction?: (item: T) => T,
-): Promise<{ data: T; pageNumber: number }> =>
+  filterFunction?: (items: U[]) => U[],
+): Promise<{ data: U[]; pageNumber: number }> =>
   new Promise((resolve, reject) => {
     try {
       // apply some filtering to the elements provided

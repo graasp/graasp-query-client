@@ -1,6 +1,6 @@
-import { ItemChatRecord } from '@graasp/sdk/frontend';
+import { ChatMessage } from '@graasp/sdk';
 
-import { ITEMS, ITEM_CHAT, MESSAGE_IDS } from '../../../test/constants';
+import { CHAT_MESSAGES, ITEMS, MESSAGE_IDS } from '../../../test/constants';
 import {
   getHandlerByChannel,
   mockWsHook,
@@ -29,7 +29,7 @@ describe('Ws Chat Hooks', () => {
     };
 
     it('Does nothing', async () => {
-      queryClient.setQueryData(chatKey, ITEM_CHAT);
+      queryClient.setQueryData(chatKey, CHAT_MESSAGES);
       await mockWsHook({
         hook: incorrectHook,
         wrapper,
@@ -44,9 +44,7 @@ describe('Ws Chat Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       // expect no change
-      expect(queryClient.getQueryData<ItemChatRecord>(chatKey)).toEqual(
-        ITEM_CHAT,
-      );
+      expect(queryClient.getQueryData(chatKey)).toEqual(CHAT_MESSAGES);
     });
   });
 
@@ -62,7 +60,7 @@ describe('Ws Chat Hooks', () => {
     const hook = () => hooks.useItemChatUpdates(itemId);
 
     it(`Receive chat messages update`, async () => {
-      queryClient.setQueryData(chatKey, ITEM_CHAT);
+      queryClient.setQueryData(chatKey, CHAT_MESSAGES);
       await mockWsHook({
         hook,
         wrapper,
@@ -76,9 +74,7 @@ describe('Ws Chat Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
-      expect(queryClient.getQueryData<ItemChatRecord>(chatKey)).toContainEqual(
-        newMessage,
-      );
+      expect(queryClient.getQueryData(chatKey)).toContainEqual(newMessage);
     });
 
     it(`Receive chat messages edit update`, async () => {
@@ -86,7 +82,7 @@ describe('Ws Chat Hooks', () => {
         id: MESSAGE_IDS[0],
         body: 'new message content',
       };
-      queryClient.setQueryData(chatKey, ITEM_CHAT);
+      queryClient.setQueryData(chatKey, CHAT_MESSAGES);
       await mockWsHook({
         hook,
         wrapper,
@@ -99,15 +95,12 @@ describe('Ws Chat Hooks', () => {
       };
 
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
-
-      expect(queryClient.getQueryData<ItemChatRecord>(chatKey)).toContainEqual(
-        updatedMessage,
-      );
+      expect(queryClient.getQueryData(chatKey)).toContainEqual(updatedMessage);
     });
 
     it(`Receive chat messages delete update`, async () => {
       const deletedMessage = { id: MESSAGE_IDS[0] };
-      queryClient.setQueryData(chatKey, ITEM_CHAT);
+      queryClient.setQueryData(chatKey, CHAT_MESSAGES);
       await mockWsHook({
         hook,
         wrapper,
@@ -120,14 +113,13 @@ describe('Ws Chat Hooks', () => {
       };
 
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
-
-      expect(
-        queryClient.getQueryData<ItemChatRecord>(chatKey),
-      ).not.toContainEqual(ITEM_CHAT[0]);
+      const m = queryClient.getQueryData(chatKey);
+      expect(m).toHaveLength(1);
+      expect(m).not.toContainEqual(CHAT_MESSAGES[0]);
     });
 
     it(`Receive chat messages clear update`, async () => {
-      queryClient.setQueryData(chatKey, ITEM_CHAT);
+      queryClient.setQueryData(chatKey, CHAT_MESSAGES);
       await mockWsHook({
         hook,
         wrapper,
@@ -140,11 +132,11 @@ describe('Ws Chat Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
-      expect(queryClient.getQueryData<ItemChatRecord>(chatKey)).toEqual([]);
+      expect(queryClient.getQueryData(chatKey)).toEqual([]);
     });
 
     it(`Does not update chat messages with wrong chat event`, async () => {
-      queryClient.setQueryData(chatKey, ITEM_CHAT);
+      queryClient.setQueryData(chatKey, CHAT_MESSAGES);
       await mockWsHook({
         hook,
         wrapper,
@@ -160,13 +152,13 @@ describe('Ws Chat Hooks', () => {
 
       expect(
         queryClient
-          .getQueryData<ItemChatRecord>(chatKey)
+          .getQueryData<ChatMessage[]>(chatKey)
           ?.find(({ body }: { body: string }) => body === newMessage.body),
       ).toBeFalsy();
     });
 
     it(`Does not update chat messages with wrong OP event`, async () => {
-      queryClient.setQueryData(chatKey, ITEM_CHAT);
+      queryClient.setQueryData(chatKey, CHAT_MESSAGES);
       await mockWsHook({
         hook,
         wrapper,
@@ -181,7 +173,7 @@ describe('Ws Chat Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
       expect(
         queryClient
-          .getQueryData<ItemChatRecord>(chatKey)
+          .getQueryData<ChatMessage[]>(chatKey)
           ?.find(({ body }: { body: string }) => body === newMessage.body),
       ).toBeFalsy();
     });

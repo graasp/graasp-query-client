@@ -1,5 +1,3 @@
-import { ItemFavorite } from '@graasp/sdk';
-
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
@@ -10,9 +8,9 @@ export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
 
   const useFavoriteItems = () =>
-    useQuery<ItemFavorite[], Error>({
+    useQuery({
       queryKey: FAVORITE_ITEMS_KEY,
-      queryFn: () => Api.getFavoriteItems(queryConfig).then((data) => data),
+      queryFn: () => Api.getFavoriteItems(queryConfig),
       ...defaultQueryOptions,
     });
 

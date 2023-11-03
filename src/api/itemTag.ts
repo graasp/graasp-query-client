@@ -1,4 +1,4 @@
-import { ItemTagType, UUID } from '@graasp/sdk';
+import { ItemTag, ItemTagType, ResultOf, UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types';
 import { verifyAuthentication } from './axios';
@@ -18,7 +18,7 @@ export const getItemTags = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get(`${API_HOST}/${buildGetItemTagsRoute(id)}`)
+    .get<ItemTag[]>(`${API_HOST}/${buildGetItemTagsRoute(id)}`)
     .then(({ data }) => data);
 
 export const getItemsTags = async (
@@ -26,7 +26,7 @@ export const getItemsTags = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get(`${API_HOST}/${buildGetItemsTagsRoute(ids)}`)
+    .get<ResultOf<ItemTag[]>>(`${API_HOST}/${buildGetItemsTagsRoute(ids)}`)
     .then(({ data }) => data);
 
 // payload: tagId, itemPath, creator
@@ -36,7 +36,7 @@ export const postItemTag = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .post(`${API_HOST}/${buildPostItemTagRoute({ itemId, type })}`)
+      .post<ItemTag>(`${API_HOST}/${buildPostItemTagRoute({ itemId, type })}`)
       .then(({ data }) => data),
   );
 
@@ -46,6 +46,8 @@ export const deleteItemTag = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .delete(`${API_HOST}/${buildDeleteItemTagRoute({ itemId, type })}`)
+      .delete<ItemTag>(
+        `${API_HOST}/${buildDeleteItemTagRoute({ itemId, type })}`,
+      )
       .then(({ data }) => data),
   );

@@ -1,7 +1,5 @@
 import { ItemMembership, PermissionLevel } from '@graasp/sdk';
 
-import Cookies from 'js-cookie';
-
 import { ITEMS, ITEM_MEMBERSHIPS_RESPONSE } from '../../../test/constants';
 import {
   getHandlerByChannel,
@@ -15,8 +13,6 @@ import { configureWsMembershipHooks } from './membership';
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsMembershipHooks,
 });
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Ws Membership Hooks', () => {
   afterEach(() => {
@@ -51,10 +47,10 @@ describe('Ws Membership Hooks', () => {
     });
 
     it(`Receive update membership update`, async () => {
-      queryClient.setQueryData(
-        membershipsKey,
-        memberships.push(newItemMembership),
-      );
+      queryClient.setQueryData(membershipsKey, [
+        ...memberships,
+        newItemMembership,
+      ]);
       const updatedMembership = {
         ...newItemMembership,
         permission: PermissionLevel.Write,

@@ -2,7 +2,6 @@
 import { HttpMethod } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
@@ -27,8 +26,6 @@ const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
-
 describe('Publish Item', () => {
   afterEach(() => {
     queryClient.clear();
@@ -36,9 +33,9 @@ describe('Publish Item', () => {
   });
 
   describe('usePublishItem', () => {
-    const item = ITEMS.first()!;
+    const item = ITEMS[0];
     const itemId = item.id;
-    const currentMember = MEMBERS_RESPONSE.first();
+    const currentMember = MEMBERS_RESPONSE[0];
     const currentMemberId = currentMember!.id;
     const notification = true;
     const mutation = mutations.usePublishItem;

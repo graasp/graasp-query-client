@@ -2,7 +2,6 @@
 import { App } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import { APPS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
@@ -12,7 +11,6 @@ import { APPS_KEY } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 describe('Apps Hooks', () => {
   afterEach(() => {
     nock.cleanAll();

@@ -1,5 +1,4 @@
 import { UUID } from '@graasp/sdk';
-import { ItemValidationGroupRecord } from '@graasp/sdk/frontend';
 
 import { useQuery } from 'react-query';
 
@@ -14,10 +13,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useLastItemValidationGroup = (itemId: UUID) =>
     useQuery({
       queryKey: buildLastItemValidationGroupKey(itemId),
-      queryFn: (): Promise<ItemValidationGroupRecord> =>
-        Api.getLastItemValidationGroup(queryConfig, itemId).then(
-          (data) => data,
-        ),
+      queryFn: () => Api.getLastItemValidationGroup(queryConfig, itemId),
       ...defaultQueryOptions,
       enabled: Boolean(itemId),
     });

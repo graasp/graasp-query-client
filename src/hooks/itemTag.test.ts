@@ -7,7 +7,6 @@ import {
 } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -26,8 +25,6 @@ import { buildGetItemTagsRoute, buildGetItemsTagsRoute } from '../api/routes';
 import { itemTagsKeys } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Item Tags Hooks', () => {
   afterEach(() => {
@@ -82,7 +79,7 @@ describe('Item Tags Hooks', () => {
     const tags = itemsIds.map((id) => [
       {
         id: 'some id',
-        createdAt: new Date(),
+        createdAt: '2023-09-06T11:50:32.894Z',
         creator: {} as Member,
         item: { id } as DiscriminatedItem,
         type: ItemTagType.Hidden,
@@ -124,7 +121,7 @@ describe('Item Tags Hooks', () => {
       const tagsForItem = [
         {
           id: 'some id',
-          createdAt: new Date(),
+          createdAt: '2023-09-06T11:50:32.894Z',
           creator: {} as Member,
           item: { id } as DiscriminatedItem,
           type: ItemTagType.Hidden,

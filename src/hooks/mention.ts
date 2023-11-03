@@ -1,5 +1,4 @@
-import { ChatMention, Member } from '@graasp/sdk';
-import { WebsocketClient } from '@graasp/sdk/frontend';
+import { CompleteMember, WebsocketClient } from '@graasp/sdk';
 
 import { UseQueryResult, useQuery } from 'react-query';
 
@@ -10,7 +9,7 @@ import { configureWsChatMentionsHooks } from '../ws/index';
 
 export default (
   queryConfig: QueryClientConfig,
-  useCurrentMember: () => UseQueryResult<Member>,
+  useCurrentMember: () => UseQueryResult<CompleteMember | null>,
   websocketClient?: WebsocketClient,
 ) => {
   const { enableWebsocket, defaultQueryOptions } = queryConfig;
@@ -30,8 +29,7 @@ export default (
 
       return useQuery({
         queryKey: buildMentionKey(),
-        queryFn: (): Promise<ChatMention[]> =>
-          Api.getMemberMentions(queryConfig).then((data) => data),
+        queryFn: () => Api.getMemberMentions(queryConfig),
         ...defaultQueryOptions,
         enabled: Boolean(memberId),
       });

@@ -230,6 +230,7 @@ export default (queryConfig: QueryClientConfig) => {
               ...withoutEmail.map((d) => ({
                 statusCode: StatusCodes.BAD_REQUEST,
                 message: ReasonPhrases.BAD_REQUEST,
+                name: ReasonPhrases.BAD_REQUEST,
                 data: d,
               })),
               ...invitationsResult.errors,

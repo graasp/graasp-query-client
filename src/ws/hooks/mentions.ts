@@ -1,5 +1,4 @@
-import { ChatMention, UUID } from '@graasp/sdk';
-import { Channel, WebsocketClient } from '@graasp/sdk/frontend';
+import { Channel, ChatMention, UUID, WebsocketClient } from '@graasp/sdk';
 
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
@@ -45,23 +44,29 @@ export const configureWsChatMentionsHooks = (
         if (current) {
           switch (event.op) {
             case OPS.PUBLISH: {
-              const mutation = current.push(mention);
+              const mutation = [...current, mention];
               queryClient.setQueryData(mentionKey, mutation);
               break;
             }
             case OPS.UPDATE: {
-              // TODO !!!!! check
-              current[current.findIndex((m) => m.id === mention.id)] = mention;
-              queryClient.setQueryData(mentionKey, current);
+              const index = current.findIndex((m) => m.id === mention.id);
+              if (index >= 0) {
+                const mutation = current
+                  .slice(0, index)
+                  .concat(mention)
+                  .concat(current.slice(index + 1));
+                queryClient.setQueryData(mentionKey, mutation);
+              }
               break;
             }
             case OPS.DELETE: {
               const index = current.findIndex((m) => m.id === mention.id);
-              const mutation = current
-                .slice(0, index)
-                .concat([mention])
-                .concat(current.slice(index + 1));
-              queryClient.setQueryData(mentionKey, mutation);
+              if (index >= 0) {
+                const mutation = current
+                  .slice(0, index)
+                  .concat(current.slice(index + 1));
+                queryClient.setQueryData(mentionKey, mutation);
+              }
               break;
             }
             case OPS.CLEAR: {

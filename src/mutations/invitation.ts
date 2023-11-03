@@ -1,5 +1,4 @@
 import { Invitation, PermissionLevel, UUID } from '@graasp/sdk';
-import { NewInvitation } from '@graasp/sdk/frontend';
 
 import { useMutation, useQueryClient } from 'react-query';
 
@@ -17,7 +16,7 @@ import {
   postInvitationsRoutine,
   resendInvitationRoutine,
 } from '../routines';
-import { QueryClientConfig } from '../types';
+import { NewInvitation, QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
   const usePostInvitations = () => {

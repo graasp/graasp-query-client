@@ -1,7 +1,6 @@
 import { ItemLike } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import { ITEMS, ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
@@ -16,7 +15,6 @@ import {
 } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Item Like Hooks', () => {
   afterEach(() => {
@@ -64,7 +62,7 @@ describe('Item Like Hooks', () => {
   });
 
   describe('useLikesForItem', () => {
-    const itemId = ITEMS[0]!.id;
+    const itemId = ITEMS[0].id;
     const route = `/${buildGetItemLikesRoute(itemId)}`;
     const key = buildGetLikesForItem(itemId);
 

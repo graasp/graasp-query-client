@@ -1,4 +1,4 @@
-import { ActionData, UUID } from '@graasp/sdk';
+import { UUID } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
@@ -25,7 +25,7 @@ export default (queryConfig: QueryClientConfig) => {
       Boolean(args.requestedSampleSize);
     return useQuery({
       queryKey: buildActionsKey(args),
-      queryFn: (): Promise<ActionData> => {
+      queryFn: () => {
         const { itemId } = args;
         if (!itemId) {
           throw new UndefinedArgument();
@@ -37,7 +37,7 @@ export default (queryConfig: QueryClientConfig) => {
             requestedSampleSize: args.requestedSampleSize,
           },
           queryConfig,
-        ).then((data) => data);
+        );
       },
       ...defaultQueryOptions,
       enabled: enabledValue,

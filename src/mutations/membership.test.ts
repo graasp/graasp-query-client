@@ -5,7 +5,6 @@ import { HttpMethod, ItemMembership, PermissionLevel } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
@@ -49,8 +48,6 @@ const mockedNotifier = jest.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Membership Mutations', () => {
   afterEach(() => {
@@ -398,8 +395,8 @@ describe('Membership Mutations', () => {
         },
         {
           response: buildResultOfData(
-            [ITEM_MEMBERSHIPS_RESPONSE[0] as ItemMembership],
-            (d: ItemMembership) => d.item.id,
+            [ITEM_MEMBERSHIPS_RESPONSE[0]],
+            (d) => d.item.id,
             [UNAUTHORIZED_RESPONSE],
           ),
           method: HttpMethod.POST,

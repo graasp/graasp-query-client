@@ -3,7 +3,6 @@ import { HttpMethod, Invitation } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -27,8 +26,6 @@ import {
   postInvitationsRoutine,
   resendInvitationRoutine,
 } from '../routines';
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 const item = ITEMS[0];
 const itemId = item.id;

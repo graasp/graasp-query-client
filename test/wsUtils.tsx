@@ -1,4 +1,4 @@
-import { Channel } from '@graasp/sdk/frontend';
+import { Channel } from '@graasp/sdk';
 
 import { renderHook } from '@testing-library/react';
 import React from 'react';

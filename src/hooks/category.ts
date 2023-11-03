@@ -1,4 +1,4 @@
-import { Category, ItemCategory, UUID } from '@graasp/sdk';
+import { UUID } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
@@ -18,31 +18,29 @@ export default (queryConfig: QueryClientConfig) => {
 
   // get categories
   const useCategories = (typeIds?: UUID[]) =>
-    useQuery<Category[], Error>({
+    useQuery({
       queryKey: buildCategoriesKey(typeIds),
-      queryFn: () =>
-        Api.getCategories(queryConfig, typeIds).then((data) => data),
+      queryFn: () => Api.getCategories(queryConfig, typeIds),
       ...defaultQueryOptions,
       cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
 
   const useCategory = (categoryId: UUID) =>
-    useQuery<Category, Error>({
+    useQuery({
       queryKey: buildCategoryKey(categoryId),
-      queryFn: () =>
-        Api.getCategory(categoryId, queryConfig).then((data) => data),
+      queryFn: () => Api.getCategory(categoryId, queryConfig),
       ...defaultQueryOptions,
       cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
 
   const useItemCategories = (itemId?: UUID) =>
-    useQuery<ItemCategory[], Error>({
+    useQuery({
       queryKey: buildItemCategoriesKey(itemId),
       queryFn: () => {
         if (!itemId) {
           throw new UndefinedArgument();
         }
-        return Api.getItemCategories(itemId, queryConfig).then((data) => data);
+        return Api.getItemCategories(itemId, queryConfig);
       },
       ...defaultQueryOptions,
       enabled: Boolean(itemId),
@@ -52,9 +50,7 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildItemsByCategoriesKey(categoryIds),
       queryFn: () =>
-        Api.buildGetItemsForCategoriesRoute(categoryIds, queryConfig).then(
-          (data) => data,
-        ),
+        Api.buildGetItemsForCategoriesRoute(categoryIds, queryConfig),
       ...defaultQueryOptions,
       enabled: Boolean(categoryIds),
     });

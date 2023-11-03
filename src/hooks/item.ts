@@ -1,16 +1,13 @@
 import {
+  CompleteMember,
   DiscriminatedItem,
-  Etherpad,
   EtherpadItemType,
-  Item,
   ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
-  Member,
   RecycledItemData,
-  ResultOf,
   UUID,
+  WebsocketClient,
 } from '@graasp/sdk';
-import { WebsocketClient } from '@graasp/sdk/frontend';
 
 import {
   UseQueryResult,
@@ -20,7 +17,7 @@ import {
 } from 'react-query';
 
 import * as Api from '../api';
-import { splitRequestByIds } from '../api/axios';
+import { splitRequestByIdsAndReturn } from '../api/axios';
 import {
   CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
@@ -50,7 +47,7 @@ import { configureWsItemHooks } from '../ws';
 
 export default (
   queryConfig: QueryClientConfig,
-  useCurrentMember: () => UseQueryResult<Member>,
+  useCurrentMember: () => UseQueryResult<CompleteMember | null>,
   websocketClient?: WebsocketClient,
 ) => {
   const { enableWebsocket, notifier, defaultQueryOptions } = queryConfig;
@@ -70,9 +67,8 @@ export default (
 
       return useQuery({
         queryKey: OWN_ITEMS_KEY,
-        queryFn: (): Promise<Item[]> =>
-          Api.getOwnItems(queryConfig).then((data) => data),
-        onSuccess: async (items: Item[]) => {
+        queryFn: () => Api.getOwnItems(queryConfig),
+        onSuccess: async (items) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
           items?.forEach(async (item) => {
@@ -93,7 +89,7 @@ export default (
         enabled?: boolean;
         ordered?: boolean;
         getUpdates?: boolean;
-        placeholderData?: Item[];
+        placeholderData?: DiscriminatedItem[];
       },
     ) => {
       const enabled = options?.enabled ?? true;
@@ -105,13 +101,13 @@ export default (
 
       return useQuery({
         queryKey: buildItemChildrenKey(id),
-        queryFn: (): Promise<Item[]> => {
+        queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getChildren(id, ordered, queryConfig).then((data) => data);
+          return Api.getChildren(id, ordered, queryConfig);
         },
-        onSuccess: async (items: Item[]) => {
+        onSuccess: async (items) => {
           if (items?.length) {
             // save items in their own key
             items.forEach(async (item) => {
@@ -128,11 +124,11 @@ export default (
 
     useChildrenPaginated: (
       id: UUID | undefined,
-      children: Item[],
+      children: DiscriminatedItem[],
       options?: {
         enabled?: boolean;
         itemsPerPage?: number;
-        filterFunction?: (items: Item[]) => Item[];
+        filterFunction?: (items: DiscriminatedItem[]) => DiscriminatedItem[];
       },
     ) => {
       const enabled = options?.enabled;
@@ -184,7 +180,7 @@ export default (
       const queryClient = useQueryClient();
       return useQuery({
         queryKey: buildItemParentsKey(id),
-        queryFn: (): Promise<Item[]> => {
+        queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
           }
@@ -193,7 +189,7 @@ export default (
             (items) => items,
           );
         },
-        onSuccess: async (items: Item[]) => {
+        onSuccess: async (items) => {
           if (items?.length) {
             // save items in their own key
             items.forEach(async (item) => {
@@ -211,9 +207,8 @@ export default (
       const queryClient = useQueryClient();
       return useQuery({
         queryKey: buildItemDescendantsKey(id),
-        queryFn: (): Promise<Item[]> =>
-          Api.getDescendants({ id }, queryConfig).then((items) => items),
-        onSuccess: async (items: Item[]) => {
+        queryFn: () => Api.getDescendants({ id }, queryConfig),
+        onSuccess: async (items) => {
           if (items?.length) {
             // save items in their own key
             items.forEach(async (item) => {
@@ -236,9 +231,8 @@ export default (
       const queryClient = useQueryClient();
       return useQuery({
         queryKey: SHARED_ITEMS_KEY,
-        queryFn: (): Promise<Item[]> =>
-          Api.getSharedItems(queryConfig).then((data) => data),
-        onSuccess: async (items: Item[]) => {
+        queryFn: () => Api.getSharedItems(queryConfig),
+        onSuccess: async (items) => {
           // save items in their own key
           items.forEach(async (item) => {
             const { id } = item;
@@ -253,19 +247,19 @@ export default (
       id?: UUID,
       options?: {
         getUpdates?: boolean;
-        placeholderData?: Item;
+        placeholderData?: DiscriminatedItem;
       },
-    ): UseQueryResult<Item> => {
+    ) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
       itemWsHooks?.useItemUpdates(getUpdates ? id : null);
 
       return useQuery({
         queryKey: buildItemKey(id),
-        queryFn: (): Promise<Item> => {
+        queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getItem(id, queryConfig).then((data) => data);
+          return Api.getItem(id, queryConfig);
         },
         enabled: Boolean(id),
         ...defaultQueryOptions,
@@ -276,10 +270,7 @@ export default (
     },
 
     // todo: add optimisation to avoid fetching items already in cache
-    useItems: (
-      ids: UUID[],
-      options?: { getUpdates?: boolean },
-    ): UseQueryResult<ResultOf<DiscriminatedItem>> => {
+    useItems: (ids: UUID[], options?: { getUpdates?: boolean }) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       itemWsHooks?.useItemsUpdates(getUpdates ? ids : null);
@@ -291,7 +282,7 @@ export default (
           if (!ids) {
             throw new UndefinedArgument();
           }
-          return splitRequestByIds(
+          return splitRequestByIdsAndReturn(
             ids,
             MAX_TARGETS_FOR_READ_REQUEST,
             (chunk) => Api.getItems(chunk, queryConfig),
@@ -300,10 +291,12 @@ export default (
         },
         onSuccess: async (items) => {
           // save items in their own key
-          Object.values(items?.data)?.forEach(async (item) => {
-            const { id } = item;
-            queryClient.setQueryData(buildItemKey(id), item);
-          });
+          if (items?.data) {
+            Object.values(items?.data)?.forEach(async (item) => {
+              const { id } = item;
+              queryClient.setQueryData(buildItemKey(id), item);
+            });
+          }
         },
         enabled: ids && Boolean(ids.length) && ids.every((id) => Boolean(id)),
         ...defaultQueryOptions,
@@ -321,7 +314,7 @@ export default (
     ) =>
       useQuery({
         queryKey: buildFileContentKey({ id, replyUrl: false }),
-        queryFn: (): Promise<Blob> => {
+        queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
           }
@@ -338,7 +331,7 @@ export default (
     ) =>
       useQuery({
         queryKey: buildFileContentKey({ id, replyUrl: true }),
-        queryFn: (): Promise<string> => {
+        queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
           }
@@ -359,7 +352,7 @@ export default (
 
       return useQuery({
         queryKey: RECYCLED_ITEMS_KEY,
-        queryFn: (): Promise<Item[]> =>
+        queryFn: () =>
           Api.getRecycledItemsData(queryConfig).then(
             (data) => data?.map(({ item }: RecycledItemData) => item),
           ),
@@ -371,8 +364,7 @@ export default (
       const queryClient = useQueryClient();
       return useQuery({
         queryKey: RECYCLED_ITEMS_DATA_KEY,
-        queryFn: (): Promise<RecycledItemData[]> =>
-          Api.getRecycledItemsData(queryConfig).then((data) => data),
+        queryFn: () => Api.getRecycledItemsData(queryConfig),
         onSuccess: async (items) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
@@ -399,12 +391,12 @@ export default (
       let shouldFetch = true;
       if (id) {
         shouldFetch =
-          queryClient.getQueryData<Item>(buildItemKey(id))?.settings
-            ?.hasThumbnail ?? true;
+          queryClient.getQueryData<DiscriminatedItem>(buildItemKey(id))
+            ?.settings?.hasThumbnail ?? true;
       }
       return useQuery({
         queryKey: buildItemThumbnailKey({ id, size, replyUrl: false }),
-        queryFn: (): Promise<Blob> => {
+        queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
           }
@@ -428,12 +420,12 @@ export default (
       let shouldFetch = true;
       if (id) {
         shouldFetch =
-          queryClient.getQueryData<Item>(buildItemKey(id))?.settings
-            ?.hasThumbnail ?? true;
+          queryClient.getQueryData<DiscriminatedItem>(buildItemKey(id))
+            ?.settings?.hasThumbnail ?? true;
       }
       return useQuery({
         queryKey: buildItemThumbnailKey({ id, size, replyUrl: true }),
-        queryFn: (): Promise<string> => {
+        queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
           }
@@ -448,7 +440,7 @@ export default (
     useEtherpad: (item: EtherpadItemType | undefined, mode: 'read' | 'write') =>
       useQuery({
         queryKey: buildEtherpadKey(item?.id),
-        queryFn: (): Promise<Etherpad> => {
+        queryFn: () => {
           if (item?.type !== ItemType.ETHERPAD) {
             throw new Error('Item is not an etherpad item');
           }
@@ -456,9 +448,7 @@ export default (
           if (!item.id) {
             throw new UndefinedArgument();
           }
-          return Api.getEtherpad({ itemId: item.id, mode }, queryConfig).then(
-            (data) => data,
-          );
+          return Api.getEtherpad({ itemId: item.id, mode }, queryConfig);
         },
         enabled: Boolean(item?.id),
         ...defaultQueryOptions,

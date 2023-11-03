@@ -2,12 +2,11 @@ import { HttpMethod, ItemTagType } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
 import {
-  ITEMS_JS,
+  ITEMS,
   ITEM_TAGS,
   MEMBER_RESPONSE,
   UNAUTHORIZED_RESPONSE,
@@ -22,8 +21,6 @@ const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
-
 describe('Item Tag Mutations', () => {
   afterEach(() => {
     queryClient.clear();
@@ -31,7 +28,7 @@ describe('Item Tag Mutations', () => {
   });
 
   describe('usePostItemTag', () => {
-    const itemId = ITEMS_JS[0].id;
+    const itemId = ITEMS[0].id;
     const creator = MEMBER_RESPONSE.id;
     const tagType = ItemTagType.Hidden;
     const route = `/${buildPostItemTagRoute({ itemId, type: tagType })}`;

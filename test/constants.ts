@@ -8,16 +8,14 @@ import {
   ChatMessage,
   CompleteMember,
   Context,
+  DiscriminatedItem,
   ExportedChatMessage,
-  ExportedItemChat,
   FlagType,
   FolderItemType,
   GraaspError,
   HttpMethod,
   Invitation,
-  Item,
   ItemCategory,
-  ItemChat,
   ItemFavorite,
   ItemFlag,
   ItemLike,
@@ -93,8 +91,8 @@ export const MOCK_COMPLETE_MEMBER: CompleteMember = {
   ...MOCK_MEMBER,
   type: MemberType.Individual,
   extra: {},
-  updatedAt: new Date(),
-  createdAt: new Date(),
+  updatedAt: '2023-09-06T11:50:32.894Z',
+  createdAt: '2023-09-06T11:50:32.894Z',
 };
 
 const createMockMember = (member?: Partial<Member>): Member => ({
@@ -110,8 +108,8 @@ export const MOCK_ITEM: FolderItemType = {
   path: '42',
   description: '',
   creator: MOCK_MEMBER,
-  updatedAt: new Date(),
-  createdAt: new Date(),
+  updatedAt: '2023-09-06T11:50:32.894Z',
+  createdAt: '2023-09-06T11:50:32.894Z',
   settings: {},
   type: ItemType.FOLDER,
   extra: {
@@ -164,7 +162,7 @@ const ITEM_6: FolderItemType = createMockFolderItem({
   path: '5896.gggg',
 });
 
-export const ITEMS_JS: Item[] = [
+export const ITEMS: DiscriminatedItem[] = [
   ITEM_1,
   ITEM_2,
   ITEM_3,
@@ -186,7 +184,6 @@ export const ITEMS_JS: Item[] = [
       }),
   ),
 ];
-export const ITEMS: Item[] = ITEMS_JS;
 
 export const MENTION_IDS = ['12345', '78945'];
 
@@ -195,19 +192,19 @@ export const RECYCLED_ITEM_DATA: RecycledItemData[] = [
     id: `recycle-item-id`,
     item: ITEM_1,
     creator: MEMBER_RESPONSE,
-    createdAt: new Date(),
+    createdAt: '2023-09-06T11:50:32.894Z',
   },
   {
     id: `recycle-item-id-1`,
     item: ITEM_2,
     creator: MEMBER_RESPONSE,
-    createdAt: new Date(),
+    createdAt: '2023-09-06T11:50:32.894Z',
   },
   {
     id: `recycle-item-id-2`,
     item: ITEM_3,
     creator: MEMBER_RESPONSE,
-    createdAt: new Date(),
+    createdAt: '2023-09-06T11:50:32.894Z',
   },
 ];
 
@@ -215,7 +212,7 @@ export const FAVORITE_ITEM: ItemFavorite[] = [
   {
     id: `favorite-item-id`,
     item: ITEM_1,
-    createdAt: new Date(),
+    createdAt: '2023-09-06T11:50:32.894Z',
   },
 ];
 
@@ -245,10 +242,9 @@ const createMockMembership = (
   id: 'membership-id',
   member: MEMBER_RESPONSE,
   item: ITEM_1,
-  // clearly type enum for immutable record to correctly infer
   permission: PermissionLevel.Read,
-  createdAt: new Date('2023-04-26T08:46:34.812Z'),
-  updatedAt: new Date('2023-04-26T08:46:34.812Z'),
+  createdAt: '2023-04-26T08:46:34.812Z',
+  updatedAt: '2023-04-26T08:46:34.812Z',
   creator: MEMBER_RESPONSE,
   ...membership,
 });
@@ -272,9 +268,9 @@ export const ITEM_MEMBERSHIPS_RESPONSE: ItemMembership[] = [
 
 export const ITEM_LOGIN_RESPONSE: ItemLoginSchema = {
   type: ItemLoginSchemaType.Username,
-  item: ITEMS_JS[0],
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  item: ITEMS[0],
+  createdAt: '2023-09-06T11:50:32.894Z',
+  updatedAt: '2023-09-06T11:50:32.894Z',
   id: 'login-schema-id',
 };
 
@@ -322,11 +318,11 @@ const defaultAppValues: App = {
     id: 'publisher-id',
     name: 'publisher name',
     origins: ['origin'],
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: '2023-09-06T11:50:32.894Z',
+    updatedAt: '2023-09-06T11:50:32.894Z',
   },
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: '2023-09-06T11:50:32.894Z',
+  updatedAt: '2023-09-06T11:50:32.894Z',
 };
 
 const APP_1: App = {
@@ -352,8 +348,8 @@ export const createMockChatMessage = (
   id: '',
   body: 'some text',
   creator: MEMBER_RESPONSE,
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: '2023-09-06T11:50:32.894Z',
+  updatedAt: '2023-09-06T11:50:32.894Z',
   item: ITEM_1,
   ...message,
 });
@@ -366,8 +362,8 @@ export const createMockExportedChatMessage = (
   body: 'some text',
   creatorName: 'Some Name',
   creator: MEMBER_RESPONSE,
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: '2023-09-06T11:50:32.894Z',
+  updatedAt: '2023-09-06T11:50:32.894Z',
   ...message,
 });
 
@@ -377,72 +373,50 @@ export const createMockMemberMentions = (
   id: 'UUID',
   message: createMockChatMessage(),
   member: MEMBER_RESPONSE,
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: '2023-09-06T11:50:32.894Z',
+  updatedAt: '2023-09-06T11:50:32.894Z',
   status: MentionStatus.Read,
   ...memberMentions,
 });
 
-export const createMockItemChat = (messages?: ChatMessage[]): ItemChat => ({
-  messages: messages ?? [],
-  id: 'someid',
-});
-
-export const createMockExportedItemChat = (
-  itemId: string,
-  messages?: ExportedChatMessage[],
-): ExportedItemChat => ({ id: itemId, messages: messages || [] });
-
 export const buildChatMention = ({
   id = v4(),
-  member,
+  member = MOCK_MEMBER,
   status = MentionStatus.Unread,
 }: {
   id?: UUID;
   member?: Member;
   status?: MentionStatus;
-}): ChatMention => {
-  const defaultChatMentionValues: ChatMention = {
-    id: 'someid',
-    message: {
-      id: 'anotherid',
-      item: MOCK_ITEM,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      body: 'somemessage here',
-      creator: MOCK_MEMBER,
-    },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    member: member ?? MOCK_MEMBER,
-    status: MentionStatus.Unread,
-  };
-  const createMockChatMention = (
-    values: Partial<ChatMention>,
-  ): ChatMention => ({ ...defaultChatMentionValues, ...values });
+}): ChatMention => ({
+  id,
+  member,
+  status,
+  message: {
+    id: 'anotherid',
+    item: MOCK_ITEM,
+    createdAt: '2023-09-06T11:50:32.894Z',
+    updatedAt: '2023-09-06T11:50:32.894Z',
+    body: 'somemessage here',
+    creator: MOCK_MEMBER,
+  },
+  createdAt: '2023-09-06T11:50:32.894Z',
+  updatedAt: '2023-09-06T11:50:32.894Z',
+});
 
-  const CHAT_MENTION: ChatMention = createMockChatMention({
-    id,
-    member: MOCK_MEMBER,
-    status,
-  });
-  return CHAT_MENTION;
-};
-
-export const buildMemberMentions = (): ChatMention => {
-  const MEMBER_MENTIONS = createMockMemberMentions([
+export const buildMemberMentions = (): ChatMention[] => {
+  const MEMBER_MENTIONS = [
     {
       id: 'someid',
       message: {
         id: 'anotherid',
         item: MOCK_ITEM,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: '2023-09-06T11:50:32.894Z',
+        updatedAt: '2023-09-06T11:50:32.894Z',
         body: 'somemessage here',
         creator: MOCK_MEMBER,
       },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: '2023-09-06T11:50:32.894Z',
+      updatedAt: '2023-09-06T11:50:32.894Z',
       member: MOCK_MEMBER,
       status: MentionStatus.Unread,
     },
@@ -451,17 +425,17 @@ export const buildMemberMentions = (): ChatMention => {
       message: {
         id: 'anotherid',
         item: MOCK_ITEM,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: '2023-09-06T11:50:32.894Z',
+        updatedAt: '2023-09-06T11:50:32.894Z',
         body: 'somemessage here',
         creator: MOCK_MEMBER,
       },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: '2023-09-06T11:50:32.894Z',
+      updatedAt: '2023-09-06T11:50:32.894Z',
       member: MOCK_MEMBER,
       status: MentionStatus.Unread,
     },
-  ]);
+  ];
   return MEMBER_MENTIONS;
 };
 
@@ -469,7 +443,7 @@ const defaultItemTagsValues: ItemTag = {
   id: 'tag-id',
   item: MOCK_ITEM,
   type: ItemTagType.Public,
-  createdAt: new Date(),
+  createdAt: '2023-09-06T11:50:32.894Z',
   creator: MOCK_MEMBER,
 };
 const createMockItemTags = (values: Partial<ItemTag>): ItemTag => ({
@@ -491,24 +465,24 @@ const ITEM_TAG_2: ItemTag = createMockItemTags({
 
 export const ITEM_TAGS = [ITEM_TAG_1, ITEM_TAG_2];
 
-export const ITEM_CHAT: ItemChat = createMockItemChat([
+export const CHAT_MESSAGES: ChatMessage[] = [
   {
     id: MESSAGE_IDS[0],
     item: ITEM_1,
     creator: MOCK_MEMBER,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: '2023-09-06T11:50:32.894Z',
+    updatedAt: '2023-09-06T11:50:32.894Z',
     body: 'text',
   },
   {
     id: MESSAGE_IDS[1],
     item: ITEM_1,
     creator: MOCK_MEMBER,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: '2023-09-06T11:50:32.894Z',
+    updatedAt: '2023-09-06T11:50:32.894Z',
     body: 'text of second message',
   },
-]);
+];
 
 const defaultCategoryValues: Category = {
   id: 'category-id1',
@@ -534,7 +508,7 @@ const defaultItemCategoryValues: ItemCategory = {
   id: 'id1',
   item: MOCK_ITEM,
   category: defaultCategoryValues,
-  createdAt: new Date(),
+  createdAt: '2023-09-06T11:50:32.894Z',
   creator: MOCK_MEMBER,
 };
 const createMockItemCategory = (
@@ -559,12 +533,12 @@ const buildItemLikes = (): ItemLike[] => [
   {
     id: 'id1',
     item: MOCK_ITEM,
-    createdAt: new Date(),
+    createdAt: '2023-09-06T11:50:32.894Z',
   },
   {
     id: 'id2',
     item: MOCK_ITEM,
-    createdAt: new Date(),
+    createdAt: '2023-09-06T11:50:32.894Z',
   },
 ];
 export const ITEM_LIKES: ItemLike[] = buildItemLikes();
@@ -578,20 +552,20 @@ export const ITEM_VALIDATION_GROUP: ItemValidationGroup = {
       item: MOCK_ITEM,
       status: ItemValidationStatus.Success,
       process: ItemValidationProcess.BadWordsDetection,
-      createdAt: new Date(),
+      createdAt: '2023-09-06T11:50:32.894Z',
       result: '',
       itemValidationGroup: { id: 'groupid' } as ItemValidationGroup,
-      updatedAt: new Date(),
+      updatedAt: '2023-09-06T11:50:32.894Z',
     },
   ],
-  createdAt: new Date(),
+  createdAt: '2023-09-06T11:50:32.894Z',
 };
 
 const ACTION_1: Action = {
   id: 'action-id',
   item: MOCK_ITEM,
   member: MOCK_MEMBER,
-  createdAt: new Date(),
+  createdAt: '2023-09-06T11:50:32.894Z',
   view: Context.Analytics,
   type: 'action-type',
   extra: { some: 'value' },
@@ -612,9 +586,9 @@ const createMockActionData = (actionData: Partial<ActionData>): ActionData => ({
 
 export const ACTIONS_DATA: ActionData = createMockActionData({
   actions: ACTIONS_LIST,
-  members: [MEMBER_RESPONSE as Member],
+  members: [MEMBER_RESPONSE],
   item: ITEM_1,
-  itemMemberships: [MEMBERSHIP_1] as ItemMembership[],
+  itemMemberships: [MEMBERSHIP_1],
   metadata: {
     numActionsRetrieved: 3,
     requestedSampleSize: 24,
@@ -622,9 +596,9 @@ export const ACTIONS_DATA: ActionData = createMockActionData({
 });
 
 export const AGGREGATE_ACTIONS_DATA = [
-  { aggregateResult: 1.5, createdDay: new Date('2023-10-10T00:00:00.000Z') },
-  { aggregateResult: 2, createdDay: new Date('2023-07-10T00:00:00.000Z') },
-  { aggregateResult: 4, createdDay: new Date('2023-11-10T00:00:00.000Z') },
+  { aggregateResult: 1.5, createdDay: '2023-10-10T00:00:00.000Z' },
+  { aggregateResult: 2, createdDay: '2023-07-10T00:00:00.000Z' },
+  { aggregateResult: 4, createdDay: '2023-11-10T00:00:00.000Z' },
 ];
 
 export const buildInvitation = (values: Partial<Invitation>): Invitation => ({
@@ -634,8 +608,8 @@ export const buildInvitation = (values: Partial<Invitation>): Invitation => ({
   creator: MOCK_MEMBER,
   permission: PermissionLevel.Read,
   item: MOCK_ITEM,
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: '2023-09-06T11:50:32.894Z',
+  updatedAt: '2023-09-06T11:50:32.894Z',
   ...values,
 });
 
@@ -662,13 +636,13 @@ export const ITEM_FLAGS: ItemFlag[] = [
     type: FlagType.FalseInformation,
     item: ITEM_1,
     creator: MEMBER_RESPONSE,
-    createdAt: new Date(),
+    createdAt: '2023-09-06T11:50:32.894Z',
   },
 ];
 
 export const ITEM_PUBLISHED_DATA: ItemPublished = {
   id: 'item-published-id',
   item: ITEM_1,
-  createdAt: new Date(),
+  createdAt: '2023-09-06T11:50:32.894Z',
   totalViews: 1,
 };

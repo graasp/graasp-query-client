@@ -1,5 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import { MEMBER_RESPONSE, buildMemberMentions } from '../../test/constants';
@@ -11,8 +10,6 @@ import {
 import { buildMentionKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Chat Mention Hooks', () => {
   afterEach(() => {

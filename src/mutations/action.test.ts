@@ -2,7 +2,6 @@ import { HttpMethod } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -14,10 +13,8 @@ import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildExportActions, buildPostItemAction } from '../api/routes';
 import { exportActionsRoutine, postActionRoutine } from '../routines';
 
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
-
 describe('Action Mutations', () => {
-  const itemId = ITEMS.first()!.id;
+  const itemId = ITEMS[0].id;
 
   const mockedNotifier = jest.fn();
   const { wrapper, queryClient, mutations } = setUpTest({

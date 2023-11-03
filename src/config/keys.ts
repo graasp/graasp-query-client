@@ -40,7 +40,6 @@ export const buildItemParentsKey = (id?: UUID) => [ITEMS_KEY, 'parents', id];
 export const CHATS_KEY = 'chats';
 export const buildItemChatKey = (id: UUID) => [CHATS_KEY, id];
 export const EXPORT_CHATS_KEY = 'exportChats';
-export const buildExportItemChatKey = (id: UUID) => [EXPORT_CHATS_KEY, id];
 export const MENTIONS_KEY = 'mentions';
 export const buildMentionKey = () => [MENTIONS_KEY];
 

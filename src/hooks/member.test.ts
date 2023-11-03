@@ -8,9 +8,7 @@ import {
 } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
-import { UseQueryResult } from 'react-query';
 
 import {
   AVATAR_BLOB_RESPONSE,
@@ -29,7 +27,6 @@ import {
   buildGetMemberStorage,
   buildGetMembersRoute,
 } from '../api/routes';
-import { SIGNED_OUT_USER } from '../config/constants';
 import {
   CURRENT_MEMBER_KEY,
   CURRENT_MEMBER_STORAGE_KEY,
@@ -39,7 +36,6 @@ import {
 } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 describe('Member Hooks', () => {
   afterEach(() => {
     queryClient.clear();
@@ -48,7 +44,7 @@ describe('Member Hooks', () => {
 
   describe('useCurrentMember', () => {
     const route = `/${GET_CURRENT_MEMBER_ROUTE}`;
-    const hook = (): UseQueryResult<Member> => hooks.useCurrentMember();
+    const hook = () => hooks.useCurrentMember();
 
     it(`Receive current member`, async () => {
       const response = MEMBER_RESPONSE;
@@ -75,10 +71,9 @@ describe('Member Hooks', () => {
       });
 
       // unauthorized request are translated to signed out user
-      expect(data).toEqual(SIGNED_OUT_USER);
+      expect(data).toBeNull();
       expect(isSuccess).toBeTruthy();
-      // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toMatchObject(data!);
+      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeNull();
     });
   });
 

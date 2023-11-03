@@ -1,4 +1,4 @@
-import { configureWebsocketClient } from '@graasp/sdk/frontend';
+import { configureWebsocketClient } from '@graasp/sdk';
 
 import { AxiosError } from 'axios';
 import { StatusCodes } from 'http-status-codes';
@@ -7,6 +7,7 @@ import {
   QueryClient,
   QueryClientProvider,
   dehydrate,
+  focusManager,
   useMutation,
   useQueryClient,
 } from 'react-query';
@@ -48,10 +49,24 @@ const retry = (failureCount: number, error: Error): boolean => {
   return false;
 };
 
-export default (config: Partial<QueryClientConfig>) => {
+export type ConfigureQueryClientConfig = Partial<
+  Pick<
+    QueryClientConfig,
+    | 'API_HOST'
+    | 'DOMAIN'
+    | 'SHOW_NOTIFICATIONS'
+    | 'onConfigAxios'
+    | 'enableWebsocket'
+    | 'WS_HOST'
+    | 'notifier'
+    | 'defaultQueryOptions'
+  >
+>;
+
+export default (config: ConfigureQueryClientConfig) => {
   const baseConfig = {
-    API_HOST: config?.API_HOST || 'http://localhost:3000',
-    SHOW_NOTIFICATIONS: config?.SHOW_NOTIFICATIONS || false,
+    API_HOST: config.API_HOST || 'http://localhost:3000',
+    SHOW_NOTIFICATIONS: config.SHOW_NOTIFICATIONS || false,
     DOMAIN: config.DOMAIN ?? getHostname(),
   };
 
@@ -66,10 +81,10 @@ export default (config: Partial<QueryClientConfig>) => {
     axios,
     // derive WS_HOST from API_HOST if needed
     WS_HOST:
-      config?.WS_HOST || `${baseConfig.API_HOST.replace('http', 'ws')}/ws`,
+      config.WS_HOST || `${baseConfig.API_HOST.replace('http', 'ws')}/ws`,
     // whether websocket support should be enabled
-    enableWebsocket: config?.enableWebsocket || false,
-    notifier: config?.notifier,
+    enableWebsocket: config.enableWebsocket || false,
+    notifier: config.notifier,
     // default hooks & mutation config
     defaultQueryOptions: {
       retry,
@@ -80,7 +95,7 @@ export default (config: Partial<QueryClientConfig>) => {
       refetchOnWindowFocus: false,
       notifyOnChangeProps: 'tracked',
       isDataEqual,
-      ...config?.defaultQueryOptions,
+      ...config.defaultQueryOptions,
     },
   };
 
@@ -99,6 +114,7 @@ export default (config: Partial<QueryClientConfig>) => {
 
   // returns the queryClient and relative instances
   return {
+    queryConfig,
     queryClient,
     useQueryClient,
     QueryClientProvider,
@@ -109,5 +125,6 @@ export default (config: Partial<QueryClientConfig>) => {
     Hydrate,
     mutations,
     axios,
+    focusManager,
   };
 };

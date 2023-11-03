@@ -1,9 +1,16 @@
-import { Member, MemberExtra, ResultOf, UUID } from '@graasp/sdk';
-import { Password } from '@graasp/sdk/frontend';
+import {
+  CompleteMember,
+  Member,
+  MemberExtra,
+  MemberStorage,
+  Password,
+  ResultOf,
+  UUID,
+} from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 
-import { DEFAULT_THUMBNAIL_SIZE, SIGNED_OUT_USER } from '../config/constants';
+import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
 import { PartialQueryConfigForApi } from '../types';
 import { verifyAuthentication } from './axios';
 import {
@@ -22,22 +29,25 @@ import {
 export const getMembersBy = async (
   { emails }: { emails: string[] },
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<ResultOf<Member>> =>
+) =>
   axios
-    .get(`${API_HOST}/${buildGetMembersBy(emails)}`)
+    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersBy(emails)}`)
     .then(({ data }) => data);
 
 export const getMember = async (
   { id }: { id: UUID },
   { API_HOST, axios }: PartialQueryConfigForApi,
-) => axios.get(`${API_HOST}/${buildGetMember(id)}`).then(({ data }) => data);
+) =>
+  axios
+    .get<Member>(`${API_HOST}/${buildGetMember(id)}`)
+    .then(({ data }) => data);
 
 export const getMembers = (
   { ids }: { ids: UUID[] },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<ResultOf<Member[]>>(`${API_HOST}/${buildGetMembersRoute(ids)}`)
+    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersRoute(ids)}`)
     .then(({ data }) => data);
 
 export const getCurrentMember = async ({
@@ -46,14 +56,14 @@ export const getCurrentMember = async ({
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
-      .get(`${API_HOST}/${GET_CURRENT_MEMBER_ROUTE}`)
+      .get<CompleteMember>(`${API_HOST}/${GET_CURRENT_MEMBER_ROUTE}`)
       .then(({ data }) => data)
       .catch((error) => {
         if (error.response) {
           // return valid response for unauthorized requests
           // avoid infinite loading induced by failure in react-query
           if (error.response.status === StatusCodes.UNAUTHORIZED) {
-            return SIGNED_OUT_USER;
+            return null;
           }
         }
         throw error;
@@ -66,17 +76,17 @@ export const getMemberStorage = async ({
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
-      .get(`${API_HOST}/${buildGetMemberStorage()}`)
+      .get<MemberStorage>(`${API_HOST}/${buildGetMemberStorage()}`)
       .then(({ data }) => data),
   );
 
 export const editMember = async (
   payload: { id: UUID; extra?: MemberExtra; name?: string },
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<Member> =>
+) =>
   verifyAuthentication(() =>
     axios
-      .patch(`${API_HOST}/${buildPatchMember(payload.id)}`, {
+      .patch<CompleteMember>(`${API_HOST}/${buildPatchMember(payload.id)}`, {
         extra: payload.extra,
       })
       .then(({ data }) => data),
@@ -88,17 +98,17 @@ export const deleteMember = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .delete(`${API_HOST}/${buildDeleteMemberRoute(id)}`)
+      .delete<Member>(`${API_HOST}/${buildDeleteMemberRoute(id)}`)
       .then(({ data }) => data),
   );
 
 export const updatePassword = async (
   payload: { password: Password; currentPassword: Password },
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<void> =>
+) =>
   verifyAuthentication(() =>
     axios
-      .patch(`${API_HOST}/${buildUpdateMemberPasswordRoute()}`, {
+      .patch<void>(`${API_HOST}/${buildUpdateMemberPasswordRoute()}`, {
         password: payload.password,
         currentPassword: payload.currentPassword,
       })
@@ -129,9 +139,9 @@ export const uploadAvatar = async (
 export const downloadAvatar = async (
   { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<Blob> =>
+) =>
   axios
-    .get(
+    .get<Blob>(
       `${API_HOST}/${buildDownloadAvatarRoute({ id, size, replyUrl: false })}`,
       {
         responseType: 'blob',
@@ -142,9 +152,9 @@ export const downloadAvatar = async (
 export const downloadAvatarUrl = async (
   { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<string> =>
+) =>
   axios
-    .get(
+    .get<string>(
       `${API_HOST}/${buildDownloadAvatarRoute({ id, size, replyUrl: true })}`,
     )
     .then(({ data }) => data);

@@ -1,3 +1,5 @@
+import { Invitation } from '@graasp/sdk';
+
 import { AxiosError, AxiosInstance } from 'axios';
 import { QueryObserverOptions } from 'react-query';
 
@@ -21,11 +23,11 @@ export type QueryClientConfig = {
   notifier?: Notifier;
   axios: AxiosInstance;
   onConfigAxios?: (axios: AxiosInstance) => void;
-  defaultQueryOptions: {
+  defaultQueryOptions?: {
     // time until data in cache considered stale if cache not invalidated
-    staleTime: number;
+    staleTime?: number;
     // time before cache labeled as inactive to be garbage collected
-    cacheTime: number;
+    cacheTime?: number;
     retry?:
       | number
       | boolean
@@ -42,3 +44,7 @@ export type PartialQueryConfigForApi = Pick<
   QueryClientConfig,
   'API_HOST' | 'axios'
 >;
+
+// todo: move per feature folders
+export type NewInvitation = Pick<Invitation, 'email' & 'permission'> &
+  Partial<Invitation>;

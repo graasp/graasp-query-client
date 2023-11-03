@@ -1,25 +1,20 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { ChatMessage, ExportedItemChat, ItemChat } from '@graasp/sdk';
+import { ChatMessage } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
-  ITEMS_JS,
+  ITEMS,
   MOCK_ITEM,
   MOCK_MEMBER,
   UNAUTHORIZED_RESPONSE,
-  createMockExportedItemChat,
-  createMockItemChat,
 } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
-import { buildExportItemChatRoute, buildGetItemChatRoute } from '../api/routes';
-import { buildExportItemChatKey, buildItemChatKey } from '../config/keys';
+import { buildGetItemChatRoute } from '../api/routes';
+import { buildItemChatKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Chat Hooks', () => {
   afterEach(() => {
@@ -28,14 +23,14 @@ describe('Chat Hooks', () => {
   });
 
   describe('useItemChat', () => {
-    const itemId = ITEMS_JS[0].id;
+    const itemId = ITEMS[0].id;
     const mockMessage: ChatMessage = {
       id: 'some-messageId',
       item: MOCK_ITEM,
       body: 'some content',
       creator: MOCK_MEMBER,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: '2023-09-06T11:50:32.894Z',
+      updatedAt: '2023-09-06T11:50:32.894Z',
     };
     const route = `/${buildGetItemChatRoute(itemId)}`;
     const key = buildItemChatKey(itemId);
@@ -43,7 +38,7 @@ describe('Chat Hooks', () => {
     const hook = () => hooks.useItemChat(itemId);
 
     it(`Receive chat messages`, async () => {
-      const response: ItemChat = createMockItemChat([mockMessage]);
+      const response = [mockMessage];
       const endpoints = [
         {
           route,
@@ -84,14 +79,14 @@ describe('Chat Hooks', () => {
   });
 
   describe('useItemChat with arguments', () => {
-    const itemId = ITEMS_JS[0].id;
+    const itemId = ITEMS[0].id;
     const mockMessage: ChatMessage = {
       id: 'some-messageId',
       item: MOCK_ITEM,
       body: 'some content',
       creator: MOCK_MEMBER,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: '2023-09-06T11:50:32.894Z',
+      updatedAt: '2023-09-06T11:50:32.894Z',
     };
     const route = `/${buildGetItemChatRoute(itemId)}`;
     const key = buildItemChatKey(itemId);
@@ -99,7 +94,7 @@ describe('Chat Hooks', () => {
     it(`getUpdates = true`, async () => {
       const hook = () => hooks.useItemChat(itemId, { getUpdates: true });
 
-      const response = createMockItemChat([mockMessage]);
+      const response = [mockMessage];
       const endpoints = [
         {
           route,
@@ -120,7 +115,7 @@ describe('Chat Hooks', () => {
 
     it(`getUpdates = false`, async () => {
       const hook = () => hooks.useItemChat(itemId, { getUpdates: false });
-      const response = createMockItemChat([mockMessage]);
+      const response = [mockMessage];
       const endpoints = [
         {
           route,
@@ -137,64 +132,6 @@ describe('Chat Hooks', () => {
 
       // verify cache keys
       expect(queryClient.getQueryData(key)).toMatchObject(response);
-    });
-  });
-
-  describe('useItemChat', () => {
-    const itemId = ITEMS_JS[0].id;
-    const route = `/${buildExportItemChatRoute(itemId)}`;
-    const key = buildExportItemChatKey(itemId);
-
-    const hook = () => hooks.useExportItemChat(itemId);
-
-    it(`Receive exported chat`, async () => {
-      const response: ExportedItemChat = createMockExportedItemChat(itemId, [
-        {
-          id: 'some-id',
-          chatId: itemId,
-          body: 'some content',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          creator: MOCK_MEMBER,
-          creatorName: 'A user name',
-        },
-      ]);
-      const endpoints = [
-        {
-          route,
-          response,
-        },
-      ];
-      const { data } = await mockHook({
-        endpoints,
-        hook,
-        wrapper,
-      });
-
-      expect(data).toMatchObject(response);
-
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toMatchObject(response);
-    });
-
-    it(`Unauthorized`, async () => {
-      const endpoints = [
-        {
-          route,
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-        },
-      ];
-      const { data, isError } = await mockHook({
-        hook,
-        wrapper,
-        endpoints,
-      });
-
-      expect(data).toBeFalsy();
-      expect(isError).toBeTruthy();
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeFalsy();
     });
   });
 });

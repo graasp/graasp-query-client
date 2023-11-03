@@ -1,9 +1,8 @@
-import { HttpMethod, Member, ThumbnailSize } from '@graasp/sdk';
+import { CompleteMember, HttpMethod, ThumbnailSize } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -21,8 +20,6 @@ import {
 } from '../api/routes';
 import { CURRENT_MEMBER_KEY, buildAvatarKey } from '../config/keys';
 import { uploadAvatarRoutine } from '../routines';
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
@@ -180,7 +177,8 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      const newData = queryClient.getQueryData<Member>(CURRENT_MEMBER_KEY);
+      const newData =
+        queryClient.getQueryData<CompleteMember>(CURRENT_MEMBER_KEY);
       expect(newData).toMatchObject(response);
     });
 
@@ -207,7 +205,8 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      const oldData = queryClient.getQueryData<Member>(CURRENT_MEMBER_KEY);
+      const oldData =
+        queryClient.getQueryData<CompleteMember>(CURRENT_MEMBER_KEY);
       expect(oldData).toMatchObject(MEMBER_RESPONSE);
     });
   });

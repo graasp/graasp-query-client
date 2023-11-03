@@ -6,7 +6,6 @@ import {
 } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -23,7 +22,6 @@ import {
 } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Membership Hooks', () => {
   afterEach(() => {
@@ -118,7 +116,7 @@ describe('Membership Hooks', () => {
       const hook = () => hooks.useManyItemMemberships(ids);
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
       // verify cache keys
       expect(queryClient.getQueryData<ResultOf<ItemMembership>>(key)).toEqual(
         response,

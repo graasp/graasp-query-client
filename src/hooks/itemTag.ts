@@ -1,14 +1,9 @@
-import {
-  ItemTag,
-  MAX_TARGETS_FOR_READ_REQUEST,
-  ResultOf,
-  UUID,
-} from '@graasp/sdk';
+import { MAX_TARGETS_FOR_READ_REQUEST, UUID } from '@graasp/sdk';
 
 import { useQuery, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
-import { splitRequestByIds } from '../api/axios';
+import { splitRequestByIdsAndReturn } from '../api/axios';
 import { UndefinedArgument } from '../config/errors';
 import { itemTagsKeys } from '../config/keys';
 import { QueryClientConfig } from '../types';
@@ -19,11 +14,11 @@ export default (queryConfig: QueryClientConfig) => {
   const useItemTags = (id?: UUID) =>
     useQuery({
       queryKey: itemTagsKeys.singleId(id),
-      queryFn: (): Promise<ItemTag[]> => {
+      queryFn: () => {
         if (!id) {
           throw new UndefinedArgument();
         }
-        return Api.getItemTags(id, queryConfig).then((data) => data);
+        return Api.getItemTags(id, queryConfig);
       },
       enabled: Boolean(id),
       ...defaultQueryOptions,
@@ -33,11 +28,11 @@ export default (queryConfig: QueryClientConfig) => {
     const queryClient = useQueryClient();
     return useQuery({
       queryKey: itemTagsKeys.manyIds(ids),
-      queryFn: (): Promise<ResultOf<ItemTag[]>> => {
+      queryFn: () => {
         if (!ids || ids?.length === 0) {
           throw new UndefinedArgument();
         }
-        return splitRequestByIds(
+        return splitRequestByIdsAndReturn(
           ids,
           MAX_TARGETS_FOR_READ_REQUEST,
           (chunk) => Api.getItemsTags(chunk, queryConfig),

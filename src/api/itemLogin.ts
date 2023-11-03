@@ -8,7 +8,7 @@ import {
 import { PartialQueryConfigForApi } from '../types';
 import { verifyAuthentication } from './axios';
 import {
-  buildDeleteItemLoginSchemaRoute, // buildGetItemLoginRoute,
+  buildDeleteItemLoginSchemaRoute,
   buildGetItemLoginSchemaRoute,
   buildGetItemLoginSchemaTypeRoute,
   buildPostItemLoginSignInRoute,
@@ -23,9 +23,9 @@ export const postItemLoginSignIn = async (
     password,
   }: { itemId: UUID; username?: string; memberId?: UUID; password?: string },
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<Member> =>
+) =>
   axios
-    .post(`${API_HOST}/${buildPostItemLoginSignInRoute(itemId)}`, {
+    .post<Member>(`${API_HOST}/${buildPostItemLoginSignInRoute(itemId)}`, {
       username: username?.trim(),
       memberId: memberId?.trim(),
       password,
@@ -37,33 +37,40 @@ export const getItemLoginSchema = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get(`${API_HOST}/${buildGetItemLoginSchemaRoute(id)}`)
+    .get<ItemLoginSchema>(`${API_HOST}/${buildGetItemLoginSchemaRoute(id)}`)
     .then(({ data }) => data);
 
 export const getItemLoginSchemaType = async (
   id: UUID,
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<ItemLoginSchemaType> =>
+) =>
   axios
-    .get(`${API_HOST}/${buildGetItemLoginSchemaTypeRoute(id)}`)
+    .get<ItemLoginSchemaType>(
+      `${API_HOST}/${buildGetItemLoginSchemaTypeRoute(id)}`,
+    )
     .then(({ data }) => data);
 
 export const putItemLoginSchema = async (
   { itemId, type }: { itemId: UUID; type: ItemLoginSchemaType },
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<ItemLoginSchema> =>
+) =>
   verifyAuthentication(() =>
     axios
-      .put(`${API_HOST}/${buildPutItemLoginSchemaRoute(itemId)}`, {
-        type,
-      })
+      .put<ItemLoginSchema>(
+        `${API_HOST}/${buildPutItemLoginSchemaRoute(itemId)}`,
+        {
+          type,
+        },
+      )
       .then(({ data }) => data),
   );
 
 export const deleteItemLoginSchema = async (
   { itemId }: { itemId: UUID },
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<void> =>
+) =>
   verifyAuthentication(() =>
-    axios.delete(`${API_HOST}/${buildDeleteItemLoginSchemaRoute(itemId)}`),
+    axios.delete<void>(
+      `${API_HOST}/${buildDeleteItemLoginSchemaRoute(itemId)}`,
+    ),
   );

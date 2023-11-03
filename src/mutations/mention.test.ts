@@ -1,8 +1,7 @@
-import { ChatMention, HttpMethod, Member, MentionStatus } from '@graasp/sdk';
+import { HttpMethod, MentionStatus } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -28,11 +27,9 @@ import {
   patchMentionRoutine,
 } from '../routines';
 
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
-
 describe('Mention Mutations', () => {
   const mentionId = MENTION_IDS[0];
-  const member = MEMBER_RESPONSE as Member;
+  const member = MEMBER_RESPONSE;
   const memberId = member.id;
   const currentMemberRoute = `/${GET_CURRENT_MEMBER_ROUTE}`;
   const key = buildMentionKey();
@@ -63,7 +60,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: buildMentionResponse(
-              MENTIONS[0] as ChatMention,
+              MENTIONS[0],
               HttpMethod.PATCH,
               MentionStatus.Read,
             ),

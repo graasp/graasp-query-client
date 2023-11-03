@@ -3,15 +3,10 @@ import { FlagType, HttpMethod } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
-import {
-  ITEMS_JS,
-  ITEM_FLAGS,
-  UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
+import { ITEMS, ITEM_FLAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildPostItemFlagRoute } from '../api/routes';
 import { buildItemFlagsKey } from '../config/keys';
@@ -21,7 +16,6 @@ const mockedNotifier = jest.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Item Flag Mutations', () => {
   afterEach(() => {
@@ -31,7 +25,7 @@ describe('Item Flag Mutations', () => {
 
   describe('usePostItemFlag', () => {
     const flagType = FlagType.FalseInformation;
-    const itemId = ITEMS_JS[0].id;
+    const itemId = ITEMS[0].id;
     const flagKey = buildItemFlagsKey(itemId);
     const route = `/${buildPostItemFlagRoute(itemId)}`;
     const mutation = mutations.usePostItemFlag;

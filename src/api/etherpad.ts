@@ -1,4 +1,4 @@
-import { EtherpadItemType, Item, UUID } from '@graasp/sdk';
+import { Etherpad, EtherpadItemType, Item, UUID } from '@graasp/sdk';
 
 import axios from 'axios';
 
@@ -17,7 +17,7 @@ class EtherpadQueue {
   static readonly instance = new EtherpadQueue();
 
   /** A reference to the last promise added to the queue */
-  private lastPromise = Promise.resolve();
+  private lastPromise: Promise<void | Etherpad> = Promise.resolve();
 
   /** Ensure singleton with private constructor */
   // eslint-disable-next-line no-useless-constructor, no-empty-function
@@ -29,7 +29,7 @@ class EtherpadQueue {
   ) {
     const doFetch = () =>
       axios
-        .get(`${API_HOST}/${buildGetEtherpadRoute(itemId)}`, {
+        .get<Etherpad>(`${API_HOST}/${buildGetEtherpadRoute(itemId)}`, {
           params: { mode },
         })
         .then(({ data }) => data);
@@ -53,12 +53,15 @@ export const postEtherpad = async (
     parentId?: UUID;
   },
   { API_HOST }: QueryClientConfig,
-): Promise<EtherpadItemType> =>
+) =>
   verifyAuthentication(() =>
     axios
-      .post(`${API_HOST}/${buildPostEtherpadRoute(parentId)}`, {
-        name: name.trim(),
-      })
+      .post<EtherpadItemType>(
+        `${API_HOST}/${buildPostEtherpadRoute(parentId)}`,
+        {
+          name: name.trim(),
+        },
+      )
       .then(({ data }) => data),
   );
 

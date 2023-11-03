@@ -1,6 +1,6 @@
 import {
+  DiscriminatedItem,
   FolderItemType,
-  Item,
   ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
@@ -8,7 +8,6 @@ import {
 } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -47,7 +46,6 @@ import {
 } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Items Hooks', () => {
   afterEach(() => {
@@ -67,11 +65,11 @@ describe('Items Hooks', () => {
       expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect((queryClient.getQueryData(OWN_ITEMS_KEY), response)).toBeTruthy();
+      expect(
+        queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY),
+      ).toEqual(response);
       for (const item of response) {
-        expect(
-          (queryClient.getQueryData(buildItemKey(item.id)), item),
-        ).toBeTruthy();
+        expect(queryClient.getQueryData(buildItemKey(item.id))).toEqual(item);
       }
     });
 
@@ -114,11 +112,9 @@ describe('Items Hooks', () => {
       expect(data).toMatchObject(response);
       expect(isSuccess).toBeTruthy();
       // verify cache keys
-      expect((queryClient.getQueryData(key), response)).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toEqual(response);
       for (const item of response) {
-        expect(
-          (queryClient.getQueryData(buildItemKey(item.id)), item),
-        ).toBeTruthy();
+        expect(queryClient.getQueryData(buildItemKey(item.id))).toEqual(item);
       }
     });
 
@@ -213,8 +209,8 @@ describe('Items Hooks', () => {
         folder: { childrenOrder: [] },
       },
       settings: {},
-      updatedAt: new Date(),
-      createdAt: new Date(),
+      updatedAt: '2023-09-06T11:50:32.894Z',
+      createdAt: '2023-09-06T11:50:32.894Z',
       creator: { id: 'creator' } as Member,
     };
     const response = ITEMS;
@@ -407,9 +403,13 @@ describe('Items Hooks', () => {
       const { data } = await mockHook({ endpoints, hook, wrapper });
       expect(data).toEqual(response);
       // verify cache keys
-      const item = queryClient.getQueryData<Item>(buildItemKey(id));
+      const item = queryClient.getQueryData<DiscriminatedItem>(
+        buildItemKey(id),
+      );
       expect(item).toEqual(response.data[id]);
-      const items = queryClient.getQueryData<Item[]>(buildItemsKey([id]));
+      const items = queryClient.getQueryData<DiscriminatedItem[]>(
+        buildItemsKey([id]),
+      );
       expect(items).toEqual(response);
     });
 
@@ -426,9 +426,9 @@ describe('Items Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(buildItemsKey(ids))).toMatchObject(data!);
       for (const item of items) {
-        const itemById = items.find(({ id }) => id === item.id) as Item;
+        const itemById = items.find(({ id }) => id === item.id);
         expect(queryClient.getQueryData(buildItemKey(item.id))).toMatchObject(
-          itemById,
+          itemById!,
         );
       }
     });

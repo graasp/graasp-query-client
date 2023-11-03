@@ -9,7 +9,6 @@ import {
 } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -30,7 +29,6 @@ type AggregateActionsResponse = {
 const { hooks, wrapper, queryClient } = setUpTest();
 const itemId = ITEMS[0].id;
 
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 describe('Action Hooks', () => {
   afterEach(() => {
     nock.cleanAll();

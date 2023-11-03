@@ -1,5 +1,4 @@
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -11,8 +10,6 @@ import { buildGetLastItemValidationGroupRoute } from '../api/routes';
 import { buildLastItemValidationGroupKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Item Validation Hooks', () => {
   afterEach(() => {

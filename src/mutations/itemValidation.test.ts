@@ -1,7 +1,6 @@
 import { HttpMethod } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
@@ -18,8 +17,6 @@ const mockedNotifier = jest.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Item Validation Mutations', () => {
   afterEach(() => {

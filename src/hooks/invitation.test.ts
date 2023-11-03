@@ -1,5 +1,4 @@
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -16,8 +15,6 @@ import { buildInvitationKey, buildItemInvitationsKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 const item = ITEMS[0];
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Invitation Hooks', () => {
   afterEach(() => {
@@ -100,7 +97,7 @@ describe('Invitation Hooks', () => {
       expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect((queryClient.getQueryData(key), response)).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toEqual(response);
     });
 
     it(`Undefined id does not fetch`, async () => {

@@ -1,4 +1,4 @@
-import { ChatMention, Member, MentionStatus } from '@graasp/sdk';
+import { ChatMention, MentionStatus } from '@graasp/sdk';
 
 import {
   MEMBER_RESPONSE,
@@ -56,7 +56,7 @@ describe('Ws Mention Hooks', () => {
   });
 
   describe('useMentionsUpdates', () => {
-    const member = MEMBER_RESPONSE as Member;
+    const member = MEMBER_RESPONSE;
     const chatKey = buildItemChatKey(member.id);
     const mentionKey = buildMentionKey();
     const channel = {
@@ -126,10 +126,8 @@ describe('Ws Mention Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(mentionEvent);
 
-      expect(queryClient.getQueryData<ChatMention[]>(mentionKey)).toEqual(
-        MENTIONS_QUERY_DATA.filter(
-          ({ id }: { id: string }) => id !== deletedMention.id,
-        ),
+      expect(queryClient.getQueryData(mentionKey)).toEqual(
+        MENTIONS_QUERY_DATA.filter(({ id }) => id !== deletedMention.id),
       );
     });
 
