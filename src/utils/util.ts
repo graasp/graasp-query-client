@@ -1,5 +1,3 @@
-import { InfiniteData } from 'react-query';
-
 export const isObject = (value: unknown) =>
   typeof value === 'object' && !Array.isArray(value) && value !== null;
 
@@ -11,21 +9,6 @@ export const getHostname = () => {
     return undefined;
   }
   return window?.location?.hostname;
-};
-
-export const isPaginatedChildrenDataEqual = <T>(
-  oldData: InfiniteData<T> | undefined,
-  newData: InfiniteData<T>,
-) => {
-  if (oldData?.pages.length === newData?.pages.length && oldData.pages.length) {
-    for (const [idx, p] of oldData.pages.entries()) {
-      if (p !== newData.pages[idx]) {
-        return false;
-      }
-    }
-    return true;
-  }
-  return false;
 };
 
 export const paginate = <U>(
