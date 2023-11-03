@@ -116,5 +116,5 @@
     "postcss": "8.4.31",
     "nth-check": "2.1.1"
   },
-  "packageManager": "yarn@4.0.0"
+  "packageManager": "yarn@4.0.1"
 }
