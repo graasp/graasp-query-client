@@ -13,24 +13,6 @@ export const getHostname = () => {
   return window?.location?.hostname;
 };
 
-export const isDataEqual = <T>(
-  oldData:
-    | T
-    | T[]
-    | T[][]
-    // necessary for download avatar, thumbnail
-    // might be removed if we only use links
-    | Blob
-    | undefined,
-  newData:
-    | T
-    | T[]
-    | T[][]
-    // necessary for download avatar, thumbnail
-    // might be removed if we only use links
-    | Blob,
-): boolean => oldData === newData; // TODO !!!!!!!!!!!!
-
 export const isPaginatedChildrenDataEqual = <T>(
   oldData: InfiniteData<T> | undefined,
   newData: InfiniteData<T>,

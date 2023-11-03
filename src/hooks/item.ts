@@ -42,7 +42,7 @@ import {
 } from '../config/keys';
 import { getOwnItemsRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
-import { isPaginatedChildrenDataEqual, paginate } from '../utils/util';
+import { paginate } from '../utils/util';
 import { configureWsItemHooks } from '../ws';
 
 export default (
@@ -136,7 +136,6 @@ export default (
       const childrenPaginatedOptions = {
         ...defaultQueryOptions,
         staleTime: STALE_TIME_CHILDREN_PAGINATED_MILLISECONDS,
-        isDataEqual: isPaginatedChildrenDataEqual,
       };
 
       return useInfiniteQuery(

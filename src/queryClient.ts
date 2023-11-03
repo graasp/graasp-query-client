@@ -21,7 +21,7 @@ import {
 import configureHooks from './hooks';
 import configureMutations from './mutations';
 import type { QueryClientConfig } from './types';
-import { getHostname, isDataEqual } from './utils/util';
+import { getHostname } from './utils/util';
 
 /* istanbul ignore next */
 // Query client retry function decides when and how many times a request should be retried
@@ -94,7 +94,6 @@ export default (config: ConfigureQueryClientConfig) => {
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       notifyOnChangeProps: 'tracked',
-      isDataEqual,
       ...config.defaultQueryOptions,
     },
   };
