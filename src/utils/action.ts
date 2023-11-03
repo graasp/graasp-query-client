@@ -19,7 +19,7 @@ export type AggregateActionsArgs<K extends AggregateBy[]> = {
 };
 
 export type MappedAggregateBy = {
-  [AggregateBy.CreatedDay]: Date;
+  [AggregateBy.CreatedDay]: string;
   // todo: this should maybe be returned by the backend as a number directly ?
   [AggregateBy.CreatedDayOfWeek]: string;
   // todo: same as above, this should be returned as a number by the backend
