@@ -6,10 +6,15 @@ import { DEFAULT_THUMBNAIL_SIZE } from './constants';
 
 export const APPS_KEY = 'apps';
 export const ITEMS_KEY = 'items';
+export const SHORT_LINKS_KEY = 'shortLinks';
 export const OWN_ITEMS_KEY = [ITEMS_KEY, 'own'];
 export const ETHERPADS_KEY = 'etherpads';
 export const SUBSCRIPTION_KEY = 'subscriptions';
 
+export const buildShortLinksItemKey = (id: UUID) => [
+  [SHORT_LINKS_KEY, ITEMS_KEY],
+  id,
+];
 export const buildItemKey = (id?: UUID) => [ITEMS_KEY, id];
 export const buildItemsKey = (ids: UUID[]) => [ITEMS_KEY, hashItemsIds(ids)];
 export const buildItemChildrenKey = (id?: UUID) => [ITEMS_KEY, 'children', id];

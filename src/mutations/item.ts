@@ -1,9 +1,11 @@
 import {
+  AnyOfExcept,
   DiscriminatedItem,
   FolderItemExtra,
   ItemType,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
   RecycledItemData,
+  ShortLinkPayload,
   ThumbnailSize,
   UUID,
 } from '@graasp/sdk';
@@ -22,17 +24,21 @@ import {
   buildItemChildrenKey,
   buildItemKey,
   buildItemThumbnailKey,
+  buildShortLinksItemKey,
   getKeyForParentId,
 } from '../config/keys';
 import {
   copyItemsRoutine,
   createEtherpadRoutine,
   createItemRoutine,
+  createShortLinkRoutine,
   deleteItemsRoutine,
+  deleteShortLinkRoutine,
   editItemRoutine,
   importH5PRoutine,
   importZipRoutine,
   moveItemsRoutine,
+  patchShortLinkRoutine,
   recycleItemsRoutine,
   restoreItemsRoutine,
   uploadFileRoutine,
@@ -118,6 +124,79 @@ export default (queryConfig: QueryClientConfig) => {
       },
     );
   };
+
+  // TODO: update success messages !
+  const usePostShortLink = () => {
+    const queryClient = useQueryClient();
+    return useMutation(
+      async (shortLink: ShortLinkPayload) =>
+        Api.postShortLink(shortLink, queryConfig),
+      {
+        onSuccess: (_data, variables) => {
+          notifier?.({
+            type: createShortLinkRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
+          });
+          queryClient.invalidateQueries(
+            buildShortLinksItemKey(variables.itemId),
+          );
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: createShortLinkRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
+  };
+
+  const usePatchShortLink = () => {
+    const queryClient = useQueryClient();
+    return useMutation(
+      async ({
+        alias,
+        shortLink,
+      }: {
+        alias: string;
+        shortLink: AnyOfExcept<ShortLinkPayload, 'itemId'>;
+      }) => Api.patchShortLink(alias, shortLink, queryConfig),
+      {
+        onSuccess: (data) => {
+          notifier?.({
+            type: patchShortLinkRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
+          });
+          queryClient.invalidateQueries(buildShortLinksItemKey(data.itemId));
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: patchShortLinkRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
+  };
+
+  const useDeleteShortLink = () =>
+    useMutation(
+      async (alias: string) => Api.deleteShortLink(alias, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: deleteShortLinkRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
+          });
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: deleteShortLinkRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
 
   const usePostEtherpad = () => {
     const queryClient = useQueryClient();
@@ -583,10 +662,13 @@ export default (queryConfig: QueryClientConfig) => {
 
   return {
     usePostItem,
+    usePostShortLink,
+    usePatchShortLink,
     usePostEtherpad,
     useEditItem,
     useRecycleItems,
     useDeleteItems,
+    useDeleteShortLink,
     useCopyItems,
     useUploadFiles,
     useUploadItemThumbnail,

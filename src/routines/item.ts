@@ -19,3 +19,6 @@ export const uploadItemThumbnailRoutine = createRoutine(
 export const importZipRoutine = createRoutine('IMPORT_ZIP');
 export const importH5PRoutine = createRoutine('IMPORT_H5P');
 export const createEtherpadRoutine = createRoutine('CREATE_ETHERPAD');
+export const createShortLinkRoutine = createRoutine('CREATE_SHORT_LINK');
+export const patchShortLinkRoutine = createRoutine('PATCH_SHORT_LINK');
+export const deleteShortLinkRoutine = createRoutine('DELETE_SHORT_LINK');

@@ -25,6 +25,8 @@ export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
 export const ETHERPAD_ROUTE = `${ITEMS_ROUTE}/etherpad`;
 export const COLLECTIONS_ROUTE = `collections`;
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
+export const SHORT_LINKS_ROUTE = 'short-links';
+export const SHORT_LINKS_LIST_ROUTE = `${SHORT_LINKS_ROUTE}/list`;
 
 export const buildPostItemRoute = (parentId?: UUID) => {
   let url = ITEMS_ROUTE;
@@ -396,6 +398,14 @@ export const buildGetEtherpadRoute = (itemId: UUID) =>
 
 export const SEARCH_PUBLISHED_ITEMS_ROUTE = `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/search`;
 
+export const buildGetShortLinksItemRoute = (itemId: string) =>
+  `${SHORT_LINKS_LIST_ROUTE}/${itemId}`;
+export const buildDeleteShortLinkRoute = (alias: string) =>
+  `${SHORT_LINKS_ROUTE}/${alias}`;
+export const buildPostShortLinkRoute = () => `${SHORT_LINKS_ROUTE}`;
+export const buildPatchShortLinkRoute = (alias: string) =>
+  `${SHORT_LINKS_ROUTE}/${alias}`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   buildAppListRoute,
@@ -412,6 +422,7 @@ export const API_ROUTES = {
   buildDeleteItemsRoute,
   buildDeleteItemTagRoute,
   buildDeleteMemberRoute,
+  buildDeleteShortLinkRoute,
   buildDownloadAvatarRoute,
   buildDownloadFilesRoute,
   buildDownloadItemThumbnailRoute,
@@ -449,6 +460,7 @@ export const API_ROUTES = {
   buildGetMostRecentPublishedItemsRoute,
   buildGetPlanRoute,
   buildGetPublishedItemsForMemberRoute,
+  buildGetShortLinksItemRoute,
   buildImportH5PRoute,
   buildImportZipRoute,
   buildItemPublishRoute,
@@ -459,6 +471,7 @@ export const API_ROUTES = {
   buildPatchInvitationRoute,
   buildPatchItemChatMessageRoute,
   buildPatchMember,
+  buildPatchShortLinkRoute,
   buildPostEtherpadRoute,
   buildPostInvitationsRoute,
   buildPostItemAction,
@@ -472,6 +485,7 @@ export const API_ROUTES = {
   buildPostItemTagRoute,
   buildPostItemValidationRoute,
   buildPostManyItemMembershipsRoute,
+  buildPostShortLinkRoute,
   buildPutItemLoginSchemaRoute,
   buildRecycleItemRoute,
   buildRecycleItemsRoute,

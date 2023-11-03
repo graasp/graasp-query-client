@@ -1808,8 +1808,8 @@ __metadata:
     "@babel/preset-typescript": "npm:7.23.3"
     "@commitlint/cli": "npm:18.4.3"
     "@commitlint/config-conventional": "npm:18.4.3"
-    "@graasp/sdk": "npm:3.1.0"
-    "@graasp/translations": "npm:1.20.1"
+    "@graasp/sdk": "npm:3.2.0"
+    "@graasp/translations": "npm:1.21.0"
     "@testing-library/dom": "npm:9.3.3"
     "@testing-library/jest-dom": "npm:6.1.4"
     "@testing-library/react": "npm:14.1.2"
@@ -1860,25 +1860,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@npm:3.1.0":
-  version: 3.1.0
-  resolution: "@graasp/sdk@npm:3.1.0"
+"@graasp/sdk@npm:3.2.0":
+  version: 3.2.0
+  resolution: "@graasp/sdk@npm:3.2.0"
   dependencies:
     "@graasp/etherpad-api": "npm:2.1.1"
     date-fns: "npm:2.30.0"
     js-cookie: "npm:3.0.5"
     uuid: "npm:9.0.1"
     validator: "npm:13.11.0"
-  checksum: 85afd7af8ce0cfb438257d526acf78aa9726ed1c523d79377bff8f5a365671d649f0b2481d9f7b70f4e05f0bd116666dd190323aea10e1849662f4e317a38888
+  checksum: 54c321bee3b37fbe6c9b098782e9891de5b0a12326fb27e3bd5bc8fb7f0ceb0a6e70f3223394350978eeee91a481f5508b60fe41ffd58ee3d034ced8634ab941
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.20.1":
-  version: 1.20.1
-  resolution: "@graasp/translations@npm:1.20.1"
+"@graasp/translations@npm:1.21.0":
+  version: 1.21.0
+  resolution: "@graasp/translations@npm:1.21.0"
   dependencies:
     i18next: "npm:23.7.6"
-  checksum: b38093d0fa717eb5fc81baf730f283ae537119e0026239ace86a538166cf86b7b1319efd80fcc66136de297e9bb1e0d7f5bfde45596e1992e61fc9503abe27f9
+  checksum: 23f7b06ca72bc50ec7ff96e4420a0cb37aabcbcb4ccd7896348a1929a2ea9c0a3bf5aac6f249d66117502ddb9aa68555e5f6c48a6bcfecb8f0603665e1c646d7
   languageName: node
   linkType: hard
 
@@ -3790,16 +3790,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js-compat@npm:^3.31.0":
-  version: 3.33.1
-  resolution: "core-js-compat@npm:3.33.1"
-  dependencies:
-    browserslist: "npm:^4.22.1"
-  checksum: 145f8ca307fadde824a75f8ee735f1c53371b44d9a911cc43860aed72972397bf3eec39b04adb1446aa60ab2a8ea074b55cc90fa7af4f84443f8568b50539756
-  languageName: node
-  linkType: hard
-
-"core-js-compat@npm:^3.32.2":
+"core-js-compat@npm:^3.31.0, core-js-compat@npm:^3.32.2":
   version: 3.33.0
   resolution: "core-js-compat@npm:3.33.0"
   dependencies:
