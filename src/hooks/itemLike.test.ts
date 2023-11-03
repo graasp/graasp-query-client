@@ -1,8 +1,6 @@
-import { ItemLikeRecord } from '@graasp/sdk/frontend';
+import { ItemLike } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import { ITEMS, ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
@@ -17,7 +15,6 @@ import {
 } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Item Like Hooks', () => {
   afterEach(() => {
@@ -37,12 +34,10 @@ describe('Item Like Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
-      expect(
-        queryClient.getQueryData<List<ItemLikeRecord>>(key)?.toJS(),
-      ).toEqual(response);
+      expect(queryClient.getQueryData<ItemLike[]>(key)).toEqual(response);
     });
 
     it(`Unauthorized`, async () => {
@@ -67,7 +62,7 @@ describe('Item Like Hooks', () => {
   });
 
   describe('useLikesForItem', () => {
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS[0].id;
     const route = `/${buildGetItemLikesRoute(itemId)}`;
     const key = buildGetLikesForItem(itemId);
 
@@ -78,12 +73,10 @@ describe('Item Like Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
-      expect(
-        queryClient.getQueryData<List<ItemLikeRecord>>(key)?.toJS(),
-      ).toEqual(response);
+      expect(queryClient.getQueryData<ItemLike[]>(key)).toEqual(response);
     });
 
     it(`Unauthorized`, async () => {

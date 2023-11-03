@@ -1,4 +1,4 @@
-import { Category, DiscriminatedItem, INDEX_NAME } from '@graasp/sdk';
+import { Category, INDEX_NAME, MeiliSearchResults } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types';
 import { SEARCH_PUBLISHED_ITEMS_ROUTE } from './routes';
@@ -34,7 +34,7 @@ export const searchPublishedItems = async (
     isPublishedRoot?: boolean;
   } & MeiliSearchProps,
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<DiscriminatedItem[]> => {
+) => {
   const query: {
     indexUid: string;
     attributesToHighlight: string[];
@@ -72,7 +72,7 @@ export const searchPublishedItems = async (
   }
 
   return axios
-    .post(`${API_HOST}/${SEARCH_PUBLISHED_ITEMS_ROUTE}`, {
+    .post<MeiliSearchResults>(`${API_HOST}/${SEARCH_PUBLISHED_ITEMS_ROUTE}`, {
       queries: [query],
     })
     .then(({ data }) => data);

@@ -1,7 +1,5 @@
-import { UUID, convertJs } from '@graasp/sdk';
-import { CategoryRecord, ItemCategoryRecord } from '@graasp/sdk/frontend';
+import { UUID } from '@graasp/sdk';
 
-import { List } from 'immutable';
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
@@ -18,47 +16,31 @@ import { QueryClientConfig } from '../types';
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
 
-  // get category types
-  // const useCategoryTypes = () =>
-  //   useQuery<List<CategoryTypeRecord>, Error>({
-  //     queryKey: CATEGORY_TYPES_KEY,
-  //     queryFn: () =>
-  //       Api.getCategoryTypes(queryConfig).then((data) => convertJs(data)),
-  //     ...defaultQueryOptions,
-  //     cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
-  //   });
-
   // get categories
   const useCategories = (typeIds?: UUID[]) =>
-    useQuery<List<CategoryRecord>, Error>({
+    useQuery({
       queryKey: buildCategoriesKey(typeIds),
-      queryFn: () =>
-        Api.getCategories(queryConfig, typeIds).then((data) => convertJs(data)),
+      queryFn: () => Api.getCategories(queryConfig, typeIds),
       ...defaultQueryOptions,
       cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
 
   const useCategory = (categoryId: UUID) =>
-    useQuery<CategoryRecord, Error>({
+    useQuery({
       queryKey: buildCategoryKey(categoryId),
-      queryFn: () =>
-        Api.getCategory(categoryId, queryConfig).then((data) =>
-          convertJs(data),
-        ),
+      queryFn: () => Api.getCategory(categoryId, queryConfig),
       ...defaultQueryOptions,
       cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
     });
 
   const useItemCategories = (itemId?: UUID) =>
-    useQuery<List<ItemCategoryRecord>, Error>({
+    useQuery({
       queryKey: buildItemCategoriesKey(itemId),
       queryFn: () => {
         if (!itemId) {
           throw new UndefinedArgument();
         }
-        return Api.getItemCategories(itemId, queryConfig).then((data) =>
-          convertJs(data),
-        );
+        return Api.getItemCategories(itemId, queryConfig);
       },
       ...defaultQueryOptions,
       enabled: Boolean(itemId),
@@ -68,9 +50,7 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildItemsByCategoriesKey(categoryIds),
       queryFn: () =>
-        Api.buildGetItemsForCategoriesRoute(categoryIds, queryConfig).then(
-          (data) => convertJs(data),
-        ),
+        Api.buildGetItemsForCategoriesRoute(categoryIds, queryConfig),
       ...defaultQueryOptions,
       enabled: Boolean(categoryIds),
     });

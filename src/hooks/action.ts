@@ -1,5 +1,4 @@
-import { UUID, convertJs } from '@graasp/sdk';
-import { ActionDataRecord, ImmutableCast } from '@graasp/sdk/frontend';
+import { UUID } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
@@ -26,7 +25,7 @@ export default (queryConfig: QueryClientConfig) => {
       Boolean(args.requestedSampleSize);
     return useQuery({
       queryKey: buildActionsKey(args),
-      queryFn: (): Promise<ActionDataRecord> => {
+      queryFn: () => {
         const { itemId } = args;
         if (!itemId) {
           throw new UndefinedArgument();
@@ -38,7 +37,7 @@ export default (queryConfig: QueryClientConfig) => {
             requestedSampleSize: args.requestedSampleSize,
           },
           queryConfig,
-        ).then((data) => convertJs(data));
+        );
       },
       ...defaultQueryOptions,
       enabled: enabledValue,
@@ -56,20 +55,11 @@ export default (queryConfig: QueryClientConfig) => {
       Boolean(args.requestedSampleSize);
     return useQuery({
       queryKey: buildAggregateActionsKey(itemId, args),
-      queryFn: (): Promise<
-        ImmutableCast<
-          ({ aggregateResult: number } & {
-            // this adds a key for each element in the aggregation array and sets it to the relevant type
-            [Key in T[number]]: MappedAggregateBy[Key];
-          })[]
-        >
-      > => {
+      queryFn: () => {
         if (!itemId) {
           throw new UndefinedArgument();
         }
-        return Api.getAggregateActions({ itemId, ...args }, queryConfig).then(
-          (data) => convertJs(data),
-        );
+        return Api.getAggregateActions<T>({ itemId, ...args }, queryConfig);
       },
       ...defaultQueryOptions,
       enabled: enabledValue,

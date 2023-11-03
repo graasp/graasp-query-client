@@ -1,5 +1,4 @@
-import { Category, convertJs } from '@graasp/sdk';
-import { MeiliSearchResultsRecord } from '@graasp/sdk/frontend';
+import { Category } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
@@ -44,7 +43,7 @@ export default (queryConfig: QueryClientConfig) => {
           highlightPostTag,
           page,
         }),
-        queryFn: (): Promise<MeiliSearchResultsRecord> =>
+        queryFn: () =>
           Api.searchPublishedItems(
             {
               attributesToCrop,
@@ -59,7 +58,7 @@ export default (queryConfig: QueryClientConfig) => {
               highlightPostTag,
             },
             queryConfig,
-          ).then((data) => convertJs(data)),
+          ),
         // we could add data in success, but not sure the data will be consistent with GET /item
         enabled,
         ...defaultQueryOptions,

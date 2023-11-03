@@ -1,7 +1,5 @@
-import { PermissionLevel, UUID } from '@graasp/sdk';
-import { InvitationRecord, NewInvitation } from '@graasp/sdk/frontend';
+import { Invitation, PermissionLevel, UUID } from '@graasp/sdk';
 
-import { List } from 'immutable';
 import { useMutation, useQueryClient } from 'react-query';
 
 import {
@@ -18,7 +16,7 @@ import {
   postInvitationsRoutine,
   resendInvitationRoutine,
 } from '../routines';
-import { QueryClientConfig } from '../types';
+import { NewInvitation, QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
   const usePostInvitations = () => {
@@ -112,8 +110,7 @@ export default (queryConfig: QueryClientConfig) => {
         onMutate: async ({ id, itemId }: { id: UUID; itemId: UUID }) => {
           const key = buildItemInvitationsKey(itemId);
 
-          const prevValue =
-            queryClient.getQueryData<List<InvitationRecord>>(key);
+          const prevValue = queryClient.getQueryData<Invitation[]>(key);
 
           // remove invitation from list
           if (prevValue) {

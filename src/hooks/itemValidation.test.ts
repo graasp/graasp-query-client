@@ -1,6 +1,4 @@
 import { StatusCodes } from 'http-status-codes';
-import Immutable from 'immutable';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -12,8 +10,6 @@ import { buildGetLastItemValidationGroupRoute } from '../api/routes';
 import { buildLastItemValidationGroupKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Item Validation Hooks', () => {
   afterEach(() => {
@@ -30,15 +26,13 @@ describe('Item Validation Hooks', () => {
 
     it(`Receive last item validation group of given item-validation-id`, async () => {
       const response = ITEM_VALIDATION_GROUP;
-      const endpoints = [{ route, response: response.toJS() }];
+      const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
     it(`Unauthorized`, async () => {
       const endpoints = [

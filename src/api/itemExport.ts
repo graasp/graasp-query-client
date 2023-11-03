@@ -7,10 +7,11 @@ import { buildExportItemRoute } from './routes';
 export const exportItem = async (
   id: UUID,
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<Blob> =>
+) =>
   // options?: { public: boolean },
-  axios({
-    url: `${API_HOST}/${buildExportItemRoute(id)}`,
-    method: 'GET',
-    responseType: 'blob',
-  }).then(({ data }) => data);
+  axios
+    .get<Blob>(`${API_HOST}/${buildExportItemRoute(id)}`, {
+      method: 'GET',
+      responseType: 'blob',
+    })
+    .then(({ data }) => data);

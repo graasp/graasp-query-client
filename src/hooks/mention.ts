@@ -1,11 +1,5 @@
-import { convertJs } from '@graasp/sdk';
-import {
-  ChatMentionRecord,
-  MemberRecord,
-  WebsocketClient,
-} from '@graasp/sdk/frontend';
+import { CompleteMember, WebsocketClient } from '@graasp/sdk';
 
-import { List } from 'immutable';
 import { UseQueryResult, useQuery } from 'react-query';
 
 import * as Api from '../api/index';
@@ -15,7 +9,7 @@ import { configureWsChatMentionsHooks } from '../ws/index';
 
 export default (
   queryConfig: QueryClientConfig,
-  useCurrentMember: () => UseQueryResult<MemberRecord>,
+  useCurrentMember: () => UseQueryResult<CompleteMember | null>,
   websocketClient?: WebsocketClient,
 ) => {
   const { enableWebsocket, defaultQueryOptions } = queryConfig;
@@ -35,8 +29,7 @@ export default (
 
       return useQuery({
         queryKey: buildMentionKey(),
-        queryFn: (): Promise<List<ChatMentionRecord>> =>
-          Api.getMemberMentions(queryConfig).then((data) => convertJs(data)),
+        queryFn: () => Api.getMemberMentions(queryConfig),
         ...defaultQueryOptions,
         enabled: Boolean(memberId),
       });

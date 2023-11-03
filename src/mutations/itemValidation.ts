@@ -14,7 +14,7 @@ export default (queryConfig: QueryClientConfig) => {
     const queryClient = useQueryClient();
     return useMutation(
       (payload: { itemId: UUID }) =>
-        Api.postItemValidation(payload, queryConfig).then(() => payload),
+        Api.postItemValidation(payload, queryConfig),
       {
         onSuccess: () => {
           notifier?.({

@@ -1,9 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { AppRecord } from '@graasp/sdk/frontend';
+import { App } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import { APPS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
@@ -13,7 +11,6 @@ import { APPS_KEY } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 describe('Apps Hooks', () => {
   afterEach(() => {
     nock.cleanAll();
@@ -31,12 +28,10 @@ describe('Apps Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData<List<AppRecord>>(key)?.toJS()).toEqual(
-        response,
-      );
+      expect(queryClient.getQueryData<App[]>(key)).toEqual(response);
     });
 
     it(`Unauthorized`, async () => {

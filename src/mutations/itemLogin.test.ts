@@ -2,7 +2,6 @@ import { HttpMethod, ItemLoginSchemaType } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
@@ -27,7 +26,6 @@ const mockedNotifier = jest.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Item Login Mutations', () => {
   afterEach(() => {
@@ -37,7 +35,7 @@ describe('Item Login Mutations', () => {
 
   const { name: username, id: memberId } = MEMBER_RESPONSE;
   const password = 'password';
-  const itemId = ITEMS.first()!.id;
+  const itemId = ITEMS[0].id;
   describe('usePostItemLogin', () => {
     const route = `/${buildPostItemLoginSignInRoute(itemId)}`;
     const mutation = mutations.usePostItemLogin;

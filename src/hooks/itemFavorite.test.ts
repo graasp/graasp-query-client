@@ -1,5 +1,4 @@
 import { StatusCodes } from 'http-status-codes';
-import Immutable from 'immutable';
 
 import { FAVORITE_ITEM, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
@@ -16,11 +15,11 @@ describe('useFavoriteItems', () => {
 
   it(`Retrieve favorite items`, async () => {
     const response = FAVORITE_ITEM;
-    const endpoints = [{ route, response: response.toJS() }];
+    const endpoints = [{ route, response }];
     await mockHook({ endpoints, hook, wrapper });
 
     // verify cache keys
-    expect(Immutable.is(queryClient.getQueryData(key), response)).toBeTruthy();
+    expect(queryClient.getQueryData(key)).toMatchObject(response);
   });
 
   it(`Unauthorized`, async () => {

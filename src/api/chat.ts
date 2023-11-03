@@ -1,7 +1,6 @@
 import {
   ChatMessage,
   DeleteChatMessageParamType,
-  ExportedChatMessage,
   PatchChatMessageParamType,
   PostChatMessageParamType,
   UUID,
@@ -12,7 +11,6 @@ import { verifyAuthentication } from './axios';
 import {
   buildClearItemChatRoute,
   buildDeleteItemChatMessageRoute,
-  buildExportItemChatRoute,
   buildGetItemChatRoute,
   buildPatchItemChatMessageRoute,
   buildPostItemChatMessageRoute,
@@ -21,72 +19,61 @@ import {
 export const getItemChat = async (
   id: UUID,
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<ChatMessage[]> =>
-  axios
-    .get(`${API_HOST}/${buildGetItemChatRoute(id)}`)
-    .then(({ data }) => data);
-
-export const exportItemChat = async (
-  id: UUID,
-  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
-  verifyAuthentication(
-    (): Promise<ExportedChatMessage> =>
-      axios
-        .get(`${API_HOST}/${buildExportItemChatRoute(id)}`)
-        .then(({ data }) => data),
-  );
+  axios
+    .get<ChatMessage[]>(`${API_HOST}/${buildGetItemChatRoute(id)}`)
+    .then(({ data }) => data);
 
 export const postItemChatMessage = async (
   { itemId, body, mentions }: PostChatMessageParamType,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
-  verifyAuthentication(
-    (): Promise<ChatMessage> =>
-      axios
-        .post(`${API_HOST}/${buildPostItemChatMessageRoute(itemId)}`, {
+  verifyAuthentication(() =>
+    axios
+      .post<ChatMessage>(
+        `${API_HOST}/${buildPostItemChatMessageRoute(itemId)}`,
+        {
           body,
           mentions,
-        })
-        .then(({ data }) => data),
+        },
+      )
+      .then(({ data }) => data),
   );
 
 export const patchItemChatMessage = async (
   { itemId, messageId, body, mentions }: PatchChatMessageParamType,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
-  verifyAuthentication(
-    (): Promise<ChatMessage> =>
-      axios
-        .patch(
-          `${API_HOST}/${buildPatchItemChatMessageRoute(itemId, messageId)}`,
-          {
-            body,
-            mentions,
-          },
-        )
-        .then(({ data }) => data),
+  verifyAuthentication(() =>
+    axios
+      .patch<ChatMessage>(
+        `${API_HOST}/${buildPatchItemChatMessageRoute(itemId, messageId)}`,
+        {
+          body,
+          mentions,
+        },
+      )
+      .then(({ data }) => data),
   );
 
 export const deleteItemChatMessage = async (
   { itemId, messageId }: DeleteChatMessageParamType,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
-  verifyAuthentication(
-    (): Promise<ChatMessage> =>
-      axios
-        .delete(
-          `${API_HOST}/${buildDeleteItemChatMessageRoute(itemId, messageId)}`,
-        )
-        .then(({ data }) => data),
+  verifyAuthentication(() =>
+    axios
+      .delete<ChatMessage>(
+        `${API_HOST}/${buildDeleteItemChatMessageRoute(itemId, messageId)}`,
+      )
+      .then(({ data }) => data),
   );
 
 export const clearItemChat = async (
   id: UUID,
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<void> =>
+) =>
   verifyAuthentication(() =>
     axios
-      .delete(`${API_HOST}/${buildClearItemChatRoute(id)}`)
+      .delete<void>(`${API_HOST}/${buildClearItemChatRoute(id)}`)
       .then(({ data }) => data),
   );

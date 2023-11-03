@@ -14,7 +14,6 @@ import configureAxios from '../src/api/axios';
 import configureHooks from '../src/hooks';
 import configureQueryClient from '../src/queryClient';
 import { Notifier, QueryClientConfig } from '../src/types';
-import { isDataEqual } from '../src/utils/util';
 import { API_HOST, DOMAIN, WS_HOST } from './constants';
 
 type Args = { enableWebsocket?: boolean; notifier?: Notifier };
@@ -34,7 +33,6 @@ export const setUpTest = (args?: Args) => {
       retry: 0,
       cacheTime: 0,
       staleTime: 0,
-      isDataEqual,
     },
     SHOW_NOTIFICATIONS: false,
     notifier,

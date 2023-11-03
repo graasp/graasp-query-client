@@ -1,4 +1,4 @@
-import { WebsocketClient } from '@graasp/sdk/frontend';
+import { WebsocketClient } from '@graasp/sdk';
 
 import { QueryClientConfig } from '../types';
 import configureActionHooks from './action';
@@ -8,7 +8,6 @@ import configureChatHooks from './chat';
 import configureInvitationHooks from './invitation';
 import configureItemHooks from './item';
 import configureItemFavoriteHooks from './itemFavorite';
-import configureItemFlagHooks from './itemFlag';
 import configureItemLikeHooks from './itemLike';
 import configureItemLoginHooks from './itemLogin';
 import configureItemPublishedHooks from './itemPublish';
@@ -40,7 +39,6 @@ export default (
       websocketClient,
     ),
     ...configureItemTagHooks(queryConfig),
-    ...configureItemFlagHooks(queryConfig),
     ...configureCategoryHooks(queryConfig),
     ...configureKeywordSearchHooks(queryConfig),
     ...configureItemLikeHooks(queryConfig),

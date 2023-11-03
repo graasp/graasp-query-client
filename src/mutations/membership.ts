@@ -4,15 +4,12 @@ import {
   PermissionLevel,
   ResultOf,
   UUID,
-  convertJs,
   partition,
 } from '@graasp/sdk';
-import { ItemMembershipRecord, ResultOfRecord } from '@graasp/sdk/frontend';
 import { FAILURE_MESSAGES, SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { AxiosError } from 'axios';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { List } from 'immutable';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
@@ -111,9 +108,7 @@ export default (queryConfig: QueryClientConfig) => {
         onMutate: ({ itemId, id }) => {
           const membershipsKey = buildItemMembershipsKey(itemId);
           const memberships =
-            queryClient.getQueryData<List<ItemMembershipRecord>>(
-              membershipsKey,
-            );
+            queryClient.getQueryData<ItemMembership[]>(membershipsKey);
 
           queryClient.setQueryData(
             membershipsKey,
@@ -158,7 +153,7 @@ export default (queryConfig: QueryClientConfig) => {
       }: {
         data: Partial<Invitation>[];
         itemId: UUID;
-      }): Promise<ResultOfRecord<ItemMembership | Invitation>> => {
+      }): Promise<ResultOf<ItemMembership | Invitation>> => {
         // validate has email, name and permission are optional
         // force type with email
         const [withEmail, withoutEmail] = partition(data, (d) =>
@@ -227,7 +222,7 @@ export default (queryConfig: QueryClientConfig) => {
             );
           }
 
-          return convertJs({
+          return {
             data: { ...dataForMemberships.data, ...invitationsResult.data },
             errors: [
               // create error shape from input
@@ -235,12 +230,13 @@ export default (queryConfig: QueryClientConfig) => {
               ...withoutEmail.map((d) => ({
                 statusCode: StatusCodes.BAD_REQUEST,
                 message: ReasonPhrases.BAD_REQUEST,
+                name: ReasonPhrases.BAD_REQUEST,
                 data: d,
               })),
               ...invitationsResult.errors,
               ...dataForMemberships.errors,
             ],
-          });
+          };
         } catch (e) {
           console.error(e);
           const errors = [];
@@ -253,7 +249,7 @@ export default (queryConfig: QueryClientConfig) => {
               message: FAILURE_MESSAGES.UNEXPECTED_ERROR,
             });
           }
-          return convertJs({ data: {}, errors });
+          return { data: {}, errors };
         }
       },
       {

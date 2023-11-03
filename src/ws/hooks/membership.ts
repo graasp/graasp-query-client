@@ -1,11 +1,11 @@
-import { ItemMembership, UUID, convertJs, getIdsFromPath } from '@graasp/sdk';
 import {
   Channel,
-  ItemMembershipRecord,
+  ItemMembership,
+  UUID,
   WebsocketClient,
-} from '@graasp/sdk/frontend';
+  getIdsFromPath,
+} from '@graasp/sdk';
 
-import { List } from 'immutable';
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 
@@ -44,35 +44,32 @@ export const configureWsMembershipHooks = (
         const handler = (event: MembershipEvent): void => {
           if (event.kind === KINDS.ITEM) {
             const current =
-              queryClient.getQueryData<List<ItemMembershipRecord>>(
-                itemMembershipsKey,
-              );
-            const membership: ItemMembershipRecord = convertJs(
-              event.membership,
-            );
+              queryClient.getQueryData<ItemMembership[]>(itemMembershipsKey);
+            const { membership } = event;
             // we handle only direct memberships
             // since we have only the item id information
             if (membership.item) {
               const lastId = getIdsFromPath(membership.item.path).pop();
               if (current && lastId === itemId) {
-                let mutation;
                 switch (event.op) {
                   case OPS.CREATE: {
                     if (!current.find((m) => m.id === membership.id)) {
-                      mutation = current.push(membership);
+                      const mutation = [...current, membership];
                       queryClient.setQueryData(itemMembershipsKey, mutation);
                     }
                     break;
                   }
                   case OPS.UPDATE: {
-                    mutation = current.map((m) =>
+                    const mutation = current.map((m) =>
                       m.id === membership.id ? membership : m,
                     );
                     queryClient.setQueryData(itemMembershipsKey, mutation);
                     break;
                   }
                   case OPS.DELETE: {
-                    mutation = current.filter((m) => m.id !== membership.id);
+                    const mutation = current.filter(
+                      (m) => m.id !== membership.id,
+                    );
                     queryClient.setQueryData(itemMembershipsKey, mutation);
                     break;
                   }

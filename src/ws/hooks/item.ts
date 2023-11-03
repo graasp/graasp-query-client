@@ -3,17 +3,14 @@
  * React effect hooks to subscribe to real-time updates and mutate query client
  */
 import {
+  Channel,
   DiscriminatedItem,
-  Item,
   ResultOf,
   UUID,
-  convertJs,
-  parseStringToDate,
+  WebsocketClient,
 } from '@graasp/sdk';
-import { Channel, ItemRecord, WebsocketClient } from '@graasp/sdk/frontend';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { List } from 'immutable';
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 
@@ -25,11 +22,11 @@ import {
   buildItemKey,
 } from '../../config/keys';
 import {
-  copyItemRoutine,
-  deleteItemRoutine,
+  copyItemsRoutine,
+  deleteItemsRoutine,
   editItemRoutine,
   exportItemRoutine,
-  moveItemRoutine,
+  moveItemsRoutine,
   postItemValidationRoutine,
   recycleItemsRoutine,
   restoreItemsRoutine,
@@ -55,12 +52,12 @@ interface ItemOpFeedbackEvent {
     | 'recycle'
     | 'restore'
     | 'validate';
-  resource: Item['id'][];
+  resource: DiscriminatedItem['id'][];
   result:
     | {
         error: Error;
       }
-    | ResultOf<Item>;
+    | ResultOf<DiscriminatedItem>;
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -86,9 +83,9 @@ export const configureWsItemHooks = (
 
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.SELF) {
-          const current: ItemRecord | undefined =
+          const current: DiscriminatedItem | undefined =
             queryClient.getQueryData(itemKey);
-          const item: ItemRecord = convertJs(parseStringToDate(event.item));
+          const { item } = event;
 
           if (current?.id === item.id) {
             switch (event.op) {
@@ -133,9 +130,9 @@ export const configureWsItemHooks = (
 
         const handler = (event: ItemEvent) => {
           if (event.kind === KINDS.SELF) {
-            const current: ItemRecord | undefined =
+            const current: DiscriminatedItem | undefined =
               queryClient.getQueryData(itemKey);
-            const item: ItemRecord = convertJs(parseStringToDate(event.item));
+            const { item } = event;
 
             if (current?.id === item.id) {
               switch (event.op) {
@@ -188,16 +185,16 @@ export const configureWsItemHooks = (
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.CHILD) {
           const current =
-            queryClient.getQueryData<List<ItemRecord>>(parentChildrenKey);
+            queryClient.getQueryData<DiscriminatedItem[]>(parentChildrenKey);
 
           if (current) {
-            const item: ItemRecord = convertJs(parseStringToDate(event.item));
+            const { item } = event;
             let mutation;
 
             switch (event.op) {
               case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
-                  mutation = current.push(item);
+                  mutation = [...current, item];
                   queryClient.setQueryData(parentChildrenKey, mutation);
                   queryClient.setQueryData(buildItemKey(item.id), item);
                 }
@@ -251,16 +248,16 @@ export const configureWsItemHooks = (
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.OWN) {
           const current =
-            queryClient.getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY);
+            queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY);
 
           if (current) {
-            const item: ItemRecord = convertJs(parseStringToDate(event.item));
+            const { item } = event;
             let mutation;
 
             switch (event.op) {
               case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
-                  mutation = current.push(item);
+                  mutation = [...current, item];
                   queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
                   queryClient.setQueryData(buildItemKey(item.id), item);
                 }
@@ -313,17 +310,17 @@ export const configureWsItemHooks = (
 
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.SHARED) {
-          const current: List<ItemRecord> | undefined =
+          const current: DiscriminatedItem[] | undefined =
             queryClient.getQueryData(SHARED_ITEMS_KEY);
 
           if (current) {
-            const item: ItemRecord = convertJs(parseStringToDate(event.item));
+            const { item } = event;
             let mutation;
 
             switch (event.op) {
               case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
-                  mutation = current.push(item);
+                  mutation = [...current, item];
                   queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
                   queryClient.setQueryData(buildItemKey(item.id), item);
                 }
@@ -372,15 +369,15 @@ export const configureWsItemHooks = (
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.RECYCLE_BIN) {
           const current =
-            queryClient.getQueryData<List<ItemRecord>>(RECYCLED_ITEMS_KEY);
+            queryClient.getQueryData<DiscriminatedItem[]>(RECYCLED_ITEMS_KEY);
 
           if (current) {
-            const item: ItemRecord = convertJs(parseStringToDate(event.item));
+            const { item } = event;
 
             switch (event.op) {
               case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
-                  const mutation = current.push(item);
+                  const mutation = [...current, item];
                   queryClient.setQueryData(RECYCLED_ITEMS_KEY, mutation);
                 }
                 break;
@@ -424,7 +421,7 @@ export const configureWsItemHooks = (
       const handler = (event: ItemOpFeedbackEvent) => {
         if (event.kind === KINDS.FEEDBACK) {
           const current =
-            queryClient.getQueryData<List<ItemRecord>>(OWN_ITEMS_KEY);
+            queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY);
 
           if (current) {
             let routine: ReturnType<typeof createRoutine> | undefined;
@@ -435,15 +432,15 @@ export const configureWsItemHooks = (
                 message = SUCCESS_MESSAGES.EDIT_ITEM;
                 break;
               case 'delete':
-                routine = deleteItemRoutine;
+                routine = deleteItemsRoutine;
                 message = SUCCESS_MESSAGES.DELETE_ITEMS;
                 break;
               case 'move':
-                routine = moveItemRoutine;
+                routine = moveItemsRoutine;
                 message = SUCCESS_MESSAGES.MOVE_ITEMS;
                 break;
               case 'copy':
-                routine = copyItemRoutine;
+                routine = copyItemsRoutine;
                 message = SUCCESS_MESSAGES.COPY_ITEMS;
                 break;
               case 'export':
