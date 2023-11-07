@@ -396,6 +396,11 @@ export const buildGetEtherpadRoute = (itemId: UUID) =>
 
 export const SEARCH_PUBLISHED_ITEMS_ROUTE = `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/search`;
 
+export const LIBRARY_PROFILE_ROUTE = `library-profile`;
+export const GET_OWN_LIBRARY_PROFILE = `${LIBRARY_PROFILE_ROUTE}/own`;
+export const buildGetMemberProfileRoute = (memberId: UUID) =>
+  `${LIBRARY_PROFILE_ROUTE}/${memberId}`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   buildAppListRoute,
@@ -499,4 +504,7 @@ export const API_ROUTES = {
   SIGN_OUT_ROUTE,
   SIGN_UP_ROUTE,
   VALIDATION_ROUTE,
+  LIBRARY_PROFILE_ROUTE,
+  GET_OWN_LIBRARY_PROFILE,
+  buildGetMemberProfileRoute,
 };
