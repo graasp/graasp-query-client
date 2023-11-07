@@ -4,12 +4,11 @@ import { PartialQueryConfigForApi } from '../types';
 import { verifyAuthentication } from './axios';
 import { buildAppListRoute, buildGetApiAccessTokenRoute } from './routes';
 
-export const getApps = async ({
-  API_HOST,
-  axios,
-}: PartialQueryConfigForApi): Promise<App[]> =>
+export const getApps = async ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
-    axios.get(`${API_HOST}/${buildAppListRoute}`).then(({ data }) => data),
+    axios
+      .get<App[]>(`${API_HOST}/${buildAppListRoute}`)
+      .then(({ data }) => data),
   );
 
 export const requestApiAccessToken = async (
@@ -21,10 +20,10 @@ export const requestApiAccessToken = async (
     app?: string;
   },
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<{ token: string }> => {
+) => {
   const { id, key, origin, app } = args;
   return axios
-    .post(`${API_HOST}/${buildGetApiAccessTokenRoute(id)}`, {
+    .post<{ token: string }>(`${API_HOST}/${buildGetApiAccessTokenRoute(id)}`, {
       origin,
       key: key ?? app,
     })

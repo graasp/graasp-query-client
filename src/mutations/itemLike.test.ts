@@ -1,7 +1,6 @@
-import { HttpMethod, convertJs } from '@graasp/sdk';
+import { HttpMethod } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
@@ -23,7 +22,6 @@ const mockedNotifier = jest.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Item Like Mutations', () => {
   afterEach(() => {
@@ -33,14 +31,14 @@ describe('Item Like Mutations', () => {
   });
 
   describe('usePostItemLike', () => {
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS[0].id;
     const memberId = MOCK_MEMBER.id;
     const likedItemsKey = buildGetLikesForMemberKey(memberId);
     const route = `/${buildPostItemLikeRoute(itemId)}`;
     const mutation = mutations.usePostItemLike;
 
     it('Post item like', async () => {
-      queryClient.setQueryData(likedItemsKey, convertJs(ITEM_LIKES));
+      queryClient.setQueryData(likedItemsKey, ITEM_LIKES);
 
       const response = ITEM_LIKES.at(1);
 
@@ -101,14 +99,14 @@ describe('Item Like Mutations', () => {
   });
 
   describe('useDeleteItemLike', () => {
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS[0].id;
     const memberId = MOCK_MEMBER.id;
     const likedItemsKey = buildGetLikesForMemberKey(memberId);
     const route = `/${buildDeleteItemLikeRoute(itemId)}`;
     const mutation = mutations.useDeleteItemLike;
 
     it('Delete item like', async () => {
-      queryClient.setQueryData(likedItemsKey, convertJs(ITEM_LIKES));
+      queryClient.setQueryData(likedItemsKey, ITEM_LIKES);
 
       const response = ITEM_LIKES.at(1);
 

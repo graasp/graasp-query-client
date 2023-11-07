@@ -5,7 +5,6 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../test/constants';
@@ -46,8 +45,6 @@ jest.mock('@graasp/sdk', () => {
     convertJs: actualModule.convertJs,
   };
 });
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 const captcha = 'captcha';
 const email = 'myemail@email.com';

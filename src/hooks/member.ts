@@ -1,19 +1,14 @@
 import {
+  CompleteMember,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
   UUID,
-  convertJs,
 } from '@graasp/sdk';
-import {
-  MemberRecord,
-  MemberStorageRecord,
-  ResultOfRecord,
-} from '@graasp/sdk/frontend';
 
-import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
-import { splitRequestByIds } from '../api/axios';
+import { splitRequestByIdsAndReturn } from '../api/axios';
 import {
   CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
@@ -36,40 +31,41 @@ export default (queryConfig: QueryClientConfig) => {
     useCurrentMember: () =>
       useQuery({
         queryKey: CURRENT_MEMBER_KEY,
-        queryFn: (): Promise<MemberRecord> =>
-          Api.getCurrentMember(queryConfig).then((data) => convertJs(data)),
+        queryFn: () => Api.getCurrentMember(queryConfig),
         ...defaultQueryOptions,
       }),
 
     useMember: (id?: UUID) =>
       useQuery({
         queryKey: buildMemberKey(id),
-        queryFn: (): Promise<MemberRecord> => {
+        queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getMember({ id }, queryConfig).then((data) =>
-            convertJs(data),
-          );
+          return Api.getMember({ id }, queryConfig);
         },
         enabled: Boolean(id),
         ...defaultQueryOptions,
       }),
 
-    useMembers: (ids: UUID[]): UseQueryResult<ResultOfRecord<Member>> => {
+    useMembers: (ids: UUID[]) => {
       const queryClient = useQueryClient();
       return useQuery({
         queryKey: buildMembersKey(ids),
         queryFn: async () =>
-          splitRequestByIds(ids, MAX_TARGETS_FOR_READ_REQUEST, (chunk) =>
-            Api.getMembers({ ids: chunk }, queryConfig),
+          splitRequestByIdsAndReturn(
+            ids,
+            MAX_TARGETS_FOR_READ_REQUEST,
+            (chunk) => Api.getMembers({ ids: chunk }, queryConfig),
           ),
         onSuccess: async (members) => {
           // save members in their own key
-          members?.data?.toSeq().forEach(async (member) => {
-            const { id } = member;
-            queryClient.setQueryData(buildMemberKey(id), member);
-          });
+          if (members?.data) {
+            Object.values(members?.data).forEach(async (member) => {
+              const { id } = member;
+              queryClient.setQueryData(buildMemberKey(id), member);
+            });
+          }
         },
         onError: (error) => {
           notifier?.({ type: getMembersRoutine.FAILURE, payload: { error } });
@@ -89,13 +85,18 @@ export default (queryConfig: QueryClientConfig) => {
       const queryClient = useQueryClient();
       let shouldFetch = true;
       if (id) {
+        // TODO: this casting is totally wrong, but allows to work for current member
+        // to be fixed
         shouldFetch =
-          queryClient.getQueryData<MemberRecord>(buildMemberKey(id))?.extra
-            ?.hasAvatar ?? true;
+          (
+            queryClient.getQueryData<Member>(
+              buildMemberKey(id),
+            ) as CompleteMember
+          )?.extra?.hasAvatar ?? true;
       }
       return useQuery({
         queryKey: buildAvatarKey({ id, size, replyUrl: false }),
-        queryFn: (): Promise<Blob> => {
+        queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
           }
@@ -118,13 +119,18 @@ export default (queryConfig: QueryClientConfig) => {
       const queryClient = useQueryClient();
       let shouldFetch = true;
       if (id) {
+        // TODO: this casting is totally wrong, but allows to work for current member
+        // to be fixed
         shouldFetch =
-          queryClient.getQueryData<MemberRecord>(buildMemberKey(id))?.extra
-            ?.hasAvatar ?? true;
+          (
+            queryClient.getQueryData<Member>(
+              buildMemberKey(id),
+            ) as CompleteMember
+          )?.extra?.hasAvatar ?? true;
       }
       return useQuery({
         queryKey: buildAvatarKey({ id, size, replyUrl: true }),
-        queryFn: (): Promise<string> => {
+        queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
           }
@@ -139,8 +145,7 @@ export default (queryConfig: QueryClientConfig) => {
     useMemberStorage: () =>
       useQuery({
         queryKey: CURRENT_MEMBER_STORAGE_KEY,
-        queryFn: (): Promise<MemberStorageRecord> =>
-          Api.getMemberStorage(queryConfig).then((data) => convertJs(data)),
+        queryFn: () => Api.getMemberStorage(queryConfig),
         ...defaultQueryOptions,
       }),
   };

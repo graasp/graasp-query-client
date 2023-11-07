@@ -1,15 +1,14 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {
+  ActionData,
   AggregateBy,
   AggregateFunction,
   AggregateMetric,
   Context,
   CountGroupBy,
 } from '@graasp/sdk';
-import { ActionDataRecord, ImmutableCast } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -22,14 +21,14 @@ import { mockHook, setUpTest } from '../../test/utils';
 import { buildGetActions, buildGetAggregateActions } from '../api/routes';
 import { buildActionsKey, buildAggregateActionsKey } from '../config/keys';
 
-type AggregateActionsResponse = ImmutableCast<
-  { aggregateResult: number; createdDay: string }[]
->;
+type AggregateActionsResponse = {
+  aggregateResult: number;
+  createdDay: string;
+}[];
 
 const { hooks, wrapper, queryClient } = setUpTest();
-const itemId = ITEMS.first()!.id;
+const itemId = ITEMS[0].id;
 
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 describe('Action Hooks', () => {
   afterEach(() => {
     nock.cleanAll();
@@ -50,12 +49,10 @@ describe('Action Hooks', () => {
       const hook = () => hooks.useActions(args);
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData<ActionDataRecord>(key)?.toJS()).toEqual(
-        response,
-      );
+      expect(queryClient.getQueryData<ActionData>(key)).toEqual(response);
     });
 
     it(`Sample size = 0 does not fetch`, async () => {
@@ -113,7 +110,6 @@ describe('Action Hooks', () => {
 
   describe('useAggregateActions', () => {
     const args = {
-      itemId,
       view: Context.Builder,
       requestedSampleSize: 5,
       type: ['update'],
@@ -122,35 +118,35 @@ describe('Action Hooks', () => {
       aggregateMetric: AggregateMetric.ActionCount,
       aggregateBy: [AggregateBy.CreatedDay],
     };
-    const route = `/${buildGetAggregateActions(args)}`;
-    const key = buildAggregateActionsKey(args);
+    const route = `/${buildGetAggregateActions({ itemId, ...args })}`;
+    const key = buildAggregateActionsKey(itemId, args);
     const response = AGGREGATE_ACTIONS_DATA;
 
     it(`Receive aggregate actions for item id`, async () => {
-      const hook = () => hooks.useAggregateActions(args);
+      const hook = () => hooks.useAggregateActions(itemId, args);
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
-      expect(
-        queryClient.getQueryData<AggregateActionsResponse>(key)?.toJS(),
-      ).toEqual(response);
+      expect(queryClient.getQueryData<AggregateActionsResponse>(key)).toEqual(
+        response,
+      );
     });
     it(`Receive aggregate actions for item id`, async () => {
-      const hook = () => hooks.useAggregateActions(args);
+      const hook = () => hooks.useAggregateActions(itemId, args);
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
-      expect(
-        queryClient.getQueryData<AggregateActionsResponse>(key)?.toJS(),
-      ).toEqual(response);
+      expect(queryClient.getQueryData<AggregateActionsResponse>(key)).toEqual(
+        response,
+      );
     });
 
     it(`Unauthorized`, async () => {
-      const hook = () => hooks.useAggregateActions(args);
+      const hook = () => hooks.useAggregateActions(itemId, args);
       const endpoints = [
         {
           route,

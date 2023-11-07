@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.0.1](https://github.com/graasp/graasp-query-client/compare/v2.0.0...v2.0.1) (2023-11-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency crypto-js to v4.2.0 [security] ([#499](https://github.com/graasp/graasp-query-client/issues/499)) ([cd09f87](https://github.com/graasp/graasp-query-client/commit/cd09f873bdfce998713e1f787a7ccbbbb9bc721c))
+* fix aggregate type date ([#509](https://github.com/graasp/graasp-query-client/issues/509)) ([7d5e2c7](https://github.com/graasp/graasp-query-client/commit/7d5e2c74a046f49620237059c2a67ee3b3fddee4))
+
+## [2.0.0](https://github.com/graasp/graasp-query-client/compare/v1.11.1...v2.0.0) (2023-11-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove immutable ([#497](https://github.com/graasp/graasp-query-client/issues/497))
+
+### Features
+
+* remove immutable ([#497](https://github.com/graasp/graasp-query-client/issues/497)) ([b952d4c](https://github.com/graasp/graasp-query-client/commit/b952d4c76a640554775a2dbee522bf1a51d2636d))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @graasp/sdk to v1.10.1 ([#472](https://github.com/graasp/graasp-query-client/issues/472)) ([ab106df](https://github.com/graasp/graasp-query-client/commit/ab106df46d5a71891fee845c5e70aa85a731b3b7))
+* **deps:** update dependency @graasp/translations to v1.19.4 ([#492](https://github.com/graasp/graasp-query-client/issues/492)) ([83ba314](https://github.com/graasp/graasp-query-client/commit/83ba31486820e01d2411a55de4f71bed4da4fcad))
+* **type:** infer correct type for return of aggregate actions ([#470](https://github.com/graasp/graasp-query-client/issues/470)) ([a46c8a5](https://github.com/graasp/graasp-query-client/commit/a46c8a5d82d575481fc8f9f49ce56960f2e520fe))
+
 ## [1.11.1](https://github.com/graasp/graasp-query-client/compare/v1.11.0...v1.11.1) (2023-10-24)
 
 

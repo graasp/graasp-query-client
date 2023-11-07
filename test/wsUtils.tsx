@@ -1,4 +1,4 @@
-import { Channel } from '@graasp/sdk/frontend';
+import { Channel } from '@graasp/sdk';
 
 import { renderHook } from '@testing-library/react';
 import React from 'react';
@@ -7,7 +7,6 @@ import { QueryClient } from 'react-query';
 import configureAxios from '../src/api/axios';
 import configureQueryClient from '../src/queryClient';
 import { Notifier, QueryClientConfig } from '../src/types';
-import { isDataEqual } from '../src/utils/util';
 import { API_HOST, DOMAIN, WS_HOST } from './constants';
 
 export type Handler = { channel: Channel; handler: (event: unknown) => void };
@@ -43,7 +42,6 @@ export const setUpWsTest = (args?: {
       retry: 0,
       cacheTime: 0,
       staleTime: 0,
-      isDataEqual,
     },
     SHOW_NOTIFICATIONS: false,
     notifier,

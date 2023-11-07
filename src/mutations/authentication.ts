@@ -1,5 +1,4 @@
-import { UUID, saveUrlForRedirection } from '@graasp/sdk';
-import { Password } from '@graasp/sdk/frontend';
+import { Password, UUID, saveUrlForRedirection } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from 'react-query';
@@ -97,7 +96,7 @@ export default (queryConfig: QueryClientConfig) => {
     return useMutation(
       (payload: {
         email: string;
-        password: Password;
+        password: string;
         captcha: string;
         challenge: string;
       }) => Api.mobileSignInWithPassword(payload, queryConfig),

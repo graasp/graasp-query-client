@@ -1,5 +1,4 @@
-import { UUID, convertJs } from '@graasp/sdk';
-import { ItemValidationGroupRecord } from '@graasp/sdk/frontend';
+import { UUID } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
@@ -14,28 +13,12 @@ export default (queryConfig: QueryClientConfig) => {
   const useLastItemValidationGroup = (itemId: UUID) =>
     useQuery({
       queryKey: buildLastItemValidationGroupKey(itemId),
-      queryFn: (): Promise<ItemValidationGroupRecord> =>
-        Api.getLastItemValidationGroup(queryConfig, itemId).then((data) =>
-          convertJs(data),
-        ),
+      queryFn: () => Api.getLastItemValidationGroup(queryConfig, itemId),
       ...defaultQueryOptions,
       enabled: Boolean(itemId),
     });
 
-  // get last validation joined with review records of given item
-  // const useItemValidationAndReview = (itemId: UUID) =>
-  //   useQuery({
-  //     queryKey: buildItemValidationAndReviewKey(itemId),
-  //     queryFn: () =>
-  //       Api.getItemValidationAndReview(queryConfig, itemId).then((data) =>
-  //         convertJs(data),
-  //       ),
-  //     ...defaultQueryOptions,
-  //     enabled: Boolean(itemId),
-  //   });
-
   return {
     useLastItemValidationGroup,
-    // useItemValidationAndReview,
   };
 };

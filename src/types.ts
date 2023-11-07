@@ -1,7 +1,7 @@
+import { Invitation } from '@graasp/sdk';
+
 import { AxiosError, AxiosInstance } from 'axios';
 import { QueryObserverOptions } from 'react-query';
-
-import { isDataEqual } from './utils/util';
 
 export type Notifier = (e: {
   type: string;
@@ -21,11 +21,11 @@ export type QueryClientConfig = {
   notifier?: Notifier;
   axios: AxiosInstance;
   onConfigAxios?: (axios: AxiosInstance) => void;
-  defaultQueryOptions: {
+  defaultQueryOptions?: {
     // time until data in cache considered stale if cache not invalidated
-    staleTime: number;
+    staleTime?: number;
     // time before cache labeled as inactive to be garbage collected
-    cacheTime: number;
+    cacheTime?: number;
     retry?:
       | number
       | boolean
@@ -34,7 +34,6 @@ export type QueryClientConfig = {
     keepPreviousData?: boolean;
     refetchOnMount?: boolean;
     notifyOnChangeProps?: QueryObserverOptions['notifyOnChangeProps']; // tracked will be removed in v4. https://tanstack.com/query/v4/docs/react/guides/migrating-to-react-query-4#notifyonchangeprops-property-no-longer-accepts-tracked-as-a-value
-    isDataEqual?: typeof isDataEqual;
   };
 };
 
@@ -42,3 +41,7 @@ export type PartialQueryConfigForApi = Pick<
   QueryClientConfig,
   'API_HOST' | 'axios'
 >;
+
+// todo: move per feature folders
+export type NewInvitation = Pick<Invitation, 'email' & 'permission'> &
+  Partial<Invitation>;

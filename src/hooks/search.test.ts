@@ -1,5 +1,4 @@
 import { HttpMethod } from '@graasp/sdk';
-import { MeiliSearchResultsRecord } from '@graasp/sdk/frontend';
 
 import axios from 'axios';
 import nock from 'nock';
@@ -23,8 +22,8 @@ const RESPONSE = {
           type: 'folder',
           categories: [],
           isPublishedRoot: true,
-          createdAt: new Date('2023-09-06T11:50:32.894Z'),
-          updatedAt: new Date('2023-09-06T11:50:32.894Z'),
+          createdAt: '2023-09-06T11:50:32.894Z',
+          updatedAt: '2023-09-06T11:50:32.894Z',
           _formatted: {
             name: '<em>lettre</em>',
             description: '',
@@ -33,8 +32,8 @@ const RESPONSE = {
             type: 'folder',
             categories: [],
             isPublishedRoot: true,
-            createdAt: new Date('2023-09-06T11:50:32.894Z'),
-            updatedAt: new Date('2023-09-06T11:50:32.894Z'),
+            createdAt: '2023-09-06T11:50:32.894Z',
+            updatedAt: '2023-09-06T11:50:32.894Z',
           },
         },
         {
@@ -45,8 +44,8 @@ const RESPONSE = {
           type: 'folder',
           categories: [],
           isPublishedRoot: true,
-          createdAt: new Date('2023-09-06T11:50:32.894Z'),
-          updatedAt: new Date('2023-09-06T11:50:32.894Z'),
+          createdAt: '2023-09-06T11:50:32.894Z',
+          updatedAt: '2023-09-06T11:50:32.894Z',
           _formatted: {
             name: 'name',
             description: 'my <em>lettre</em> is for oyu to sijefk',
@@ -55,8 +54,8 @@ const RESPONSE = {
             type: 'folder',
             categories: [],
             isPublishedRoot: true,
-            createdAt: new Date('2023-09-06T11:50:32.894Z'),
-            updatedAt: new Date('2023-09-06T11:50:32.894Z'),
+            createdAt: '2023-09-06T11:50:32.894Z',
+            updatedAt: '2023-09-06T11:50:32.894Z',
           },
         },
         {
@@ -67,8 +66,8 @@ const RESPONSE = {
           type: 'folder',
           categories: [],
           isPublishedRoot: false,
-          createdAt: new Date('2023-09-06T11:50:32.894Z'),
-          updatedAt: new Date('2023-09-06T11:50:32.894Z'),
+          createdAt: '2023-09-06T11:50:32.894Z',
+          updatedAt: '2023-09-06T11:50:32.894Z',
           _formatted: {
             name: 'name',
             description: 'some description',
@@ -77,8 +76,8 @@ const RESPONSE = {
             type: 'folder',
             categories: [],
             isPublishedRoot: false,
-            createdAt: new Date('2023-09-06T11:50:32.894Z'),
-            updatedAt: new Date('2023-09-06T11:50:32.894Z'),
+            createdAt: '2023-09-06T11:50:32.894Z',
+            updatedAt: '2023-09-06T11:50:32.894Z',
           },
         },
       ],
@@ -119,12 +118,10 @@ describe('Published Search Hook', () => {
         hook,
         wrapper,
       });
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
-      expect(
-        queryClient.getQueryData<MeiliSearchResultsRecord>(key)?.toJS(),
-      ).toEqual(response);
+      expect(queryClient.getQueryData(key)).toEqual(response);
     });
 
     it(`does not fetch if no query nor categories is provided`, async () => {
@@ -188,12 +185,10 @@ describe('Published Search Hook', () => {
         ],
       });
 
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
-      expect(
-        queryClient.getQueryData<MeiliSearchResultsRecord>(key)?.toJS(),
-      ).toEqual(response);
+      expect(queryClient.getQueryData(key)).toEqual(response);
     });
 
     it(`search for page 3`, async () => {
@@ -241,12 +236,10 @@ describe('Published Search Hook', () => {
         ],
       });
 
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
-      expect(
-        queryClient.getQueryData<MeiliSearchResultsRecord>(key)?.toJS(),
-      ).toEqual(response);
+      expect(queryClient.getQueryData(key)).toEqual(response);
     });
 
     it(`does not fetch for enabled = false`, async () => {

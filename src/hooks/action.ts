@@ -1,5 +1,4 @@
-import { UUID, convertJs } from '@graasp/sdk';
-import { ActionDataRecord, ImmutableCast } from '@graasp/sdk/frontend';
+import { UUID } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
@@ -7,7 +6,7 @@ import * as Api from '../api';
 import { UndefinedArgument } from '../config/errors';
 import { buildActionsKey, buildAggregateActionsKey } from '../config/keys';
 import { QueryClientConfig } from '../types';
-import { AggregateActionsArgs } from '../utils/action';
+import { AggregateActionsArgs, MappedAggregateBy } from '../utils/action';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -26,7 +25,7 @@ export default (queryConfig: QueryClientConfig) => {
       Boolean(args.requestedSampleSize);
     return useQuery({
       queryKey: buildActionsKey(args),
-      queryFn: (): Promise<ActionDataRecord> => {
+      queryFn: () => {
         const { itemId } = args;
         if (!itemId) {
           throw new UndefinedArgument();
@@ -38,35 +37,29 @@ export default (queryConfig: QueryClientConfig) => {
             requestedSampleSize: args.requestedSampleSize,
           },
           queryConfig,
-        ).then((data) => convertJs(data));
+        );
       },
       ...defaultQueryOptions,
       enabled: enabledValue,
     });
   };
 
-  const useAggregateActions = (
-    args: Omit<AggregateActionsArgs, 'itemId'> &
-      Partial<Pick<AggregateActionsArgs, 'itemId'>>,
+  const useAggregateActions = <T extends (keyof MappedAggregateBy)[]>(
+    itemId: string | undefined,
+    args: Omit<AggregateActionsArgs<T>, 'itemId'>,
     options?: { enabled?: boolean },
   ) => {
     const enabledValue =
       (options?.enabled ?? true) &&
-      Boolean(args.itemId) &&
+      Boolean(itemId) &&
       Boolean(args.requestedSampleSize);
     return useQuery({
-      queryKey: buildAggregateActionsKey(args),
-      queryFn: (): Promise<
-        ImmutableCast<{ aggregateResult: number; createdDay: string }[]>
-      > => {
-        const { itemId } = args;
+      queryKey: buildAggregateActionsKey(itemId, args),
+      queryFn: () => {
         if (!itemId) {
           throw new UndefinedArgument();
         }
-        return Api.getAggregateActions(
-          args as AggregateActionsArgs,
-          queryConfig,
-        ).then((data) => convertJs(data));
+        return Api.getAggregateActions<T>({ itemId, ...args }, queryConfig);
       },
       ...defaultQueryOptions,
       enabled: enabledValue,

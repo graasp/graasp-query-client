@@ -15,9 +15,11 @@ import {
 export const getMembershipsForItems = async (
   ids: UUID[],
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<ResultOf<ItemMembership[]>> =>
+) =>
   axios
-    .get(`${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`)
+    .get<ResultOf<ItemMembership[]>>(
+      `${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`,
+    )
     .then(({ data }) => data);
 
 export const postManyItemMemberships = async (
@@ -26,12 +28,15 @@ export const postManyItemMemberships = async (
     itemId,
   }: { itemId: UUID; memberships: Partial<ItemMembership>[] },
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<ResultOf<ItemMembership>> =>
+) =>
   verifyAuthentication(() =>
     axios
-      .post(`${API_HOST}/${buildPostManyItemMembershipsRoute(itemId)}`, {
-        memberships,
-      })
+      .post<ResultOf<ItemMembership>>(
+        `${API_HOST}/${buildPostManyItemMembershipsRoute(itemId)}`,
+        {
+          memberships,
+        },
+      )
       .then(({ data }) => data),
   );
 
@@ -42,7 +47,7 @@ export const postItemMembership = async (
     permission,
   }: { id: UUID; email: string; permission: PermissionLevel },
   config: PartialQueryConfigForApi,
-): Promise<ItemMembership> => {
+) => {
   const { API_HOST, axios } = config;
   const member = await getMembersBy({ emails: [email] }, config);
 
@@ -52,7 +57,7 @@ export const postItemMembership = async (
 
   return verifyAuthentication(() =>
     axios
-      .post(`${API_HOST}/${buildPostItemMembershipRoute(id)}`, {
+      .post<ItemMembership>(`${API_HOST}/${buildPostItemMembershipRoute(id)}`, {
         // assume will receive only one member
         memberId: Object.values(member.data)[0].id,
         permission,
@@ -64,21 +69,26 @@ export const postItemMembership = async (
 export const editItemMembership = async (
   { id, permission }: { id: UUID; permission: PermissionLevel },
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<ItemMembership> =>
+) =>
   verifyAuthentication(() =>
     axios
-      .patch(`${API_HOST}/${buildEditItemMembershipRoute(id)}`, {
-        permission,
-      })
+      .patch<ItemMembership>(
+        `${API_HOST}/${buildEditItemMembershipRoute(id)}`,
+        {
+          permission,
+        },
+      )
       .then(({ data }) => data),
   );
 
 export const deleteItemMembership = async (
   { id }: { id: UUID },
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<ItemMembership> =>
+) =>
   verifyAuthentication(() =>
     axios
-      .delete(`${API_HOST}/${buildDeleteItemMembershipRoute(id)}`)
+      .delete<ItemMembership>(
+        `${API_HOST}/${buildDeleteItemMembershipRoute(id)}`,
+      )
       .then(({ data }) => data),
   );

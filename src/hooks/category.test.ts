@@ -1,7 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
-import Immutable, { List, Record, RecordOf } from 'immutable';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -24,14 +22,6 @@ import {
 } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-
-type ItemId = {
-  itemId: string;
-};
-
-type ItemIdRecord = RecordOf<ItemId>;
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Category Hooks', () => {
   afterEach(() => {
@@ -88,12 +78,10 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
     it(`Unauthorized`, async () => {
       const endpoints = [
@@ -124,16 +112,14 @@ describe('Category Hooks', () => {
     const hook = () => hooks.useCategory(categoryId);
 
     it(`Receive category info`, async () => {
-      const response = CATEGORIES.first()!;
+      const response = CATEGORIES[0];
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
     it(`Unauthorized`, async () => {
       const endpoints = [
@@ -168,12 +154,10 @@ describe('Category Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
 
     it(`Unauthorized`, async () => {
@@ -205,21 +189,16 @@ describe('Category Hooks', () => {
     const hook = () => hooks.useItemsInCategories(categoryIds);
 
     it(`Receive items in categories`, async () => {
-      const defaultItemIdValues: ItemId = { itemId: 'id1' };
-      const createMockItemId: Record.Factory<ItemId> =
-        Record(defaultItemIdValues);
-      const ITEM_ID_1: ItemIdRecord = createMockItemId();
-      const ITEM_ID_2: ItemIdRecord = createMockItemId({ itemId: 'id2' });
-      const response = List([ITEM_ID_1, ITEM_ID_2]);
+      const ITEM_ID_1 = { itemId: 'id1' };
+      const ITEM_ID_2 = { itemId: 'id2' };
+      const response = [ITEM_ID_1, ITEM_ID_2];
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
     it(`Unauthorized`, async () => {
       const endpoints = [

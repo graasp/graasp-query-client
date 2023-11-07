@@ -1,7 +1,5 @@
-import { UUID, convertJs } from '@graasp/sdk';
-import { ItemLikeRecord } from '@graasp/sdk/frontend';
+import { UUID } from '@graasp/sdk';
 
-import { List } from 'immutable';
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
@@ -18,13 +16,11 @@ export default (queryConfig: QueryClientConfig) => {
   const useLikesForMember = (memberId?: UUID) =>
     useQuery({
       queryKey: buildGetLikesForMemberKey(memberId),
-      queryFn: (): Promise<List<ItemLikeRecord>> => {
+      queryFn: () => {
         if (!memberId) {
           throw new UndefinedArgument();
         }
-        return Api.getLikedItems(memberId, queryConfig).then((data) =>
-          convertJs(data),
-        );
+        return Api.getLikedItems(memberId, queryConfig);
       },
       ...defaultQueryOptions,
       enabled: Boolean(memberId),
@@ -33,13 +29,11 @@ export default (queryConfig: QueryClientConfig) => {
   const useLikesForItem = (itemId?: UUID) =>
     useQuery({
       queryKey: buildGetLikesForItem(itemId),
-      queryFn: (): Promise<List<ItemLikeRecord>> => {
+      queryFn: () => {
         if (!itemId) {
           throw new UndefinedArgument();
         }
-        return Api.getItemLikes(itemId, queryConfig).then((data) =>
-          convertJs(data),
-        );
+        return Api.getItemLikes(itemId, queryConfig);
       },
       ...defaultQueryOptions,
       enabled: Boolean(itemId),

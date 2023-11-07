@@ -3,13 +3,9 @@ import {
   ItemMembership,
   MAX_TARGETS_FOR_READ_REQUEST,
   ResultOf,
-  convertJs,
 } from '@graasp/sdk';
-import { ImmutableCast, ItemMembershipRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
-import Immutable from 'immutable';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -26,7 +22,6 @@ import {
 } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Membership Hooks', () => {
   afterEach(() => {
@@ -35,9 +30,9 @@ describe('Membership Hooks', () => {
   });
 
   describe('useItemMemberships', () => {
-    const { id } = ITEMS.first()!;
+    const { id } = ITEMS[0];
     // this hook uses the many endpoint
-    const response = buildResultOfData([ITEM_MEMBERSHIPS_RESPONSE.toJS()]);
+    const response = buildResultOfData([ITEM_MEMBERSHIPS_RESPONSE]);
     const route = `/${buildGetItemMembershipsForItemsRoute([id])}`;
     const key = buildItemMembershipsKey(id);
 
@@ -46,11 +41,11 @@ describe('Membership Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data?.toJS()).toEqual(response.data[id]);
+      expect(data).toEqual(response.data[id]);
       // verify cache keys
-      expect(
-        queryClient.getQueryData<ItemMembershipRecord>(key)?.toJS(),
-      ).toEqual(response.data[id]);
+      expect(queryClient.getQueryData<ItemMembership>(key)).toEqual(
+        response.data[id],
+      );
     });
 
     it(`Undefined ids does not fetch`, async () => {
@@ -92,28 +87,28 @@ describe('Membership Hooks', () => {
   });
 
   describe('useManyItemMemberships', () => {
-    const ids = [ITEMS.first()!.id, ITEMS.get(1)!.id];
+    const ids = [ITEMS[0].id, ITEMS[1].id];
     const response = buildResultOfData([
-      ITEM_MEMBERSHIPS_RESPONSE.toJS(),
-      ITEM_MEMBERSHIPS_RESPONSE.toJS(),
+      ITEM_MEMBERSHIPS_RESPONSE,
+      ITEM_MEMBERSHIPS_RESPONSE,
     ]);
     const route = `/${buildGetItemMembershipsForItemsRoute(ids)}`;
     const key = buildManyItemMembershipsKey(ids);
 
     it(`Receive one item memberships`, async () => {
-      const id = [ITEMS.first()!.id];
+      const id = [ITEMS[0].id];
       const oneRoute = `/${buildGetItemMembershipsForItemsRoute(id)}`;
-      const oneResponse = buildResultOfData([ITEM_MEMBERSHIPS_RESPONSE.toJS()]);
+      const oneResponse = buildResultOfData([ITEM_MEMBERSHIPS_RESPONSE]);
       const oneKey = buildManyItemMembershipsKey(id);
       const hook = () => hooks.useManyItemMemberships(id);
       const endpoints = [{ route: oneRoute, response: oneResponse }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data?.toJS()).toEqual(oneResponse);
+      expect(data).toEqual(oneResponse);
       // verify cache keys
-      expect(
-        queryClient.getQueryData<ItemMembershipRecord>(oneKey)?.toJS(),
-      ).toEqual(oneResponse);
+      expect(queryClient.getQueryData<ItemMembership>(oneKey)).toEqual(
+        oneResponse,
+      );
     });
 
     it(`Receive two item memberships`, async () => {
@@ -121,18 +116,16 @@ describe('Membership Hooks', () => {
       const hook = () => hooks.useManyItemMemberships(ids);
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, convertJs(response))).toBeTruthy();
+      expect(data).toMatchObject(response);
       // verify cache keys
-      expect(
-        queryClient
-          .getQueryData<ImmutableCast<ResultOf<ItemMembership>>>(key)
-          ?.toJS(),
-      ).toEqual(response);
+      expect(queryClient.getQueryData<ResultOf<ItemMembership>>(key)).toEqual(
+        response,
+      );
     });
 
     it(`Receive lots of item memberships`, async () => {
-      const manyIds = ITEMS.map(({ id }) => id).toArray();
-      const memberships = manyIds.map(() => ITEM_MEMBERSHIPS_RESPONSE.toJS());
+      const manyIds = ITEMS.map(({ id }) => id);
+      const memberships = manyIds.map(() => ITEM_MEMBERSHIPS_RESPONSE);
       const manyResponse = buildResultOfData(memberships);
       const manyKey = buildManyItemMembershipsKey(manyIds);
       const hook = () => hooks.useManyItemMemberships(manyIds);
@@ -144,14 +137,9 @@ describe('Membership Hooks', () => {
       );
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, convertJs(manyResponse))).toBeTruthy();
+      expect(data).toEqual(manyResponse);
       // verify cache keys
-      expect(
-        Immutable.is(
-          queryClient.getQueryData(manyKey),
-          convertJs(manyResponse),
-        ),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(manyKey)).toEqual(manyResponse);
     });
 
     it(`Undefined ids does not fetch`, async () => {

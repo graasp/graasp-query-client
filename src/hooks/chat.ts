@@ -1,14 +1,9 @@
-import { UUID, convertJs } from '@graasp/sdk';
-import {
-  ExportedItemChatRecord,
-  ItemChatRecord,
-  WebsocketClient,
-} from '@graasp/sdk/frontend';
+import { UUID, WebsocketClient } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
-import { buildExportItemChatKey, buildItemChatKey } from '../config/keys';
+import { buildItemChatKey } from '../config/keys';
 import { QueryClientConfig } from '../types';
 import { configureWsChatHooks } from '../ws';
 
@@ -31,24 +26,10 @@ export default (
 
       return useQuery({
         queryKey: buildItemChatKey(itemId),
-        queryFn: (): Promise<ItemChatRecord> =>
-          Api.getItemChat(itemId, queryConfig).then((data) => convertJs(data)),
+        queryFn: () => Api.getItemChat(itemId, queryConfig),
         ...defaultQueryOptions,
         enabled: Boolean(itemId),
       });
     },
-    useExportItemChat: (
-      itemId: UUID,
-      options: { enabled: boolean } = { enabled: true },
-    ) =>
-      useQuery({
-        queryKey: buildExportItemChatKey(itemId),
-        queryFn: (): Promise<ExportedItemChatRecord> =>
-          Api.exportItemChat(itemId, queryConfig).then((data) =>
-            convertJs(data),
-          ),
-        ...defaultQueryOptions,
-        enabled: Boolean(itemId) && options.enabled,
-      }),
   };
 };

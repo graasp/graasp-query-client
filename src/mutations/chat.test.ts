@@ -3,12 +3,11 @@ import { HttpMethod } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
-  ITEMS_JS,
-  ITEM_CHAT,
+  CHAT_MESSAGES,
+  ITEMS,
   MESSAGE_IDS,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
@@ -28,10 +27,8 @@ import {
   postItemChatMessageRoutine,
 } from '../routines';
 
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
-
 describe('Chat Mutations', () => {
-  const itemId = ITEMS_JS[0].id;
+  const itemId = ITEMS[0].id;
   const chatKey = buildItemChatKey(itemId);
   const messageId = MESSAGE_IDS[0];
 
@@ -55,7 +52,7 @@ describe('Chat Mutations', () => {
           { route, response: OK_RESPONSE, method: HttpMethod.POST },
         ];
         // set random data in cache
-        queryClient.setQueryData(chatKey, ITEM_CHAT);
+        queryClient.setQueryData(chatKey, CHAT_MESSAGES);
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -82,7 +79,7 @@ describe('Chat Mutations', () => {
           },
         ];
         // set random data in cache
-        queryClient.setQueryData(chatKey, ITEM_CHAT);
+        queryClient.setQueryData(chatKey, CHAT_MESSAGES);
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -114,7 +111,7 @@ describe('Chat Mutations', () => {
           { route, response: OK_RESPONSE, method: HttpMethod.PATCH },
         ];
         // set random data in cache
-        queryClient.setQueryData(chatKey, ITEM_CHAT);
+        queryClient.setQueryData(chatKey, CHAT_MESSAGES);
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -145,7 +142,7 @@ describe('Chat Mutations', () => {
           },
         ];
         // set random data in cache
-        queryClient.setQueryData(chatKey, ITEM_CHAT);
+        queryClient.setQueryData(chatKey, CHAT_MESSAGES);
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -182,7 +179,7 @@ describe('Chat Mutations', () => {
           { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
         ];
         // set random data in cache
-        queryClient.setQueryData(chatKey, ITEM_CHAT);
+        queryClient.setQueryData(chatKey, CHAT_MESSAGES);
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -209,7 +206,7 @@ describe('Chat Mutations', () => {
           },
         ];
         // set random data in cache
-        queryClient.setQueryData(chatKey, ITEM_CHAT);
+        queryClient.setQueryData(chatKey, CHAT_MESSAGES);
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -241,7 +238,7 @@ describe('Chat Mutations', () => {
           { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
         ];
         // set random data in cache
-        queryClient.setQueryData(chatKey, ITEM_CHAT);
+        queryClient.setQueryData(chatKey, CHAT_MESSAGES);
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -268,7 +265,7 @@ describe('Chat Mutations', () => {
           },
         ];
         // set random data in cache
-        queryClient.setQueryData(chatKey, ITEM_CHAT);
+        queryClient.setQueryData(chatKey, CHAT_MESSAGES);
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -310,7 +307,7 @@ describe('Chat Mutations', () => {
           { route, response: OK_RESPONSE, method: HttpMethod.POST },
         ];
         // set random data in cache
-        queryClient.setQueryData(chatKey, ITEM_CHAT);
+        queryClient.setQueryData(chatKey, CHAT_MESSAGES);
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -337,7 +334,7 @@ describe('Chat Mutations', () => {
           { route, response: OK_RESPONSE, method: HttpMethod.PATCH },
         ];
         // set random data in cache
-        queryClient.setQueryData(chatKey, ITEM_CHAT);
+        queryClient.setQueryData(chatKey, CHAT_MESSAGES);
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -368,7 +365,7 @@ describe('Chat Mutations', () => {
           { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
         ];
         // set random data in cache
-        queryClient.setQueryData(chatKey, ITEM_CHAT);
+        queryClient.setQueryData(chatKey, CHAT_MESSAGES);
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -398,7 +395,7 @@ describe('Chat Mutations', () => {
           { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
         ];
         // set random data in cache
-        queryClient.setQueryData(chatKey, ITEM_CHAT);
+        queryClient.setQueryData(chatKey, CHAT_MESSAGES);
 
         const mockedMutation = await mockMutation({
           endpoints,

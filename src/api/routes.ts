@@ -1,4 +1,10 @@
-import { DiscriminatedItem, ItemTag, ItemTagType, UUID } from '@graasp/sdk';
+import {
+  AggregateBy,
+  DiscriminatedItem,
+  ItemTag,
+  ItemTagType,
+  UUID,
+} from '@graasp/sdk';
 
 import qs from 'qs';
 
@@ -302,7 +308,9 @@ export const buildGetActions = (
       addQueryPrefix: true,
     },
   )}`;
-export const buildGetAggregateActions = (args: AggregateActionsArgs) =>
+export const buildGetAggregateActions = <K extends AggregateBy[]>(
+  args: AggregateActionsArgs<K>,
+) =>
   `${ITEMS_ROUTE}/${args.itemId}/actions/aggregation${qs.stringify(
     {
       requestedSampleSize: args.requestedSampleSize,

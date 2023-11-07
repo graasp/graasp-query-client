@@ -1,15 +1,12 @@
 import {
-  Item,
+  DiscriminatedItem,
   ItemTag,
   ItemTagType,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
 } from '@graasp/sdk';
-import { ItemTagRecord } from '@graasp/sdk/frontend';
 
 import { StatusCodes } from 'http-status-codes';
-import Immutable from 'immutable';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import {
@@ -29,8 +26,6 @@ import { itemTagsKeys } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
-
 describe('Item Tags Hooks', () => {
   afterEach(() => {
     nock.cleanAll();
@@ -38,7 +33,7 @@ describe('Item Tags Hooks', () => {
   });
 
   describe('useItemTags', () => {
-    const itemId = ITEMS.first()!.id;
+    const itemId = ITEMS[0].id;
     const route = `/${buildGetItemTagsRoute(itemId)}`;
     const key = itemTagsKeys.singleId(itemId);
 
@@ -49,12 +44,10 @@ describe('Item Tags Hooks', () => {
       const endpoints = [{ route, response }];
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
       expect(isSuccess).toBeTruthy();
     });
 
@@ -80,15 +73,15 @@ describe('Item Tags Hooks', () => {
   });
 
   describe('useItemsTags', () => {
-    const itemsIds = ITEMS.map(({ id }) => id).toArray();
+    const itemsIds = ITEMS.map(({ id }) => id);
 
     const keys = itemsIds.map((itemId) => itemTagsKeys.singleId(itemId));
     const tags = itemsIds.map((id) => [
       {
         id: 'some id',
-        createdAt: new Date(),
+        createdAt: '2023-09-06T11:50:32.894Z',
         creator: {} as Member,
-        item: { id } as Item,
+        item: { id } as DiscriminatedItem,
         type: ItemTagType.Hidden,
       },
     ]);
@@ -106,13 +99,11 @@ describe('Item Tags Hooks', () => {
         (t: ItemTag[]) => t[0].item.id,
       );
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
       keys.forEach((key, idx) =>
-        expect(queryClient.getQueryData<ItemTagRecord>(key)?.toJS()).toEqual(
-          tags[idx],
-        ),
+        expect(queryClient.getQueryData<ItemTag>(key)).toEqual(tags[idx]),
       );
 
       expect(isSuccess).toBeTruthy();
@@ -130,9 +121,9 @@ describe('Item Tags Hooks', () => {
       const tagsForItem = [
         {
           id: 'some id',
-          createdAt: new Date(),
+          createdAt: '2023-09-06T11:50:32.894Z',
           creator: {} as Member,
-          item: { id } as Item,
+          item: { id } as DiscriminatedItem,
           type: ItemTagType.Hidden,
         },
       ];
@@ -156,13 +147,11 @@ describe('Item Tags Hooks', () => {
         wrapper,
       });
 
-      expect(data?.toJS()).toEqual(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
       expect(
-        queryClient
-          .getQueryData<ItemTagRecord>(itemTagsKeys.singleId(ids[0]))
-          ?.toJS(),
+        queryClient.getQueryData<ItemTag>(itemTagsKeys.singleId(ids[0])),
       ).toEqual(tagsForItem);
       expect(
         queryClient.getQueryData(itemTagsKeys.singleId(idWithError)),

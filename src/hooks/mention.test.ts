@@ -1,6 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import Immutable from 'immutable';
-import Cookies from 'js-cookie';
 import nock from 'nock';
 
 import { MEMBER_RESPONSE, buildMemberMentions } from '../../test/constants';
@@ -12,8 +10,6 @@ import {
 import { buildMentionKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-
-jest.spyOn(Cookies, 'get').mockReturnValue({ session: 'somesession' });
 
 describe('Chat Mention Hooks', () => {
   afterEach(() => {
@@ -46,12 +42,10 @@ describe('Chat Mention Hooks', () => {
         wrapper,
       });
 
-      expect(Immutable.is(data, response)).toBeTruthy();
+      expect(data).toMatchObject(response);
 
       // verify cache keys
-      expect(
-        Immutable.is(queryClient.getQueryData(key), response),
-      ).toBeTruthy();
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
   });
 });

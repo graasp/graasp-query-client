@@ -1,7 +1,3 @@
-import { convertJs } from '@graasp/sdk';
-import { ItemFavoriteRecord } from '@graasp/sdk/frontend';
-
-import { List } from 'immutable';
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
@@ -12,10 +8,9 @@ export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
 
   const useFavoriteItems = () =>
-    useQuery<List<ItemFavoriteRecord>, Error>({
+    useQuery({
       queryKey: FAVORITE_ITEMS_KEY,
-      queryFn: () =>
-        Api.getFavoriteItems(queryConfig).then((data) => convertJs(data)),
+      queryFn: () => Api.getFavoriteItems(queryConfig),
       ...defaultQueryOptions,
     });
 
