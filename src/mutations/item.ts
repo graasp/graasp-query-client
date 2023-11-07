@@ -179,15 +179,17 @@ export default (queryConfig: QueryClientConfig) => {
     );
   };
 
-  const useDeleteShortLink = () =>
-    useMutation(
+  const useDeleteShortLink = () => {
+    const queryClient = useQueryClient();
+    return useMutation(
       async (alias: string) => Api.deleteShortLink(alias, queryConfig),
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           notifier?.({
             type: deleteShortLinkRoutine.SUCCESS,
             payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
           });
+          queryClient.invalidateQueries(buildShortLinksItemKey(data.itemId));
         },
         onError: (error: Error) => {
           notifier?.({
@@ -197,6 +199,7 @@ export default (queryConfig: QueryClientConfig) => {
         },
       },
     );
+  };
 
   const usePostEtherpad = () => {
     const queryClient = useQueryClient();

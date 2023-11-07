@@ -459,12 +459,7 @@ export default (
     useShortLinksItem: (itemId: string) =>
       useQuery({
         queryKey: buildShortLinksItemKey(itemId),
-        queryFn: () => {
-          if (!itemId) {
-            throw new UndefinedArgument();
-          }
-          return Api.getShortLinksItem(itemId, queryConfig);
-        },
+        queryFn: () => Api.getShortLinksItem(itemId, queryConfig),
         enabled: true,
         ...defaultQueryOptions,
       }),
