@@ -396,7 +396,7 @@ export const buildGetEtherpadRoute = (itemId: UUID) =>
 
 export const SEARCH_PUBLISHED_ITEMS_ROUTE = `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/search`;
 
-export const LIBRARY_PROFILE_ROUTE = `library-profile`;
+export const LIBRARY_PROFILE_ROUTE = `member-profile`;
 export const GET_OWN_LIBRARY_PROFILE = `${LIBRARY_PROFILE_ROUTE}/own`;
 export const buildGetMemberProfileRoute = (memberId: UUID) =>
   `${LIBRARY_PROFILE_ROUTE}/${memberId}`;
