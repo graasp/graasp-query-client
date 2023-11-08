@@ -298,5 +298,5 @@ export const DATA_KEYS = {
   buildEtherpadKey,
   buildSearchPublishedItemsKey,
   OWN_LIBRARY_PROFILE_KEY,
-  buildMemberProfileKey
+  buildMemberProfileKey,
 };
