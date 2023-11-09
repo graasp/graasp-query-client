@@ -594,6 +594,14 @@ export const ACTIONS_DATA: ActionData = createMockActionData({
     requestedSampleSize: 24,
   },
 });
+export const MEMBER_PUBLIC_PROFILE = {
+  member: MEMBER_RESPONSE,
+  bio: 'some random bio',
+  visibility: true,
+  linkedinLink: 'https://linkedin.com/user',
+  facebookLink: 'https://facebook.com/user',
+  twitterLink: 'https://twitter.com/user',
+};
 
 export const AGGREGATE_ACTIONS_DATA = [
   { aggregateResult: 1.5, createdDay: '2023-10-10T00:00:00.000Z' },
