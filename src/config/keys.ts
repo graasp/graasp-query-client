@@ -7,10 +7,14 @@ import { DEFAULT_THUMBNAIL_SIZE } from './constants';
 export const APPS_KEY = 'apps';
 export const ITEMS_KEY = 'items';
 export const SHORT_LINKS_KEY = 'shortLinks';
+export const SHORT_LINK_KEY = 'shortLink';
 export const OWN_ITEMS_KEY = [ITEMS_KEY, 'own'];
 export const ETHERPADS_KEY = 'etherpads';
 export const SUBSCRIPTION_KEY = 'subscriptions';
 
+export const buildShortLinkKey = (alias: string | undefined) => [
+  [SHORT_LINK_KEY, alias],
+];
 export const buildShortLinksItemKey = (id: UUID) => [
   [SHORT_LINKS_KEY, ITEMS_KEY],
   id,

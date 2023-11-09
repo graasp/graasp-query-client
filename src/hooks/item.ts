@@ -39,6 +39,7 @@ import {
   buildItemParentsKey,
   buildItemThumbnailKey,
   buildItemsKey,
+  buildShortLinkKey,
   buildShortLinksItemKey,
 } from '../config/keys';
 import { getOwnItemsRoutine } from '../routines';
@@ -455,6 +456,19 @@ export default (
       }),
 
     useItemFeedbackUpdates: itemWsHooks?.useItemFeedbackUpdates,
+
+    useShortLink: (alias: string | undefined) =>
+      useQuery({
+        queryKey: buildShortLinkKey(alias),
+        queryFn: () => {
+          if (!alias) {
+            throw new UndefinedArgument();
+          }
+          return Api.getShortLink(alias, queryConfig);
+        },
+        enabled: Boolean(alias),
+        ...defaultQueryOptions,
+      }),
 
     useShortLinksItem: (itemId: string) =>
       useQuery({

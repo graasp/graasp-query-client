@@ -135,10 +135,10 @@ export default (queryConfig: QueryClientConfig) => {
         onSuccess: (_data, variables) => {
           notifier?.({
             type: createShortLinkRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
+            payload: { message: SUCCESS_MESSAGES.CREATE_SHORT_LINK },
           });
           queryClient.invalidateQueries(
-            buildShortLinksItemKey(variables.itemId),
+            buildShortLinksItemKey(variables.item.id),
           );
         },
         onError: (error: Error) => {
@@ -159,15 +159,15 @@ export default (queryConfig: QueryClientConfig) => {
         shortLink,
       }: {
         alias: string;
-        shortLink: AnyOfExcept<ShortLinkPayload, 'itemId'>;
+        shortLink: AnyOfExcept<ShortLinkPayload, 'item'>;
       }) => Api.patchShortLink(alias, shortLink, queryConfig),
       {
         onSuccess: (data) => {
           notifier?.({
             type: patchShortLinkRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
+            payload: { message: SUCCESS_MESSAGES.EDIT_SHORT_LINK },
           });
-          queryClient.invalidateQueries(buildShortLinksItemKey(data.itemId));
+          queryClient.invalidateQueries(buildShortLinksItemKey(data.item.id));
         },
         onError: (error: Error) => {
           notifier?.({
@@ -187,9 +187,9 @@ export default (queryConfig: QueryClientConfig) => {
         onSuccess: (data) => {
           notifier?.({
             type: deleteShortLinkRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
+            payload: { message: SUCCESS_MESSAGES.DELETE_SHORT_LINK },
           });
-          queryClient.invalidateQueries(buildShortLinksItemKey(data.itemId));
+          queryClient.invalidateQueries(buildShortLinksItemKey(data.item.id));
         },
         onError: (error: Error) => {
           notifier?.({

@@ -398,6 +398,8 @@ export const buildGetEtherpadRoute = (itemId: UUID) =>
 
 export const SEARCH_PUBLISHED_ITEMS_ROUTE = `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/search`;
 
+export const buildGetShortLinkRoute = (alias: string) =>
+  `${SHORT_LINKS_ROUTE}/check/${alias}`;
 export const buildGetShortLinksItemRoute = (itemId: string) =>
   `${SHORT_LINKS_LIST_ROUTE}/${itemId}`;
 export const buildDeleteShortLinkRoute = (alias: string) =>
@@ -460,6 +462,7 @@ export const API_ROUTES = {
   buildGetMostRecentPublishedItemsRoute,
   buildGetPlanRoute,
   buildGetPublishedItemsForMemberRoute,
+  buildGetShortLinkRoute,
   buildGetShortLinksItemRoute,
   buildImportH5PRoute,
   buildImportZipRoute,

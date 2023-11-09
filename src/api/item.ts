@@ -27,6 +27,7 @@ import {
   buildGetItemParents,
   buildGetItemRoute,
   buildGetItemsRoute,
+  buildGetShortLinkRoute,
   buildGetShortLinksItemRoute,
   buildMoveItemsRoute,
   buildPatchShortLinkRoute,
@@ -281,6 +282,16 @@ export const downloadItemThumbnailUrl = async (
     )
     .then(({ data }) => data);
 
+export const getShortLink = (
+  alias: string,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .get<string>(`${API_HOST}/${buildGetShortLinkRoute(alias)}`)
+      .then(({ data }) => data),
+  );
+
 export const getShortLinksItem = (
   itemId: string,
   { API_HOST, axios }: PartialQueryConfigForApi,
@@ -319,7 +330,7 @@ export const postShortLink = async (
 
 export const patchShortLink = (
   alias: string,
-  updatedPayload: AnyOfExcept<ShortLinkPayload, 'itemId'>,
+  updatedPayload: AnyOfExcept<ShortLinkPayload, 'item'>,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
