@@ -1,10 +1,7 @@
 import {
-  AnyOfExcept,
   DiscriminatedItem,
   RecycledItemData,
   ResultOf,
-  ShortLinkPayload,
-  ShortLinkResponse,
   UUID,
 } from '@graasp/sdk';
 
@@ -18,7 +15,6 @@ import {
   SHARED_ITEM_WITH_ROUTE,
   buildCopyItemsRoute,
   buildDeleteItemsRoute,
-  buildDeleteShortLinkRoute,
   buildDownloadFilesRoute,
   buildDownloadItemThumbnailRoute,
   buildEditItemRoute,
@@ -27,12 +23,8 @@ import {
   buildGetItemParents,
   buildGetItemRoute,
   buildGetItemsRoute,
-  buildGetShortLinkRoute,
-  buildGetShortLinksItemRoute,
   buildMoveItemsRoute,
-  buildPatchShortLinkRoute,
   buildPostItemRoute,
-  buildPostShortLinkRoute,
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
 } from './routes';
@@ -281,65 +273,3 @@ export const downloadItemThumbnailUrl = async (
       })}`,
     )
     .then(({ data }) => data);
-
-export const getShortLink = (
-  alias: string,
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  verifyAuthentication(() =>
-    axios
-      .get<string>(`${API_HOST}/${buildGetShortLinkRoute(alias)}`)
-      .then(({ data }) => data),
-  );
-
-export const getShortLinksItem = (
-  itemId: string,
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  verifyAuthentication(() =>
-    axios
-      .get<ShortLinkResponse[]>(
-        `${API_HOST}/${buildGetShortLinksItemRoute(itemId)}`,
-      )
-      .then(({ data }) => data),
-  );
-
-export const deleteShortLink = (
-  alias: string,
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  verifyAuthentication(() =>
-    axios
-      .delete<ShortLinkResponse>(
-        `${API_HOST}/${buildDeleteShortLinkRoute(alias)}`,
-      )
-      .then(({ data }) => data),
-  );
-
-export const postShortLink = async (
-  shortLink: ShortLinkPayload,
-  { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<ShortLinkPayload> =>
-  verifyAuthentication(() =>
-    axios
-      .post<ShortLinkResponse>(`${API_HOST}/${buildPostShortLinkRoute()}`, {
-        ...shortLink,
-      })
-      .then(({ data }) => data),
-  );
-
-export const patchShortLink = (
-  alias: string,
-  updatedPayload: AnyOfExcept<ShortLinkPayload, 'item'>,
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  verifyAuthentication(() =>
-    axios
-      .patch<ShortLinkResponse>(
-        `${API_HOST}/${buildPatchShortLinkRoute(alias)}`,
-        {
-          ...updatedPayload,
-        },
-      )
-      .then(({ data }) => data),
-  );
