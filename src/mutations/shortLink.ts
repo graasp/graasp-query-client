@@ -1,4 +1,4 @@
-import { AnyOfExcept, ShortLinkPayload } from '@graasp/sdk';
+import { ShortLinkPatchPayload, ShortLinkPostPayload } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from 'react-query';
@@ -18,7 +18,7 @@ export default (queryConfig: QueryClientConfig) => {
   const usePostShortLink = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      async (shortLink: ShortLinkPayload) =>
+      async (shortLink: ShortLinkPostPayload) =>
         Api.postShortLink(shortLink, queryConfig),
       {
         onSuccess: (_data, variables) => {
@@ -49,7 +49,7 @@ export default (queryConfig: QueryClientConfig) => {
         shortLink,
       }: {
         alias: string;
-        shortLink: AnyOfExcept<ShortLinkPayload, 'item'>;
+        shortLink: ShortLinkPatchPayload;
       }) => Api.patchShortLink(alias, shortLink, queryConfig),
       {
         onSuccess: (data) => {
