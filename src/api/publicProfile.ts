@@ -2,20 +2,20 @@ import { UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types';
 import {
-  GET_OWN_LIBRARY_PROFILE,
-  LIBRARY_PROFILE_ROUTE,
-  buildGetMemberProfileRoute,
+  GET_OWN_PROFILE,
+  PUBLIC_PROFILE_ROUTE,
+  buildGetPublicProfileRoute,
 } from './routes';
 
 export const getOwnProfile = ({ API_HOST, axios }: PartialQueryConfigForApi) =>
-  axios.get(`${API_HOST}/${GET_OWN_LIBRARY_PROFILE}`).then(({ data }) => data);
+  axios.get(`${API_HOST}/${GET_OWN_PROFILE}`).then(({ data }) => data);
 
-export const getMemberProfile = (
+export const getPublicProfile = (
   memberId: UUID,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get(`${API_HOST}/${buildGetMemberProfileRoute(memberId)}`)
+    .get(`${API_HOST}/${buildGetPublicProfileRoute(memberId)}`)
     .then(({ data }) => data);
 
 export type PostProfilePayloadType = {
@@ -37,7 +37,7 @@ export const postProfile = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .post(`${API_HOST}/${LIBRARY_PROFILE_ROUTE}`, {
+    .post(`${API_HOST}/${PUBLIC_PROFILE_ROUTE}`, {
       bio,
       twitterLink,
       facebookLink,
@@ -51,5 +51,5 @@ export const editProfile = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .patch(`${API_HOST}/${LIBRARY_PROFILE_ROUTE}`, arg)
+    .patch(`${API_HOST}/${PUBLIC_PROFILE_ROUTE}`, arg)
     .then(({ data }) => data);

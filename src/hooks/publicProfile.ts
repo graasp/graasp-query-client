@@ -18,14 +18,14 @@ export default (queryConfig: QueryClientConfig) => {
         ...defaultQueryOptions,
       }),
 
-    useMemberProfile: (memberId: UUID) =>
+    usePublicProfile: (memberId: UUID) =>
       useQuery({
         queryKey: buildMemberProfileKey(memberId),
         queryFn: () => {
           if (!memberId) {
             throw new UndefinedArgument();
           }
-          return Api.getMemberProfile(memberId, queryConfig);
+          return Api.getPublicProfile(memberId, queryConfig);
         },
         enabled: Boolean(memberId),
         ...defaultQueryOptions,

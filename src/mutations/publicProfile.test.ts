@@ -5,7 +5,7 @@ import nock from 'nock';
 
 import { MEMBER_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { LIBRARY_PROFILE_ROUTE } from '../api/routes';
+import { PUBLIC_PROFILE_ROUTE } from '../api/routes';
 import { OWN_LIBRARY_PROFILE_KEY } from '../config/keys';
 
 const mockedNotifier = jest.fn();
@@ -30,7 +30,7 @@ describe('Public Profile Mutations', () => {
     const mutation = mutations.usePostProfile;
 
     it('Post profile', async () => {
-      const route = `/${LIBRARY_PROFILE_ROUTE}`;
+      const route = `/${PUBLIC_PROFILE_ROUTE}`;
       const response = { ...newProfile, id: 'someid', member: MEMBER_RESPONSE };
 
       queryClient.setQueryData(OWN_LIBRARY_PROFILE_KEY, response);
@@ -71,7 +71,7 @@ describe('Public Profile Mutations', () => {
     };
 
     it('Edit item in root', async () => {
-      const route = `/${LIBRARY_PROFILE_ROUTE}`;
+      const route = `/${PUBLIC_PROFILE_ROUTE}`;
       const response = null;
       const endpoints = [
         {

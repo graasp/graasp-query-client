@@ -13,11 +13,11 @@ import itemLoginMutations from './itemLogin';
 import itemPublishMutations from './itemPublish';
 import tagsMutations from './itemTag';
 import itemValidationMutations from './itemValidation';
-import libraryProfileMutations from './libraryProfile';
 import memberMutations from './member';
 import itemMembershipMutations from './membership';
 import mentionMutations from './mention';
 import subscriptionMutations from './plan';
+import publicProfileMutations from './publicProfile';
 
 const configureMutations = (queryConfig: QueryClientConfig) => ({
   ...itemMutations(queryConfig),
@@ -38,7 +38,7 @@ const configureMutations = (queryConfig: QueryClientConfig) => ({
   ...authenticationMutations(queryConfig),
   ...subscriptionMutations(queryConfig),
   ...itemPublishMutations(queryConfig),
-  ...libraryProfileMutations(queryConfig),
+  ...publicProfileMutations(queryConfig),
 });
 
 export default configureMutations;
