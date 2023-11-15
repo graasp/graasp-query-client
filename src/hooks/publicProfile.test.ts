@@ -48,7 +48,6 @@ describe('Public Profile Hooks', () => {
 
       expect(isError).toBeTruthy();
       expect(queryClient.getQueryData(OWN_LIBRARY_PROFILE_KEY)).toBeFalsy();
-
     });
   });
 

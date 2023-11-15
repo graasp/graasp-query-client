@@ -97,7 +97,6 @@ describe('Public Profile Mutations', () => {
         result,
       );
       expect(queryClient.getQueryData(OWN_LIBRARY_PROFILE_KEY)).toEqual(result);
-
     });
   });
 });
