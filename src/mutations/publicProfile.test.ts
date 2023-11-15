@@ -60,8 +60,8 @@ describe('Public Profile Mutations', () => {
     });
   });
 
-  describe('useEditProfile', () => {
-    const mutation = mutations.useEditProfile;
+  describe('usePatchProfile', () => {
+    const mutation = mutations.usePatchProfile;
     const payload = { bio: 'new description' };
     const result = {
       ...newProfile,
@@ -96,6 +96,8 @@ describe('Public Profile Mutations', () => {
       expect(queryClient.getQueryState(OWN_LIBRARY_PROFILE_KEY)?.data).toEqual(
         result,
       );
+      expect(queryClient.getQueryData(OWN_LIBRARY_PROFILE_KEY)).toEqual(result);
+
     });
   });
 });

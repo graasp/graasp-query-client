@@ -46,7 +46,7 @@ export const postProfile = async (
     })
     .then(({ data }) => data);
 
-export const editProfile = async (
+export const patchProfile = async (
   arg: Partial<PostProfilePayloadType>,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>

@@ -7,6 +7,7 @@ import {
 } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import { GET_OWN_PROFILE, buildGetPublicProfileRoute } from '../api/routes';
+import { OWN_LIBRARY_PROFILE_KEY, buildPublicProfileKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -26,6 +27,9 @@ describe('Public Profile Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
       expect(data).toEqual(response);
+      expect(queryClient.getQueryData(OWN_LIBRARY_PROFILE_KEY)).toEqual(
+        response,
+      );
     });
 
     it(`Unauthorized`, async () => {
@@ -43,10 +47,12 @@ describe('Public Profile Hooks', () => {
       });
 
       expect(isError).toBeTruthy();
+      expect(queryClient.getQueryData(OWN_LIBRARY_PROFILE_KEY)).toBeFalsy();
+
     });
   });
 
-  describe('useMemberProfile', () => {
+  describe('usePublicProfile', () => {
     const id = 'member-id';
     const response = MEMBER_PUBLIC_PROFILE;
 
@@ -63,7 +69,9 @@ describe('Public Profile Hooks', () => {
         wrapper,
         endpoints,
       });
-
+      expect(queryClient.getQueryData(buildPublicProfileKey(id))).toEqual(
+        response,
+      );
       expect(data).toMatchObject(response);
     });
   });

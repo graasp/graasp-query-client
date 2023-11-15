@@ -24,10 +24,10 @@ export default (queryConfig: QueryClientConfig) => {
         },
       },
     );
-  const useEditProfile = () =>
+  const usePatchProfile = () =>
     useMutation(
       (payload: Partial<PostProfilePayloadType>) =>
-        Api.editProfile(payload, queryConfig),
+        Api.patchProfile(payload, queryConfig),
       {
         onSuccess: () => {
           notifier?.({
@@ -43,6 +43,6 @@ export default (queryConfig: QueryClientConfig) => {
 
   return {
     usePostProfile,
-    useEditProfile,
+    usePatchProfile,
   };
 };

@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 
 import * as Api from '../api';
 import { UndefinedArgument } from '../config/errors';
-import { OWN_LIBRARY_PROFILE_KEY, buildMemberProfileKey } from '../config/keys';
+import { OWN_LIBRARY_PROFILE_KEY, buildPublicProfileKey } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
@@ -20,7 +20,7 @@ export default (queryConfig: QueryClientConfig) => {
 
     usePublicProfile: (memberId: UUID) =>
       useQuery({
-        queryKey: buildMemberProfileKey(memberId),
+        queryKey: buildPublicProfileKey(memberId),
         queryFn: () => {
           if (!memberId) {
             throw new UndefinedArgument();
