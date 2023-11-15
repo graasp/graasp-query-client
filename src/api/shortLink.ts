@@ -1,5 +1,6 @@
 import {
   ShortLink,
+  ShortLinkAvailable,
   ShortLinkPatchPayload,
   ShortLinkPostPayload,
 } from '@graasp/sdk';
@@ -8,19 +9,21 @@ import { PartialQueryConfigForApi } from '../types';
 import { verifyAuthentication } from './axios';
 import {
   buildDeleteShortLinkRoute,
-  buildGetShortLinkRoute,
+  buildGetShortLinkAvailableRoute,
   buildGetShortLinksItemRoute,
   buildPatchShortLinkRoute,
   buildPostShortLinkRoute,
 } from './routes';
 
-export const getShortLink = (
+export const getShortLinkAvailable = (
   alias: string,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
-      .get<string>(`${API_HOST}/${buildGetShortLinkRoute(alias)}`)
+      .get<ShortLinkAvailable>(
+        `${API_HOST}/${buildGetShortLinkAvailableRoute(alias)}`,
+      )
       .then(({ data }) => data),
   );
 

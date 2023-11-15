@@ -9,14 +9,14 @@ export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
 
   return {
-    useShortLink: (alias: string | undefined) =>
+    useShortLinkAvailable: (alias: string | undefined) =>
       useQuery({
         queryKey: buildShortLinkKey(alias),
         queryFn: () => {
           if (!alias) {
             throw new UndefinedArgument();
           }
-          return Api.getShortLink(alias, queryConfig);
+          return Api.getShortLinkAvailable(alias, queryConfig);
         },
         enabled: Boolean(alias),
         ...defaultQueryOptions,
