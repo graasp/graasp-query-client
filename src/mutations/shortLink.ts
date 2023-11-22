@@ -27,7 +27,7 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { message: SUCCESS_MESSAGES.CREATE_SHORT_LINK },
           });
           queryClient.invalidateQueries(
-            buildShortLinksItemKey(variables.item.id),
+            buildShortLinksItemKey(variables.itemId),
           );
           queryClient.invalidateQueries(buildShortLinkKey(variables.alias));
         },
