@@ -6,7 +6,7 @@ import nock from 'nock';
 import { MEMBER_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { PUBLIC_PROFILE_ROUTE } from '../api/routes';
-import { OWN_LIBRARY_PROFILE_KEY } from '../config/keys';
+import { OWN_PUBLIC_PROFILE_KEY } from '../config/keys';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
@@ -26,14 +26,14 @@ describe('Public Profile Mutations', () => {
     mockedNotifier.mockClear();
   });
 
-  describe('usePostProfile', () => {
-    const mutation = mutations.usePostProfile;
+  describe('usePostPublicProfile', () => {
+    const mutation = mutations.usePostPublicProfile;
 
     it('Post profile', async () => {
       const route = `/${PUBLIC_PROFILE_ROUTE}`;
       const response = { ...newProfile, id: 'someid', member: MEMBER_RESPONSE };
 
-      queryClient.setQueryData(OWN_LIBRARY_PROFILE_KEY, response);
+      queryClient.setQueryData(OWN_PUBLIC_PROFILE_KEY, response);
 
       const endpoints = [
         {
@@ -54,14 +54,14 @@ describe('Public Profile Mutations', () => {
         await waitForMutation();
       });
 
-      expect(queryClient.getQueryState(OWN_LIBRARY_PROFILE_KEY)?.data).toEqual(
+      expect(queryClient.getQueryState(OWN_PUBLIC_PROFILE_KEY)?.data).toEqual(
         response,
       );
     });
   });
 
-  describe('usePatchProfile', () => {
-    const mutation = mutations.usePatchProfile;
+  describe('usePatchPublicProfile', () => {
+    const mutation = mutations.usePatchPublicProfile;
     const payload = { bio: 'new description' };
     const result = {
       ...newProfile,
@@ -70,7 +70,7 @@ describe('Public Profile Mutations', () => {
       member: MEMBER_RESPONSE,
     };
 
-    it('Edit item in root', async () => {
+    it('Edit public profile', async () => {
       const route = `/${PUBLIC_PROFILE_ROUTE}`;
       const response = null;
       const endpoints = [
@@ -80,7 +80,7 @@ describe('Public Profile Mutations', () => {
           route,
         },
       ];
-      queryClient.setQueryData(OWN_LIBRARY_PROFILE_KEY, result);
+      queryClient.setQueryData(OWN_PUBLIC_PROFILE_KEY, result);
 
       const mockedMutation = await mockMutation({
         endpoints,
@@ -93,10 +93,10 @@ describe('Public Profile Mutations', () => {
         await waitForMutation();
       });
 
-      expect(queryClient.getQueryState(OWN_LIBRARY_PROFILE_KEY)?.data).toEqual(
+      expect(queryClient.getQueryState(OWN_PUBLIC_PROFILE_KEY)?.data).toEqual(
         result,
       );
-      expect(queryClient.getQueryData(OWN_LIBRARY_PROFILE_KEY)).toEqual(result);
+      expect(queryClient.getQueryData(OWN_PUBLIC_PROFILE_KEY)).toEqual(result);
     });
   });
 });

@@ -1,48 +1,57 @@
 import { useMutation } from 'react-query';
 
 import * as Api from '../api';
-import { PostProfilePayloadType } from '../api';
-import { patchProfileRoutine, postProfileRoutine } from '../routines';
+import { PostPublicProfilePayloadType } from '../api';
+import {
+  patchPublicProfileRoutine,
+  postPublicProfileRoutine,
+} from '../routines';
 import type { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  const usePostProfile = () =>
+  const usePostPublicProfile = () =>
     useMutation(
-      async (profileData: PostProfilePayloadType) =>
-        Api.postProfile(profileData, queryConfig),
+      async (profileData: PostPublicProfilePayloadType) =>
+        Api.postPublicProfile(profileData, queryConfig),
       {
         onSuccess: () => {
           notifier?.({
-            type: postProfileRoutine.SUCCESS,
+            type: postPublicProfileRoutine.SUCCESS,
             payload: { message: 'Your Data Saved Successfully' },
           });
         },
         onError: (error: Error) => {
-          notifier?.({ type: postProfileRoutine.FAILURE, payload: { error } });
+          notifier?.({
+            type: postPublicProfileRoutine.FAILURE,
+            payload: { error },
+          });
         },
       },
     );
-  const usePatchProfile = () =>
+  const usePatchPublicProfile = () =>
     useMutation(
-      (payload: Partial<PostProfilePayloadType>) =>
-        Api.patchProfile(payload, queryConfig),
+      (payload: Partial<PostPublicProfilePayloadType>) =>
+        Api.patchPublicProfile(payload, queryConfig),
       {
         onSuccess: () => {
           notifier?.({
-            type: patchProfileRoutine.SUCCESS,
+            type: patchPublicProfileRoutine.SUCCESS,
             payload: { message: 'Your Data Saved Successfully' },
           });
         },
         onError: (error: Error) => {
-          notifier?.({ type: patchProfileRoutine.FAILURE, payload: { error } });
+          notifier?.({
+            type: patchPublicProfileRoutine.FAILURE,
+            payload: { error },
+          });
         },
       },
     );
 
   return {
-    usePostProfile,
-    usePatchProfile,
+    usePostPublicProfile,
+    usePatchPublicProfile,
   };
 };

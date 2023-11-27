@@ -16,4 +16,4 @@ export * from './invitation';
 export * from './authentication';
 export * from './plan';
 export * from './itemPublish';
-export * from './libraryProfile';
+export * from './publicProfile';

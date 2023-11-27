@@ -18,7 +18,7 @@ export const getPublicProfile = (
     .get(`${API_HOST}/${buildGetPublicProfileRoute(memberId)}`)
     .then(({ data }) => data);
 
-export type PostProfilePayloadType = {
+export type PostPublicProfilePayloadType = {
   bio: string;
   twitterLink?: string;
   facebookLink?: string;
@@ -26,14 +26,14 @@ export type PostProfilePayloadType = {
   visibility?: boolean;
 };
 
-export const postProfile = async (
+export const postPublicProfile = async (
   {
     bio,
     twitterLink,
     facebookLink,
     linkedinLink,
     visibility = false,
-  }: PostProfilePayloadType,
+  }: PostPublicProfilePayloadType,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
@@ -46,8 +46,8 @@ export const postProfile = async (
     })
     .then(({ data }) => data);
 
-export const patchProfile = async (
-  arg: Partial<PostProfilePayloadType>,
+export const patchPublicProfile = async (
+  arg: Partial<PostPublicProfilePayloadType>,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
