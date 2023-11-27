@@ -12,7 +12,6 @@ import {
   ExportedChatMessage,
   FlagType,
   FolderItemType,
-  GraaspError,
   HttpMethod,
   Invitation,
   ItemCategory,
@@ -43,17 +42,25 @@ import {
 import { StatusCodes } from 'http-status-codes';
 import { v4 } from 'uuid';
 
+type MockFastifyError = {
+  name: string;
+  code: string;
+  message: string;
+  statusCode: number;
+  origin: string;
+};
+
 export const WS_HOST = 'ws://localhost:3000';
 export const API_HOST = 'http://localhost:3000';
 export const DOMAIN = 'domain';
-export const UNAUTHORIZED_RESPONSE: GraaspError = {
+export const UNAUTHORIZED_RESPONSE: MockFastifyError = {
   name: 'unauthorized',
   code: 'ERRCODE',
   message: 'unauthorized error message',
   statusCode: StatusCodes.UNAUTHORIZED,
   origin: 'plugin',
 };
-export const FILE_NOT_FOUND_RESPONSE: GraaspError = {
+export const FILE_NOT_FOUND_RESPONSE: MockFastifyError = {
   name: 'unauthorized',
   code: 'GPFERR006',
   message: 'LOCAL_FILE_NOT_FOUND',
