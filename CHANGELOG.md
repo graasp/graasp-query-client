@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://github.com/graasp/graasp-query-client/compare/v2.0.3...v2.1.0) (2023-11-28)
+
+
+### Features
+
+* add short links feature (graasp/graasp[#664](https://github.com/graasp/graasp-query-client/issues/664)) ([#516](https://github.com/graasp/graasp-query-client/issues/516)) ([f6d724a](https://github.com/graasp/graasp-query-client/commit/f6d724a8650e56b7332e8e4dc755ec5d301fb037))
+
+
+### Bug Fixes
+
+* test errors ([#531](https://github.com/graasp/graasp-query-client/issues/531)) ([3d7de12](https://github.com/graasp/graasp-query-client/commit/3d7de12f2d76937ea8d5ed4ae755beb9ab3ad3ee))
+
 ## [2.0.3](https://github.com/graasp/graasp-query-client/compare/v2.0.2...v2.0.3) (2023-11-16)
 
 
