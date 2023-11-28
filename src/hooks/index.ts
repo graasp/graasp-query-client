@@ -18,6 +18,7 @@ import configureMembershipHooks from './membership';
 import configureMentionsHooks from './mention';
 import configurePlanHooks from './plan';
 import configureKeywordSearchHooks from './search';
+import configureShortLinkHooks from './shortLink';
 
 export default (
   queryConfig: QueryClientConfig,
@@ -51,5 +52,6 @@ export default (
     ...configureInvitationHooks(queryConfig),
     ...memberHooks,
     ...configurePlanHooks(queryConfig),
+    ...configureShortLinkHooks(queryConfig),
   };
 };

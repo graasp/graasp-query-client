@@ -19,3 +19,4 @@ export * from './membership';
 export * from './mentions';
 export * from './search';
 export * from './subscription';
+export * from './shortLink';
