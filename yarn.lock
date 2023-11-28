@@ -1809,7 +1809,7 @@ __metadata:
     "@commitlint/cli": "npm:18.4.3"
     "@commitlint/config-conventional": "npm:18.4.3"
     "@graasp/sdk": "npm:3.1.0"
-    "@graasp/translations": "npm:1.20.1"
+    "@graasp/translations": "npm:1.21.0"
     "@testing-library/dom": "npm:9.3.3"
     "@testing-library/jest-dom": "npm:6.1.4"
     "@testing-library/react": "npm:14.1.2"
@@ -1873,12 +1873,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.20.1":
-  version: 1.20.1
-  resolution: "@graasp/translations@npm:1.20.1"
+"@graasp/translations@npm:1.21.0":
+  version: 1.21.0
+  resolution: "@graasp/translations@npm:1.21.0"
   dependencies:
     i18next: "npm:23.7.6"
-  checksum: b38093d0fa717eb5fc81baf730f283ae537119e0026239ace86a538166cf86b7b1319efd80fcc66136de297e9bb1e0d7f5bfde45596e1992e61fc9503abe27f9
+  checksum: 23f7b06ca72bc50ec7ff96e4420a0cb37aabcbcb4ccd7896348a1929a2ea9c0a3bf5aac6f249d66117502ddb9aa68555e5f6c48a6bcfecb8f0603665e1c646d7
   languageName: node
   linkType: hard
 
