@@ -5,7 +5,7 @@ import nock from 'nock';
 
 import { MEMBER_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { PUBLIC_PROFILE_ROUTE } from '../api/routes';
+import { MEMBERS_ROUTE, PUBLIC_PROFILE_ROUTE } from '../api/routes';
 import { OWN_PUBLIC_PROFILE_KEY } from '../config/keys';
 
 const mockedNotifier = jest.fn();
@@ -14,9 +14,9 @@ const { wrapper, queryClient, mutations } = setUpTest({
 });
 const newProfile = {
   bio: 'text',
-  twitterLink: 'https://twitter.com/test',
-  facebookLink: 'https://facebook.com/test',
-  linkedinLink: 'https://linkedin.com/test',
+  twitterID: 'twitter_handle',
+  facebookID: 'fb_handle',
+  linkedinID: 'linkedin_handle',
   visibility: false,
 };
 describe('Public Profile Mutations', () => {
@@ -30,7 +30,7 @@ describe('Public Profile Mutations', () => {
     const mutation = mutations.usePostPublicProfile;
 
     it('Post profile', async () => {
-      const route = `/${PUBLIC_PROFILE_ROUTE}`;
+      const route = `/${MEMBERS_ROUTE}/${PUBLIC_PROFILE_ROUTE}`;
       const response = { ...newProfile, id: 'someid', member: MEMBER_RESPONSE };
 
       queryClient.setQueryData(OWN_PUBLIC_PROFILE_KEY, response);
@@ -71,7 +71,7 @@ describe('Public Profile Mutations', () => {
     };
 
     it('Edit public profile', async () => {
-      const route = `/${PUBLIC_PROFILE_ROUTE}`;
+      const route = `/${MEMBERS_ROUTE}/${PUBLIC_PROFILE_ROUTE}`;
       const response = null;
       const endpoints = [
         {

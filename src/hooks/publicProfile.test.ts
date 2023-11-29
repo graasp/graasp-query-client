@@ -6,7 +6,11 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
-import { GET_OWN_PROFILE, buildGetPublicProfileRoute } from '../api/routes';
+import {
+  GET_OWN_PROFILE,
+  MEMBERS_ROUTE,
+  buildGetPublicProfileRoute,
+} from '../api/routes';
 import { OWN_PUBLIC_PROFILE_KEY, buildPublicProfileKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
@@ -18,7 +22,7 @@ describe('Public Profile Hooks', () => {
   });
 
   describe('useOwnProfile', () => {
-    const route = `/${GET_OWN_PROFILE}`;
+    const route = `/${MEMBERS_ROUTE}/${GET_OWN_PROFILE}`;
 
     const response = MEMBER_PUBLIC_PROFILE;
 
@@ -58,7 +62,7 @@ describe('Public Profile Hooks', () => {
     it(`Receive member public profile for member-id = ${id}`, async () => {
       const endpoints = [
         {
-          route: `/${buildGetPublicProfileRoute(id)}`,
+          route: `/${MEMBERS_ROUTE}/${buildGetPublicProfileRoute(id)}`,
           response,
         },
       ];

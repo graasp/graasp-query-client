@@ -598,9 +598,9 @@ export const MEMBER_PUBLIC_PROFILE = {
   member: MEMBER_RESPONSE,
   bio: 'some random bio',
   visibility: true,
-  linkedinLink: 'https://linkedin.com/user',
-  facebookLink: 'https://facebook.com/user',
-  twitterLink: 'https://twitter.com/user',
+  linkedinID: 'user',
+  facebookID: 'user',
+  twitterLink: 'user',
 };
 
 export const AGGREGATE_ACTIONS_DATA = [
