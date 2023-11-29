@@ -1808,7 +1808,7 @@ __metadata:
     "@babel/preset-typescript": "npm:7.23.3"
     "@commitlint/cli": "npm:18.4.3"
     "@commitlint/config-conventional": "npm:18.4.3"
-    "@graasp/sdk": "npm:3.2.0"
+    "@graasp/sdk": "npm:3.3.0"
     "@graasp/translations": "npm:1.21.0"
     "@testing-library/dom": "npm:9.3.3"
     "@testing-library/jest-dom": "npm:6.1.4"
@@ -1860,16 +1860,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@npm:3.2.0":
-  version: 3.2.0
-  resolution: "@graasp/sdk@npm:3.2.0"
+"@graasp/sdk@npm:3.3.0":
+  version: 3.3.0
+  resolution: "@graasp/sdk@npm:3.3.0"
   dependencies:
     "@graasp/etherpad-api": "npm:2.1.1"
     date-fns: "npm:2.30.0"
     js-cookie: "npm:3.0.5"
     uuid: "npm:9.0.1"
     validator: "npm:13.11.0"
-  checksum: 54c321bee3b37fbe6c9b098782e9891de5b0a12326fb27e3bd5bc8fb7f0ceb0a6e70f3223394350978eeee91a481f5508b60fe41ffd58ee3d034ced8634ab941
+  checksum: 12a11bfb2ff35d4fdccc38ad10fab8fe4ee4f7cea2a26ac17040d8758e2cf86070cbfa0c02243bb7efc3410f1abd5d0e18834dc6f6226bb216b33e0f83b19e2d
   languageName: node
   linkType: hard
 
