@@ -28,6 +28,7 @@ export const buildItemDescendantsKey = (id: UUID) => [
   'descendants',
   id,
 ];
+export const ACCESSIBLE_ITEMS_KEY = 'accessible';
 export const SHARED_ITEMS_KEY = 'shared';
 export const CURRENT_MEMBER_KEY = 'currentMember';
 export const MEMBERS_KEY = 'members';

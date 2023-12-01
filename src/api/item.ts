@@ -12,12 +12,14 @@ import { verifyAuthentication } from './axios';
 import {
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_DATA_ROUTE,
+  GetAccessibleItemsParamsType,
   SHARED_ITEM_WITH_ROUTE,
   buildCopyItemsRoute,
   buildDeleteItemsRoute,
   buildDownloadFilesRoute,
   buildDownloadItemThumbnailRoute,
   buildEditItemRoute,
+  buildGetAccessibleItems,
   buildGetChildrenRoute,
   buildGetItemDescendants,
   buildGetItemParents,
@@ -52,6 +54,18 @@ export const getOwnItems = async ({
   verifyAuthentication(() =>
     axios
       .get<DiscriminatedItem[]>(`${API_HOST}/${GET_OWN_ITEMS_ROUTE}`)
+      .then(({ data }) => data),
+  );
+
+export const getAccessibleItems = async (
+  params: GetAccessibleItemsParamsType,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .get<DiscriminatedItem[]>(
+        `${API_HOST}/${buildGetAccessibleItems(params)}`,
+      )
       .then(({ data }) => data),
   );
 

@@ -18,6 +18,7 @@ import {
 
 import * as Api from '../api';
 import { splitRequestByIdsAndReturn } from '../api/axios';
+import { GetAccessibleItemsParamsType } from '../api/routes';
 import {
   CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
@@ -26,6 +27,7 @@ import {
 } from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
 import {
+  ACCESSIBLE_ITEMS_KEY,
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_DATA_KEY,
   RECYCLED_ITEMS_KEY,
@@ -40,7 +42,7 @@ import {
   buildItemThumbnailKey,
   buildItemsKey,
 } from '../config/keys';
-import { getOwnItemsRoutine } from '../routines';
+import { getAccessibleItemsRoutine, getOwnItemsRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 import { paginate } from '../utils/util';
 import { configureWsItemHooks } from '../ws';
@@ -58,6 +60,38 @@ export default (
       : undefined;
 
   return {
+    useAccessibleItems: (
+      params: GetAccessibleItemsParamsType,
+      _options?: { getUpdates?: boolean },
+    ) => {
+      const queryClient = useQueryClient();
+      // const getUpdates = options?.getUpdates ?? enableWebsocket;
+
+      // TODO: implement websockets
+      // const { data: currentMember } = useCurrentMember();
+      // itemWsHooks?.useOwnItemsUpdates(getUpdates ? currentMember?.id : null);
+
+      return useQuery({
+        queryKey: ACCESSIBLE_ITEMS_KEY,
+        queryFn: () => Api.getAccessibleItems(params, queryConfig),
+        onSuccess: async (items) => {
+          // save items in their own key
+          // eslint-disable-next-line no-unused-expressions
+          items?.forEach(async (item) => {
+            const { id } = item;
+            queryClient.setQueryData(buildItemKey(id), item);
+          });
+        },
+        onError: (error) => {
+          notifier?.({
+            type: getAccessibleItemsRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+        ...defaultQueryOptions,
+      });
+    },
+
     useOwnItems: (options?: { getUpdates?: boolean }) => {
       const queryClient = useQueryClient();
       const getUpdates = options?.getUpdates ?? enableWebsocket;

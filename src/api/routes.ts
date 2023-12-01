@@ -3,6 +3,7 @@ import {
   DiscriminatedItem,
   ItemTag,
   ItemTagType,
+  Member,
   UUID,
 } from '@graasp/sdk';
 
@@ -25,6 +26,15 @@ export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
 export const ETHERPAD_ROUTE = `${ITEMS_ROUTE}/etherpad`;
 export const COLLECTIONS_ROUTE = `collections`;
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
+
+export type GetAccessibleItemsParamsType = {
+  creatorId: Member['id'];
+};
+export const buildGetAccessibleItems = (params: GetAccessibleItemsParamsType) =>
+  `${ITEMS_ROUTE}/accessible${qs.stringify(params, {
+    arrayFormat: 'repeat',
+    addQueryPrefix: true,
+  })}`;
 
 export const buildPostItemRoute = (parentId?: UUID) => {
   let url = ITEMS_ROUTE;
