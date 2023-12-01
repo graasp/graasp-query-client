@@ -18,7 +18,10 @@ import {
 
 import * as Api from '../api';
 import { splitRequestByIdsAndReturn } from '../api/axios';
-import { GetAccessibleItemsParamsType } from '../api/routes';
+import {
+  GetAccessibleItemsParamsType,
+  buildGetAccessibleItems,
+} from '../api/routes';
 import {
   CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
@@ -27,7 +30,6 @@ import {
 } from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
 import {
-  ACCESSIBLE_ITEMS_KEY,
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_DATA_KEY,
   RECYCLED_ITEMS_KEY,
@@ -72,7 +74,7 @@ export default (
       // itemWsHooks?.useOwnItemsUpdates(getUpdates ? currentMember?.id : null);
 
       return useQuery({
-        queryKey: ACCESSIBLE_ITEMS_KEY,
+        queryKey: buildGetAccessibleItems(params),
         queryFn: () => Api.getAccessibleItems(params, queryConfig),
         onSuccess: async (items) => {
           // save items in their own key

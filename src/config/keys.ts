@@ -1,5 +1,6 @@
 import { AggregateBy, Category, UUID } from '@graasp/sdk';
 
+import { GetAccessibleItemsParamsType } from '../api/routes';
 import { AggregateActionsArgs } from '../utils/action';
 import { hashItemsIds } from '../utils/item';
 import { DEFAULT_THUMBNAIL_SIZE } from './constants';
@@ -28,7 +29,9 @@ export const buildItemDescendantsKey = (id: UUID) => [
   'descendants',
   id,
 ];
-export const ACCESSIBLE_ITEMS_KEY = 'accessible';
+export const buildAccessibleItemsKey = (
+  params: GetAccessibleItemsParamsType,
+) => ['accessible', params];
 export const SHARED_ITEMS_KEY = 'shared';
 export const CURRENT_MEMBER_KEY = 'currentMember';
 export const MEMBERS_KEY = 'members';
