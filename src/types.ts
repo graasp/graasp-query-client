@@ -48,6 +48,7 @@ export type NewInvitation = Pick<Invitation, 'email' & 'permission'> &
 
 export type PaginationParams = {
   page?: number;
+  pageSize?: number;
 };
 
 export type Paginated<T> = { data: T[]; totalCount: number };
