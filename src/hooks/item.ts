@@ -18,7 +18,7 @@ import {
 
 import * as Api from '../api';
 import { splitRequestByIdsAndReturn } from '../api/axios';
-import { ItemSearchParams, buildGetAccessibleItems } from '../api/routes';
+import { ItemSearchParams } from '../api/routes';
 import {
   CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
@@ -31,6 +31,7 @@ import {
   RECYCLED_ITEMS_DATA_KEY,
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
+  buildAccessibleItemsKey,
   buildEtherpadKey,
   buildFileContentKey,
   buildItemChildrenKey,
@@ -45,6 +46,7 @@ import { getAccessibleItemsRoutine, getOwnItemsRoutine } from '../routines';
 import { PaginationParams, QueryClientConfig } from '../types';
 import { paginate } from '../utils/util';
 import { configureWsItemHooks } from '../ws';
+import useDebounce from './useDebounce';
 
 export default (
   queryConfig: QueryClientConfig,
@@ -70,10 +72,12 @@ export default (
       // TODO: implement websockets
       // const { data: currentMember } = useCurrentMember();
       // itemWsHooks?.useOwnItemsUpdates(getUpdates ? currentMember?.id : null);
-
+      const debouncedName = useDebounce(params?.name, 500);
+      const finalParams = { ...params, name: debouncedName };
       return useQuery({
-        queryKey: buildGetAccessibleItems(params, pagination),
-        queryFn: () => Api.getAccessibleItems(params, pagination, queryConfig),
+        queryKey: buildAccessibleItemsKey(finalParams, pagination),
+        queryFn: () =>
+          Api.getAccessibleItems(finalParams, pagination, queryConfig),
         onSuccess: async ({ data: items }) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
