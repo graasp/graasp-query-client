@@ -18,10 +18,7 @@ import {
 
 import * as Api from '../api';
 import { splitRequestByIdsAndReturn } from '../api/axios';
-import {
-  GetAccessibleItemsParamsType,
-  buildGetAccessibleItems,
-} from '../api/routes';
+import { ItemSearchParams, buildGetAccessibleItems } from '../api/routes';
 import {
   CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
@@ -45,7 +42,7 @@ import {
   buildItemsKey,
 } from '../config/keys';
 import { getAccessibleItemsRoutine, getOwnItemsRoutine } from '../routines';
-import { QueryClientConfig } from '../types';
+import { PaginationParams, QueryClientConfig } from '../types';
 import { paginate } from '../utils/util';
 import { configureWsItemHooks } from '../ws';
 
@@ -63,7 +60,8 @@ export default (
 
   return {
     useAccessibleItems: (
-      params: GetAccessibleItemsParamsType,
+      params: ItemSearchParams,
+      pagination: PaginationParams,
       _options?: { getUpdates?: boolean },
     ) => {
       const queryClient = useQueryClient();
@@ -74,9 +72,9 @@ export default (
       // itemWsHooks?.useOwnItemsUpdates(getUpdates ? currentMember?.id : null);
 
       return useQuery({
-        queryKey: buildGetAccessibleItems(params),
-        queryFn: () => Api.getAccessibleItems(params, queryConfig),
-        onSuccess: async (items) => {
+        queryKey: buildGetAccessibleItems(params, pagination),
+        queryFn: () => Api.getAccessibleItems(params, pagination, queryConfig),
+        onSuccess: async ({ data: items }) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
           items?.forEach(async (item) => {

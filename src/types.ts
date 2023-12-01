@@ -45,3 +45,11 @@ export type PartialQueryConfigForApi = Pick<
 // todo: move per feature folders
 export type NewInvitation = Pick<Invitation, 'email' & 'permission'> &
   Partial<Invitation>;
+
+export type PaginationParams = {
+  page?: number;
+};
+
+export type Paginated<T> = { data: T[]; totalCount: number };
+
+export const defaultPagination: PaginationParams = { page: 1 };

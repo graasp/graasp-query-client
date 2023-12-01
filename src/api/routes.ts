@@ -10,6 +10,7 @@ import {
 import qs from 'qs';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
+import { PaginationParams } from '../types';
 import { AggregateActionsArgs } from '../utils/action';
 
 export const APPS_ROUTE = 'app-items';
@@ -27,18 +28,23 @@ export const ETHERPAD_ROUTE = `${ITEMS_ROUTE}/etherpad`;
 export const COLLECTIONS_ROUTE = `collections`;
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
 
-export type GetAccessibleItemsParamsType =
+export type ItemSearchParams =
   | {
       creatorId?: Member['id'];
+      name?: string;
     }
   | undefined;
 export const buildGetAccessibleItems = (
-  params?: GetAccessibleItemsParamsType,
+  params: ItemSearchParams,
+  pagination: PaginationParams,
 ) =>
-  `${ITEMS_ROUTE}/accessible${qs.stringify(params, {
-    arrayFormat: 'repeat',
-    addQueryPrefix: true,
-  })}`;
+  `${ITEMS_ROUTE}/accessible${qs.stringify(
+    { ...params, ...pagination },
+    {
+      arrayFormat: 'repeat',
+      addQueryPrefix: true,
+    },
+  )}`;
 
 export const buildPostItemRoute = (parentId?: UUID) => {
   let url = ITEMS_ROUTE;
