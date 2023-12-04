@@ -1,3 +1,5 @@
+import { SUCCESS_MESSAGES } from '@graasp/translations';
+
 import { useMutation } from 'react-query';
 
 import * as Api from '../api';
@@ -19,7 +21,7 @@ export default (queryConfig: QueryClientConfig) => {
         onSuccess: () => {
           notifier?.({
             type: postPublicProfileRoutine.SUCCESS,
-            payload: { message: 'Your Data Saved Successfully' },
+            payload: { message: SUCCESS_MESSAGES.POST_PROFILE },
           });
         },
         onError: (error: Error) => {
@@ -38,7 +40,7 @@ export default (queryConfig: QueryClientConfig) => {
         onSuccess: () => {
           notifier?.({
             type: patchPublicProfileRoutine.SUCCESS,
-            payload: { message: 'Your Data Saved Successfully' },
+            payload: { message: SUCCESS_MESSAGES.PATCH_PROFILE },
           });
         },
         onError: (error: Error) => {
