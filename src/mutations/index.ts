@@ -18,6 +18,7 @@ import itemMembershipMutations from './membership';
 import mentionMutations from './mention';
 import subscriptionMutations from './plan';
 import publicProfileMutations from './publicProfile';
+import shortLinksMutations from './shortLink';
 
 const configureMutations = (queryConfig: QueryClientConfig) => ({
   ...itemMutations(queryConfig),
@@ -39,6 +40,7 @@ const configureMutations = (queryConfig: QueryClientConfig) => ({
   ...subscriptionMutations(queryConfig),
   ...itemPublishMutations(queryConfig),
   ...publicProfileMutations(queryConfig),
+  ...shortLinksMutations(queryConfig),
 });
 
 export default configureMutations;
