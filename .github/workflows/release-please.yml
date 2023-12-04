@@ -1,7 +1,5 @@
-# automate releases for a library package
-name: Release new package version
+name: release-please
 
-# Control when the action will run
 on:
   push:
     branches:
@@ -16,20 +14,9 @@ jobs:
         id: release
         with:
           release-type: node
-          package-name: graasp-query-client
-          changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"docs","section":"Documentation","hidden":false}]'
 
       # checkout the code to get the latest version
       - uses: actions/checkout@v4
-
-      # in case a release was created, this will create or update the major and minor tags
-      # so you can refer to `v1` or `v1.1` and get the latest version corresponding to that prefix.
-      - name: Tag major and minor versions
-        uses: jacobsvante/tag-major-minor-action@v0.1
-        if: ${{ steps.release.outputs.releases_created }}
-        with:
-          major: ${{ steps.release.outputs.major }}
-          minor: ${{ steps.release.outputs.minor }}
 
       - name: Auto Tag
         uses: graasp/graasp-deploy/.github/actions/auto-tag-after-release@v1
