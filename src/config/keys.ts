@@ -256,6 +256,8 @@ export const buildSearchPublishedItemsKey = (args: {
 
 export const CURRENT_MEMBER_STORAGE_KEY = [MEMBERS_KEY, 'current', 'storage'];
 
+export const OWN_PUBLIC_PROFILE_KEY = ['own-profile'];
+export const buildPublicProfileKey = (memberId: UUID) => ['profile', memberId];
 export const DATA_KEYS = {
   APPS_KEY,
   ITEMS_KEY,
@@ -305,4 +307,6 @@ export const DATA_KEYS = {
   buildPublishedItemsKey,
   buildEtherpadKey,
   buildSearchPublishedItemsKey,
+  OWN_PUBLIC_PROFILE_KEY,
+  buildPublicProfileKey,
 };

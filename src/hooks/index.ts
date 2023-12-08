@@ -17,6 +17,7 @@ import configureMemberHooks from './member';
 import configureMembershipHooks from './membership';
 import configureMentionsHooks from './mention';
 import configurePlanHooks from './plan';
+import configurePublicProfileHooks from './publicProfile';
 import configureKeywordSearchHooks from './search';
 import configureShortLinkHooks from './shortLink';
 
@@ -52,6 +53,7 @@ export default (
     ...configureInvitationHooks(queryConfig),
     ...memberHooks,
     ...configurePlanHooks(queryConfig),
+    ...configurePublicProfileHooks(queryConfig),
     ...configureShortLinkHooks(queryConfig),
   };
 };

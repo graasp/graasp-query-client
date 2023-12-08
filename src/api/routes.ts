@@ -398,6 +398,10 @@ export const buildGetEtherpadRoute = (itemId: UUID) =>
 
 export const SEARCH_PUBLISHED_ITEMS_ROUTE = `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/search`;
 
+export const PUBLIC_PROFILE_ROUTE = `profile`;
+export const GET_OWN_PROFILE = `${PUBLIC_PROFILE_ROUTE}/own`;
+export const buildGetPublicProfileRoute = (memberId: UUID) =>
+  `${PUBLIC_PROFILE_ROUTE}/${memberId}`;
 export const buildGetShortLinkAvailableRoute = (alias: string) =>
   `${SHORT_LINKS_ROUTE}/available/${alias}`;
 export const buildGetShortLinksItemRoute = (itemId: string) =>
@@ -516,4 +520,7 @@ export const API_ROUTES = {
   SIGN_OUT_ROUTE,
   SIGN_UP_ROUTE,
   VALIDATION_ROUTE,
+  PUBLIC_PROFILE_ROUTE,
+  GET_OWN_PROFILE,
+  buildGetPublicProfileRoute,
 };
