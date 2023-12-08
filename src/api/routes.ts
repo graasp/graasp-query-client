@@ -32,6 +32,8 @@ export type ItemSearchParams =
   | {
       creatorId?: Member['id'];
       name?: string;
+      ordering?: 'desc' | 'asc';
+      sortBy?: 'name' | 'type' | 'creator' | 'created_at' | 'updated_at';
     }
   | undefined;
 export const buildGetAccessibleItems = (
