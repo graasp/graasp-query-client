@@ -18,6 +18,7 @@ import {
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
+  accessibleItemsKeys,
   buildItemChildrenKey,
   buildItemKey,
 } from '../../config/keys';
@@ -351,6 +352,55 @@ export const configureWsItemHooks = (
 
       return function cleanup() {
         websocketClient.unsubscribe(channel, handler);
+      };
+    }, [userId]);
+  },
+  /**
+   * React hook to subscribe to the accessible items updates
+   */
+  useAccessibleItemsUpdates: (userId?: UUID | null) => {
+    const queryClient = useQueryClient();
+    useEffect(() => {
+      if (!userId) {
+        return () => {
+          // do nothing
+        };
+      }
+
+      const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
+
+      const handlerAccessible = (event: ItemEvent) => {
+        if (event.kind === KINDS.ACCESSIBLE) {
+          // for over all accessible keys
+
+          // operations might change the result of the search and/or pagination
+          // so it's easier to invalidate all queries
+          queryClient.invalidateQueries(accessibleItemsKeys.all);
+
+          const { item } = event;
+          switch (event.op) {
+            case OPS.CREATE: {
+              queryClient.setQueryData(buildItemKey(item.id), item);
+              break;
+            }
+            case OPS.UPDATE: {
+              queryClient.setQueryData(buildItemKey(item.id), item);
+              break;
+            }
+            case OPS.DELETE: {
+              break;
+            }
+            default:
+              console.error('unhandled event for useAccessibleItemsUpdates');
+              break;
+          }
+        }
+      };
+
+      websocketClient.subscribe(channel, handlerAccessible);
+
+      return function cleanup() {
+        websocketClient.unsubscribe(channel, handlerAccessible);
       };
     }, [userId]);
   },

@@ -29,6 +29,7 @@ import {
   SHARED_ITEM_WITH_ROUTE,
   buildDownloadFilesRoute,
   buildDownloadItemThumbnailRoute,
+  buildGetAccessibleItems,
   buildGetChildrenRoute,
   buildGetItemParents,
   buildGetItemRoute,
@@ -37,6 +38,7 @@ import {
 import {
   OWN_ITEMS_KEY,
   SHARED_ITEMS_KEY,
+  accessibleItemsKeys,
   buildFileContentKey,
   buildItemChildrenKey,
   buildItemKey,
@@ -336,6 +338,44 @@ describe('Items Hooks', () => {
       expect(isError).toBeTruthy();
       // verify cache keys
       expect(queryClient.getQueryData(SHARED_ITEMS_KEY)).toBeFalsy();
+    });
+  });
+
+  describe.only('useAccessibleItems', () => {
+    const params = {};
+    const pagination = {};
+    const route = `/${buildGetAccessibleItems(params, pagination)}`;
+    const response = { data: ITEMS, totalCount: ITEMS.length };
+    const hook = () => hooks.useAccessibleItems();
+    const key = accessibleItemsKeys.singlePage(params, pagination);
+
+    it(`Receive accessible items`, async () => {
+      const endpoints = [{ route, response }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+
+      expect(data).toMatchObject(response);
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toMatchObject(response);
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook,
+        endpoints,
+        wrapper,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
     });
   });
 

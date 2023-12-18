@@ -31,7 +31,7 @@ import {
   RECYCLED_ITEMS_DATA_KEY,
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
-  buildAccessibleItemsKey,
+  accessibleItemsKeys,
   buildEtherpadKey,
   buildFileContentKey,
   buildItemChildrenKey,
@@ -61,23 +61,34 @@ export default (
       : undefined;
 
   return {
+    /**
+     * Returns items the highest in the tree you have access to
+     * Is paginated by default
+     * @param params
+     * @param pagination
+     * @param _options
+     * @returns
+     */
     useAccessibleItems: (
-      params: ItemSearchParams,
-      pagination: PaginationParams,
-      _options?: { getUpdates?: boolean },
+      params?: ItemSearchParams,
+      pagination?: PaginationParams,
+      options?: { getUpdates?: boolean },
     ) => {
       const queryClient = useQueryClient();
-      // const getUpdates = options?.getUpdates ?? enableWebsocket;
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
 
-      // TODO: implement websockets
-      // const { data: currentMember } = useCurrentMember();
-      // itemWsHooks?.useOwnItemsUpdates(getUpdates ? currentMember?.id : null);
+      const { data: currentMember } = useCurrentMember();
+      itemWsHooks?.useAccessibleItemsUpdates(
+        getUpdates ? currentMember?.id : null,
+      );
+
       const debouncedName = useDebounce(params?.name, 500);
       const finalParams = { ...params, name: debouncedName };
+      const paginationParams = { ...(pagination ?? {}) };
       return useQuery({
-        queryKey: buildAccessibleItemsKey(finalParams, pagination),
+        queryKey: accessibleItemsKeys.singlePage(finalParams, paginationParams),
         queryFn: () =>
-          Api.getAccessibleItems(finalParams, pagination, queryConfig),
+          Api.getAccessibleItems(finalParams, paginationParams, queryConfig),
         onSuccess: async ({ data: items }) => {
           // save items in their own key
           // eslint-disable-next-line no-unused-expressions
@@ -96,6 +107,7 @@ export default (
       });
     },
 
+    /** @deprecated use useAccessibleItems */
     useOwnItems: (options?: { getUpdates?: boolean }) => {
       const queryClient = useQueryClient();
       const getUpdates = options?.getUpdates ?? enableWebsocket;
@@ -259,6 +271,7 @@ export default (
       });
     },
 
+    /** @deprecated use useAccessibleItems */
     useSharedItems: (options?: { getUpdates?: boolean }) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 

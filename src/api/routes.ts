@@ -443,6 +443,7 @@ export const API_ROUTES = {
   buildExportItemChatRoute,
   buildExportItemRoute,
   buildFavoriteItemRoute,
+  buildGetAccessibleItems,
   buildGetActions,
   buildGetAllPublishedItemsRoute,
   buildGetApiAccessTokenRoute,

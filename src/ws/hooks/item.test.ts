@@ -9,6 +9,7 @@ import {
 import {
   OWN_ITEMS_KEY,
   SHARED_ITEMS_KEY,
+  accessibleItemsKeys,
   buildItemChildrenKey,
   buildItemKey,
 } from '../../config/keys';
@@ -359,6 +360,148 @@ describe('Ws Item Hooks', () => {
       expect(
         queryClient.getQueryData<DiscriminatedItem[]>(SHARED_ITEMS_KEY),
       ).toEqual(ITEMS);
+    });
+  });
+
+  describe('useAccessibleItemsUpdates', () => {
+    const item = ITEMS[2];
+    const itemId = item.id;
+    const itemKey = buildItemKey(itemId);
+    const channel = { name: itemId, topic: TOPICS.ITEM_MEMBER };
+    const hook = () => hooks.useAccessibleItemsUpdates(itemId);
+
+    const params1 = { name: 'name1' };
+    const pagination1 = { page: 1 };
+    const params2 = { name: 'name2' };
+    const pagination2 = { page: 2 };
+
+    beforeEach(() => {
+      queryClient.setQueryData(
+        accessibleItemsKeys.singlePage(params1, pagination1),
+        { data: ITEMS, totalCount: ITEMS.length },
+      );
+      queryClient.setQueryData(
+        accessibleItemsKeys.singlePage(params2, pagination2),
+        { data: ITEMS, totalCount: ITEMS.length },
+      );
+    });
+
+    it(`Receive create child`, async () => {
+      await mockWsHook({ hook, wrapper });
+
+      const itemEvent = {
+        kind: KINDS.ACCESSIBLE,
+        op: OPS.CREATE,
+        item,
+      };
+
+      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
+
+      // check accessible items keys are all invalidated
+      expect(
+        queryClient.getQueryState(
+          accessibleItemsKeys.singlePage(params1, pagination1),
+        )?.isInvalidated,
+      ).toBe(true);
+      expect(
+        queryClient.getQueryState(
+          accessibleItemsKeys.singlePage(params2, pagination2),
+        )?.isInvalidated,
+      ).toBe(true);
+      // check new item key
+      expect(
+        queryClient.getQueryData<DiscriminatedItem>(itemKey),
+      ).toMatchObject(item);
+    });
+
+    it(`Receive update child`, async () => {
+      const updatedItem = { ...item, description: 'new description' };
+      queryClient.setQueryData(itemKey, item);
+      await mockWsHook({ hook, wrapper });
+
+      const itemEvent = {
+        kind: KINDS.ACCESSIBLE,
+        op: OPS.UPDATE,
+        item: updatedItem,
+      };
+
+      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
+
+      // check new item key content
+      expect(
+        queryClient.getQueryData<DiscriminatedItem>(itemKey),
+      ).toMatchObject(updatedItem);
+      // check accessible items keys are all invalidated
+      expect(
+        queryClient.getQueryState(
+          accessibleItemsKeys.singlePage(params1, pagination1),
+        )?.isInvalidated,
+      ).toBe(true);
+      expect(
+        queryClient.getQueryState(
+          accessibleItemsKeys.singlePage(params2, pagination2),
+        )?.isInvalidated,
+      ).toBe(true);
+    });
+
+    it(`Receive delete item update`, async () => {
+      queryClient.setQueryData(itemKey, item);
+      await mockWsHook({ hook, wrapper });
+
+      const itemEvent = {
+        kind: KINDS.ACCESSIBLE,
+        op: OPS.DELETE,
+        item,
+      };
+
+      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
+
+      // check accessible items keys are all invalidated
+      expect(
+        queryClient.getQueryState(
+          accessibleItemsKeys.singlePage(params1, pagination1),
+        )?.isInvalidated,
+      ).toBe(true);
+      expect(
+        queryClient.getQueryState(
+          accessibleItemsKeys.singlePage(params2, pagination2),
+        )?.isInvalidated,
+      ).toBe(true);
+    });
+
+    it(`Does not update on other events`, async () => {
+      queryClient.setQueryData(itemKey, item);
+      await mockWsHook({ hook, wrapper });
+
+      const itemEvent = {
+        kind: 'kind',
+        op: OPS.UPDATE,
+        item,
+      };
+
+      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
+      // check accessible items keys still contain data and are not invalidated
+      // check accessible items keys are all invalidated
+      expect(
+        queryClient.getQueryState(
+          accessibleItemsKeys.singlePage(params1, pagination1),
+        )?.isInvalidated,
+      ).toBe(false);
+      expect(
+        queryClient.getQueryState(
+          accessibleItemsKeys.singlePage(params2, pagination2),
+        )?.isInvalidated,
+      ).toBe(false);
+      expect(
+        queryClient.getQueryData(
+          accessibleItemsKeys.singlePage(params1, pagination1),
+        ),
+      ).toEqual({ data: ITEMS, totalCount: ITEMS.length });
+      expect(
+        queryClient.getQueryData(
+          accessibleItemsKeys.singlePage(params2, pagination2),
+        ),
+      ).toEqual({ data: ITEMS, totalCount: ITEMS.length });
     });
   });
 });

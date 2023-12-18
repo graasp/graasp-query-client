@@ -67,6 +67,8 @@ export default (queryConfig: QueryClientConfig) => {
     return prevValue;
   };
 
+  // todo: we don't consider accessible, shared or published items here
+  // this part is a bit flacky/unclear it might be better to refactor it
   const mutateParentChildren = async (
     args: ({ id?: string } | { childPath: string }) & { value: unknown },
     queryClient: QueryClient,

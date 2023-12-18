@@ -30,10 +30,12 @@ export const buildItemDescendantsKey = (id: UUID) => [
   'descendants',
   id,
 ];
-export const buildAccessibleItemsKey = (
-  params: ItemSearchParams,
-  pagination: PaginationParams,
-) => ['accessible', params, pagination];
+
+export const accessibleItemsKeys = {
+  all: [ITEMS_KEY, 'accessible'] as const,
+  singlePage: (params: ItemSearchParams, pagination: PaginationParams) =>
+    [...accessibleItemsKeys.all, params, pagination] as const,
+};
 export const SHARED_ITEMS_KEY = 'shared';
 export const CURRENT_MEMBER_KEY = 'currentMember';
 export const MEMBERS_KEY = 'members';
