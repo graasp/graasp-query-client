@@ -5,6 +5,7 @@ export const KINDS = {
   OWN: 'own',
   RECYCLE_BIN: 'recycle_bin',
   SELF: 'self',
+  ACCESSIBLE: 'accessible',
   SHARED: 'shared',
 };
 

@@ -1,5 +1,7 @@
 import { AggregateBy, Category, UUID } from '@graasp/sdk';
 
+import { ItemSearchParams } from '../api/routes';
+import { PaginationParams } from '../types';
 import { AggregateActionsArgs } from '../utils/action';
 import { hashItemsIds } from '../utils/item';
 import { DEFAULT_THUMBNAIL_SIZE } from './constants';
@@ -38,6 +40,12 @@ export const buildItemDescendantsKey = (id: UUID) => [
   'descendants',
   id,
 ];
+
+export const accessibleItemsKeys = {
+  all: [ITEMS_KEY, 'accessible'] as const,
+  singlePage: (params: ItemSearchParams, pagination: PaginationParams) =>
+    [...accessibleItemsKeys.all, params, pagination] as const,
+};
 export const SHARED_ITEMS_KEY = 'shared';
 export const CURRENT_MEMBER_KEY = 'currentMember';
 export const MEMBERS_KEY = 'members';

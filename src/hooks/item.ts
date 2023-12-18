@@ -18,6 +18,7 @@ import {
 
 import * as Api from '../api';
 import { splitRequestByIdsAndReturn } from '../api/axios';
+import { ItemSearchParams } from '../api/routes';
 import {
   CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
@@ -30,6 +31,7 @@ import {
   RECYCLED_ITEMS_DATA_KEY,
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
+  accessibleItemsKeys,
   buildEtherpadKey,
   buildFileContentKey,
   buildItemChildrenKey,
@@ -40,10 +42,11 @@ import {
   buildItemThumbnailKey,
   buildItemsKey,
 } from '../config/keys';
-import { getOwnItemsRoutine } from '../routines';
-import { QueryClientConfig } from '../types';
+import { getAccessibleItemsRoutine, getOwnItemsRoutine } from '../routines';
+import { PaginationParams, QueryClientConfig } from '../types';
 import { paginate } from '../utils/util';
 import { configureWsItemHooks } from '../ws';
+import useDebounce from './useDebounce';
 
 export default (
   queryConfig: QueryClientConfig,
@@ -58,6 +61,53 @@ export default (
       : undefined;
 
   return {
+    /**
+     * Returns items the highest in the tree you have access to
+     * Is paginated by default
+     * @param params
+     * @param pagination
+     * @param _options
+     * @returns
+     */
+    useAccessibleItems: (
+      params?: ItemSearchParams,
+      pagination?: PaginationParams,
+      options?: { getUpdates?: boolean },
+    ) => {
+      const queryClient = useQueryClient();
+      const getUpdates = options?.getUpdates ?? enableWebsocket;
+
+      const { data: currentMember } = useCurrentMember();
+      itemWsHooks?.useAccessibleItemsUpdates(
+        getUpdates ? currentMember?.id : null,
+      );
+
+      const debouncedName = useDebounce(params?.name, 500);
+      const finalParams = { ...params, name: debouncedName };
+      const paginationParams = { ...(pagination ?? {}) };
+      return useQuery({
+        queryKey: accessibleItemsKeys.singlePage(finalParams, paginationParams),
+        queryFn: () =>
+          Api.getAccessibleItems(finalParams, paginationParams, queryConfig),
+        onSuccess: async ({ data: items }) => {
+          // save items in their own key
+          // eslint-disable-next-line no-unused-expressions
+          items?.forEach(async (item) => {
+            const { id } = item;
+            queryClient.setQueryData(buildItemKey(id), item);
+          });
+        },
+        onError: (error) => {
+          notifier?.({
+            type: getAccessibleItemsRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+        ...defaultQueryOptions,
+      });
+    },
+
+    /** @deprecated use useAccessibleItems */
     useOwnItems: (options?: { getUpdates?: boolean }) => {
       const queryClient = useQueryClient();
       const getUpdates = options?.getUpdates ?? enableWebsocket;
@@ -221,6 +271,7 @@ export default (
       });
     },
 
+    /** @deprecated use useAccessibleItems */
     useSharedItems: (options?: { getUpdates?: boolean }) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 

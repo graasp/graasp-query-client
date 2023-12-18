@@ -3,12 +3,14 @@ import {
   DiscriminatedItem,
   ItemTag,
   ItemTagType,
+  Member,
   UUID,
 } from '@graasp/sdk';
 
 import qs from 'qs';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
+import { PaginationParams } from '../types';
 import { AggregateActionsArgs } from '../utils/action';
 
 export const APPS_ROUTE = 'app-items';
@@ -27,6 +29,26 @@ export const COLLECTIONS_ROUTE = `collections`;
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
 export const SHORT_LINKS_ROUTE = `${ITEMS_ROUTE}/short-links`;
 export const SHORT_LINKS_LIST_ROUTE = `${SHORT_LINKS_ROUTE}/list`;
+
+export type ItemSearchParams =
+  | {
+      creatorId?: Member['id'];
+      name?: string;
+      ordering?: 'desc' | 'asc';
+      sortBy?: 'name' | 'type' | 'creator' | 'created_at' | 'updated_at';
+    }
+  | undefined;
+export const buildGetAccessibleItems = (
+  params: ItemSearchParams,
+  pagination: PaginationParams,
+) =>
+  `${ITEMS_ROUTE}/accessible${qs.stringify(
+    { ...params, ...pagination },
+    {
+      arrayFormat: 'repeat',
+      addQueryPrefix: true,
+    },
+  )}`;
 
 export const buildPostItemRoute = (parentId?: UUID) => {
   let url = ITEMS_ROUTE;
@@ -438,6 +460,7 @@ export const API_ROUTES = {
   buildExportItemChatRoute,
   buildExportItemRoute,
   buildFavoriteItemRoute,
+  buildGetAccessibleItems,
   buildGetActions,
   buildGetAllPublishedItemsRoute,
   buildGetApiAccessTokenRoute,

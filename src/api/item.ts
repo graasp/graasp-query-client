@@ -6,18 +6,24 @@ import {
 } from '@graasp/sdk';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
-import { PartialQueryConfigForApi } from '../types';
+import {
+  Paginated,
+  PaginationParams,
+  PartialQueryConfigForApi,
+} from '../types';
 import { getParentsIdsFromPath } from '../utils/item';
 import { verifyAuthentication } from './axios';
 import {
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_DATA_ROUTE,
+  ItemSearchParams,
   SHARED_ITEM_WITH_ROUTE,
   buildCopyItemsRoute,
   buildDeleteItemsRoute,
   buildDownloadFilesRoute,
   buildDownloadItemThumbnailRoute,
   buildEditItemRoute,
+  buildGetAccessibleItems,
   buildGetChildrenRoute,
   buildGetItemDescendants,
   buildGetItemParents,
@@ -52,6 +58,19 @@ export const getOwnItems = async ({
   verifyAuthentication(() =>
     axios
       .get<DiscriminatedItem[]>(`${API_HOST}/${GET_OWN_ITEMS_ROUTE}`)
+      .then(({ data }) => data),
+  );
+
+export const getAccessibleItems = async (
+  params: ItemSearchParams,
+  pagination: PaginationParams,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .get<Paginated<DiscriminatedItem>>(
+        `${API_HOST}/${buildGetAccessibleItems(params, pagination)}`,
+      )
       .then(({ data }) => data),
   );
 
