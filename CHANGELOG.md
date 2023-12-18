@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.2.0](https://github.com/graasp/graasp-query-client/compare/v2.1.1...v2.2.0) (2023-12-18)
+
+
+### Features
+
+* add accessible items endpoint ([#538](https://github.com/graasp/graasp-query-client/issues/538)) ([5da09cd](https://github.com/graasp/graasp-query-client/commit/5da09cd70d3b5e048c687ee86a6a773691fc4f4a))
+* library profile mutations ([#514](https://github.com/graasp/graasp-query-client/issues/514)) ([353664e](https://github.com/graasp/graasp-query-client/commit/353664eabce1eac01549307b63e0316b78d63ee4))
+
+
+### Bug Fixes
+
+* udpate release-please condition ([b43c1d1](https://github.com/graasp/graasp-query-client/commit/b43c1d1596d515669b6780f995e3e6009cd7e974))
+
 ## [2.1.1](https://github.com/graasp/graasp-query-client/compare/v2.1.0...v2.1.1) (2023-12-04)
 
 
