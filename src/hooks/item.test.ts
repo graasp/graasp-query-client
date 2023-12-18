@@ -341,7 +341,7 @@ describe('Items Hooks', () => {
     });
   });
 
-  describe.only('useAccessibleItems', () => {
+  describe('useAccessibleItems', () => {
     const params = {};
     const pagination = {};
     const route = `/${buildGetAccessibleItems(params, pagination)}`;
