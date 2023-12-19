@@ -35,7 +35,12 @@ export type ItemSearchParams =
       creatorId?: Member['id'];
       name?: string;
       ordering?: 'desc' | 'asc';
-      sortBy?: 'name' | 'type' | 'creator' | 'created_at' | 'updated_at';
+      sortBy?:
+        | 'item.name'
+        | 'item.type'
+        | 'item.creator.name'
+        | 'item.created_at'
+        | 'item.updated_at';
     }
   | undefined;
 export const buildGetAccessibleItems = (
