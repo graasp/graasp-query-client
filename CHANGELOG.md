@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/graasp/graasp-query-client/compare/v2.2.0...v2.2.1) (2023-12-19)
+
+
+### Bug Fixes
+
+* update sort params for accessible items ([#555](https://github.com/graasp/graasp-query-client/issues/555)) ([2bf6524](https://github.com/graasp/graasp-query-client/commit/2bf65241784faec3752662dd5c067933c54e84b3))
+
 ## [2.2.0](https://github.com/graasp/graasp-query-client/compare/v2.1.1...v2.2.0) (2023-12-18)
 
 
