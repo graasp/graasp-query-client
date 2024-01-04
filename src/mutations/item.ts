@@ -337,9 +337,17 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useCopyItems = () =>
     useMutation(
-      ({ ids, to }: { ids: UUID[]; to?: UUID }) =>
+      ({
+        ids,
+        to,
+        itemsName,
+      }: {
+        ids: UUID[];
+        to?: UUID;
+        itemsName?: { [key: string]: string };
+      }) =>
         splitRequestByIds(ids, MAX_TARGETS_FOR_MODIFY_REQUEST, (chunk) =>
-          Api.copyItems({ ids: chunk, to }, queryConfig),
+          Api.copyItems({ ids: chunk, to, itemsName }, queryConfig),
         ),
       // cannot mutate because it needs the id
       {

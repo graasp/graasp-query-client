@@ -184,15 +184,18 @@ export const copyItems = async (
   {
     ids,
     to,
+    itemsName,
   }: {
     ids: UUID[];
     to?: UUID;
+    itemsName?: { [key: string]: string };
   },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() => {
     // send parentId if defined
-    const body = { ...(to && { parentId: to }) };
+    const body = { ...(to && { parentId: to, itemsName }) };
+
     return axios
       .post<void>(`${API_HOST}/${buildCopyItemsRoute(ids)}`, {
         ...body,
