@@ -194,7 +194,7 @@ export const copyItems = async (
 ) =>
   verifyAuthentication(() => {
     // send parentId if defined
-    const body = { ...(to && { parentId: to, itemsName }) };
+    const body = { ...(to && { parentId: to }), itemsName };
 
     return axios
       .post<void>(`${API_HOST}/${buildCopyItemsRoute(ids)}`, {
