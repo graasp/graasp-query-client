@@ -340,14 +340,14 @@ export default (queryConfig: QueryClientConfig) => {
       ({
         ids,
         to,
-        itemsName,
+        newNames,
       }: {
         ids: UUID[];
         to?: UUID;
-        itemsName?: { [key: string]: string };
+        newNames?: { [key: string]: string };
       }) =>
         splitRequestByIds(ids, MAX_TARGETS_FOR_MODIFY_REQUEST, (chunk) =>
-          Api.copyItems({ ids: chunk, to, itemsName }, queryConfig),
+          Api.copyItems({ ids: chunk, to, newNames }, queryConfig),
         ),
       // cannot mutate because it needs the id
       {
