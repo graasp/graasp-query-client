@@ -1805,7 +1805,7 @@ __metadata:
     "@commitlint/cli": "npm:18.4.4"
     "@commitlint/config-conventional": "npm:18.4.4"
     "@graasp/sdk": "npm:3.4.0"
-    "@graasp/translations": "npm:1.22.0"
+    "@graasp/translations": "npm:1.22.1"
     "@testing-library/dom": "npm:9.3.4"
     "@testing-library/jest-dom": "npm:6.2.0"
     "@testing-library/react": "npm:14.1.2"
@@ -1869,12 +1869,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.22.0":
-  version: 1.22.0
-  resolution: "@graasp/translations@npm:1.22.0"
+"@graasp/translations@npm:1.22.1":
+  version: 1.22.1
+  resolution: "@graasp/translations@npm:1.22.1"
   dependencies:
-    i18next: "npm:23.7.11"
-  checksum: 2152c51c94e940bf6949319ed1ea179a03176fe06e836b91c4881283d73397eca35f95d842c53f016a60f5c00261c7a8bbb3a1a5b69497d0ba5ebc4972974ffd
+    i18next: "npm:23.7.16"
+  checksum: 29043007a9926ff54236101c41ceb92eead09d8ce99edf46943790171f3275fb2cc1acd552bfa605247c42b4866bbf1f83dd889da3f571d388eca5f2dd598e17
   languageName: node
   linkType: hard
 
@@ -5380,12 +5380,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:23.7.11":
-  version: 23.7.11
-  resolution: "i18next@npm:23.7.11"
+"i18next@npm:23.7.16":
+  version: 23.7.16
+  resolution: "i18next@npm:23.7.16"
   dependencies:
     "@babel/runtime": "npm:^7.23.2"
-  checksum: 1127bc17f94459d40bd9aaa0350e9786d3853eb82449aabb4514e187fafc752c76a3f52c6be1c2722bfdadaa74f0d26b4f7dd04528ba6b2de7e34f5c6c019c21
+  checksum: 77e74c07a73316f6fb6678a5a3e8ce58a6e66be457dd1ccd23941e9fc57ad8e1da55193fa6328c70b86073337b776cd267f3c13c6309f548b3116f27a1e41787
   languageName: node
   linkType: hard
 
