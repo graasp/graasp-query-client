@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.2.2](https://github.com/graasp/graasp-query-client/compare/v2.2.1...v2.2.2) (2024-01-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @graasp/sdk to v3.4.0 ([#568](https://github.com/graasp/graasp-query-client/issues/568)) ([de5e2bc](https://github.com/graasp/graasp-query-client/commit/de5e2bc5574a5964ae018f67627f25135680391a))
+* **deps:** update dependency @graasp/translations to v1.22.0 ([#564](https://github.com/graasp/graasp-query-client/issues/564)) ([39b493b](https://github.com/graasp/graasp-query-client/commit/39b493b517d80bad0e4ecbb0926b01e66b4812ce))
+* **deps:** update dependency @graasp/translations to v1.22.1 ([#567](https://github.com/graasp/graasp-query-client/issues/567)) ([adc9846](https://github.com/graasp/graasp-query-client/commit/adc984640950c567b02b8672762ef004b04e6bd6))
+
 ## [2.2.1](https://github.com/graasp/graasp-query-client/compare/v2.2.0...v2.2.1) (2023-12-19)
 
 
