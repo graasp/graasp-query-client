@@ -6,12 +6,13 @@ import { AggregateActionsArgs } from '../utils/action';
 import { hashItemsIds } from '../utils/item';
 import { DEFAULT_THUMBNAIL_SIZE } from './constants';
 
-export const APPS_KEY = 'apps';
-export const ITEMS_KEY = 'items';
+export const ITEMS_CONTEXT = 'items';
+
+export const APPS_KEY = ['apps'];
 export const SHORT_LINKS_KEY = 'shortLinks';
-export const OWN_ITEMS_KEY = [ITEMS_KEY, 'own'];
-export const ETHERPADS_KEY = 'etherpads';
-export const SUBSCRIPTION_KEY = 'subscriptions';
+export const OWN_ITEMS_KEY = [ITEMS_CONTEXT, 'own'];
+export const ETHERPADS_CONTEXT = 'etherpads';
+export const SUBSCRIPTION_CONTEXT = 'subscriptions';
 
 export const buildShortLinkKey = (alias: string | undefined) => [
   SHORT_LINKS_KEY,
@@ -19,64 +20,75 @@ export const buildShortLinkKey = (alias: string | undefined) => [
 ];
 export const buildShortLinksItemKey = (id: UUID) => [
   SHORT_LINKS_KEY,
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   id,
 ];
-export const buildItemKey = (id?: UUID) => [ITEMS_KEY, id];
-export const buildItemsKey = (ids: UUID[]) => [ITEMS_KEY, hashItemsIds(ids)];
-export const buildItemChildrenKey = (id?: UUID) => [ITEMS_KEY, 'children', id];
+export const buildItemKey = (id?: UUID) => [ITEMS_CONTEXT, id];
+export const buildItemsKey = (ids: UUID[]) => [
+  ITEMS_CONTEXT,
+  hashItemsIds(ids),
+];
+export const buildItemChildrenKey = (id?: UUID) => [
+  ITEMS_CONTEXT,
+  'children',
+  id,
+];
 export const buildItemPaginatedChildrenKey = (id?: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'childrenPaginated',
   id,
 ];
 export const buildItemsChildrenKey = (ids: UUID[]) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'children',
   hashItemsIds(ids),
 ];
 export const buildItemDescendantsKey = (id: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'descendants',
   id,
 ];
 
 export const accessibleItemsKeys = {
-  all: [ITEMS_KEY, 'accessible'] as const,
+  all: [ITEMS_CONTEXT, 'accessible'] as const,
   singlePage: (params: ItemSearchParams, pagination: PaginationParams) =>
     [...accessibleItemsKeys.all, params, pagination] as const,
 };
-export const SHARED_ITEMS_KEY = 'shared';
-export const CURRENT_MEMBER_KEY = 'currentMember';
-export const MEMBERS_KEY = 'members';
-export const buildMemberKey = (id?: UUID) => [MEMBERS_KEY, id];
+export const SHARED_ITEMS_KEY = ['shared'];
+export const CURRENT_MEMBER_KEY = ['currentMember'];
+export const MEMBERS_CONTEXT = 'members';
+export const buildMemberKey = (id?: UUID) => [MEMBERS_CONTEXT, id];
 export const buildMembersKey = (ids: UUID[]) => [
-  MEMBERS_KEY,
+  MEMBERS_CONTEXT,
   hashItemsIds(ids),
 ];
-export const buildItemParentsKey = (id?: UUID) => [ITEMS_KEY, 'parents', id];
-export const CHATS_KEY = 'chats';
-export const buildItemChatKey = (id: UUID) => [CHATS_KEY, id];
-export const EXPORT_CHATS_KEY = 'exportChats';
-export const MENTIONS_KEY = 'mentions';
-export const buildMentionKey = () => [MENTIONS_KEY];
+export const buildItemParentsKey = (id?: UUID) => [
+  ITEMS_CONTEXT,
+  'parents',
+  id,
+];
+export const CHATS_CONTEXT = 'chats';
+export const buildItemChatKey = (id: UUID) => [CHATS_CONTEXT, id];
+export const EXPORT_CHATS_CONTEXT = 'exportChats';
+export const MENTIONS_CONTEXT = 'mentions';
+export const buildMentionKey = () => [MENTIONS_CONTEXT];
 
 export const getKeyForParentId = (parentId?: UUID | null) =>
   parentId ? buildItemChildrenKey(parentId) : OWN_ITEMS_KEY;
 
 export const buildItemMembershipsKey = (id?: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'memberships',
   id,
 ];
 export const buildManyItemMembershipsKey = (ids?: UUID[]) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'memberships',
   hashItemsIds(ids),
 ];
-export const buildItemLoginKey = (id?: UUID) => [ITEMS_KEY, 'login', id];
+export const buildItemLoginKey = (id?: UUID) => [ITEMS_CONTEXT, 'login', id];
 export const buildItemLoginSchemaKey = (id?: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'loginSchema',
   id,
 ];
@@ -84,10 +96,10 @@ export const buildItemLoginSchemaTypeKey = (id?: UUID) => [
   ...buildItemLoginSchemaKey(id),
   'type',
 ];
-export const TAGS_KEY = 'tags';
-export const ITEM_TAGS_KEY = 'itemTags';
+export const TAGS_CONTEXT = 'tags';
+export const ITEM_TAGS_CONTEXT = 'itemTags';
 export const itemTagsKeys = {
-  all: [ITEMS_KEY, ITEM_TAGS_KEY] as const,
+  all: [ITEMS_CONTEXT, ITEM_TAGS_CONTEXT] as const,
   many: () => [...itemTagsKeys.all, 'many'] as const,
   single: () => [...itemTagsKeys.all, 'single'] as const,
   singleId: (id?: UUID) => [...itemTagsKeys.single(), id] as const,
@@ -100,19 +112,18 @@ export const buildFileContentKey = ({
 }: {
   id?: UUID;
   replyUrl?: boolean;
-}) => [ITEMS_KEY, 'file', id, replyUrl ? 'url' : 'blob'];
+}) => [ITEMS_CONTEXT, 'file', id, replyUrl ? 'url' : 'blob'];
 
-export const ITEM_FLAGS_KEY = 'itemFlags';
-export const buildItemFlagsKey = (id: UUID) => [ITEMS_KEY, 'flags', id];
+export const ITEM_FLAGS_CONTEXT = 'itemFlags';
+export const buildItemFlagsKey = (id: UUID) => [ITEMS_CONTEXT, 'flags', id];
 
-export const CATEGORY_TYPES_KEY = 'categoryTypes';
 export const buildCategoryKey = (id: UUID) => ['category', id];
 export const buildCategoriesKey = (typeId?: UUID[]) => [
   'categories',
   hashItemsIds(typeId),
 ];
 export const buildItemCategoriesKey = (id?: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'categories',
   id,
 ];
@@ -122,9 +133,9 @@ export const buildItemsByCategoriesKey = (ids: UUID[]) => [
 ];
 
 export const RECYCLED_ITEMS_KEY = 'recycledItems';
-export const RECYCLED_ITEMS_DATA_KEY = 'recycledItemsData';
+export const RECYCLED_ITEMS_DATA_KEY = ['recycledItemsData'];
 
-export const FAVORITE_ITEMS_KEY = 'favoriteItems';
+export const FAVORITE_ITEMS_KEY = ['favoriteItems'];
 
 export const buildItemThumbnailKey = ({
   id,
@@ -134,7 +145,7 @@ export const buildItemThumbnailKey = ({
   id?: UUID;
   size?: string;
   replyUrl?: boolean;
-}) => [ITEMS_KEY, id, 'thumbnails', size, replyUrl ? 'url' : 'blob'];
+}) => [ITEMS_CONTEXT, id, 'thumbnails', size, replyUrl ? 'url' : 'blob'];
 export const buildAvatarKey = ({
   id,
   replyUrl,
@@ -143,65 +154,65 @@ export const buildAvatarKey = ({
   id?: UUID;
   size?: string;
   replyUrl: boolean;
-}) => [MEMBERS_KEY, id, 'avatars', size, replyUrl ? 'url' : 'blob'];
+}) => [MEMBERS_CONTEXT, id, 'avatars', size, replyUrl ? 'url' : 'blob'];
 
 export const buildGetLikesForMemberKey = (id?: UUID) => [
-  MEMBERS_KEY,
+  MEMBERS_CONTEXT,
   'likedItems',
   id,
 ];
-export const buildGetLikesForItem = (id?: UUID) => [ITEMS_KEY, 'likes', id];
+export const buildGetLikesForItem = (id?: UUID) => [ITEMS_CONTEXT, 'likes', id];
 export const buildGetMostLikedPublishedItems = (limit?: number) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'collections',
   'liked',
   limit,
 ];
 export const buildGetMostRecentPublishedItems = (limit?: number) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'collections',
   'recent',
   limit,
 ];
 
 export const buildPublishedItemsKey = (categoryIds?: UUID[]) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'collections',
   hashItemsIds(categoryIds),
 ];
 export const buildPublishedItemsForMemberKey = (memberId?: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'collections',
-  MEMBERS_KEY,
+  MEMBERS_CONTEXT,
   memberId,
 ];
 
 export const buildItemPublishedInformationKey = (id: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'publishedInformation',
   id,
 ];
 
 export const buildManyItemPublishedInformationsKey = (ids: UUID[]) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'publishedInformation',
   ids,
 ];
 
 export const buildLastItemValidationGroupKey = (id: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'itemValidation',
   'latest',
   id,
 ];
 
 export const buildItemValidationAndReviewKey = (id: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'itemValidationAndReview',
   id,
 ];
 export const buildItemValidationGroupsKey = (id: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   'itemValidationGroups',
   id,
 ];
@@ -226,29 +237,29 @@ export const buildAggregateActionsKey = <K extends AggregateBy[]>(
 
 export const buildInvitationKey = (id?: UUID) => ['invitations', id];
 export const buildItemInvitationsKey = (id?: UUID) => [
-  ITEMS_KEY,
+  ITEMS_CONTEXT,
   id,
   'invitations',
 ];
 
-export const PLANS_KEY = [SUBSCRIPTION_KEY, 'plans'];
-export const OWN_PLAN_KEY = [SUBSCRIPTION_KEY, 'ownPlan'];
-export const CARDS_KEY = [SUBSCRIPTION_KEY, 'cards'];
+export const PLANS_KEY = [SUBSCRIPTION_CONTEXT, 'plans'];
+export const OWN_PLAN_KEY = [SUBSCRIPTION_CONTEXT, 'ownPlan'];
+export const CARDS_KEY = [SUBSCRIPTION_CONTEXT, 'cards'];
 export const buildPlanKey = (id: string) => [
-  MEMBERS_KEY,
-  SUBSCRIPTION_KEY,
+  MEMBERS_CONTEXT,
+  SUBSCRIPTION_CONTEXT,
   'plans',
   id,
 ];
 export const buildPlansKey = (id: string) => [
-  MEMBERS_KEY,
-  SUBSCRIPTION_KEY,
+  MEMBERS_CONTEXT,
+  SUBSCRIPTION_CONTEXT,
   'plans',
   id,
 ];
-export const CURRENT_CUSTOMER_KEY = [SUBSCRIPTION_KEY, 'currentCustomer'];
+export const CURRENT_CUSTOMER_KEY = [SUBSCRIPTION_CONTEXT, 'currentCustomer'];
 
-export const buildEtherpadKey = (itemId?: UUID) => [ETHERPADS_KEY, itemId];
+export const buildEtherpadKey = (itemId?: UUID) => [ETHERPADS_CONTEXT, itemId];
 
 export const buildSearchPublishedItemsKey = (args: {
   query?: string;
@@ -260,46 +271,40 @@ export const buildSearchPublishedItemsKey = (args: {
   highlightPreTag?: string;
   highlightPostTag?: string;
   page?: number;
-}) => [ITEMS_KEY, 'search', { isPublishedRoot: false, ...args }];
+}) => [ITEMS_CONTEXT, 'search', { isPublishedRoot: false, ...args }];
 
-export const CURRENT_MEMBER_STORAGE_KEY = [MEMBERS_KEY, 'current', 'storage'];
+export const CURRENT_MEMBER_STORAGE_KEY = [
+  MEMBERS_CONTEXT,
+  'current',
+  'storage',
+];
 
 export const OWN_PUBLIC_PROFILE_KEY = ['own-profile'];
 export const buildPublicProfileKey = (memberId: UUID) => ['profile', memberId];
 export const DATA_KEYS = {
   APPS_KEY,
-  ITEMS_KEY,
-  OWN_ITEMS_KEY,
   buildItemKey,
   buildItemsKey,
   buildItemChildrenKey,
   buildItemsChildrenKey,
-  SHARED_ITEMS_KEY,
   CURRENT_MEMBER_KEY,
-  MEMBERS_KEY,
   buildMemberKey,
   buildMembersKey,
   buildItemParentsKey,
-  CHATS_KEY,
   buildItemChatKey,
   buildMentionKey,
   getKeyForParentId,
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
   buildItemLoginKey,
-  TAGS_KEY,
-  ITEM_TAGS_KEY,
   itemTagsKeys,
   buildFileContentKey,
-  ITEM_FLAGS_KEY,
   buildItemFlagsKey,
-  CATEGORY_TYPES_KEY,
   buildCategoryKey,
   buildCategoriesKey,
   buildItemCategoriesKey,
   buildItemsByCategoriesKey,
   RECYCLED_ITEMS_DATA_KEY,
-  FAVORITE_ITEMS_KEY,
   buildItemThumbnailKey,
   CURRENT_MEMBER_STORAGE_KEY,
   buildAvatarKey,
