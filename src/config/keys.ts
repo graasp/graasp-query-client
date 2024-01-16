@@ -6,13 +6,13 @@ import { AggregateActionsArgs } from '../utils/action';
 import { hashItemsIds } from '../utils/item';
 import { DEFAULT_THUMBNAIL_SIZE } from './constants';
 
-export const ITEMS_CONTEXT = 'items';
+const ITEMS_CONTEXT = 'items';
 
 export const APPS_KEY = ['apps'];
 export const SHORT_LINKS_KEY = 'shortLinks';
 export const OWN_ITEMS_KEY = [ITEMS_CONTEXT, 'own'];
-export const ETHERPADS_CONTEXT = 'etherpads';
-export const SUBSCRIPTION_CONTEXT = 'subscriptions';
+const ETHERPADS_CONTEXT = 'etherpads';
+const SUBSCRIPTION_CONTEXT = 'subscriptions';
 
 export const buildShortLinkKey = (alias: string | undefined) => [
   SHORT_LINKS_KEY,
@@ -56,7 +56,7 @@ export const accessibleItemsKeys = {
 };
 export const SHARED_ITEMS_KEY = ['shared'];
 export const CURRENT_MEMBER_KEY = ['currentMember'];
-export const MEMBERS_CONTEXT = 'members';
+const MEMBERS_CONTEXT = 'members';
 export const buildMemberKey = (id?: UUID) => [MEMBERS_CONTEXT, id];
 export const buildMembersKey = (ids: UUID[]) => [
   MEMBERS_CONTEXT,
@@ -67,10 +67,9 @@ export const buildItemParentsKey = (id?: UUID) => [
   'parents',
   id,
 ];
-export const CHATS_CONTEXT = 'chats';
+const CHATS_CONTEXT = 'chats';
 export const buildItemChatKey = (id: UUID) => [CHATS_CONTEXT, id];
-export const EXPORT_CHATS_CONTEXT = 'exportChats';
-export const MENTIONS_CONTEXT = 'mentions';
+const MENTIONS_CONTEXT = 'mentions';
 export const buildMentionKey = () => [MENTIONS_CONTEXT];
 
 export const getKeyForParentId = (parentId?: UUID | null) =>
@@ -96,8 +95,7 @@ export const buildItemLoginSchemaTypeKey = (id?: UUID) => [
   ...buildItemLoginSchemaKey(id),
   'type',
 ];
-export const TAGS_CONTEXT = 'tags';
-export const ITEM_TAGS_CONTEXT = 'itemTags';
+const ITEM_TAGS_CONTEXT = 'itemTags';
 export const itemTagsKeys = {
   all: [ITEMS_CONTEXT, ITEM_TAGS_CONTEXT] as const,
   many: () => [...itemTagsKeys.all, 'many'] as const,
