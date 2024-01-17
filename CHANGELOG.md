@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.3](https://github.com/graasp/graasp-query-client/compare/v2.2.2...v2.2.3) (2024-01-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @graasp/sdk to v3.4.1 ([7abba36](https://github.com/graasp/graasp-query-client/commit/7abba36c2b784fd1d043a8d8fe51c4770969cc25))
+
 ## [2.2.2](https://github.com/graasp/graasp-query-client/compare/v2.2.1...v2.2.2) (2024-01-11)
 
 
