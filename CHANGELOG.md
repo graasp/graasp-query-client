@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/graasp/graasp-query-client/compare/v2.2.3...v2.3.0) (2024-01-19)
+
+
+### Features
+
+* add permissions to accessible endpoint ([#577](https://github.com/graasp/graasp-query-client/issues/577)) ([e426d95](https://github.com/graasp/graasp-query-client/commit/e426d95b386deeaa30e1ccede6b2b15dc5dfdd2e))
+
 ## [2.2.3](https://github.com/graasp/graasp-query-client/compare/v2.2.2...v2.2.3) (2024-01-17)
 
 
