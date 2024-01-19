@@ -4,6 +4,7 @@ import {
   ItemTag,
   ItemTagType,
   Member,
+  PermissionLevel,
   UUID,
 } from '@graasp/sdk';
 
@@ -41,6 +42,7 @@ export type ItemSearchParams =
         | 'item.creator.name'
         | 'item.created_at'
         | 'item.updated_at';
+      permissions?: PermissionLevel[];
     }
   | undefined;
 export const buildGetAccessibleItems = (
