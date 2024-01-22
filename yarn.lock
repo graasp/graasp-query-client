@@ -1798,10 +1798,10 @@ __metadata:
     "@testing-library/react": "npm:14.1.2"
     "@testing-library/user-event": "npm:14.5.2"
     "@trivago/prettier-plugin-sort-imports": "npm:4.3.0"
-    "@types/crypto-js": "npm:4.2.1"
+    "@types/crypto-js": "npm:4.2.2"
     "@types/jest": "npm:29.5.11"
     "@types/jsdom": "npm:21.1.6"
-    "@types/node": "npm:20.11.4"
+    "@types/node": "npm:20.11.5"
     "@types/qs": "npm:6.9.11"
     "@types/react": "npm:18.2.48"
     "@types/react-dom": "npm:18.2.18"
@@ -1833,7 +1833,7 @@ __metadata:
     react-dom: "npm:18.2.0"
     react-query: "npm:3.39.3"
     react-test-renderer: "npm:18.2.0"
-    ts-jest: "npm:29.1.1"
+    ts-jest: "npm:29.1.2"
     ts-node: "npm:10.9.2"
     tsc-alias: "npm:1.8.8"
     typescript: "npm:5.3.3"
@@ -2474,10 +2474,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/crypto-js@npm:4.2.1":
-  version: 4.2.1
-  resolution: "@types/crypto-js@npm:4.2.1"
-  checksum: 413a3de36ff916fd796aac6069dc4afba26c3add11c2570eff43f98eb86e34ed8fa2693636743d13685f038f9d3a21e3327b33e3a06c3cb332be5ca64b802925
+"@types/crypto-js@npm:4.2.2":
+  version: 4.2.2
+  resolution: "@types/crypto-js@npm:4.2.2"
+  checksum: a40fc5a9219fd33f54ba3e094c5e5ab2904d3106681a76f1029bb038976591e9c8959099963bf4474fde21c2d8d00c1f896445206a3a58f85588f9cb1bd96a9a
   languageName: node
   linkType: hard
 
@@ -2577,12 +2577,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.11.4":
-  version: 20.11.4
-  resolution: "@types/node@npm:20.11.4"
+"@types/node@npm:20.11.5":
+  version: 20.11.5
+  resolution: "@types/node@npm:20.11.5"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 207e17fa3aa7047ba729e0faf0eae5ae547132fd189eb64feb4427bcaa58d4f00354409008df305f84da49007d850890df8826548d5989f1a914eb182f77346d
+  checksum: 9f31c471047d7b3e240ce7b77ff29b0d15e83be7e3feafb3d0b0d0931122b438b1eefa302a5a2e1e9849914ff3fd76aafbd8ccb372efb1331ba048da63bce6f8
   languageName: node
   linkType: hard
 
@@ -8537,9 +8537,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:29.1.1":
-  version: 29.1.1
-  resolution: "ts-jest@npm:29.1.1"
+"ts-jest@npm:29.1.2":
+  version: 29.1.2
+  resolution: "ts-jest@npm:29.1.2"
   dependencies:
     bs-logger: "npm:0.x"
     fast-json-stable-stringify: "npm:2.x"
@@ -8566,7 +8566,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 30e8259baba95dd786e64f7c18b864e904598f3ba07911be4d9bd29ca9c3c0024bad4ccf8ec0abd2a2fa14b06622cbbadff1b3be822189c657196442d33ee6ca
+  checksum: 5e40e7b933a1f3aa0d304d3c53913d1a7125fc79cd44e22b332f6e25dfe13008ddc7ac647066bb4f914d76083f7e8949f0bc156d793c30f3419f4ffd8180968b
   languageName: node
   linkType: hard
 
