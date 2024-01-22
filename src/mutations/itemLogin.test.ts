@@ -41,6 +41,7 @@ describe('Item Login Mutations', () => {
     const mutation = mutations.usePostItemLogin;
     it('Post item login', async () => {
       queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+      // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
 
       const endpoints = [
@@ -69,11 +70,13 @@ describe('Item Login Mutations', () => {
 
       // check all set keys are reset
       expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+      // todo: change to Accessible
       expect(queryClient.getQueryData(OWN_ITEMS_KEY)).toBeFalsy();
     });
 
     it('Unauthorized to post item login', async () => {
       queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+      // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
 
       const endpoints = [
@@ -103,6 +106,7 @@ describe('Item Login Mutations', () => {
 
       // check all set keys are reset
       expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+      // todo: change to Accessible ?
       expect(queryClient.getQueryData(OWN_ITEMS_KEY)).toBeFalsy();
 
       expect(mockedNotifier).toHaveBeenCalledWith(

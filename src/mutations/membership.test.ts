@@ -76,6 +76,7 @@ describe('Membership Mutations', () => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
+      // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
@@ -121,6 +122,7 @@ describe('Membership Mutations', () => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
+      // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
@@ -318,6 +320,7 @@ describe('Membership Mutations', () => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
+      // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
@@ -377,6 +380,7 @@ describe('Membership Mutations', () => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
+      // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
@@ -448,6 +452,7 @@ describe('Membership Mutations', () => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
+      // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
@@ -498,6 +503,7 @@ describe('Membership Mutations', () => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
+      // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
@@ -557,6 +563,7 @@ describe('Membership Mutations', () => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
+      // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
