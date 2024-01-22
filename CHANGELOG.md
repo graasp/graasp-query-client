@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.3.1](https://github.com/graasp/graasp-query-client/compare/v2.3.0...v2.3.1) (2024-01-22)
+
+
+### Bug Fixes
+
+* allow union litterals in aggregate ([#580](https://github.com/graasp/graasp-query-client/issues/580)) ([6955626](https://github.com/graasp/graasp-query-client/commit/69556262d7dbc419cceb5ec98c710bc991d7c42a))
+* **deps:** update dependency @graasp/sdk to v3.5.0 ([#584](https://github.com/graasp/graasp-query-client/issues/584)) ([43de546](https://github.com/graasp/graasp-query-client/commit/43de546f3559e6e8663ea8955595664d4d5ffd5a))
+* use accessible to invalidate on post item ([#581](https://github.com/graasp/graasp-query-client/issues/581)) ([cabeb5c](https://github.com/graasp/graasp-query-client/commit/cabeb5c4adac3f851e8f498f9d972b17443190ec))
+
 ## [2.3.0](https://github.com/graasp/graasp-query-client/compare/v2.2.3...v2.3.0) (2024-01-19)
 
 
