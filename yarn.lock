@@ -1538,13 +1538,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@commitlint/cli@npm:18.4.4":
-  version: 18.4.4
-  resolution: "@commitlint/cli@npm:18.4.4"
+"@commitlint/cli@npm:18.5.0":
+  version: 18.5.0
+  resolution: "@commitlint/cli@npm:18.5.0"
   dependencies:
     "@commitlint/format": "npm:^18.4.4"
-    "@commitlint/lint": "npm:^18.4.4"
-    "@commitlint/load": "npm:^18.4.4"
+    "@commitlint/lint": "npm:^18.5.0"
+    "@commitlint/load": "npm:^18.5.0"
     "@commitlint/read": "npm:^18.4.4"
     "@commitlint/types": "npm:^18.4.4"
     execa: "npm:^5.0.0"
@@ -1554,16 +1554,16 @@ __metadata:
     yargs: "npm:^17.0.0"
   bin:
     commitlint: cli.js
-  checksum: d7c093fd092f5fb59547f93635875e251cbb92632dc921473815b266e8638a4abb5ab24cf7ed1ca9ec600432ea795fc4c0d8fc5bb48ccf38653a260085f14e47
+  checksum: 2d6485e80c58b5944c837c34c93e2258c2a3c5cccaed0cd39b53bf8bf4dd6e8a5f1e6c222adca3faf7c99f1311cfdc0ec08171863992561a3c36fb93a805045f
   languageName: node
   linkType: hard
 
-"@commitlint/config-conventional@npm:18.4.4":
-  version: 18.4.4
-  resolution: "@commitlint/config-conventional@npm:18.4.4"
+"@commitlint/config-conventional@npm:18.5.0":
+  version: 18.5.0
+  resolution: "@commitlint/config-conventional@npm:18.5.0"
   dependencies:
     conventional-changelog-conventionalcommits: "npm:^7.0.2"
-  checksum: 53238dfac4bef5dcee301cbe1cfc4501054adf9bc1c9bcda47ff0039cf108fd0ffa5e27ff608e62baced9dc976745e7dc2d2a8242704b23251632ed59e303be2
+  checksum: 787f7b6f8ad0dc550932798a4f3ad427f407518397deeb6ddc0c25c160086f25a9953dc4428319a89d71f626c86b8a1102a60d0a40d422199a8f80185e85ed0b
   languageName: node
   linkType: hard
 
@@ -1618,7 +1618,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@commitlint/lint@npm:^18.4.4":
+"@commitlint/lint@npm:^18.5.0":
   version: 18.5.0
   resolution: "@commitlint/lint@npm:18.5.0"
   dependencies:
@@ -1630,7 +1630,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@commitlint/load@npm:^18.4.4":
+"@commitlint/load@npm:^18.5.0":
   version: 18.5.0
   resolution: "@commitlint/load@npm:18.5.0"
   dependencies:
@@ -1789,8 +1789,8 @@ __metadata:
     "@babel/core": "npm:7.23.7"
     "@babel/preset-env": "npm:7.23.8"
     "@babel/preset-typescript": "npm:7.23.3"
-    "@commitlint/cli": "npm:18.4.4"
-    "@commitlint/config-conventional": "npm:18.4.4"
+    "@commitlint/cli": "npm:18.5.0"
+    "@commitlint/config-conventional": "npm:18.5.0"
     "@graasp/sdk": "npm:3.5.0"
     "@graasp/translations": "npm:1.22.1"
     "@testing-library/dom": "npm:9.3.4"
