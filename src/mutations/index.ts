@@ -8,6 +8,7 @@ import itemCategoryMutations from './itemCategory';
 import itemExportMutations from './itemExport';
 import itemFavoriteMutations from './itemFavorite';
 import flagsMutations from './itemFlag';
+import itemGeolocationMutations from './itemGeolocation';
 import itemLikeMutations from './itemLike';
 import itemLoginMutations from './itemLogin';
 import itemPublishMutations from './itemPublish';
@@ -41,6 +42,7 @@ const configureMutations = (queryConfig: QueryClientConfig) => ({
   ...itemPublishMutations(queryConfig),
   ...publicProfileMutations(queryConfig),
   ...shortLinksMutations(queryConfig),
+  ...itemGeolocationMutations(queryConfig),
 });
 
 export default configureMutations;
