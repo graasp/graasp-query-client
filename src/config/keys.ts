@@ -73,7 +73,7 @@ const MENTIONS_CONTEXT = 'mentions';
 export const buildMentionKey = () => [MENTIONS_CONTEXT];
 
 export const getKeyForParentId = (parentId?: UUID | null) =>
-  parentId ? buildItemChildrenKey(parentId) : OWN_ITEMS_KEY;
+  parentId ? buildItemChildrenKey(parentId) : accessibleItemsKeys.all;
 
 export const buildItemMembershipsKey = (id?: UUID) => [
   ITEMS_CONTEXT,

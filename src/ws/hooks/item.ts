@@ -458,7 +458,6 @@ export const configureWsItemHooks = (
    * @param userId The ID of the user on which to observe item feedback updates
    */
   useItemFeedbackUpdates: (userId?: UUID | null) => {
-    const queryClient = useQueryClient();
     useEffect(() => {
       if (!userId) {
         return () => {
@@ -470,64 +469,59 @@ export const configureWsItemHooks = (
 
       const handler = (event: ItemOpFeedbackEvent) => {
         if (event.kind === KINDS.FEEDBACK) {
-          const current =
-            queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY);
-
-          if (current) {
-            let routine: ReturnType<typeof createRoutine> | undefined;
-            let message: string | undefined;
-            switch (event.op) {
-              case 'update':
-                routine = editItemRoutine;
-                message = SUCCESS_MESSAGES.EDIT_ITEM;
-                break;
-              case 'delete':
-                routine = deleteItemsRoutine;
-                message = SUCCESS_MESSAGES.DELETE_ITEMS;
-                break;
-              case 'move':
-                routine = moveItemsRoutine;
-                message = SUCCESS_MESSAGES.MOVE_ITEMS;
-                break;
-              case 'copy':
-                routine = copyItemsRoutine;
-                message = SUCCESS_MESSAGES.COPY_ITEMS;
-                break;
-              case 'export':
-                routine = exportItemRoutine;
-                message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
-                break;
-              case 'recycle':
-                routine = recycleItemsRoutine;
-                message = SUCCESS_MESSAGES.RECYCLE_ITEMS;
-                break;
-              case 'restore':
-                routine = restoreItemsRoutine;
-                message = SUCCESS_MESSAGES.RESTORE_ITEMS;
-                break;
-              case 'validate':
-                routine = postItemValidationRoutine;
-                message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
-                break;
-              default: {
-                console.error('unhandled event for useItemFeedbackUpdates');
-                break;
-              }
+          let routine: ReturnType<typeof createRoutine> | undefined;
+          let message: string | undefined;
+          switch (event.op) {
+            case 'update':
+              routine = editItemRoutine;
+              message = SUCCESS_MESSAGES.EDIT_ITEM;
+              break;
+            case 'delete':
+              routine = deleteItemsRoutine;
+              message = SUCCESS_MESSAGES.DELETE_ITEMS;
+              break;
+            case 'move':
+              routine = moveItemsRoutine;
+              message = SUCCESS_MESSAGES.MOVE_ITEMS;
+              break;
+            case 'copy':
+              routine = copyItemsRoutine;
+              message = SUCCESS_MESSAGES.COPY_ITEMS;
+              break;
+            case 'export':
+              routine = exportItemRoutine;
+              message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
+              break;
+            case 'recycle':
+              routine = recycleItemsRoutine;
+              message = SUCCESS_MESSAGES.RECYCLE_ITEMS;
+              break;
+            case 'restore':
+              routine = restoreItemsRoutine;
+              message = SUCCESS_MESSAGES.RESTORE_ITEMS;
+              break;
+            case 'validate':
+              routine = postItemValidationRoutine;
+              message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
+              break;
+            default: {
+              console.error('unhandled event for useItemFeedbackUpdates');
+              break;
             }
-            if (routine && message) {
-              if ('error' in event.result) {
-                notifier?.({
-                  type: routine.FAILURE,
-                  payload: {
-                    error: event.result.error,
-                  },
-                });
-              } else {
-                notifier?.({
-                  type: routine.SUCCESS,
-                  payload: { message },
-                });
-              }
+          }
+          if (routine && message) {
+            if ('error' in event.result) {
+              notifier?.({
+                type: routine.FAILURE,
+                payload: {
+                  error: event.result.error,
+                },
+              });
+            } else {
+              notifier?.({
+                type: routine.SUCCESS,
+                payload: { message },
+              });
             }
           }
         }

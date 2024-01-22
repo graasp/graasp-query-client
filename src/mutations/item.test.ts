@@ -39,6 +39,7 @@ import {
 import {
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_DATA_KEY,
+  accessibleItemsKeys,
   buildItemChildrenKey,
   buildItemKey,
   buildItemThumbnailKey,
@@ -72,7 +73,7 @@ describe('Items Mutations', () => {
 
     it('Post item in root', async () => {
       const route = `/${buildPostItemRoute()}`;
-      queryClient.setQueryData(OWN_ITEMS_KEY, [ITEMS[1]]);
+      queryClient.setQueryData(accessibleItemsKeys.all, [ITEMS[1]]);
 
       const response = { ...newItem, id: 'someid', path: 'someid' };
 
@@ -96,7 +97,7 @@ describe('Items Mutations', () => {
       });
 
       expect(
-        queryClient.getQueryState(OWN_ITEMS_KEY)?.isInvalidated,
+        queryClient.getQueryState(accessibleItemsKeys.all)?.isInvalidated,
       ).toBeTruthy();
     });
 
@@ -138,7 +139,7 @@ describe('Items Mutations', () => {
 
     it('Unauthorized', async () => {
       const route = `/${buildPostItemRoute()}`;
-      queryClient.setQueryData(OWN_ITEMS_KEY, [ITEMS[1]]);
+      queryClient.setQueryData(accessibleItemsKeys.all, [ITEMS[1]]);
 
       const endpoints = [
         {
@@ -161,7 +162,7 @@ describe('Items Mutations', () => {
       });
 
       expect(
-        queryClient.getQueryState(OWN_ITEMS_KEY)?.isInvalidated,
+        queryClient.getQueryState(accessibleItemsKeys.all)?.isInvalidated,
       ).toBeTruthy();
     });
   });
@@ -175,7 +176,7 @@ describe('Items Mutations', () => {
     it('Edit item in root', async () => {
       // set default data
       queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(OWN_ITEMS_KEY, [ITEMS[1]]);
+      queryClient.setQueryData(accessibleItemsKeys.all, [ITEMS[1]]);
 
       const route = `/${buildEditItemRoute(item.id)}`;
       const response = item;
@@ -200,7 +201,7 @@ describe('Items Mutations', () => {
 
       expect(queryClient.getQueryState(itemKey)?.isInvalidated).toBeTruthy();
       expect(
-        queryClient.getQueryState(OWN_ITEMS_KEY)?.isInvalidated,
+        queryClient.getQueryState(accessibleItemsKeys.all)?.isInvalidated,
       ).toBeTruthy();
     });
 
@@ -500,6 +501,7 @@ describe('Items Mutations', () => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
+      // todo: change to use Accessible items
       queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
 
       const response = items;
@@ -531,6 +533,7 @@ describe('Items Mutations', () => {
         expect(data).toMatchObject(ITEMS.find(({ id }) => id === itemId)!);
       }
 
+      // todo: this will need to be updated too
       // Check parent's children key is correctly invalidated
       // and should not contain recycled item
       const childrenKey = getKeyForParentId(null);
@@ -701,7 +704,7 @@ describe('Items Mutations', () => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(accessibleItemsKeys.all, ITEMS);
       queryClient.setQueryData(buildItemChildrenKey(id), ITEMS);
 
       const mockedMutation = await mockMutation({
@@ -732,7 +735,7 @@ describe('Items Mutations', () => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(accessibleItemsKeys.all, ITEMS);
       queryClient.setQueryData(buildItemChildrenKey(id), ITEMS);
 
       const mockedMutation = await mockMutation({
