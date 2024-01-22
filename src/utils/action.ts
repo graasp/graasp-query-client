@@ -9,7 +9,7 @@ import {
 
 export type AggregateActionsArgs<K extends AggregateBy[]> = {
   itemId: Item['id'];
-  view: Context;
+  view: `${Context}` | Context;
   requestedSampleSize: number;
   type?: string[];
   countGroupBy: CountGroupBy[];
