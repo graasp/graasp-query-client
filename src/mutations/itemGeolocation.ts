@@ -1,4 +1,4 @@
-import { UUID } from '@graasp/sdk';
+import { Item, UUID } from '@graasp/sdk';
 
 import { useMutation, useQueryClient } from 'react-query';
 
@@ -40,11 +40,17 @@ export default (queryConfig: QueryClientConfig) => {
       },
     );
   };
+  // eslint-disable-next-line arrow-body-style
   const usePostItemWithGeolocation = () => {
-    const queryClient = useQueryClient();
+    // const queryClient = useQueryClient();
     return useMutation(
-      (payload: { itemId: UUID; lat: number; lng: number }) =>
-        postItemWithGeolocation(payload, queryConfig),
+      (
+        payload: {
+          lat: number;
+          lng: number;
+          parentItemId: UUID;
+        } & Partial<Item>,
+      ) => postItemWithGeolocation(payload, queryConfig),
       {
         onSuccess: () => {
           queryConfig.notifier?.({
@@ -57,8 +63,9 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { error },
           });
         },
-        onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(buildItemGeolocationKey(itemId));
+        onSettled: (_data, _error) => {
+          // TODO
+          // queryClient.invalidateQueries(buildItemsInMapKey());
         },
       },
     );

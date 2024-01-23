@@ -280,6 +280,7 @@ export const CURRENT_MEMBER_STORAGE_KEY = [
 export const OWN_PUBLIC_PROFILE_KEY = ['own-profile'];
 export const buildPublicProfileKey = (memberId: UUID) => ['profile', memberId];
 
+// TODO: all key
 export const buildItemsInMapKey = ({
   lat1,
   lat2,
