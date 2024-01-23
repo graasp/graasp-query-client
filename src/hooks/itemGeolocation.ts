@@ -30,12 +30,17 @@ export default (queryConfig: QueryClientConfig) => {
       },
     });
 
-  const useItemsInMap = (
-    lat1: number,
-    lat2: number,
-    lng1: number,
-    lng2: number,
-  ) =>
+  const useItemsInMap = ({
+    lat1,
+    lat2,
+    lng1,
+    lng2,
+  }: {
+    lat1: number;
+    lat2: number;
+    lng1: number;
+    lng2: number;
+  }) =>
     useQuery({
       queryKey: buildItemsInMapKey({ lat1, lat2, lng1, lng2 }),
       queryFn: () => {
