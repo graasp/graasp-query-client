@@ -8,6 +8,7 @@ import configureChatHooks from './chat';
 import configureInvitationHooks from './invitation';
 import configureItemHooks from './item';
 import configureItemFavoriteHooks from './itemFavorite';
+import configureItemGeolocationHooks from './itemGeolocation';
 import configureItemLikeHooks from './itemLike';
 import configureItemLoginHooks from './itemLogin';
 import configureItemPublishedHooks from './itemPublish';
@@ -55,5 +56,6 @@ export default (
     ...configurePlanHooks(queryConfig),
     ...configurePublicProfileHooks(queryConfig),
     ...configureShortLinkHooks(queryConfig),
+    ...configureItemGeolocationHooks(queryConfig),
   };
 };
