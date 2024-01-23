@@ -5,11 +5,13 @@ import { useMutation, useQueryClient } from 'react-query';
 import {
   ItemGeolocation,
   deleteItemGeolocation,
+  postItemWithGeolocation,
   putItemGeolocation,
 } from '../api';
 import { buildItemGeolocationKey } from '../config/keys';
 import {
   deleteItemGeolocationRoutine,
+  postItemWithGeolocationRoutine,
   putItemGeolocationRoutine,
 } from '../routines';
 import { QueryClientConfig } from '../types';
@@ -29,6 +31,29 @@ export default (queryConfig: QueryClientConfig) => {
         onError: (error: Error) => {
           queryConfig.notifier?.({
             type: putItemGeolocationRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+        onSettled: (_data, _error, { itemId }) => {
+          queryClient.invalidateQueries(buildItemGeolocationKey(itemId));
+        },
+      },
+    );
+  };
+  const usePostItemWithGeolocation = () => {
+    const queryClient = useQueryClient();
+    return useMutation(
+      (payload: { itemId: UUID; lat: number; lng: number }) =>
+        postItemWithGeolocation(payload, queryConfig),
+      {
+        onSuccess: () => {
+          queryConfig.notifier?.({
+            type: postItemWithGeolocationRoutine.SUCCESS,
+          });
+        },
+        onError: (error: Error) => {
+          queryConfig.notifier?.({
+            type: postItemWithGeolocationRoutine.FAILURE,
             payload: { error },
           });
         },
@@ -80,5 +105,9 @@ export default (queryConfig: QueryClientConfig) => {
     );
   };
 
-  return { usePutItemGeolocation, useDeleteItemGeolocation };
+  return {
+    usePostItemWithGeolocation,
+    usePutItemGeolocation,
+    useDeleteItemGeolocation,
+  };
 };

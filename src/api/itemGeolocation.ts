@@ -40,6 +40,19 @@ export const putItemGeolocation = async (
       .then(({ data }) => data),
   );
 
+export const postItemWithGeolocation = async (
+  payload: { itemId: UUID; lat: number; lng: number },
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .post<void>(
+        `${API_HOST}/${buildPutItemGeolocationRoute(payload.itemId)}`,
+        { lat: payload.lat, lng: payload.lng },
+      )
+      .then(({ data }) => data),
+  );
+
 export const getItemsInMap = async (
   payload: { lat1: number; lat2: number; lng1: number; lng2: number },
   { API_HOST, axios }: PartialQueryConfigForApi,

@@ -5,4 +5,7 @@ export const deleteItemGeolocationRoutine = createRoutine(
   'DELETE_ITEM_GEOLOCATION',
 );
 export const putItemGeolocationRoutine = createRoutine('PUT_ITEM_GEOLOCATION');
+export const postItemWithGeolocationRoutine = createRoutine(
+  'POST_ITEM_WITH_GEOLOCATION',
+);
 export const getItemsInMapRoutine = createRoutine('GET_ITEMS_IN_MAP');
