@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 
 import * as Api from '../api';
 import { UndefinedArgument } from '../config/errors';
-import { buildItemGeolocationKey, buildItemsInMapKey } from '../config/keys';
+import { buildItemGeolocationKey, buildItemsInMapKeys } from '../config/keys';
 import { getItemGeolocationRoutine } from '../routines/itemGeolocation';
 import { QueryClientConfig } from '../types';
 
@@ -42,7 +42,7 @@ export default (queryConfig: QueryClientConfig) => {
     lng2: number;
   }) =>
     useQuery({
-      queryKey: buildItemsInMapKey({ lat1, lat2, lng1, lng2 }),
+      queryKey: buildItemsInMapKeys.single({ lat1, lat2, lng1, lng2 }),
       queryFn: () => {
         if (!lat1 || !lat2 || !lng1 || !lng2) {
           throw new UndefinedArgument({ lat1, lat2, lng1, lng2 });

@@ -1791,7 +1791,7 @@ __metadata:
     "@babel/preset-typescript": "npm:7.23.3"
     "@commitlint/cli": "npm:18.6.0"
     "@commitlint/config-conventional": "npm:18.6.0"
-    "@graasp/sdk": "npm:3.5.0"
+    "@graasp/sdk": "github:graasp/graasp-sdk#item-geolocation"
     "@graasp/translations": "npm:1.22.1"
     "@testing-library/dom": "npm:9.3.4"
     "@testing-library/jest-dom": "npm:6.3.0"
@@ -1843,15 +1843,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@npm:3.5.0":
+"@graasp/sdk@github:graasp/graasp-sdk#item-geolocation":
   version: 3.5.0
-  resolution: "@graasp/sdk@npm:3.5.0"
+  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=7f9b1c7e88c8f22fa9beeb871d3a577c110cc0eb"
   dependencies:
-    date-fns: "npm:3.2.0"
+    date-fns: "npm:3.3.1"
     js-cookie: "npm:3.0.5"
     uuid: "npm:9.0.1"
     validator: "npm:13.11.0"
-  checksum: dfbb9977904336214e411c93a33084fca8e07cb73145f655a070dfdb81a772d6a0412849ee07c8ee2e74497d59f960a8ef1989062a4e41d78ad5d22b24e8a8db
+  checksum: 95a6309e11f70364c0f5ccb46317e16a3ebc8bf4766aaf0cac092e59b6f74b935253a9d1b62ed254879f62e64cb093b081935b553f71e61c9ab9823ca9ddb01c
   languageName: node
   linkType: hard
 
@@ -3881,10 +3881,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:3.2.0":
-  version: 3.2.0
-  resolution: "date-fns@npm:3.2.0"
-  checksum: 2f36cb9165a066ae90c0b6f0c25b3c70eb75bc52e64ba6dd8680964ebda144851a244ff4ed0b2afb4a6bab796a1af6a0e6c7c2814529d04c72fa434f931d4e81
+"date-fns@npm:3.3.1":
+  version: 3.3.1
+  resolution: "date-fns@npm:3.3.1"
+  checksum: 98231936765dfb6fc6897676319b500a06a39f051b2c3ecbdd541a07ce9b1344b770277b8bfb1049fb7a2f70bf365ac8e6f1e2bb452b10e1a8101d518ca7f95d
   languageName: node
   linkType: hard
 

@@ -1,14 +1,13 @@
-import { DiscriminatedItem, UUID } from '@graasp/sdk';
+import { DiscriminatedItem, ItemGeolocation, UUID } from '@graasp/sdk';
 
 import { useMutation, useQueryClient } from 'react-query';
 
 import {
-  ItemGeolocation,
   deleteItemGeolocation,
   postItemWithGeolocation,
   putItemGeolocation,
 } from '../api';
-import { buildItemGeolocationKey } from '../config/keys';
+import { buildItemGeolocationKey, buildItemsInMapKeys } from '../config/keys';
 import {
   deleteItemGeolocationRoutine,
   postItemWithGeolocationRoutine,
@@ -42,7 +41,7 @@ export default (queryConfig: QueryClientConfig) => {
   };
   // eslint-disable-next-line arrow-body-style
   const usePostItemWithGeolocation = () => {
-    // const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
     return useMutation(
       (
         payload: {
@@ -64,8 +63,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error) => {
-          // TODO
-          // queryClient.invalidateQueries(buildItemsInMapKey());
+          queryClient.invalidateQueries(buildItemsInMapKeys.all);
         },
       },
     );
