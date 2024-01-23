@@ -1,4 +1,4 @@
-import { UUID } from '@graasp/sdk';
+import { DiscriminatedItem, UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types';
 import { verifyAuthentication } from './axios';
@@ -9,7 +9,14 @@ import {
   buildPutItemGeolocationRoute,
 } from './routes';
 
-type ItemGeolocation = {};
+// TODO: sdk
+export type ItemGeolocation = {
+  id: UUID;
+  lat: number;
+  lng: number;
+  item: DiscriminatedItem;
+  country: string;
+};
 
 // eslint-disable-next-line import/prefer-default-export
 export const getItemGeolocation = async (

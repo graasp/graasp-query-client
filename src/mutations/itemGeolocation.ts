@@ -2,7 +2,11 @@ import { UUID } from '@graasp/sdk';
 
 import { useMutation, useQueryClient } from 'react-query';
 
-import { deleteItemGeolocation, putItemGeolocation } from '../api';
+import {
+  ItemGeolocation,
+  deleteItemGeolocation,
+  putItemGeolocation,
+} from '../api';
 import { buildItemGeolocationKey } from '../config/keys';
 import {
   deleteItemGeolocationRoutine,
