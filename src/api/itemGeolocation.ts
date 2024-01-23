@@ -1,4 +1,4 @@
-import { DiscriminatedItem, Item, UUID } from '@graasp/sdk';
+import { DiscriminatedItem, UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types';
 import { verifyAuthentication } from './axios';
@@ -6,6 +6,7 @@ import {
   buildDeleteItemGeolocationRoute,
   buildGetItemGeolocationRoute,
   buildGetItemsInMapRoute,
+  buildPostItemWithGeolocationRoute,
   buildPutItemGeolocationRoute,
 } from './routes';
 
@@ -41,13 +42,19 @@ export const putItemGeolocation = async (
   );
 
 export const postItemWithGeolocation = async (
-  payload: { lat: number; lng: number; parentItemId: UUID } & Partial<Item>,
+  payload: {
+    lat: number;
+    lng: number;
+    parentItemId?: UUID;
+  } & Partial<DiscriminatedItem>,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
       .post<void>(
-        `${API_HOST}/${buildPutItemGeolocationRoute(payload.parentItemId)}`,
+        `${API_HOST}/${buildPostItemWithGeolocationRoute(
+          payload.parentItemId,
+        )}`,
         {
           lat: payload.lat,
           lng: payload.lng,

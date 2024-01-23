@@ -1,4 +1,4 @@
-import { Item, UUID } from '@graasp/sdk';
+import { DiscriminatedItem, UUID } from '@graasp/sdk';
 
 import { useMutation, useQueryClient } from 'react-query';
 
@@ -48,8 +48,8 @@ export default (queryConfig: QueryClientConfig) => {
         payload: {
           lat: number;
           lng: number;
-          parentItemId: UUID;
-        } & Partial<Item>,
+          parentItemId?: UUID;
+        } & Partial<DiscriminatedItem>,
       ) => postItemWithGeolocation(payload, queryConfig),
       {
         onSuccess: () => {
