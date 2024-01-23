@@ -55,10 +55,7 @@ export const postItemWithGeolocation = async (
         `${API_HOST}/${buildPostItemWithGeolocationRoute(
           payload.parentItemId,
         )}`,
-        {
-          lat: payload.lat,
-          lng: payload.lng,
-        },
+        payload,
       )
       .then(({ data }) => data),
   );
