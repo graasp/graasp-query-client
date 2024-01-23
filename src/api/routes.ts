@@ -457,7 +457,8 @@ export const buildGetItemsInMapRoute = ({
   lat2: number;
   lng1: number;
   lng2: number;
-}) => `${ITEMS_ROUTE}/map?lat1=${lat1}&lat2=${lat2}&lng1=${lng1}&lng2=${lng2}`;
+}) =>
+  `${ITEMS_ROUTE}/geolocation?lat1=${lat1}&lat2=${lat2}&lng1=${lng1}&lng2=${lng2}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,
