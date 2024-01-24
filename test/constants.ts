@@ -14,9 +14,10 @@ import {
   FolderItemType,
   HttpMethod,
   Invitation,
+  ItemBookmark,
   ItemCategory,
-  ItemFavorite,
   ItemFlag,
+  ItemGeolocation,
   ItemLike,
   ItemLoginSchema,
   ItemLoginSchemaType,
@@ -215,7 +216,7 @@ export const RECYCLED_ITEM_DATA: RecycledItemData[] = [
   },
 ];
 
-export const FAVORITE_ITEM: ItemFavorite[] = [
+export const FAVORITE_ITEM: ItemBookmark[] = [
   {
     id: `favorite-item-id`,
     item: ITEM_1,
@@ -660,4 +661,14 @@ export const ITEM_PUBLISHED_DATA: ItemPublished = {
   item: ITEM_1,
   createdAt: '2023-09-06T11:50:32.894Z',
   totalViews: 1,
+};
+
+export const ITEM_GEOLOCATION: ItemGeolocation = {
+  id: 'item-published-id',
+  item: ITEM_1,
+  lat: 1,
+  lng: 1,
+  country: 'DE',
+  createdAt: '2023-09-06T11:50:32.894Z',
+  updatedAt: '2023-09-06T11:50:32.894Z',
 };

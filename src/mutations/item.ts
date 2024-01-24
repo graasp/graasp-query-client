@@ -120,7 +120,7 @@ export default (queryConfig: QueryClientConfig) => {
 
           // if item has geoloc, invalidate map related keys
           if (lat || lng) {
-            queryClient.invalidateQueries(itemsWithGeolocationKeys.all);
+            queryClient.invalidateQueries(itemsWithGeolocationKeys.allBounds);
           }
         },
       },

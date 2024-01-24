@@ -1845,13 +1845,13 @@ __metadata:
 
 "@graasp/sdk@github:graasp/graasp-sdk#item-geolocation":
   version: 3.5.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=7f9b1c7e88c8f22fa9beeb871d3a577c110cc0eb"
+  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=c2a2b310ec7989f2b7358521d04c563a155a8c91"
   dependencies:
     date-fns: "npm:3.3.1"
     js-cookie: "npm:3.0.5"
     uuid: "npm:9.0.1"
     validator: "npm:13.11.0"
-  checksum: 95a6309e11f70364c0f5ccb46317e16a3ebc8bf4766aaf0cac092e59b6f74b935253a9d1b62ed254879f62e64cb093b081935b553f71e61c9ab9823ca9ddb01c
+  checksum: c865daa5256c9e0946fcc0b096cb0bd9d2e0c69374f3e9ef4a18de5d45b717028d12e83694a5254c42febe052ff8467427aa1b890187cc01ffaf8d102627fa3d
   languageName: node
   linkType: hard
 

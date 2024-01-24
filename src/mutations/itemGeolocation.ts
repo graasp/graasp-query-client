@@ -1,9 +1,12 @@
-import { ItemGeolocation, UUID } from '@graasp/sdk';
+import { Item, ItemGeolocation } from '@graasp/sdk';
 
 import { useMutation, useQueryClient } from 'react-query';
 
 import { deleteItemGeolocation, putItemGeolocation } from '../api';
-import { buildItemGeolocationKey } from '../config/keys';
+import {
+  buildItemGeolocationKey,
+  itemsWithGeolocationKeys,
+} from '../config/keys';
 import {
   deleteItemGeolocationRoutine,
   putItemGeolocationRoutine,
@@ -14,8 +17,9 @@ export default (queryConfig: QueryClientConfig) => {
   const usePutItemGeolocation = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (payload: { itemId: UUID; lat: number; lng: number }) =>
-        putItemGeolocation(payload, queryConfig),
+      (
+        payload: { itemId: Item['id'] } & Pick<ItemGeolocation, 'lat' | 'lng'>,
+      ) => putItemGeolocation(payload, queryConfig),
       {
         onSuccess: () => {
           queryConfig.notifier?.({
@@ -30,6 +34,7 @@ export default (queryConfig: QueryClientConfig) => {
         },
         onSettled: (_data, _error, { itemId }) => {
           queryClient.invalidateQueries(buildItemGeolocationKey(itemId));
+          queryClient.invalidateQueries(itemsWithGeolocationKeys.allBounds);
         },
       },
     );
@@ -38,32 +43,15 @@ export default (queryConfig: QueryClientConfig) => {
   const useDeleteItemGeolocation = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (payload: { itemId: UUID }) =>
+      (payload: { itemId: Item['id'] }) =>
         deleteItemGeolocation(payload, queryConfig),
       {
-        onMutate: async ({ id, itemId }: { id: UUID; itemId: UUID }) => {
-          const key = buildItemGeolocationKey(itemId);
-
-          const prevValue = queryClient.getQueryData<ItemGeolocation[]>(key);
-
-          // remove ItemGeolocation from list
-          if (prevValue) {
-            queryClient.setQueryData(
-              key,
-              prevValue.filter(({ id: iId }) => iId !== id),
-            );
-            return { prevValue };
-          }
-          return {};
-        },
         onSuccess: () => {
           queryConfig.notifier?.({
             type: deleteItemGeolocationRoutine.SUCCESS,
           });
         },
-        onError: (error: Error, { itemId }, context) => {
-          const key = buildItemGeolocationKey(itemId);
-          queryClient.setQueryData(key, context?.prevValue);
+        onError: (error: Error) => {
           queryConfig.notifier?.({
             type: deleteItemGeolocationRoutine.FAILURE,
             payload: { error },
@@ -71,6 +59,7 @@ export default (queryConfig: QueryClientConfig) => {
         },
         onSettled: (_data, _error, { itemId }) => {
           queryClient.invalidateQueries(buildItemGeolocationKey(itemId));
+          queryClient.invalidateQueries(itemsWithGeolocationKeys.allBounds);
         },
       },
     );

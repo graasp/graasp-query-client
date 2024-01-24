@@ -1,4 +1,4 @@
-import { UUID } from '@graasp/sdk';
+import { Item, ItemGeolocation } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
@@ -14,7 +14,7 @@ import { QueryClientConfig } from '../types';
 export default (queryConfig: QueryClientConfig) => {
   const { notifier, defaultQueryOptions } = queryConfig;
 
-  const useItemGeolocation = (id?: UUID) =>
+  const useItemGeolocation = (id?: Item['id']) =>
     useQuery({
       queryKey: buildItemGeolocationKey(id),
       queryFn: () => {
@@ -39,24 +39,32 @@ export default (queryConfig: QueryClientConfig) => {
     lng1,
     lng2,
   }: {
-    lat1: number;
-    lat2: number;
-    lng1: number;
-    lng2: number;
-  }) =>
-    useQuery({
-      queryKey: itemsWithGeolocationKeys.single({ lat1, lat2, lng1, lng2 }),
+    lat1: ItemGeolocation['lat'];
+    lat2: ItemGeolocation['lat'];
+    lng1: ItemGeolocation['lng'];
+    lng2: ItemGeolocation['lng'];
+  }) => {
+    const enabled = Boolean(
+      (lat1 || lat1 === 0) &&
+        (lat2 || lat2 === 0) &&
+        (lng1 || lng1 === 0) &&
+        (lng2 || lng2 === 0),
+    );
+
+    return useQuery({
+      queryKey: itemsWithGeolocationKeys.inBounds({ lat1, lat2, lng1, lng2 }),
       queryFn: () => {
-        if (!lat1 || !lat2 || !lng1 || !lng2) {
+        if (!enabled) {
           throw new UndefinedArgument({ lat1, lat2, lng1, lng2 });
         }
 
         return Api.getItemsInMap({ lat1, lat2, lng1, lng2 }, queryConfig);
       },
       // question: cat lat or lng be 0?
-      enabled: Boolean(lat1 && lat2 && lng1 && lng2),
+      enabled,
       ...defaultQueryOptions,
     });
+  };
 
   return { useItemGeolocation, useItemsInMap };
 };

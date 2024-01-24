@@ -1,4 +1,4 @@
-import { ItemGeolocation, UUID } from '@graasp/sdk';
+import { Item, ItemGeolocation, UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types';
 import { verifyAuthentication } from './axios';
@@ -19,7 +19,7 @@ export const getItemGeolocation = async (
     .then(({ data }) => data);
 
 export const putItemGeolocation = async (
-  payload: { itemId: UUID; lat: number; lng: number },
+  payload: { itemId: Item['id'] } & Pick<ItemGeolocation, 'lat' | 'lng'>,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
@@ -32,7 +32,12 @@ export const putItemGeolocation = async (
   );
 
 export const getItemsInMap = async (
-  payload: { lat1: number; lat2: number; lng1: number; lng2: number },
+  payload: {
+    lat1: ItemGeolocation['lat'];
+    lat2: ItemGeolocation['lat'];
+    lng1: ItemGeolocation['lng'];
+    lng2: ItemGeolocation['lng'];
+  },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>

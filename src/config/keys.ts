@@ -281,8 +281,8 @@ export const OWN_PUBLIC_PROFILE_KEY = ['own-profile'];
 export const buildPublicProfileKey = (memberId: UUID) => ['profile', memberId];
 
 export const itemsWithGeolocationKeys = {
-  all: [ITEMS_CONTEXT, 'map'],
-  single: ({
+  allBounds: [ITEMS_CONTEXT, 'map'],
+  inBounds: ({
     lat1,
     lat2,
     lng1,
@@ -292,7 +292,7 @@ export const itemsWithGeolocationKeys = {
     lat2: number;
     lng1: number;
     lng2: number;
-  }) => [...itemsWithGeolocationKeys.all, { lat1, lat2, lng1, lng2 }],
+  }) => [...itemsWithGeolocationKeys.allBounds, { lat1, lat2, lng1, lng2 }],
 };
 
 export const buildItemGeolocationKey = (itemId?: UUID) => [

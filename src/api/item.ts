@@ -79,10 +79,7 @@ type AllOrNothing<T> = T | Partial<Record<keyof T, undefined>>;
 export type PostItemPayloadType = Partial<DiscriminatedItem> &
   Pick<DiscriminatedItem, 'type' | 'name'> & {
     parentId?: UUID;
-  } & AllOrNothing<{
-    lat: ItemGeolocation['lat'];
-    lng: ItemGeolocation['lng'];
-  }>;
+  } & AllOrNothing<Pick<ItemGeolocation, 'lat' | 'lng'>>;
 
 // payload = {name, type, description, extra, lat, lng}
 // querystring = {parentId}
