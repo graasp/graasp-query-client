@@ -23,6 +23,7 @@ import {
   buildItemKey,
   buildItemThumbnailKey,
   getKeyForParentId,
+  itemsWithGeolocationKeys,
 } from '../config/keys';
 import {
   copyItemsRoutine,
@@ -113,9 +114,14 @@ export default (queryConfig: QueryClientConfig) => {
         onError: (error: Error) => {
           notifier?.({ type: createItemRoutine.FAILURE, payload: { error } });
         },
-        onSettled: (_data, _error, { parentId }) => {
+        onSettled: (_data, _error, { lat, lng, parentId }) => {
           const key = getKeyForParentId(parentId);
           queryClient.invalidateQueries(key);
+
+          // if item has geoloc, invalidate map related keys
+          if (lat || lng) {
+            queryClient.invalidateQueries(itemsWithGeolocationKeys.all);
+          }
         },
       },
     );

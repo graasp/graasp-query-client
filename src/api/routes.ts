@@ -445,8 +445,6 @@ export const buildGetItemGeolocationRoute = (itemId: UUID) =>
   `${ITEMS_ROUTE}/${itemId}/geolocation`;
 export const buildPutItemGeolocationRoute = (itemId: UUID) =>
   `${ITEMS_ROUTE}/${itemId}/geolocation`;
-export const buildPostItemWithGeolocationRoute = (itemId?: UUID) =>
-  `${ITEMS_ROUTE}/map${itemId ? `?id=${itemId}` : ''}`;
 export const buildDeleteItemGeolocationRoute = (itemId: UUID) =>
   `${ITEMS_ROUTE}/${itemId}/geolocation`;
 export const buildGetItemsInMapRoute = ({
