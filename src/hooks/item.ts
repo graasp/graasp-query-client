@@ -454,7 +454,6 @@ export default (
         },
         ...defaultQueryOptions,
         enabled: Boolean(id) && shouldFetch,
-        cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
       });
     },
 
@@ -483,7 +482,6 @@ export default (
         },
         ...defaultQueryOptions,
         enabled: Boolean(id) && shouldFetch,
-        cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
       });
     },
 
