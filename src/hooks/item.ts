@@ -403,8 +403,8 @@ export default (
       return useQuery({
         queryKey: RECYCLED_ITEMS_KEY,
         queryFn: () =>
-          Api.getRecycledItemsData(queryConfig).then(
-            (data) => data?.map(({ item }: RecycledItemData) => item),
+          Api.getRecycledItemsData(queryConfig).then((data) =>
+            data?.map(({ item }: RecycledItemData) => item),
           ),
         ...defaultQueryOptions,
       });

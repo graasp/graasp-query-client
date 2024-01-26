@@ -68,9 +68,9 @@ export const getAccessibleItems = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .get<Paginated<DiscriminatedItem>>(
-        `${API_HOST}/${buildGetAccessibleItems(params, pagination)}`,
-      )
+      .get<
+        Paginated<DiscriminatedItem>
+      >(`${API_HOST}/${buildGetAccessibleItems(params, pagination)}`)
       .then(({ data }) => data),
   );
 
@@ -131,9 +131,9 @@ export const getChildren = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<DiscriminatedItem[]>(
-      `${API_HOST}/${buildGetChildrenRoute(id, ordered)}`,
-    )
+    .get<
+      DiscriminatedItem[]
+    >(`${API_HOST}/${buildGetChildrenRoute(id, ordered)}`)
     .then(({ data }) => data);
 
 export const getParents = async (

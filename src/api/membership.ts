@@ -17,9 +17,9 @@ export const getMembershipsForItems = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<ResultOf<ItemMembership[]>>(
-      `${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`,
-    )
+    .get<
+      ResultOf<ItemMembership[]>
+    >(`${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`)
     .then(({ data }) => data);
 
 export const postManyItemMemberships = async (

@@ -18,9 +18,9 @@ export const getAllPublishedItems = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<DiscriminatedItem[]>(
-      `${API_HOST}/${buildGetAllPublishedItemsRoute(args?.categoryIds)}`,
-    )
+    .get<
+      DiscriminatedItem[]
+    >(`${API_HOST}/${buildGetAllPublishedItemsRoute(args?.categoryIds)}`)
     .then(({ data }) => data);
 
 export const getMostLikedPublishedItems = async (
@@ -28,9 +28,9 @@ export const getMostLikedPublishedItems = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<DiscriminatedItem[]>(
-      `${API_HOST}/${buildGetMostLikedPublishedItemsRoute(args?.limit)}`,
-    )
+    .get<
+      DiscriminatedItem[]
+    >(`${API_HOST}/${buildGetMostLikedPublishedItemsRoute(args?.limit)}`)
     .then(({ data }) => data);
 
 export const getMostRecentPublishedItems = async (
@@ -38,9 +38,9 @@ export const getMostRecentPublishedItems = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<DiscriminatedItem[]>(
-      `${API_HOST}/${buildGetMostRecentPublishedItemsRoute(args?.limit)}`,
-    )
+    .get<
+      DiscriminatedItem[]
+    >(`${API_HOST}/${buildGetMostRecentPublishedItemsRoute(args?.limit)}`)
     .then(({ data }) => data);
 
 export const getPublishedItemsForMember = async (
@@ -48,9 +48,9 @@ export const getPublishedItemsForMember = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<DiscriminatedItem[]>(
-      `${API_HOST}/${buildGetPublishedItemsForMemberRoute(memberId)}`,
-    )
+    .get<
+      DiscriminatedItem[]
+    >(`${API_HOST}/${buildGetPublishedItemsForMemberRoute(memberId)}`)
     .then(({ data }) => data);
 
 export const getItemPublishedInformation = async (
@@ -68,9 +68,9 @@ export const getManyItemPublishedInformations = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<ResultOf<ItemPublished>>(
-      `${API_HOST}/${buildManyGetItemPublishedInformationsRoute(ids)}`,
-    )
+    .get<
+      ResultOf<ItemPublished>
+    >(`${API_HOST}/${buildManyGetItemPublishedInformationsRoute(ids)}`)
     .then(({ data }) => data);
 
 export const publishItem = async (
