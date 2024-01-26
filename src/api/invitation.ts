@@ -26,10 +26,9 @@ export const postInvitations = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .post<ResultOf<Invitation>>(
-        `${API_HOST}/${buildPostInvitationsRoute(itemId)}`,
-        { invitations },
-      )
+      .post<
+        ResultOf<Invitation>
+      >(`${API_HOST}/${buildPostInvitationsRoute(itemId)}`, { invitations })
       .then(({ data }) => data),
   );
 
@@ -39,9 +38,9 @@ export const getInvitationsForItem = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .get<Invitation[]>(
-        `${API_HOST}/${buildGetItemInvitationsForItemRoute(id)}`,
-      )
+      .get<
+        Invitation[]
+      >(`${API_HOST}/${buildGetItemInvitationsForItemRoute(id)}`)
       .then(({ data }) => data),
   );
 

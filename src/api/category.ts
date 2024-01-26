@@ -55,9 +55,9 @@ export const buildGetItemsForCategoriesRoute = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<DiscriminatedItem[]>(
-      `${API_HOST}/${buildGetItemsInCategoryRoute(categoryIds)}`,
-    )
+    .get<
+      DiscriminatedItem[]
+    >(`${API_HOST}/${buildGetItemsInCategoryRoute(categoryIds)}`)
     .then(({ data }) => data);
 
 // payload: itemId, categoryId
