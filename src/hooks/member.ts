@@ -10,7 +10,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import * as Api from '../api';
 import { splitRequestByIdsAndReturn } from '../api/axios';
 import {
-  CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
+  CONSTANT_KEY_STALE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
 } from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
@@ -104,7 +104,7 @@ export default (queryConfig: QueryClientConfig) => {
         },
         ...defaultQueryOptions,
         enabled: Boolean(id) && shouldFetch,
-        cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
+        staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       });
     },
 
@@ -138,7 +138,7 @@ export default (queryConfig: QueryClientConfig) => {
         },
         ...defaultQueryOptions,
         enabled: Boolean(id) && shouldFetch,
-        cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
+        staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       });
     },
 

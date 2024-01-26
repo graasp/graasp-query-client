@@ -20,10 +20,9 @@ import * as Api from '../api';
 import { splitRequestByIdsAndReturn } from '../api/axios';
 import { ItemSearchParams } from '../api/routes';
 import {
-  CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
+  CONSTANT_KEY_STALE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
   PAGINATED_ITEMS_PER_PAGE,
-  STALE_TIME_CHILDREN_PAGINATED_MILLISECONDS,
 } from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
 import {
@@ -185,7 +184,6 @@ export default (
 
       const childrenPaginatedOptions = {
         ...defaultQueryOptions,
-        staleTime: STALE_TIME_CHILDREN_PAGINATED_MILLISECONDS,
       };
 
       return useInfiniteQuery(
@@ -372,7 +370,7 @@ export default (
         },
         enabled: Boolean(id) && enabled,
         ...defaultQueryOptions,
-        cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
+        staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       }),
 
     useFileContentUrl: (
@@ -389,7 +387,7 @@ export default (
         },
         enabled: Boolean(id) && enabled,
         ...defaultQueryOptions,
-        cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
+        staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       }),
 
     useRecycledItems: (options?: { getUpdates?: boolean }) => {
@@ -454,6 +452,7 @@ export default (
         },
         ...defaultQueryOptions,
         enabled: Boolean(id) && shouldFetch,
+        staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       });
     },
 
@@ -482,6 +481,7 @@ export default (
         },
         ...defaultQueryOptions,
         enabled: Boolean(id) && shouldFetch,
+        staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       });
     },
 

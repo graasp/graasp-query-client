@@ -4,7 +4,6 @@ import {
   ItemType,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
   RecycledItemData,
-  ThumbnailSize,
   UUID,
 } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
@@ -21,7 +20,6 @@ import {
   RECYCLED_ITEMS_DATA_KEY,
   buildItemChildrenKey,
   buildItemKey,
-  buildItemThumbnailKey,
   getKeyForParentId,
   itemsWithGeolocationKeys,
 } from '../config/keys';
@@ -493,12 +491,6 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { id }) => {
-          Object.values(ThumbnailSize).forEach((size) => {
-            const key1 = buildItemThumbnailKey({ replyUrl: false, id, size });
-            queryClient.invalidateQueries(key1);
-            const key2 = buildItemThumbnailKey({ replyUrl: true, id, size });
-            queryClient.invalidateQueries(key2);
-          });
           // invalidate item to update settings.hasThumbnail
           queryClient.invalidateQueries(buildItemKey(id));
         },
