@@ -19,14 +19,17 @@ export const getItemGeolocation = async (
     .then(({ data }) => data);
 
 export const putItemGeolocation = async (
-  payload: { itemId: Item['id'] } & Pick<ItemGeolocation, 'lat' | 'lng'>,
+  payload: {
+    itemId: Item['id'];
+    geolocation: Pick<ItemGeolocation, 'lat' | 'lng'>;
+  },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
       .put<void>(
         `${API_HOST}/${buildPutItemGeolocationRoute(payload.itemId)}`,
-        { lat: payload.lat, lng: payload.lng },
+        payload,
       )
       .then(({ data }) => data),
   );

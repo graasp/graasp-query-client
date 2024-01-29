@@ -18,12 +18,10 @@ export default (queryConfig: QueryClientConfig) => {
   const usePutItemGeolocation = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (
-        payload: { itemId: DiscriminatedItem['id'] } & Pick<
-          ItemGeolocation,
-          'lat' | 'lng'
-        >,
-      ) => putItemGeolocation(payload, queryConfig),
+      (payload: {
+        itemId: DiscriminatedItem['id'];
+        geolocation: Pick<ItemGeolocation, 'lat' | 'lng'>;
+      }) => putItemGeolocation(payload, queryConfig),
       {
         onSuccess: () => {
           queryConfig.notifier?.({

@@ -60,7 +60,6 @@ export default (queryConfig: QueryClientConfig) => {
 
         return Api.getItemsInMap({ lat1, lat2, lng1, lng2 }, queryConfig);
       },
-      // question: cat lat or lng be 0?
       enabled,
       ...defaultQueryOptions,
     });

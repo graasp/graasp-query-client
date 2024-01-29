@@ -75,16 +75,24 @@ export const getAccessibleItems = async (
       .then(({ data }) => data),
   );
 
-type AllOrNothing<T> = T | Partial<Record<keyof T, undefined>>;
 export type PostItemPayloadType = Partial<DiscriminatedItem> &
   Pick<DiscriminatedItem, 'type' | 'name'> & {
     parentId?: UUID;
-  } & AllOrNothing<Pick<ItemGeolocation, 'lat' | 'lng'>>;
+  } & {
+    geolocation?: Pick<ItemGeolocation, 'lat' | 'lng'>;
+  };
 
-// payload = {name, type, description, extra, lat, lng}
+// payload = {name, type, description, extra, geolocation}
 // querystring = {parentId}
 export const postItem = async (
-  { name, type, description, extra, parentId, lat, lng }: PostItemPayloadType,
+  {
+    name,
+    type,
+    description,
+    extra,
+    parentId,
+    geolocation,
+  }: PostItemPayloadType,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
@@ -94,8 +102,7 @@ export const postItem = async (
         type,
         description,
         extra,
-        lat,
-        lng,
+        geolocation,
       })
       .then(({ data }) => data),
   );

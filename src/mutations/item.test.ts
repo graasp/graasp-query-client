@@ -175,8 +175,7 @@ describe('Items Mutations', () => {
         await mockedMutation.mutate({
           ...newItem,
           parentId: parentItem.id,
-          lat: 1,
-          lng: 1,
+          geolocation: { lat: 1, lng: 1 },
         });
         await waitForMutation();
       });

@@ -114,13 +114,12 @@ export default (queryConfig: QueryClientConfig) => {
         onError: (error: Error) => {
           notifier?.({ type: createItemRoutine.FAILURE, payload: { error } });
         },
-        onSettled: (_data, _error, { lat, lng, parentId }) => {
-          console.log(lat, lng);
+        onSettled: (_data, _error, { geolocation, parentId }) => {
           const key = getKeyForParentId(parentId);
           queryClient.invalidateQueries(key);
 
           // if item has geoloc, invalidate map related keys
-          if (lat || lng) {
+          if (geolocation) {
             queryClient.invalidateQueries(itemsWithGeolocationKeys.allBounds);
           }
         },
