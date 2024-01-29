@@ -1,5 +1,6 @@
 import {
   DiscriminatedItem,
+  ItemGeolocation,
   RecycledItemData,
   ResultOf,
   UUID,
@@ -77,11 +78,21 @@ export const getAccessibleItems = async (
 export type PostItemPayloadType = Partial<DiscriminatedItem> &
   Pick<DiscriminatedItem, 'type' | 'name'> & {
     parentId?: UUID;
+  } & {
+    geolocation?: Pick<ItemGeolocation, 'lat' | 'lng'>;
   };
-// payload = {name, type, description, extra}
+
+// payload = {name, type, description, extra, geolocation}
 // querystring = {parentId}
 export const postItem = async (
-  { name, type, description, extra, parentId }: PostItemPayloadType,
+  {
+    name,
+    type,
+    description,
+    extra,
+    parentId,
+    geolocation,
+  }: PostItemPayloadType,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
@@ -91,6 +102,7 @@ export const postItem = async (
         type,
         description,
         extra,
+        geolocation,
       })
       .then(({ data }) => data),
   );

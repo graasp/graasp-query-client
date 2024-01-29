@@ -11,9 +11,9 @@ export class UserIsSignedOut extends Error {
 }
 
 export class UndefinedArgument extends Error {
-  constructor() {
+  constructor(data?: object) {
     super();
-    this.message = 'UnexpectedInput';
+    this.message = `UnexpectedInput ${JSON.stringify(data ?? {})}`;
     this.name = 'UnexpectedInput';
     this.stack = new Error().stack;
   }

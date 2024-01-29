@@ -279,6 +279,28 @@ export const CURRENT_MEMBER_STORAGE_KEY = [
 
 export const OWN_PUBLIC_PROFILE_KEY = ['own-profile'];
 export const buildPublicProfileKey = (memberId: UUID) => ['profile', memberId];
+
+export const itemsWithGeolocationKeys = {
+  allBounds: [ITEMS_CONTEXT, 'map'],
+  inBounds: ({
+    lat1,
+    lat2,
+    lng1,
+    lng2,
+  }: {
+    lat1: number;
+    lat2: number;
+    lng1: number;
+    lng2: number;
+  }) => [...itemsWithGeolocationKeys.allBounds, { lat1, lat2, lng1, lng2 }],
+};
+
+export const buildItemGeolocationKey = (itemId?: UUID) => [
+  ITEMS_CONTEXT,
+  itemId,
+  'geolocation',
+];
+
 export const DATA_KEYS = {
   APPS_KEY,
   buildItemKey,
@@ -320,4 +342,6 @@ export const DATA_KEYS = {
   buildSearchPublishedItemsKey,
   OWN_PUBLIC_PROFILE_KEY,
   buildPublicProfileKey,
+  itemsWithGeolocationKeys,
+  buildItemGeolocationKey,
 };

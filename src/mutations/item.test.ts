@@ -15,6 +15,7 @@ import nock from 'nock';
 
 import {
   ITEMS,
+  ITEM_GEOLOCATION,
   OK_RESPONSE,
   RECYCLED_ITEM_DATA,
   THUMBNAIL_BLOB_RESPONSE,
@@ -44,6 +45,7 @@ import {
   buildItemKey,
   buildItemThumbnailKey,
   getKeyForParentId,
+  itemsWithGeolocationKeys,
 } from '../config/keys';
 import { uploadFileRoutine, uploadItemThumbnailRoutine } from '../routines';
 import {
@@ -135,6 +137,54 @@ describe('Items Mutations', () => {
         queryClient.getQueryState(getKeyForParentId(parentItem.id))
           ?.isInvalidated,
       ).toBeTruthy();
+    });
+
+    it('Post item with geoloc', async () => {
+      const parentItem = ITEMS[1]!;
+      const singleKey = itemsWithGeolocationKeys.inBounds({
+        lat1: 1,
+        lat2: 2,
+        lng1: 1,
+        lng2: 2,
+      });
+      const response = {
+        ...newItem,
+        id: 'someid',
+        path: buildPath({ prefix: parentItem.path, ids: ['someid'] }),
+      };
+
+      // set default data
+      queryClient.setQueryData(getKeyForParentId(parentItem.id), [ITEMS[2]]);
+      queryClient.setQueryData(singleKey, [ITEM_GEOLOCATION]);
+
+      const endpoints = [
+        {
+          response,
+          method: HttpMethod.POST,
+          route: `/${buildPostItemRoute(parentItem.id)}`,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({
+          ...newItem,
+          parentId: parentItem.id,
+          geolocation: { lat: 1, lng: 1 },
+        });
+        await waitForMutation();
+      });
+
+      expect(
+        queryClient.getQueryState(getKeyForParentId(parentItem.id))
+          ?.isInvalidated,
+      ).toBeTruthy();
+      expect(queryClient.getQueryState(singleKey)?.isInvalidated).toBeTruthy();
     });
 
     it('Unauthorized', async () => {

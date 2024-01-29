@@ -21,3 +21,4 @@ export * from './search';
 export * from './subscription';
 export * from './publicProfile';
 export * from './shortLink';
+export * from './itemGeolocation';

@@ -17,3 +17,4 @@ export * from './authentication';
 export * from './plan';
 export * from './itemPublish';
 export * from './publicProfile';
+export * from './itemGeolocation';
