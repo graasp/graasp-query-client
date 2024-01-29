@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "@graasp/sdk": "3.6.0",
-    "@graasp/translations": "github:graasp/graasp-translations#geolocation",
+    "@graasp/translations": "1.23.0",
     "axios": "0.27.2",
     "crypto-js": "4.2.0",
     "date-fns": "3.3.1",
