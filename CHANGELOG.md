@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.4.0](https://github.com/graasp/graasp-query-client/compare/v2.3.2...v2.4.0) (2024-01-29)
+
+
+### Features
+
+* add geolocation hooks and mutations ([#590](https://github.com/graasp/graasp-query-client/issues/590)) ([48ed281](https://github.com/graasp/graasp-query-client/commit/48ed2813891f2166a8a836bba9913396e40c0825))
+
+
+### Bug Fixes
+
+* better understanding of `staleTime` and `cacheTime`  ([#594](https://github.com/graasp/graasp-query-client/issues/594)) ([662549a](https://github.com/graasp/graasp-query-client/commit/662549a0063ce12488c07ffc3af076c2dc7773a8))
+* use stale time instead of cache time for thumbnails, app, categories queries ([662549a](https://github.com/graasp/graasp-query-client/commit/662549a0063ce12488c07ffc3af076c2dc7773a8))
+
 ## [2.3.2](https://github.com/graasp/graasp-query-client/compare/v2.3.1...v2.3.2) (2024-01-22)
 
 
