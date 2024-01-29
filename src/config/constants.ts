@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 
 // React Query Configs
 
-// duration for which query data is considered "fresh", meaning all access to that entry will be from cached data, no refetch.
+// duration for which query data is considered "fresh", meaning every access to that entry will be from cached data, no refetch.
 export const STALE_TIME_MILLISECONDS = 3 * 1000; // default is 3 seconds to deduplicate calls to the same resource on load.
 // time during which to keep the cache entry of a query that is not on screen.
 // increasing this time allows to keep data between screens for example.
