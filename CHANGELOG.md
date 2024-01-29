@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.1](https://github.com/graasp/graasp-query-client/compare/v2.3.2...v2.4.1) (2024-01-29)
+
+
+### Bug Fixes
+
+* update translations ([bc1c85d](https://github.com/graasp/graasp-query-client/commit/bc1c85de8db672a4c20ed8312f6b229d2b41aa74))
+
 ## [2.4.0](https://github.com/graasp/graasp-query-client/compare/v2.3.2...v2.4.0) (2024-01-29)
 
 
