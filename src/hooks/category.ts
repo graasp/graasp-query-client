@@ -3,7 +3,7 @@ import { UUID } from '@graasp/sdk';
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
-import { CONSTANT_KEY_CACHE_TIME_MILLISECONDS } from '../config/constants';
+import { CONSTANT_KEY_STALE_TIME_MILLISECONDS } from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
 import {
   buildCategoriesKey,
@@ -22,7 +22,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: buildCategoriesKey(typeIds),
       queryFn: () => Api.getCategories(queryConfig, typeIds),
       ...defaultQueryOptions,
-      cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
+      staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
     });
 
   const useCategory = (categoryId: UUID) =>
@@ -30,7 +30,7 @@ export default (queryConfig: QueryClientConfig) => {
       queryKey: buildCategoryKey(categoryId),
       queryFn: () => Api.getCategory(categoryId, queryConfig),
       ...defaultQueryOptions,
-      cacheTime: CONSTANT_KEY_CACHE_TIME_MILLISECONDS,
+      staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
     });
 
   const useItemCategories = (itemId?: UUID) =>
