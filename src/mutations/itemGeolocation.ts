@@ -1,4 +1,5 @@
-import { Item, ItemGeolocation } from '@graasp/sdk';
+import { DiscriminatedItem, ItemGeolocation } from '@graasp/sdk';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from 'react-query';
 
@@ -18,12 +19,16 @@ export default (queryConfig: QueryClientConfig) => {
     const queryClient = useQueryClient();
     return useMutation(
       (
-        payload: { itemId: Item['id'] } & Pick<ItemGeolocation, 'lat' | 'lng'>,
+        payload: { itemId: DiscriminatedItem['id'] } & Pick<
+          ItemGeolocation,
+          'lat' | 'lng'
+        >,
       ) => putItemGeolocation(payload, queryConfig),
       {
         onSuccess: () => {
           queryConfig.notifier?.({
             type: putItemGeolocationRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.PUT_ITEM_GEOLOCATION },
           });
         },
         onError: (error: Error) => {
@@ -43,12 +48,13 @@ export default (queryConfig: QueryClientConfig) => {
   const useDeleteItemGeolocation = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (payload: { itemId: Item['id'] }) =>
+      (payload: { itemId: DiscriminatedItem['id'] }) =>
         deleteItemGeolocation(payload, queryConfig),
       {
         onSuccess: () => {
           queryConfig.notifier?.({
             type: deleteItemGeolocationRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_GEOLOCATION },
           });
         },
         onError: (error: Error) => {

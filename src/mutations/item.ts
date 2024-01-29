@@ -115,6 +115,7 @@ export default (queryConfig: QueryClientConfig) => {
           notifier?.({ type: createItemRoutine.FAILURE, payload: { error } });
         },
         onSettled: (_data, _error, { lat, lng, parentId }) => {
+          console.log(lat, lng);
           const key = getKeyForParentId(parentId);
           queryClient.invalidateQueries(key);
 

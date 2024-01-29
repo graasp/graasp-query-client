@@ -1791,8 +1791,8 @@ __metadata:
     "@babel/preset-typescript": "npm:7.23.3"
     "@commitlint/cli": "npm:18.6.0"
     "@commitlint/config-conventional": "npm:18.6.0"
-    "@graasp/sdk": "github:graasp/graasp-sdk#item-geolocation"
-    "@graasp/translations": "npm:1.22.1"
+    "@graasp/sdk": "npm:3.6.0"
+    "@graasp/translations": "github:graasp/graasp-translations#geolocation"
     "@testing-library/dom": "npm:9.3.4"
     "@testing-library/jest-dom": "npm:6.3.0"
     "@testing-library/react": "npm:14.1.2"
@@ -1812,6 +1812,7 @@ __metadata:
     axios: "npm:0.27.2"
     babel-jest: "npm:29.7.0"
     crypto-js: "npm:4.2.0"
+    date-fns: "npm:3.3.1"
     env-cmd: "npm:10.1.0"
     eslint: "npm:8.56.0"
     eslint-config-airbnb: "npm:19.0.4"
@@ -1843,24 +1844,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@github:graasp/graasp-sdk#item-geolocation":
-  version: 3.5.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=c2a2b310ec7989f2b7358521d04c563a155a8c91"
+"@graasp/sdk@npm:3.6.0":
+  version: 3.6.0
+  resolution: "@graasp/sdk@npm:3.6.0"
   dependencies:
-    date-fns: "npm:3.3.1"
     js-cookie: "npm:3.0.5"
-    uuid: "npm:9.0.1"
     validator: "npm:13.11.0"
-  checksum: c865daa5256c9e0946fcc0b096cb0bd9d2e0c69374f3e9ef4a18de5d45b717028d12e83694a5254c42febe052ff8467427aa1b890187cc01ffaf8d102627fa3d
+  peerDependencies:
+    date-fns: ^3
+    uuid: ^9
+  checksum: df52e11764c727e17ce69d247805fd8a2d49ba291b84e00ca390f853f0b0eb7fc4a2153e7003044cb8f84edf9c2c9cae91b79a55d1e71e71c69317e40145ad12
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.22.1":
+"@graasp/translations@github:graasp/graasp-translations#geolocation":
   version: 1.22.1
-  resolution: "@graasp/translations@npm:1.22.1"
+  resolution: "@graasp/translations@https://github.com/graasp/graasp-translations.git#commit=38e9980b5d0450a1fe80b942aae798b20b01ab89"
   dependencies:
     i18next: "npm:23.7.16"
-  checksum: 29043007a9926ff54236101c41ceb92eead09d8ce99edf46943790171f3275fb2cc1acd552bfa605247c42b4866bbf1f83dd889da3f571d388eca5f2dd598e17
+  checksum: d4499181f921aa08bbaf8c7f191d03d5b463c3d55ebb377ccd17edb6603643b239eb5d33af2e8476bca906f1ed5e3bc47271bbfedac1ba471fd393c0ecddb426
   languageName: node
   linkType: hard
 
