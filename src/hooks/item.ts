@@ -18,7 +18,7 @@ import {
 
 import * as Api from '../api';
 import { splitRequestByIdsAndReturn } from '../api/axios';
-import { ItemSearchParams } from '../api/routes';
+import { ItemChildrenParams, ItemSearchParams } from '../api/routes';
 import {
   CONSTANT_KEY_STALE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
@@ -134,15 +134,15 @@ export default (
 
     useChildren: (
       id?: UUID,
+      params?: ItemChildrenParams,
       options?: {
         enabled?: boolean;
-        ordered?: boolean;
         getUpdates?: boolean;
         placeholderData?: DiscriminatedItem[];
       },
     ) => {
       const enabled = options?.enabled ?? true;
-      const ordered = options?.ordered ?? true;
+      const ordered = params?.ordered ?? true;
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       itemWsHooks?.useChildrenUpdates(enabled && getUpdates ? id : null);
@@ -154,7 +154,7 @@ export default (
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getChildren(id, ordered, queryConfig);
+          return Api.getChildren(id, { ...params, ordered }, queryConfig);
         },
         onSuccess: async (items) => {
           if (items?.length) {

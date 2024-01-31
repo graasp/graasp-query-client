@@ -98,7 +98,7 @@ describe('Items Hooks', () => {
 
   describe('useChildren', () => {
     const id = 'item-id';
-    const route = `/${buildGetChildrenRoute(id, true)}`;
+    const route = `/${buildGetChildrenRoute(id, { ordered: true })}`;
     const response = ITEMS;
     const key = buildItemChildrenKey(id);
 
@@ -140,7 +140,7 @@ describe('Items Hooks', () => {
     });
 
     it(`enabled=false does not fetch`, async () => {
-      const hook = () => hooks.useChildren(id, { enabled: false });
+      const hook = () => hooks.useChildren(id, {}, { enabled: false });
       const endpoints = [{ route, response }];
       const { data, isFetched } = await mockHook({
         endpoints,
@@ -159,7 +159,9 @@ describe('Items Hooks', () => {
     });
 
     it(`ordered=false fetch children`, async () => {
-      const unorderedRoute = `/${buildGetChildrenRoute(id, false)}`;
+      const unorderedRoute = `/${buildGetChildrenRoute(id, {
+        ordered: false,
+      })}`;
       const hook = () => hooks.useChildren(id, { ordered: false });
       const endpoints = [{ route: unorderedRoute, response }];
       const { data, isSuccess } = await mockHook({
@@ -182,7 +184,7 @@ describe('Items Hooks', () => {
     it(`Unauthorized`, async () => {
       const endpoints = [
         {
-          route: `/${buildGetChildrenRoute(id, true)}`,
+          route: `/${buildGetChildrenRoute(id, { ordered: true })}`,
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
