@@ -40,6 +40,7 @@ export const getItemsInMap = async (
     lat2: ItemGeolocation['lat'];
     lng1: ItemGeolocation['lng'];
     lng2: ItemGeolocation['lng'];
+    search?: string[];
   },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>

@@ -38,11 +38,13 @@ export default (queryConfig: QueryClientConfig) => {
     lat2,
     lng1,
     lng2,
+    search,
   }: {
     lat1: ItemGeolocation['lat'];
     lat2: ItemGeolocation['lat'];
     lng1: ItemGeolocation['lng'];
     lng2: ItemGeolocation['lng'];
+    search?: string[];
   }) => {
     const enabled = Boolean(
       (lat1 || lat1 === 0) &&
@@ -52,13 +54,22 @@ export default (queryConfig: QueryClientConfig) => {
     );
 
     return useQuery({
-      queryKey: itemsWithGeolocationKeys.inBounds({ lat1, lat2, lng1, lng2 }),
+      queryKey: itemsWithGeolocationKeys.inBounds({
+        lat1,
+        lat2,
+        lng1,
+        lng2,
+        search,
+      }),
       queryFn: () => {
         if (!enabled) {
-          throw new UndefinedArgument({ lat1, lat2, lng1, lng2 });
+          throw new UndefinedArgument({ lat1, lat2, lng1, lng2, search });
         }
 
-        return Api.getItemsInMap({ lat1, lat2, lng1, lng2 }, queryConfig);
+        return Api.getItemsInMap(
+          { lat1, lat2, lng1, lng2, search },
+          queryConfig,
+        );
       },
       enabled,
       ...defaultQueryOptions,
