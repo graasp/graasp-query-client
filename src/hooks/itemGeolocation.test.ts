@@ -81,6 +81,30 @@ describe('useItemsInMap', () => {
     expect(queryClient.getQueryData(key)).toMatchObject(response);
   });
 
+  it(`Retrieve geolocation for search`, async () => {
+    const keywords = ['here'];
+    const { data, isSuccess } = await mockHook({
+      endpoints: [
+        {
+          route: `/${ITEMS_ROUTE}/geolocation?lat1=1&lat2=1&lng1=1&lng2=1&keywords=${keywords[0]}`,
+          response,
+        },
+      ],
+      hook: () => hooks.useItemsInMap({ ...values, keywords }),
+      wrapper,
+    });
+
+    expect(isSuccess).toBeTruthy();
+    expect(data).toEqual(response);
+
+    // verify cache keys
+    expect(
+      queryClient.getQueryData(
+        itemsWithGeolocationKeys.inBounds({ ...values, keywords }),
+      ),
+    ).toMatchObject(response);
+  });
+
   it(`Retrieve geolocation for lat1=0`, async () => {
     const valuesAndLat1IsZero = { ...values, lat1: 0 };
     const { data, isSuccess } = await mockHook({

@@ -452,20 +452,20 @@ export const buildGetItemsInMapRoute = ({
   lat2,
   lng1,
   lng2,
-  search,
+  keywords,
 }: {
   lat1: number;
   lat2: number;
   lng1: number;
   lng2: number;
-  search?: string[];
+  keywords?: string[];
 }) => {
   const params = new URLSearchParams();
   params.append('lat1', lat1.toString());
   params.append('lat2', lat2.toString());
   params.append('lng1', lng1.toString());
   params.append('lng2', lng2.toString());
-  search?.forEach((s) => params.append('search', s));
+  keywords?.forEach((s) => params.append('keywords', s));
 
   const searchString = params.toString();
 
