@@ -452,13 +452,25 @@ export const buildGetItemsInMapRoute = ({
   lat2,
   lng1,
   lng2,
+  search,
 }: {
   lat1: number;
   lat2: number;
   lng1: number;
   lng2: number;
-}) =>
-  `${ITEMS_ROUTE}/geolocation?lat1=${lat1}&lat2=${lat2}&lng1=${lng1}&lng2=${lng2}`;
+  search: string[];
+}) => {
+  const params = new URLSearchParams();
+  params.append('lat1', lat1.toString());
+  params.append('lat2', lat2.toString());
+  params.append('lng1', lng1.toString());
+  params.append('lng2', lng2.toString());
+  search.forEach((s) => params.append('search', s));
+
+  const searchString = params.toString();
+
+  return `${ITEMS_ROUTE}/geolocation?${searchString}`;
+};
 
 export const API_ROUTES = {
   APPS_ROUTE,
