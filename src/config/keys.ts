@@ -43,7 +43,7 @@ export const buildItemsChildrenKey = (ids: UUID[]) => [
   'children',
   hashItemsIds(ids),
 ];
-export const buildItemDescendantsKey = (id: UUID) => [
+export const buildItemDescendantsKey = (id?: UUID) => [
   ITEMS_CONTEXT,
   'descendants',
   id,

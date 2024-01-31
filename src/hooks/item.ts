@@ -250,11 +250,16 @@ export default (
       });
     },
 
-    useDescendants: ({ id, enabled }: { id: UUID; enabled?: boolean }) => {
+    useDescendants: ({ id, enabled }: { id?: UUID; enabled?: boolean }) => {
       const queryClient = useQueryClient();
       return useQuery({
         queryKey: buildItemDescendantsKey(id),
-        queryFn: () => Api.getDescendants({ id }, queryConfig),
+        queryFn: () => {
+          if (!id) {
+            throw new UndefinedArgument();
+          }
+          return Api.getDescendants({ id }, queryConfig);
+        },
         onSuccess: async (items) => {
           if (items?.length) {
             // save items in their own key
