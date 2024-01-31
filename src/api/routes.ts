@@ -3,9 +3,11 @@ import {
   DiscriminatedItem,
   ItemTag,
   ItemTagType,
+  ItemType,
   Member,
   PermissionLevel,
   UUID,
+  UnionOfConst,
 } from '@graasp/sdk';
 
 import qs from 'qs';
@@ -43,6 +45,7 @@ export type ItemSearchParams =
         | 'item.created_at'
         | 'item.updated_at';
       permissions?: PermissionLevel[];
+      types?: UnionOfConst<typeof ItemType>[];
     }
   | undefined;
 export const buildGetAccessibleItems = (
