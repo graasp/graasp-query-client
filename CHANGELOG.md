@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.2](https://github.com/graasp/graasp-query-client/compare/v2.4.1...v2.4.2) (2024-02-01)
+
+
+### Bug Fixes
+
+* allow descendents id to be undefined ([#604](https://github.com/graasp/graasp-query-client/issues/604)) ([550cea8](https://github.com/graasp/graasp-query-client/commit/550cea8dd4cf04d6b589ee60e2225abc98f88e6a))
+
 ## [2.4.1](https://github.com/graasp/graasp-query-client/compare/v2.3.2...v2.4.1) (2024-01-29)
 
 
