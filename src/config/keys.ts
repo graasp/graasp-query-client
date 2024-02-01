@@ -287,12 +287,17 @@ export const itemsWithGeolocationKeys = {
     lat2,
     lng1,
     lng2,
+    keywords,
   }: {
     lat1: number;
     lat2: number;
     lng1: number;
     lng2: number;
-  }) => [...itemsWithGeolocationKeys.allBounds, { lat1, lat2, lng1, lng2 }],
+    keywords?: string[];
+  }) => [
+    ...itemsWithGeolocationKeys.allBounds,
+    { lat1, lat2, lng1, lng2, keywords },
+  ],
 };
 
 export const buildItemGeolocationKey = (itemId?: UUID) => [
