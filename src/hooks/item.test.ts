@@ -358,6 +358,16 @@ describe('Items Hooks', () => {
       expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
 
+    it(`Route constrcuted correctly for accessible folders`, async () => {
+      const typesParams = { types: [ItemType.FOLDER] };
+      const url = `/${buildGetAccessibleItems(typesParams, {})}`;
+      const urlObject = new URL(url, 'https://no-existing-url.tmp');
+      const queryParams = urlObject.searchParams;
+      const typesValue = queryParams.get('types');
+
+      expect(typesValue).toEqual(ItemType.FOLDER);
+    });
+
     it(`Unauthorized`, async () => {
       const endpoints = [
         {
