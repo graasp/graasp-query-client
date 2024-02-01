@@ -120,6 +120,16 @@ describe('Items Hooks', () => {
       }
     });
 
+    it(`Route constrcuted correctly for children folders`, async () => {
+      const typesParams = { types: [ItemType.FOLDER] };
+      const url = `/${buildGetChildrenRoute(id, typesParams)}`;
+      const urlObject = new URL(url, 'https://no-existing-url.tmp');
+      const queryParams = urlObject.searchParams;
+      const typesValue = queryParams.get('types');
+
+      expect(typesValue).toEqual(ItemType.FOLDER);
+    });
+
     it(`Undefined id does not fetch`, async () => {
       const hook = () => hooks.useChildren(undefined);
       const endpoints = [{ route, response }];
