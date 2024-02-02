@@ -120,7 +120,7 @@ describe('Items Hooks', () => {
       }
     });
 
-    it(`Route constrcuted correctly for children folders`, async () => {
+    it(`Route constructed correctly for children folders`, async () => {
       const typesParams = { types: [ItemType.FOLDER] };
       const url = `/${buildGetChildrenRoute(id, typesParams)}`;
       const urlObject = new URL(url, 'https://no-existing-url.tmp');

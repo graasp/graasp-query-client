@@ -48,12 +48,11 @@ export type ItemSearchParams =
       types?: UnionOfConst<typeof ItemType>[];
     }
   | undefined;
-export type ItemChildrenParams =
-  | {
-      ordered?: boolean;
-      types?: UnionOfConst<typeof ItemType>[];
-    }
-  | undefined;
+
+export type ItemChildrenParams = {
+  ordered?: boolean;
+  types?: UnionOfConst<typeof ItemType>[];
+};
 
 export const buildGetAccessibleItems = (
   params: ItemSearchParams,
@@ -84,10 +83,10 @@ export const buildDeleteItemsRoute = (ids: UUID[]) =>
     },
   )}`;
 export const buildGetChildrenRoute = (id: UUID, params: ItemChildrenParams) =>
-  `${ITEMS_ROUTE}/${id}/children${qs.stringify(
-    { ...params },
-    { arrayFormat: 'repeat', addQueryPrefix: true },
-  )}`;
+  `${ITEMS_ROUTE}/${id}/children${qs.stringify(params, {
+    arrayFormat: 'repeat',
+    addQueryPrefix: true,
+  })}`;
 export const buildGetItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
 export const buildGetItemParents = (id: UUID) => `${ITEMS_ROUTE}/${id}/parents`;
 export const buildGetItemDescendants = (id: UUID) =>
