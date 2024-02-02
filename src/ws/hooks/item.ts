@@ -16,11 +16,13 @@ import { useQueryClient } from 'react-query';
 
 import {
   OWN_ITEMS_KEY,
+  RECYCLED_ITEMS_DATA_KEY,
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
   accessibleItemsKeys,
   buildItemChildrenKey,
   buildItemKey,
+  buildLastItemValidationGroupKey,
 } from '../../config/keys';
 import {
   copyItemsRoutine,
@@ -95,6 +97,8 @@ export const configureWsItemHooks = (
                 break;
               }
               case OPS.DELETE: {
+                // should looks for keys that should be updated or invalidated further.
+                // leads to seeing an error message if this item was viewed in the builder for example.
                 queryClient.setQueryData(itemKey, null);
                 break;
               }
@@ -115,8 +119,8 @@ export const configureWsItemHooks = (
   },
 
   /**
-   * React hook to subscribe to the updates of the given item ID
-   * @param itemId The ID of the item of which to observe updates
+   * React hook to subscribe to the updates of the given item IDs
+   * @param itemIds The IDs of the items for which to observe updates
    */
   useItemsUpdates: (itemIds?: UUID[] | null) => {
     const queryClient = useQueryClient();
@@ -438,7 +442,7 @@ export const configureWsItemHooks = (
                 break;
               }
               default:
-                console.error('unhandled event for useRecyledItemsUpdates');
+                console.error('unhandled event for useRecycledItemsUpdates');
                 break;
             }
           }
@@ -458,6 +462,7 @@ export const configureWsItemHooks = (
    * @param userId The ID of the user on which to observe item feedback updates
    */
   useItemFeedbackUpdates: (userId?: UUID | null) => {
+    const queryClient = useQueryClient();
     useEffect(() => {
       if (!userId) {
         return () => {
@@ -471,38 +476,52 @@ export const configureWsItemHooks = (
         if (event.kind === KINDS.FEEDBACK) {
           let routine: ReturnType<typeof createRoutine> | undefined;
           let message: string | undefined;
+          const itemIds = event.resource;
           switch (event.op) {
-            case 'update':
+            case OPS.UPDATE:
               routine = editItemRoutine;
               message = SUCCESS_MESSAGES.EDIT_ITEM;
+              // todo: add invalidations for queries related to an update of the itemIds specified
               break;
-            case 'delete':
+            case OPS.DELETE:
               routine = deleteItemsRoutine;
               message = SUCCESS_MESSAGES.DELETE_ITEMS;
+              // invalidate data displayed in the Trash screen
+              queryClient.invalidateQueries(RECYCLED_ITEMS_DATA_KEY);
               break;
-            case 'move':
+            case OPS.MOVE:
               routine = moveItemsRoutine;
               message = SUCCESS_MESSAGES.MOVE_ITEMS;
+              // todo: invalidate queries for the source and destination
               break;
-            case 'copy':
+            case OPS.COPY:
               routine = copyItemsRoutine;
               message = SUCCESS_MESSAGES.COPY_ITEMS;
+              // todo: invalidate queries for the destination
               break;
-            case 'export':
+            case OPS.EXPORT:
               routine = exportItemRoutine;
               message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
               break;
             case 'recycle':
               routine = recycleItemsRoutine;
               message = SUCCESS_MESSAGES.RECYCLE_ITEMS;
+              // todo: invalidate the queries related to the trash and to the original source
+
               break;
-            case 'restore':
+            case OPS.RESTORE:
               routine = restoreItemsRoutine;
               message = SUCCESS_MESSAGES.RESTORE_ITEMS;
               break;
-            case 'validate':
+            case OPS.VALIDATE:
               routine = postItemValidationRoutine;
               message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
+              // todo: invalidate the validation query to refetch the validation status
+              itemIds.map((itemId) =>
+                queryClient.invalidateQueries(
+                  buildLastItemValidationGroupKey(itemId),
+                ),
+              );
               break;
             default: {
               console.error('unhandled event for useItemFeedbackUpdates');
