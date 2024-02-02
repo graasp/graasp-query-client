@@ -19,7 +19,7 @@ import {
   RECYCLED_ITEMS_KEY,
   SHARED_ITEMS_KEY,
   accessibleItemsKeys,
-  buildItemChildrenKey,
+  buildItemChildrenKeys,
   buildItemKey,
 } from '../../config/keys';
 import {
@@ -181,12 +181,15 @@ export const configureWsItemHooks = (
       }
 
       const channel: Channel = { name: parentId, topic: TOPICS.ITEM };
-      const parentChildrenKey = buildItemChildrenKey(parentId);
+      const parentChildrenKey = buildItemChildrenKeys(parentId).all;
 
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.CHILD) {
           const current =
             queryClient.getQueryData<DiscriminatedItem[]>(parentChildrenKey);
+
+          // TODO: check if we have to invalidate queries or not
+          queryClient.invalidateQueries(parentChildrenKey);
 
           if (current) {
             const { item } = event;

@@ -10,7 +10,7 @@ import {
   OWN_ITEMS_KEY,
   SHARED_ITEMS_KEY,
   accessibleItemsKeys,
-  buildItemChildrenKey,
+  buildItemChildrenKeys,
   buildItemKey,
 } from '../../config/keys';
 import { KINDS, OPS, TOPICS } from '../constants';
@@ -87,7 +87,7 @@ describe('Ws Item Hooks', () => {
     // we need to use a different id for the channel to avoid handlers collision
     const parent = ITEMS[1];
     const parentId = parent.id;
-    const childrenKey = buildItemChildrenKey(parentId);
+    const childrenKey = buildItemChildrenKeys(parentId).all;
     const channel = { name: parentId, topic: TOPICS.ITEM };
     const targetItem = ITEMS[2];
     const targetItemKey = buildItemKey(targetItem.id);

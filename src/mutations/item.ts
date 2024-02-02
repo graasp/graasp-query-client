@@ -18,7 +18,7 @@ import {
 import {
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_DATA_KEY,
-  buildItemChildrenKey,
+  buildItemChildrenKeys,
   buildItemKey,
   getKeyForParentId,
   itemsWithGeolocationKeys,
@@ -79,7 +79,7 @@ export default (queryConfig: QueryClientConfig) => {
     // get parent key
     const childrenKey = !parentId
       ? OWN_ITEMS_KEY
-      : buildItemChildrenKey(parentId);
+      : buildItemChildrenKeys(parentId).all;
     // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
     await queryClient.cancelQueries(childrenKey);
 
@@ -246,7 +246,7 @@ export default (queryConfig: QueryClientConfig) => {
 
           // reorder affect children to change
           if ((extra as FolderItemExtra)?.[ItemType.FOLDER]?.childrenOrder) {
-            queryClient.invalidateQueries(buildItemChildrenKey(id));
+            queryClient.invalidateQueries(buildItemChildrenKeys(id).all);
           }
 
           const itemKey = buildItemKey(id);

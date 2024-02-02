@@ -1,12 +1,6 @@
-import {
-  AggregateBy,
-  Category,
-  ItemType,
-  UUID,
-  UnionOfConst,
-} from '@graasp/sdk';
+import { AggregateBy, Category, UUID } from '@graasp/sdk';
 
-import { ItemSearchParams } from '../api/routes';
+import { ItemChildrenParams, ItemSearchParams } from '../api/routes';
 import { PaginationParams } from '../types';
 import { AggregateActionsArgs } from '../utils/action';
 import { hashItemsIds } from '../utils/item';
@@ -34,19 +28,19 @@ export const buildItemsKey = (ids: UUID[]) => [
   ITEMS_CONTEXT,
   hashItemsIds(ids),
 ];
-export const buildItemChildrenKey = (
-  id: UUID | undefined,
-  types?: UnionOfConst<typeof ItemType>[],
-) => [ITEMS_CONTEXT, 'children', id, types];
+export const buildItemChildrenKeys = (id: UUID | undefined) => ({
+  all: [ITEMS_CONTEXT, id, 'children'],
+  single: (params?: ItemChildrenParams) => [
+    ITEMS_CONTEXT,
+    id,
+    'children',
+    params,
+  ],
+});
 export const buildItemPaginatedChildrenKey = (id?: UUID) => [
   ITEMS_CONTEXT,
   'childrenPaginated',
   id,
-];
-export const buildItemsChildrenKey = (ids: UUID[]) => [
-  ITEMS_CONTEXT,
-  'children',
-  hashItemsIds(ids),
 ];
 export const buildItemDescendantsKey = (id?: UUID) => [
   ITEMS_CONTEXT,
@@ -78,7 +72,7 @@ const MENTIONS_CONTEXT = 'mentions';
 export const buildMentionKey = () => [MENTIONS_CONTEXT];
 
 export const getKeyForParentId = (parentId?: UUID | null) =>
-  parentId ? buildItemChildrenKey(parentId) : accessibleItemsKeys.all;
+  parentId ? buildItemChildrenKeys(parentId).all : accessibleItemsKeys.all;
 
 export const buildItemMembershipsKey = (id?: UUID) => [
   ITEMS_CONTEXT,
@@ -315,8 +309,7 @@ export const DATA_KEYS = {
   APPS_KEY,
   buildItemKey,
   buildItemsKey,
-  buildItemChildrenKey,
-  buildItemsChildrenKey,
+  buildItemChildrenKeys,
   CURRENT_MEMBER_KEY,
   buildMemberKey,
   buildMembersKey,

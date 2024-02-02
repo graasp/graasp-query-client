@@ -40,7 +40,7 @@ import {
   SHARED_ITEMS_KEY,
   accessibleItemsKeys,
   buildFileContentKey,
-  buildItemChildrenKey,
+  buildItemChildrenKeys,
   buildItemKey,
   buildItemParentsKey,
   buildItemThumbnailKey,
@@ -101,7 +101,7 @@ describe('Items Hooks', () => {
     const params = { ordered: true };
     const route = `/${buildGetChildrenRoute(id, params)}`;
     const response = ITEMS;
-    const key = buildItemChildrenKey(id);
+    const key = buildItemChildrenKeys(id).all;
 
     it(`Receive children of item by id`, async () => {
       const hook = () => hooks.useChildren(id);
@@ -209,7 +209,9 @@ describe('Items Hooks', () => {
       expect(data).toBeFalsy();
       expect(isError).toBeTruthy();
       // verify cache keys
-      expect(queryClient.getQueryData(buildItemChildrenKey(id))).toBeFalsy();
+      expect(
+        queryClient.getQueryData(buildItemChildrenKeys(id).all),
+      ).toBeFalsy();
     });
   });
 

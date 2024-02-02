@@ -33,7 +33,7 @@ import {
   accessibleItemsKeys,
   buildEtherpadKey,
   buildFileContentKey,
-  buildItemChildrenKey,
+  buildItemChildrenKeys,
   buildItemDescendantsKey,
   buildItemKey,
   buildItemPaginatedChildrenKey,
@@ -149,7 +149,7 @@ export default (
       const queryClient = useQueryClient();
 
       return useQuery({
-        queryKey: buildItemChildrenKey(id, params?.types),
+        queryKey: buildItemChildrenKeys(id).single(params),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();

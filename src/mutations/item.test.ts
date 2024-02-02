@@ -41,7 +41,7 @@ import {
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_DATA_KEY,
   accessibleItemsKeys,
-  buildItemChildrenKey,
+  buildItemChildrenKeys,
   buildItemKey,
   buildItemThumbnailKey,
   getKeyForParentId,
@@ -304,7 +304,7 @@ describe('Items Mutations', () => {
         // these are dummy ids, in reality they should be UUIDs
         extra: { folder: { childrenOrder: ['1', '2'] } },
       };
-      const childrenKey = buildItemChildrenKey(editedItem.id);
+      const childrenKey = buildItemChildrenKeys(editedItem.id).all;
       queryClient.setQueryData(childrenKey, [ITEMS[1]]);
       queryClient.setQueryData(editedItemKey, editedItem);
 
@@ -755,7 +755,7 @@ describe('Items Mutations', () => {
         queryClient.setQueryData(itemKey, item);
       });
       queryClient.setQueryData(accessibleItemsKeys.all, ITEMS);
-      queryClient.setQueryData(buildItemChildrenKey(id), ITEMS);
+      queryClient.setQueryData(buildItemChildrenKeys(id).all, ITEMS);
 
       const mockedMutation = await mockMutation({
         endpoints: [],
@@ -769,7 +769,7 @@ describe('Items Mutations', () => {
       });
 
       // check memberships invalidation
-      const data = queryClient.getQueryState(buildItemChildrenKey(id));
+      const data = queryClient.getQueryState(buildItemChildrenKeys(id).all);
       expect(data?.isInvalidated).toBeTruthy();
 
       // check notification trigger
@@ -786,7 +786,7 @@ describe('Items Mutations', () => {
         queryClient.setQueryData(itemKey, item);
       });
       queryClient.setQueryData(accessibleItemsKeys.all, ITEMS);
-      queryClient.setQueryData(buildItemChildrenKey(id), ITEMS);
+      queryClient.setQueryData(buildItemChildrenKeys(id).all, ITEMS);
 
       const mockedMutation = await mockMutation({
         endpoints: [],
@@ -802,7 +802,7 @@ describe('Items Mutations', () => {
       });
 
       // check memberships invalidation
-      const data = queryClient.getQueryState(buildItemChildrenKey(id));
+      const data = queryClient.getQueryState(buildItemChildrenKeys(id).all);
       expect(data?.isInvalidated).toBeTruthy();
 
       // check notification trigger
