@@ -48,6 +48,12 @@ export type ItemSearchParams =
       types?: UnionOfConst<typeof ItemType>[];
     }
   | undefined;
+
+export type ItemChildrenParams = {
+  ordered?: boolean;
+  types?: UnionOfConst<typeof ItemType>[];
+};
+
 export const buildGetAccessibleItems = (
   params: ItemSearchParams,
   pagination: PaginationParams,
@@ -76,11 +82,11 @@ export const buildDeleteItemsRoute = (ids: UUID[]) =>
       addQueryPrefix: true,
     },
   )}`;
-export const buildGetChildrenRoute = (id: UUID, ordered: boolean) =>
-  `${ITEMS_ROUTE}/${id}/children${qs.stringify(
-    { ordered },
-    { addQueryPrefix: true },
-  )}`;
+export const buildGetChildrenRoute = (id: UUID, params: ItemChildrenParams) =>
+  `${ITEMS_ROUTE}/${id}/children${qs.stringify(params, {
+    arrayFormat: 'repeat',
+    addQueryPrefix: true,
+  })}`;
 export const buildGetItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
 export const buildGetItemParents = (id: UUID) => `${ITEMS_ROUTE}/${id}/parents`;
 export const buildGetItemDescendants = (id: UUID) =>

@@ -1,4 +1,10 @@
-import { AggregateBy, Category, UUID } from '@graasp/sdk';
+import {
+  AggregateBy,
+  Category,
+  ItemType,
+  UUID,
+  UnionOfConst,
+} from '@graasp/sdk';
 
 import { ItemSearchParams } from '../api/routes';
 import { PaginationParams } from '../types';
@@ -28,11 +34,10 @@ export const buildItemsKey = (ids: UUID[]) => [
   ITEMS_CONTEXT,
   hashItemsIds(ids),
 ];
-export const buildItemChildrenKey = (id?: UUID) => [
-  ITEMS_CONTEXT,
-  'children',
-  id,
-];
+export const buildItemChildrenKey = (
+  id: UUID | undefined,
+  types?: UnionOfConst<typeof ItemType>[],
+) => [ITEMS_CONTEXT, 'children', id, types];
 export const buildItemPaginatedChildrenKey = (id?: UUID) => [
   ITEMS_CONTEXT,
   'childrenPaginated',

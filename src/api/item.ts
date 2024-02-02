@@ -17,6 +17,7 @@ import { verifyAuthentication } from './axios';
 import {
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_DATA_ROUTE,
+  ItemChildrenParams,
   ItemSearchParams,
   SHARED_ITEM_WITH_ROUTE,
   buildCopyItemsRoute,
@@ -138,14 +139,13 @@ export const editItem = async (
 
 export const getChildren = async (
   id: UUID,
-  // eslint-disable-next-line default-param-last
-  ordered = true,
+  params: ItemChildrenParams,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get<
       DiscriminatedItem[]
-    >(`${API_HOST}/${buildGetChildrenRoute(id, ordered)}`)
+    >(`${API_HOST}/${buildGetChildrenRoute(id, params)}`)
     .then(({ data }) => data);
 
 export const getParents = async (

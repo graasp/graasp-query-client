@@ -98,7 +98,8 @@ describe('Items Hooks', () => {
 
   describe('useChildren', () => {
     const id = 'item-id';
-    const route = `/${buildGetChildrenRoute(id, true)}`;
+    const params = { ordered: true };
+    const route = `/${buildGetChildrenRoute(id, params)}`;
     const response = ITEMS;
     const key = buildItemChildrenKey(id);
 
@@ -118,6 +119,16 @@ describe('Items Hooks', () => {
       for (const item of response) {
         expect(queryClient.getQueryData(buildItemKey(item.id))).toEqual(item);
       }
+    });
+
+    it(`Route constructed correctly for children folders`, async () => {
+      const typesParams = { types: [ItemType.FOLDER] };
+      const url = `/${buildGetChildrenRoute(id, typesParams)}`;
+      const urlObject = new URL(url, 'https://no-existing-url.tmp');
+      const queryParams = urlObject.searchParams;
+      const typesValue = queryParams.get('types');
+
+      expect(typesValue).toEqual(ItemType.FOLDER);
     });
 
     it(`Undefined id does not fetch`, async () => {
@@ -140,7 +151,7 @@ describe('Items Hooks', () => {
     });
 
     it(`enabled=false does not fetch`, async () => {
-      const hook = () => hooks.useChildren(id, { enabled: false });
+      const hook = () => hooks.useChildren(id, {}, { enabled: false });
       const endpoints = [{ route, response }];
       const { data, isFetched } = await mockHook({
         endpoints,
@@ -159,7 +170,9 @@ describe('Items Hooks', () => {
     });
 
     it(`ordered=false fetch children`, async () => {
-      const unorderedRoute = `/${buildGetChildrenRoute(id, false)}`;
+      const unorderedRoute = `/${buildGetChildrenRoute(id, {
+        ordered: false,
+      })}`;
       const hook = () => hooks.useChildren(id, { ordered: false });
       const endpoints = [{ route: unorderedRoute, response }];
       const { data, isSuccess } = await mockHook({
@@ -182,7 +195,7 @@ describe('Items Hooks', () => {
     it(`Unauthorized`, async () => {
       const endpoints = [
         {
-          route: `/${buildGetChildrenRoute(id, true)}`,
+          route: `/${buildGetChildrenRoute(id, { ordered: true })}`,
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
