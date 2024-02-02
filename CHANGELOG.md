@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.5.0](https://github.com/graasp/graasp-query-client/compare/v2.4.2...v2.5.0) (2024-02-01)
+
+
+### Features
+
+* add keywords in geolocation endpoint ([#608](https://github.com/graasp/graasp-query-client/issues/608)) ([1f8598e](https://github.com/graasp/graasp-query-client/commit/1f8598e9494b32d37feda3262fb3d12decec6286))
+* add types filter in useAccessible ([#607](https://github.com/graasp/graasp-query-client/issues/607)) ([076137d](https://github.com/graasp/graasp-query-client/commit/076137db5a4e107b1464e2b02ec68d537fe70ab6))
+
 ## [2.4.2](https://github.com/graasp/graasp-query-client/compare/v2.4.1...v2.4.2) (2024-02-01)
 
 

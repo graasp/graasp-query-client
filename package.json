@@ -1,6 +1,6 @@
 {
   "name": "@graasp/query-client",
-  "version": "2.4.2",
+  "version": "2.5.0",
   "type": "commonjs",
   "repository": "graasp/graasp-query-client",
   "module": "./dist/index.js",
