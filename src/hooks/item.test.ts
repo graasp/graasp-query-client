@@ -98,7 +98,8 @@ describe('Items Hooks', () => {
 
   describe('useChildren', () => {
     const id = 'item-id';
-    const route = `/${buildGetChildrenRoute(id, { ordered: true })}`;
+    const params = { ordered: true };
+    const route = `/${buildGetChildrenRoute(id, params)}`;
     const response = ITEMS;
     const key = buildItemChildrenKey(id);
 
