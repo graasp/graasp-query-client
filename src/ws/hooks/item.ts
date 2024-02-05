@@ -185,44 +185,46 @@ export const configureWsItemHooks = (
 
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.CHILD) {
-          const current =
-            queryClient.getQueryData<DiscriminatedItem[]>(parentChildrenKey);
+          // const current =
+          //   queryClient.getQueryData<DiscriminatedItem[]>(parentChildrenKey);
 
           // TODO: check if we have to invalidate queries or not
+          const { item } = event;
           queryClient.invalidateQueries(parentChildrenKey);
+          queryClient.invalidateQueries(buildItemKey(item.id));
 
-          if (current) {
-            const { item } = event;
-            let mutation;
+          // if (current) {
+          //   const { item } = event;
+          //   let mutation;
 
-            switch (event.op) {
-              case OPS.CREATE: {
-                if (!current.find((i) => i.id === item.id)) {
-                  mutation = [...current, item];
-                  queryClient.setQueryData(parentChildrenKey, mutation);
-                  queryClient.setQueryData(buildItemKey(item.id), item);
-                }
-                break;
-              }
-              case OPS.UPDATE: {
-                // replace value if it exists
-                mutation = current.map((i) => (i.id === item.id ? item : i));
-                queryClient.setQueryData(parentChildrenKey, mutation);
-                queryClient.setQueryData(buildItemKey(item.id), item);
+          //   switch (event.op) {
+          //     case OPS.CREATE: {
+          //       if (!current.find((i) => i.id === item.id)) {
+          //         mutation = [...current, item];
+          //         queryClient.setQueryData(parentChildrenKey, mutation);
+          //         queryClient.setQueryData(buildItemKey(item.id), item);
+          //       }
+          //       break;
+          //     }
+          //     case OPS.UPDATE: {
+          //       // replace value if it exists
+          //       mutation = current.map((i) => (i.id === item.id ? item : i));
+          //       queryClient.setQueryData(parentChildrenKey, mutation);
+          //       queryClient.setQueryData(buildItemKey(item.id), item);
 
-                break;
-              }
-              case OPS.DELETE: {
-                mutation = current.filter((i) => i.id !== item.id);
-                queryClient.setQueryData(parentChildrenKey, mutation);
-                // question: reset item key
-                break;
-              }
-              default:
-                console.error('unhandled event for useChildrenUpdates');
-                break;
-            }
-          }
+          //       break;
+          //     }
+          //     case OPS.DELETE: {
+          //       mutation = current.filter((i) => i.id !== item.id);
+          //       queryClient.setQueryData(parentChildrenKey, mutation);
+          //       // question: reset item key
+          //       break;
+          //     }
+          //     default:
+          //       console.error('unhandled event for useChildrenUpdates');
+          //       break;
+          //   }
+          // }
         }
       };
 
