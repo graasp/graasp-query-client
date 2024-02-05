@@ -21,6 +21,7 @@ import {
   accessibleItemsKeys,
   buildItemChildrenKeys,
   buildItemKey,
+  getKeyForParentId,
 } from '../../config/keys';
 import {
   copyItemsRoutine,
@@ -34,6 +35,7 @@ import {
 } from '../../routines';
 import createRoutine from '../../routines/utils';
 import { Notifier } from '../../types';
+import { getDirectParentId } from '../../utils/item';
 import { KINDS, OPS, TOPICS } from '../constants';
 
 interface ItemEvent {
@@ -54,11 +56,7 @@ interface ItemOpFeedbackEvent {
     | 'restore'
     | 'validate';
   resource: DiscriminatedItem['id'][];
-  result:
-    | {
-        error: Error;
-      }
-    | ResultOf<DiscriminatedItem>;
+  result: ResultOf<DiscriminatedItem>;
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -172,6 +170,7 @@ export const configureWsItemHooks = (
    * @param parentId The ID of the parent on which to observe children updates
    */
   useChildrenUpdates: (parentId?: UUID | null) => {
+    // TODO: check if we want to keep the optimistic updates
     const queryClient = useQueryClient();
     useEffect(() => {
       if (!parentId) {
@@ -179,57 +178,48 @@ export const configureWsItemHooks = (
           // do nothing
         };
       }
-
       const channel: Channel = { name: parentId, topic: TOPICS.ITEM };
-      const parentChildrenKey = buildItemChildrenKeys(parentId).all;
-
+      const parentChildrenKey = buildItemChildrenKeys.all(parentId);
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.CHILD) {
-          // const current =
-          //   queryClient.getQueryData<DiscriminatedItem[]>(parentChildrenKey);
+          const current =
+            queryClient.getQueryData<DiscriminatedItem[]>(parentChildrenKey);
 
-          // TODO: check if we have to invalidate queries or not
-          const { item } = event;
           queryClient.invalidateQueries(parentChildrenKey);
-          queryClient.invalidateQueries(buildItemKey(item.id));
 
-          // if (current) {
-          //   const { item } = event;
-          //   let mutation;
-
-          //   switch (event.op) {
-          //     case OPS.CREATE: {
-          //       if (!current.find((i) => i.id === item.id)) {
-          //         mutation = [...current, item];
-          //         queryClient.setQueryData(parentChildrenKey, mutation);
-          //         queryClient.setQueryData(buildItemKey(item.id), item);
-          //       }
-          //       break;
-          //     }
-          //     case OPS.UPDATE: {
-          //       // replace value if it exists
-          //       mutation = current.map((i) => (i.id === item.id ? item : i));
-          //       queryClient.setQueryData(parentChildrenKey, mutation);
-          //       queryClient.setQueryData(buildItemKey(item.id), item);
-
-          //       break;
-          //     }
-          //     case OPS.DELETE: {
-          //       mutation = current.filter((i) => i.id !== item.id);
-          //       queryClient.setQueryData(parentChildrenKey, mutation);
-          //       // question: reset item key
-          //       break;
-          //     }
-          //     default:
-          //       console.error('unhandled event for useChildrenUpdates');
-          //       break;
-          //   }
-          // }
+          if (current) {
+            const { item } = event;
+            let mutation;
+            switch (event.op) {
+              case OPS.CREATE: {
+                if (!current.find((i) => i.id === item.id)) {
+                  mutation = [...current, item];
+                  queryClient.setQueryData(parentChildrenKey, mutation);
+                  queryClient.setQueryData(buildItemKey(item.id), item);
+                }
+                break;
+              }
+              case OPS.UPDATE: {
+                // replace value if it exists
+                mutation = current.map((i) => (i.id === item.id ? item : i));
+                queryClient.setQueryData(parentChildrenKey, mutation);
+                queryClient.setQueryData(buildItemKey(item.id), item);
+                break;
+              }
+              case OPS.DELETE: {
+                mutation = current.filter((i) => i.id !== item.id);
+                queryClient.setQueryData(parentChildrenKey, mutation);
+                // question: reset item key
+                break;
+              }
+              default:
+                console.error('unhandled event for useChildrenUpdates');
+                break;
+            }
+          }
         }
       };
-
       websocketClient.subscribe(channel, handler);
-
       return function cleanup() {
         websocketClient.unsubscribe(channel, handler);
       };
@@ -463,6 +453,8 @@ export const configureWsItemHooks = (
    * @param userId The ID of the user on which to observe item feedback updates
    */
   useItemFeedbackUpdates: (userId?: UUID | null) => {
+    const queryClient = useQueryClient();
+
     useEffect(() => {
       if (!userId) {
         return () => {
@@ -488,10 +480,51 @@ export const configureWsItemHooks = (
             case 'move':
               routine = moveItemsRoutine;
               message = SUCCESS_MESSAGES.MOVE_ITEMS;
+              if (event.result.data) {
+                event.resource.forEach((movedItemId) => {
+                  const newMovedItemPath = event.result.data[movedItemId].path;
+
+                  // Invalidates destination (new parent folder).
+                  // If no parent, invalidates accessible,
+                  // else invalidates the useChildren of new parent's folder.
+                  queryClient.invalidateQueries(
+                    getKeyForParentId(getDirectParentId(newMovedItemPath)),
+                  );
+
+                  // Get the previous moved item's data to find the previous path.
+                  const previousItem =
+                    queryClient.getQueryData<DiscriminatedItem>(
+                      buildItemKey(movedItemId),
+                    );
+                  if (previousItem) {
+                    // Invalidates source (old parent folder).
+                    // If no parent, invalidates accessible,
+                    // else invalidates the useChildren of the old parent's folder.
+                    queryClient.invalidateQueries(
+                      getKeyForParentId(getDirectParentId(previousItem.path)),
+                    );
+                  }
+                });
+              }
               break;
             case 'copy':
               routine = copyItemsRoutine;
               message = SUCCESS_MESSAGES.COPY_ITEMS;
+              // Because the copied item doesn't have the same id as the original,
+              // we can't loop the same way as for the moved items.
+
+              if (event.result.data) {
+                Object.keys(event.result.data).forEach((newCopyId) => {
+                  const newCopyItemPath = event.result.data[newCopyId].path;
+
+                  // Invalidates destination (new parent folder).
+                  // If no parent, invalidates accessible,
+                  // else invalidates the useChildren of new parent's folder.
+                  queryClient.invalidateQueries(
+                    getKeyForParentId(getDirectParentId(newCopyItemPath)),
+                  );
+                });
+              }
               break;
             case 'export':
               routine = exportItemRoutine;
@@ -515,11 +548,12 @@ export const configureWsItemHooks = (
             }
           }
           if (routine && message) {
-            if ('error' in event.result) {
+            if (event.result.errors) {
               notifier?.({
                 type: routine.FAILURE,
                 payload: {
-                  error: event.result.error,
+                  // TODO: keep the first error ?
+                  error: event.result.errors[0],
                 },
               });
             } else {

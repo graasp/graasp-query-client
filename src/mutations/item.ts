@@ -79,7 +79,7 @@ export default (queryConfig: QueryClientConfig) => {
     // get parent key
     const childrenKey = !parentId
       ? OWN_ITEMS_KEY
-      : buildItemChildrenKeys(parentId).all;
+      : buildItemChildrenKeys.all(parentId);
     // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
     await queryClient.cancelQueries(childrenKey);
 
@@ -246,7 +246,7 @@ export default (queryConfig: QueryClientConfig) => {
 
           // reorder affect children to change
           if ((extra as FolderItemExtra)?.[ItemType.FOLDER]?.childrenOrder) {
-            queryClient.invalidateQueries(buildItemChildrenKeys(id).all);
+            queryClient.invalidateQueries(buildItemChildrenKeys.all(id));
           }
 
           const itemKey = buildItemKey(id);

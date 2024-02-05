@@ -26,17 +26,16 @@ export const buildShortLinksItemKey = (id: UUID) => [
 export const buildItemKey = (id?: UUID) => [ITEMS_CONTEXT, id];
 export const buildItemsKey = (ids: UUID[]) => [
   ITEMS_CONTEXT,
+  'many',
   hashItemsIds(ids),
 ];
-export const buildItemChildrenKeys = (id: UUID | undefined) => ({
-  all: [ITEMS_CONTEXT, id, 'children'],
-  single: (params?: ItemChildrenParams) => [
-    ITEMS_CONTEXT,
-    id,
-    'children',
+export const buildItemChildrenKeys = {
+  all: (id: UUID | undefined) => [ITEMS_CONTEXT, id, 'children'],
+  single: (id: UUID | undefined, params?: ItemChildrenParams) => [
+    ...buildItemChildrenKeys.all(id),
     params,
   ],
-});
+};
 export const buildItemPaginatedChildrenKey = (id?: UUID) => [
   ITEMS_CONTEXT,
   'childrenPaginated',
@@ -72,7 +71,7 @@ const MENTIONS_CONTEXT = 'mentions';
 export const buildMentionKey = () => [MENTIONS_CONTEXT];
 
 export const getKeyForParentId = (parentId?: UUID | null) =>
-  parentId ? buildItemChildrenKeys(parentId).all : accessibleItemsKeys.all;
+  parentId ? buildItemChildrenKeys.all(parentId) : accessibleItemsKeys.all;
 
 export const buildItemMembershipsKey = (id?: UUID) => [
   ITEMS_CONTEXT,

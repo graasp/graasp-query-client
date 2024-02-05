@@ -304,7 +304,7 @@ describe('Items Mutations', () => {
         // these are dummy ids, in reality they should be UUIDs
         extra: { folder: { childrenOrder: ['1', '2'] } },
       };
-      const childrenKey = buildItemChildrenKeys(editedItem.id).all;
+      const childrenKey = buildItemChildrenKeys.all(editedItem.id);
       queryClient.setQueryData(childrenKey, [ITEMS[1]]);
       queryClient.setQueryData(editedItemKey, editedItem);
 
@@ -755,7 +755,7 @@ describe('Items Mutations', () => {
         queryClient.setQueryData(itemKey, item);
       });
       queryClient.setQueryData(accessibleItemsKeys.all, ITEMS);
-      queryClient.setQueryData(buildItemChildrenKeys(id).all, ITEMS);
+      queryClient.setQueryData(buildItemChildrenKeys.all(id), ITEMS);
 
       const mockedMutation = await mockMutation({
         endpoints: [],
@@ -769,7 +769,7 @@ describe('Items Mutations', () => {
       });
 
       // check memberships invalidation
-      const data = queryClient.getQueryState(buildItemChildrenKeys(id).all);
+      const data = queryClient.getQueryState(buildItemChildrenKeys.all(id));
       expect(data?.isInvalidated).toBeTruthy();
 
       // check notification trigger
@@ -786,7 +786,7 @@ describe('Items Mutations', () => {
         queryClient.setQueryData(itemKey, item);
       });
       queryClient.setQueryData(accessibleItemsKeys.all, ITEMS);
-      queryClient.setQueryData(buildItemChildrenKeys(id).all, ITEMS);
+      queryClient.setQueryData(buildItemChildrenKeys.all(id), ITEMS);
 
       const mockedMutation = await mockMutation({
         endpoints: [],
@@ -802,7 +802,7 @@ describe('Items Mutations', () => {
       });
 
       // check memberships invalidation
-      const data = queryClient.getQueryState(buildItemChildrenKeys(id).all);
+      const data = queryClient.getQueryState(buildItemChildrenKeys.all(id));
       expect(data?.isInvalidated).toBeTruthy();
 
       // check notification trigger

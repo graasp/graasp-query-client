@@ -101,7 +101,7 @@ describe('Items Hooks', () => {
     const params = { ordered: true };
     const route = `/${buildGetChildrenRoute(id, params)}`;
     const response = ITEMS;
-    const key = buildItemChildrenKeys(id).single();
+    const key = buildItemChildrenKeys.single(id, { ordered: true });
 
     it(`Receive children of item by id`, async () => {
       const hook = () => hooks.useChildren(id);
@@ -115,9 +115,7 @@ describe('Items Hooks', () => {
       expect(data).toMatchObject(response);
       expect(isSuccess).toBeTruthy();
       // verify cache keys
-      expect(
-        queryClient.getQueryData(buildItemChildrenKeys(id).single()),
-      ).toEqual(response);
+      expect(queryClient.getQueryData(key)).toEqual(response);
       for (const item of response) {
         expect(queryClient.getQueryData(buildItemKey(item.id))).toEqual(item);
       }
@@ -175,7 +173,7 @@ describe('Items Hooks', () => {
       const unorderedParams = {
         ordered: false,
       };
-      const unorderedKey = buildItemChildrenKeys(id).single(unorderedParams);
+      const unorderedKey = buildItemChildrenKeys.single(id, unorderedParams);
       const unorderedRoute = `/${buildGetChildrenRoute(id, unorderedParams)}`;
       const hook = () => hooks.useChildren(id, unorderedParams);
       const endpoints = [{ route: unorderedRoute, response }];
@@ -215,7 +213,7 @@ describe('Items Hooks', () => {
       expect(isError).toBeTruthy();
       // verify cache keys
       expect(
-        queryClient.getQueryData(buildItemChildrenKeys(id).all),
+        queryClient.getQueryData(buildItemChildrenKeys.all(id)),
       ).toBeFalsy();
     });
   });

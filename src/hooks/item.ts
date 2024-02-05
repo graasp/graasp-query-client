@@ -149,7 +149,10 @@ export default (
       const queryClient = useQueryClient();
 
       return useQuery({
-        queryKey: buildItemChildrenKeys(id).single(params),
+        queryKey: buildItemChildrenKeys.single(id, {
+          ...params,
+          ordered,
+        }),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
