@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { MemberFactory } from '@graasp/sdk';
 
 import nock from 'nock';

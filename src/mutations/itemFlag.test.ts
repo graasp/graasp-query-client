@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { FlagType, FolderItemFactory, HttpMethod } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 

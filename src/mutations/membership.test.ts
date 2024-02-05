@@ -1,6 +1,3 @@
-// yes this bad, but we do not really have a choice...
-
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   FolderItemFactory,
   HttpMethod,
