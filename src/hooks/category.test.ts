@@ -14,12 +14,7 @@ import {
   buildGetItemCategoriesRoute,
   buildGetItemsInCategoryRoute,
 } from '../api/routes';
-import {
-  buildCategoriesKey,
-  buildCategoryKey,
-  buildItemCategoriesKey,
-  buildItemsByCategoriesKey,
-} from '../config/keys';
+import { categoryKeys, itemKeys } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -69,7 +64,7 @@ describe('Category Hooks', () => {
   describe('useCategories', () => {
     const typeIds = ['type-id1', 'type-id2'];
     const route = `/${buildGetCategoriesRoute(typeIds)}`;
-    const key = buildCategoriesKey(typeIds);
+    const key = categoryKeys.many(typeIds);
 
     const hook = () => hooks.useCategories(typeIds);
 
@@ -107,7 +102,7 @@ describe('Category Hooks', () => {
   describe('useCategory', () => {
     const categoryId = 'id';
     const route = `/${buildGetCategoryRoute(categoryId)}`;
-    const key = buildCategoryKey(categoryId);
+    const key = categoryKeys.single(categoryId);
 
     const hook = () => hooks.useCategory(categoryId);
 
@@ -145,7 +140,7 @@ describe('Category Hooks', () => {
   describe('useItemCategories', () => {
     const itemId = 'item-id';
     const route = `/${buildGetItemCategoriesRoute(itemId)}`;
-    const key = buildItemCategoriesKey(itemId);
+    const key = itemKeys.single(itemId).categories;
 
     const hook = () => hooks.useItemCategories(itemId);
 
@@ -184,7 +179,7 @@ describe('Category Hooks', () => {
   describe('useItemsInCategories', () => {
     const categoryIds = ['id1'];
     const route = `/${buildGetItemsInCategoryRoute(categoryIds)}`;
-    const key = buildItemsByCategoriesKey(categoryIds);
+    const key = itemKeys.categories(categoryIds);
 
     const hook = () => hooks.useItemsInCategories(categoryIds);
 

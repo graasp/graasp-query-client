@@ -4,7 +4,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
-import { buildItemFlagsKey } from '../config/keys';
+import { itemKeys } from '../config/keys';
 import { postItemFlagRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
@@ -28,7 +28,7 @@ export default (queryConfig: QueryClientConfig) => {
           notifier?.({ type: postItemFlagRoutine.FAILURE, payload: { error } });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(buildItemFlagsKey(itemId));
+          queryClient.invalidateQueries(itemKeys.single(itemId).flags);
         },
       },
     );

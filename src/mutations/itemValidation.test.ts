@@ -10,7 +10,7 @@ import {
 } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildPostItemValidationRoute } from '../api/routes';
-import { buildLastItemValidationGroupKey } from '../config/keys';
+import { itemKeys } from '../config/keys';
 import { postItemValidationRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -28,7 +28,7 @@ describe('Item Validation Mutations', () => {
     const itemId = 'item-id';
     const route = `/${buildPostItemValidationRoute(itemId)}`;
     const mutation = mutations.usePostItemValidation;
-    const key = buildLastItemValidationGroupKey(itemId);
+    const key = itemKeys.single(itemId).validation;
 
     it('Post item validation', async () => {
       queryClient.setQueryData(key, ITEM_VALIDATION_GROUP);
@@ -48,7 +48,7 @@ describe('Item Validation Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           itemId,
         });
         await waitForMutation();
@@ -76,7 +76,7 @@ describe('Item Validation Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId });
+        mockedMutation.mutate({ itemId });
         await waitForMutation();
       });
 

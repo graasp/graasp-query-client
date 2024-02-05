@@ -5,7 +5,7 @@ import nock from 'nock';
 
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { MEMBERS_ROUTE, PUBLIC_PROFILE_ROUTE } from '../api/routes';
-import { OWN_PUBLIC_PROFILE_KEY } from '../config/keys';
+import { memberKeys } from '../config/keys';
 
 const mockedNotifier = jest.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
@@ -32,7 +32,7 @@ describe('Public Profile Mutations', () => {
       const route = `/${MEMBERS_ROUTE}/${PUBLIC_PROFILE_ROUTE}`;
       const response = { ...newProfile, id: 'someid', member: MemberFactory() };
 
-      queryClient.setQueryData(OWN_PUBLIC_PROFILE_KEY, response);
+      queryClient.setQueryData(memberKeys.current().profile, response);
 
       const endpoints = [
         {
@@ -53,9 +53,9 @@ describe('Public Profile Mutations', () => {
         await waitForMutation();
       });
 
-      expect(queryClient.getQueryState(OWN_PUBLIC_PROFILE_KEY)?.data).toEqual(
-        response,
-      );
+      expect(
+        queryClient.getQueryState(memberKeys.current().profile)?.data,
+      ).toEqual(response);
     });
   });
 
@@ -79,7 +79,7 @@ describe('Public Profile Mutations', () => {
           route,
         },
       ];
-      queryClient.setQueryData(OWN_PUBLIC_PROFILE_KEY, result);
+      queryClient.setQueryData(memberKeys.current().profile, result);
 
       const mockedMutation = await mockMutation({
         endpoints,
@@ -92,10 +92,12 @@ describe('Public Profile Mutations', () => {
         await waitForMutation();
       });
 
-      expect(queryClient.getQueryState(OWN_PUBLIC_PROFILE_KEY)?.data).toEqual(
+      expect(
+        queryClient.getQueryState(memberKeys.current().profile)?.data,
+      ).toEqual(result);
+      expect(queryClient.getQueryData(memberKeys.current().profile)).toEqual(
         result,
       );
-      expect(queryClient.getQueryData(OWN_PUBLIC_PROFILE_KEY)).toEqual(result);
     });
   });
 });

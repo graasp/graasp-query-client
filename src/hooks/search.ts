@@ -3,7 +3,7 @@ import { Category } from '@graasp/sdk';
 import { useQuery } from 'react-query';
 
 import * as Api from '../api';
-import { buildSearchPublishedItemsKey } from '../config/keys';
+import { itemKeys } from '../config/keys';
 import { QueryClientConfig } from '../types';
 import useDebounce from './useDebounce';
 
@@ -34,7 +34,7 @@ export default (queryConfig: QueryClientConfig) => {
     } & Api.MeiliSearchProps) => {
       const debouncedQuery = useDebounce(query, 500);
       return useQuery({
-        queryKey: buildSearchPublishedItemsKey({
+        queryKey: itemKeys.search({
           query: debouncedQuery,
           categories,
           isPublishedRoot,

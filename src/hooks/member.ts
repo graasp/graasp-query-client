@@ -14,13 +14,7 @@ import {
   DEFAULT_THUMBNAIL_SIZE,
 } from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
-import {
-  CURRENT_MEMBER_KEY,
-  CURRENT_MEMBER_STORAGE_KEY,
-  buildAvatarKey,
-  buildMemberKey,
-  buildMembersKey,
-} from '../config/keys';
+import { memberKeys } from '../config/keys';
 import { getMembersRoutine } from '../routines/member';
 import { QueryClientConfig } from '../types';
 
@@ -30,14 +24,14 @@ export default (queryConfig: QueryClientConfig) => {
   return {
     useCurrentMember: () =>
       useQuery({
-        queryKey: CURRENT_MEMBER_KEY,
+        queryKey: memberKeys.current().content,
         queryFn: () => Api.getCurrentMember(queryConfig),
         ...defaultQueryOptions,
       }),
 
     useMember: (id?: UUID) =>
       useQuery({
-        queryKey: buildMemberKey(id),
+        queryKey: memberKeys.single(id).content,
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
@@ -51,7 +45,7 @@ export default (queryConfig: QueryClientConfig) => {
     useMembers: (ids: UUID[]) => {
       const queryClient = useQueryClient();
       return useQuery({
-        queryKey: buildMembersKey(ids),
+        queryKey: memberKeys.many(ids),
         queryFn: async () =>
           splitRequestByIdsAndReturn(
             ids,
@@ -63,7 +57,7 @@ export default (queryConfig: QueryClientConfig) => {
           if (members?.data) {
             Object.values(members?.data).forEach(async (member) => {
               const { id } = member;
-              queryClient.setQueryData(buildMemberKey(id), member);
+              queryClient.setQueryData(memberKeys.single(id).content, member);
             });
           }
         },
@@ -90,12 +84,12 @@ export default (queryConfig: QueryClientConfig) => {
         shouldFetch =
           (
             queryClient.getQueryData<Member>(
-              buildMemberKey(id),
+              memberKeys.single(id).content,
             ) as CompleteMember
           )?.extra?.hasAvatar ?? true;
       }
       return useQuery({
-        queryKey: buildAvatarKey({ id, size, replyUrl: false }),
+        queryKey: memberKeys.single(id).avatar({ size, replyUrl: false }),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
@@ -124,12 +118,12 @@ export default (queryConfig: QueryClientConfig) => {
         shouldFetch =
           (
             queryClient.getQueryData<Member>(
-              buildMemberKey(id),
+              memberKeys.single(id).content,
             ) as CompleteMember
           )?.extra?.hasAvatar ?? true;
       }
       return useQuery({
-        queryKey: buildAvatarKey({ id, size, replyUrl: true }),
+        queryKey: memberKeys.single(id).avatar({ size, replyUrl: true }),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
@@ -144,7 +138,7 @@ export default (queryConfig: QueryClientConfig) => {
 
     useMemberStorage: () =>
       useQuery({
-        queryKey: CURRENT_MEMBER_STORAGE_KEY,
+        queryKey: memberKeys.current().storage,
         queryFn: () => Api.getMemberStorage(queryConfig),
         ...defaultQueryOptions,
       }),

@@ -1,11 +1,11 @@
-import { CompleteMember, MemberExtra, ThumbnailSize, UUID } from '@graasp/sdk';
+import { CompleteMember, MemberExtra, UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
-import { CURRENT_MEMBER_KEY, buildAvatarKey } from '../config/keys';
+import { memberKeys } from '../config/keys';
 import {
   deleteMemberRoutine,
   editMemberRoutine,
@@ -41,7 +41,7 @@ export default (queryConfig: QueryClientConfig) => {
 
           // Update when the server confirmed the logout, instead optimistically updating the member
           // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
-          queryClient.setQueryData(CURRENT_MEMBER_KEY, undefined);
+          queryClient.setQueryData(memberKeys.current().content, undefined);
         },
         // If the mutation fails, use the context returned from onMutate to roll back
         onError: (error: Error, _args, _context) => {
@@ -60,11 +60,12 @@ export default (queryConfig: QueryClientConfig) => {
       {
         onMutate: async (member) => {
           // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-          await queryClient.cancelQueries(CURRENT_MEMBER_KEY);
+          await queryClient.cancelQueries(memberKeys.current().content);
 
           // Snapshot the previous value
-          const previousMember =
-            queryClient.getQueryData<CompleteMember>(CURRENT_MEMBER_KEY);
+          const previousMember = queryClient.getQueryData<CompleteMember>(
+            memberKeys.current().content,
+          );
 
           // Optimistically update to the new value
           const newMember = previousMember;
@@ -75,7 +76,7 @@ export default (queryConfig: QueryClientConfig) => {
             if (member.extra) {
               newMember.extra = member.extra;
             }
-            queryClient.setQueryData(CURRENT_MEMBER_KEY, newMember);
+            queryClient.setQueryData(memberKeys.current().content, newMember);
           }
 
           // Return a context object with the snapshotted value
@@ -90,12 +91,15 @@ export default (queryConfig: QueryClientConfig) => {
         // If the mutation fails, use the context returned from onMutate to roll back
         onError: (error: Error, _, context) => {
           notifier?.({ type: editMemberRoutine.FAILURE, payload: { error } });
-          queryClient.setQueryData(CURRENT_MEMBER_KEY, context?.previousMember);
+          queryClient.setQueryData(
+            memberKeys.current().content,
+            context?.previousMember,
+          );
         },
         // Always refetch after error or success:
         onSettled: () => {
           // invalidate all queries
-          queryClient.invalidateQueries(CURRENT_MEMBER_KEY);
+          queryClient.invalidateQueries(memberKeys.current().content);
         },
       },
     );
@@ -125,12 +129,7 @@ export default (queryConfig: QueryClientConfig) => {
           notifier?.({ type: uploadAvatarRoutine.FAILURE, payload: { error } });
         },
         onSettled: (_data, _error, { id }) => {
-          Object.values(ThumbnailSize).forEach((size) => {
-            const key1 = buildAvatarKey({ replyUrl: true, id, size });
-            queryClient.invalidateQueries(key1);
-            const key2 = buildAvatarKey({ replyUrl: false, id, size });
-            queryClient.invalidateQueries(key2);
-          });
+          queryClient.invalidateQueries(memberKeys.single(id).allAvatars);
         },
       },
     );

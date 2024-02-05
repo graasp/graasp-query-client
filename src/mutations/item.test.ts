@@ -40,13 +40,10 @@ import {
 } from '../api/routes';
 import {
   OWN_ITEMS_KEY,
-  RECYCLED_ITEMS_DATA_KEY,
-  accessibleItemsKeys,
-  buildItemChildrenKey,
-  buildItemKey,
-  buildItemThumbnailKey,
   getKeyForParentId,
+  itemKeys,
   itemsWithGeolocationKeys,
+  memberKeys,
 } from '../config/keys';
 import { uploadFileRoutine, uploadItemThumbnailRoutine } from '../routines';
 import {
@@ -76,7 +73,7 @@ describe('Items Mutations', () => {
 
     it('Post item in root', async () => {
       const route = `/${buildPostItemRoute()}`;
-      queryClient.setQueryData(accessibleItemsKeys.all, [FolderItemFactory()]);
+      queryClient.setQueryData(itemKeys.allAccessible(), [FolderItemFactory()]);
 
       const response = { ...newItem, id: 'someid', path: 'someid' };
 
@@ -100,7 +97,7 @@ describe('Items Mutations', () => {
       });
 
       expect(
-        queryClient.getQueryState(accessibleItemsKeys.all)?.isInvalidated,
+        queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
       ).toBeTruthy();
     });
 
@@ -194,7 +191,7 @@ describe('Items Mutations', () => {
 
     it('Unauthorized', async () => {
       const route = `/${buildPostItemRoute()}`;
-      queryClient.setQueryData(accessibleItemsKeys.all, [FolderItemFactory()]);
+      queryClient.setQueryData(itemKeys.allAccessible(), [FolderItemFactory()]);
 
       const endpoints = [
         {
@@ -217,7 +214,7 @@ describe('Items Mutations', () => {
       });
 
       expect(
-        queryClient.getQueryState(accessibleItemsKeys.all)?.isInvalidated,
+        queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
       ).toBeTruthy();
     });
   });
@@ -225,13 +222,13 @@ describe('Items Mutations', () => {
   describe('useEditItem', () => {
     const item = FolderItemFactory();
     const mutation = mutations.useEditItem;
-    const itemKey = buildItemKey(item.id);
+    const itemKey = itemKeys.single(item.id).content;
     const payload = { id: item.id, description: 'new description' };
 
     it('Edit item in root', async () => {
       // set default data
       queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(accessibleItemsKeys.all, [FolderItemFactory()]);
+      queryClient.setQueryData(itemKeys.allAccessible(), [FolderItemFactory()]);
 
       const route = `/${buildEditItemRoute(item.id)}`;
       const response = item;
@@ -256,7 +253,7 @@ describe('Items Mutations', () => {
 
       expect(queryClient.getQueryState(itemKey)?.isInvalidated).toBeTruthy();
       expect(
-        queryClient.getQueryState(accessibleItemsKeys.all)?.isInvalidated,
+        queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
       ).toBeTruthy();
     });
 
@@ -265,7 +262,7 @@ describe('Items Mutations', () => {
       const parentItem = FolderItemFactory();
       const parentKey = getKeyForParentId(parentItem.id);
       const editedItem = FolderItemFactory({ parentItem });
-      const editedItemKey = buildItemKey(editedItem.id);
+      const editedItemKey = itemKeys.single(editedItem.id).content;
       const editPayload = {
         id: editedItem.id,
         description: 'a new description',
@@ -303,13 +300,13 @@ describe('Items Mutations', () => {
     it('Edit item extra children order invalidate children key', async () => {
       // set default data
       const editedItem = FolderItemFactory();
-      const editedItemKey = buildItemKey(editedItem.id);
+      const editedItemKey = itemKeys.single(editedItem.id).content;
       const editPayload = {
         id: editedItem.id,
         // these are dummy ids, in reality they should be UUIDs
         extra: { folder: { childrenOrder: ['1', '2'] } },
       };
-      const childrenKey = buildItemChildrenKey(editedItem.id);
+      const childrenKey = itemKeys.single(editedItem.id).children();
       queryClient.setQueryData(childrenKey, [FolderItemFactory()]);
       queryClient.setQueryData(editedItemKey, editedItem);
 
@@ -338,7 +335,8 @@ describe('Items Mutations', () => {
         queryClient.getQueryState(editedItemKey)?.isInvalidated,
       ).toBeTruthy();
       expect(
-        queryClient.getQueryState(childrenKey)?.isInvalidated,
+        queryClient.getQueryState(itemKeys.single(editedItem.id).children())
+          ?.isInvalidated,
       ).toBeTruthy();
     });
 
@@ -388,7 +386,7 @@ describe('Items Mutations', () => {
 
       // set data in cache
       items.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
       });
 
@@ -422,7 +420,7 @@ describe('Items Mutations', () => {
 
       // original copied items path have not changed
       copied.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         const path = queryClient.getQueryData<DiscriminatedItem>(itemKey)?.path;
         expect(path).toEqual(item.path);
       });
@@ -446,7 +444,7 @@ describe('Items Mutations', () => {
       const route = `/${buildMoveItemsRoute(movedIds)}`;
       // set data in cache
       moved.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
       });
       queryClient.setQueryData(getKeyForParentId(null), moved);
@@ -479,7 +477,7 @@ describe('Items Mutations', () => {
 
       // Check new path are corrects
       moved.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         const path = queryClient.getQueryData<DiscriminatedItem>(itemKey)?.path;
         expect(path).toEqual(`${to.path}.${transformIdForPath(item.id)}`);
       });
@@ -497,7 +495,7 @@ describe('Items Mutations', () => {
       const movedIds = moved.map((x) => x.id);
       // set data in cache
       items.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
       });
       queryClient.setQueryData(getKeyForParentId(null), items);
@@ -531,7 +529,7 @@ describe('Items Mutations', () => {
 
       // Check new paths are corrects
       moved.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         const path = queryClient.getQueryData<DiscriminatedItem>(itemKey)?.path;
         expect(path).toEqual(`${to.path}.${transformIdForPath(item.id)}`);
       });
@@ -556,7 +554,7 @@ describe('Items Mutations', () => {
 
       // set data in cache
       items.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
       });
       // todo: change to use Accessible items
@@ -586,7 +584,7 @@ describe('Items Mutations', () => {
       // verify item is still available
       // in real cases, the path should be different
       for (const itemId of itemIds) {
-        const itemKey = buildItemKey(itemId);
+        const itemKey = itemKeys.single(itemId).content;
         const data = queryClient.getQueryData<DiscriminatedItem>(itemKey);
         expect(data).toMatchObject(items.find(({ id }) => id === itemId)!);
       }
@@ -613,7 +611,7 @@ describe('Items Mutations', () => {
 
       // set data in cache
       toRecycle.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
       });
       const childrenKey = getKeyForParentId(children[2].id);
@@ -643,7 +641,7 @@ describe('Items Mutations', () => {
       // verify item is still available
       // in real cases, the path should be different
       for (const itemId of itemIds) {
-        const itemKey = buildItemKey(itemId);
+        const itemKey = itemKeys.single(itemId).content;
         const data = queryClient.getQueryData<DiscriminatedItem>(itemKey);
         expect(data).toMatchObject(toRecycle.find(({ id }) => id === itemId)!);
       }
@@ -673,10 +671,13 @@ describe('Items Mutations', () => {
 
       // set data in cache
       items.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
       });
-      queryClient.setQueryData(RECYCLED_ITEMS_DATA_KEY, RECYCLED_ITEM_DATA);
+      queryClient.setQueryData(
+        memberKeys.current().recycled,
+        RECYCLED_ITEM_DATA,
+      );
 
       const response = [OK_RESPONSE];
 
@@ -702,12 +703,12 @@ describe('Items Mutations', () => {
       // verify item is still available
       // in real cases, the path should be different
       for (const itemId of itemIds) {
-        const itemKey = buildItemKey(itemId);
+        const itemKey = itemKeys.single(itemId).content;
         const state = queryClient.getQueryState<DiscriminatedItem>(itemKey);
         expect(state?.isInvalidated).toBeFalsy();
       }
 
-      expect(queryClient.getQueryData(RECYCLED_ITEMS_DATA_KEY)).toEqual([
+      expect(queryClient.getQueryData(memberKeys.current().recycled)).toEqual([
         RECYCLED_ITEM_DATA[1],
       ]);
     });
@@ -718,7 +719,7 @@ describe('Items Mutations', () => {
 
       // set data in cache
       items.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
       });
 
@@ -746,7 +747,7 @@ describe('Items Mutations', () => {
       // verify items are not available
       // in real cases, the path should be different
       for (const itemId of itemIds) {
-        const itemKey = buildItemKey(itemId);
+        const itemKey = itemKeys.single(itemId).content;
         const state = queryClient.getQueryState<DiscriminatedItem>(itemKey);
         expect(state?.isInvalidated).toBeFalsy();
       }
@@ -761,11 +762,11 @@ describe('Items Mutations', () => {
     it('Upload one item', async () => {
       // set data in cache
       items.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
       });
-      queryClient.setQueryData(accessibleItemsKeys.all, items);
-      queryClient.setQueryData(buildItemChildrenKey(id), items);
+      queryClient.setQueryData(itemKeys.allAccessible(), items);
+      queryClient.setQueryData(itemKeys.single(id).children(), items);
 
       const mockedMutation = await mockMutation({
         endpoints: [],
@@ -779,7 +780,7 @@ describe('Items Mutations', () => {
       });
 
       // check memberships invalidation
-      const data = queryClient.getQueryState(buildItemChildrenKey(id));
+      const data = queryClient.getQueryState(itemKeys.single(id).children());
       expect(data?.isInvalidated).toBeTruthy();
 
       // check notification trigger
@@ -792,11 +793,11 @@ describe('Items Mutations', () => {
     it('Error while uploading an item', async () => {
       // set data in cache
       items.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
       });
-      queryClient.setQueryData(accessibleItemsKeys.all, items);
-      queryClient.setQueryData(buildItemChildrenKey(id), items);
+      queryClient.setQueryData(itemKeys.allAccessible(), items);
+      queryClient.setQueryData(itemKeys.single(id).children(), items);
 
       const mockedMutation = await mockMutation({
         endpoints: [],
@@ -812,7 +813,7 @@ describe('Items Mutations', () => {
       });
 
       // check memberships invalidation
-      const data = queryClient.getQueryState(buildItemChildrenKey(id));
+      const data = queryClient.getQueryState(itemKeys.single(id).children());
       expect(data?.isInvalidated).toBeTruthy();
 
       // check notification trigger
@@ -834,15 +835,16 @@ describe('Items Mutations', () => {
 
       // set data in cache
       items.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
         const parentKey = getKeyForParentId(getDirectParentId(item.path));
         queryClient.setQueryData(parentKey, [item]);
       });
-      queryClient.setQueryData(RECYCLED_ITEMS_DATA_KEY, response);
+      queryClient.setQueryData(memberKeys.current().recycled, response);
       expect(
-        queryClient.getQueryData<RecycledItemData[]>(RECYCLED_ITEMS_DATA_KEY)!
-          .length,
+        queryClient.getQueryData<RecycledItemData[]>(
+          memberKeys.current().recycled,
+        )!.length,
       ).not.toEqual(0);
 
       const endpoints = [
@@ -860,25 +862,26 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(itemIds);
+        mockedMutation.mutate(itemIds);
         await waitForMutation();
       });
 
       // verify item is still available
       // in real cases, the path should be different
       for (const item of items) {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         const data = queryClient.getQueryData<DiscriminatedItem>(itemKey);
         expect(data).toMatchObject(item);
       }
 
       // check recycle bin key
       expect(
-        queryClient.getQueryState(RECYCLED_ITEMS_DATA_KEY)?.isInvalidated,
+        queryClient.getQueryState(memberKeys.current().recycled)?.isInvalidated,
       ).toBeFalsy();
       expect(
-        queryClient.getQueryData<RecycledItemData[]>(RECYCLED_ITEMS_DATA_KEY)!
-          .length,
+        queryClient.getQueryData<RecycledItemData[]>(
+          memberKeys.current().recycled,
+        )!.length,
       ).toEqual(0);
     });
 
@@ -889,15 +892,16 @@ describe('Items Mutations', () => {
 
       // set data in cache
       items.forEach((item) => {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
         const parentKey = getKeyForParentId(getDirectParentId(item.path));
         queryClient.setQueryData(parentKey, [item]);
       });
-      queryClient.setQueryData(RECYCLED_ITEMS_DATA_KEY, response);
+      queryClient.setQueryData(memberKeys.current().recycled, response);
       expect(
-        queryClient.getQueryData<RecycledItemData[]>(RECYCLED_ITEMS_DATA_KEY)!
-          .length,
+        queryClient.getQueryData<RecycledItemData[]>(
+          memberKeys.current().recycled,
+        )!.length,
       ).not.toEqual(0);
 
       const endpoints = splitEndpointByIds(
@@ -923,18 +927,19 @@ describe('Items Mutations', () => {
       // verify item is still available
       // in real cases, the path should be different
       for (const item of items) {
-        const itemKey = buildItemKey(item.id);
+        const itemKey = itemKeys.single(item.id).content;
         const data = queryClient.getQueryData<DiscriminatedItem>(itemKey);
         expect(data).toMatchObject(item);
       }
 
       // check original parent is invalidated
       expect(
-        queryClient.getQueryState(RECYCLED_ITEMS_DATA_KEY)?.isInvalidated,
+        queryClient.getQueryState(memberKeys.current().recycled)?.isInvalidated,
       ).toBeFalsy();
       expect(
-        queryClient.getQueryData<RecycledItemData[]>(RECYCLED_ITEMS_DATA_KEY)!
-          .length,
+        queryClient.getQueryData<RecycledItemData[]>(
+          memberKeys.current().recycled,
+        )!.length,
       ).toEqual(0);
     });
   });
@@ -948,7 +953,7 @@ describe('Items Mutations', () => {
 
       // set data in cache
       Object.values(ThumbnailSize).forEach((size) => {
-        const key = buildItemThumbnailKey({ id, size });
+        const key = itemKeys.single(id).thumbnail({ size });
         queryClient.setQueryData(key, Math.random());
       });
 
@@ -976,7 +981,7 @@ describe('Items Mutations', () => {
       // verify item is still available
       // in real cases, the path should be different
       for (const size of Object.values(ThumbnailSize)) {
-        const key = buildItemThumbnailKey({ id, size });
+        const key = itemKeys.single(id).thumbnail({ size });
         const state = queryClient.getQueryState(key);
         expect(state?.isInvalidated).toBeTruthy();
       }
@@ -990,7 +995,7 @@ describe('Items Mutations', () => {
       const route = `/${buildUploadItemThumbnailRoute(id)}`;
       // set data in cache
       Object.values(ThumbnailSize).forEach((size) => {
-        const key = buildItemThumbnailKey({ id, size });
+        const key = itemKeys.single(id).thumbnail({ size });
         queryClient.setQueryData(key, Math.random());
       });
 
@@ -1024,7 +1029,7 @@ describe('Items Mutations', () => {
       // verify item is still available
       // in real cases, the path should be different
       for (const size of Object.values(ThumbnailSize)) {
-        const key = buildItemThumbnailKey({ id, size });
+        const key = itemKeys.single(id).thumbnail({ size });
         const state = queryClient.getQueryState(key);
         expect(state?.isInvalidated).toBeTruthy();
       }

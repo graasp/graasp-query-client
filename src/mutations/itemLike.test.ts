@@ -10,7 +10,7 @@ import {
   buildDeleteItemLikeRoute,
   buildPostItemLikeRoute,
 } from '../api/routes';
-import { buildGetLikesForMemberKey } from '../config/keys';
+import { memberKeys } from '../config/keys';
 import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -28,7 +28,7 @@ describe('Item Like Mutations', () => {
   describe('usePostItemLike', () => {
     const itemId = FolderItemFactory().id;
     const memberId = MemberFactory().id;
-    const likedItemsKey = buildGetLikesForMemberKey(memberId);
+    const likedItemsKey = memberKeys.single(memberId).likedItems;
     const route = `/${buildPostItemLikeRoute(itemId)}`;
     const mutation = mutations.usePostItemLike;
 
@@ -96,7 +96,7 @@ describe('Item Like Mutations', () => {
   describe('useDeleteItemLike', () => {
     const itemId = FolderItemFactory().id;
     const memberId = MemberFactory().id;
-    const likedItemsKey = buildGetLikesForMemberKey(memberId);
+    const likedItemsKey = memberKeys.single(memberId).likedItems;
     const route = `/${buildDeleteItemLikeRoute(itemId)}`;
     const mutation = mutations.useDeleteItemLike;
 

@@ -19,7 +19,7 @@ import {
   SIGN_UP_ROUTE,
   buildUpdateMemberPasswordRoute,
 } from '../api/routes';
-import { CURRENT_MEMBER_KEY } from '../config/keys';
+import { memberKeys } from '../config/keys';
 import {
   signInRoutine,
   signInWithPasswordRoutine,
@@ -188,7 +188,7 @@ describe('Authentication Mutations', () => {
         },
       ];
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, 'somevalue');
+      queryClient.setQueryData(memberKeys.current().content, 'somevalue');
 
       const mockedMutation = await mockMutation({
         endpoints,
@@ -202,7 +202,9 @@ describe('Authentication Mutations', () => {
       });
 
       // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+      expect(
+        queryClient.getQueryData(memberKeys.current().content),
+      ).toBeFalsy();
 
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: signInWithPasswordRoutine.SUCCESS,
@@ -255,7 +257,7 @@ describe('Authentication Mutations', () => {
         },
       ];
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, 'somevalue');
+      queryClient.setQueryData(memberKeys.current().content, 'somevalue');
 
       const mockedMutation = await mockMutation({
         endpoints,
@@ -269,7 +271,9 @@ describe('Authentication Mutations', () => {
       });
 
       // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+      expect(
+        queryClient.getQueryData(memberKeys.current().content),
+      ).toBeFalsy();
 
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: signInWithPasswordRoutine.SUCCESS,
@@ -488,7 +492,7 @@ describe('Authentication Mutations', () => {
 
     it(`Sign out`, async () => {
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, 'somevalue');
+      queryClient.setQueryData(memberKeys.current().content, 'somevalue');
 
       const endpoints = [
         { route, response: OK_RESPONSE, method: HttpMethod.GET },
@@ -509,7 +513,9 @@ describe('Authentication Mutations', () => {
         type: signOutRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
       });
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+      expect(
+        queryClient.getQueryData(memberKeys.current().content),
+      ).toBeFalsy();
 
       // cookie management
       expect(utils.saveUrlForRedirection).toHaveBeenCalled();

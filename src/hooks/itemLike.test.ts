@@ -9,10 +9,7 @@ import {
   buildGetItemLikesRoute,
   buildGetLikesForMemberRoute,
 } from '../api/routes';
-import {
-  buildGetLikesForItem,
-  buildGetLikesForMemberKey,
-} from '../config/keys';
+import { itemKeys, memberKeys } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -25,7 +22,7 @@ describe('Item Like Hooks', () => {
   describe('useLikesForMember', () => {
     const memberId = 'member-id';
     const route = `/${buildGetLikesForMemberRoute(memberId)}`;
-    const key = buildGetLikesForMemberKey(memberId);
+    const key = memberKeys.single(memberId).likedItems;
 
     const hook = () => hooks.useLikesForMember(memberId);
 
@@ -64,7 +61,7 @@ describe('Item Like Hooks', () => {
   describe('useLikesForItem', () => {
     const itemId = FolderItemFactory().id;
     const route = `/${buildGetItemLikesRoute(itemId)}`;
-    const key = buildGetLikesForItem(itemId);
+    const key = itemKeys.single(itemId).likes;
 
     const hook = () => hooks.useLikesForItem(itemId);
 

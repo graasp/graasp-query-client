@@ -5,12 +5,7 @@ import { useQuery } from 'react-query';
 import * as Api from '../api';
 import { CONSTANT_KEY_STALE_TIME_MILLISECONDS } from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
-import {
-  buildCategoriesKey,
-  buildCategoryKey,
-  buildItemCategoriesKey,
-  buildItemsByCategoriesKey,
-} from '../config/keys';
+import { categoryKeys, itemKeys } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
@@ -19,7 +14,7 @@ export default (queryConfig: QueryClientConfig) => {
   // get categories
   const useCategories = (typeIds?: UUID[]) =>
     useQuery({
-      queryKey: buildCategoriesKey(typeIds),
+      queryKey: categoryKeys.many(typeIds),
       queryFn: () => Api.getCategories(queryConfig, typeIds),
       ...defaultQueryOptions,
       staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
@@ -27,7 +22,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useCategory = (categoryId: UUID) =>
     useQuery({
-      queryKey: buildCategoryKey(categoryId),
+      queryKey: categoryKeys.single(categoryId),
       queryFn: () => Api.getCategory(categoryId, queryConfig),
       ...defaultQueryOptions,
       staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
@@ -35,7 +30,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useItemCategories = (itemId?: UUID) =>
     useQuery({
-      queryKey: buildItemCategoriesKey(itemId),
+      queryKey: itemKeys.single(itemId).categories,
       queryFn: () => {
         if (!itemId) {
           throw new UndefinedArgument();
@@ -48,7 +43,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useItemsInCategories = (categoryIds: UUID[]) =>
     useQuery({
-      queryKey: buildItemsByCategoriesKey(categoryIds),
+      queryKey: itemKeys.categories(categoryIds),
       queryFn: () =>
         Api.buildGetItemsForCategoriesRoute(categoryIds, queryConfig),
       ...defaultQueryOptions,

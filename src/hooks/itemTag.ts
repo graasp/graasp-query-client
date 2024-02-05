@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import * as Api from '../api';
 import { splitRequestByIdsAndReturn } from '../api/axios';
 import { UndefinedArgument } from '../config/errors';
-import { itemTagsKeys } from '../config/keys';
+import { itemKeys } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
@@ -13,7 +13,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useItemTags = (id?: UUID) =>
     useQuery({
-      queryKey: itemTagsKeys.singleId(id),
+      queryKey: itemKeys.single(id).tags,
       queryFn: () => {
         if (!id) {
           throw new UndefinedArgument();
@@ -27,7 +27,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useItemsTags = (ids?: UUID[]) => {
     const queryClient = useQueryClient();
     return useQuery({
-      queryKey: itemTagsKeys.manyIds(ids),
+      queryKey: itemKeys.many(ids).tags,
       queryFn: () => {
         if (!ids || ids?.length === 0) {
           throw new UndefinedArgument();
@@ -44,7 +44,7 @@ export default (queryConfig: QueryClientConfig) => {
         ids?.forEach(async (id) => {
           const itemTags = tags?.data?.[id];
           if (itemTags?.length) {
-            queryClient.setQueryData(itemTagsKeys.singleId(id), itemTags);
+            queryClient.setQueryData(itemKeys.single(id).tags, itemTags);
           }
         });
       },

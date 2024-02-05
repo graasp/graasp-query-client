@@ -9,10 +9,7 @@ import { v4 } from 'uuid';
 import { ITEM_GEOLOCATION, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildPutItemGeolocationRoute } from '../api/routes';
-import {
-  buildItemGeolocationKey,
-  itemsWithGeolocationKeys,
-} from '../config/keys';
+import { itemKeys, itemsWithGeolocationKeys } from '../config/keys';
 import {
   deleteItemGeolocationRoutine,
   putItemGeolocationRoutine,
@@ -31,7 +28,7 @@ describe('Item Flag Mutations', () => {
 
   describe('usePutItemGeolocation', () => {
     const itemId = v4();
-    const key = buildItemGeolocationKey(itemId);
+    const key = itemKeys.single(itemId).geolocation;
     const route = `/${buildPutItemGeolocationRoute(itemId)}`;
     const mutation = mutations.usePutItemGeolocation;
     const singleKey = itemsWithGeolocationKeys.inBounds({
@@ -161,7 +158,7 @@ describe('Item Flag Mutations', () => {
 
   describe('useDeleteItemGeolocation', () => {
     const itemId = v4();
-    const key = buildItemGeolocationKey(itemId);
+    const key = itemKeys.single(itemId).geolocation;
     const route = `/${buildPutItemGeolocationRoute(itemId)}`;
     const mutation = mutations.useDeleteItemGeolocation;
     const singleKey = itemsWithGeolocationKeys.inBounds({

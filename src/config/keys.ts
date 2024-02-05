@@ -14,73 +14,243 @@ import { AggregateActionsArgs } from '../utils/action';
 import { hashItemsIds } from '../utils/item';
 import { DEFAULT_THUMBNAIL_SIZE } from './constants';
 
+/**
+ * Contexts
+ */
 const ITEMS_CONTEXT = 'items';
-
-export const APPS_KEY = ['apps'];
-export const SHORT_LINKS_KEY = 'shortLinks';
-export const OWN_ITEMS_KEY = [ITEMS_CONTEXT, 'own'];
-const ETHERPADS_CONTEXT = 'etherpads';
+const CHATS_CONTEXT = 'chats';
+const SHORT_LINKS_CONTEXT = 'shortLinks';
 const SUBSCRIPTION_CONTEXT = 'subscriptions';
 
+export const APPS_KEY = ['apps'];
+export const OWN_ITEMS_KEY = [ITEMS_CONTEXT, 'own'];
+
 export const buildShortLinkKey = (alias: string | undefined) => [
-  SHORT_LINKS_KEY,
+  SHORT_LINKS_CONTEXT,
   alias,
 ];
-export const buildShortLinksItemKey = (id: UUID) => [
-  SHORT_LINKS_KEY,
-  ITEMS_CONTEXT,
-  id,
-];
-export const buildItemKey = (id?: UUID) => [ITEMS_CONTEXT, id];
-export const buildItemsKey = (ids: UUID[]) => [
-  ITEMS_CONTEXT,
-  hashItemsIds(ids),
-];
-export const buildItemChildrenKey = (
-  id: UUID | undefined,
-  types?: UnionOfConst<typeof ItemType>[],
-) => [ITEMS_CONTEXT, 'children', id, types];
-export const buildItemPaginatedChildrenKey = (id?: UUID) => [
-  ITEMS_CONTEXT,
-  'childrenPaginated',
-  id,
-];
-export const buildItemsChildrenKey = (ids: UUID[]) => [
-  ITEMS_CONTEXT,
-  'children',
-  hashItemsIds(ids),
-];
-export const buildItemDescendantsKey = (id?: UUID) => [
-  ITEMS_CONTEXT,
-  'descendants',
-  id,
-];
 
-export const accessibleItemsKeys = {
-  all: [ITEMS_CONTEXT, 'accessible'] as const,
-  singlePage: (params: ItemSearchParams, pagination: PaginationParams) =>
-    [...accessibleItemsKeys.all, params, pagination] as const,
+export const itemKeys = {
+  all: [ITEMS_CONTEXT] as const,
+
+  // all single item queries
+  allSingles: () => [...itemKeys.all, 'one'] as const,
+
+  // keys for a single item
+  single: (id?: UUID) => {
+    const singleBaseKey = [...itemKeys.allSingles(), id] as const;
+    const allChildren = [...singleBaseKey, 'children'] as const;
+    const itemLoginSchema = [...singleBaseKey, 'loginSchema'] as const;
+    const allThumbnails = [...singleBaseKey, 'thumbnails'] as const;
+
+    return {
+      // data for one item
+      content: [...singleBaseKey] as const,
+
+      // all children queries for single items
+      allChildren,
+
+      // itemKeys.single(id).children([one, two])
+      children: (types?: UnionOfConst<typeof ItemType>[]) =>
+        [...allChildren, types] as const,
+
+      // todo: add page and filtering options
+      // this is used in the infinite query for the player
+      // we might change it in a future refactor
+      paginatedChildren: [...allChildren, 'paginated'] as const,
+
+      // descendants
+      descendants: [...singleBaseKey, 'descendants'] as const,
+
+      // parents
+      parents: [...singleBaseKey, 'parents'] as const,
+
+      // categories
+      categories: [...singleBaseKey, 'categories'] as const,
+
+      // item login
+      itemLoginSchema: {
+        content: [...itemLoginSchema, 'content'] as const,
+        type: [...itemLoginSchema, 'type'] as const,
+      },
+
+      // thumbnails
+      allThumbnails,
+      thumbnail: (options: { size?: string; replyUrl?: boolean }) =>
+        [
+          ...allThumbnails,
+          options.size ?? DEFAULT_THUMBNAIL_SIZE,
+          options.replyUrl ? 'url' : 'blob',
+        ] as const,
+
+      tags: [...singleBaseKey, 'tags'] as const,
+
+      flags: [...singleBaseKey, 'flags'] as const,
+
+      file: (options?: { replyUrl?: boolean }) =>
+        [...singleBaseKey, 'file', options] as const,
+
+      // etherpad
+      etherpad: [...singleBaseKey, 'etherpad'] as const,
+
+      // geolocation
+      geolocation: [...singleBaseKey, 'geolocation'] as const,
+
+      // short links
+      shortLinks: [...singleBaseKey, 'shortLink'] as const,
+
+      // likes
+      likes: [...singleBaseKey, 'likes'] as const,
+
+      // published info
+      publishedInformation: [...singleBaseKey, 'publishedInformation'] as const,
+
+      validation: [...singleBaseKey, 'validation'] as const,
+    };
+  },
+
+  // many items
+  allMany: () => [...itemKeys.all, 'many'] as const,
+  many: (ids?: UUID[]) => {
+    const manyBaseKey = [...itemKeys.allMany(), ids] as const;
+    const allTags = [...manyBaseKey, 'tags'] as const;
+    return {
+      // data for the items requested
+      content: [...manyBaseKey, 'content'],
+
+      // children data for the many items requested
+      children: [...manyBaseKey, 'children'],
+
+      // published info
+      publishedInformation: [...manyBaseKey, 'publishedInformation'],
+
+      tags: allTags,
+    };
+  },
+
+  // accessible items
+  allAccessible: () => [...itemKeys.all, 'accessible'] as const,
+  accessiblePage: (params: ItemSearchParams, pagination: PaginationParams) =>
+    [...itemKeys.allAccessible(), params, pagination] as const,
+
+  // shared items
+  shared: () => [...itemKeys.all, 'shared'] as const,
+
+  search: (args: {
+    query?: string;
+    categories?: Category['id'][][];
+    isPublishedRoot?: boolean;
+    limit?: number;
+    offset?: number;
+    sort?: string[];
+    highlightPreTag?: string;
+    highlightPostTag?: string;
+    page?: number;
+  }) =>
+    [...itemKeys.all, 'search', { isPublishedRoot: false, ...args }] as const,
+
+  published: () => {
+    const publishedBaseKey = [...itemKeys.all, 'collections'] as const;
+
+    return {
+      all: [...publishedBaseKey] as const,
+
+      // for categories
+      forCategories: (categoryIds?: UUID[]) =>
+        [...publishedBaseKey, { categoryIds }] as const,
+
+      // most liked collections
+      mostLiked: (limit?: number) =>
+        [...publishedBaseKey, 'mostLiked', limit] as const,
+
+      // most liked collections
+      mostRecent: (limit?: number) =>
+        [...publishedBaseKey, 'mostRecent', limit] as const,
+
+      // for member
+      byMember: (memberId?: UUID) =>
+        [...publishedBaseKey, 'member', memberId] as const,
+    };
+  },
+
+  categories: (categories?: UUID[]) => [...itemKeys.all, { categories }],
 };
-export const SHARED_ITEMS_KEY = ['shared'];
-export const CURRENT_MEMBER_KEY = ['currentMember'];
-const MEMBERS_CONTEXT = 'members';
-export const buildMemberKey = (id?: UUID) => [MEMBERS_CONTEXT, id];
-export const buildMembersKey = (ids: UUID[]) => [
-  MEMBERS_CONTEXT,
-  hashItemsIds(ids),
-];
-export const buildItemParentsKey = (id?: UUID) => [
-  ITEMS_CONTEXT,
-  'parents',
-  id,
-];
-const CHATS_CONTEXT = 'chats';
+
+export const memberKeys = {
+  all: ['members'] as const,
+
+  // a single member
+  single: (id?: UUID) => {
+    const singleBaseKey = [...memberKeys.all, id] as const;
+    const allAvatars = [...singleBaseKey, 'avatar'] as const;
+    const allSubscriptions = [...singleBaseKey, 'subscription'] as const;
+    return {
+      // data of the member in question
+      content: [...singleBaseKey] as const,
+
+      // avatar picture
+      allAvatars,
+      avatar: (options: { size?: string; replyUrl?: boolean }) =>
+        [...allAvatars, { size: DEFAULT_THUMBNAIL_SIZE, ...options }] as const,
+
+      // profile data
+      profile: [...singleBaseKey, 'profile'] as const,
+
+      // items liked by the member
+      likedItems: [...singleBaseKey, 'likedItems'] as const,
+
+      // subscription plan for the member
+      allSubscriptions,
+      subscription: (planId: string) => [...allSubscriptions, planId] as const,
+    };
+  },
+
+  // many members
+  many: (ids?: UUID[]) => [...memberKeys.all, ids] as const,
+
+  // the current member
+  current: () => {
+    const currentBaseKey = [...memberKeys.all, 'current'] as const;
+    return {
+      // data for the current member
+      content: [...currentBaseKey] as const,
+
+      // items liked by the current member
+      // todo: should this be in the items keys instead ?
+      likedItems: [...currentBaseKey, 'likedItems'] as const,
+
+      /**
+        Favorite items
+      */
+      favoriteItems: [...currentBaseKey, 'favoriteItems'] as const,
+
+      /**
+        This should hold RecycledItemData
+      */
+      recycled: [...currentBaseKey, 'recycled'] as const,
+      /**
+        This should hold items that have been recycled
+      */
+      recycledItems: [...currentBaseKey, 'recycledItems'] as const,
+
+      // current member storage usage
+      storage: [...currentBaseKey, 'storage'] as const,
+
+      // current member profile (can be non-public)
+      profile: [...currentBaseKey, 'profile'] as const,
+
+      // subscription plan for the current member
+      subscription: [...currentBaseKey, 'subscription'] as const,
+    };
+  },
+};
+
 export const buildItemChatKey = (id: UUID) => [CHATS_CONTEXT, id];
 const MENTIONS_CONTEXT = 'mentions';
 export const buildMentionKey = () => [MENTIONS_CONTEXT];
 
 export const getKeyForParentId = (parentId?: UUID | null) =>
-  parentId ? buildItemChildrenKey(parentId) : accessibleItemsKeys.all;
+  parentId ? itemKeys.single(parentId).allChildren : itemKeys.allAccessible();
 
 export const buildItemMembershipsKey = (id?: UUID) => [
   ITEMS_CONTEXT,
@@ -92,135 +262,12 @@ export const buildManyItemMembershipsKey = (ids?: UUID[]) => [
   'memberships',
   hashItemsIds(ids),
 ];
-export const buildItemLoginKey = (id?: UUID) => [ITEMS_CONTEXT, 'login', id];
-export const buildItemLoginSchemaKey = (id?: UUID) => [
-  ITEMS_CONTEXT,
-  'loginSchema',
-  id,
-];
-export const buildItemLoginSchemaTypeKey = (id?: UUID) => [
-  ...buildItemLoginSchemaKey(id),
-  'type',
-];
-const ITEM_TAGS_CONTEXT = 'itemTags';
-export const itemTagsKeys = {
-  all: [ITEMS_CONTEXT, ITEM_TAGS_CONTEXT] as const,
-  many: () => [...itemTagsKeys.all, 'many'] as const,
-  single: () => [...itemTagsKeys.all, 'single'] as const,
-  singleId: (id?: UUID) => [...itemTagsKeys.single(), id] as const,
-  manyIds: (ids: UUID[] | undefined = []) =>
-    [...itemTagsKeys.many(), ...ids] as const,
+
+export const categoryKeys = {
+  all: ['category'] as const,
+  single: (id?: UUID) => [...categoryKeys.all, id] as const,
+  many: (ids?: UUID[]) => [...categoryKeys.all, ids] as const,
 };
-export const buildFileContentKey = ({
-  id,
-  replyUrl,
-}: {
-  id?: UUID;
-  replyUrl?: boolean;
-}) => [ITEMS_CONTEXT, 'file', id, replyUrl ? 'url' : 'blob'];
-
-export const ITEM_FLAGS_CONTEXT = 'itemFlags';
-export const buildItemFlagsKey = (id: UUID) => [ITEMS_CONTEXT, 'flags', id];
-
-export const buildCategoryKey = (id: UUID) => ['category', id];
-export const buildCategoriesKey = (typeId?: UUID[]) => [
-  'categories',
-  hashItemsIds(typeId),
-];
-export const buildItemCategoriesKey = (id?: UUID) => [
-  ITEMS_CONTEXT,
-  'categories',
-  id,
-];
-export const buildItemsByCategoriesKey = (ids: UUID[]) => [
-  'itemsInCategories',
-  hashItemsIds(ids),
-];
-
-export const RECYCLED_ITEMS_KEY = 'recycledItems';
-export const RECYCLED_ITEMS_DATA_KEY = ['recycledItemsData'];
-
-export const FAVORITE_ITEMS_KEY = ['favoriteItems'];
-
-export const buildItemThumbnailKey = ({
-  id,
-  size = DEFAULT_THUMBNAIL_SIZE,
-  replyUrl,
-}: {
-  id?: UUID;
-  size?: string;
-  replyUrl?: boolean;
-}) => [ITEMS_CONTEXT, id, 'thumbnails', size, replyUrl ? 'url' : 'blob'];
-export const buildAvatarKey = ({
-  id,
-  replyUrl,
-  size = DEFAULT_THUMBNAIL_SIZE,
-}: {
-  id?: UUID;
-  size?: string;
-  replyUrl: boolean;
-}) => [MEMBERS_CONTEXT, id, 'avatars', size, replyUrl ? 'url' : 'blob'];
-
-export const buildGetLikesForMemberKey = (id?: UUID) => [
-  MEMBERS_CONTEXT,
-  'likedItems',
-  id,
-];
-export const buildGetLikesForItem = (id?: UUID) => [ITEMS_CONTEXT, 'likes', id];
-export const buildGetMostLikedPublishedItems = (limit?: number) => [
-  ITEMS_CONTEXT,
-  'collections',
-  'liked',
-  limit,
-];
-export const buildGetMostRecentPublishedItems = (limit?: number) => [
-  ITEMS_CONTEXT,
-  'collections',
-  'recent',
-  limit,
-];
-
-export const buildPublishedItemsKey = (categoryIds?: UUID[]) => [
-  ITEMS_CONTEXT,
-  'collections',
-  hashItemsIds(categoryIds),
-];
-export const buildPublishedItemsForMemberKey = (memberId?: UUID) => [
-  ITEMS_CONTEXT,
-  'collections',
-  MEMBERS_CONTEXT,
-  memberId,
-];
-
-export const buildItemPublishedInformationKey = (id: UUID) => [
-  ITEMS_CONTEXT,
-  'publishedInformation',
-  id,
-];
-
-export const buildManyItemPublishedInformationsKey = (ids: UUID[]) => [
-  ITEMS_CONTEXT,
-  'publishedInformation',
-  ids,
-];
-
-export const buildLastItemValidationGroupKey = (id: UUID) => [
-  ITEMS_CONTEXT,
-  'itemValidation',
-  'latest',
-  id,
-];
-
-export const buildItemValidationAndReviewKey = (id: UUID) => [
-  ITEMS_CONTEXT,
-  'itemValidationAndReview',
-  id,
-];
-export const buildItemValidationGroupsKey = (id: UUID) => [
-  ITEMS_CONTEXT,
-  'itemValidationGroups',
-  id,
-];
 
 export const buildActionsKey = (args: {
   itemId?: UUID;
@@ -248,44 +295,9 @@ export const buildItemInvitationsKey = (id?: UUID) => [
 ];
 
 export const PLANS_KEY = [SUBSCRIPTION_CONTEXT, 'plans'];
-export const OWN_PLAN_KEY = [SUBSCRIPTION_CONTEXT, 'ownPlan'];
 export const CARDS_KEY = [SUBSCRIPTION_CONTEXT, 'cards'];
-export const buildPlanKey = (id: string) => [
-  MEMBERS_CONTEXT,
-  SUBSCRIPTION_CONTEXT,
-  'plans',
-  id,
-];
-export const buildPlansKey = (id: string) => [
-  MEMBERS_CONTEXT,
-  SUBSCRIPTION_CONTEXT,
-  'plans',
-  id,
-];
+
 export const CURRENT_CUSTOMER_KEY = [SUBSCRIPTION_CONTEXT, 'currentCustomer'];
-
-export const buildEtherpadKey = (itemId?: UUID) => [ETHERPADS_CONTEXT, itemId];
-
-export const buildSearchPublishedItemsKey = (args: {
-  query?: string;
-  categories?: Category['id'][][];
-  isPublishedRoot?: boolean;
-  limit?: number;
-  offset?: number;
-  sort?: string[];
-  highlightPreTag?: string;
-  highlightPostTag?: string;
-  page?: number;
-}) => [ITEMS_CONTEXT, 'search', { isPublishedRoot: false, ...args }];
-
-export const CURRENT_MEMBER_STORAGE_KEY = [
-  MEMBERS_CONTEXT,
-  'current',
-  'storage',
-];
-
-export const OWN_PUBLIC_PROFILE_KEY = ['own-profile'];
-export const buildPublicProfileKey = (memberId?: UUID) => ['profile', memberId];
 
 export const itemsWithGeolocationKeys = {
   allBounds: [ITEMS_CONTEXT, 'map'],
@@ -309,63 +321,22 @@ export const itemsWithGeolocationKeys = {
   ],
 };
 
-export const buildItemGeolocationKey = (itemId?: UUID) => [
-  ITEMS_CONTEXT,
-  itemId,
-  'geolocation',
-];
-
 export const buildAddressFromCoordinatesKey = ({
   lat,
   lng,
-}: Pick<ItemGeolocation, 'lat' | 'lng'>) => [
-  ITEMS_CONTEXT,
-  { lat, lng },
-  'address',
-];
+}: Pick<ItemGeolocation, 'lat' | 'lng'>) => ['address', { lat, lng }];
 
 export const DATA_KEYS = {
   APPS_KEY,
-  buildItemKey,
-  buildItemsKey,
-  buildItemChildrenKey,
-  buildItemsChildrenKey,
-  CURRENT_MEMBER_KEY,
-  buildMemberKey,
-  buildMembersKey,
-  buildItemParentsKey,
+  itemKeys,
   buildItemChatKey,
   buildMentionKey,
   getKeyForParentId,
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
-  buildItemLoginKey,
-  itemTagsKeys,
-  buildFileContentKey,
-  buildItemFlagsKey,
-  buildCategoryKey,
-  buildCategoriesKey,
-  buildItemCategoriesKey,
-  buildItemsByCategoriesKey,
-  RECYCLED_ITEMS_DATA_KEY,
-  buildItemThumbnailKey,
-  CURRENT_MEMBER_STORAGE_KEY,
-  buildAvatarKey,
-  buildGetLikesForMemberKey,
-  buildGetLikesForItem,
-  buildItemValidationAndReviewKey,
-  buildItemValidationGroupsKey,
-  buildLastItemValidationGroupKey,
   buildInvitationKey,
   buildItemInvitationsKey,
   CARDS_KEY,
-  buildPlanKey,
-  buildPublishedItemsKey,
-  buildEtherpadKey,
-  buildSearchPublishedItemsKey,
-  OWN_PUBLIC_PROFILE_KEY,
-  buildPublicProfileKey,
   itemsWithGeolocationKeys,
-  buildItemGeolocationKey,
   buildAddressFromCoordinatesKey,
 };

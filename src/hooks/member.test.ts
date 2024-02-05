@@ -27,13 +27,7 @@ import {
   buildGetMemberStorage,
   buildGetMembersRoute,
 } from '../api/routes';
-import {
-  CURRENT_MEMBER_KEY,
-  CURRENT_MEMBER_STORAGE_KEY,
-  buildAvatarKey,
-  buildMemberKey,
-  buildMembersKey,
-} from '../config/keys';
+import { memberKeys } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 describe('Member Hooks', () => {
@@ -53,7 +47,9 @@ describe('Member Hooks', () => {
 
       expect(data).toMatchObject(response);
       // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toMatchObject(data!);
+      expect(
+        queryClient.getQueryData(memberKeys.current().content),
+      ).toMatchObject(data!);
     });
 
     it(`Unauthorized`, async () => {
@@ -73,7 +69,7 @@ describe('Member Hooks', () => {
       // unauthorized request are translated to signed out user
       expect(data).toBeNull();
       expect(isSuccess).toBeTruthy();
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeNull();
+      expect(queryClient.getQueryData(memberKeys.current().content)).toBeNull();
     });
   });
 
@@ -97,7 +93,9 @@ describe('Member Hooks', () => {
 
       expect(data).toMatchObject(response);
       // verify cache keys
-      expect(queryClient.getQueryData(buildMemberKey(id))).toMatchObject(data!);
+      expect(
+        queryClient.getQueryData(memberKeys.single(id).content),
+      ).toMatchObject(data!);
     });
 
     it(`Unauthorized`, async () => {
@@ -118,7 +116,9 @@ describe('Member Hooks', () => {
       expect(data).toBeFalsy();
       expect(isError).toBeTruthy();
       // verify cache keys
-      expect(queryClient.getQueryData(buildMemberKey(id))).toBeFalsy();
+      expect(
+        queryClient.getQueryData(memberKeys.single(id).content),
+      ).toBeFalsy();
     });
   });
 
@@ -144,7 +144,7 @@ describe('Member Hooks', () => {
 
       expect(data).toBeFalsy();
       // verify cache keys
-      expect(queryClient.getQueryData(buildMembersKey(emptyIds))).toBeFalsy();
+      expect(queryClient.getQueryData(memberKeys.many(emptyIds))).toBeFalsy();
     });
 
     it(`Receive one member`, async () => {
@@ -166,10 +166,12 @@ describe('Member Hooks', () => {
 
       expect(members).toEqual(oneMemberResponse);
       // verify cache keys
-      expect(queryClient.getQueryData(buildMembersKey(oneMemberIds))).toEqual(
+      expect(queryClient.getQueryData(memberKeys.many(oneMemberIds))).toEqual(
         members,
       );
-      expect(queryClient.getQueryData(buildMemberKey(m.id))).toMatchObject(m);
+      expect(
+        queryClient.getQueryData(memberKeys.single(m.id).content),
+      ).toMatchObject(m);
     });
 
     it(`Receive two members`, async () => {
@@ -192,11 +194,11 @@ describe('Member Hooks', () => {
       expect(members).toEqual(endpointResponse);
       // verify cache keys
       expect(
-        queryClient.getQueryData<ResultOf<Member>>(buildMembersKey(twoIds)),
+        queryClient.getQueryData<ResultOf<Member>>(memberKeys.many(twoIds)),
       ).toEqual(endpointResponse);
       for (const id of twoIds) {
         expect(
-          queryClient.getQueryData<Member>(buildMemberKey(id)),
+          queryClient.getQueryData<Member>(memberKeys.single(id).content),
         ).toMatchObject(twoMembers.find(({ id: thisId }) => thisId === id)!);
       }
     });
@@ -220,11 +222,11 @@ describe('Member Hooks', () => {
       expect(members).toEqual(fullResponse);
       // verify cache keys
       expect(
-        queryClient.getQueryData<ResultOf<Member>>(buildMembersKey(ids)),
+        queryClient.getQueryData<ResultOf<Member>>(memberKeys.many(ids)),
       ).toEqual(fullResponse);
       for (const id of ids) {
         expect(
-          queryClient.getQueryData<Member>(buildMemberKey(id)),
+          queryClient.getQueryData<Member>(memberKeys.single(id).content),
         ).toMatchObject(response.find(({ id: thisId }) => thisId === id)!);
       }
     });
@@ -247,10 +249,10 @@ describe('Member Hooks', () => {
       expect(data).toBeFalsy();
       expect(isError).toBeTruthy();
       // verify cache keys
-      expect(queryClient.getQueryData(buildMembersKey(ids))).toBeFalsy();
+      expect(queryClient.getQueryData(memberKeys.many(ids))).toBeFalsy();
       for (const id of ids) {
         expect(
-          queryClient.getQueryData<Member>(buildMemberKey(id)),
+          queryClient.getQueryData<Member>(memberKeys.single(id).content),
         ).toBeFalsy();
       }
     });
@@ -264,7 +266,7 @@ describe('Member Hooks', () => {
     const response = AVATAR_BLOB_RESPONSE;
     const route = `/${buildDownloadAvatarRoute({ id: member.id, replyUrl })}`;
     const hook = () => hooks.useAvatar({ id: member.id });
-    const key = buildAvatarKey({ id: member.id, replyUrl });
+    const key = memberKeys.single(member.id).avatar({ replyUrl });
 
     it(`Receive default avatar`, async () => {
       const endpoints = [
@@ -285,7 +287,7 @@ describe('Member Hooks', () => {
         size,
       })}`;
       const hookLarge = () => hooks.useAvatar({ id: member.id, size });
-      const keyLarge = buildAvatarKey({ id: member.id, size, replyUrl });
+      const keyLarge = memberKeys.single(member.id).avatar({ size, replyUrl });
 
       const endpoints = [
         {
@@ -369,7 +371,7 @@ describe('Member Hooks', () => {
     const response = AVATAR_URL_RESPONSE;
     const route = `/${buildDownloadAvatarRoute({ id: member.id, replyUrl })}`;
     const hook = () => hooks.useAvatarUrl({ id: member.id });
-    const key = buildAvatarKey({ id: member.id, replyUrl });
+    const key = memberKeys.single(member.id).avatar({ replyUrl });
 
     it(`Receive default avatar url`, async () => {
       const endpoints = [{ route, response }];
@@ -387,7 +389,7 @@ describe('Member Hooks', () => {
         size,
       })}`;
       const hookLarge = () => hooks.useAvatarUrl({ id: member.id, size });
-      const keyLarge = buildAvatarKey({ id: member.id, size, replyUrl });
+      const keyLarge = memberKeys.single(member.id).avatar({ size, replyUrl });
 
       const endpoints = [
         {
@@ -468,7 +470,7 @@ describe('Member Hooks', () => {
     const response: MemberStorage = { current: 123, maximum: 123 };
     const route = `/${buildGetMemberStorage()}`;
     const hook = () => hooks.useMemberStorage();
-    const key = CURRENT_MEMBER_STORAGE_KEY;
+    const key = memberKeys.current().storage;
 
     it(`Receive member storage`, async () => {
       const endpoints = [{ route, response }];

@@ -3,12 +3,7 @@ import { CompleteMember, UUID } from '@graasp/sdk';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
-import {
-  CURRENT_MEMBER_KEY,
-  buildItemPublishedInformationKey,
-  buildPublishedItemsForMemberKey,
-  buildPublishedItemsKey,
-} from '../config/keys';
+import { itemKeys, memberKeys } from '../config/keys';
 import { publishItemRoutine, unpublishItemRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
@@ -31,15 +26,18 @@ export default (queryConfig: QueryClientConfig) => {
           notifier?.({ type: publishItemRoutine.FAILURE, payload: { error } });
         },
         onSettled: (_data, _error, { id }) => {
-          queryClient.invalidateQueries(buildItemPublishedInformationKey(id));
-          const currentMemberId =
-            queryClient.getQueryData<CompleteMember>(CURRENT_MEMBER_KEY)?.id;
+          queryClient.invalidateQueries(
+            itemKeys.single(id).publishedInformation,
+          );
+          const currentMemberId = queryClient.getQueryData<CompleteMember>(
+            memberKeys.current().content,
+          )?.id;
           if (currentMemberId) {
             queryClient.invalidateQueries(
-              buildPublishedItemsForMemberKey(currentMemberId),
+              itemKeys.published().byMember(currentMemberId),
             );
           }
-          queryClient.invalidateQueries(buildPublishedItemsKey());
+          queryClient.invalidateQueries(itemKeys.published().all);
         },
       },
     );
@@ -60,15 +58,18 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { id }) => {
-          queryClient.invalidateQueries(buildItemPublishedInformationKey(id));
-          const currentMemberId =
-            queryClient.getQueryData<CompleteMember>(CURRENT_MEMBER_KEY)?.id;
+          queryClient.invalidateQueries(
+            itemKeys.single(id).publishedInformation,
+          );
+          const currentMemberId = queryClient.getQueryData<CompleteMember>(
+            memberKeys.current().content,
+          )?.id;
           if (currentMemberId) {
             queryClient.invalidateQueries(
-              buildPublishedItemsForMemberKey(currentMemberId),
+              itemKeys.published().byMember(currentMemberId),
             );
           }
-          queryClient.invalidateQueries(buildPublishedItemsKey());
+          queryClient.invalidateQueries(itemKeys.published().all);
         },
       },
     );

@@ -4,7 +4,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
-import { buildItemLoginSchemaKey } from '../config/keys';
+import { itemKeys } from '../config/keys';
 import {
   deleteItemLoginSchemaRoutine,
   postItemLoginRoutine,
@@ -58,7 +58,9 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(buildItemLoginSchemaKey(itemId));
+          queryClient.invalidateQueries(
+            itemKeys.single(itemId).itemLoginSchema.content,
+          );
         },
       },
     );
@@ -71,7 +73,7 @@ export default (queryConfig: QueryClientConfig) => {
         Api.deleteItemLoginSchema(payload, queryConfig),
       {
         onMutate: ({ itemId }) => {
-          const key = buildItemLoginSchemaKey(itemId);
+          const key = itemKeys.single(itemId).itemLoginSchema.content;
           const previous = queryClient.getQueryData(key);
           queryClient.setQueryData(key, null);
           return previous;
@@ -87,12 +89,17 @@ export default (queryConfig: QueryClientConfig) => {
             type: deleteItemLoginSchemaRoutine.FAILURE,
             payload: { error },
           });
-          queryClient.setQueryData(buildItemLoginSchemaKey(itemId), previous);
+          queryClient.setQueryData(
+            itemKeys.single(itemId).itemLoginSchema.content,
+            previous,
+          );
         },
         onSettled: (_data, _error, { itemId }) => {
           // it is not necessary to update the cache for the given item login schema
           // because the item login only applies if the user is signed out
-          queryClient.invalidateQueries(buildItemLoginSchemaKey(itemId));
+          queryClient.invalidateQueries(
+            itemKeys.single(itemId).itemLoginSchema.content,
+          );
         },
       },
     );

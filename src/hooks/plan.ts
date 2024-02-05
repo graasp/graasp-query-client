@@ -4,9 +4,8 @@ import * as Api from '../api';
 import {
   CARDS_KEY,
   CURRENT_CUSTOMER_KEY,
-  OWN_PLAN_KEY,
   PLANS_KEY,
-  buildPlanKey,
+  memberKeys,
 } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
@@ -15,7 +14,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const usePlan = ({ planId }: { planId: string }) =>
     useQuery({
-      queryKey: buildPlanKey(planId),
+      queryKey: memberKeys.single().subscription(planId),
       queryFn: () => Api.getPlan({ planId }, queryConfig),
       ...defaultOptions,
     });
@@ -29,7 +28,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useOwnPlan = () =>
     useQuery({
-      queryKey: OWN_PLAN_KEY,
+      queryKey: memberKeys.current().subscription,
       queryFn: () => Api.getOwnPlan(queryConfig),
       ...defaultOptions,
     });

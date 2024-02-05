@@ -8,7 +8,7 @@ import { act } from 'react-test-renderer';
 import { ITEM_FLAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildPostItemFlagRoute } from '../api/routes';
-import { buildItemFlagsKey } from '../config/keys';
+import { itemKeys } from '../config/keys';
 import { postItemFlagRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -25,7 +25,7 @@ describe('Item Flag Mutations', () => {
   describe('usePostItemFlag', () => {
     const flagType = FlagType.FalseInformation;
     const itemId = FolderItemFactory().id;
-    const flagKey = buildItemFlagsKey(itemId);
+    const flagKey = itemKeys.single(itemId).flags;
     const route = `/${buildPostItemFlagRoute(itemId)}`;
     const mutation = mutations.usePostItemFlag;
 

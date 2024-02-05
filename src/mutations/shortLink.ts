@@ -4,7 +4,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
-import { buildShortLinkKey, buildShortLinksItemKey } from '../config/keys';
+import { buildShortLinkKey, itemKeys } from '../config/keys';
 import {
   createShortLinkRoutine,
   deleteShortLinkRoutine,
@@ -27,7 +27,7 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { message: SUCCESS_MESSAGES.CREATE_SHORT_LINK },
           });
           queryClient.invalidateQueries(
-            buildShortLinksItemKey(variables.itemId),
+            itemKeys.single(variables.itemId).shortLinks,
           );
           queryClient.invalidateQueries(buildShortLinkKey(variables.alias));
         },
@@ -57,7 +57,9 @@ export default (queryConfig: QueryClientConfig) => {
             type: patchShortLinkRoutine.SUCCESS,
             payload: { message: SUCCESS_MESSAGES.EDIT_SHORT_LINK },
           });
-          queryClient.invalidateQueries(buildShortLinksItemKey(data.item.id));
+          queryClient.invalidateQueries(
+            itemKeys.single(data.item.id).shortLinks,
+          );
           queryClient.invalidateQueries(buildShortLinkKey(data.alias));
         },
         onError: (error: Error) => {
@@ -80,7 +82,9 @@ export default (queryConfig: QueryClientConfig) => {
             type: deleteShortLinkRoutine.SUCCESS,
             payload: { message: SUCCESS_MESSAGES.DELETE_SHORT_LINK },
           });
-          queryClient.invalidateQueries(buildShortLinksItemKey(data.item.id));
+          queryClient.invalidateQueries(
+            itemKeys.single(data.item.id).shortLinks,
+          );
           queryClient.invalidateQueries(buildShortLinkKey(data.alias));
         },
         onError: (error: Error) => {

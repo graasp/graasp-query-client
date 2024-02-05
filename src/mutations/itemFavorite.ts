@@ -3,7 +3,7 @@ import { UUID } from '@graasp/sdk';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
-import { FAVORITE_ITEMS_KEY } from '../config/keys';
+import { memberKeys } from '../config/keys';
 import { addFavoriteItemRoutine, deleteFavoriteItemRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
@@ -25,7 +25,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: () => {
-          queryClient.invalidateQueries(FAVORITE_ITEMS_KEY);
+          queryClient.invalidateQueries(memberKeys.current().favoriteItems);
         },
       },
     );
@@ -46,7 +46,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: () => {
-          queryClient.invalidateQueries(FAVORITE_ITEMS_KEY);
+          queryClient.invalidateQueries(memberKeys.current().favoriteItems);
         },
       },
     );

@@ -4,10 +4,7 @@ import { useQuery } from 'react-query';
 
 import * as Api from '../api';
 import { UndefinedArgument } from '../config/errors';
-import {
-  buildGetLikesForItem,
-  buildGetLikesForMemberKey,
-} from '../config/keys';
+import { itemKeys, memberKeys } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
@@ -15,7 +12,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useLikesForMember = (memberId?: UUID) =>
     useQuery({
-      queryKey: buildGetLikesForMemberKey(memberId),
+      queryKey: memberKeys.single(memberId).likedItems,
       queryFn: () => {
         if (!memberId) {
           throw new UndefinedArgument();
@@ -28,7 +25,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useLikesForItem = (itemId?: UUID) =>
     useQuery({
-      queryKey: buildGetLikesForItem(itemId),
+      queryKey: itemKeys.single(itemId).likes,
       queryFn: () => {
         if (!itemId) {
           throw new UndefinedArgument();

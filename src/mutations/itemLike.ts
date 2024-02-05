@@ -3,10 +3,7 @@ import { ItemLike, Member, UUID } from '@graasp/sdk';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
-import {
-  buildGetLikesForItem,
-  buildGetLikesForMemberKey,
-} from '../config/keys';
+import { itemKeys, memberKeys } from '../config/keys';
 import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
@@ -27,8 +24,8 @@ export default (queryConfig: QueryClientConfig) => {
         notifier?.({ type: postItemLikeRoutine.FAILURE, payload: { error } });
       },
       onSettled: (_data, _error, { memberId, itemId }) => {
-        queryClient.invalidateQueries(buildGetLikesForMemberKey(memberId));
-        queryClient.invalidateQueries(buildGetLikesForItem(itemId));
+        queryClient.invalidateQueries(memberKeys.single(memberId).likedItems);
+        queryClient.invalidateQueries(itemKeys.single(itemId).likes);
       },
     });
   };
@@ -50,8 +47,8 @@ export default (queryConfig: QueryClientConfig) => {
         });
       },
       onSettled: (_data, _error, { memberId, itemId }) => {
-        queryClient.invalidateQueries(buildGetLikesForMemberKey(memberId));
-        queryClient.invalidateQueries(buildGetLikesForItem(itemId));
+        queryClient.invalidateQueries(memberKeys.single(memberId).likedItems);
+        queryClient.invalidateQueries(itemKeys.single(itemId).likes);
       },
     });
   };

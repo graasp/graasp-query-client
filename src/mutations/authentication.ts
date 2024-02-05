@@ -4,7 +4,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
-import { CURRENT_MEMBER_KEY } from '../config/keys';
+import { memberKeys } from '../config/keys';
 import {
   signInRoutine,
   signInWithPasswordRoutine,
@@ -211,7 +211,7 @@ export default (queryConfig: QueryClientConfig) => {
         }
         // Update when the server confirmed the logout, instead optimistically updating the member
         // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
-        queryClient.setQueryData(CURRENT_MEMBER_KEY, undefined);
+        queryClient.setQueryData(memberKeys.current().content, undefined);
       },
       onError: (error: Error) => {
         notifier?.({

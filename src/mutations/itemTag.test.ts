@@ -13,7 +13,7 @@ import { act } from 'react-test-renderer';
 import { ITEM_TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildDeleteItemTagRoute, buildPostItemTagRoute } from '../api/routes';
-import { itemTagsKeys } from '../config/keys';
+import { itemKeys } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -33,7 +33,7 @@ describe('Item Tag Mutations', () => {
     const tagType = ItemTagType.Hidden;
     const route = `/${buildPostItemTagRoute({ itemId, type: tagType })}`;
     const mutation = mutations.usePostItemTag;
-    const itemTagKey = itemTagsKeys.singleId(itemId);
+    const itemTagKey = itemKeys.single(itemId).tags;
 
     it('Post item tag', async () => {
       queryClient.setQueryData(itemTagKey, ITEM_TAGS);
@@ -110,7 +110,7 @@ describe('Item Tag Mutations', () => {
     const itemId = item.id;
     const route = `/${buildDeleteItemTagRoute({ itemId, type: tagType })}`;
     const mutation = mutations.useDeleteItemTag;
-    const itemTagKey = itemTagsKeys.singleId(itemId);
+    const itemTagKey = itemKeys.single(itemId).tags;
 
     it('Delete item tag', async () => {
       queryClient.setQueryData(itemTagKey, ITEM_TAGS);

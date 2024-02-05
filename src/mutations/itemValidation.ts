@@ -3,7 +3,7 @@ import { UUID } from '@graasp/sdk';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
-import { buildLastItemValidationGroupKey } from '../config/keys';
+import { itemKeys } from '../config/keys';
 import { postItemValidationRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
@@ -28,9 +28,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(
-            buildLastItemValidationGroupKey(itemId),
-          );
+          queryClient.invalidateQueries(itemKeys.single(itemId).validation);
         },
       },
     );
