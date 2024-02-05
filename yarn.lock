@@ -1804,6 +1804,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@faker-js/faker@npm:8.4.0":
+  version: 8.4.0
+  resolution: "@faker-js/faker@npm:8.4.0"
+  checksum: 10/f9253d0b4846ab0fd769cd78be88c4ea24741d9201cccb0038b3627ac21041a2aef150b0f843b2f63d5a056737bec28bcdf493e0b72201a892df4423be0dff79
+  languageName: node
+  linkType: hard
+
 "@graasp/query-client@workspace:.":
   version: 0.0.0-use.local
   resolution: "@graasp/query-client@workspace:."
@@ -1813,7 +1820,7 @@ __metadata:
     "@babel/preset-typescript": "npm:7.23.3"
     "@commitlint/cli": "npm:18.6.0"
     "@commitlint/config-conventional": "npm:18.6.0"
-    "@graasp/sdk": "npm:3.6.0"
+    "@graasp/sdk": "npm:3.7.0"
     "@graasp/translations": "npm:1.23.0"
     "@testing-library/dom": "npm:9.3.4"
     "@testing-library/jest-dom": "npm:6.4.0"
@@ -1866,16 +1873,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@npm:3.6.0":
-  version: 3.6.0
-  resolution: "@graasp/sdk@npm:3.6.0"
+"@graasp/sdk@npm:3.7.0":
+  version: 3.7.0
+  resolution: "@graasp/sdk@npm:3.7.0"
   dependencies:
+    "@faker-js/faker": "npm:8.4.0"
     js-cookie: "npm:3.0.5"
     validator: "npm:13.11.0"
   peerDependencies:
     date-fns: ^3
     uuid: ^9
-  checksum: 10/df52e11764c727e17ce69d247805fd8a2d49ba291b84e00ca390f853f0b0eb7fc4a2153e7003044cb8f84edf9c2c9cae91b79a55d1e71e71c69317e40145ad12
+  checksum: 10/686ecf2f252ccaf17a63730e3a9f486bbf5d4744a62c66fc338ec7bc4e1c9161387ce1c72bd560946a57aaa6798ef5e50fe97ccd8178c52ff5c497c8d11ee131
   languageName: node
   linkType: hard
 
