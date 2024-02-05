@@ -1,6 +1,14 @@
-import { ItemMembership, PermissionLevel } from '@graasp/sdk';
+import {
+  FolderItemFactory,
+  ItemMembership,
+  MemberFactory,
+  PermissionLevel,
+} from '@graasp/sdk';
 
-import { ITEMS, ITEM_MEMBERSHIPS_RESPONSE } from '../../../test/constants';
+import {
+  ITEM_MEMBERSHIPS_RESPONSE,
+  createMockMembership,
+} from '../../../test/constants';
 import {
   getHandlerByChannel,
   mockWsHook,
@@ -20,11 +28,18 @@ describe('Ws Membership Hooks', () => {
   });
 
   describe('useItemsMembershipsUpdates', () => {
-    const itemId = ITEMS[0].id;
+    const item = FolderItemFactory();
+    const itemId = item.id;
+    const member = MemberFactory();
     const membershipsKey = buildItemMembershipsKey(itemId);
-    const newItemMembership = ITEM_MEMBERSHIPS_RESPONSE[0];
-    const newMembership = ITEM_MEMBERSHIPS_RESPONSE[0];
-    const memberships = [ITEM_MEMBERSHIPS_RESPONSE[1]];
+    const newItemMembership = createMockMembership({
+      item,
+      member,
+      creator: member,
+    });
+    const memberships = [
+      createMockMembership({ item, member, creator: member }),
+    ];
     const channel = { name: itemId, topic: TOPICS.MEMBERSHIPS_ITEM };
     const hook = () => hooks.useItemsMembershipsUpdates([itemId]);
 
@@ -36,14 +51,14 @@ describe('Ws Membership Hooks', () => {
       const chatEvent = {
         kind: KINDS.ITEM,
         op: OPS.CREATE,
-        membership: newMembership,
+        membership: newItemMembership,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);
 
       expect(
         queryClient.getQueryData<ItemMembership[]>(membershipsKey),
-      ).toContainEqual(newMembership);
+      ).toContainEqual(newItemMembership);
     });
 
     it(`Receive update membership update`, async () => {
@@ -97,7 +112,7 @@ describe('Ws Membership Hooks', () => {
       const chatEvent = {
         kind: 'false kind',
         op: OPS.PUBLISH,
-        membership: newMembership,
+        membership: newItemMembership,
       };
 
       getHandlerByChannel(handlers, channel)?.handler(chatEvent);

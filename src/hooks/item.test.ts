@@ -1,9 +1,10 @@
 import {
   DiscriminatedItem,
+  FolderItemFactory,
   FolderItemType,
   ItemType,
+  LocalFileItemFactory,
   MAX_TARGETS_FOR_READ_REQUEST,
-  Member,
   ThumbnailSize,
 } from '@graasp/sdk';
 
@@ -12,11 +13,11 @@ import nock from 'nock';
 
 import {
   FILE_RESPONSE,
-  ITEMS,
   THUMBNAIL_BLOB_RESPONSE,
   THUMBNAIL_URL_RESPONSE,
   UNAUTHORIZED_RESPONSE,
   buildResultOfData,
+  generateFolders,
 } from '../../test/constants';
 import {
   Endpoint,
@@ -60,7 +61,11 @@ describe('Items Hooks', () => {
     const hook = () => hooks.useOwnItems();
 
     it(`Receive own items`, async () => {
-      const response = ITEMS;
+      const response = [
+        FolderItemFactory(),
+        FolderItemFactory(),
+        FolderItemFactory(),
+      ];
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
@@ -100,7 +105,11 @@ describe('Items Hooks', () => {
     const id = 'item-id';
     const params = { ordered: true };
     const route = `/${buildGetChildrenRoute(id, params)}`;
-    const response = ITEMS;
+    const response = [
+      FolderItemFactory(),
+      FolderItemFactory(),
+      FolderItemFactory(),
+    ];
     const key = buildItemChildrenKey(id);
 
     it(`Receive children of item by id`, async () => {
@@ -214,21 +223,15 @@ describe('Items Hooks', () => {
   });
 
   describe('useParents', () => {
-    const childItem: FolderItemType = {
+    const response = [
+      FolderItemFactory(),
+      FolderItemFactory(),
+      FolderItemFactory(),
+    ];
+    const childItem: FolderItemType = FolderItemFactory({
       id: 'child-item-id',
-      path: [...ITEMS.map(({ id }) => id), 'child_item_id'].join('.'),
-      name: 'child-item-id',
-      type: ItemType.FOLDER,
-      description: '',
-      extra: {
-        folder: { childrenOrder: [] },
-      },
-      settings: {},
-      updatedAt: '2023-09-06T11:50:32.894Z',
-      createdAt: '2023-09-06T11:50:32.894Z',
-      creator: { id: 'creator' } as Member,
-    };
-    const response = ITEMS;
+      path: [...response.map(({ id }) => id), 'child_item_id'].join('.'),
+    });
     it(`Receive parents of item by id`, async () => {
       const hook = () => hooks.useParents({ id: childItem.id, enabled: true });
 
@@ -320,7 +323,11 @@ describe('Items Hooks', () => {
 
   describe('useSharedItems', () => {
     const route = `/${SHARED_ITEM_WITH_ROUTE}`;
-    const response = ITEMS;
+    const response = [
+      FolderItemFactory(),
+      FolderItemFactory(),
+      FolderItemFactory(),
+    ];
     const hook = () => hooks.useSharedItems();
     it(`Receive shared items`, async () => {
       const endpoints = [{ route, response }];
@@ -358,7 +365,12 @@ describe('Items Hooks', () => {
     const params = {};
     const pagination = {};
     const route = `/${buildGetAccessibleItems(params, pagination)}`;
-    const response = { data: ITEMS, totalCount: ITEMS.length };
+    const items = [
+      FolderItemFactory(),
+      FolderItemFactory(),
+      FolderItemFactory(),
+    ];
+    const response = { data: items, totalCount: items.length };
     const hook = () => hooks.useAccessibleItems();
     const key = accessibleItemsKeys.singlePage(params, pagination);
 
@@ -403,7 +415,7 @@ describe('Items Hooks', () => {
   });
 
   describe('useItem', () => {
-    const response = ITEMS[0];
+    const response = FolderItemFactory();
     const { id } = response;
     const route = `/${buildGetItemRoute(id)}`;
     const hook = () => hooks.useItem(id);
@@ -455,9 +467,16 @@ describe('Items Hooks', () => {
   });
 
   describe('useItems', () => {
+    const dataItems = [
+      FolderItemFactory(),
+      FolderItemFactory(),
+      FolderItemFactory(),
+      FolderItemFactory(),
+      FolderItemFactory(),
+    ];
     it(`Receive one item`, async () => {
-      const oneItem = ITEMS[0];
-      const { id } = oneItem;
+      const oneItem = FolderItemFactory();
+      const { id } = dataItems[0];
       const response = buildResultOfData([oneItem]);
       // use single item call
       const route = `/${buildGetItemsRoute([id])}`;
@@ -477,7 +496,7 @@ describe('Items Hooks', () => {
     });
 
     it(`Receive two items`, async () => {
-      const items = ITEMS.slice(0, 2);
+      const items = dataItems.slice(0, 2);
       const response = buildResultOfData(items);
       const ids: string[] = items.map(({ id }) => id);
       const hook = () => hooks.useItems(ids);
@@ -497,7 +516,7 @@ describe('Items Hooks', () => {
     });
 
     it(`Receive many items`, async () => {
-      const items = ITEMS;
+      const items = generateFolders(MAX_TARGETS_FOR_READ_REQUEST + 1);
       const response = buildResultOfData(items);
       const ids: string[] = items.map(({ id }) => id);
       const hook = () => hooks.useItems(ids);
@@ -520,7 +539,7 @@ describe('Items Hooks', () => {
     });
 
     it(`Unauthorized`, async () => {
-      const requestedItems = ITEMS;
+      const requestedItems = dataItems;
       const ids: string[] = requestedItems.map(({ id }) => id);
       const hook = () => hooks.useItems(ids);
       const route = `/${buildGetItemsRoute(ids)}`;
@@ -546,61 +565,9 @@ describe('Items Hooks', () => {
     // TODO: errors, contains errors, full errors
   });
 
-  // describe('useItemLogin', () => {
-  //   const response = ITEMS[0];
-  //   const { id } = response;
-  //   const route = `/${buildGetItemLoginRoute(id)}`;
-  //   const hook = () => hooks.useItemLogin(id);
-  //   const key = buildItemLoginKey(id);
-
-  //   it(`Receive item login`, async () => {
-  //     const endpoints = [{ route, response }];
-  //     const { data } = await mockHook({ endpoints, hook, wrapper });
-
-  //     expect(data as ItemLoginRecord).toEqualImmutable(response);
-  //     // verify cache keys
-  //     expect(queryClient.getQueryData(key)).toEqualImmutable(response);
-  //   });
-
-  //   it(`Undefined id does not fetch`, async () => {
-  //     const endpoints = [{ route, response }];
-  //     const { data, isFetched } = await mockHook({
-  //       endpoints,
-  //       hook: () => hooks.useItemLogin(undefined),
-  //       wrapper,
-  //       enabled: false,
-  //     });
-
-  //     expect(data).toBeFalsy();
-  //     expect(isFetched).toBeFalsy();
-  //     // verify cache keys
-  //     expect(queryClient.getQueryData(key)).toBeFalsy();
-  //   });
-
-  //   it(`Unauthorized`, async () => {
-  //     const endpoints = [
-  //       {
-  //         route,
-  //         response: UNAUTHORIZED_RESPONSE,
-  //         statusCode: StatusCodes.UNAUTHORIZED,
-  //       },
-  //     ];
-  //     const { data, isError } = await mockHook({
-  //       hook,
-  //       endpoints,
-  //       wrapper,
-  //     });
-
-  //     expect(isError).toBeTruthy();
-  //     expect(data).toBeFalsy();
-  //     // verify cache keys
-  //     expect(queryClient.getQueryData(key)).toBeFalsy();
-  //   });
-  // });
-
   describe('useFileContent', () => {
     const response = FILE_RESPONSE;
-    const { id } = ITEMS[0];
+    const { id } = LocalFileItemFactory();
     const route = `/${buildDownloadFilesRoute(id)}`;
     const hook = () => hooks.useFileContent(id);
     const key = buildFileContentKey({ id });
@@ -666,104 +633,8 @@ describe('Items Hooks', () => {
     });
   });
 
-  // describe('useRecycledItems', () => {
-  //   const route = `/${GET_RECYCLED_ITEMS_ROUTE}`;
-  //   const hook = () => hooks.useRecycledItems();
-  //   const recycleBinKey = RECYCLED_ITEMS_KEY;
-
-  //   it(`Receive recycled items`, async () => {
-  //     const response = ITEMS;
-  //     const endpoints = [{ route, response }];
-  //     const { data } = await mockHook({ endpoints, hook, wrapper });
-  //     expect(data as Item).toEqualImmutable(response);
-
-  //     // verify cache keys
-  //     expect(queryClient.getQueryData(recycleBinKey)).toEqualImmutable(
-  //       response,
-  //     );
-  //     for (const item of response) {
-  //       expect(
-  //         queryClient.getQueryData(buildItemKey(item.id)),
-  //       ).toEqualImmutable(item);
-  //     }
-  //   });
-
-  //   it(`Unauthorized`, async () => {
-  //     const endpoints = [
-  //       {
-  //         route,
-  //         response: UNAUTHORIZED_RESPONSE,
-  //         statusCode: StatusCodes.UNAUTHORIZED,
-  //       },
-  //     ];
-  //     const { data, isError } = await mockHook({
-  //       hook,
-  //       wrapper,
-  //       endpoints,
-  //     });
-
-  //     expect(data).toBeFalsy();
-  //     expect(isError).toBeTruthy();
-  //     // verify cache keys
-  //     expect(queryClient.getQueryData(recycleBinKey)).toBeFalsy();
-  //   });
-  // });
-
-  // describe('usePublicItemsWithTag', () => {
-  //   const response = ITEMS;
-  //   const { id } = TAGS[0];
-  //   const route = `/${buildGetPublicItemsWithTag({ tagId: id })}`;
-  //   const hook = () => hooks.usePublicItemsWithTag(id);
-  //   const key = buildPublicItemsWithTagKey(id);
-
-  //   it(`Receive items`, async () => {
-  //     const endpoints = [{ route, response }];
-  //     const { data } = await mockHook({ endpoints, hook, wrapper });
-
-  //     expect(data as List<Item>).toEqualImmutable(response);
-  //     // verify cache keys
-  //     expect(queryClient.getQueryData(key)).toEqualImmutable(response);
-  //   });
-
-  //   it(`Undefined id does not fetch`, async () => {
-  //     const endpoints = [
-  //       {
-  //         route,
-  //         response,
-  //       },
-  //     ];
-  //     const { data, isFetched } = await mockHook({
-  //       endpoints,
-  //       hook: () => hooks.usePublicItemsWithTag(undefined),
-  //       wrapper,
-  //       enabled: false,
-  //     });
-
-  //     expect(data).toBeFalsy();
-  //     expect(isFetched).toBeFalsy();
-  //     // verify cache keys
-  //     expect(queryClient.getQueryData(key)).toBeFalsy();
-  //   });
-
-  //   it(`Unauthorized`, async () => {
-  //     const endpoints = [
-  //       {
-  //         route,
-  //         response: UNAUTHORIZED_RESPONSE,
-  //         statusCode: StatusCodes.UNAUTHORIZED,
-  //       },
-  //     ];
-  //     const { data, isError } = await mockHook({ endpoints, hook, wrapper });
-
-  //     expect(data).toBeFalsy();
-  //     expect(isError).toBeTruthy();
-  //     // verify cache keys
-  //     expect(queryClient.getQueryData(key)).toBeFalsy();
-  //   });
-  // });
-
   describe('useItemThumbnail', () => {
-    const item = ITEMS[0];
+    const item = FolderItemFactory();
     const replyUrl = false;
     const key = buildItemThumbnailKey({ id: item.id, replyUrl });
     const response = THUMBNAIL_BLOB_RESPONSE;
@@ -886,7 +757,7 @@ describe('Items Hooks', () => {
   });
 
   describe('useItemThumbnailUrl', () => {
-    const item = ITEMS[0];
+    const item = FolderItemFactory();
     const replyUrl = true;
     const key = buildItemThumbnailKey({ id: item.id, replyUrl });
     const response = THUMBNAIL_URL_RESPONSE;

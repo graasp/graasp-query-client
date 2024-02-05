@@ -1,6 +1,7 @@
 import {
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
+  MemberFactory,
   MemberStorage,
   ResultOf,
   ThumbnailSize,
@@ -14,10 +15,9 @@ import {
   AVATAR_BLOB_RESPONSE,
   AVATAR_URL_RESPONSE,
   FILE_NOT_FOUND_RESPONSE,
-  MEMBERS_RESPONSE,
-  MEMBER_RESPONSE,
   UNAUTHORIZED_RESPONSE,
   buildResultOfData,
+  generateMembers,
 } from '../../test/constants';
 import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils';
 import {
@@ -47,7 +47,7 @@ describe('Member Hooks', () => {
     const hook = () => hooks.useCurrentMember();
 
     it(`Receive current member`, async () => {
-      const response = MEMBER_RESPONSE;
+      const response = MemberFactory();
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
@@ -79,7 +79,7 @@ describe('Member Hooks', () => {
 
   describe('useMember', () => {
     const id = 'member-id';
-    const response = MEMBER_RESPONSE;
+    const response = MemberFactory();
 
     it(`Receive member id = ${id}`, async () => {
       const endpoints = [
@@ -123,7 +123,7 @@ describe('Member Hooks', () => {
   });
 
   describe('useMembers', () => {
-    const response = MEMBERS_RESPONSE;
+    const response = generateMembers(MAX_TARGETS_FOR_READ_REQUEST + 1);
     const ids = response.map(({ id }) => id);
 
     it(`Does not run for empty ids`, async () => {
@@ -173,7 +173,7 @@ describe('Member Hooks', () => {
     });
 
     it(`Receive two members`, async () => {
-      const twoMembers = MEMBERS_RESPONSE.slice(0, 2);
+      const twoMembers = response.slice(0, 2);
       const twoIds = twoMembers.map(({ id }) => id);
       const endpointResponse = buildResultOfData(twoMembers);
       const endpoints = [
@@ -225,9 +225,7 @@ describe('Member Hooks', () => {
       for (const id of ids) {
         expect(
           queryClient.getQueryData<Member>(buildMemberKey(id)),
-        ).toMatchObject(
-          MEMBERS_RESPONSE.find(({ id: thisId }) => thisId === id)!,
-        );
+        ).toMatchObject(response.find(({ id: thisId }) => thisId === id)!);
       }
     });
 
@@ -261,7 +259,7 @@ describe('Member Hooks', () => {
   });
 
   describe('useAvatar', () => {
-    const member = MEMBER_RESPONSE;
+    const member = MemberFactory();
     const replyUrl = false;
     const response = AVATAR_BLOB_RESPONSE;
     const route = `/${buildDownloadAvatarRoute({ id: member.id, replyUrl })}`;
@@ -366,7 +364,7 @@ describe('Member Hooks', () => {
   });
 
   describe('useAvatarUrl', () => {
-    const member = MEMBER_RESPONSE;
+    const member = MemberFactory();
     const replyUrl = true;
     const response = AVATAR_URL_RESPONSE;
     const route = `/${buildDownloadAvatarRoute({ id: member.id, replyUrl })}`;

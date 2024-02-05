@@ -1,12 +1,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { HttpMethod, Invitation } from '@graasp/sdk';
+import { FolderItemFactory, HttpMethod, Invitation } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 
 import {
-  ITEMS,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
   buildInvitation,
@@ -27,7 +26,7 @@ import {
   resendInvitationRoutine,
 } from '../routines';
 
-const item = ITEMS[0];
+const item = FolderItemFactory();
 const itemId = item.id;
 
 const defaultInvitations = buildMockInvitations(itemId);

@@ -1,11 +1,9 @@
+import { FolderItemFactory } from '@graasp/sdk';
+
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 
-import {
-  ITEMS,
-  UNAUTHORIZED_RESPONSE,
-  buildInvitation,
-} from '../../test/constants';
+import { UNAUTHORIZED_RESPONSE, buildInvitation } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import {
   buildGetInvitationRoute,
@@ -14,7 +12,7 @@ import {
 import { buildInvitationKey, buildItemInvitationsKey } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-const item = ITEMS[0];
+const item = FolderItemFactory();
 
 describe('Invitation Hooks', () => {
   afterEach(() => {
@@ -79,7 +77,7 @@ describe('Invitation Hooks', () => {
   });
 
   describe('useItemInvitations', () => {
-    const itemId = ITEMS[0].id;
+    const itemId = FolderItemFactory().id;
     const route = `/${buildGetItemInvitationsForItemRoute(itemId)}`;
     const key = buildItemInvitationsKey(itemId);
 

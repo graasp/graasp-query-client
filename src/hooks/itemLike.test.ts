@@ -1,9 +1,9 @@
-import { ItemLike } from '@graasp/sdk';
+import { FolderItemFactory, ItemLike } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 
-import { ITEMS, ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import { ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import {
   buildGetItemLikesRoute,
@@ -62,7 +62,7 @@ describe('Item Like Hooks', () => {
   });
 
   describe('useLikesForItem', () => {
-    const itemId = ITEMS[0].id;
+    const itemId = FolderItemFactory().id;
     const route = `/${buildGetItemLikesRoute(itemId)}`;
     const key = buildGetLikesForItem(itemId);
 

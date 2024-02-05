@@ -1,6 +1,6 @@
-import { ChatMessage } from '@graasp/sdk';
+import { ChatMessage, FolderItemFactory } from '@graasp/sdk';
 
-import { CHAT_MESSAGES, ITEMS, MESSAGE_IDS } from '../../../test/constants';
+import { CHAT_MESSAGES } from '../../../test/constants';
 import {
   getHandlerByChannel,
   mockWsHook,
@@ -49,9 +49,10 @@ describe('Ws Chat Hooks', () => {
   });
 
   describe('useItemChatUpdates', () => {
-    const itemId = ITEMS[0].id;
+    const itemId = FolderItemFactory().id;
     const chatId = itemId;
     const chatKey = buildItemChatKey(chatId);
+    const messages = CHAT_MESSAGES;
     const newMessage = { body: 'new content message' };
     const channel = {
       name: chatId,
@@ -79,10 +80,10 @@ describe('Ws Chat Hooks', () => {
 
     it(`Receive chat messages edit update`, async () => {
       const updatedMessage = {
-        id: MESSAGE_IDS[0],
+        id: messages[0].id,
         body: 'new message content',
       };
-      queryClient.setQueryData(chatKey, CHAT_MESSAGES);
+      queryClient.setQueryData(chatKey, messages);
       await mockWsHook({
         hook,
         wrapper,
@@ -99,7 +100,7 @@ describe('Ws Chat Hooks', () => {
     });
 
     it(`Receive chat messages delete update`, async () => {
-      const deletedMessage = { id: MESSAGE_IDS[0] };
+      const deletedMessage = { id: messages[0].id };
       queryClient.setQueryData(chatKey, CHAT_MESSAGES);
       await mockWsHook({
         hook,

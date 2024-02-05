@@ -6,12 +6,10 @@ import {
   CategoryType,
   ChatMention,
   ChatMessage,
-  CompleteMember,
   Context,
-  DiscriminatedItem,
   ExportedChatMessage,
   FlagType,
-  FolderItemType,
+  FolderItemFactory,
   HttpMethod,
   Invitation,
   ItemBookmark,
@@ -25,14 +23,11 @@ import {
   ItemPublished,
   ItemTag,
   ItemTagType,
-  ItemType,
   ItemValidationGroup,
   ItemValidationProcess,
   ItemValidationStatus,
-  MAX_TARGETS_FOR_MODIFY_REQUEST,
-  MAX_TARGETS_FOR_READ_REQUEST,
   Member,
-  MemberType,
+  MemberFactory,
   MentionStatus,
   PermissionLevel,
   RecycledItemData,
@@ -87,131 +82,29 @@ export const buildResultOfData = <T>(
   };
 };
 
-export const MESSAGE_IDS = ['12345', '78945'];
+export const generateFolders = (nb: number = 5) =>
+  Array.from({ length: nb }, () => FolderItemFactory());
 
-export const MOCK_MEMBER: Member = {
-  id: '42',
-  name: 'username',
-  email: 'username@graasp.org',
-};
-
-export const MOCK_COMPLETE_MEMBER: CompleteMember = {
-  ...MOCK_MEMBER,
-  type: MemberType.Individual,
-  extra: {},
-  updatedAt: '2023-09-06T11:50:32.894Z',
-  createdAt: '2023-09-06T11:50:32.894Z',
-};
-
-const createMockMember = (member?: Partial<Member>): Member => ({
-  ...MOCK_MEMBER,
-  ...member,
-});
-
-export const MEMBER_RESPONSE: Member = createMockMember();
-
-export const MOCK_ITEM: FolderItemType = {
-  id: '42',
-  name: 'item1',
-  path: '42',
-  description: '',
-  creator: MOCK_MEMBER,
-  updatedAt: '2023-09-06T11:50:32.894Z',
-  createdAt: '2023-09-06T11:50:32.894Z',
-  settings: {},
-  type: ItemType.FOLDER,
-  extra: {
-    [ItemType.FOLDER]: {
-      childrenOrder: [],
-    },
-  },
-};
-
-const createMockFolderItem = (
-  folderItem?: Partial<FolderItemType>,
-): FolderItemType => ({
-  ...MOCK_ITEM,
-  ...folderItem,
-});
-
-const ITEM_1: FolderItemType = createMockFolderItem({
-  id: '42',
-  name: 'item1',
-  path: '42',
-});
-
-const ITEM_2: FolderItemType = createMockFolderItem({
-  id: '5243',
-  name: 'item2',
-  path: '5243',
-});
-
-const ITEM_3: FolderItemType = createMockFolderItem({
-  id: '5896',
-  name: 'item3',
-  path: '5896',
-});
-
-const ITEM_4: FolderItemType = createMockFolderItem({
-  id: 'dddd',
-  name: 'item4',
-  path: '5896.dddd',
-});
-
-const ITEM_5: FolderItemType = createMockFolderItem({
-  id: 'eeee',
-  name: 'item5',
-  path: '5896.eeee',
-});
-
-const ITEM_6: FolderItemType = createMockFolderItem({
-  id: 'gggg',
-  name: 'item5',
-  path: '5896.gggg',
-});
-
-export const ITEMS: DiscriminatedItem[] = [
-  ITEM_1,
-  ITEM_2,
-  ITEM_3,
-  ITEM_4,
-  ITEM_5,
-  ITEM_6,
-  ...Array.from(
-    {
-      length:
-        Math.max(MAX_TARGETS_FOR_MODIFY_REQUEST, MAX_TARGETS_FOR_READ_REQUEST) +
-        1,
-    },
-    (_, idx) =>
-      createMockFolderItem({
-        id: `item-${idx}`,
-        name: `item-${idx}`,
-        path: `item_${idx}`,
-        description: '',
-      }),
-  ),
-];
-
-export const MENTION_IDS = ['12345', '78945'];
+export const generateMembers = (nb: number = 5) =>
+  Array.from({ length: nb }, () => MemberFactory());
 
 export const RECYCLED_ITEM_DATA: RecycledItemData[] = [
   {
     id: `recycle-item-id`,
-    item: ITEM_1,
-    creator: MEMBER_RESPONSE,
+    item: FolderItemFactory(),
+    creator: MemberFactory(),
     createdAt: '2023-09-06T11:50:32.894Z',
   },
   {
     id: `recycle-item-id-1`,
-    item: ITEM_2,
-    creator: MEMBER_RESPONSE,
+    item: FolderItemFactory(),
+    creator: MemberFactory(),
     createdAt: '2023-09-06T11:50:32.894Z',
   },
   {
     id: `recycle-item-id-2`,
-    item: ITEM_3,
-    creator: MEMBER_RESPONSE,
+    item: FolderItemFactory(),
+    creator: MemberFactory(),
     createdAt: '2023-09-06T11:50:32.894Z',
   },
 ];
@@ -219,53 +112,35 @@ export const RECYCLED_ITEM_DATA: RecycledItemData[] = [
 export const FAVORITE_ITEM: ItemBookmark[] = [
   {
     id: `favorite-item-id`,
-    item: ITEM_1,
+    item: FolderItemFactory(),
     createdAt: '2023-09-06T11:50:32.894Z',
   },
 ];
 
-const MEMBER_RESPONSE_2: Member = createMockMember({
-  id: '421',
-  name: 'username1',
-  email: 'username1@graasp.org',
-});
-
-export const MEMBERS_RESPONSE: Member[] = [
-  MEMBER_RESPONSE,
-  MEMBER_RESPONSE_2,
-  ...Array.from({ length: MAX_TARGETS_FOR_READ_REQUEST }, (_, idx) =>
-    createMockMember({
-      id: idx.toString(),
-      name: `username-${idx}`,
-      email: `username-${idx}@graasp.org`,
-    }),
-  ),
-];
-
 export const OK_RESPONSE = {};
 
-const createMockMembership = (
+export const createMockMembership = (
   membership?: Partial<ItemMembership>,
 ): ItemMembership => ({
   id: 'membership-id',
-  member: MEMBER_RESPONSE,
-  item: ITEM_1,
+  member: MemberFactory(),
+  item: FolderItemFactory(),
   permission: PermissionLevel.Read,
   createdAt: '2023-04-26T08:46:34.812Z',
   updatedAt: '2023-04-26T08:46:34.812Z',
-  creator: MEMBER_RESPONSE,
+  creator: MemberFactory(),
   ...membership,
 });
 
 const MEMBERSHIP_1: ItemMembership = createMockMembership({
   id: 'membership-id',
-  member: MOCK_MEMBER,
+  member: MemberFactory(),
   permission: PermissionLevel.Read,
 });
 
 const MEMBERSHIP_2: ItemMembership = createMockMembership({
   id: 'membership-id1',
-  member: MOCK_MEMBER,
+  member: MemberFactory(),
   permission: PermissionLevel.Admin,
 });
 
@@ -276,7 +151,7 @@ export const ITEM_MEMBERSHIPS_RESPONSE: ItemMembership[] = [
 
 export const ITEM_LOGIN_RESPONSE: ItemLoginSchema = {
   type: ItemLoginSchemaType.Username,
-  item: ITEMS[0],
+  item: FolderItemFactory(),
   createdAt: '2023-09-06T11:50:32.894Z',
   updatedAt: '2023-09-06T11:50:32.894Z',
   id: 'login-schema-id',
@@ -355,10 +230,10 @@ export const createMockChatMessage = (
 ): ChatMessage => ({
   id: '',
   body: 'some text',
-  creator: MEMBER_RESPONSE,
+  creator: MemberFactory(),
   createdAt: '2023-09-06T11:50:32.894Z',
   updatedAt: '2023-09-06T11:50:32.894Z',
-  item: ITEM_1,
+  item: FolderItemFactory(),
   ...message,
 });
 
@@ -369,7 +244,7 @@ export const createMockExportedChatMessage = (
   chatId: '',
   body: 'some text',
   creatorName: 'Some Name',
-  creator: MEMBER_RESPONSE,
+  creator: MemberFactory(),
   createdAt: '2023-09-06T11:50:32.894Z',
   updatedAt: '2023-09-06T11:50:32.894Z',
   ...message,
@@ -380,7 +255,7 @@ export const createMockMemberMentions = (
 ): ChatMention => ({
   id: 'UUID',
   message: createMockChatMessage(),
-  member: MEMBER_RESPONSE,
+  member: MemberFactory(),
   createdAt: '2023-09-06T11:50:32.894Z',
   updatedAt: '2023-09-06T11:50:32.894Z',
   status: MentionStatus.Read,
@@ -389,7 +264,7 @@ export const createMockMemberMentions = (
 
 export const buildChatMention = ({
   id = v4(),
-  member = MOCK_MEMBER,
+  member = MemberFactory(),
   status = MentionStatus.Unread,
 }: {
   id?: UUID;
@@ -401,11 +276,11 @@ export const buildChatMention = ({
   status,
   message: {
     id: 'anotherid',
-    item: MOCK_ITEM,
+    item: FolderItemFactory(),
     createdAt: '2023-09-06T11:50:32.894Z',
     updatedAt: '2023-09-06T11:50:32.894Z',
     body: 'somemessage here',
-    creator: MOCK_MEMBER,
+    creator: MemberFactory(),
   },
   createdAt: '2023-09-06T11:50:32.894Z',
   updatedAt: '2023-09-06T11:50:32.894Z',
@@ -417,30 +292,30 @@ export const buildMemberMentions = (): ChatMention[] => {
       id: 'someid',
       message: {
         id: 'anotherid',
-        item: MOCK_ITEM,
+        item: FolderItemFactory(),
         createdAt: '2023-09-06T11:50:32.894Z',
         updatedAt: '2023-09-06T11:50:32.894Z',
         body: 'somemessage here',
-        creator: MOCK_MEMBER,
+        creator: MemberFactory(),
       },
       createdAt: '2023-09-06T11:50:32.894Z',
       updatedAt: '2023-09-06T11:50:32.894Z',
-      member: MOCK_MEMBER,
+      member: MemberFactory(),
       status: MentionStatus.Unread,
     },
     {
       id: 'someOtherId',
       message: {
         id: 'anotherid',
-        item: MOCK_ITEM,
+        item: FolderItemFactory(),
         createdAt: '2023-09-06T11:50:32.894Z',
         updatedAt: '2023-09-06T11:50:32.894Z',
         body: 'somemessage here',
-        creator: MOCK_MEMBER,
+        creator: MemberFactory(),
       },
       createdAt: '2023-09-06T11:50:32.894Z',
       updatedAt: '2023-09-06T11:50:32.894Z',
-      member: MOCK_MEMBER,
+      member: MemberFactory(),
       status: MentionStatus.Unread,
     },
   ];
@@ -449,10 +324,10 @@ export const buildMemberMentions = (): ChatMention[] => {
 
 const defaultItemTagsValues: ItemTag = {
   id: 'tag-id',
-  item: MOCK_ITEM,
+  item: FolderItemFactory(),
   type: ItemTagType.Public,
   createdAt: '2023-09-06T11:50:32.894Z',
-  creator: MOCK_MEMBER,
+  creator: MemberFactory(),
 };
 const createMockItemTags = (values: Partial<ItemTag>): ItemTag => ({
   ...defaultItemTagsValues,
@@ -461,13 +336,13 @@ const createMockItemTags = (values: Partial<ItemTag>): ItemTag => ({
 
 const ITEM_TAG_1: ItemTag = createMockItemTags({
   id: 'tag-id',
-  item: MOCK_ITEM,
+  item: FolderItemFactory(),
   type: ItemTagType.Public,
 });
 
 const ITEM_TAG_2: ItemTag = createMockItemTags({
   id: 'tag-id1',
-  item: MOCK_ITEM,
+  item: FolderItemFactory(),
   type: ItemTagType.Public,
 });
 
@@ -475,17 +350,17 @@ export const ITEM_TAGS = [ITEM_TAG_1, ITEM_TAG_2];
 
 export const CHAT_MESSAGES: ChatMessage[] = [
   {
-    id: MESSAGE_IDS[0],
-    item: ITEM_1,
-    creator: MOCK_MEMBER,
+    id: v4(),
+    item: FolderItemFactory(),
+    creator: MemberFactory(),
     createdAt: '2023-09-06T11:50:32.894Z',
     updatedAt: '2023-09-06T11:50:32.894Z',
     body: 'text',
   },
   {
-    id: MESSAGE_IDS[1],
-    item: ITEM_1,
-    creator: MOCK_MEMBER,
+    id: v4(),
+    item: FolderItemFactory(),
+    creator: MemberFactory(),
     createdAt: '2023-09-06T11:50:32.894Z',
     updatedAt: '2023-09-06T11:50:32.894Z',
     body: 'text of second message',
@@ -514,10 +389,10 @@ export const CATEGORIES = [CATEGORY_1, CATEGORY_2];
 
 const defaultItemCategoryValues: ItemCategory = {
   id: 'id1',
-  item: MOCK_ITEM,
+  item: FolderItemFactory(),
   category: defaultCategoryValues,
   createdAt: '2023-09-06T11:50:32.894Z',
-  creator: MOCK_MEMBER,
+  creator: MemberFactory(),
 };
 const createMockItemCategory = (
   values: Partial<ItemCategory>,
@@ -525,13 +400,13 @@ const createMockItemCategory = (
 
 const ITEM_CATEGORY_1: ItemCategory = createMockItemCategory({
   id: 'id1',
-  item: MOCK_ITEM,
+  item: FolderItemFactory(),
   category: defaultCategoryValues,
 });
 
 const ITEM_CATEGORY_2: ItemCategory = createMockItemCategory({
   id: 'id2',
-  item: MOCK_ITEM,
+  item: FolderItemFactory(),
   category: defaultCategoryValues,
 });
 
@@ -540,12 +415,12 @@ export const ITEM_CATEGORIES = [ITEM_CATEGORY_1, ITEM_CATEGORY_2];
 const buildItemLikes = (): ItemLike[] => [
   {
     id: 'id1',
-    item: MOCK_ITEM,
+    item: FolderItemFactory(),
     createdAt: '2023-09-06T11:50:32.894Z',
   },
   {
     id: 'id2',
-    item: MOCK_ITEM,
+    item: FolderItemFactory(),
     createdAt: '2023-09-06T11:50:32.894Z',
   },
 ];
@@ -553,11 +428,11 @@ export const ITEM_LIKES: ItemLike[] = buildItemLikes();
 
 export const ITEM_VALIDATION_GROUP: ItemValidationGroup = {
   id: 'id-1',
-  item: MOCK_ITEM,
+  item: FolderItemFactory(),
   itemValidations: [
     {
       id: 'id-1',
-      item: MOCK_ITEM,
+      item: FolderItemFactory(),
       status: ItemValidationStatus.Success,
       process: ItemValidationProcess.BadWordsDetection,
       createdAt: '2023-09-06T11:50:32.894Z',
@@ -571,8 +446,8 @@ export const ITEM_VALIDATION_GROUP: ItemValidationGroup = {
 
 const ACTION_1: Action = {
   id: 'action-id',
-  item: MOCK_ITEM,
-  member: MOCK_MEMBER,
+  item: FolderItemFactory(),
+  member: MemberFactory(),
   createdAt: '2023-09-06T11:50:32.894Z',
   view: Context.Analytics,
   type: 'action-type',
@@ -594,8 +469,8 @@ const createMockActionData = (actionData: Partial<ActionData>): ActionData => ({
 
 export const ACTIONS_DATA: ActionData = createMockActionData({
   actions: ACTIONS_LIST,
-  members: [MEMBER_RESPONSE],
-  item: ITEM_1,
+  members: [MemberFactory()],
+  item: FolderItemFactory(),
   itemMemberships: [MEMBERSHIP_1],
   metadata: {
     numActionsRetrieved: 3,
@@ -603,7 +478,7 @@ export const ACTIONS_DATA: ActionData = createMockActionData({
   },
 });
 export const MEMBER_PUBLIC_PROFILE = {
-  member: MEMBER_RESPONSE,
+  member: MemberFactory(),
   bio: 'some random bio',
   visibility: true,
   linkedinID: 'user',
@@ -621,9 +496,9 @@ export const buildInvitation = (values: Partial<Invitation>): Invitation => ({
   id: 'id',
   name: 'member-name',
   email: 'email',
-  creator: MOCK_MEMBER,
+  creator: MemberFactory(),
   permission: PermissionLevel.Read,
-  item: MOCK_ITEM,
+  item: FolderItemFactory(),
   createdAt: '2023-09-06T11:50:32.894Z',
   updatedAt: '2023-09-06T11:50:32.894Z',
   ...values,
@@ -632,14 +507,14 @@ export const buildInvitation = (values: Partial<Invitation>): Invitation => ({
 export const buildMockInvitations = (itemId: string) => [
   buildInvitation({
     item: {
-      ...MOCK_ITEM,
+      ...FolderItemFactory(),
       path: itemId,
     },
     email: 'a',
   }),
   buildInvitation({
     item: {
-      ...MOCK_ITEM,
+      ...FolderItemFactory(),
       path: itemId,
     },
     email: 'b',
@@ -650,22 +525,22 @@ export const ITEM_FLAGS: ItemFlag[] = [
   {
     id: 'item-flag-1',
     type: FlagType.FalseInformation,
-    item: ITEM_1,
-    creator: MEMBER_RESPONSE,
+    item: FolderItemFactory(),
+    creator: MemberFactory(),
     createdAt: '2023-09-06T11:50:32.894Z',
   },
 ];
 
 export const ITEM_PUBLISHED_DATA: ItemPublished = {
   id: 'item-published-id',
-  item: ITEM_1,
+  item: FolderItemFactory(),
   createdAt: '2023-09-06T11:50:32.894Z',
   totalViews: 1,
 };
 
 export const ITEM_GEOLOCATION: ItemGeolocation = {
   id: 'item-published-id',
-  item: ITEM_1,
+  item: FolderItemFactory(),
   lat: 1,
   lng: 1,
   country: 'DE',

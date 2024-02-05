@@ -1,5 +1,6 @@
 import {
   DiscriminatedItem,
+  FolderItemFactory,
   ItemTag,
   ItemTagType,
   MAX_TARGETS_FOR_READ_REQUEST,
@@ -10,10 +11,10 @@ import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 
 import {
-  ITEMS,
   ITEM_TAGS,
   UNAUTHORIZED_RESPONSE,
   buildResultOfData,
+  generateFolders,
 } from '../../test/constants';
 import {
   mockHook,
@@ -33,7 +34,7 @@ describe('Item Tags Hooks', () => {
   });
 
   describe('useItemTags', () => {
-    const itemId = ITEMS[0].id;
+    const itemId = FolderItemFactory().id;
     const route = `/${buildGetItemTagsRoute(itemId)}`;
     const key = itemTagsKeys.singleId(itemId);
 
@@ -73,7 +74,9 @@ describe('Item Tags Hooks', () => {
   });
 
   describe('useItemsTags', () => {
-    const itemsIds = ITEMS.map(({ id }) => id);
+    const itemsIds = generateFolders(MAX_TARGETS_FOR_READ_REQUEST + 1).map(
+      ({ id }) => id,
+    );
 
     const keys = itemsIds.map((itemId) => itemTagsKeys.singleId(itemId));
     const tags = itemsIds.map((id) => [

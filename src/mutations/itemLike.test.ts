@@ -1,15 +1,10 @@
-import { HttpMethod } from '@graasp/sdk';
+import { FolderItemFactory, HttpMethod, MemberFactory } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
-import {
-  ITEMS,
-  ITEM_LIKES,
-  MOCK_MEMBER,
-  UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
+import { ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
   buildDeleteItemLikeRoute,
@@ -31,8 +26,8 @@ describe('Item Like Mutations', () => {
   });
 
   describe('usePostItemLike', () => {
-    const itemId = ITEMS[0].id;
-    const memberId = MOCK_MEMBER.id;
+    const itemId = FolderItemFactory().id;
+    const memberId = MemberFactory().id;
     const likedItemsKey = buildGetLikesForMemberKey(memberId);
     const route = `/${buildPostItemLikeRoute(itemId)}`;
     const mutation = mutations.usePostItemLike;
@@ -99,8 +94,8 @@ describe('Item Like Mutations', () => {
   });
 
   describe('useDeleteItemLike', () => {
-    const itemId = ITEMS[0].id;
-    const memberId = MOCK_MEMBER.id;
+    const itemId = FolderItemFactory().id;
+    const memberId = MemberFactory().id;
     const likedItemsKey = buildGetLikesForMemberKey(memberId);
     const route = `/${buildDeleteItemLikeRoute(itemId)}`;
     const mutation = mutations.useDeleteItemLike;

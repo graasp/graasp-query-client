@@ -1,15 +1,16 @@
-import { HttpMethod, ItemLoginSchemaType } from '@graasp/sdk';
+import {
+  FolderItemFactory,
+  HttpMethod,
+  ItemLoginSchemaType,
+  MemberFactory,
+} from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
-import {
-  ITEMS,
-  ITEM_LOGIN_RESPONSE,
-  MEMBER_RESPONSE,
-} from '../../test/constants';
+import { ITEM_LOGIN_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import {
   buildPostItemLoginSignInRoute,
@@ -33,16 +34,17 @@ describe('Item Login Mutations', () => {
     nock.cleanAll();
   });
 
-  const { name: username, id: memberId } = MEMBER_RESPONSE;
+  const { name: username, id: memberId } = MemberFactory();
   const password = 'password';
-  const itemId = ITEMS[0].id;
+  const itemId = FolderItemFactory().id;
+  const items = [FolderItemFactory(), FolderItemFactory(), FolderItemFactory()];
   describe('usePostItemLogin', () => {
     const route = `/${buildPostItemLoginSignInRoute(itemId)}`;
     const mutation = mutations.usePostItemLogin;
     it('Post item login', async () => {
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, MemberFactory());
       // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(OWN_ITEMS_KEY, items);
 
       const endpoints = [
         {
@@ -75,9 +77,9 @@ describe('Item Login Mutations', () => {
     });
 
     it('Unauthorized to post item login', async () => {
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, MemberFactory());
       // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(OWN_ITEMS_KEY, items);
 
       const endpoints = [
         {

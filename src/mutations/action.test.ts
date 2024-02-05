@@ -1,20 +1,16 @@
-import { HttpMethod } from '@graasp/sdk';
+import { FolderItemFactory, HttpMethod } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 
-import {
-  ITEMS,
-  OK_RESPONSE,
-  UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
+import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildExportActions, buildPostItemAction } from '../api/routes';
 import { exportActionsRoutine, postActionRoutine } from '../routines';
 
 describe('Action Mutations', () => {
-  const itemId = ITEMS[0].id;
+  const itemId = FolderItemFactory().id;
 
   const mockedNotifier = jest.fn();
   const { wrapper, queryClient, mutations } = setUpTest({
