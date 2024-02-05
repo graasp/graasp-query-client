@@ -8,6 +8,7 @@ import { act } from 'react-test-renderer';
 import {
   ITEM_PUBLISHED_DATA,
   UNAUTHORIZED_RESPONSE,
+  generateFolders,
 } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildItemPublishRoute } from '../api/routes';
@@ -37,11 +38,7 @@ describe('Publish Item', () => {
     const currentMemberId = currentMember!.id;
     const notification = true;
     const mutation = mutations.usePublishItem;
-    const items = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const items = generateFolders();
 
     it('Publish Item with notification', async () => {
       const route = `/${buildItemPublishRoute(itemId, notification)}`;

@@ -105,11 +105,7 @@ describe('Items Hooks', () => {
     const id = 'item-id';
     const params = { ordered: true };
     const route = `/${buildGetChildrenRoute(id, params)}`;
-    const response = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const response = generateFolders();
     const key = buildItemChildrenKey(id);
 
     it(`Receive children of item by id`, async () => {
@@ -223,11 +219,7 @@ describe('Items Hooks', () => {
   });
 
   describe('useParents', () => {
-    const response = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const response = generateFolders();
     const childItem: FolderItemType = FolderItemFactory({
       id: 'child-item-id',
       path: [...response.map(({ id }) => id), 'child_item_id'].join('.'),
@@ -323,11 +315,7 @@ describe('Items Hooks', () => {
 
   describe('useSharedItems', () => {
     const route = `/${SHARED_ITEM_WITH_ROUTE}`;
-    const response = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const response = generateFolders();
     const hook = () => hooks.useSharedItems();
     it(`Receive shared items`, async () => {
       const endpoints = [{ route, response }];
@@ -365,11 +353,7 @@ describe('Items Hooks', () => {
     const params = {};
     const pagination = {};
     const route = `/${buildGetAccessibleItems(params, pagination)}`;
-    const items = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const items = generateFolders();
     const response = { data: items, totalCount: items.length };
     const hook = () => hooks.useAccessibleItems();
     const key = accessibleItemsKeys.singlePage(params, pagination);
@@ -467,13 +451,7 @@ describe('Items Hooks', () => {
   });
 
   describe('useItems', () => {
-    const dataItems = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const dataItems = generateFolders();
     it(`Receive one item`, async () => {
       const oneItem = FolderItemFactory();
       const { id } = dataItems[0];

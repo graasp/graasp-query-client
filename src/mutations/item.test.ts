@@ -433,13 +433,7 @@ describe('Items Mutations', () => {
   });
 
   describe('useMoveItems', () => {
-    const items = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const items = generateFolders();
     const to = items[0];
     const toId = to.id;
 
@@ -553,16 +547,7 @@ describe('Items Mutations', () => {
 
   describe('useRecycleItems', () => {
     const mutation = mutations.useRecycleItems;
-    const dataItems = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const dataItems = generateFolders(10);
 
     it('Recycle root items', async () => {
       const items = dataItems.slice(0, 2);
@@ -677,11 +662,7 @@ describe('Items Mutations', () => {
 
   describe('useDeleteItems', () => {
     const mutation = mutations.useDeleteItems;
-    const items = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const items = generateFolders();
 
     it('Delete root items', async () => {
       const itemIds = [
@@ -774,11 +755,7 @@ describe('Items Mutations', () => {
 
   describe('useUploadFiles', () => {
     const mutation = mutations.useUploadFiles;
-    const items = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const items = generateFolders();
     const { id } = items[0];
 
     it('Upload one item', async () => {

@@ -1,5 +1,6 @@
 import { DiscriminatedItem, FolderItemFactory } from '@graasp/sdk';
 
+import { generateFolders } from '../../../test/constants';
 import {
   getHandlerByChannel,
   mockWsHook,
@@ -84,11 +85,7 @@ describe('Ws Item Hooks', () => {
 
   describe('useChildrenUpdates', () => {
     // we need to use a different id for the channel to avoid handlers collision
-    const items = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const items = generateFolders();
     const parent = FolderItemFactory();
     const parentId = parent.id;
     const childrenKey = buildItemChildrenKey(parentId);
@@ -183,11 +180,7 @@ describe('Ws Item Hooks', () => {
   });
 
   describe('useOwnItemsUpdates', () => {
-    const items = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const items = generateFolders();
     const item = items[0];
     const itemId = item.id;
     const itemKey = buildItemKey(itemId);
@@ -281,11 +274,7 @@ describe('Ws Item Hooks', () => {
 
   describe('useSharedItemsUpdates', () => {
     // we need to use a different id to avoid handler collision
-    const items = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const items = generateFolders();
     const item = items[1];
     const itemId = item.id;
     const itemKey = buildItemKey(itemId);
@@ -378,11 +367,7 @@ describe('Ws Item Hooks', () => {
   });
 
   describe('useAccessibleItemsUpdates', () => {
-    const items = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
+    const items = generateFolders();
     const item = items[2];
     const itemId = item.id;
     const itemKey = buildItemKey(itemId);
