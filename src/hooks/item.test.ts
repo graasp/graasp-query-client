@@ -101,7 +101,7 @@ describe('Items Hooks', () => {
     const params = { ordered: true };
     const route = `/${buildGetChildrenRoute(id, params)}`;
     const response = ITEMS;
-    const key = buildItemChildrenKeys(id).all;
+    const key = buildItemChildrenKeys(id).single();
 
     it(`Receive children of item by id`, async () => {
       const hook = () => hooks.useChildren(id);
@@ -115,7 +115,9 @@ describe('Items Hooks', () => {
       expect(data).toMatchObject(response);
       expect(isSuccess).toBeTruthy();
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toEqual(response);
+      expect(
+        queryClient.getQueryData(buildItemChildrenKeys(id).single()),
+      ).toEqual(response);
       for (const item of response) {
         expect(queryClient.getQueryData(buildItemKey(item.id))).toEqual(item);
       }
@@ -170,10 +172,12 @@ describe('Items Hooks', () => {
     });
 
     it(`ordered=false fetch children`, async () => {
-      const unorderedRoute = `/${buildGetChildrenRoute(id, {
+      const unorderedParams = {
         ordered: false,
-      })}`;
-      const hook = () => hooks.useChildren(id, { ordered: false });
+      };
+      const unorderedKey = buildItemChildrenKeys(id).single(unorderedParams);
+      const unorderedRoute = `/${buildGetChildrenRoute(id, unorderedParams)}`;
+      const hook = () => hooks.useChildren(id, unorderedParams);
       const endpoints = [{ route: unorderedRoute, response }];
       const { data, isSuccess } = await mockHook({
         endpoints,
@@ -183,8 +187,9 @@ describe('Items Hooks', () => {
 
       expect(isSuccess).toBeTruthy();
       expect(data).toMatchObject(response);
+
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toMatchObject(response);
+      expect(queryClient.getQueryData(unorderedKey)).toMatchObject(response);
       for (const item of response) {
         expect(queryClient.getQueryData(buildItemKey(item.id))).toMatchObject(
           item,
