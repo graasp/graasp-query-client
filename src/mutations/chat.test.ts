@@ -1,14 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { HttpMethod } from '@graasp/sdk';
+import { FolderItemFactory, HttpMethod } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { v4 } from 'uuid';
 
 import {
   CHAT_MESSAGES,
-  ITEMS,
-  MESSAGE_IDS,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
@@ -28,9 +27,9 @@ import {
 } from '../routines';
 
 describe('Chat Mutations', () => {
-  const itemId = ITEMS[0].id;
+  const itemId = FolderItemFactory().id;
   const chatKey = buildItemChatKey(itemId);
-  const messageId = MESSAGE_IDS[0];
+  const messageId = v4();
 
   describe('enableWebsockets = false', () => {
     const mockedNotifier = jest.fn();

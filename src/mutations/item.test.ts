@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {
   DiscriminatedItem,
+  FolderItemFactory,
   HttpMethod,
   ItemType,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
@@ -14,12 +15,12 @@ import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 
 import {
-  ITEMS,
   ITEM_GEOLOCATION,
   OK_RESPONSE,
   RECYCLED_ITEM_DATA,
   THUMBNAIL_BLOB_RESPONSE,
   UNAUTHORIZED_RESPONSE,
+  generateFolders,
 } from '../../test/constants';
 import {
   mockMutation,
@@ -75,7 +76,7 @@ describe('Items Mutations', () => {
 
     it('Post item in root', async () => {
       const route = `/${buildPostItemRoute()}`;
-      queryClient.setQueryData(accessibleItemsKeys.all, [ITEMS[1]]);
+      queryClient.setQueryData(accessibleItemsKeys.all, [FolderItemFactory()]);
 
       const response = { ...newItem, id: 'someid', path: 'someid' };
 
@@ -104,7 +105,7 @@ describe('Items Mutations', () => {
     });
 
     it('Post item in item', async () => {
-      const parentItem = ITEMS[1]!;
+      const parentItem = FolderItemFactory();
       const response = {
         ...newItem,
         id: 'someid',
@@ -112,7 +113,9 @@ describe('Items Mutations', () => {
       };
 
       // set default data
-      queryClient.setQueryData(getKeyForParentId(parentItem.id), [ITEMS[2]]);
+      queryClient.setQueryData(getKeyForParentId(parentItem.id), [
+        FolderItemFactory(),
+      ]);
 
       const endpoints = [
         {
@@ -140,7 +143,7 @@ describe('Items Mutations', () => {
     });
 
     it('Post item with geoloc', async () => {
-      const parentItem = ITEMS[1]!;
+      const parentItem = FolderItemFactory();
       const singleKey = itemsWithGeolocationKeys.inBounds({
         lat1: 1,
         lat2: 2,
@@ -154,7 +157,9 @@ describe('Items Mutations', () => {
       };
 
       // set default data
-      queryClient.setQueryData(getKeyForParentId(parentItem.id), [ITEMS[2]]);
+      queryClient.setQueryData(getKeyForParentId(parentItem.id), [
+        FolderItemFactory(),
+      ]);
       queryClient.setQueryData(singleKey, [ITEM_GEOLOCATION]);
 
       const endpoints = [
@@ -189,7 +194,7 @@ describe('Items Mutations', () => {
 
     it('Unauthorized', async () => {
       const route = `/${buildPostItemRoute()}`;
-      queryClient.setQueryData(accessibleItemsKeys.all, [ITEMS[1]]);
+      queryClient.setQueryData(accessibleItemsKeys.all, [FolderItemFactory()]);
 
       const endpoints = [
         {
@@ -218,7 +223,7 @@ describe('Items Mutations', () => {
   });
 
   describe('useEditItem', () => {
-    const item = ITEMS[0];
+    const item = FolderItemFactory();
     const mutation = mutations.useEditItem;
     const itemKey = buildItemKey(item.id);
     const payload = { id: item.id, description: 'new description' };
@@ -226,7 +231,7 @@ describe('Items Mutations', () => {
     it('Edit item in root', async () => {
       // set default data
       queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(accessibleItemsKeys.all, [ITEMS[1]]);
+      queryClient.setQueryData(accessibleItemsKeys.all, [FolderItemFactory()]);
 
       const route = `/${buildEditItemRoute(item.id)}`;
       const response = item;
@@ -257,16 +262,16 @@ describe('Items Mutations', () => {
 
     it('Edit item in item', async () => {
       // set default data
-      const parentItem = ITEMS[2];
+      const parentItem = FolderItemFactory();
       const parentKey = getKeyForParentId(parentItem.id);
-      const editedItem = ITEMS[3];
+      const editedItem = FolderItemFactory({ parentItem });
       const editedItemKey = buildItemKey(editedItem.id);
       const editPayload = {
         id: editedItem.id,
         description: 'a new description',
       };
       queryClient.setQueryData(editedItemKey, editedItem);
-      queryClient.setQueryData(parentKey, [ITEMS[1]]);
+      queryClient.setQueryData(parentKey, [FolderItemFactory()]);
 
       const route = `/${buildEditItemRoute(editedItem.id)}`;
       const response = item;
@@ -297,7 +302,7 @@ describe('Items Mutations', () => {
 
     it('Edit item extra children order invalidate children key', async () => {
       // set default data
-      const editedItem = ITEMS[3];
+      const editedItem = FolderItemFactory();
       const editedItemKey = buildItemKey(editedItem.id);
       const editPayload = {
         id: editedItem.id,
@@ -305,7 +310,7 @@ describe('Items Mutations', () => {
         extra: { folder: { childrenOrder: ['1', '2'] } },
       };
       const childrenKey = buildItemChildrenKey(editedItem.id);
-      queryClient.setQueryData(childrenKey, [ITEMS[1]]);
+      queryClient.setQueryData(childrenKey, [FolderItemFactory()]);
       queryClient.setQueryData(editedItemKey, editedItem);
 
       const route = `/${buildEditItemRoute(editedItem.id)}`;
@@ -370,26 +375,27 @@ describe('Items Mutations', () => {
   });
 
   describe('useCopyItems', () => {
-    const to = ITEMS[0].id;
+    const items = generateFolders(MAX_TARGETS_FOR_MODIFY_REQUEST + 1);
+    const to = items[3].id;
 
     const mutation = mutations.useCopyItems;
 
     const key = getKeyForParentId(to);
 
     it('copy multiple root items to first level item', async () => {
-      const copied = ITEMS.slice(1);
+      const copied = [items[0], items[1]];
       const copiedIds = copied.map((x) => x.id);
 
       // set data in cache
-      ITEMS.forEach((item) => {
+      items.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
 
-      queryClient.setQueryData(key, [ITEMS[1]]);
+      queryClient.setQueryData(key, [items[1]]);
 
       // we don't care about the returned value
-      const response = ITEMS.map(() => OK_RESPONSE);
+      const response = items.map(() => OK_RESPONSE);
 
       const endpoints = splitEndpointByIds(
         copiedIds,
@@ -427,14 +433,15 @@ describe('Items Mutations', () => {
   });
 
   describe('useMoveItems', () => {
-    const to = ITEMS[0];
+    const items = generateFolders();
+    const to = items[0];
     const toId = to.id;
 
     const mutation = mutations.useMoveItems;
 
     it('Move 2 items from root to first level item', async () => {
       const nb = 2;
-      const moved = ITEMS.slice(0, nb);
+      const moved = items.slice(0, nb);
       const movedIds = moved.map((x) => x.id);
       const route = `/${buildMoveItemsRoute(movedIds)}`;
       // set data in cache
@@ -444,7 +451,7 @@ describe('Items Mutations', () => {
       });
       queryClient.setQueryData(getKeyForParentId(null), moved);
       const toItemKey = getKeyForParentId(toId);
-      queryClient.setQueryData(toItemKey, ITEMS);
+      queryClient.setQueryData(toItemKey, items);
 
       const response = moved.map(({ id }) => id);
 
@@ -486,16 +493,16 @@ describe('Items Mutations', () => {
     });
 
     it('Move many items from root to first level item', async () => {
-      const moved = ITEMS;
+      const moved = items;
       const movedIds = moved.map((x) => x.id);
       // set data in cache
-      ITEMS.forEach((item) => {
+      items.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
-      queryClient.setQueryData(getKeyForParentId(null), ITEMS);
+      queryClient.setQueryData(getKeyForParentId(null), items);
       const toItemKey = getKeyForParentId(toId);
-      queryClient.setQueryData(toItemKey, ITEMS);
+      queryClient.setQueryData(toItemKey, items);
 
       const response = moved.map(({ id }) => id);
 
@@ -540,19 +547,20 @@ describe('Items Mutations', () => {
 
   describe('useRecycleItems', () => {
     const mutation = mutations.useRecycleItems;
+    const dataItems = generateFolders(10);
 
     it('Recycle root items', async () => {
-      const items = ITEMS.slice(0, 2);
+      const items = dataItems.slice(0, 2);
       const itemIds = items.map(({ id }) => id);
       const route = `/${buildRecycleItemsRoute(itemIds)}`;
 
       // set data in cache
-      ITEMS.forEach((item) => {
+      items.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
       // todo: change to use Accessible items
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(OWN_ITEMS_KEY, items);
 
       const response = items;
 
@@ -580,7 +588,7 @@ describe('Items Mutations', () => {
       for (const itemId of itemIds) {
         const itemKey = buildItemKey(itemId);
         const data = queryClient.getQueryData<DiscriminatedItem>(itemKey);
-        expect(data).toMatchObject(ITEMS.find(({ id }) => id === itemId)!);
+        expect(data).toMatchObject(items.find(({ id }) => id === itemId)!);
       }
 
       // todo: this will need to be updated too
@@ -598,19 +606,20 @@ describe('Items Mutations', () => {
     });
 
     it('Recycle child items', async () => {
-      const items = [ITEMS[3], ITEMS[4], ITEMS[5]];
-      const itemIds = items.map(({ id }) => id);
+      const children = [dataItems[0], dataItems[1], dataItems[2]];
+      const toRecycle = [dataItems[3], dataItems[4], dataItems[5]];
+      const itemIds = toRecycle.map(({ id }) => id);
       const route = `/${buildRecycleItemsRoute(itemIds)}`;
 
       // set data in cache
-      ITEMS.forEach((item) => {
+      toRecycle.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
-      const childrenKey = getKeyForParentId(ITEMS[2].id);
-      queryClient.setQueryData(childrenKey, ITEMS);
+      const childrenKey = getKeyForParentId(children[2].id);
+      queryClient.setQueryData(childrenKey, children);
 
-      const response = items;
+      const response = toRecycle;
 
       const endpoints = [
         {
@@ -636,7 +645,7 @@ describe('Items Mutations', () => {
       for (const itemId of itemIds) {
         const itemKey = buildItemKey(itemId);
         const data = queryClient.getQueryData<DiscriminatedItem>(itemKey);
-        expect(data).toMatchObject(ITEMS.find(({ id }) => id === itemId)!);
+        expect(data).toMatchObject(toRecycle.find(({ id }) => id === itemId)!);
       }
 
       // Check parent's children key is not invalidated
@@ -653,6 +662,7 @@ describe('Items Mutations', () => {
 
   describe('useDeleteItems', () => {
     const mutation = mutations.useDeleteItems;
+    const items = generateFolders();
 
     it('Delete root items', async () => {
       const itemIds = [
@@ -662,7 +672,7 @@ describe('Items Mutations', () => {
       const route = `/${buildDeleteItemsRoute(itemIds)}`;
 
       // set data in cache
-      ITEMS.forEach((item) => {
+      items.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
@@ -703,12 +713,11 @@ describe('Items Mutations', () => {
     });
 
     it('Delete child items', async () => {
-      const items = [ITEMS[3], ITEMS[4]];
       const itemIds = items.map(({ id }) => id);
       const route = `/${buildDeleteItemsRoute(itemIds)}`;
 
       // set data in cache
-      ITEMS.forEach((item) => {
+      items.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
@@ -746,16 +755,17 @@ describe('Items Mutations', () => {
 
   describe('useUploadFiles', () => {
     const mutation = mutations.useUploadFiles;
-    const { id } = ITEMS[0];
+    const items = generateFolders();
+    const { id } = items[0];
 
     it('Upload one item', async () => {
       // set data in cache
-      ITEMS.forEach((item) => {
+      items.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
-      queryClient.setQueryData(accessibleItemsKeys.all, ITEMS);
-      queryClient.setQueryData(buildItemChildrenKey(id), ITEMS);
+      queryClient.setQueryData(accessibleItemsKeys.all, items);
+      queryClient.setQueryData(buildItemChildrenKey(id), items);
 
       const mockedMutation = await mockMutation({
         endpoints: [],
@@ -781,12 +791,12 @@ describe('Items Mutations', () => {
 
     it('Error while uploading an item', async () => {
       // set data in cache
-      ITEMS.forEach((item) => {
+      items.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
       });
-      queryClient.setQueryData(accessibleItemsKeys.all, ITEMS);
-      queryClient.setQueryData(buildItemChildrenKey(id), ITEMS);
+      queryClient.setQueryData(accessibleItemsKeys.all, items);
+      queryClient.setQueryData(buildItemChildrenKey(id), items);
 
       const mockedMutation = await mockMutation({
         endpoints: [],
@@ -873,12 +883,12 @@ describe('Items Mutations', () => {
     });
 
     it('Restore many items', async () => {
-      const items = ITEMS;
-      const itemIds = items.map(({ id }) => id);
       const response = RECYCLED_ITEM_DATA;
+      const items = RECYCLED_ITEM_DATA.map(({ item }) => item);
+      const itemIds = items.map(({ id }) => id);
 
       // set data in cache
-      ITEMS.forEach((item) => {
+      items.forEach((item) => {
         const itemKey = buildItemKey(item.id);
         queryClient.setQueryData(itemKey, item);
         const parentKey = getKeyForParentId(getDirectParentId(item.path));
@@ -931,7 +941,7 @@ describe('Items Mutations', () => {
 
   describe('useUploadItemThumbnail', () => {
     const mutation = mutations.useUploadItemThumbnail;
-    const { id } = ITEMS[0];
+    const { id } = FolderItemFactory();
 
     it('Upload thumbnail', async () => {
       const route = `/${buildUploadItemThumbnailRoute(id)}`;

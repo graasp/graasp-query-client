@@ -1,12 +1,11 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import { FlagType, HttpMethod } from '@graasp/sdk';
+import { FlagType, FolderItemFactory, HttpMethod } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
-import { ITEMS, ITEM_FLAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
+import { ITEM_FLAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildPostItemFlagRoute } from '../api/routes';
 import { buildItemFlagsKey } from '../config/keys';
@@ -25,7 +24,7 @@ describe('Item Flag Mutations', () => {
 
   describe('usePostItemFlag', () => {
     const flagType = FlagType.FalseInformation;
-    const itemId = ITEMS[0].id;
+    const itemId = FolderItemFactory().id;
     const flagKey = buildItemFlagsKey(itemId);
     const route = `/${buildPostItemFlagRoute(itemId)}`;
     const mutation = mutations.usePostItemFlag;

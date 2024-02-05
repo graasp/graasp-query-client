@@ -1,16 +1,16 @@
-import { HttpMethod, ItemTagType } from '@graasp/sdk';
+import {
+  FolderItemFactory,
+  HttpMethod,
+  ItemTagType,
+  MemberFactory,
+} from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
-import {
-  ITEMS,
-  ITEM_TAGS,
-  MEMBER_RESPONSE,
-  UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
+import { ITEM_TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildDeleteItemTagRoute, buildPostItemTagRoute } from '../api/routes';
 import { itemTagsKeys } from '../config/keys';
@@ -28,8 +28,8 @@ describe('Item Tag Mutations', () => {
   });
 
   describe('usePostItemTag', () => {
-    const itemId = ITEMS[0].id;
-    const creator = MEMBER_RESPONSE.id;
+    const itemId = FolderItemFactory().id;
+    const creator = MemberFactory().id;
     const tagType = ItemTagType.Hidden;
     const route = `/${buildPostItemTagRoute({ itemId, type: tagType })}`;
     const mutation = mutations.usePostItemTag;

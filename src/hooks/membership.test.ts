@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {
+  FolderItemFactory,
   ItemMembership,
   MAX_TARGETS_FOR_READ_REQUEST,
   ResultOf,
@@ -9,10 +10,10 @@ import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 
 import {
-  ITEMS,
   ITEM_MEMBERSHIPS_RESPONSE,
   UNAUTHORIZED_RESPONSE,
   buildResultOfData,
+  generateFolders,
 } from '../../test/constants';
 import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils';
 import { buildGetItemMembershipsForItemsRoute } from '../api/routes';
@@ -30,7 +31,7 @@ describe('Membership Hooks', () => {
   });
 
   describe('useItemMemberships', () => {
-    const { id } = ITEMS[0];
+    const { id } = FolderItemFactory();
     // this hook uses the many endpoint
     const response = buildResultOfData([ITEM_MEMBERSHIPS_RESPONSE]);
     const route = `/${buildGetItemMembershipsForItemsRoute([id])}`;
@@ -87,7 +88,11 @@ describe('Membership Hooks', () => {
   });
 
   describe('useManyItemMemberships', () => {
-    const ids = [ITEMS[0].id, ITEMS[1].id];
+    const ids = [
+      FolderItemFactory().id,
+      FolderItemFactory().id,
+      FolderItemFactory().id,
+    ];
     const response = buildResultOfData([
       ITEM_MEMBERSHIPS_RESPONSE,
       ITEM_MEMBERSHIPS_RESPONSE,
@@ -96,7 +101,7 @@ describe('Membership Hooks', () => {
     const key = buildManyItemMembershipsKey(ids);
 
     it(`Receive one item memberships`, async () => {
-      const id = [ITEMS[0].id];
+      const id = [ids[0]];
       const oneRoute = `/${buildGetItemMembershipsForItemsRoute(id)}`;
       const oneResponse = buildResultOfData([ITEM_MEMBERSHIPS_RESPONSE]);
       const oneKey = buildManyItemMembershipsKey(id);
@@ -124,7 +129,9 @@ describe('Membership Hooks', () => {
     });
 
     it(`Receive lots of item memberships`, async () => {
-      const manyIds = ITEMS.map(({ id }) => id);
+      const manyIds = generateFolders(MAX_TARGETS_FOR_READ_REQUEST + 1).map(
+        ({ id }) => id,
+      );
       const memberships = manyIds.map(() => ITEM_MEMBERSHIPS_RESPONSE);
       const manyResponse = buildResultOfData(memberships);
       const manyKey = buildManyItemMembershipsKey(manyIds);

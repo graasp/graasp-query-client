@@ -1,7 +1,10 @@
-// yes this bad, but we do not really have a choice...
-
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { HttpMethod, ItemMembership, PermissionLevel } from '@graasp/sdk';
+import {
+  FolderItemFactory,
+  HttpMethod,
+  ItemMembership,
+  MemberFactory,
+  PermissionLevel,
+} from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { StatusCodes } from 'http-status-codes';
@@ -9,10 +12,7 @@ import nock from 'nock';
 import { act } from 'react-test-renderer';
 
 import {
-  ITEMS,
   ITEM_MEMBERSHIPS_RESPONSE,
-  MEMBERS_RESPONSE,
-  MEMBER_RESPONSE,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
   buildMockInvitations,
@@ -56,7 +56,14 @@ describe('Membership Mutations', () => {
     jest.clearAllMocks();
   });
 
-  const item = ITEMS[0];
+  const items = [
+    FolderItemFactory(),
+    FolderItemFactory(),
+    FolderItemFactory(),
+    FolderItemFactory(),
+    FolderItemFactory(),
+  ];
+  const item = items[0];
   const itemId = item.id;
   const memberships = ITEM_MEMBERSHIPS_RESPONSE;
   const membershipsKey = buildItemMembershipsKey(itemId);
@@ -66,18 +73,18 @@ describe('Membership Mutations', () => {
   describe('usePostItemMembership', () => {
     const mutation = mutations.usePostItemMembership;
 
-    const { email } = MEMBER_RESPONSE;
+    const { email } = MemberFactory();
 
     it('Create one membership', async () => {
       const route = `/${buildPostItemMembershipRoute(itemId)}`;
 
       // set data in cache
-      ITEMS.forEach((i) => {
+      items.forEach((i) => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -87,7 +94,7 @@ describe('Membership Mutations', () => {
 
       const endpoints = [
         {
-          response: [MEMBERS_RESPONSE],
+          response: [MemberFactory()],
           method: HttpMethod.GET,
           route: `/${buildGetMembersBy([email])}`,
         },
@@ -118,12 +125,12 @@ describe('Membership Mutations', () => {
       const route = `/${buildPostItemMembershipRoute(itemId)}`;
 
       // set data in cache
-      ITEMS.forEach((i) => {
+      items.forEach((i) => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -131,7 +138,7 @@ describe('Membership Mutations', () => {
 
       const endpoints = [
         {
-          response: [MEMBERS_RESPONSE],
+          response: [MemberFactory()],
           method: HttpMethod.GET,
           route: `/${buildGetMembersBy([email])}`,
         },
@@ -316,12 +323,12 @@ describe('Membership Mutations', () => {
 
     it('Successfully share item with all emails', async () => {
       // set data in cache
-      ITEMS.forEach((i) => {
+      items.forEach((i) => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -333,7 +340,7 @@ describe('Membership Mutations', () => {
 
       const endpoints = [
         {
-          response: buildResultOfData(MEMBERS_RESPONSE),
+          response: buildResultOfData([MemberFactory()]),
           method: HttpMethod.GET,
           route: `/${buildGetMembersBy(emails)}`,
         },
@@ -376,12 +383,12 @@ describe('Membership Mutations', () => {
 
     it('Mixed return values for sharing item with many emails', async () => {
       // set data in cache
-      ITEMS.forEach((i) => {
+      items.forEach((i) => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -448,12 +455,12 @@ describe('Membership Mutations', () => {
 
     it('Unauthorized to search members', async () => {
       // set data in cache
-      ITEMS.forEach((i) => {
+      items.forEach((i) => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -499,12 +506,12 @@ describe('Membership Mutations', () => {
 
     it('Unauthorized to post memberships', async () => {
       // set data in cache
-      ITEMS.forEach((i) => {
+      items.forEach((i) => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -559,12 +566,12 @@ describe('Membership Mutations', () => {
 
     it('Unauthorized to post invitations', async () => {
       // set data in cache
-      ITEMS.forEach((i) => {
+      items.forEach((i) => {
         const itemKey = buildItemKey(i.id);
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
         buildItemMembershipsKey(itemId),
         ITEM_MEMBERSHIPS_RESPONSE,

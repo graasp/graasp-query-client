@@ -6,6 +6,7 @@ import {
   AggregateMetric,
   Context,
   CountGroupBy,
+  FolderItemFactory,
 } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
@@ -14,7 +15,6 @@ import nock from 'nock';
 import {
   ACTIONS_DATA,
   AGGREGATE_ACTIONS_DATA,
-  ITEMS,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
@@ -27,7 +27,7 @@ type AggregateActionsResponse = {
 }[];
 
 const { hooks, wrapper, queryClient } = setUpTest();
-const itemId = ITEMS[0].id;
+const itemId = FolderItemFactory().id;
 
 describe('Action Hooks', () => {
   afterEach(() => {

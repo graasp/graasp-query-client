@@ -1,12 +1,11 @@
-import { HttpMethod, MentionStatus } from '@graasp/sdk';
+import { HttpMethod, MemberFactory, MentionStatus } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { v4 } from 'uuid';
 
 import {
-  MEMBER_RESPONSE,
-  MENTION_IDS,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
   buildChatMention,
@@ -28,8 +27,8 @@ import {
 } from '../routines';
 
 describe('Mention Mutations', () => {
-  const mentionId = MENTION_IDS[0];
-  const member = MEMBER_RESPONSE;
+  const mentionId = v4();
+  const member = MemberFactory();
   const memberId = member.id;
   const currentMemberRoute = `/${GET_CURRENT_MEMBER_ROUTE}`;
   const key = buildMentionKey();
@@ -55,7 +54,7 @@ describe('Mention Mutations', () => {
           // mock currentMember route for the Mention hook to work
           {
             route: currentMemberRoute,
-            response: MEMBER_RESPONSE,
+            response: MemberFactory(),
           },
           {
             route,
@@ -93,7 +92,7 @@ describe('Mention Mutations', () => {
         const endpoints = [
           {
             route: currentMemberRoute,
-            response: MEMBER_RESPONSE,
+            response: MemberFactory(),
           },
           {
             route,
@@ -138,7 +137,7 @@ describe('Mention Mutations', () => {
         const endpoints = [
           {
             route: currentMemberRoute,
-            response: MEMBER_RESPONSE,
+            response: MemberFactory(),
           },
           {
             route,
@@ -168,7 +167,7 @@ describe('Mention Mutations', () => {
         const endpoints = [
           {
             route: currentMemberRoute,
-            response: MEMBER_RESPONSE,
+            response: MemberFactory(),
           },
           {
             route,
@@ -209,7 +208,7 @@ describe('Mention Mutations', () => {
         const endpoints = [
           {
             route: currentMemberRoute,
-            response: MEMBER_RESPONSE,
+            response: MemberFactory(),
           },
           {
             route,
@@ -286,7 +285,7 @@ describe('Mention Mutations', () => {
         const endpoints = [
           {
             route: currentMemberRoute,
-            response: MEMBER_RESPONSE,
+            response: MemberFactory(),
           },
           {
             route,
@@ -324,7 +323,7 @@ describe('Mention Mutations', () => {
         const endpoints = [
           {
             route: currentMemberRoute,
-            response: MEMBER_RESPONSE,
+            response: MemberFactory(),
           },
           {
             route,
@@ -358,7 +357,7 @@ describe('Mention Mutations', () => {
         const endpoints = [
           {
             route: currentMemberRoute,
-            response: MEMBER_RESPONSE,
+            response: MemberFactory(),
           },
           {
             route,

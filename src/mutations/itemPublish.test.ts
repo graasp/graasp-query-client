@@ -1,15 +1,14 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { HttpMethod } from '@graasp/sdk';
+import { FolderItemFactory, HttpMethod, MemberFactory } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 
 import {
-  ITEMS,
   ITEM_PUBLISHED_DATA,
-  MEMBERS_RESPONSE,
   UNAUTHORIZED_RESPONSE,
+  generateFolders,
 } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildItemPublishRoute } from '../api/routes';
@@ -33,12 +32,13 @@ describe('Publish Item', () => {
   });
 
   describe('usePublishItem', () => {
-    const item = ITEMS[0];
+    const item = FolderItemFactory();
     const itemId = item.id;
-    const currentMember = MEMBERS_RESPONSE[0];
+    const currentMember = MemberFactory();
     const currentMemberId = currentMember!.id;
     const notification = true;
     const mutation = mutations.usePublishItem;
+    const items = generateFolders();
 
     it('Publish Item with notification', async () => {
       const route = `/${buildItemPublishRoute(itemId, notification)}`;
@@ -48,9 +48,9 @@ describe('Publish Item', () => {
       );
       queryClient.setQueryData(
         buildPublishedItemsForMemberKey(currentMemberId),
-        ITEMS,
+        items,
       );
-      queryClient.setQueryData(buildPublishedItemsKey(), ITEMS);
+      queryClient.setQueryData(buildPublishedItemsKey(), items);
       queryClient.setQueryData(CURRENT_MEMBER_KEY, currentMember);
 
       const endpoints = [
@@ -103,9 +103,9 @@ describe('Publish Item', () => {
       );
       queryClient.setQueryData(
         buildPublishedItemsForMemberKey(currentMemberId),
-        ITEMS,
+        items,
       );
-      queryClient.setQueryData(buildPublishedItemsKey(), ITEMS);
+      queryClient.setQueryData(buildPublishedItemsKey(), items);
       queryClient.setQueryData(CURRENT_MEMBER_KEY, currentMember);
 
       const endpoints = [

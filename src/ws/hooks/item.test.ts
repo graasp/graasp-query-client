@@ -1,6 +1,6 @@
-import { DiscriminatedItem } from '@graasp/sdk';
+import { DiscriminatedItem, FolderItemFactory } from '@graasp/sdk';
 
-import { ITEMS } from '../../../test/constants';
+import { generateFolders } from '../../../test/constants';
 import {
   getHandlerByChannel,
   mockWsHook,
@@ -26,7 +26,7 @@ describe('Ws Item Hooks', () => {
   });
 
   describe('useItemUpdates', () => {
-    const item = ITEMS[0];
+    const item = FolderItemFactory();
     const itemId = item?.id;
     const itemKey = buildItemKey(itemId);
     const channel = { name: itemId, topic: TOPICS.ITEM };
@@ -85,16 +85,17 @@ describe('Ws Item Hooks', () => {
 
   describe('useChildrenUpdates', () => {
     // we need to use a different id for the channel to avoid handlers collision
-    const parent = ITEMS[1];
+    const items = generateFolders();
+    const parent = FolderItemFactory();
     const parentId = parent.id;
     const childrenKey = buildItemChildrenKey(parentId);
     const channel = { name: parentId, topic: TOPICS.ITEM };
-    const targetItem = ITEMS[2];
+    const targetItem = items[0];
     const targetItemKey = buildItemKey(targetItem.id);
     const hook = () => hooks.useChildrenUpdates(parentId);
 
     it(`Receive create child`, async () => {
-      queryClient.setQueryData(childrenKey, [ITEMS[3]]);
+      queryClient.setQueryData(childrenKey, [FolderItemFactory()]);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -119,7 +120,7 @@ describe('Ws Item Hooks', () => {
       const updatedItem = { ...targetItem, description: 'new description' };
 
       queryClient.setQueryData(targetItemKey, targetItem);
-      queryClient.setQueryData(childrenKey, ITEMS);
+      queryClient.setQueryData(childrenKey, items);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -137,12 +138,12 @@ describe('Ws Item Hooks', () => {
       // check children key contains newly item
       const own = queryClient.getQueryData<DiscriminatedItem[]>(childrenKey);
       expect(own).toContainEqual(updatedItem);
-      expect(own?.length).toBe(ITEMS.length);
+      expect(own?.length).toBe(items.length);
     });
 
     it(`Receive delete item update`, async () => {
       queryClient.setQueryData(targetItemKey, targetItem);
-      queryClient.setQueryData(childrenKey, ITEMS);
+      queryClient.setQueryData(childrenKey, items);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -161,7 +162,7 @@ describe('Ws Item Hooks', () => {
     });
 
     it(`Does not update on other events`, async () => {
-      queryClient.setQueryData(childrenKey, ITEMS);
+      queryClient.setQueryData(childrenKey, items);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -173,20 +174,21 @@ describe('Ws Item Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       expect(queryClient.getQueryData<DiscriminatedItem>(childrenKey)).toEqual(
-        ITEMS,
+        items,
       );
     });
   });
 
   describe('useOwnItemsUpdates', () => {
-    const item = ITEMS[0];
+    const items = generateFolders();
+    const item = items[0];
     const itemId = item.id;
     const itemKey = buildItemKey(itemId);
     const channel = { name: itemId, topic: TOPICS.ITEM_MEMBER };
     const hook = () => hooks.useOwnItemsUpdates(itemId);
 
     it(`Receive create child`, async () => {
-      queryClient.setQueryData(OWN_ITEMS_KEY, [ITEMS[2]]);
+      queryClient.setQueryData(OWN_ITEMS_KEY, [items[2]]);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -210,7 +212,7 @@ describe('Ws Item Hooks', () => {
     it(`Receive update child`, async () => {
       const updatedItem = { ...item, description: 'new description' };
       queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(OWN_ITEMS_KEY, items);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -229,12 +231,12 @@ describe('Ws Item Hooks', () => {
       const children =
         queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY);
       expect(children).toContainEqual(updatedItem);
-      expect(children?.length).toBe(ITEMS.length);
+      expect(children?.length).toBe(items.length);
     });
 
     it(`Receive delete item update`, async () => {
       queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(OWN_ITEMS_KEY, items);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -253,7 +255,7 @@ describe('Ws Item Hooks', () => {
 
     it(`Does not update on other events`, async () => {
       queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(OWN_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(OWN_ITEMS_KEY, items);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -266,20 +268,21 @@ describe('Ws Item Hooks', () => {
 
       expect(
         queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY),
-      ).toMatchObject(ITEMS);
+      ).toMatchObject(items);
     });
   });
 
   describe('useSharedItemsUpdates', () => {
     // we need to use a different id to avoid handler collision
-    const item = ITEMS[1];
+    const items = generateFolders();
+    const item = items[1];
     const itemId = item.id;
     const itemKey = buildItemKey(itemId);
     const channel = { name: itemId, topic: TOPICS.ITEM_MEMBER };
     const hook = () => hooks.useSharedItemsUpdates(itemId);
 
     it(`Receive create child`, async () => {
-      queryClient.setQueryData(SHARED_ITEMS_KEY, [ITEMS[2]]);
+      queryClient.setQueryData(SHARED_ITEMS_KEY, [items[2]]);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -303,7 +306,7 @@ describe('Ws Item Hooks', () => {
     it(`Receive update child`, async () => {
       const updatedItem = { ...item, description: 'new description' };
       queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(SHARED_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(SHARED_ITEMS_KEY, items);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -322,12 +325,12 @@ describe('Ws Item Hooks', () => {
       const shared =
         queryClient.getQueryData<DiscriminatedItem[]>(SHARED_ITEMS_KEY);
       expect(shared).toContainEqual(updatedItem);
-      expect(shared?.length).toBe(ITEMS.length);
+      expect(shared?.length).toBe(items.length);
     });
 
     it(`Receive delete item update`, async () => {
       queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(SHARED_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(SHARED_ITEMS_KEY, items);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -346,7 +349,7 @@ describe('Ws Item Hooks', () => {
 
     it(`Does not update on other events`, async () => {
       queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(SHARED_ITEMS_KEY, ITEMS);
+      queryClient.setQueryData(SHARED_ITEMS_KEY, items);
       await mockWsHook({ hook, wrapper });
 
       const itemEvent = {
@@ -359,12 +362,13 @@ describe('Ws Item Hooks', () => {
 
       expect(
         queryClient.getQueryData<DiscriminatedItem[]>(SHARED_ITEMS_KEY),
-      ).toEqual(ITEMS);
+      ).toEqual(items);
     });
   });
 
   describe('useAccessibleItemsUpdates', () => {
-    const item = ITEMS[2];
+    const items = generateFolders();
+    const item = items[2];
     const itemId = item.id;
     const itemKey = buildItemKey(itemId);
     const channel = { name: itemId, topic: TOPICS.ITEM_MEMBER };
@@ -378,11 +382,11 @@ describe('Ws Item Hooks', () => {
     beforeEach(() => {
       queryClient.setQueryData(
         accessibleItemsKeys.singlePage(params1, pagination1),
-        { data: ITEMS, totalCount: ITEMS.length },
+        { data: items, totalCount: items.length },
       );
       queryClient.setQueryData(
         accessibleItemsKeys.singlePage(params2, pagination2),
-        { data: ITEMS, totalCount: ITEMS.length },
+        { data: items, totalCount: items.length },
       );
     });
 
@@ -496,12 +500,12 @@ describe('Ws Item Hooks', () => {
         queryClient.getQueryData(
           accessibleItemsKeys.singlePage(params1, pagination1),
         ),
-      ).toEqual({ data: ITEMS, totalCount: ITEMS.length });
+      ).toEqual({ data: items, totalCount: items.length });
       expect(
         queryClient.getQueryData(
           accessibleItemsKeys.singlePage(params2, pagination2),
         ),
-      ).toEqual({ data: ITEMS, totalCount: ITEMS.length });
+      ).toEqual({ data: items, totalCount: items.length });
     });
   });
 });

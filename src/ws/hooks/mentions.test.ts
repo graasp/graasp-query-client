@@ -1,11 +1,6 @@
-import { ChatMention, MentionStatus } from '@graasp/sdk';
+import { ChatMention, MemberFactory, MentionStatus } from '@graasp/sdk';
 
-import {
-  MEMBER_RESPONSE,
-  MOCK_MEMBER,
-  buildChatMention,
-  buildMemberMentions,
-} from '../../../test/constants';
+import { buildChatMention, buildMemberMentions } from '../../../test/constants';
 import {
   getHandlerByChannel,
   mockWsHook,
@@ -56,7 +51,7 @@ describe('Ws Mention Hooks', () => {
   });
 
   describe('useMentionsUpdates', () => {
-    const member = MEMBER_RESPONSE;
+    const member = MemberFactory();
     const chatKey = buildItemChatKey(member.id);
     const mentionKey = buildMentionKey();
     const channel = {
@@ -153,7 +148,7 @@ describe('Ws Mention Hooks', () => {
         hook,
         wrapper,
       });
-      const newMention = buildChatMention({ member: MOCK_MEMBER });
+      const newMention = buildChatMention({ member: MemberFactory() });
       const mentionEvent = {
         op: 'unset op',
         mention: newMention,

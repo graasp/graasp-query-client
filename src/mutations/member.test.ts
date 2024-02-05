@@ -1,4 +1,9 @@
-import { CompleteMember, HttpMethod, ThumbnailSize } from '@graasp/sdk';
+import {
+  CompleteMember,
+  HttpMethod,
+  MemberFactory,
+  ThumbnailSize,
+} from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { act } from '@testing-library/react';
@@ -7,7 +12,6 @@ import nock from 'nock';
 
 import {
   AVATAR_BLOB_RESPONSE,
-  MEMBER_RESPONSE,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants';
@@ -38,7 +42,7 @@ describe('Member Mutations', () => {
     it(`Successfully sign out`, async () => {
       const endpoints = [{ route, response: OK_RESPONSE }];
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, MemberFactory());
 
       const mockedMutation = await mockMutation({
         endpoints,
@@ -57,7 +61,8 @@ describe('Member Mutations', () => {
 
     it(`Unauthorized`, async () => {
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+      const member = MemberFactory();
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, member);
       const endpoints = [
         {
           method: HttpMethod.GET,
@@ -79,7 +84,7 @@ describe('Member Mutations', () => {
 
       // verify cache keys
       expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toMatchObject(
-        MEMBER_RESPONSE,
+        member,
       );
     });
   });
@@ -102,7 +107,7 @@ describe('Member Mutations', () => {
         },
       ];
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, MemberFactory());
 
       const mockedMutation = await mockMutation({
         endpoints,
@@ -121,7 +126,8 @@ describe('Member Mutations', () => {
 
     it(`Unauthorized`, async () => {
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+      const member = MemberFactory();
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, member);
       const endpoints = [
         {
           method: HttpMethod.GET,
@@ -143,7 +149,7 @@ describe('Member Mutations', () => {
 
       // verify cache keys
       expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toMatchObject(
-        MEMBER_RESPONSE,
+        member,
       );
     });
   });
@@ -153,11 +159,12 @@ describe('Member Mutations', () => {
     const route = `/${buildPatchMember(id)}`;
     const newMember = { name: 'newname' };
     const mutation = mutations.useEditMember;
+    const member = MemberFactory();
 
     it(`Successfully edit member id = ${id}`, async () => {
-      const response = { ...MEMBER_RESPONSE, name: newMember.name };
+      const response = { ...member, name: newMember.name };
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, member);
       const endpoints = [
         {
           response,
@@ -184,7 +191,7 @@ describe('Member Mutations', () => {
 
     it(`Unauthorized`, async () => {
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MEMBER_RESPONSE);
+      queryClient.setQueryData(CURRENT_MEMBER_KEY, member);
       const endpoints = [
         {
           response: UNAUTHORIZED_RESPONSE,
@@ -207,13 +214,13 @@ describe('Member Mutations', () => {
       // verify cache keys
       const oldData =
         queryClient.getQueryData<CompleteMember>(CURRENT_MEMBER_KEY);
-      expect(oldData).toMatchObject(MEMBER_RESPONSE);
+      expect(oldData).toMatchObject(member);
     });
   });
 
   describe('useUploadAvatar', () => {
     const mutation = mutations.useUploadAvatar;
-    const member = MEMBER_RESPONSE;
+    const member = MemberFactory();
     const replyUrl = true;
     const { id } = member;
 

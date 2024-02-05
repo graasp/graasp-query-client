@@ -1,7 +1,8 @@
-/* eslint-disable import/no-extraneous-dependencies */
+import { MemberFactory } from '@graasp/sdk';
+
 import nock from 'nock';
 
-import { MEMBER_RESPONSE, buildMemberMentions } from '../../test/constants';
+import { buildMemberMentions } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import {
   GET_CURRENT_MEMBER_ROUTE,
@@ -29,7 +30,7 @@ describe('Chat Mention Hooks', () => {
       const endpoints = [
         {
           route: currentMemberRoute,
-          response: MEMBER_RESPONSE,
+          response: MemberFactory(),
         },
         {
           route,

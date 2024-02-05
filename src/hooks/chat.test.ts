@@ -1,15 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { ChatMessage } from '@graasp/sdk';
+import { ChatMessage, FolderItemFactory, MemberFactory } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 
-import {
-  ITEMS,
-  MOCK_ITEM,
-  MOCK_MEMBER,
-  UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
+import { UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildGetItemChatRoute } from '../api/routes';
 import { buildItemChatKey } from '../config/keys';
@@ -23,12 +18,12 @@ describe('Chat Hooks', () => {
   });
 
   describe('useItemChat', () => {
-    const itemId = ITEMS[0].id;
+    const itemId = FolderItemFactory().id;
     const mockMessage: ChatMessage = {
       id: 'some-messageId',
-      item: MOCK_ITEM,
+      item: FolderItemFactory(),
       body: 'some content',
-      creator: MOCK_MEMBER,
+      creator: MemberFactory(),
       createdAt: '2023-09-06T11:50:32.894Z',
       updatedAt: '2023-09-06T11:50:32.894Z',
     };
@@ -79,12 +74,12 @@ describe('Chat Hooks', () => {
   });
 
   describe('useItemChat with arguments', () => {
-    const itemId = ITEMS[0].id;
+    const itemId = FolderItemFactory().id;
     const mockMessage: ChatMessage = {
       id: 'some-messageId',
-      item: MOCK_ITEM,
+      item: FolderItemFactory(),
       body: 'some content',
-      creator: MOCK_MEMBER,
+      creator: MemberFactory(),
       createdAt: '2023-09-06T11:50:32.894Z',
       updatedAt: '2023-09-06T11:50:32.894Z',
     };

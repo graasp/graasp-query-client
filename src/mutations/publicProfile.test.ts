@@ -1,9 +1,8 @@
-import { HttpMethod } from '@graasp/sdk';
+import { HttpMethod, MemberFactory } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import nock from 'nock';
 
-import { MEMBER_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { MEMBERS_ROUTE, PUBLIC_PROFILE_ROUTE } from '../api/routes';
 import { OWN_PUBLIC_PROFILE_KEY } from '../config/keys';
@@ -31,7 +30,7 @@ describe('Public Profile Mutations', () => {
 
     it('Post profile', async () => {
       const route = `/${MEMBERS_ROUTE}/${PUBLIC_PROFILE_ROUTE}`;
-      const response = { ...newProfile, id: 'someid', member: MEMBER_RESPONSE };
+      const response = { ...newProfile, id: 'someid', member: MemberFactory() };
 
       queryClient.setQueryData(OWN_PUBLIC_PROFILE_KEY, response);
 
@@ -67,7 +66,7 @@ describe('Public Profile Mutations', () => {
       ...newProfile,
       bio: 'new description',
       id: 'someid',
-      member: MEMBER_RESPONSE,
+      member: MemberFactory(),
     };
 
     it('Edit public profile', async () => {
