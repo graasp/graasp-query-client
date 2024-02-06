@@ -56,7 +56,9 @@ interface ItemOpFeedbackEvent {
     | 'restore'
     | 'validate';
   resource: DiscriminatedItem['id'][];
-  result: ResultOf<DiscriminatedItem>;
+  // TODO: migrate the ItemOpFeedbackEvent to use errors in ResultOf.
+  // Do in another PR to migrate the backend too.
+  result: { error: Error } | ResultOf<DiscriminatedItem>;
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -477,12 +479,14 @@ export const configureWsItemHooks = (
               routine = deleteItemsRoutine;
               message = SUCCESS_MESSAGES.DELETE_ITEMS;
               break;
-            case 'move':
+            case 'move': {
               routine = moveItemsRoutine;
               message = SUCCESS_MESSAGES.MOVE_ITEMS;
-              if (event.result.data) {
+
+              const res = event.result;
+              if ('data' in res) {
                 event.resource.forEach((movedItemId) => {
-                  const newMovedItemPath = event.result.data[movedItemId].path;
+                  const newMovedItemPath = res.data[movedItemId].path;
 
                   // Invalidates destination (new parent folder).
                   // If no parent, invalidates accessible,
@@ -507,23 +511,24 @@ export const configureWsItemHooks = (
                 });
               }
               break;
+            }
             case 'copy':
               routine = copyItemsRoutine;
               message = SUCCESS_MESSAGES.COPY_ITEMS;
               // Because the copied item doesn't have the same id as the original,
               // we can't loop the same way as for the moved items.
 
-              if (event.result.data) {
-                Object.keys(event.result.data).forEach((newCopyId) => {
-                  const newCopyItemPath = event.result.data[newCopyId].path;
-
-                  // Invalidates destination (new parent folder).
-                  // If no parent, invalidates accessible,
-                  // else invalidates the useChildren of new parent's folder.
-                  queryClient.invalidateQueries(
-                    getKeyForParentId(getDirectParentId(newCopyItemPath)),
-                  );
-                });
+              if ('data' in event.result) {
+                Object.values(event.result.data).forEach(
+                  ({ path: newCopyItem }: { path: string }) => {
+                    // Invalidates destination (new parent folder).
+                    // If no parent, invalidates accessible,
+                    // else invalidates the useChildren of new parent's folder.
+                    queryClient.invalidateQueries(
+                      getKeyForParentId(getDirectParentId(newCopyItem)),
+                    );
+                  },
+                );
               }
               break;
             case 'export':
@@ -548,12 +553,11 @@ export const configureWsItemHooks = (
             }
           }
           if (routine && message) {
-            if (event.result.errors) {
+            if ('error' in event.result) {
               notifier?.({
                 type: routine.FAILURE,
                 payload: {
-                  // TODO: keep the first error ?
-                  error: event.result.errors[0],
+                  error: event.result.error,
                 },
               });
             } else {
