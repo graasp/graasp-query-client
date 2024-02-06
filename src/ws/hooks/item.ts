@@ -12,8 +12,9 @@ import {
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useEffect } from 'react';
-import { useQueryClient } from 'react-query';
+import { QueryKey, useQueryClient } from 'react-query';
 
+import { ItemChildrenParams } from '../../api/routes';
 import {
   OWN_ITEMS_KEY,
   RECYCLED_ITEMS_KEY,
@@ -36,6 +37,7 @@ import {
 import createRoutine from '../../routines/utils';
 import { Notifier } from '../../types';
 import { getDirectParentId } from '../../utils/item';
+import { shouldBeAddedInCache } from '../../utils/util';
 import { KINDS, OPS, TOPICS } from '../constants';
 
 interface ItemEvent {
@@ -181,44 +183,66 @@ export const configureWsItemHooks = (
         };
       }
       const channel: Channel = { name: parentId, topic: TOPICS.ITEM };
-      const parentChildrenKey = buildItemChildrenKeys.all(parentId);
+      const allChildrenKeys = buildItemChildrenKeys.all(parentId);
+
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.CHILD) {
-          const current =
-            queryClient.getQueryData<DiscriminatedItem[]>(parentChildrenKey);
+          const handle = (key: string[] | QueryKey) => {
+            const current = queryClient.getQueryData<DiscriminatedItem[]>(key);
 
-          queryClient.invalidateQueries(parentChildrenKey);
-
-          if (current) {
-            const { item } = event;
-            let mutation;
-            switch (event.op) {
-              case OPS.CREATE: {
-                if (!current.find((i) => i.id === item.id)) {
-                  mutation = [...current, item];
-                  queryClient.setQueryData(parentChildrenKey, mutation);
-                  queryClient.setQueryData(buildItemKey(item.id), item);
+            if (current) {
+              const { item } = event;
+              let mutation;
+              switch (event.op) {
+                case OPS.CREATE: {
+                  const params = key[3] as ItemChildrenParams | undefined;
+                  if (
+                    !current.find((i) => i.id === item.id) &&
+                    shouldBeAddedInCache({ newItem: item, params })
+                  ) {
+                    mutation = [...current, item];
+                    queryClient.setQueryData(key, mutation);
+                    queryClient.setQueryData(buildItemKey(item.id), item);
+                  }
+                  break;
                 }
-                break;
+                case OPS.UPDATE: {
+                  // replace value if it exists
+                  mutation = current.map((i) => (i.id === item.id ? item : i));
+                  queryClient.setQueryData(key, mutation);
+                  queryClient.setQueryData(buildItemKey(item.id), item);
+                  break;
+                }
+                case OPS.DELETE: {
+                  mutation = current.filter((i) => i.id !== item.id);
+                  queryClient.setQueryData(key, mutation);
+                  // question: reset item key
+                  break;
+                }
+                default:
+                  console.error('unhandled event for useChildrenUpdates');
+                  break;
               }
-              case OPS.UPDATE: {
-                // replace value if it exists
-                mutation = current.map((i) => (i.id === item.id ? item : i));
-                queryClient.setQueryData(parentChildrenKey, mutation);
-                queryClient.setQueryData(buildItemKey(item.id), item);
-                break;
-              }
-              case OPS.DELETE: {
-                mutation = current.filter((i) => i.id !== item.id);
-                queryClient.setQueryData(parentChildrenKey, mutation);
-                // question: reset item key
-                break;
-              }
-              default:
-                console.error('unhandled event for useChildrenUpdates');
-                break;
             }
-          }
+          };
+
+          const queryCache = queryClient.getQueryCache();
+
+          queryCache.getAll().forEach((cache) => {
+            const { queryKey } = cache;
+            if (queryKey.length >= allChildrenKeys.length) {
+              const match = allChildrenKeys.reduce((acc, _, idx) => {
+                if (!acc || queryKey[idx] !== allChildrenKeys[idx]) {
+                  return false;
+                }
+                return acc;
+              }, true);
+
+              if (match) {
+                handle(queryKey);
+              }
+            }
+          });
         }
       };
       websocketClient.subscribe(channel, handler);
@@ -496,6 +520,7 @@ export const configureWsItemHooks = (
                   );
 
                   // Get the previous moved item's data to find the previous path.
+                  // could not exist !!!
                   const previousItem =
                     queryClient.getQueryData<DiscriminatedItem>(
                       buildItemKey(movedItemId),

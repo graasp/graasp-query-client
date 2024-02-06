@@ -1,3 +1,7 @@
+import { DiscriminatedItem } from '@graasp/sdk';
+
+import { ItemChildrenParams } from '../api/routes';
+
 export const isObject = (value: unknown) =>
   typeof value === 'object' && !Array.isArray(value) && value !== null;
 
@@ -35,3 +39,21 @@ export const paginate = <U>(
       reject(error);
     }
   });
+
+export const shouldBeAddedInCache = ({
+  newItem,
+  params,
+}: {
+  newItem: DiscriminatedItem;
+  params?: ItemChildrenParams;
+}) => {
+  if (!params) {
+    return true;
+  }
+
+  if (params.types && params.types.includes(newItem.type)) {
+    return true;
+  }
+
+  return false;
+};
