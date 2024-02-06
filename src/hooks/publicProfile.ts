@@ -18,7 +18,7 @@ export default (queryConfig: QueryClientConfig) => {
         ...defaultQueryOptions,
       }),
 
-    usePublicProfile: (memberId: UUID) =>
+    usePublicProfile: (memberId?: UUID) =>
       useQuery({
         queryKey: buildPublicProfileKey(memberId),
         queryFn: () => {

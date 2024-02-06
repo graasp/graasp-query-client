@@ -283,7 +283,7 @@ export const CURRENT_MEMBER_STORAGE_KEY = [
 ];
 
 export const OWN_PUBLIC_PROFILE_KEY = ['own-profile'];
-export const buildPublicProfileKey = (memberId: UUID) => ['profile', memberId];
+export const buildPublicProfileKey = (memberId?: UUID) => ['profile', memberId];
 
 export const itemsWithGeolocationKeys = {
   allBounds: [ITEMS_CONTEXT, 'map'],
