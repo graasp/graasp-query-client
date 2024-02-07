@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.6.0](https://github.com/graasp/graasp-query-client/compare/v2.5.0...v2.6.0) (2024-02-07)
+
+
+### Features
+
+* allow useChildren to filter by types ([#611](https://github.com/graasp/graasp-query-client/issues/611)) ([c326ba1](https://github.com/graasp/graasp-query-client/commit/c326ba12d2d71359947533492a29a6574a20d0a3))
+
+
+### Bug Fixes
+
+* allow undefined memberId in publicprofile hook ([#613](https://github.com/graasp/graasp-query-client/issues/613)) ([f52d163](https://github.com/graasp/graasp-query-client/commit/f52d16345ec55c258b428ba4e4db50a5e34ecb38))
+
 ## [2.5.0](https://github.com/graasp/graasp-query-client/compare/v2.4.2...v2.5.0) (2024-02-01)
 
 
