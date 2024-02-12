@@ -64,6 +64,48 @@ describe('Item Flag Mutations', () => {
 
       await act(async () => {
         await mockedMutation.mutate({
+          geolocation: {
+            lat: 1,
+            lng: 1,
+            addressLabel: 'address',
+            country: 'country',
+          },
+          itemId,
+        });
+        await waitForMutation();
+      });
+
+      expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
+      expect(queryClient.getQueryState(singleKey)?.isInvalidated).toBeTruthy();
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: putItemGeolocationRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.PUT_ITEM_GEOLOCATION },
+      });
+    });
+
+    it('Put item geolocation without address and country', async () => {
+      // set some starting data
+      queryClient.setQueryData(key, ITEM_GEOLOCATION);
+      queryClient.setQueryData(singleKey, [ITEM_GEOLOCATION]);
+
+      const response = {};
+
+      const endpoints = [
+        {
+          response,
+          method: HttpMethod.PUT,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        await mockedMutation.mutate({
           geolocation: { lat: 1, lng: 1 },
           itemId,
         });

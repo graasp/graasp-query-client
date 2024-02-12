@@ -20,7 +20,8 @@ export default (queryConfig: QueryClientConfig) => {
     return useMutation(
       (payload: {
         itemId: DiscriminatedItem['id'];
-        geolocation: Pick<ItemGeolocation, 'lat' | 'lng'>;
+        geolocation: Pick<ItemGeolocation, 'lat' | 'lng'> &
+          Pick<Partial<ItemGeolocation>, 'country' | 'addressLabel'>;
       }) => putItemGeolocation(payload, queryConfig),
       {
         onSuccess: () => {

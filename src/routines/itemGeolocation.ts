@@ -1,6 +1,9 @@
 import createRoutine from './utils';
 
 export const getItemGeolocationRoutine = createRoutine('GET_ITEM_GEOLOCATION');
+export const getAddressFromCoordinatesRoutine = createRoutine(
+  'GET_ADDRESS_FROM_COORDINATES',
+);
 export const deleteItemGeolocationRoutine = createRoutine(
   'DELETE_ITEM_GEOLOCATION',
 );

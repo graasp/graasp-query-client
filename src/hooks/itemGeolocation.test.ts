@@ -1,9 +1,11 @@
 import { StatusCodes } from 'http-status-codes';
+import nock from 'nock';
 
 import { ITEM_GEOLOCATION, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import { ITEMS_ROUTE } from '../api/routes';
 import {
+  buildAddressFromCoordinatesKey,
   buildItemGeolocationKey,
   itemsWithGeolocationKeys,
 } from '../config/keys';
@@ -58,6 +60,62 @@ describe('useItemGeolocation', () => {
 
     expect(data).toBeFalsy();
     expect(isError).toBeTruthy();
+    // verify cache keys
+    expect(queryClient.getQueryData(key)).toBeFalsy();
+  });
+});
+
+describe('useAddressFromGeolocation', () => {
+  const response = { display_name: 'display_name' };
+  const payload = { lat: 1, lng: 1 };
+
+  nock('https://nominatim.openstreetmap.org')
+    .get(`/reverse?format=jsonv2&lat=${payload.lat}&lon=${payload.lng}`)
+    .reply(200, response);
+
+  const hook = () => hooks.useAddressFromGeolocation(payload);
+  const key = buildAddressFromCoordinatesKey(payload);
+
+  it(`Retrieve address for coordinates`, async () => {
+    const { data, isSuccess } = await mockHook({
+      endpoints: [],
+      hook,
+      wrapper,
+    });
+
+    expect(isSuccess).toBeTruthy();
+    expect(data).toEqual(response);
+
+    // verify cache keys
+    expect(queryClient.getQueryData(key)).toMatchObject(response);
+  });
+
+  it(`Undefined lat does not fetch`, async () => {
+    const { data, isFetched } = await mockHook({
+      endpoints: [],
+      hook,
+      wrapper,
+      enabled: false,
+    });
+
+    expect(isFetched).toBeFalsy();
+    expect(data).toBeFalsy();
+
+    // verify cache keys
+    expect(queryClient.getQueryData(key)).toBeFalsy();
+  });
+
+  it(`Undefined lng does not fetch`, async () => {
+    const { data, isFetched } = await mockHook({
+      endpoints: [],
+      hook,
+      wrapper,
+      enabled: false,
+    });
+
+    expect(isFetched).toBeFalsy();
+    expect(data).toBeFalsy();
+
     // verify cache keys
     expect(queryClient.getQueryData(key)).toBeFalsy();
   });
