@@ -1,9 +1,13 @@
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { URL } from 'url';
 
 import { ITEM_GEOLOCATION, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
-import { ITEMS_ROUTE } from '../api/routes';
+import {
+  ITEMS_ROUTE,
+  buildGetAddressFromCoordinatesRoute,
+} from '../api/routes';
 import {
   buildAddressFromCoordinatesKey,
   buildItemGeolocationKey,
@@ -69,8 +73,10 @@ describe('useAddressFromGeolocation', () => {
   const response = { display_name: 'display_name' };
   const payload = { lat: 1, lng: 1 };
 
-  nock('https://nominatim.openstreetmap.org')
-    .get(`/reverse?format=jsonv2&lat=${payload.lat}&lon=${payload.lng}`)
+  const url = new URL(buildGetAddressFromCoordinatesRoute(payload));
+
+  nock(url.origin)
+    .get(url.pathname + url.search)
     .reply(200, response);
 
   const hook = () => hooks.useAddressFromGeolocation(payload);

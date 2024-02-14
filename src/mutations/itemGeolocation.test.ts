@@ -63,7 +63,7 @@ describe('Item Flag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           geolocation: {
             lat: 1,
             lng: 1,
@@ -105,7 +105,7 @@ describe('Item Flag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           geolocation: { lat: 1, lng: 1 },
           itemId,
         });
@@ -141,7 +141,7 @@ describe('Item Flag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           geolocation: { lat: 1, lng: 1 },
           itemId,
         });
@@ -193,7 +193,7 @@ describe('Item Flag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId });
+        mockedMutation.mutate({ itemId });
         await waitForMutation();
       });
 
@@ -226,7 +226,7 @@ describe('Item Flag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId });
+        mockedMutation.mutate({ itemId });
         await waitForMutation();
       });
 

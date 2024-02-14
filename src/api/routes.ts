@@ -494,6 +494,11 @@ export const buildGetItemsInMapRoute = ({
 
   return `${ITEMS_ROUTE}/geolocation?${searchString}`;
 };
+export const buildGetAddressFromCoordinatesRoute = ({
+  lat,
+  lng,
+}: Pick<ItemGeolocation, 'lat' | 'lng'>) =>
+  `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,
@@ -611,4 +616,5 @@ export const API_ROUTES = {
   buildGetItemGeolocationRoute,
   buildDeleteItemGeolocationRoute,
   buildPutItemGeolocationRoute,
+  buildGetAddressFromCoordinatesRoute,
 };

@@ -4,6 +4,7 @@ import { PartialQueryConfigForApi } from '../types';
 import { verifyAuthentication } from './axios';
 import {
   buildDeleteItemGeolocationRoute,
+  buildGetAddressFromCoordinatesRoute,
   buildGetItemGeolocationRoute,
   buildGetItemsInMapRoute,
   buildPutItemGeolocationRoute,
@@ -71,7 +72,7 @@ export const getAddressFromCoordinates = async (
 ) =>
   axios
     .get<{ display_name: string }>(
-      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
+      buildGetAddressFromCoordinatesRoute({ lat, lng }),
       {
         responseType: 'json',
       },
