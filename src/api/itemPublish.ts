@@ -1,5 +1,7 @@
 import { DiscriminatedItem, ItemPublished, ResultOf, UUID } from '@graasp/sdk';
 
+import { StatusCodes } from 'http-status-codes';
+
 import { PartialQueryConfigForApi } from '../types';
 import { verifyAuthentication } from './axios';
 import {
@@ -61,7 +63,14 @@ export const getItemPublishedInformation = async (
     .get<ItemPublished>(
       `${API_HOST}/${buildGetItemPublishedInformationRoute(id)}`,
     )
-    .then(({ data }) => data);
+    .then(({ data }) => data)
+    .catch((error) => {
+      if (error.status === StatusCodes.NOT_FOUND) {
+        // this means that the collection is not published, we return undefined in this case
+        return undefined;
+      }
+      throw error;
+    });
 
 export const getManyItemPublishedInformations = async (
   ids: UUID[],
