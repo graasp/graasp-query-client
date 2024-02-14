@@ -1,6 +1,8 @@
 import {
   AggregateBy,
   Category,
+  DiscriminatedItem,
+  ItemGeolocation,
   ItemType,
   UUID,
   UnionOfConst,
@@ -292,16 +294,18 @@ export const itemsWithGeolocationKeys = {
     lat2,
     lng1,
     lng2,
+    parentItemId,
     keywords,
   }: {
-    lat1: number;
-    lat2: number;
-    lng1: number;
-    lng2: number;
     keywords?: string[];
+    lat1?: ItemGeolocation['lat'];
+    lat2?: ItemGeolocation['lat'];
+    lng1?: ItemGeolocation['lng'];
+    lng2?: ItemGeolocation['lng'];
+    parentItemId?: DiscriminatedItem['id'];
   }) => [
     ...itemsWithGeolocationKeys.allBounds,
-    { lat1, lat2, lng1, lng2, keywords },
+    { lat1, lat2, lng1, lng2, parentItemId, keywords },
   ],
 };
 
@@ -309,6 +313,15 @@ export const buildItemGeolocationKey = (itemId?: UUID) => [
   ITEMS_CONTEXT,
   itemId,
   'geolocation',
+];
+
+export const buildAddressFromCoordinatesKey = ({
+  lat,
+  lng,
+}: Pick<ItemGeolocation, 'lat' | 'lng'>) => [
+  ITEMS_CONTEXT,
+  { lat, lng },
+  'address',
 ];
 
 export const DATA_KEYS = {
@@ -354,4 +367,5 @@ export const DATA_KEYS = {
   buildPublicProfileKey,
   itemsWithGeolocationKeys,
   buildItemGeolocationKey,
+  buildAddressFromCoordinatesKey,
 };

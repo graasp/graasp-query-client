@@ -1,6 +1,7 @@
 import {
   AggregateBy,
   DiscriminatedItem,
+  ItemGeolocation,
   ItemTag,
   ItemTagType,
   ItemType,
@@ -462,24 +463,42 @@ export const buildGetItemsInMapRoute = ({
   lng1,
   lng2,
   keywords,
+  parentItemId,
 }: {
-  lat1: number;
-  lat2: number;
-  lng1: number;
-  lng2: number;
   keywords?: string[];
+  lat1?: ItemGeolocation['lat'];
+  lat2?: ItemGeolocation['lat'];
+  lng1?: ItemGeolocation['lng'];
+  lng2?: ItemGeolocation['lng'];
+  parentItemId?: DiscriminatedItem['id'];
 }) => {
   const params = new URLSearchParams();
-  params.append('lat1', lat1.toString());
-  params.append('lat2', lat2.toString());
-  params.append('lng1', lng1.toString());
-  params.append('lng2', lng2.toString());
+  if (lat1 || lat1 === 0) {
+    params.append('lat1', lat1.toString());
+  }
+  if (lat2 || lat2 === 0) {
+    params.append('lat2', lat2.toString());
+  }
+  if (lng1 || lng1 === 0) {
+    params.append('lng1', lng1.toString());
+  }
+  if (lng2 || lng2 === 0) {
+    params.append('lng2', lng2.toString());
+  }
+  if (parentItemId) {
+    params.append('parentItemId', parentItemId);
+  }
   keywords?.forEach((s) => params.append('keywords', s));
 
   const searchString = params.toString();
 
   return `${ITEMS_ROUTE}/geolocation?${searchString}`;
 };
+export const buildGetAddressFromCoordinatesRoute = ({
+  lat,
+  lng,
+}: Pick<ItemGeolocation, 'lat' | 'lng'>) =>
+  `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,
@@ -597,4 +616,5 @@ export const API_ROUTES = {
   buildGetItemGeolocationRoute,
   buildDeleteItemGeolocationRoute,
   buildPutItemGeolocationRoute,
+  buildGetAddressFromCoordinatesRoute,
 };
