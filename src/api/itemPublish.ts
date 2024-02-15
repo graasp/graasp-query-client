@@ -58,7 +58,7 @@ export const getItemPublishedInformation = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<ItemPublished>(
+    .get<ItemPublished | null>(
       `${API_HOST}/${buildGetItemPublishedInformationRoute(id)}`,
     )
     .then(({ data }) => data);
