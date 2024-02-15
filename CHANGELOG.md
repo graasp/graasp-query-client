@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.6.2](https://github.com/graasp/graasp-query-client/compare/v2.6.1...v2.6.2) (2024-02-15)
+
+
+### Bug Fixes
+
+* adapt return type of item publish info ([#636](https://github.com/graasp/graasp-query-client/issues/636)) ([aa804f2](https://github.com/graasp/graasp-query-client/commit/aa804f2ea5a78430bbb31ef3eb391f8d90444fa8))
+* **deps:** update dependency @graasp/sdk to v3.8.2 ([#640](https://github.com/graasp/graasp-query-client/issues/640)) ([1242e4f](https://github.com/graasp/graasp-query-client/commit/1242e4fbc8caf955e10e09da3209b264abd4e896))
+
 ## [2.6.1](https://github.com/graasp/graasp-query-client/compare/v2.6.0...v2.6.1) (2024-02-15)
 
 ### Features
