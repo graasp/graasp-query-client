@@ -1869,6 +1869,8 @@ __metadata:
     typescript: "npm:5.3.3"
     uuid: "npm:9.0.1"
   peerDependencies:
+    "@graasp/sdk": ^3.8.3
+    "@graasp/translations": ^1.23.0
     react: ^17.0.0 || ^18.0.0
   languageName: unknown
   linkType: soft
