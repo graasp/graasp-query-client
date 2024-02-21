@@ -3,14 +3,14 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
-import { buildShortLinkKey, itemKeys } from '../config/keys';
+import * as Api from '../api/index.js';
+import { buildShortLinkKey, itemKeys } from '../config/keys.js';
 import {
   createShortLinkRoutine,
   deleteShortLinkRoutine,
   patchShortLinkRoutine,
-} from '../routines';
-import type { QueryClientConfig } from '../types';
+} from '../routines/index.js';
+import type { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

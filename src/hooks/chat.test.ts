@@ -1,13 +1,13 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { ChatMessage, FolderItemFactory, MemberFactory } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it } from 'vitest';
 
-import { UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockHook, setUpTest } from '../../test/utils';
-import { buildGetItemChatRoute } from '../api/routes';
-import { buildItemChatKey } from '../config/keys';
+import { UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
+import { mockHook, setUpTest } from '../../test/utils.js';
+import { buildGetItemChatRoute } from '../api/routes.js';
+import { buildItemChatKey } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

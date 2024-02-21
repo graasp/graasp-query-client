@@ -2,9 +2,9 @@ import { UUID } from '@graasp/sdk';
 
 import { useMutation } from 'react-query';
 
-import { exportActions, postItemAction } from '../api';
-import { exportActionsRoutine, postActionRoutine } from '../routines';
-import { QueryClientConfig } from '../types';
+import { exportActions, postItemAction } from '../api/action.js';
+import { exportActionsRoutine, postActionRoutine } from '../routines/action.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const usePostItemAction = () =>

@@ -1,13 +1,13 @@
 import { ItemLike, UUID } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types';
-import { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 import {
   buildDeleteItemLikeRoute,
   buildGetItemLikesRoute,
   buildGetLikesForMemberRoute,
   buildPostItemLikeRoute,
-} from './routes';
+} from './routes.js';
 
 export const getLikedItems = async (
   memberId: UUID,

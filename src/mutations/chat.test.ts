@@ -1,30 +1,30 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { FolderItemFactory, HttpMethod } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { v4 } from 'uuid';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   CHAT_MESSAGES,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+} from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import {
   buildClearItemChatRoute,
   buildDeleteItemChatMessageRoute,
   buildPatchItemChatMessageRoute,
   buildPostItemChatMessageRoute,
-} from '../api/routes';
-import { buildItemChatKey } from '../config/keys';
+} from '../api/routes.js';
+import { buildItemChatKey } from '../config/keys.js';
 import {
   clearItemChatRoutine,
   deleteItemChatMessageRoutine,
   patchItemChatMessageRoutine,
   postItemChatMessageRoutine,
-} from '../routines';
+} from '../routines/chat.js';
 
 describe('Chat Mutations', () => {
   const itemId = FolderItemFactory().id;
@@ -32,7 +32,7 @@ describe('Chat Mutations', () => {
   const messageId = v4();
 
   describe('enableWebsockets = false', () => {
-    const mockedNotifier = jest.fn();
+    const mockedNotifier = vi.fn();
     const { wrapper, queryClient, mutations } = setUpTest({
       notifier: mockedNotifier,
     });
@@ -48,7 +48,7 @@ describe('Chat Mutations', () => {
 
       it(`Post item chat message`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: HttpMethod.POST },
+          { route, response: OK_RESPONSE, method: HttpMethod.Post },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, CHAT_MESSAGES);
@@ -60,7 +60,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ itemId, body: 'new message' });
+          mockedMutation.mutate({ itemId, body: 'new message' });
           await waitForMutation();
         });
 
@@ -73,7 +73,7 @@ describe('Chat Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: HttpMethod.POST,
+            method: HttpMethod.Post,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -87,7 +87,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ itemId, body: 'new message' });
+          mockedMutation.mutate({ itemId, body: 'new message' });
           await waitForMutation();
         });
 
@@ -107,7 +107,7 @@ describe('Chat Mutations', () => {
 
       it(`Patch item chat message`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: HttpMethod.PATCH },
+          { route, response: OK_RESPONSE, method: HttpMethod.Patch },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, CHAT_MESSAGES);
@@ -119,7 +119,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({
+          mockedMutation.mutate({
             itemId,
             messageId,
             body: 'Updated message',
@@ -136,7 +136,7 @@ describe('Chat Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: HttpMethod.PATCH,
+            method: HttpMethod.Patch,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -150,7 +150,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({
+          mockedMutation.mutate({
             itemId,
             messageId,
             body: 'Updated message',
@@ -175,7 +175,7 @@ describe('Chat Mutations', () => {
 
       it(`Delete item chat message`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
+          { route, response: OK_RESPONSE, method: HttpMethod.Delete },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, CHAT_MESSAGES);
@@ -187,7 +187,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ itemId, messageId });
+          mockedMutation.mutate({ itemId, messageId });
           await waitForMutation();
         });
 
@@ -200,7 +200,7 @@ describe('Chat Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: HttpMethod.DELETE,
+            method: HttpMethod.Delete,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -214,7 +214,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ itemId, messageId });
+          mockedMutation.mutate({ itemId, messageId });
           await waitForMutation();
         });
 
@@ -234,7 +234,7 @@ describe('Chat Mutations', () => {
 
       it(`Clear chat`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
+          { route, response: OK_RESPONSE, method: HttpMethod.Delete },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, CHAT_MESSAGES);
@@ -246,7 +246,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate(itemId);
+          mockedMutation.mutate(itemId);
           await waitForMutation();
         });
 
@@ -259,7 +259,7 @@ describe('Chat Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: HttpMethod.DELETE,
+            method: HttpMethod.Delete,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -273,7 +273,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate(itemId);
+          mockedMutation.mutate(itemId);
           await waitForMutation();
         });
 
@@ -303,7 +303,7 @@ describe('Chat Mutations', () => {
       const mutation = mutations.usePostItemChatMessage;
       it(`Post item chat message`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: HttpMethod.POST },
+          { route, response: OK_RESPONSE, method: HttpMethod.Post },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, CHAT_MESSAGES);
@@ -315,7 +315,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({ itemId, body: 'new message' });
+          mockedMutation.mutate({ itemId, body: 'new message' });
           await waitForMutation();
         });
 
@@ -330,7 +330,7 @@ describe('Chat Mutations', () => {
 
       it(`Patch item chat message`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: HttpMethod.PATCH },
+          { route, response: OK_RESPONSE, method: HttpMethod.Patch },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, CHAT_MESSAGES);
@@ -342,7 +342,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({
+          mockedMutation.mutate({
             itemId,
             messageId,
             body: 'new message content',
@@ -361,7 +361,7 @@ describe('Chat Mutations', () => {
 
       it(`Delete item chat message`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
+          { route, response: OK_RESPONSE, method: HttpMethod.Delete },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, CHAT_MESSAGES);
@@ -373,7 +373,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({
+          mockedMutation.mutate({
             itemId,
             messageId,
           });
@@ -391,7 +391,7 @@ describe('Chat Mutations', () => {
 
       it(`Clear chat`, async () => {
         const endpoints = [
-          { route, response: OK_RESPONSE, method: HttpMethod.DELETE },
+          { route, response: OK_RESPONSE, method: HttpMethod.Delete },
         ];
         // set random data in cache
         queryClient.setQueryData(chatKey, CHAT_MESSAGES);
@@ -403,7 +403,7 @@ describe('Chat Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate(itemId);
+          mockedMutation.mutate(itemId);
           await waitForMutation();
         });
 

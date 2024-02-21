@@ -1,4 +1,4 @@
-import createRoutine from './utils';
+import createRoutine from './utils.js';
 
 export const postItemValidationRoutine = createRoutine('POST_ITEM_VALIDATION');
 export const updateItemValidationReviewRoutine = createRoutine(

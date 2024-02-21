@@ -1,4 +1,4 @@
-import createRoutine from './utils';
+import createRoutine from './utils.js';
 
 export const postItemChatMessageRoutine = createRoutine(
   'POST_CHAT_MESSAGES_MESSAGE',

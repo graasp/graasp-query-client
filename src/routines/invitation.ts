@@ -1,4 +1,4 @@
-import createRoutine from './utils';
+import createRoutine from './utils.js';
 
 export const getInvitationRoutine = createRoutine('GET_INVITATION');
 export const postInvitationsRoutine = createRoutine('POST_INVITATIONS');

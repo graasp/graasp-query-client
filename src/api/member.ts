@@ -1,7 +1,6 @@
 import {
   CompleteMember,
   Member,
-  MemberExtra,
   MemberStorage,
   Password,
   ResultOf,
@@ -10,9 +9,9 @@ import {
 
 import { StatusCodes } from 'http-status-codes';
 
-import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
-import { PartialQueryConfigForApi } from '../types';
-import { verifyAuthentication } from './axios';
+import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 import {
   GET_CURRENT_MEMBER_ROUTE,
   buildDeleteMemberRoute,
@@ -24,7 +23,7 @@ import {
   buildPatchMember,
   buildUpdateMemberPasswordRoute,
   buildUploadAvatarRoute,
-} from './routes';
+} from './routes.js';
 
 export const getMembersBy = async (
   { emails }: { emails: string[] },
@@ -81,7 +80,7 @@ export const getMemberStorage = async ({
   );
 
 export const editMember = async (
-  payload: { id: UUID; extra?: MemberExtra; name?: string },
+  payload: { id: UUID; extra?: CompleteMember['extra']; name?: string },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>

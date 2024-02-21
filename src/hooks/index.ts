@@ -1,26 +1,26 @@
 import { WebsocketClient } from '@graasp/sdk';
 
-import { QueryClientConfig } from '../types';
-import configureActionHooks from './action';
-import configureAppsHooks from './apps';
-import configureCategoryHooks from './category';
-import configureChatHooks from './chat';
-import configureInvitationHooks from './invitation';
-import configureItemHooks from './item';
-import configureItemFavoriteHooks from './itemFavorite';
-import configureItemGeolocationHooks from './itemGeolocation';
-import configureItemLikeHooks from './itemLike';
-import configureItemLoginHooks from './itemLogin';
-import configureItemPublishedHooks from './itemPublish';
-import configureItemTagHooks from './itemTag';
-import configureItemValidationHooks from './itemValidation';
-import configureMemberHooks from './member';
-import configureMembershipHooks from './membership';
-import configureMentionsHooks from './mention';
-import configurePlanHooks from './plan';
-import configurePublicProfileHooks from './publicProfile';
-import configureKeywordSearchHooks from './search';
-import configureShortLinkHooks from './shortLink';
+import { QueryClientConfig } from '../types.js';
+import configureActionHooks from './action.js';
+import configureAppsHooks from './apps.js';
+import configureCategoryHooks from './category.js';
+import configureChatHooks from './chat.js';
+import configureInvitationHooks from './invitation.js';
+import configureItemHooks from './item.js';
+import configureItemFavoriteHooks from './itemFavorite.js';
+import configureItemGeolocationHooks from './itemGeolocation.js';
+import configureItemLikeHooks from './itemLike.js';
+import configureItemLoginHooks from './itemLogin.js';
+import configureItemPublishedHooks from './itemPublish.js';
+import configureItemTagHooks from './itemTag.js';
+import configureItemValidationHooks from './itemValidation.js';
+import configureMemberHooks from './member.js';
+import configureMembershipHooks from './membership.js';
+import configureMentionsHooks from './mention.js';
+import configurePublicProfileHooks from './publicProfile.js';
+import configureKeywordSearchHooks from './search.js';
+import configureShortLinkHooks from './shortLink.js';
+import configureSubscriptionHooks from './subscription.js';
 
 export default (
   queryConfig: QueryClientConfig,
@@ -53,7 +53,7 @@ export default (
     ...configureActionHooks(queryConfig),
     ...configureInvitationHooks(queryConfig),
     ...memberHooks,
-    ...configurePlanHooks(queryConfig),
+    ...configureSubscriptionHooks(queryConfig),
     ...configurePublicProfileHooks(queryConfig),
     ...configureShortLinkHooks(queryConfig),
     ...configureItemGeolocationHooks(queryConfig),

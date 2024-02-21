@@ -9,8 +9,8 @@ import {
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 
-import { buildItemMembershipsKey } from '../../config/keys';
-import { KINDS, OPS, TOPICS } from '../constants';
+import { buildItemMembershipsKey } from '../../config/keys.js';
+import { KINDS, OPS, TOPICS } from '../constants.js';
 
 // todo: use graasp-types?
 interface MembershipEvent {

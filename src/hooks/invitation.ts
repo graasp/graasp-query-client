@@ -2,11 +2,11 @@ import { UUID } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
-import * as Api from '../api';
-import { UndefinedArgument } from '../config/errors';
-import { buildInvitationKey, buildItemInvitationsKey } from '../config/keys';
-import { getInvitationRoutine } from '../routines';
-import { QueryClientConfig } from '../types';
+import * as Api from '../api/invitation.js';
+import { UndefinedArgument } from '../config/errors.js';
+import { buildInvitationKey, buildItemInvitationsKey } from '../config/keys.js';
+import { getInvitationRoutine } from '../routines/invitation.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier, defaultQueryOptions } = queryConfig;

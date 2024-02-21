@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import {
   FolderItemFactory,
   ItemMembership,
@@ -8,19 +7,20 @@ import {
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   ITEM_MEMBERSHIPS_RESPONSE,
   UNAUTHORIZED_RESPONSE,
   buildResultOfData,
   generateFolders,
-} from '../../test/constants';
-import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils';
-import { buildGetItemMembershipsForItemsRoute } from '../api/routes';
+} from '../../test/constants.js';
+import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils.js';
+import { buildGetItemMembershipsForItemsRoute } from '../api/routes.js';
 import {
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
-} from '../config/keys';
+} from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

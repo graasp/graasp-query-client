@@ -4,6 +4,7 @@ import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { v4 } from 'uuid';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   OK_RESPONSE,
@@ -11,20 +12,20 @@ import {
   buildChatMention,
   buildMemberMentions,
   buildMentionResponse,
-} from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+} from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import {
   GET_CURRENT_MEMBER_ROUTE,
   buildClearMentionsRoute,
   buildDeleteMentionRoute,
   buildPatchMentionRoute,
-} from '../api/routes';
-import { buildMentionKey } from '../config/keys';
+} from '../api/routes.js';
+import { buildMentionKey } from '../config/keys.js';
 import {
   clearMentionsRoutine,
   deleteMentionRoutine,
   patchMentionRoutine,
-} from '../routines';
+} from '../routines/mentions.js';
 
 describe('Mention Mutations', () => {
   const mentionId = v4();
@@ -35,7 +36,7 @@ describe('Mention Mutations', () => {
   const MENTIONS = buildMemberMentions();
 
   describe('enableWebsockets = false', () => {
-    const mockedNotifier = jest.fn();
+    const mockedNotifier = vi.fn();
     const { wrapper, queryClient, mutations } = setUpTest({
       notifier: mockedNotifier,
     });
@@ -60,10 +61,10 @@ describe('Mention Mutations', () => {
             route,
             response: buildMentionResponse(
               MENTIONS[0],
-              HttpMethod.PATCH,
+              HttpMethod.Patch,
               MentionStatus.Read,
             ),
-            method: HttpMethod.PATCH,
+            method: HttpMethod.Patch,
           },
         ];
         // set random data in cache
@@ -76,7 +77,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({
+          mockedMutation.mutate({
             memberId,
             id: mentionId,
             status: MentionStatus.Read,
@@ -97,7 +98,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: HttpMethod.PATCH,
+            method: HttpMethod.Patch,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -111,7 +112,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({
+          mockedMutation.mutate({
             memberId,
             id: mentionId,
             status: MentionStatus.Read,
@@ -142,7 +143,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: OK_RESPONSE,
-            method: HttpMethod.DELETE,
+            method: HttpMethod.Delete,
           },
         ];
         // set random data in cache
@@ -155,7 +156,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate(mentionId);
+          mockedMutation.mutate(mentionId);
           await waitForMutation();
         });
 
@@ -172,7 +173,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: HttpMethod.DELETE,
+            method: HttpMethod.Delete,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -186,7 +187,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate(mentionId);
+          mockedMutation.mutate(mentionId);
           await waitForMutation();
         });
 
@@ -213,7 +214,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: OK_RESPONSE,
-            method: HttpMethod.DELETE,
+            method: HttpMethod.Delete,
           },
         ];
         // set random data in cache
@@ -226,7 +227,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate();
+          mockedMutation.mutate();
           await waitForMutation();
         });
 
@@ -239,7 +240,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: UNAUTHORIZED_RESPONSE,
-            method: HttpMethod.DELETE,
+            method: HttpMethod.Delete,
             statusCode: StatusCodes.UNAUTHORIZED,
           },
         ];
@@ -253,7 +254,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate();
+          mockedMutation.mutate();
           await waitForMutation();
         });
 
@@ -290,7 +291,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: OK_RESPONSE,
-            method: HttpMethod.PATCH,
+            method: HttpMethod.Patch,
           },
         ];
         // set random data in cache
@@ -303,7 +304,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate({
+          mockedMutation.mutate({
             memberId,
             id: mentionId,
             status: MentionStatus.Read,
@@ -328,7 +329,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: OK_RESPONSE,
-            method: HttpMethod.DELETE,
+            method: HttpMethod.Delete,
           },
         ];
         // set random data in cache
@@ -341,7 +342,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate(mentionId);
+          mockedMutation.mutate(mentionId);
           await waitForMutation();
         });
 
@@ -362,7 +363,7 @@ describe('Mention Mutations', () => {
           {
             route,
             response: OK_RESPONSE,
-            method: HttpMethod.DELETE,
+            method: HttpMethod.Delete,
           },
         ];
         // set random data in cache
@@ -375,7 +376,7 @@ describe('Mention Mutations', () => {
         });
 
         await act(async () => {
-          await mockedMutation.mutate();
+          mockedMutation.mutate();
           await waitForMutation();
         });
 

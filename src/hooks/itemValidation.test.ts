@@ -1,13 +1,14 @@
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   ITEM_VALIDATION_GROUP,
   UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
-import { mockHook, setUpTest } from '../../test/utils';
-import { buildGetLastItemValidationGroupRoute } from '../api/routes';
-import { itemKeys } from '../config/keys';
+} from '../../test/constants.js';
+import { mockHook, setUpTest } from '../../test/utils.js';
+import { buildGetLastItemValidationGroupRoute } from '../api/routes.js';
+import { itemKeys } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

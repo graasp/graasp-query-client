@@ -9,17 +9,21 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { ITEM_LOGIN_RESPONSE } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import { ITEM_LOGIN_RESPONSE } from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import {
   buildPostItemLoginSignInRoute,
   buildPutItemLoginSchemaRoute,
-} from '../api/routes';
-import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../config/keys';
-import { postItemLoginRoutine, putItemLoginSchemaRoutine } from '../routines';
+} from '../api/routes.js';
+import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../config/keys.js';
+import {
+  postItemLoginRoutine,
+  putItemLoginSchemaRoutine,
+} from '../routines/itemLogin.js';
 
-const mockedNotifier = jest.fn();
+const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
@@ -45,7 +49,7 @@ describe('Item Login Mutations', () => {
       const endpoints = [
         {
           response: {},
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -57,7 +61,7 @@ describe('Item Login Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           itemId,
           username,
           memberId,
@@ -83,7 +87,7 @@ describe('Item Login Mutations', () => {
         {
           response: {},
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -95,7 +99,7 @@ describe('Item Login Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           itemId,
           username,
           memberId,
@@ -132,7 +136,7 @@ describe('Item Login Mutations', () => {
       const endpoints = [
         {
           response: {},
-          method: HttpMethod.PUT,
+          method: HttpMethod.Put,
           route,
         },
       ];
@@ -144,7 +148,7 @@ describe('Item Login Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, type: newLoginSchema });
+        mockedMutation.mutate({ itemId, type: newLoginSchema });
         await waitForMutation();
       });
 
@@ -165,7 +169,7 @@ describe('Item Login Mutations', () => {
         {
           response: {},
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.PUT,
+          method: HttpMethod.Put,
           route,
         },
       ];
@@ -177,7 +181,7 @@ describe('Item Login Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           itemId,
           type: newLoginSchema,
         });

@@ -8,11 +8,11 @@ import {
   UnionOfConst,
 } from '@graasp/sdk';
 
-import { ItemSearchParams } from '../api/routes';
-import { PaginationParams } from '../types';
-import { AggregateActionsArgs } from '../utils/action';
-import { hashItemsIds } from '../utils/item';
-import { DEFAULT_THUMBNAIL_SIZE } from './constants';
+import { ItemSearchParams } from '../api/routes.js';
+import { PaginationParams } from '../types.js';
+import { AggregateActionsArgs } from '../utils/action.js';
+import { hashItemsIds } from '../utils/item.js';
+import { DEFAULT_THUMBNAIL_SIZE } from './constants.js';
 
 /**
  * Contexts

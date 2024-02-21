@@ -10,21 +10,20 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { QueryClient, useMutation, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
 import {
   splitRequestByIds,
   throwIfArrayContainsErrorOrReturn,
-} from '../api/axios';
+} from '../api/axios.js';
+import * as Api from '../api/item.js';
 import {
   OWN_ITEMS_KEY,
   getKeyForParentId,
   itemKeys,
   itemsWithGeolocationKeys,
   memberKeys,
-} from '../config/keys';
+} from '../config/keys.js';
 import {
   copyItemsRoutine,
-  createEtherpadRoutine,
   createItemRoutine,
   deleteItemsRoutine,
   editItemRoutine,
@@ -35,9 +34,9 @@ import {
   restoreItemsRoutine,
   uploadFileRoutine,
   uploadItemThumbnailRoutine,
-} from '../routines';
-import type { QueryClientConfig } from '../types';
-import { buildPath, getDirectParentId } from '../utils/item';
+} from '../routines/item.js';
+import type { QueryClientConfig } from '../types.js';
+import { buildPath, getDirectParentId } from '../utils/item.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -119,36 +118,6 @@ export default (queryConfig: QueryClientConfig) => {
           if (geolocation) {
             queryClient.invalidateQueries(itemsWithGeolocationKeys.allBounds);
           }
-        },
-      },
-    );
-  };
-
-  const usePostEtherpad = () => {
-    const queryClient = useQueryClient();
-    return useMutation(
-      async (
-        params: Pick<DiscriminatedItem, 'name'> & {
-          parentId?: string;
-        },
-      ) => Api.postEtherpad(params, queryConfig),
-      // we cannot optimistically add an item because we need its id
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: createEtherpadRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
-          });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: createEtherpadRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error, { parentId }) => {
-          const key = getKeyForParentId(parentId);
-          queryClient.invalidateQueries(key);
         },
       },
     );
@@ -583,7 +552,6 @@ export default (queryConfig: QueryClientConfig) => {
 
   return {
     usePostItem,
-    usePostEtherpad,
     useEditItem,
     useRecycleItems,
     useDeleteItems,

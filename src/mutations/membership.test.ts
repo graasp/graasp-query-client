@@ -10,6 +10,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   ITEM_MEMBERSHIPS_RESPONSE,
@@ -17,13 +18,13 @@ import {
   UNAUTHORIZED_RESPONSE,
   buildMockInvitations,
   buildResultOfData,
-} from '../../test/constants';
+} from '../../test/constants.js';
 import {
   Endpoint,
   mockMutation,
   setUpTest,
   waitForMutation,
-} from '../../test/utils';
+} from '../../test/utils.js';
 import {
   buildDeleteItemMembershipRoute,
   buildEditItemMembershipRoute,
@@ -31,20 +32,20 @@ import {
   buildPostInvitationsRoute,
   buildPostItemMembershipRoute,
   buildPostManyItemMembershipsRoute,
-} from '../api/routes';
+} from '../api/routes.js';
 import {
   OWN_ITEMS_KEY,
   buildItemInvitationsKey,
   buildItemMembershipsKey,
   itemKeys,
-} from '../config/keys';
+} from '../config/keys.js';
+import { shareItemRoutine } from '../routines/member.js';
 import {
   deleteItemMembershipRoutine,
   editItemMembershipRoutine,
-  shareItemRoutine,
-} from '../routines';
+} from '../routines/membership.js';
 
-const mockedNotifier = jest.fn();
+const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
@@ -53,7 +54,7 @@ describe('Membership Mutations', () => {
   afterEach(() => {
     queryClient.clear();
     nock.cleanAll();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   const items = [
@@ -95,12 +96,12 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: [MemberFactory()],
-          method: HttpMethod.GET,
+          method: HttpMethod.Get,
           route: `/${buildGetMembersBy([email])}`,
         },
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -112,7 +113,7 @@ describe('Membership Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: itemId, email, permission });
+        mockedMutation.mutate({ id: itemId, email, permission });
         await waitForMutation();
       });
 
@@ -139,13 +140,13 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: [MemberFactory()],
-          method: HttpMethod.GET,
+          method: HttpMethod.Get,
           route: `/${buildGetMembersBy([email])}`,
         },
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -157,7 +158,7 @@ describe('Membership Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: itemId, email, permission });
+        mockedMutation.mutate({ id: itemId, email, permission });
         await waitForMutation();
       });
 
@@ -177,7 +178,7 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: {},
-          method: HttpMethod.PATCH,
+          method: HttpMethod.Patch,
           route,
         },
       ];
@@ -189,7 +190,7 @@ describe('Membership Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           id: membershipId,
           permission,
           itemId,
@@ -212,7 +213,7 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: UNAUTHORIZED_RESPONSE,
-          method: HttpMethod.PATCH,
+          method: HttpMethod.Patch,
           statusCode: StatusCodes.UNAUTHORIZED,
           route,
         },
@@ -225,7 +226,7 @@ describe('Membership Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: membershipId, permission, itemId });
+        mockedMutation.mutate({ id: membershipId, permission, itemId });
         await waitForMutation();
       });
 
@@ -250,7 +251,7 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: {},
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];
@@ -262,7 +263,7 @@ describe('Membership Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: membershipId, itemId });
+        mockedMutation.mutate({ id: membershipId, itemId });
         await waitForMutation();
       });
 
@@ -285,7 +286,7 @@ describe('Membership Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];
@@ -297,7 +298,7 @@ describe('Membership Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: membershipId, itemId });
+        mockedMutation.mutate({ id: membershipId, itemId });
         await waitForMutation();
       });
 
@@ -341,17 +342,17 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: buildResultOfData([MemberFactory()]),
-          method: HttpMethod.GET,
+          method: HttpMethod.Get,
           route: `/${buildGetMembersBy(emails)}`,
         },
         {
           response: ITEM_MEMBERSHIPS_RESPONSE,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
         {
           response: initialInvitations,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route: `/${buildPostInvitationsRoute(itemId)}`,
         },
       ];
@@ -364,7 +365,7 @@ describe('Membership Mutations', () => {
 
       const invitations = emails.map((email) => ({ email, permission }));
       await act(async () => {
-        await mockedMutation.mutate({ itemId, data: invitations });
+        mockedMutation.mutate({ itemId, data: invitations });
         await waitForMutation();
       });
 
@@ -401,7 +402,7 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: buildResultOfData([{ email: emails[0], id: emails[0] }]),
-          method: HttpMethod.GET,
+          method: HttpMethod.Get,
           route: `/${buildGetMembersBy(emails)}`,
         },
         {
@@ -410,14 +411,14 @@ describe('Membership Mutations', () => {
             (d) => d.item.id,
             [UNAUTHORIZED_RESPONSE],
           ),
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
         {
           response: buildResultOfData([initialInvitations[0]], (d) => d.email, [
             UNAUTHORIZED_RESPONSE,
           ]),
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route: `/${buildPostInvitationsRoute(itemId)}`,
         },
       ];
@@ -430,7 +431,7 @@ describe('Membership Mutations', () => {
 
       const invitations = emails.map((email) => ({ email, permission }));
       await act(async () => {
-        await mockedMutation.mutate({ itemId, data: invitations });
+        mockedMutation.mutate({ itemId, data: invitations });
         await waitForMutation();
       });
 
@@ -474,7 +475,7 @@ describe('Membership Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.GET,
+          method: HttpMethod.Get,
           route: `/${buildGetMembersBy(emails)}`,
         },
       ];
@@ -487,7 +488,7 @@ describe('Membership Mutations', () => {
 
       const invitations = emails.map((email) => ({ email, permission }));
       await act(async () => {
-        await mockedMutation.mutate({ itemId, data: invitations });
+        mockedMutation.mutate({ itemId, data: invitations });
         await waitForMutation();
       });
 
@@ -524,18 +525,18 @@ describe('Membership Mutations', () => {
       const endpoints: Endpoint[] = [
         {
           response: buildResultOfData([{ email: emails[0], id: emails[0] }]),
-          method: HttpMethod.GET,
+          method: HttpMethod.Get,
           route: `/${buildGetMembersBy(emails)}`,
         },
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
         {
           response: buildResultOfData(initialInvitations),
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route: `/${buildPostInvitationsRoute(itemId)}`,
         },
       ];
@@ -548,7 +549,7 @@ describe('Membership Mutations', () => {
 
       const invitations = emails.map((email) => ({ email, permission }));
       await act(async () => {
-        await mockedMutation.mutate({ itemId, data: invitations });
+        mockedMutation.mutate({ itemId, data: invitations });
         await waitForMutation();
       });
 
@@ -584,18 +585,18 @@ describe('Membership Mutations', () => {
       const endpoints = [
         {
           response: buildResultOfData([{ email: emails[0], id: emails[0] }]),
-          method: HttpMethod.GET,
+          method: HttpMethod.Get,
           route: `/${buildGetMembersBy(emails)}`,
         },
         {
           response: buildResultOfData(ITEM_MEMBERSHIPS_RESPONSE),
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route: `/${buildPostInvitationsRoute(itemId)}`,
         },
       ];
@@ -608,7 +609,7 @@ describe('Membership Mutations', () => {
 
       const invitations = emails.map((email) => ({ email, permission }));
       await act(async () => {
-        await mockedMutation.mutate({ itemId, data: invitations });
+        mockedMutation.mutate({ itemId, data: invitations });
         await waitForMutation();
       });
 

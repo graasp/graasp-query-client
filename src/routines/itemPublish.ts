@@ -1,4 +1,4 @@
-import createRoutine from './utils';
+import createRoutine from './utils.js';
 
 export const publishItemRoutine = createRoutine('PUBLISH_ITEM');
 

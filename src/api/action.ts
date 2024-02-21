@@ -1,13 +1,13 @@
 import { Action, ActionData, AggregateBy, UUID } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types';
-import { AggregateActionsArgs, MappedAggregateBy } from '../utils/action';
+import { PartialQueryConfigForApi } from '../types.js';
+import { AggregateActionsArgs, MappedAggregateBy } from '../utils/action.js';
 import {
   buildExportActions,
   buildGetActions,
   buildGetAggregateActions,
   buildPostItemAction,
-} from './routes';
+} from './routes.js';
 
 export const getActions = async (
   args: { itemId: UUID; requestedSampleSize: number; view: string },

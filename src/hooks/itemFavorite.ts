@@ -1,8 +1,8 @@
 import { useQuery } from 'react-query';
 
-import * as Api from '../api';
-import { memberKeys } from '../config/keys';
-import { QueryClientConfig } from '../types';
+import * as Api from '../api/itemFavorite.js';
+import { memberKeys } from '../config/keys.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;

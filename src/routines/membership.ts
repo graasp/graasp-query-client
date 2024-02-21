@@ -1,4 +1,4 @@
-import createRoutine from './utils';
+import createRoutine from './utils.js';
 
 export const postItemMembershipRoutine = createRoutine('POST_ITEM_MEMBERSHIP');
 export const editItemMembershipRoutine = createRoutine('EDIT_ITEM_MEMBERSHIP');

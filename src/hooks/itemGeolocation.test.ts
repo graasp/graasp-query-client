@@ -1,18 +1,22 @@
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { URL } from 'url';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import { ITEM_GEOLOCATION, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockHook, setUpTest } from '../../test/utils';
+import {
+  ITEM_GEOLOCATION,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants.js';
+import { mockHook, setUpTest } from '../../test/utils.js';
 import {
   ITEMS_ROUTE,
   buildGetAddressFromCoordinatesRoute,
-} from '../api/routes';
+} from '../api/routes.js';
 import {
   buildAddressFromCoordinatesKey,
   itemKeys,
   itemsWithGeolocationKeys,
-} from '../config/keys';
+} from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -23,6 +27,10 @@ describe('useItemGeolocation', () => {
   const hook = () => hooks.useItemGeolocation(response.item.id);
   const key = itemKeys.single(itemId).geolocation;
   const endpoints = [{ route, response }];
+
+  beforeEach(() => {
+    queryClient.clear();
+  });
 
   it(`Retrieve geolocation of item`, async () => {
     const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
@@ -74,13 +82,22 @@ describe('useAddressFromGeolocation', () => {
   const payload = { lat: 1, lng: 1 };
 
   const url = new URL(buildGetAddressFromCoordinatesRoute(payload));
-
   nock(url.origin)
+    // this is needed for JSDOM to accept the cross origin request
+    .defaultReplyHeaders({
+      'access-control-allow-origin': '*',
+      'access-control-allow-credentials': 'true',
+    })
     .get(url.pathname + url.search)
-    .reply(200, response);
+    .reply(200, response)
+    .persist();
 
   const hook = () => hooks.useAddressFromGeolocation(payload);
   const key = buildAddressFromCoordinatesKey(payload);
+
+  beforeEach(() => {
+    queryClient.clear();
+  });
 
   it(`Retrieve address for coordinates`, async () => {
     const { data, isSuccess } = await mockHook({
@@ -89,8 +106,8 @@ describe('useAddressFromGeolocation', () => {
       wrapper,
     });
 
-    expect(isSuccess).toBeTruthy();
     expect(data).toEqual(response);
+    expect(isSuccess).toBeTruthy();
 
     // verify cache keys
     expect(queryClient.getQueryData(key)).toMatchObject(response);
@@ -134,6 +151,10 @@ describe('useItemsInMap', () => {
   const hook = () => hooks.useItemsInMap(values);
   const key = itemsWithGeolocationKeys.inBounds(values);
   const endpoints = [{ route, response }];
+
+  beforeEach(() => {
+    queryClient.clear();
+  });
 
   it(`Retrieve geolocation of item`, async () => {
     const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
@@ -198,7 +219,7 @@ describe('useItemsInMap', () => {
       endpoints: [
         { route: `/${ITEMS_ROUTE}/geolocation?lat2=1&lng1=1&lng2=1`, response },
       ],
-      hook: () => hooks.useItemsInMap({ ...values, lat1: undefined! }),
+      hook: () => hooks.useItemsInMap({ ...values, lat1: undefined }),
       wrapper,
       enabled: false,
     });

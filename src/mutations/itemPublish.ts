@@ -2,10 +2,13 @@ import { CompleteMember, UUID } from '@graasp/sdk';
 
 import { useMutation, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
-import { itemKeys, memberKeys } from '../config/keys';
-import { publishItemRoutine, unpublishItemRoutine } from '../routines';
-import { QueryClientConfig } from '../types';
+import * as Api from '../api/itemPublish.js';
+import { itemKeys, memberKeys } from '../config/keys.js';
+import {
+  publishItemRoutine,
+  unpublishItemRoutine,
+} from '../routines/itemPublish.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

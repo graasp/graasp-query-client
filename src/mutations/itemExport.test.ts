@@ -1,14 +1,14 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { HttpMethod } from '@graasp/sdk';
 
 import nock from 'nock';
 import { act } from 'react-test-renderer';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { buildExportItemRoute } from '../api/routes';
-import { exportItemRoutine } from '../routines';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import { buildExportItemRoute } from '../api/routes.js';
+import { exportItemRoutine } from '../routines/itemExport.js';
 
-const mockedNotifier = jest.fn();
+const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
@@ -28,7 +28,7 @@ describe('Export Zip', () => {
       const endpoints = [
         {
           response: { id: 'id', content: 'content' },
-          method: HttpMethod.GET,
+          method: HttpMethod.Get,
           route,
         },
       ];
@@ -40,7 +40,7 @@ describe('Export Zip', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: itemId });
+        mockedMutation.mutate({ id: itemId });
         await waitForMutation();
       });
 

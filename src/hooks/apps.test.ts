@@ -1,13 +1,13 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { App } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it } from 'vitest';
 
-import { APPS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockHook, setUpTest } from '../../test/utils';
-import { buildAppListRoute } from '../api/routes';
-import { APPS_KEY } from '../config/keys';
+import { APPS, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
+import { mockHook, setUpTest } from '../../test/utils.js';
+import { buildAppListRoute } from '../api/routes.js';
+import { APPS_KEY } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

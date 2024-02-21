@@ -3,14 +3,18 @@ import { HttpMethod } from '@graasp/sdk';
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { buildFavoriteItemRoute } from '../api/routes';
-import { memberKeys } from '../config/keys';
-import { addFavoriteItemRoutine, deleteFavoriteItemRoutine } from '../routines';
+import { UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import { buildFavoriteItemRoute } from '../api/routes.js';
+import { memberKeys } from '../config/keys.js';
+import {
+  addFavoriteItemRoutine,
+  deleteFavoriteItemRoutine,
+} from '../routines/itemFavorite.js';
 
-const mockedNotifier = jest.fn();
+const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
@@ -31,7 +35,7 @@ describe('Favorite Mutations', () => {
       const endpoints = [
         {
           response: itemId,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -60,7 +64,7 @@ describe('Favorite Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -95,7 +99,7 @@ describe('Favorite Mutations', () => {
       const endpoints = [
         {
           response: itemId,
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];
@@ -125,7 +129,7 @@ describe('Favorite Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];

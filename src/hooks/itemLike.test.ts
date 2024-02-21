@@ -2,14 +2,15 @@ import { FolderItemFactory, ItemLike } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it } from 'vitest';
 
-import { ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockHook, setUpTest } from '../../test/utils';
+import { ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
+import { mockHook, setUpTest } from '../../test/utils.js';
 import {
   buildGetItemLikesRoute,
   buildGetLikesForMemberRoute,
-} from '../api/routes';
-import { itemKeys, memberKeys } from '../config/keys';
+} from '../api/routes.js';
+import { itemKeys, memberKeys } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

@@ -10,6 +10,7 @@ import {
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   AVATAR_BLOB_RESPONSE,
@@ -18,16 +19,16 @@ import {
   UNAUTHORIZED_RESPONSE,
   buildResultOfData,
   generateMembers,
-} from '../../test/constants';
-import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils';
+} from '../../test/constants.js';
+import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils.js';
 import {
   GET_CURRENT_MEMBER_ROUTE,
   buildDownloadAvatarRoute,
   buildGetMember,
   buildGetMemberStorage,
   buildGetMembersRoute,
-} from '../api/routes';
-import { memberKeys } from '../config/keys';
+} from '../api/routes.js';
+import { memberKeys } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 describe('Member Hooks', () => {

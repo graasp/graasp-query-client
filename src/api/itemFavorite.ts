@@ -1,8 +1,8 @@
 import { ItemFavorite, UUID } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types';
-import { verifyAuthentication } from './axios';
-import { GET_FAVORITE_ITEMS_ROUTE, buildFavoriteItemRoute } from './routes';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
+import { GET_FAVORITE_ITEMS_ROUTE, buildFavoriteItemRoute } from './routes.js';
 
 export const getFavoriteItems = async ({
   API_HOST,

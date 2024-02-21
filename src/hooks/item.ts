@@ -1,8 +1,6 @@
 import {
   CompleteMember,
   DiscriminatedItem,
-  EtherpadItemType,
-  ItemType,
   MAX_TARGETS_FOR_READ_REQUEST,
   RecycledItemData,
   UUID,
@@ -16,21 +14,24 @@ import {
   useQueryClient,
 } from 'react-query';
 
-import * as Api from '../api';
-import { splitRequestByIdsAndReturn } from '../api/axios';
-import { ItemChildrenParams, ItemSearchParams } from '../api/routes';
+import { splitRequestByIdsAndReturn } from '../api/axios.js';
+import * as Api from '../api/item.js';
+import { ItemChildrenParams, ItemSearchParams } from '../api/routes.js';
 import {
   CONSTANT_KEY_STALE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
   PAGINATED_ITEMS_PER_PAGE,
-} from '../config/constants';
-import { UndefinedArgument } from '../config/errors';
-import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../config/keys';
-import { getAccessibleItemsRoutine, getOwnItemsRoutine } from '../routines';
-import { PaginationParams, QueryClientConfig } from '../types';
-import { paginate } from '../utils/util';
-import { configureWsItemHooks } from '../ws';
-import useDebounce from './useDebounce';
+} from '../config/constants.js';
+import { UndefinedArgument } from '../config/errors.js';
+import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../config/keys.js';
+import {
+  getAccessibleItemsRoutine,
+  getOwnItemsRoutine,
+} from '../routines/item.js';
+import { PaginationParams, QueryClientConfig } from '../types.js';
+import { paginate } from '../utils/util.js';
+import { configureWsItemHooks } from '../ws/index.js';
+import useDebounce from './useDebounce.js';
 
 export default (
   queryConfig: QueryClientConfig,
@@ -476,23 +477,6 @@ export default (
         staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       });
     },
-
-    useEtherpad: (item: EtherpadItemType | undefined, mode: 'read' | 'write') =>
-      useQuery({
-        queryKey: itemKeys.single(item?.id).etherpad,
-        queryFn: () => {
-          if (item?.type !== ItemType.ETHERPAD) {
-            throw new Error('Item is not an etherpad item');
-          }
-
-          if (!item.id) {
-            throw new UndefinedArgument();
-          }
-          return Api.getEtherpad({ itemId: item.id, mode }, queryConfig);
-        },
-        enabled: Boolean(item?.id),
-        ...defaultQueryOptions,
-      }),
 
     useItemFeedbackUpdates: itemWsHooks?.useItemFeedbackUpdates,
   };

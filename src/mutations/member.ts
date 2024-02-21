@@ -1,17 +1,19 @@
-import { CompleteMember, MemberExtra, UUID } from '@graasp/sdk';
+import { CompleteMember, Password, UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
-import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
-import { memberKeys } from '../config/keys';
+import * as AuthApi from '../api/authentication.js';
+import { throwIfArrayContainsErrorOrReturn } from '../api/axios.js';
+import * as Api from '../api/member.js';
+import { memberKeys } from '../config/keys.js';
 import {
   deleteMemberRoutine,
   editMemberRoutine,
+  updatePasswordRoutine,
   uploadAvatarRoutine,
-} from '../routines';
-import { QueryClientConfig } from '../types';
+} from '../routines/member.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -21,7 +23,7 @@ export default (queryConfig: QueryClientConfig) => {
     return useMutation(
       (payload: { id: UUID }) =>
         Api.deleteMember(payload, queryConfig).then(() =>
-          Api.signOut(queryConfig),
+          AuthApi.signOut(queryConfig),
         ),
       {
         onSuccess: () => {
@@ -55,8 +57,11 @@ export default (queryConfig: QueryClientConfig) => {
   const useEditMember = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (payload: { id: string; name?: string; extra?: MemberExtra }) =>
-        Api.editMember(payload, queryConfig),
+      (payload: {
+        id: string;
+        name?: string;
+        extra?: CompleteMember['extra'];
+      }) => Api.editMember(payload, queryConfig),
       {
         onMutate: async (member) => {
           // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
@@ -135,9 +140,34 @@ export default (queryConfig: QueryClientConfig) => {
     );
   };
 
+  /**  mutation to update member password. suppose only you can edit yourself
+   * @param {Password} password new password that user wants to set
+   * @param {Password} currentPassword current password already stored
+   */
+  const useUpdatePassword = () =>
+    useMutation(
+      (payload: { password: Password; currentPassword: Password }) =>
+        Api.updatePassword(payload, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: updatePasswordRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
+          });
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: updatePasswordRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
+
   return {
     useDeleteMember,
     useUploadAvatar,
     useEditMember,
+    useUpdatePassword,
   };
 };

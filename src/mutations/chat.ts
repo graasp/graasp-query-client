@@ -7,15 +7,15 @@ import {
 
 import { useMutation, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
-import { buildItemChatKey } from '../config/keys';
+import * as Api from '../api/chat.js';
+import { buildItemChatKey } from '../config/keys.js';
 import {
   clearItemChatRoutine,
   deleteItemChatMessageRoutine,
   patchItemChatMessageRoutine,
   postItemChatMessageRoutine,
-} from '../routines';
-import { QueryClientConfig } from '../types';
+} from '../routines/chat.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const usePostItemChatMessage = () => {

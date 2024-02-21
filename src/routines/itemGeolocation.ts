@@ -1,4 +1,4 @@
-import createRoutine from './utils';
+import createRoutine from './utils.js';
 
 export const getItemGeolocationRoutine = createRoutine('GET_ITEM_GEOLOCATION');
 export const getAddressFromCoordinatesRoutine = createRoutine(

@@ -2,21 +2,21 @@ import { Invitation, PermissionLevel, UUID } from '@graasp/sdk';
 
 import { useMutation, useQueryClient } from 'react-query';
 
+import { throwIfArrayContainsErrorOrReturn } from '../api/axios.js';
 import {
   deleteInvitation,
   patchInvitation,
   postInvitations,
   resendInvitation,
-} from '../api';
-import { throwIfArrayContainsErrorOrReturn } from '../api/axios';
-import { buildItemInvitationsKey } from '../config/keys';
+} from '../api/invitation.js';
+import { buildItemInvitationsKey } from '../config/keys.js';
 import {
   deleteInvitationRoutine,
   patchInvitationRoutine,
   postInvitationsRoutine,
   resendInvitationRoutine,
-} from '../routines';
-import { NewInvitation, QueryClientConfig } from '../types';
+} from '../routines/invitation.js';
+import { NewInvitation, QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const usePostInvitations = () => {

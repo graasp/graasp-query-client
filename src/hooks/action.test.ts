@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import {
   ActionData,
   AggregateBy,
@@ -11,15 +10,16 @@ import {
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   ACTIONS_DATA,
   AGGREGATE_ACTIONS_DATA,
   UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
-import { mockHook, setUpTest } from '../../test/utils';
-import { buildGetActions, buildGetAggregateActions } from '../api/routes';
-import { buildActionsKey, buildAggregateActionsKey } from '../config/keys';
+} from '../../test/constants.js';
+import { mockHook, setUpTest } from '../../test/utils.js';
+import { buildGetActions, buildGetAggregateActions } from '../api/routes.js';
+import { buildActionsKey, buildAggregateActionsKey } from '../config/keys.js';
 
 type AggregateActionsResponse = {
   aggregateResult: number;

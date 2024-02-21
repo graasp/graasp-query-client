@@ -3,17 +3,18 @@ import { HttpMethod } from '@graasp/sdk';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   ITEM_VALIDATION_GROUP,
   UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { buildPostItemValidationRoute } from '../api/routes';
-import { itemKeys } from '../config/keys';
-import { postItemValidationRoutine } from '../routines';
+} from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import { buildPostItemValidationRoute } from '../api/routes.js';
+import { itemKeys } from '../config/keys.js';
+import { postItemValidationRoutine } from '../routines/itemValidation.js';
 
-const mockedNotifier = jest.fn();
+const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
@@ -36,7 +37,7 @@ describe('Item Validation Mutations', () => {
       const endpoints = [
         {
           response: ITEM_VALIDATION_GROUP,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -64,7 +65,7 @@ describe('Item Validation Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];

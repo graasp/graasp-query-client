@@ -1,4 +1,4 @@
-export { configureWsChatHooks } from './chat';
-export { configureWsChatMentionsHooks } from './mentions';
-export { configureWsItemHooks } from './item';
-export { configureWsMembershipHooks } from './membership';
+export { configureWsChatHooks } from './chat.js';
+export { configureWsChatMentionsHooks } from './mentions.js';
+export { configureWsItemHooks } from './item.js';
+export { configureWsMembershipHooks } from './membership.js';

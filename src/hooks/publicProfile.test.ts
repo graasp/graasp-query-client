@@ -1,17 +1,18 @@
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   MEMBER_PUBLIC_PROFILE,
   UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
-import { mockHook, setUpTest } from '../../test/utils';
+} from '../../test/constants.js';
+import { mockHook, setUpTest } from '../../test/utils.js';
 import {
   GET_OWN_PROFILE,
   MEMBERS_ROUTE,
   buildGetPublicProfileRoute,
-} from '../api/routes';
-import { memberKeys } from '../config/keys';
+} from '../api/routes.js';
+import { memberKeys } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

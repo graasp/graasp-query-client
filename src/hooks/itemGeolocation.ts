@@ -1,24 +1,24 @@
-import { DiscriminatedItem, Item, ItemGeolocation } from '@graasp/sdk';
+import { DiscriminatedItem, ItemGeolocation } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
-import * as Api from '../api';
-import { UndefinedArgument } from '../config/errors';
+import * as Api from '../api/itemGeolocation.js';
+import { UndefinedArgument } from '../config/errors.js';
 import {
   buildAddressFromCoordinatesKey,
   itemKeys,
   itemsWithGeolocationKeys,
-} from '../config/keys';
+} from '../config/keys.js';
 import {
   getAddressFromCoordinatesRoutine,
   getItemGeolocationRoutine,
-} from '../routines/itemGeolocation';
-import { QueryClientConfig } from '../types';
+} from '../routines/itemGeolocation.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier, defaultQueryOptions } = queryConfig;
 
-  const useItemGeolocation = (id?: Item['id']) =>
+  const useItemGeolocation = (id?: DiscriminatedItem['id']) =>
     useQuery({
       queryKey: itemKeys.single(id).geolocation,
       queryFn: () => {

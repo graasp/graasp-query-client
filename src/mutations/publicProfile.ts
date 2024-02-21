@@ -2,13 +2,13 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation } from 'react-query';
 
-import * as Api from '../api';
-import { PostPublicProfilePayloadType } from '../api';
+import * as Api from '../api/publicProfile.js';
+import type { PostPublicProfilePayloadType } from '../api/publicProfile.js';
 import {
   patchPublicProfileRoutine,
   postPublicProfileRoutine,
-} from '../routines';
-import type { QueryClientConfig } from '../types';
+} from '../routines/publicProfile.js';
+import type { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

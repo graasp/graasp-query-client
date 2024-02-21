@@ -2,9 +2,9 @@ import { UUID } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
-import * as Api from '../api';
-import { itemKeys } from '../config/keys';
-import { QueryClientConfig } from '../types';
+import * as Api from '../api/itemValidation.js';
+import { itemKeys } from '../config/keys.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;

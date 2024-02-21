@@ -1,9 +1,10 @@
 import { StatusCodes } from 'http-status-codes';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import { FAVORITE_ITEM, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockHook, setUpTest } from '../../test/utils';
-import { GET_FAVORITE_ITEMS_ROUTE } from '../api/routes';
-import { memberKeys } from '../config/keys';
+import { FAVORITE_ITEM, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
+import { mockHook, setUpTest } from '../../test/utils.js';
+import { GET_FAVORITE_ITEMS_ROUTE } from '../api/routes.js';
+import { memberKeys } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -12,6 +13,10 @@ describe('useFavoriteItems', () => {
   const key = memberKeys.current().favoriteItems;
 
   const hook = () => hooks.useFavoriteItems();
+
+  beforeEach(() => {
+    queryClient.clear();
+  });
 
   it(`Retrieve favorite items`, async () => {
     const response = FAVORITE_ITEM;
