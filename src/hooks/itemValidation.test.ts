@@ -7,7 +7,7 @@ import {
 } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import { buildGetLastItemValidationGroupRoute } from '../api/routes';
-import { buildLastItemValidationGroupKey } from '../config/keys';
+import { itemKeys } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -20,7 +20,7 @@ describe('Item Validation Hooks', () => {
   describe('useLastItemValidationGroup', () => {
     const iVId = 'item-validation-id';
     const route = `/${buildGetLastItemValidationGroupRoute(iVId)}`;
-    const key = buildLastItemValidationGroupKey(iVId);
+    const key = itemKeys.single(iVId).validation;
 
     const hook = () => hooks.useLastItemValidationGroup(iVId);
 

@@ -10,7 +10,7 @@ import {
 } from '../api/routes';
 import {
   buildAddressFromCoordinatesKey,
-  buildItemGeolocationKey,
+  itemKeys,
   itemsWithGeolocationKeys,
 } from '../config/keys';
 
@@ -21,7 +21,7 @@ describe('useItemGeolocation', () => {
   const itemId = response.item.id;
   const route = `/${ITEMS_ROUTE}/${itemId}/geolocation`;
   const hook = () => hooks.useItemGeolocation(response.item.id);
-  const key = buildItemGeolocationKey(itemId);
+  const key = itemKeys.single(itemId).geolocation;
   const endpoints = [{ route, response }];
 
   it(`Retrieve geolocation of item`, async () => {

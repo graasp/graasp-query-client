@@ -12,12 +12,7 @@ import {
 } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildItemPublishRoute } from '../api/routes';
-import {
-  CURRENT_MEMBER_KEY,
-  buildItemPublishedInformationKey,
-  buildPublishedItemsForMemberKey,
-  buildPublishedItemsKey,
-} from '../config/keys';
+import { itemKeys, memberKeys } from '../config/keys';
 import { publishItemRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -43,15 +38,15 @@ describe('Publish Item', () => {
     it('Publish Item with notification', async () => {
       const route = `/${buildItemPublishRoute(itemId, notification)}`;
       queryClient.setQueryData(
-        buildItemPublishedInformationKey(itemId),
+        itemKeys.single(itemId).publishedInformation,
         ITEM_PUBLISHED_DATA,
       );
       queryClient.setQueryData(
-        buildPublishedItemsForMemberKey(currentMemberId),
+        itemKeys.published().byMember(currentMemberId),
         items,
       );
-      queryClient.setQueryData(buildPublishedItemsKey(), items);
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, currentMember);
+      queryClient.setQueryData(itemKeys.published().forCategories(), items);
+      queryClient.setQueryData(memberKeys.current().content, currentMember);
 
       const endpoints = [
         {
@@ -78,16 +73,17 @@ describe('Publish Item', () => {
       expect(route.includes('notification'));
 
       expect(
-        queryClient.getQueryState(buildItemPublishedInformationKey(itemId))
+        queryClient.getQueryState(itemKeys.single(itemId).publishedInformation)
           ?.isInvalidated,
       ).toBeTruthy();
       expect(
         queryClient.getQueryState(
-          buildPublishedItemsForMemberKey(currentMemberId),
+          itemKeys.published().byMember(currentMemberId),
         )?.isInvalidated,
       ).toBeTruthy();
       expect(
-        queryClient.getQueryState(buildPublishedItemsKey())?.isInvalidated,
+        queryClient.getQueryState(itemKeys.published().forCategories())
+          ?.isInvalidated,
       ).toBeTruthy();
 
       expect(mockedNotifier).toHaveBeenCalledWith({
@@ -98,15 +94,15 @@ describe('Publish Item', () => {
     it('Publish Item without notification', async () => {
       const route = `/${buildItemPublishRoute(itemId)}`;
       queryClient.setQueryData(
-        buildItemPublishedInformationKey(itemId),
+        itemKeys.single(itemId).publishedInformation,
         ITEM_PUBLISHED_DATA,
       );
       queryClient.setQueryData(
-        buildPublishedItemsForMemberKey(currentMemberId),
+        itemKeys.published().byMember(currentMemberId),
         items,
       );
-      queryClient.setQueryData(buildPublishedItemsKey(), items);
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, currentMember);
+      queryClient.setQueryData(itemKeys.published().forCategories(), items);
+      queryClient.setQueryData(memberKeys.current().content, currentMember);
 
       const endpoints = [
         {
@@ -131,16 +127,17 @@ describe('Publish Item', () => {
       });
 
       expect(
-        queryClient.getQueryState(buildItemPublishedInformationKey(itemId))
+        queryClient.getQueryState(itemKeys.single(itemId).publishedInformation)
           ?.isInvalidated,
       ).toBeTruthy();
       expect(
         queryClient.getQueryState(
-          buildPublishedItemsForMemberKey(currentMemberId),
+          itemKeys.published().byMember(currentMemberId),
         )?.isInvalidated,
       ).toBeTruthy();
       expect(
-        queryClient.getQueryState(buildPublishedItemsKey())?.isInvalidated,
+        queryClient.getQueryState(itemKeys.published().forCategories())
+          ?.isInvalidated,
       ).toBeTruthy();
 
       expect(mockedNotifier).toHaveBeenCalledWith({

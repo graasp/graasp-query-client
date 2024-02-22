@@ -14,16 +14,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 
-import {
-  OWN_ITEMS_KEY,
-  RECYCLED_ITEMS_DATA_KEY,
-  RECYCLED_ITEMS_KEY,
-  SHARED_ITEMS_KEY,
-  accessibleItemsKeys,
-  buildItemChildrenKey,
-  buildItemKey,
-  buildLastItemValidationGroupKey,
-} from '../../config/keys';
+import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../../config/keys';
 import {
   copyItemsRoutine,
   deleteItemsRoutine,
@@ -82,7 +73,7 @@ export const configureWsItemHooks = (
       }
 
       const channel: Channel = { name: itemId, topic: TOPICS.ITEM };
-      const itemKey = buildItemKey(itemId);
+      const itemKey = itemKeys.single(itemId).content;
 
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.SELF) {
@@ -131,7 +122,7 @@ export const configureWsItemHooks = (
 
       const unsubscribeFunctions = itemIds.map((itemId) => {
         const channel: Channel = { name: itemId, topic: TOPICS.ITEM };
-        const itemKey = buildItemKey(itemId);
+        const itemKey = itemKeys.single(itemId).content;
 
         const handler = (event: ItemEvent) => {
           if (event.kind === KINDS.SELF) {
@@ -185,7 +176,7 @@ export const configureWsItemHooks = (
       }
 
       const channel: Channel = { name: parentId, topic: TOPICS.ITEM };
-      const parentChildrenKey = buildItemChildrenKey(parentId);
+      const parentChildrenKey = itemKeys.single(parentId).children();
 
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.CHILD) {
@@ -201,7 +192,10 @@ export const configureWsItemHooks = (
                 if (!current.find((i) => i.id === item.id)) {
                   mutation = [...current, item];
                   queryClient.setQueryData(parentChildrenKey, mutation);
-                  queryClient.setQueryData(buildItemKey(item.id), item);
+                  queryClient.setQueryData(
+                    itemKeys.single(item.id).content,
+                    item,
+                  );
                 }
                 break;
               }
@@ -209,7 +203,10 @@ export const configureWsItemHooks = (
                 // replace value if it exists
                 mutation = current.map((i) => (i.id === item.id ? item : i));
                 queryClient.setQueryData(parentChildrenKey, mutation);
-                queryClient.setQueryData(buildItemKey(item.id), item);
+                queryClient.setQueryData(
+                  itemKeys.single(item.id).content,
+                  item,
+                );
 
                 break;
               }
@@ -264,7 +261,10 @@ export const configureWsItemHooks = (
                 if (!current.find((i) => i.id === item.id)) {
                   mutation = [...current, item];
                   queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
-                  queryClient.setQueryData(buildItemKey(item.id), item);
+                  queryClient.setQueryData(
+                    itemKeys.single(item.id).content,
+                    item,
+                  );
                 }
                 break;
               }
@@ -272,7 +272,10 @@ export const configureWsItemHooks = (
                 // replace value if it exists
                 mutation = current.map((i) => (i.id === item.id ? item : i));
                 queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
-                queryClient.setQueryData(buildItemKey(item.id), item);
+                queryClient.setQueryData(
+                  itemKeys.single(item.id).content,
+                  item,
+                );
 
                 break;
               }
@@ -316,7 +319,7 @@ export const configureWsItemHooks = (
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.SHARED) {
           const current: DiscriminatedItem[] | undefined =
-            queryClient.getQueryData(SHARED_ITEMS_KEY);
+            queryClient.getQueryData(itemKeys.shared());
 
           if (current) {
             const { item } = event;
@@ -326,22 +329,28 @@ export const configureWsItemHooks = (
               case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
                   mutation = [...current, item];
-                  queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
-                  queryClient.setQueryData(buildItemKey(item.id), item);
+                  queryClient.setQueryData(itemKeys.shared(), mutation);
+                  queryClient.setQueryData(
+                    itemKeys.single(item.id).content,
+                    item,
+                  );
                 }
                 break;
               }
               case OPS.UPDATE: {
                 // replace value if it exists
                 mutation = current.map((i) => (i.id === item.id ? item : i));
-                queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
-                queryClient.setQueryData(buildItemKey(item.id), item);
+                queryClient.setQueryData(itemKeys.shared(), mutation);
+                queryClient.setQueryData(
+                  itemKeys.single(item.id).content,
+                  item,
+                );
 
                 break;
               }
               case OPS.DELETE: {
                 mutation = current.filter((i) => i.id !== item.id);
-                queryClient.setQueryData(SHARED_ITEMS_KEY, mutation);
+                queryClient.setQueryData(itemKeys.shared(), mutation);
 
                 break;
               }
@@ -379,16 +388,16 @@ export const configureWsItemHooks = (
 
           // operations might change the result of the search and/or pagination
           // so it's easier to invalidate all queries
-          queryClient.invalidateQueries(accessibleItemsKeys.all);
+          queryClient.invalidateQueries(itemKeys.allAccessible());
 
           const { item } = event;
           switch (event.op) {
             case OPS.CREATE: {
-              queryClient.setQueryData(buildItemKey(item.id), item);
+              queryClient.setQueryData(itemKeys.single(item.id).content, item);
               break;
             }
             case OPS.UPDATE: {
-              queryClient.setQueryData(buildItemKey(item.id), item);
+              queryClient.setQueryData(itemKeys.single(item.id).content, item);
               break;
             }
             case OPS.DELETE: {
@@ -422,8 +431,9 @@ export const configureWsItemHooks = (
 
       const handler = (event: ItemEvent) => {
         if (event.kind === KINDS.RECYCLE_BIN) {
-          const current =
-            queryClient.getQueryData<DiscriminatedItem[]>(RECYCLED_ITEMS_KEY);
+          const current = queryClient.getQueryData<DiscriminatedItem[]>(
+            memberKeys.current().recycledItems,
+          );
 
           if (current) {
             const { item } = event;
@@ -432,13 +442,19 @@ export const configureWsItemHooks = (
               case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
                   const mutation = [...current, item];
-                  queryClient.setQueryData(RECYCLED_ITEMS_KEY, mutation);
+                  queryClient.setQueryData(
+                    memberKeys.current().recycledItems,
+                    mutation,
+                  );
                 }
                 break;
               }
               case OPS.DELETE: {
                 const mutation = current.filter((i) => i.id !== item.id);
-                queryClient.setQueryData(RECYCLED_ITEMS_KEY, mutation);
+                queryClient.setQueryData(
+                  memberKeys.current().recycledItems,
+                  mutation,
+                );
                 break;
               }
               default:
@@ -487,7 +503,8 @@ export const configureWsItemHooks = (
               routine = deleteItemsRoutine;
               message = SUCCESS_MESSAGES.DELETE_ITEMS;
               // invalidate data displayed in the Trash screen
-              queryClient.invalidateQueries(RECYCLED_ITEMS_DATA_KEY);
+              queryClient.invalidateQueries(memberKeys.current().recycled);
+              queryClient.invalidateQueries(memberKeys.current().recycledItems);
               break;
             case OPS.MOVE:
               routine = moveItemsRoutine;
@@ -519,7 +536,7 @@ export const configureWsItemHooks = (
               // todo: invalidate the validation query to refetch the validation status
               itemIds.map((itemId) =>
                 queryClient.invalidateQueries(
-                  buildLastItemValidationGroupKey(itemId),
+                  itemKeys.single(itemId).validation,
                 ),
               );
               break;

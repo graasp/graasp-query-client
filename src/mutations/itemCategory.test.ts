@@ -12,7 +12,7 @@ import {
   buildDeleteItemCategoryRoute,
   buildPostItemCategoryRoute,
 } from '../api/routes';
-import { buildItemCategoriesKey } from '../config/keys';
+import { itemKeys } from '../config/keys';
 import {
   deleteItemCategoryRoutine,
   postItemCategoryRoutine,
@@ -34,7 +34,7 @@ describe('Item Category Mutations', () => {
     const categoryId = 'new-category';
     const route = `/${buildPostItemCategoryRoute(itemId)}`;
     const mutation = mutations.usePostItemCategory;
-    const key = buildItemCategoriesKey(itemId);
+    const key = itemKeys.single(itemId).categories;
 
     it('Post item category', async () => {
       queryClient.setQueryData(key, ITEM_CATEGORIES);
@@ -106,7 +106,7 @@ describe('Item Category Mutations', () => {
       itemCategoryId,
     })}`;
     const mutation = mutations.useDeleteItemCategory;
-    const key = buildItemCategoriesKey(itemId);
+    const key = itemKeys.single(itemId).categories;
 
     it('Delete item category', async () => {
       queryClient.setQueryData(key, ITEM_CATEGORIES);

@@ -4,10 +4,7 @@ import { useQuery } from 'react-query';
 
 import * as Api from '../api';
 import { UndefinedArgument } from '../config/errors';
-import {
-  buildItemLoginSchemaKey,
-  buildItemLoginSchemaTypeKey,
-} from '../config/keys';
+import { itemKeys } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
@@ -22,7 +19,7 @@ export default (queryConfig: QueryClientConfig) => {
     ) => {
       const enabledValue = (options?.enabled ?? true) && Boolean(args.itemId);
       return useQuery({
-        queryKey: buildItemLoginSchemaKey(args.itemId),
+        queryKey: itemKeys.single(args.itemId).itemLoginSchema.content,
         queryFn: () => Api.getItemLoginSchema(args.itemId, queryConfig),
         ...defaultQueryOptions,
         enabled: enabledValue,
@@ -37,7 +34,7 @@ export default (queryConfig: QueryClientConfig) => {
     ) => {
       const enabledValue = (options?.enabled ?? true) && Boolean(args.itemId);
       return useQuery({
-        queryKey: buildItemLoginSchemaTypeKey(args.itemId),
+        queryKey: itemKeys.single(args.itemId).itemLoginSchema.type,
         queryFn: () => {
           if (!args.itemId) {
             throw new UndefinedArgument();

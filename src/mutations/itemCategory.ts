@@ -4,7 +4,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
-import { buildItemCategoriesKey } from '../config/keys';
+import { itemKeys } from '../config/keys';
 import {
   deleteItemCategoryRoutine,
   postItemCategoryRoutine,
@@ -33,7 +33,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(buildItemCategoriesKey(itemId));
+          queryClient.invalidateQueries(itemKeys.single(itemId).categories);
         },
       },
     );
@@ -58,7 +58,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(buildItemCategoriesKey(itemId));
+          queryClient.invalidateQueries(itemKeys.single(itemId).categories);
         },
       },
     );

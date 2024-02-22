@@ -36,17 +36,7 @@ import {
   buildGetItemRoute,
   buildGetItemsRoute,
 } from '../api/routes';
-import {
-  OWN_ITEMS_KEY,
-  SHARED_ITEMS_KEY,
-  accessibleItemsKeys,
-  buildFileContentKey,
-  buildItemChildrenKey,
-  buildItemKey,
-  buildItemParentsKey,
-  buildItemThumbnailKey,
-  buildItemsKey,
-} from '../config/keys';
+import { OWN_ITEMS_KEY, itemKeys } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -76,7 +66,9 @@ describe('Items Hooks', () => {
         queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY),
       ).toEqual(response);
       for (const item of response) {
-        expect(queryClient.getQueryData(buildItemKey(item.id))).toEqual(item);
+        expect(
+          queryClient.getQueryData(itemKeys.single(item.id).content),
+        ).toEqual(item);
       }
     });
 
@@ -106,7 +98,7 @@ describe('Items Hooks', () => {
     const params = { ordered: true };
     const route = `/${buildGetChildrenRoute(id, params)}`;
     const response = generateFolders();
-    const key = buildItemChildrenKey(id);
+    const key = itemKeys.single(id).children();
 
     it(`Receive children of item by id`, async () => {
       const hook = () => hooks.useChildren(id);
@@ -122,7 +114,9 @@ describe('Items Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(key)).toEqual(response);
       for (const item of response) {
-        expect(queryClient.getQueryData(buildItemKey(item.id))).toEqual(item);
+        expect(
+          queryClient.getQueryData(itemKeys.single(item.id).content),
+        ).toEqual(item);
       }
     });
 
@@ -151,7 +145,9 @@ describe('Items Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
       for (const item of response) {
-        expect(queryClient.getQueryData(buildItemKey(item.id))).toBeFalsy();
+        expect(
+          queryClient.getQueryData(itemKeys.single(item.id).content),
+        ).toBeFalsy();
       }
     });
 
@@ -170,7 +166,9 @@ describe('Items Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(key)).toBeFalsy();
       for (const item of response) {
-        expect(queryClient.getQueryData(buildItemKey(item.id))).toBeFalsy();
+        expect(
+          queryClient.getQueryData(itemKeys.single(item.id).content),
+        ).toBeFalsy();
       }
     });
 
@@ -191,9 +189,9 @@ describe('Items Hooks', () => {
       // verify cache keys
       expect(queryClient.getQueryData(key)).toMatchObject(response);
       for (const item of response) {
-        expect(queryClient.getQueryData(buildItemKey(item.id))).toMatchObject(
-          item,
-        );
+        expect(
+          queryClient.getQueryData(itemKeys.single(item.id).content),
+        ).toMatchObject(item);
       }
     });
 
@@ -214,7 +212,9 @@ describe('Items Hooks', () => {
       expect(data).toBeFalsy();
       expect(isError).toBeTruthy();
       // verify cache keys
-      expect(queryClient.getQueryData(buildItemChildrenKey(id))).toBeFalsy();
+      expect(
+        queryClient.getQueryData(itemKeys.single(id).children()),
+      ).toBeFalsy();
     });
   });
 
@@ -239,10 +239,12 @@ describe('Items Hooks', () => {
       expect(data).toMatchObject(response);
       // verify cache keys
       expect(
-        queryClient.getQueryData(buildItemParentsKey(childItem.id)),
+        queryClient.getQueryData(itemKeys.single(childItem.id).parents),
       ).toMatchObject(response);
       for (const i of response) {
-        expect(queryClient.getQueryData(buildItemKey(i.id))).toMatchObject(i);
+        expect(
+          queryClient.getQueryData(itemKeys.single(i.id).content),
+        ).toMatchObject(i);
       }
     });
 
@@ -264,11 +266,13 @@ describe('Items Hooks', () => {
       expect(data).toBeFalsy();
       expect(isFetched).toBeFalsy();
       expect(
-        queryClient.getQueryData(buildItemParentsKey(childItem.id)),
+        queryClient.getQueryData(itemKeys.single(childItem.id).parents),
       ).toBeFalsy();
       // verify cache keys
       for (const i of response) {
-        expect(queryClient.getQueryData(buildItemKey(i.id))).toBeFalsy();
+        expect(
+          queryClient.getQueryData(itemKeys.single(i.id).content),
+        ).toBeFalsy();
       }
     });
 
@@ -282,7 +286,7 @@ describe('Items Hooks', () => {
       expect(data).toHaveLength(0);
       expect(isFetched).toBeTruthy();
       expect(
-        queryClient.getQueryData(buildItemParentsKey(childItem.id)),
+        queryClient.getQueryData(itemKeys.single(childItem.id).parents),
       ).toHaveLength(0);
     });
 
@@ -304,11 +308,13 @@ describe('Items Hooks', () => {
       expect(data).toBeFalsy();
       expect(isError).toBeTruthy();
       expect(
-        queryClient.getQueryData(buildItemParentsKey(childItem.id)),
+        queryClient.getQueryData(itemKeys.single(childItem.id).parents),
       ).toBeFalsy();
       // verify cache keys
       for (const i of response) {
-        expect(queryClient.getQueryData(buildItemKey(i.id))).toBeFalsy();
+        expect(
+          queryClient.getQueryData(itemKeys.single(i.id).content),
+        ).toBeFalsy();
       }
     });
   });
@@ -323,7 +329,7 @@ describe('Items Hooks', () => {
 
       expect(data).toMatchObject(response);
       // verify cache keys
-      expect(queryClient.getQueryData(SHARED_ITEMS_KEY)).toMatchObject(
+      expect(queryClient.getQueryData(itemKeys.shared())).toMatchObject(
         response,
       );
     });
@@ -345,7 +351,7 @@ describe('Items Hooks', () => {
       expect(data).toBeFalsy();
       expect(isError).toBeTruthy();
       // verify cache keys
-      expect(queryClient.getQueryData(SHARED_ITEMS_KEY)).toBeFalsy();
+      expect(queryClient.getQueryData(itemKeys.shared())).toBeFalsy();
     });
   });
 
@@ -356,7 +362,7 @@ describe('Items Hooks', () => {
     const items = generateFolders();
     const response = { data: items, totalCount: items.length };
     const hook = () => hooks.useAccessibleItems();
-    const key = accessibleItemsKeys.singlePage(params, pagination);
+    const key = itemKeys.accessiblePage(params, pagination);
 
     it(`Receive accessible items`, async () => {
       const endpoints = [{ route, response }];
@@ -403,7 +409,7 @@ describe('Items Hooks', () => {
     const { id } = response;
     const route = `/${buildGetItemRoute(id)}`;
     const hook = () => hooks.useItem(id);
-    const key = buildItemKey(id);
+    const key = itemKeys.single(id).content;
 
     it(`Receive item by id`, async () => {
       const endpoints = [{ route, response }];
@@ -464,11 +470,11 @@ describe('Items Hooks', () => {
       expect(data).toEqual(response);
       // verify cache keys
       const item = queryClient.getQueryData<DiscriminatedItem>(
-        buildItemKey(id),
+        itemKeys.single(id).content,
       );
       expect(item).toEqual(response.data[id]);
       const items = queryClient.getQueryData<DiscriminatedItem[]>(
-        buildItemsKey([id]),
+        itemKeys.many([id]).content,
       );
       expect(items).toEqual(response);
     });
@@ -484,12 +490,14 @@ describe('Items Hooks', () => {
 
       expect(data).toEqual(response);
       // verify cache keys
-      expect(queryClient.getQueryData(buildItemsKey(ids))).toMatchObject(data!);
+      expect(
+        queryClient.getQueryData(itemKeys.many(ids).content),
+      ).toMatchObject(data!);
       for (const item of items) {
         const itemById = items.find(({ id }) => id === item.id);
-        expect(queryClient.getQueryData(buildItemKey(item.id))).toMatchObject(
-          itemById!,
-        );
+        expect(
+          queryClient.getQueryData(itemKeys.single(item.id).content),
+        ).toMatchObject(itemById!);
       }
     });
 
@@ -507,12 +515,14 @@ describe('Items Hooks', () => {
       const { data } = await mockHook({ endpoints, hook, wrapper });
       expect(data).toEqual(response);
       // verify cache keys
-      expect(queryClient.getQueryData(buildItemsKey(ids))).toMatchObject(data!);
+      expect(
+        queryClient.getQueryData(itemKeys.many(ids).content),
+      ).toMatchObject(data!);
       for (const item of items) {
         const itemById = items.find(({ id }) => id === item.id);
-        expect(queryClient.getQueryData(buildItemKey(item.id))).toMatchObject(
-          itemById!,
-        );
+        expect(
+          queryClient.getQueryData(itemKeys.single(item.id).content),
+        ).toMatchObject(itemById!);
       }
     });
 
@@ -537,7 +547,7 @@ describe('Items Hooks', () => {
       expect(data).toBeFalsy();
       expect(isError).toBeTruthy();
       // verify cache keys
-      expect(queryClient.getQueryData(buildItemsKey(ids))).toBeFalsy();
+      expect(queryClient.getQueryData(itemKeys.many(ids).content)).toBeFalsy();
     });
 
     // TODO: errors, contains errors, full errors
@@ -548,7 +558,7 @@ describe('Items Hooks', () => {
     const { id } = LocalFileItemFactory();
     const route = `/${buildDownloadFilesRoute(id)}`;
     const hook = () => hooks.useFileContent(id);
-    const key = buildFileContentKey({ id });
+    const key = itemKeys.single(id).file({ replyUrl: false });
 
     it(`Receive file content`, async () => {
       const endpoints = [{ route, response }];
@@ -614,7 +624,7 @@ describe('Items Hooks', () => {
   describe('useItemThumbnail', () => {
     const item = FolderItemFactory();
     const replyUrl = false;
-    const key = buildItemThumbnailKey({ id: item.id, replyUrl });
+    const key = itemKeys.single(item.id).thumbnail({ replyUrl });
     const response = THUMBNAIL_BLOB_RESPONSE;
     const route = `/${buildDownloadItemThumbnailRoute({
       id: item.id,
@@ -647,7 +657,7 @@ describe('Items Hooks', () => {
         replyUrl,
       })}`;
       const hookLarge = () => hooks.useItemThumbnail({ id: item.id, size });
-      const keyLarge = buildItemThumbnailKey({ id: item.id, size });
+      const keyLarge = itemKeys.single(item.id).thumbnail({ size });
 
       const endpoints = [
         {
@@ -695,7 +705,7 @@ describe('Items Hooks', () => {
         settings: { hasThumbnail: false },
       };
       queryClient.setQueryData(
-        buildItemKey(itemWithoutThumbnail.id),
+        itemKeys.single(itemWithoutThumbnail.id).content,
         itemWithoutThumbnail,
       );
       const endpoints = [
@@ -737,7 +747,7 @@ describe('Items Hooks', () => {
   describe('useItemThumbnailUrl', () => {
     const item = FolderItemFactory();
     const replyUrl = true;
-    const key = buildItemThumbnailKey({ id: item.id, replyUrl });
+    const key = itemKeys.single(item.id).thumbnail({ replyUrl });
     const response = THUMBNAIL_URL_RESPONSE;
     const route = `/${buildDownloadItemThumbnailRoute({
       id: item.id,
@@ -767,7 +777,7 @@ describe('Items Hooks', () => {
         replyUrl,
       })}`;
       const hookLarge = () => hooks.useItemThumbnailUrl({ id: item.id, size });
-      const keyLarge = buildItemThumbnailKey({ id: item.id, size, replyUrl });
+      const keyLarge = itemKeys.single(item.id).thumbnail({ size, replyUrl });
 
       const endpoints = [
         {
@@ -812,7 +822,7 @@ describe('Items Hooks', () => {
         settings: { hasThumbnail: false },
       };
       queryClient.setQueryData(
-        buildItemKey(itemWithoutThumbnail.id),
+        itemKeys.single(itemWithoutThumbnail.id).content,
         itemWithoutThumbnail,
       );
       const endpoints = [

@@ -6,7 +6,7 @@ import * as Api from '../api';
 import { UndefinedArgument } from '../config/errors';
 import {
   buildAddressFromCoordinatesKey,
-  buildItemGeolocationKey,
+  itemKeys,
   itemsWithGeolocationKeys,
 } from '../config/keys';
 import {
@@ -20,7 +20,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useItemGeolocation = (id?: Item['id']) =>
     useQuery({
-      queryKey: buildItemGeolocationKey(id),
+      queryKey: itemKeys.single(id).geolocation,
       queryFn: () => {
         if (!id) {
           throw new UndefinedArgument();

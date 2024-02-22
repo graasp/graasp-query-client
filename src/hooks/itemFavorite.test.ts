@@ -3,13 +3,13 @@ import { StatusCodes } from 'http-status-codes';
 import { FAVORITE_ITEM, UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockHook, setUpTest } from '../../test/utils';
 import { GET_FAVORITE_ITEMS_ROUTE } from '../api/routes';
-import { FAVORITE_ITEMS_KEY } from '../config/keys';
+import { memberKeys } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
 describe('useFavoriteItems', () => {
   const route = `/${GET_FAVORITE_ITEMS_ROUTE}`;
-  const key = FAVORITE_ITEMS_KEY;
+  const key = memberKeys.current().favoriteItems;
 
   const hook = () => hooks.useFavoriteItems();
 

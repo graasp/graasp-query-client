@@ -35,8 +35,8 @@ import {
 import {
   OWN_ITEMS_KEY,
   buildItemInvitationsKey,
-  buildItemKey,
   buildItemMembershipsKey,
+  itemKeys,
 } from '../config/keys';
 import {
   deleteItemMembershipRoutine,
@@ -80,7 +80,7 @@ describe('Membership Mutations', () => {
 
       // set data in cache
       items.forEach((i) => {
-        const itemKey = buildItemKey(i.id);
+        const itemKey = itemKeys.single(i.id).content;
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?
@@ -126,7 +126,7 @@ describe('Membership Mutations', () => {
 
       // set data in cache
       items.forEach((i) => {
-        const itemKey = buildItemKey(i.id);
+        const itemKey = itemKeys.single(i.id).content;
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?
@@ -324,7 +324,7 @@ describe('Membership Mutations', () => {
     it('Successfully share item with all emails', async () => {
       // set data in cache
       items.forEach((i) => {
-        const itemKey = buildItemKey(i.id);
+        const itemKey = itemKeys.single(i.id).content;
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?
@@ -384,7 +384,7 @@ describe('Membership Mutations', () => {
     it('Mixed return values for sharing item with many emails', async () => {
       // set data in cache
       items.forEach((i) => {
-        const itemKey = buildItemKey(i.id);
+        const itemKey = itemKeys.single(i.id).content;
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?
@@ -456,7 +456,7 @@ describe('Membership Mutations', () => {
     it('Unauthorized to search members', async () => {
       // set data in cache
       items.forEach((i) => {
-        const itemKey = buildItemKey(i.id);
+        const itemKey = itemKeys.single(i.id).content;
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?
@@ -507,7 +507,7 @@ describe('Membership Mutations', () => {
     it('Unauthorized to post memberships', async () => {
       // set data in cache
       items.forEach((i) => {
-        const itemKey = buildItemKey(i.id);
+        const itemKey = itemKeys.single(i.id).content;
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?
@@ -567,7 +567,7 @@ describe('Membership Mutations', () => {
     it('Unauthorized to post invitations', async () => {
       // set data in cache
       items.forEach((i) => {
-        const itemKey = buildItemKey(i.id);
+        const itemKey = itemKeys.single(i.id).content;
         queryClient.setQueryData(itemKey, i);
       });
       // todo: change to Accessible ?

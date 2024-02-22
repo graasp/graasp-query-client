@@ -2,7 +2,7 @@ import { useQuery } from 'react-query';
 
 import * as Api from '../api';
 import { UndefinedArgument } from '../config/errors';
-import { buildShortLinkKey, buildShortLinksItemKey } from '../config/keys';
+import { buildShortLinkKey, itemKeys } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
@@ -24,7 +24,7 @@ export default (queryConfig: QueryClientConfig) => {
 
     useShortLinksItem: (itemId: string) =>
       useQuery({
-        queryKey: buildShortLinksItemKey(itemId),
+        queryKey: itemKeys.single(itemId).shortLinks,
         queryFn: () => Api.getShortLinksItem(itemId, queryConfig),
         enabled: true,
         ...defaultQueryOptions,

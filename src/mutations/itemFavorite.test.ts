@@ -7,7 +7,7 @@ import nock from 'nock';
 import { UNAUTHORIZED_RESPONSE } from '../../test/constants';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
 import { buildFavoriteItemRoute } from '../api/routes';
-import { FAVORITE_ITEMS_KEY } from '../config/keys';
+import { memberKeys } from '../config/keys';
 import { addFavoriteItemRoutine, deleteFavoriteItemRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -27,7 +27,7 @@ describe('Favorite Mutations', () => {
 
     it(`Successfully add favorite item`, async () => {
       // set random data in cache
-      queryClient.setQueryData(FAVORITE_ITEMS_KEY, 'mock');
+      queryClient.setQueryData(memberKeys.current().favoriteItems, 'mock');
       const endpoints = [
         {
           response: itemId,
@@ -42,12 +42,13 @@ describe('Favorite Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(itemId);
+        mockedMutation.mutate(itemId);
         await waitForMutation();
       });
 
       expect(
-        queryClient.getQueryState(FAVORITE_ITEMS_KEY)?.isInvalidated,
+        queryClient.getQueryState(memberKeys.current().favoriteItems)
+          ?.isInvalidated,
       ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: addFavoriteItemRoutine.SUCCESS,
@@ -71,7 +72,7 @@ describe('Favorite Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(itemId);
+        mockedMutation.mutate(itemId);
         await waitForMutation();
       });
 
@@ -89,7 +90,7 @@ describe('Favorite Mutations', () => {
     const mutation = mutations.useRemoveFavoriteItem;
 
     it('Delete item like', async () => {
-      queryClient.setQueryData(FAVORITE_ITEMS_KEY, itemId);
+      queryClient.setQueryData(memberKeys.current().favoriteItems, itemId);
 
       const endpoints = [
         {
@@ -106,12 +107,13 @@ describe('Favorite Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(itemId);
+        mockedMutation.mutate(itemId);
         await waitForMutation();
       });
 
       expect(
-        queryClient.getQueryState(FAVORITE_ITEMS_KEY)?.isInvalidated,
+        queryClient.getQueryState(memberKeys.current().favoriteItems)
+          ?.isInvalidated,
       ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: deleteFavoriteItemRoutine.SUCCESS,
@@ -135,7 +137,7 @@ describe('Favorite Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(itemId);
+        mockedMutation.mutate(itemId);
         await waitForMutation();
       });
 

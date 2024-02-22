@@ -4,10 +4,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { deleteItemGeolocation, putItemGeolocation } from '../api';
-import {
-  buildItemGeolocationKey,
-  itemsWithGeolocationKeys,
-} from '../config/keys';
+import { itemKeys, itemsWithGeolocationKeys } from '../config/keys';
 import {
   deleteItemGeolocationRoutine,
   putItemGeolocationRoutine,
@@ -37,7 +34,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(buildItemGeolocationKey(itemId));
+          queryClient.invalidateQueries(itemKeys.single(itemId).geolocation);
           queryClient.invalidateQueries(itemsWithGeolocationKeys.allBounds);
         },
       },
@@ -63,7 +60,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(buildItemGeolocationKey(itemId));
+          queryClient.invalidateQueries(itemKeys.single(itemId).geolocation);
           queryClient.invalidateQueries(itemsWithGeolocationKeys.allBounds);
         },
       },

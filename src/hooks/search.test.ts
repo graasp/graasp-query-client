@@ -5,7 +5,7 @@ import nock from 'nock';
 
 import { mockHook, setUpTest } from '../../test/utils';
 import { SEARCH_PUBLISHED_ITEMS_ROUTE } from '../api/routes';
-import { buildSearchPublishedItemsKey } from '../config/keys';
+import { itemKeys } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -105,7 +105,7 @@ describe('Published Search Hook', () => {
       const categories = [['mycategoryid']];
       const hook = () =>
         hooks.useSearchPublishedItems({ query, categories, page: 1 });
-      const key = buildSearchPublishedItemsKey({
+      const key = itemKeys.search({
         query,
         categories,
         page: 1,
@@ -126,7 +126,7 @@ describe('Published Search Hook', () => {
 
     it(`does not fetch if no query nor categories is provided`, async () => {
       const hook = () => hooks.useSearchPublishedItems({});
-      const key = buildSearchPublishedItemsKey({ page: 1 });
+      const key = itemKeys.search({ page: 1 });
       const endpoints = [{ route, response: RESPONSE }];
       const { data, isFetched } = await mockHook({
         endpoints,
@@ -146,7 +146,7 @@ describe('Published Search Hook', () => {
       const categories = [['mycategoryid']];
       const isPublishedRoot = true;
       const spy = jest.spyOn(axios, 'post');
-      const key = buildSearchPublishedItemsKey({
+      const key = itemKeys.search({
         isPublishedRoot,
         query,
         categories,
@@ -197,7 +197,7 @@ describe('Published Search Hook', () => {
       const isPublishedRoot = true;
       const page = 3;
       const spy = jest.spyOn(axios, 'post');
-      const key = buildSearchPublishedItemsKey({
+      const key = itemKeys.search({
         isPublishedRoot,
         query,
         categories,
@@ -246,7 +246,7 @@ describe('Published Search Hook', () => {
       const query = 'some string';
       const categories = [['mycategoryid']];
       const isPublishedRoot = true;
-      const key = buildSearchPublishedItemsKey({
+      const key = itemKeys.search({
         isPublishedRoot,
         query,
         categories,

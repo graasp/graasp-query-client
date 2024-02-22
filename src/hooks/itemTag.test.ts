@@ -23,7 +23,7 @@ import {
   splitEndpointByIdsForErrors,
 } from '../../test/utils';
 import { buildGetItemTagsRoute, buildGetItemsTagsRoute } from '../api/routes';
-import { itemTagsKeys } from '../config/keys';
+import { itemKeys } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -36,7 +36,7 @@ describe('Item Tags Hooks', () => {
   describe('useItemTags', () => {
     const itemId = FolderItemFactory().id;
     const route = `/${buildGetItemTagsRoute(itemId)}`;
-    const key = itemTagsKeys.singleId(itemId);
+    const key = itemKeys.single(itemId).tags;
 
     const hook = () => hooks.useItemTags(itemId);
 
@@ -78,7 +78,7 @@ describe('Item Tags Hooks', () => {
       ({ id }) => id,
     );
 
-    const keys = itemsIds.map((itemId) => itemTagsKeys.singleId(itemId));
+    const keys = itemsIds.map((itemId) => itemKeys.single(itemId).tags);
     const tags = itemsIds.map((id) => [
       {
         id: 'some id',
@@ -154,10 +154,10 @@ describe('Item Tags Hooks', () => {
 
       // verify cache keys
       expect(
-        queryClient.getQueryData<ItemTag>(itemTagsKeys.singleId(ids[0])),
+        queryClient.getQueryData<ItemTag>(itemKeys.single(ids[0]).tags),
       ).toEqual(tagsForItem);
       expect(
-        queryClient.getQueryData(itemTagsKeys.singleId(idWithError)),
+        queryClient.getQueryData(itemKeys.single(idWithError).tags),
       ).toBeFalsy();
 
       expect(isSuccess).toBeTruthy();

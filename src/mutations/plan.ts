@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
-import { CURRENT_CUSTOMER_KEY, OWN_PLAN_KEY } from '../config/keys';
+import { CURRENT_CUSTOMER_KEY, memberKeys } from '../config/keys';
 import {
   changePlanRoutine,
   createSetupIntentRoutine,
@@ -25,7 +25,7 @@ export default (queryConfig: QueryClientConfig) => {
           notifier?.({ type: changePlanRoutine.FAILURE, payload: { error } });
         },
         onSettled: () => {
-          queryClient.invalidateQueries(OWN_PLAN_KEY);
+          queryClient.invalidateQueries(memberKeys.current().subscription);
         },
       },
     );

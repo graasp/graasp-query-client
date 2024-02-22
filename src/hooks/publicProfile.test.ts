@@ -11,7 +11,7 @@ import {
   MEMBERS_ROUTE,
   buildGetPublicProfileRoute,
 } from '../api/routes';
-import { OWN_PUBLIC_PROFILE_KEY, buildPublicProfileKey } from '../config/keys';
+import { memberKeys } from '../config/keys';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -31,7 +31,7 @@ describe('Public Profile Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
       expect(data).toEqual(response);
-      expect(queryClient.getQueryData(OWN_PUBLIC_PROFILE_KEY)).toEqual(
+      expect(queryClient.getQueryData(memberKeys.current().profile)).toEqual(
         response,
       );
     });
@@ -51,7 +51,9 @@ describe('Public Profile Hooks', () => {
       });
 
       expect(isError).toBeTruthy();
-      expect(queryClient.getQueryData(OWN_PUBLIC_PROFILE_KEY)).toBeFalsy();
+      expect(
+        queryClient.getQueryData(memberKeys.current().profile),
+      ).toBeFalsy();
     });
   });
 
@@ -72,7 +74,7 @@ describe('Public Profile Hooks', () => {
         wrapper,
         endpoints,
       });
-      expect(queryClient.getQueryData(buildPublicProfileKey(id))).toEqual(
+      expect(queryClient.getQueryData(memberKeys.single(id).profile)).toEqual(
         response,
       );
       expect(data).toMatchObject(response);

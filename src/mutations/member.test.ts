@@ -22,7 +22,7 @@ import {
   buildPatchMember,
   buildUploadAvatarRoute,
 } from '../api/routes';
-import { CURRENT_MEMBER_KEY, buildAvatarKey } from '../config/keys';
+import { memberKeys } from '../config/keys';
 import { uploadAvatarRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -42,7 +42,7 @@ describe('Member Mutations', () => {
     it(`Successfully sign out`, async () => {
       const endpoints = [{ route, response: OK_RESPONSE }];
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MemberFactory());
+      queryClient.setQueryData(memberKeys.current().content, MemberFactory());
 
       const mockedMutation = await mockMutation({
         endpoints,
@@ -56,13 +56,15 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqual(undefined);
+      expect(queryClient.getQueryData(memberKeys.current().content)).toEqual(
+        undefined,
+      );
     });
 
     it(`Unauthorized`, async () => {
       // set random data in cache
       const member = MemberFactory();
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, member);
+      queryClient.setQueryData(memberKeys.current().content, member);
       const endpoints = [
         {
           method: HttpMethod.GET,
@@ -83,9 +85,9 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toMatchObject(
-        member,
-      );
+      expect(
+        queryClient.getQueryData(memberKeys.current().content),
+      ).toMatchObject(member);
     });
   });
 
@@ -107,7 +109,7 @@ describe('Member Mutations', () => {
         },
       ];
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MemberFactory());
+      queryClient.setQueryData(memberKeys.current().content, MemberFactory());
 
       const mockedMutation = await mockMutation({
         endpoints,
@@ -121,13 +123,15 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toEqual(undefined);
+      expect(queryClient.getQueryData(memberKeys.current().content)).toEqual(
+        undefined,
+      );
     });
 
     it(`Unauthorized`, async () => {
       // set random data in cache
       const member = MemberFactory();
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, member);
+      queryClient.setQueryData(memberKeys.current().content, member);
       const endpoints = [
         {
           method: HttpMethod.GET,
@@ -148,9 +152,9 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toMatchObject(
-        member,
-      );
+      expect(
+        queryClient.getQueryData(memberKeys.current().content),
+      ).toMatchObject(member);
     });
   });
 
@@ -164,7 +168,7 @@ describe('Member Mutations', () => {
     it(`Successfully edit member id = ${id}`, async () => {
       const response = { ...member, name: newMember.name };
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, member);
+      queryClient.setQueryData(memberKeys.current().content, member);
       const endpoints = [
         {
           response,
@@ -184,14 +188,15 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      const newData =
-        queryClient.getQueryData<CompleteMember>(CURRENT_MEMBER_KEY);
+      const newData = queryClient.getQueryData<CompleteMember>(
+        memberKeys.current().content,
+      );
       expect(newData).toMatchObject(response);
     });
 
     it(`Unauthorized`, async () => {
       // set random data in cache
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, member);
+      queryClient.setQueryData(memberKeys.current().content, member);
       const endpoints = [
         {
           response: UNAUTHORIZED_RESPONSE,
@@ -212,8 +217,9 @@ describe('Member Mutations', () => {
       });
 
       // verify cache keys
-      const oldData =
-        queryClient.getQueryData<CompleteMember>(CURRENT_MEMBER_KEY);
+      const oldData = queryClient.getQueryData<CompleteMember>(
+        memberKeys.current().content,
+      );
       expect(oldData).toMatchObject(member);
     });
   });
@@ -229,7 +235,7 @@ describe('Member Mutations', () => {
 
       // set data in cache
       Object.values(ThumbnailSize).forEach((size) => {
-        const key = buildAvatarKey({ id, size, replyUrl });
+        const key = memberKeys.single(id).avatar({ size, replyUrl });
         queryClient.setQueryData(key, Math.random());
       });
 
@@ -257,7 +263,7 @@ describe('Member Mutations', () => {
       // verify member is still available
       // in real cases, the path should be different
       for (const size of Object.values(ThumbnailSize)) {
-        const key = buildAvatarKey({ id, size, replyUrl });
+        const key = memberKeys.single(id).avatar({ size, replyUrl });
         const state = queryClient.getQueryState(key);
         expect(state?.isInvalidated).toBeTruthy();
       }
@@ -271,7 +277,7 @@ describe('Member Mutations', () => {
       const route = `/${buildUploadAvatarRoute()}`;
       // set data in cache
       Object.values(ThumbnailSize).forEach((size) => {
-        const key = buildAvatarKey({ id, size, replyUrl });
+        const key = memberKeys.single(id).avatar({ size, replyUrl });
         queryClient.setQueryData(key, Math.random());
       });
 
@@ -300,7 +306,7 @@ describe('Member Mutations', () => {
       // verify member is still available
       // in real cases, the path should be different
       for (const size of Object.values(ThumbnailSize)) {
-        const key = buildAvatarKey({ id, size, replyUrl });
+        const key = memberKeys.single(id).avatar({ size, replyUrl });
         const state = queryClient.getQueryState(key);
         expect(state?.isInvalidated).toBeTruthy();
       }

@@ -16,11 +16,7 @@ import {
   buildPostItemLoginSignInRoute,
   buildPutItemLoginSchemaRoute,
 } from '../api/routes';
-import {
-  CURRENT_MEMBER_KEY,
-  OWN_ITEMS_KEY,
-  buildItemLoginSchemaKey,
-} from '../config/keys';
+import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../config/keys';
 import { postItemLoginRoutine, putItemLoginSchemaRoutine } from '../routines';
 
 const mockedNotifier = jest.fn();
@@ -42,7 +38,7 @@ describe('Item Login Mutations', () => {
     const route = `/${buildPostItemLoginSignInRoute(itemId)}`;
     const mutation = mutations.usePostItemLogin;
     it('Post item login', async () => {
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MemberFactory());
+      queryClient.setQueryData(memberKeys.current().content, MemberFactory());
       // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, items);
 
@@ -71,13 +67,15 @@ describe('Item Login Mutations', () => {
       });
 
       // check all set keys are reset
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+      expect(
+        queryClient.getQueryData(memberKeys.current().content),
+      ).toBeFalsy();
       // todo: change to Accessible
       expect(queryClient.getQueryData(OWN_ITEMS_KEY)).toBeFalsy();
     });
 
     it('Unauthorized to post item login', async () => {
-      queryClient.setQueryData(CURRENT_MEMBER_KEY, MemberFactory());
+      queryClient.setQueryData(memberKeys.current().content, MemberFactory());
       // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, items);
 
@@ -107,7 +105,9 @@ describe('Item Login Mutations', () => {
       });
 
       // check all set keys are reset
-      expect(queryClient.getQueryData(CURRENT_MEMBER_KEY)).toBeFalsy();
+      expect(
+        queryClient.getQueryData(memberKeys.current().content),
+      ).toBeFalsy();
       // todo: change to Accessible ?
       expect(queryClient.getQueryData(OWN_ITEMS_KEY)).toBeFalsy();
 
@@ -123,7 +123,7 @@ describe('Item Login Mutations', () => {
     const route = `/${buildPutItemLoginSchemaRoute(itemId)}`;
     const mutation = mutations.usePutItemLoginSchema;
     const loginSchema = ITEM_LOGIN_RESPONSE;
-    const itemLoginKey = buildItemLoginSchemaKey(itemId);
+    const itemLoginKey = itemKeys.single(itemId).itemLoginSchema.content;
     const newLoginSchema = ItemLoginSchemaType.UsernameAndPassword;
 
     it('Put item login schema', async () => {

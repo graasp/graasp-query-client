@@ -5,14 +5,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import * as Api from '../api';
 import { splitRequestByIdsAndReturn } from '../api/axios';
 import { UndefinedArgument } from '../config/errors';
-import {
-  buildGetMostLikedPublishedItems,
-  buildGetMostRecentPublishedItems,
-  buildItemPublishedInformationKey,
-  buildManyItemPublishedInformationsKey,
-  buildPublishedItemsForMemberKey,
-  buildPublishedItemsKey,
-} from '../config/keys';
+import { itemKeys } from '../config/keys';
 import { QueryClientConfig } from '../types';
 
 export default (queryConfig: QueryClientConfig) => {
@@ -27,7 +20,7 @@ export default (queryConfig: QueryClientConfig) => {
     ) => {
       const enabledValue = options?.enabled ?? true;
       return useQuery({
-        queryKey: buildPublishedItemsKey(args?.categoryIds),
+        queryKey: itemKeys.published().forCategories(args?.categoryIds),
         queryFn: () => Api.getAllPublishedItems(args ?? {}, queryConfig),
         ...defaultQueryOptions,
         enabled: enabledValue,
@@ -41,7 +34,7 @@ export default (queryConfig: QueryClientConfig) => {
     ) => {
       const enabledValue = options?.enabled ?? true;
       return useQuery({
-        queryKey: buildGetMostLikedPublishedItems(args?.limit),
+        queryKey: itemKeys.published().mostLiked(args?.limit),
         queryFn: () => Api.getMostLikedPublishedItems(args ?? {}, queryConfig),
         ...defaultQueryOptions,
         enabled: enabledValue,
@@ -55,7 +48,7 @@ export default (queryConfig: QueryClientConfig) => {
     ) => {
       const enabledValue = options?.enabled ?? true;
       return useQuery({
-        queryKey: buildGetMostRecentPublishedItems(args?.limit),
+        queryKey: itemKeys.published().mostRecent(args?.limit),
         queryFn: () => Api.getMostRecentPublishedItems(args ?? {}, queryConfig),
         ...defaultQueryOptions,
         enabled: enabledValue,
@@ -66,7 +59,7 @@ export default (queryConfig: QueryClientConfig) => {
       options?: { enabled?: boolean },
     ) =>
       useQuery({
-        queryKey: buildPublishedItemsForMemberKey(memberId),
+        queryKey: itemKeys.published().byMember(memberId),
         queryFn: () => {
           if (!memberId) {
             throw new UndefinedArgument();
@@ -84,7 +77,7 @@ export default (queryConfig: QueryClientConfig) => {
     ) => {
       const enabledValue = (options?.enabled ?? true) && Boolean(args.itemId);
       return useQuery({
-        queryKey: buildItemPublishedInformationKey(args.itemId),
+        queryKey: itemKeys.single(args.itemId).publishedInformation,
         queryFn: () =>
           Api.getItemPublishedInformation(args.itemId, queryConfig),
         ...defaultQueryOptions,
@@ -101,7 +94,7 @@ export default (queryConfig: QueryClientConfig) => {
         (options?.enabled ?? true) && Boolean(args.itemIds.length);
       const queryClient = useQueryClient();
       return useQuery({
-        queryKey: buildManyItemPublishedInformationsKey(args.itemIds),
+        queryKey: itemKeys.many(args.itemIds).publishedInformation,
         queryFn: () =>
           splitRequestByIdsAndReturn<ItemPublished>(
             args.itemIds,
@@ -114,7 +107,10 @@ export default (queryConfig: QueryClientConfig) => {
           if (publishedData?.data) {
             Object.values(publishedData?.data)?.forEach(async (p) => {
               const { id } = p.item;
-              queryClient.setQueryData(buildItemPublishedInformationKey(id), p);
+              queryClient.setQueryData(
+                itemKeys.single(id).publishedInformation,
+                p,
+              );
             });
           }
         },

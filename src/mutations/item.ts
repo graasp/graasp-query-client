@@ -17,11 +17,10 @@ import {
 } from '../api/axios';
 import {
   OWN_ITEMS_KEY,
-  RECYCLED_ITEMS_DATA_KEY,
-  buildItemChildrenKey,
-  buildItemKey,
   getKeyForParentId,
+  itemKeys,
   itemsWithGeolocationKeys,
+  memberKeys,
 } from '../config/keys';
 import {
   copyItemsRoutine,
@@ -53,7 +52,7 @@ export default (queryConfig: QueryClientConfig) => {
     value: T;
     queryClient: QueryClient;
   }): Promise<T | undefined> => {
-    const itemKey = buildItemKey(id);
+    const itemKey = itemKeys.single(id).content;
 
     await queryClient.cancelQueries(itemKey);
 
@@ -67,7 +66,7 @@ export default (queryConfig: QueryClientConfig) => {
   };
 
   // todo: we don't consider accessible, shared or published items here
-  // this part is a bit flacky/unclear it might be better to refactor it
+  // this part is a bit flaky/unclear it might be better to refactor it
   const mutateParentChildren = async (
     args: ({ id?: string } | { childPath: string }) & { value: unknown },
     queryClient: QueryClient,
@@ -79,8 +78,8 @@ export default (queryConfig: QueryClientConfig) => {
     // get parent key
     const childrenKey = !parentId
       ? OWN_ITEMS_KEY
-      : buildItemChildrenKey(parentId);
-    // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      : itemKeys.single(parentId).allChildren;
+    // Cancel any outgoing re-fetches (so they don't overwrite our optimistic update)
     await queryClient.cancelQueries(childrenKey);
 
     // Snapshot the previous value if exists
@@ -91,7 +90,7 @@ export default (queryConfig: QueryClientConfig) => {
       // Optimistically update
       queryClient.setQueryData(childrenKey, value);
 
-      // Return a context object with the snapshotted value
+      // Return a context object with the a snapshot of the value
       return prevChildren;
     }
     return null;
@@ -175,7 +174,7 @@ export default (queryConfig: QueryClientConfig) => {
               extra?: DiscriminatedItem['extra'];
             },
         ) => {
-          const itemKey = buildItemKey(newItem.id);
+          const itemKey = itemKeys.single(newItem.id).content;
 
           // invalidate key
           await queryClient.cancelQueries(itemKey);
@@ -231,7 +230,7 @@ export default (queryConfig: QueryClientConfig) => {
             queryClient.setQueryData(parentKey, context.parent);
           }
 
-          const itemKey = buildItemKey(newItem.id);
+          const itemKey = itemKeys.single(newItem.id).content;
           queryClient.setQueryData(itemKey, context?.item);
           notifier?.({ type: editItemRoutine.FAILURE, payload: { error } });
         },
@@ -246,10 +245,10 @@ export default (queryConfig: QueryClientConfig) => {
 
           // reorder affect children to change
           if ((extra as FolderItemExtra)?.[ItemType.FOLDER]?.childrenOrder) {
-            queryClient.invalidateQueries(buildItemChildrenKey(id));
+            queryClient.invalidateQueries(itemKeys.single(id).allChildren);
           }
 
-          const itemKey = buildItemKey(id);
+          const itemKey = itemKeys.single(id).content;
           queryClient.invalidateQueries(itemKey);
         },
       },
@@ -266,7 +265,7 @@ export default (queryConfig: QueryClientConfig) => {
       {
         onMutate: async (itemIds: UUID[]) => {
           // get path from first item and invalidate parent's children
-          const itemKey = buildItemKey(itemIds[0]);
+          const itemKey = itemKeys.single(itemIds[0]).content;
           const itemData = queryClient.getQueryData<DiscriminatedItem>(itemKey);
           const itemPath = itemData?.path;
           const newParent = itemPath
@@ -309,7 +308,7 @@ export default (queryConfig: QueryClientConfig) => {
       {
         onMutate: async (itemIds: UUID[]) => {
           // get path from first item
-          const itemKey = RECYCLED_ITEMS_DATA_KEY;
+          const itemKey = memberKeys.current().recycled;
           const itemData =
             queryClient.getQueryData<RecycledItemData[]>(itemKey);
           queryClient.setQueryData(
@@ -369,7 +368,7 @@ export default (queryConfig: QueryClientConfig) => {
           const itemIds = ids;
           const itemsData = itemIds
             .map((itemId: UUID) => {
-              const itemKey = buildItemKey(itemId);
+              const itemKey = itemKeys.single(itemId).content;
               const itemData =
                 queryClient.getQueryData<DiscriminatedItem>(itemKey);
               return itemData;
@@ -402,7 +401,7 @@ export default (queryConfig: QueryClientConfig) => {
           };
 
           const toData = queryClient.getQueryData<DiscriminatedItem>(
-            buildItemKey(to),
+            itemKeys.single(to).content,
           );
           if (toData?.path) {
             const toDataPath = toData.path;
@@ -492,7 +491,8 @@ export default (queryConfig: QueryClientConfig) => {
         },
         onSettled: (_data, _error, { id }) => {
           // invalidate item to update settings.hasThumbnail
-          queryClient.invalidateQueries(buildItemKey(id));
+          queryClient.invalidateQueries(itemKeys.single(id).content);
+          queryClient.invalidateQueries(itemKeys.single(id).allThumbnails);
         },
       },
     );
@@ -559,7 +559,7 @@ export default (queryConfig: QueryClientConfig) => {
         ),
       {
         onMutate: async (itemIds) => {
-          const key = RECYCLED_ITEMS_DATA_KEY;
+          const key = memberKeys.current().recycled;
           const recycleItemData =
             queryClient.getQueryData<RecycledItemData[]>(key);
           if (recycleItemData) {

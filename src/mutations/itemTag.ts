@@ -4,7 +4,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useMutation, useQueryClient } from 'react-query';
 
 import * as Api from '../api';
-import { itemTagsKeys } from '../config/keys';
+import { itemKeys } from '../config/keys';
 import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
 import { QueryClientConfig } from '../types';
 
@@ -30,9 +30,9 @@ export default (queryConfig: QueryClientConfig) => {
           notifier?.({ type: postItemTagRoutine.FAILURE, payload: { error } });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(itemTagsKeys.singleId(itemId));
+          queryClient.invalidateQueries(itemKeys.single(itemId).tags);
           // invalidate any "many" query targeting item tags
-          queryClient.invalidateQueries(itemTagsKeys.many());
+          queryClient.invalidateQueries(itemKeys.allMany());
         },
       },
     );
@@ -45,7 +45,7 @@ export default (queryConfig: QueryClientConfig) => {
         Api.deleteItemTag(payload, queryConfig),
       {
         onMutate: async ({ itemId, type }) => {
-          const itemTagKey = itemTagsKeys.singleId(itemId);
+          const itemTagKey = itemKeys.single(itemId).tags;
           await queryClient.cancelQueries(itemTagKey);
 
           // Snapshot the previous value
@@ -70,7 +70,7 @@ export default (queryConfig: QueryClientConfig) => {
           // await queryClient.invalidateQueries(DATA_KEYS.itemTagsKeys.many());
         },
         onError: (error: Error, { itemId }, context) => {
-          const itemKey = itemTagsKeys.singleId(itemId);
+          const itemKey = itemKeys.single(itemId).tags;
           queryClient.setQueryData(itemKey, context?.itemTags);
           notifier?.({
             type: deleteItemTagRoutine.FAILURE,
@@ -78,9 +78,9 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(itemTagsKeys.singleId(itemId));
+          queryClient.invalidateQueries(itemKeys.single(itemId).tags);
           // invalidate any "many" query that contains the id we modified
-          queryClient.invalidateQueries(itemTagsKeys.many());
+          queryClient.invalidateQueries(itemKeys.allMany());
         },
       },
     );

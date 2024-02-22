@@ -25,22 +25,7 @@ import {
   PAGINATED_ITEMS_PER_PAGE,
 } from '../config/constants';
 import { UndefinedArgument } from '../config/errors';
-import {
-  OWN_ITEMS_KEY,
-  RECYCLED_ITEMS_DATA_KEY,
-  RECYCLED_ITEMS_KEY,
-  SHARED_ITEMS_KEY,
-  accessibleItemsKeys,
-  buildEtherpadKey,
-  buildFileContentKey,
-  buildItemChildrenKey,
-  buildItemDescendantsKey,
-  buildItemKey,
-  buildItemPaginatedChildrenKey,
-  buildItemParentsKey,
-  buildItemThumbnailKey,
-  buildItemsKey,
-} from '../config/keys';
+import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../config/keys';
 import { getAccessibleItemsRoutine, getOwnItemsRoutine } from '../routines';
 import { PaginationParams, QueryClientConfig } from '../types';
 import { paginate } from '../utils/util';
@@ -85,7 +70,7 @@ export default (
       const finalParams = { ...params, name: debouncedName };
       const paginationParams = { ...(pagination ?? {}) };
       return useQuery({
-        queryKey: accessibleItemsKeys.singlePage(finalParams, paginationParams),
+        queryKey: itemKeys.accessiblePage(finalParams, paginationParams),
         queryFn: () =>
           Api.getAccessibleItems(finalParams, paginationParams, queryConfig),
         onSuccess: async ({ data: items }) => {
@@ -93,7 +78,7 @@ export default (
           // eslint-disable-next-line no-unused-expressions
           items?.forEach(async (item) => {
             const { id } = item;
-            queryClient.setQueryData(buildItemKey(id), item);
+            queryClient.setQueryData(itemKeys.single(id).content, item);
           });
         },
         onError: (error) => {
@@ -122,7 +107,7 @@ export default (
           // eslint-disable-next-line no-unused-expressions
           items?.forEach(async (item) => {
             const { id } = item;
-            queryClient.setQueryData(buildItemKey(id), item);
+            queryClient.setQueryData(itemKeys.single(id).content, item);
           });
         },
         onError: (error) => {
@@ -149,7 +134,7 @@ export default (
       const queryClient = useQueryClient();
 
       return useQuery({
-        queryKey: buildItemChildrenKey(id, params?.types),
+        queryKey: itemKeys.single(id).children(params?.types),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
@@ -161,7 +146,7 @@ export default (
             // save items in their own key
             items.forEach(async (item) => {
               const { id: itemId } = item;
-              queryClient.setQueryData(buildItemKey(itemId), item);
+              queryClient.setQueryData(itemKeys.single(itemId).content, item);
             });
           }
         },
@@ -187,7 +172,7 @@ export default (
       };
 
       return useInfiniteQuery(
-        buildItemPaginatedChildrenKey(id),
+        itemKeys.single(id).paginatedChildren,
         ({ pageParam = 1 }) =>
           paginate(
             children,
@@ -226,7 +211,7 @@ export default (
     }) => {
       const queryClient = useQueryClient();
       return useQuery({
-        queryKey: buildItemParentsKey(id),
+        queryKey: itemKeys.single(id).parents,
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
@@ -241,7 +226,7 @@ export default (
             // save items in their own key
             items.forEach(async (item) => {
               const { id: itemId } = item;
-              queryClient.setQueryData(buildItemKey(itemId), item);
+              queryClient.setQueryData(itemKeys.single(itemId).content, item);
             });
           }
         },
@@ -253,7 +238,7 @@ export default (
     useDescendants: ({ id, enabled }: { id?: UUID; enabled?: boolean }) => {
       const queryClient = useQueryClient();
       return useQuery({
-        queryKey: buildItemDescendantsKey(id),
+        queryKey: itemKeys.single(id).descendants,
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
@@ -265,7 +250,7 @@ export default (
             // save items in their own key
             items.forEach(async (item) => {
               const { id: itemId } = item;
-              queryClient.setQueryData(buildItemKey(itemId), item);
+              queryClient.setQueryData(itemKeys.single(itemId).content, item);
             });
           }
         },
@@ -283,13 +268,13 @@ export default (
 
       const queryClient = useQueryClient();
       return useQuery({
-        queryKey: SHARED_ITEMS_KEY,
+        queryKey: itemKeys.shared(),
         queryFn: () => Api.getSharedItems(queryConfig),
         onSuccess: async (items) => {
           // save items in their own key
           items.forEach(async (item) => {
             const { id } = item;
-            queryClient.setQueryData(buildItemKey(id), item);
+            queryClient.setQueryData(itemKeys.single(id).content, item);
           });
         },
         ...defaultQueryOptions,
@@ -307,7 +292,7 @@ export default (
       itemWsHooks?.useItemUpdates(getUpdates ? id : null);
 
       return useQuery({
-        queryKey: buildItemKey(id),
+        queryKey: itemKeys.single(id).content,
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
@@ -330,7 +315,7 @@ export default (
 
       const queryClient = useQueryClient();
       return useQuery({
-        queryKey: buildItemsKey(ids),
+        queryKey: itemKeys.many(ids).content,
         queryFn: () => {
           if (!ids) {
             throw new UndefinedArgument();
@@ -347,7 +332,7 @@ export default (
           if (items?.data) {
             Object.values(items?.data)?.forEach(async (item) => {
               const { id } = item;
-              queryClient.setQueryData(buildItemKey(id), item);
+              queryClient.setQueryData(itemKeys.single(id).content, item);
             });
           }
         },
@@ -366,7 +351,7 @@ export default (
       { enabled = true }: { enabled?: boolean } = {},
     ) =>
       useQuery({
-        queryKey: buildFileContentKey({ id, replyUrl: false }),
+        queryKey: itemKeys.single(id).file({ replyUrl: false }),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
@@ -383,7 +368,7 @@ export default (
       { enabled = true }: { enabled?: boolean } = {},
     ) =>
       useQuery({
-        queryKey: buildFileContentKey({ id, replyUrl: true }),
+        queryKey: itemKeys.single(id).file({ replyUrl: true }),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
@@ -404,7 +389,7 @@ export default (
       );
 
       return useQuery({
-        queryKey: RECYCLED_ITEMS_KEY,
+        queryKey: memberKeys.current().recycledItems,
         queryFn: () =>
           Api.getRecycledItemsData(queryConfig).then((data) =>
             data?.map(({ item }: RecycledItemData) => item),
@@ -416,7 +401,7 @@ export default (
     useRecycledItemsData: () => {
       const queryClient = useQueryClient();
       return useQuery({
-        queryKey: RECYCLED_ITEMS_DATA_KEY,
+        queryKey: memberKeys.current().recycled,
         queryFn: () => Api.getRecycledItemsData(queryConfig),
         onSuccess: async (items) => {
           // save items in their own key
@@ -424,7 +409,7 @@ export default (
           items?.forEach(async (item) => {
             const { item: recycledItem } = item;
             queryClient.setQueryData(
-              buildItemKey(recycledItem.id),
+              itemKeys.single(recycledItem.id).content,
               recycledItem,
             );
           });
@@ -444,11 +429,12 @@ export default (
       let shouldFetch = true;
       if (id) {
         shouldFetch =
-          queryClient.getQueryData<DiscriminatedItem>(buildItemKey(id))
-            ?.settings?.hasThumbnail ?? true;
+          queryClient.getQueryData<DiscriminatedItem>(
+            itemKeys.single(id).content,
+          )?.settings?.hasThumbnail ?? true;
       }
       return useQuery({
-        queryKey: buildItemThumbnailKey({ id, size, replyUrl: false }),
+        queryKey: itemKeys.single(id).thumbnail({ size, replyUrl: false }),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
@@ -473,11 +459,12 @@ export default (
       let shouldFetch = true;
       if (id) {
         shouldFetch =
-          queryClient.getQueryData<DiscriminatedItem>(buildItemKey(id))
-            ?.settings?.hasThumbnail ?? true;
+          queryClient.getQueryData<DiscriminatedItem>(
+            itemKeys.single(id).content,
+          )?.settings?.hasThumbnail ?? true;
       }
       return useQuery({
-        queryKey: buildItemThumbnailKey({ id, size, replyUrl: true }),
+        queryKey: itemKeys.single(id).thumbnail({ size, replyUrl: true }),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
@@ -492,7 +479,7 @@ export default (
 
     useEtherpad: (item: EtherpadItemType | undefined, mode: 'read' | 'write') =>
       useQuery({
-        queryKey: buildEtherpadKey(item?.id),
+        queryKey: itemKeys.single(item?.id).etherpad,
         queryFn: () => {
           if (item?.type !== ItemType.ETHERPAD) {
             throw new Error('Item is not an etherpad item');
