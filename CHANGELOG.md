@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.6.3](https://github.com/graasp/graasp-query-client/compare/v2.6.2...v2.6.3) (2024-02-22)
+
+
+### Bug Fixes
+
+* add country_code to geoloc address ([#648](https://github.com/graasp/graasp-query-client/issues/648)) ([a675178](https://github.com/graasp/graasp-query-client/commit/a675178a5e0636035c0f93a53a75895aebccf6b4))
+* make graasp deps peer ([#641](https://github.com/graasp/graasp-query-client/issues/641)) ([a8aba03](https://github.com/graasp/graasp-query-client/commit/a8aba0379c94d13c2b7bd3bda7770f23796389ac))
+
 ## [2.6.2](https://github.com/graasp/graasp-query-client/compare/v2.6.1...v2.6.2) (2024-02-15)
 
 
