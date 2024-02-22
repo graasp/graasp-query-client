@@ -71,7 +71,7 @@ export const getAddressFromCoordinates = async (
   { axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<{ display_name: string }>(
+    .get<{ display_name: string; country_code: string }>(
       buildGetAddressFromCoordinatesRoute({ lat, lng }),
       {
         responseType: 'json',
