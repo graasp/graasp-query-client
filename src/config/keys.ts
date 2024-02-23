@@ -51,7 +51,7 @@ export const itemKeys = {
       allChildren,
 
       // itemKeys.single(id).children([one, two])
-      children: (types?: UnionOfConst<typeof ItemType>[]) =>
+      children: (types: UnionOfConst<typeof ItemType>[] = []) =>
         [...allChildren, types] as const,
 
       // todo: add page and filtering options
