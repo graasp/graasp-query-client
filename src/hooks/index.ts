@@ -5,6 +5,7 @@ import configureActionHooks from './action.js';
 import configureAppsHooks from './apps.js';
 import configureCategoryHooks from './category.js';
 import configureChatHooks from './chat.js';
+import configureEtherpadHooks from './etherpad.js';
 import configureInvitationHooks from './invitation.js';
 import configureItemHooks from './item.js';
 import configureItemFavoriteHooks from './itemFavorite.js';
@@ -41,6 +42,7 @@ export default (
       memberHooks.useCurrentMember,
       websocketClient,
     ),
+    ...configureEtherpadHooks(queryConfig),
     ...configureItemTagHooks(queryConfig),
     ...configureCategoryHooks(queryConfig),
     ...configureKeywordSearchHooks(queryConfig),
