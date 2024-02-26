@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0](https://github.com/graasp/graasp-query-client/compare/v2.6.3...v2.7.0) (2024-02-26)
+
+
+### Features
+
+* update sdk with ESM support and move tests to vitest ([#647](https://github.com/graasp/graasp-query-client/issues/647)) ([7ccff0a](https://github.com/graasp/graasp-query-client/commit/7ccff0acd9ab80f0f2e8b4f1f8443c9cc1cf33bb))
+
 ## [2.6.3](https://github.com/graasp/graasp-query-client/compare/v2.6.2...v2.6.3) (2024-02-22)
 
 
