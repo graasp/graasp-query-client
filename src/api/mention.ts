@@ -1,13 +1,13 @@
 import { ChatMention, UUID } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi, QueryClientConfig } from '../types';
-import { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi, QueryClientConfig } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 import {
   buildClearMentionsRoute,
   buildDeleteMentionRoute,
   buildGetMemberMentionsRoute,
   buildPatchMentionRoute,
-} from './routes';
+} from './routes.js';
 
 export const getMemberMentions = async ({
   API_HOST,

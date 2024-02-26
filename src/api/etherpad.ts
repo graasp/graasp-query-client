@@ -1,10 +1,15 @@
-import { Etherpad, EtherpadItemType, Item, UUID } from '@graasp/sdk';
+import {
+  DiscriminatedItem,
+  Etherpad,
+  EtherpadItemType,
+  UUID,
+} from '@graasp/sdk';
 
 import axios from 'axios';
 
-import { QueryClientConfig } from '../types';
-import { verifyAuthentication } from './axios';
-import { buildGetEtherpadRoute, buildPostEtherpadRoute } from './routes';
+import { QueryClientConfig } from '../types.js';
+import { verifyAuthentication } from './axios.js';
+import { buildGetEtherpadRoute, buildPostEtherpadRoute } from './routes.js';
 
 /**
  * This is a queue singleton class that manages querying etherpads
@@ -49,7 +54,7 @@ export const postEtherpad = async (
   {
     name,
     parentId,
-  }: Pick<Item, 'name'> & {
+  }: Pick<DiscriminatedItem, 'name'> & {
     parentId?: UUID;
   },
   { API_HOST }: QueryClientConfig,

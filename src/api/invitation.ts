@@ -1,7 +1,7 @@
 import { Invitation, ResultOf, UUID } from '@graasp/sdk';
 
-import { NewInvitation, PartialQueryConfigForApi } from '../types';
-import { verifyAuthentication } from './axios';
+import { NewInvitation, PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 import {
   buildDeleteInvitationRoute,
   buildGetInvitationRoute,
@@ -9,7 +9,7 @@ import {
   buildPatchInvitationRoute,
   buildPostInvitationsRoute,
   buildResendInvitationRoute,
-} from './routes';
+} from './routes.js';
 
 // eslint-disable-next-line import/prefer-default-export
 export const getInvitation = async (

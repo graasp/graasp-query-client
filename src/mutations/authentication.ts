@@ -3,17 +3,16 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
-import { memberKeys } from '../config/keys';
+import * as Api from '../api/authentication.js';
+import { memberKeys } from '../config/keys.js';
 import {
   signInRoutine,
   signInWithPasswordRoutine,
   signOutRoutine,
   signUpRoutine,
-  updatePasswordRoutine,
-} from '../routines';
-import { QueryClientConfig } from '../types';
-import { isServer } from '../utils/util';
+} from '../routines/authentication.js';
+import { QueryClientConfig } from '../types.js';
+import { isServer } from '../utils/util.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -117,30 +116,6 @@ export default (queryConfig: QueryClientConfig) => {
       },
     );
   };
-
-  /**  mutation to update member password. suppose only you can edit yourself
-   * @param {Password} password new password that user wants to set
-   * @param {Password} currentPassword current password already stored
-   */
-  const useUpdatePassword = () =>
-    useMutation(
-      (payload: { password: Password; currentPassword: Password }) =>
-        Api.updatePassword(payload, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: updatePasswordRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
-          });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: updatePasswordRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-      },
-    );
 
   const useSignUp = () =>
     useMutation(
@@ -259,7 +234,6 @@ export default (queryConfig: QueryClientConfig) => {
     useSignOut,
     useSignUp,
     useMobileSignUp,
-    useUpdatePassword,
     useMobileSignIn,
     useMobileSignInWithPassword,
   };

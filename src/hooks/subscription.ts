@@ -1,13 +1,13 @@
 import { useQuery } from 'react-query';
 
-import * as Api from '../api';
+import * as Api from '../api/subscription.js';
 import {
   CARDS_KEY,
   CURRENT_CUSTOMER_KEY,
   PLANS_KEY,
   memberKeys,
-} from '../config/keys';
-import { QueryClientConfig } from '../types';
+} from '../config/keys.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions: defaultOptions } = queryConfig;

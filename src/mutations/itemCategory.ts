@@ -3,13 +3,13 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
-import { itemKeys } from '../config/keys';
+import * as Api from '../api/category.js';
+import { itemKeys } from '../config/keys.js';
 import {
   deleteItemCategoryRoutine,
   postItemCategoryRoutine,
-} from '../routines';
-import { QueryClientConfig } from '../types';
+} from '../routines/itemCategory.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

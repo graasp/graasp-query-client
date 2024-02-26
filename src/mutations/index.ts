@@ -1,48 +1,48 @@
-import { QueryClientConfig } from '../types';
-import actionMutations from './action';
-import authenticationMutations from './authentication';
-import chatMutations from './chat';
-import invitationMutations from './invitation';
-import itemMutations from './item';
-import itemCategoryMutations from './itemCategory';
-import itemExportMutations from './itemExport';
-import itemFavoriteMutations from './itemFavorite';
-import flagsMutations from './itemFlag';
-import itemGeolocationMutations from './itemGeolocation';
-import itemLikeMutations from './itemLike';
-import itemLoginMutations from './itemLogin';
-import itemPublishMutations from './itemPublish';
-import tagsMutations from './itemTag';
-import itemValidationMutations from './itemValidation';
-import memberMutations from './member';
-import itemMembershipMutations from './membership';
-import mentionMutations from './mention';
-import subscriptionMutations from './plan';
-import publicProfileMutations from './publicProfile';
-import shortLinksMutations from './shortLink';
+import { QueryClientConfig } from '../types.js';
+import actionMutations from './action.js';
+import authenticationMutations from './authentication.js';
+import chatMutations from './chat.js';
+import etherpadMutations from './etherpad.js';
+import invitationMutations from './invitation.js';
+import itemMutations from './item.js';
+import itemCategoryMutations from './itemCategory.js';
+import itemExportMutations from './itemExport.js';
+import itemFavoriteMutations from './itemFavorite.js';
+import flagsMutations from './itemFlag.js';
+import itemGeolocationMutations from './itemGeolocation.js';
+import itemLikeMutations from './itemLike.js';
+import itemLoginMutations from './itemLogin.js';
+import itemPublishMutations from './itemPublish.js';
+import tagsMutations from './itemTag.js';
+import itemValidationMutations from './itemValidation.js';
+import memberMutations from './member.js';
+import itemMembershipMutations from './membership.js';
+import mentionMutations from './mention.js';
+import publicProfileMutations from './publicProfile.js';
+import shortLinksMutations from './shortLink.js';
 
 const configureMutations = (queryConfig: QueryClientConfig) => ({
-  ...itemMutations(queryConfig),
-  ...itemMembershipMutations(queryConfig),
-  ...memberMutations(queryConfig),
-  ...tagsMutations(queryConfig),
-  ...flagsMutations(queryConfig),
-  ...itemLoginMutations(queryConfig),
-  ...chatMutations(queryConfig),
-  ...mentionMutations(queryConfig),
-  ...itemCategoryMutations(queryConfig),
-  ...itemFavoriteMutations(queryConfig),
-  ...itemExportMutations(queryConfig),
-  ...itemLikeMutations(queryConfig),
-  ...itemValidationMutations(queryConfig),
   ...actionMutations(queryConfig),
-  ...invitationMutations(queryConfig),
   ...authenticationMutations(queryConfig),
-  ...subscriptionMutations(queryConfig),
+  ...chatMutations(queryConfig),
+  ...etherpadMutations(queryConfig),
+  ...flagsMutations(queryConfig),
+  ...invitationMutations(queryConfig),
+  ...itemCategoryMutations(queryConfig),
+  ...itemExportMutations(queryConfig),
+  ...itemFavoriteMutations(queryConfig),
+  ...itemGeolocationMutations(queryConfig),
+  ...itemLikeMutations(queryConfig),
+  ...itemLoginMutations(queryConfig),
+  ...itemMembershipMutations(queryConfig),
+  ...itemMutations(queryConfig),
   ...itemPublishMutations(queryConfig),
+  ...itemValidationMutations(queryConfig),
+  ...memberMutations(queryConfig),
+  ...mentionMutations(queryConfig),
   ...publicProfileMutations(queryConfig),
   ...shortLinksMutations(queryConfig),
-  ...itemGeolocationMutations(queryConfig),
+  ...tagsMutations(queryConfig),
 });
 
 export default configureMutations;

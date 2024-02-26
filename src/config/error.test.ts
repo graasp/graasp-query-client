@@ -1,4 +1,6 @@
-import { UndefinedArgument, UserIsSignedOut } from './errors';
+import { describe, expect, it } from 'vitest';
+
+import { UndefinedArgument, UserIsSignedOut } from './errors.js';
 
 describe('Errors', () => {
   it('Undefined Argument error', () => {

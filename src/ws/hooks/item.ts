@@ -14,7 +14,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 
-import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../../config/keys';
+import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../../config/keys.js';
 import {
   copyItemsRoutine,
   deleteItemsRoutine,
@@ -24,10 +24,10 @@ import {
   postItemValidationRoutine,
   recycleItemsRoutine,
   restoreItemsRoutine,
-} from '../../routines';
-import createRoutine from '../../routines/utils';
-import { Notifier } from '../../types';
-import { KINDS, OPS, TOPICS } from '../constants';
+} from '../../routines/index.js';
+import createRoutine from '../../routines/utils.js';
+import { Notifier } from '../../types.js';
+import { KINDS, OPS, TOPICS } from '../constants.js';
 
 interface ItemEvent {
   kind: string;

@@ -9,14 +9,21 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { ITEM_TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { buildDeleteItemTagRoute, buildPostItemTagRoute } from '../api/routes';
-import { itemKeys } from '../config/keys';
-import { deleteItemTagRoutine, postItemTagRoutine } from '../routines';
+import { ITEM_TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import {
+  buildDeleteItemTagRoute,
+  buildPostItemTagRoute,
+} from '../api/routes.js';
+import { itemKeys } from '../config/keys.js';
+import {
+  deleteItemTagRoutine,
+  postItemTagRoutine,
+} from '../routines/itemTag.js';
 
-const mockedNotifier = jest.fn();
+const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
@@ -41,7 +48,7 @@ describe('Item Tag Mutations', () => {
       const endpoints = [
         {
           response: {},
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -53,7 +60,7 @@ describe('Item Tag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           itemId,
           type: tagType,
           creator,
@@ -75,7 +82,7 @@ describe('Item Tag Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -87,7 +94,7 @@ describe('Item Tag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           itemId,
           type: tagType,
           creator,
@@ -118,7 +125,7 @@ describe('Item Tag Mutations', () => {
       const endpoints = [
         {
           response: {},
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];
@@ -130,7 +137,7 @@ describe('Item Tag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, type: tagType });
+        mockedMutation.mutate({ itemId, type: tagType });
         await waitForMutation();
       });
 
@@ -152,7 +159,7 @@ describe('Item Tag Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];
@@ -164,7 +171,7 @@ describe('Item Tag Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, type: tagType });
+        mockedMutation.mutate({ itemId, type: tagType });
         await waitForMutation();
       });
 

@@ -6,15 +6,15 @@ import {
 
 import { useQuery, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
-import { splitRequestByIdsAndReturn } from '../api/axios';
-import { UndefinedArgument } from '../config/errors';
+import { splitRequestByIdsAndReturn } from '../api/axios.js';
+import * as Api from '../api/membership.js';
+import { UndefinedArgument } from '../config/errors.js';
 import {
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
-} from '../config/keys';
-import { QueryClientConfig } from '../types';
-import { configureWsMembershipHooks } from '../ws';
+} from '../config/keys.js';
+import { QueryClientConfig } from '../types.js';
+import { configureWsMembershipHooks } from '../ws/index.js';
 
 export default (
   queryConfig: QueryClientConfig,

@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import {
   DiscriminatedItem,
   FolderItemFactory,
@@ -13,6 +12,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   ITEM_GEOLOCATION,
@@ -21,13 +21,13 @@ import {
   THUMBNAIL_BLOB_RESPONSE,
   UNAUTHORIZED_RESPONSE,
   generateFolders,
-} from '../../test/constants';
+} from '../../test/constants.js';
 import {
   mockMutation,
   setUpTest,
   splitEndpointByIds,
   waitForMutation,
-} from '../../test/utils';
+} from '../../test/utils.js';
 import {
   buildCopyItemsRoute,
   buildDeleteItemsRoute,
@@ -37,22 +37,25 @@ import {
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
   buildUploadItemThumbnailRoute,
-} from '../api/routes';
+} from '../api/routes.js';
 import {
   OWN_ITEMS_KEY,
   getKeyForParentId,
   itemKeys,
   itemsWithGeolocationKeys,
   memberKeys,
-} from '../config/keys';
-import { uploadFileRoutine, uploadItemThumbnailRoutine } from '../routines';
+} from '../config/keys.js';
+import {
+  uploadFileRoutine,
+  uploadItemThumbnailRoutine,
+} from '../routines/item.js';
 import {
   buildPath,
   getDirectParentId,
   transformIdForPath,
-} from '../utils/item';
+} from '../utils/item.js';
 
-const mockedNotifier = jest.fn();
+const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
@@ -80,7 +83,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -92,7 +95,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(newItem);
+        mockedMutation.mutate(newItem);
         await waitForMutation();
       });
 
@@ -117,7 +120,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route: `/${buildPostItemRoute(parentItem.id)}`,
         },
       ];
@@ -129,7 +132,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ ...newItem, parentId: parentItem.id });
+        mockedMutation.mutate({ ...newItem, parentId: parentItem.id });
         await waitForMutation();
       });
 
@@ -162,7 +165,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route: `/${buildPostItemRoute(parentItem.id)}`,
         },
       ];
@@ -174,7 +177,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           ...newItem,
           parentId: parentItem.id,
           geolocation: { lat: 1, lng: 1 },
@@ -197,7 +200,7 @@ describe('Items Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -209,7 +212,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(newItem);
+        mockedMutation.mutate(newItem);
         await waitForMutation();
       });
 
@@ -235,7 +238,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.PATCH,
+          method: HttpMethod.Patch,
           route,
         },
       ];
@@ -247,7 +250,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(payload);
+        mockedMutation.mutate(payload);
         await waitForMutation();
       });
 
@@ -275,7 +278,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.PATCH,
+          method: HttpMethod.Patch,
           route,
         },
       ];
@@ -287,7 +290,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(editPayload);
+        mockedMutation.mutate(editPayload);
         await waitForMutation();
       });
 
@@ -315,7 +318,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.PATCH,
+          method: HttpMethod.Patch,
           route,
         },
       ];
@@ -327,7 +330,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(editPayload);
+        mockedMutation.mutate(editPayload);
         await waitForMutation();
       });
 
@@ -348,7 +351,7 @@ describe('Items Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.PATCH,
+          method: HttpMethod.Patch,
           route,
         },
       ];
@@ -360,7 +363,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(payload);
+        mockedMutation.mutate(payload);
         await waitForMutation();
       });
 
@@ -401,7 +404,7 @@ describe('Items Mutations', () => {
         (chunk) => `/${buildCopyItemsRoute(chunk)}`,
         response,
         (d) => d.id,
-        HttpMethod.POST,
+        HttpMethod.Post,
       );
 
       const mockedMutation = await mockMutation({
@@ -411,7 +414,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           to,
           ids: copiedIds,
         });
@@ -456,7 +459,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -468,7 +471,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           to: toId,
           ids: movedIds,
         });
@@ -510,7 +513,7 @@ describe('Items Mutations', () => {
         (chunk) => `/${buildMoveItemsRoute(chunk)}`,
         response,
         (el) => el,
-        HttpMethod.POST,
+        HttpMethod.Post,
       );
 
       const mockedMutation = await mockMutation({
@@ -520,7 +523,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           to: toId,
           ids: movedIds,
         });
@@ -565,7 +568,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -577,7 +580,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(itemIds);
+        mockedMutation.mutate(itemIds);
         await waitForMutation();
       });
 
@@ -622,7 +625,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -634,7 +637,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(itemIds);
+        mockedMutation.mutate(itemIds);
         await waitForMutation();
       });
 
@@ -684,7 +687,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];
@@ -696,7 +699,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(itemIds);
+        mockedMutation.mutate(itemIds);
         await waitForMutation();
       });
 
@@ -728,7 +731,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];
@@ -740,7 +743,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(itemIds);
+        mockedMutation.mutate(itemIds);
         await waitForMutation();
       });
 
@@ -775,7 +778,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ data: [id], id });
+        mockedMutation.mutate({ data: [id], id });
         await waitForMutation();
       });
 
@@ -808,7 +811,7 @@ describe('Items Mutations', () => {
       const error = new Error('an error');
 
       await act(async () => {
-        await mockedMutation.mutate({ id, error });
+        mockedMutation.mutate({ id, error });
         await waitForMutation();
       });
 
@@ -850,7 +853,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -910,7 +913,7 @@ describe('Items Mutations', () => {
         (chunk) => `/${buildRestoreItemsRoute(chunk)}`,
         items,
         (d) => d.id,
-        HttpMethod.POST,
+        HttpMethod.Post,
       );
 
       const mockedMutation = await mockMutation({
@@ -920,7 +923,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(itemIds);
+        mockedMutation.mutate(itemIds);
         await waitForMutation();
       });
 
@@ -962,7 +965,7 @@ describe('Items Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -974,7 +977,7 @@ describe('Items Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id, data: [id] });
+        mockedMutation.mutate({ id, data: [id] });
         await waitForMutation();
       });
 
@@ -1005,7 +1008,7 @@ describe('Items Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -1019,7 +1022,7 @@ describe('Items Mutations', () => {
       const error = new Error(`${StatusCodes.UNAUTHORIZED}`);
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           id,
           error,
         });

@@ -1,21 +1,21 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "module": "CommonJS",
+    "target": "ESNext",
+    "module": "NodeNext",
     "lib": ["dom", "esnext"],
-    "jsx": "react",
+    "jsx": "react-jsx",
     "sourceMap": true,
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "declaration": true,
-    "esModuleInterop": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "target": "esnext",
     "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
@@ -23,7 +23,5 @@
     "isolatedModules": true,
     "noEmit": false
   },
-  "include": ["src"],
-  "files": ["src/types.ts"], // allows to have the types.d.ts file under /dist
-  "exclude": ["dist", "example", "src/**/*.test.ts"]
+  "include": ["src"]
 }

@@ -9,12 +9,13 @@ import {
   QueryObserverBaseResult,
   UseMutationResult,
 } from 'react-query';
+import { expect } from 'vitest';
 
-import configureAxios from '../src/api/axios';
-import configureHooks from '../src/hooks';
-import configureQueryClient from '../src/queryClient';
-import { Notifier, QueryClientConfig } from '../src/types';
-import { API_HOST, DOMAIN, WS_HOST } from './constants';
+import configureAxios from '../src/api/axios.js';
+import configureHooks from '../src/hooks/index.js';
+import configureQueryClient from '../src/queryClient.js';
+import { Notifier, QueryClientConfig } from '../src/types.js';
+import { API_HOST, DOMAIN, WS_HOST } from './constants.js';
 
 type Args = { enableWebsocket?: boolean; notifier?: Notifier };
 
@@ -91,7 +92,7 @@ export const mockEndpoints = (endpoints: Endpoint[]) => {
   // mock endpoint with given response
   const server = nock(API_HOST);
   endpoints.forEach(({ route, method, statusCode, response, headers }) => {
-    server[(method || HttpMethod.GET).toLowerCase() as NockMethodType](
+    server[(method || HttpMethod.Get).toLowerCase() as NockMethodType](
       route,
     ).reply(statusCode || StatusCodes.OK, response, headers);
   });

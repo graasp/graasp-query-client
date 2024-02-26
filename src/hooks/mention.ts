@@ -2,10 +2,10 @@ import { CompleteMember, WebsocketClient } from '@graasp/sdk';
 
 import { UseQueryResult, useQuery } from 'react-query';
 
-import * as Api from '../api/index';
-import { buildMentionKey } from '../config/keys';
-import { QueryClientConfig } from '../types';
-import { configureWsChatMentionsHooks } from '../ws/index';
+import * as Api from '../api/index.js';
+import { buildMentionKey } from '../config/keys.js';
+import { QueryClientConfig } from '../types.js';
+import { configureWsChatMentionsHooks } from '../ws/index.js';
 
 export default (
   queryConfig: QueryClientConfig,

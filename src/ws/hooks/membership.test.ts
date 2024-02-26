@@ -5,18 +5,20 @@ import {
   PermissionLevel,
 } from '@graasp/sdk';
 
+import { afterEach, describe, expect, it } from 'vitest';
+
 import {
   ITEM_MEMBERSHIPS_RESPONSE,
   createMockMembership,
-} from '../../../test/constants';
+} from '../../../test/constants.js';
 import {
   getHandlerByChannel,
   mockWsHook,
   setUpWsTest,
-} from '../../../test/wsUtils';
-import { buildItemMembershipsKey } from '../../config/keys';
-import { KINDS, OPS, TOPICS } from '../constants';
-import { configureWsMembershipHooks } from './membership';
+} from '../../../test/wsUtils.js';
+import { buildItemMembershipsKey } from '../../config/keys.js';
+import { KINDS, OPS, TOPICS } from '../constants.js';
+import { configureWsMembershipHooks } from './membership.js';
 
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsMembershipHooks,

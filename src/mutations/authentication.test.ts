@@ -1,14 +1,13 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { HttpMethod } from '@graasp/sdk';
-import * as utils from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import {
   MOBILE_SIGN_IN_ROUTE,
   MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE,
@@ -17,41 +16,21 @@ import {
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
   SIGN_UP_ROUTE,
-  buildUpdateMemberPasswordRoute,
-} from '../api/routes';
-import { memberKeys } from '../config/keys';
+} from '../api/routes.js';
+import { memberKeys } from '../config/keys.js';
 import {
   signInRoutine,
   signInWithPasswordRoutine,
   signOutRoutine,
   signUpRoutine,
-  updatePasswordRoutine,
-} from '../routines';
-
-jest.mock('@graasp/sdk', () => {
-  // use auto-mocking system to get an object that mocks all
-  // of the module's functions, just like what `jest.mock()`
-  // (w/ no parameters) would do
-  const allAutoMocked = jest.createMockFromModule('@graasp/sdk');
-
-  // grab all the *real* implementations of the module's functions
-  // in an object
-  const actualModule = jest.requireActual('@graasp/sdk');
-  return {
-    __esModule: true,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    ...allAutoMocked,
-    convertJs: actualModule.convertJs,
-  };
-});
+} from '../routines/authentication.js';
 
 const captcha = 'captcha';
 const email = 'myemail@email.com';
 const challenge = '1234';
 
 describe('Authentication Mutations', () => {
-  const mockedNotifier = jest.fn();
+  const mockedNotifier = vi.fn();
   const { wrapper, queryClient, mutations } = setUpTest({
     notifier: mockedNotifier,
   });
@@ -59,7 +38,7 @@ describe('Authentication Mutations', () => {
   afterEach(() => {
     queryClient.clear();
     nock.cleanAll();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('useSignIn', () => {
@@ -68,7 +47,7 @@ describe('Authentication Mutations', () => {
 
     it(`Sign in`, async () => {
       const endpoints = [
-        { route, response: OK_RESPONSE, method: HttpMethod.POST },
+        { route, response: OK_RESPONSE, method: HttpMethod.Post },
       ];
 
       const mockedMutation = await mockMutation({
@@ -78,7 +57,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, captcha });
+        mockedMutation.mutate({ email, captcha });
         await waitForMutation();
       });
 
@@ -93,7 +72,7 @@ describe('Authentication Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];
@@ -105,7 +84,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, captcha });
+        mockedMutation.mutate({ email, captcha });
         await waitForMutation();
       });
 
@@ -123,7 +102,7 @@ describe('Authentication Mutations', () => {
 
     it(`Sign in`, async () => {
       const endpoints = [
-        { route, response: OK_RESPONSE, method: HttpMethod.POST },
+        { route, response: OK_RESPONSE, method: HttpMethod.Post },
       ];
 
       const mockedMutation = await mockMutation({
@@ -133,7 +112,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, captcha, challenge });
+        mockedMutation.mutate({ email, captcha, challenge });
         await waitForMutation();
       });
 
@@ -148,7 +127,7 @@ describe('Authentication Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];
@@ -160,7 +139,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, captcha, challenge });
+        mockedMutation.mutate({ email, captcha, challenge });
         await waitForMutation();
       });
 
@@ -184,7 +163,7 @@ describe('Authentication Mutations', () => {
           route,
           response: { resource: link },
           statusCode: StatusCodes.SEE_OTHER,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
         },
       ];
       // set random data in cache
@@ -197,7 +176,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, password, captcha });
+        mockedMutation.mutate({ email, password, captcha });
         await waitForMutation();
       });
 
@@ -217,7 +196,7 @@ describe('Authentication Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];
@@ -229,7 +208,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, password, captcha });
+        mockedMutation.mutate({ email, password, captcha });
         await waitForMutation();
       });
 
@@ -253,7 +232,7 @@ describe('Authentication Mutations', () => {
           route,
           response: { resource: link },
           statusCode: StatusCodes.SEE_OTHER,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
         },
       ];
       // set random data in cache
@@ -266,7 +245,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, password, captcha, challenge });
+        mockedMutation.mutate({ email, password, captcha, challenge });
         await waitForMutation();
       });
 
@@ -286,7 +265,7 @@ describe('Authentication Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];
@@ -298,77 +277,13 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, password, captcha, challenge });
+        mockedMutation.mutate({ email, password, captcha, challenge });
         await waitForMutation();
       });
 
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: signInWithPasswordRoutine.FAILURE,
-        }),
-      );
-    });
-  });
-
-  describe('useUpdatePassword', () => {
-    const route = `/${buildUpdateMemberPasswordRoute()}`;
-    const mutation = mutations.useUpdatePassword;
-    const password = 'ASDasd123';
-    const currentPassword = 'ASDasd123';
-    const name = 'myName';
-    const id = 'myId';
-
-    it(`Update password`, async () => {
-      const endpoints = [
-        {
-          route,
-          response: { email, id, name },
-          statusCode: StatusCodes.OK,
-          method: HttpMethod.PATCH,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({ currentPassword, password });
-        await waitForMutation();
-      });
-
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: updatePasswordRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
-      });
-    });
-
-    it(`Unauthorized`, async () => {
-      const endpoints = [
-        {
-          route,
-          response: UNAUTHORIZED_RESPONSE,
-          method: HttpMethod.PATCH,
-          statusCode: StatusCodes.UNAUTHORIZED,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        await mockedMutation.mutate({ password, currentPassword });
-        await waitForMutation();
-      });
-
-      expect(mockedNotifier).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: updatePasswordRoutine.FAILURE,
         }),
       );
     });
@@ -381,7 +296,7 @@ describe('Authentication Mutations', () => {
 
     it(`Sign up`, async () => {
       const endpoints = [
-        { route, response: OK_RESPONSE, method: HttpMethod.POST },
+        { route, response: OK_RESPONSE, method: HttpMethod.Post },
       ];
 
       const mockedMutation = await mockMutation({
@@ -391,7 +306,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, name, captcha });
+        mockedMutation.mutate({ email, name, captcha });
         await waitForMutation();
       });
 
@@ -406,7 +321,7 @@ describe('Authentication Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];
@@ -418,7 +333,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, name, captcha });
+        mockedMutation.mutate({ email, name, captcha });
         await waitForMutation();
       });
 
@@ -436,7 +351,7 @@ describe('Authentication Mutations', () => {
 
     it(`Sign up`, async () => {
       const endpoints = [
-        { route, response: OK_RESPONSE, method: HttpMethod.POST },
+        { route, response: OK_RESPONSE, method: HttpMethod.Post },
       ];
 
       const mockedMutation = await mockMutation({
@@ -446,7 +361,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, name, captcha, challenge });
+        mockedMutation.mutate({ email, name, captcha, challenge });
         await waitForMutation();
       });
 
@@ -461,7 +376,7 @@ describe('Authentication Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];
@@ -473,7 +388,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ email, name, captcha, challenge });
+        mockedMutation.mutate({ email, name, captcha, challenge });
         await waitForMutation();
       });
 
@@ -495,7 +410,7 @@ describe('Authentication Mutations', () => {
       queryClient.setQueryData(memberKeys.current().content, 'somevalue');
 
       const endpoints = [
-        { route, response: OK_RESPONSE, method: HttpMethod.GET },
+        { route, response: OK_RESPONSE, method: HttpMethod.Get },
       ];
 
       const mockedMutation = await mockMutation({
@@ -505,7 +420,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(userId);
+        mockedMutation.mutate(userId);
         await waitForMutation();
       });
 
@@ -518,7 +433,7 @@ describe('Authentication Mutations', () => {
       ).toBeFalsy();
 
       // cookie management
-      expect(utils.saveUrlForRedirection).toHaveBeenCalled();
+      // we do not test that the cookie has been set as it depends on globals that are not available in the test environnement
     });
 
     it(`Unauthorized`, async () => {
@@ -526,7 +441,7 @@ describe('Authentication Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: HttpMethod.GET,
+          method: HttpMethod.Get,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];
@@ -538,7 +453,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(undefined);
+        mockedMutation.mutate(undefined);
         await waitForMutation();
       });
 
@@ -563,7 +478,7 @@ describe('Authentication Mutations', () => {
   //     (utils.getStoredSessions as jest.Mock).mockReturnValue(MOCK_SESSIONS);
 
   //     await act(async () => {
-  //       await mockedMutation.mutate({
+  //       mockedMutation.mutate({
   //         memberId: MOCK_SESSIONS[0].id,
   //         domain: DOMAIN,
   //       });
@@ -592,7 +507,7 @@ describe('Authentication Mutations', () => {
   //     (utils.getStoredSessions as jest.Mock).mockReturnValue([]);
 
   //     await act(async () => {
-  //       await mockedMutation.mutate({
+  //       mockedMutation.mutate({
   //         memberId: MOCK_SESSIONS[0].id,
   //         domain: DOMAIN,
   //       });

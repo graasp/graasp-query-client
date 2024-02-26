@@ -2,11 +2,11 @@ import { UUID } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
-import * as Api from '../api';
-import { UndefinedArgument } from '../config/errors';
-import { buildActionsKey, buildAggregateActionsKey } from '../config/keys';
-import { QueryClientConfig } from '../types';
-import { AggregateActionsArgs, MappedAggregateBy } from '../utils/action';
+import * as Api from '../api/action.js';
+import { UndefinedArgument } from '../config/errors.js';
+import { buildActionsKey, buildAggregateActionsKey } from '../config/keys.js';
+import { QueryClientConfig } from '../types.js';
+import { AggregateActionsArgs, MappedAggregateBy } from '../utils/action.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;

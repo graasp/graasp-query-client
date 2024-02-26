@@ -2,11 +2,11 @@ import { MAX_TARGETS_FOR_READ_REQUEST, UUID } from '@graasp/sdk';
 
 import { useQuery, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
-import { splitRequestByIdsAndReturn } from '../api/axios';
-import { UndefinedArgument } from '../config/errors';
-import { itemKeys } from '../config/keys';
-import { QueryClientConfig } from '../types';
+import { splitRequestByIdsAndReturn } from '../api/axios.js';
+import * as Api from '../api/itemTag.js';
+import { UndefinedArgument } from '../config/errors.js';
+import { itemKeys } from '../config/keys.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;

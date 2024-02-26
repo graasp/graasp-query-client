@@ -1,7 +1,7 @@
 import { UUID } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types';
-import { buildExportItemRoute } from './routes';
+import { PartialQueryConfigForApi } from '../types.js';
+import { buildExportItemRoute } from './routes.js';
 
 /* eslint-disable import/prefer-default-export */
 export const exportItem = async (

@@ -1,30 +1,30 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { FolderItemFactory, HttpMethod, Invitation } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
   buildInvitation,
   buildMockInvitations,
-} from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+} from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import {
   buildDeleteInvitationRoute,
   buildPatchInvitationRoute,
   buildPostInvitationsRoute,
   buildResendInvitationRoute,
-} from '../api/routes';
-import { buildItemInvitationsKey } from '../config/keys';
+} from '../api/routes.js';
+import { buildItemInvitationsKey } from '../config/keys.js';
 import {
   deleteInvitationRoutine,
   patchInvitationRoutine,
   postInvitationsRoutine,
   resendInvitationRoutine,
-} from '../routines';
+} from '../routines/invitation.js';
 
 const item = FolderItemFactory();
 const itemId = item.id;
@@ -32,7 +32,7 @@ const itemId = item.id;
 const defaultInvitations = buildMockInvitations(itemId);
 
 describe('Invitations Mutations', () => {
-  const mockedNotifier = jest.fn();
+  const mockedNotifier = vi.fn();
   const { wrapper, queryClient, mutations } = setUpTest({
     notifier: mockedNotifier,
   });
@@ -58,7 +58,7 @@ describe('Invitations Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -70,7 +70,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, invitations: [newInvitation] });
+        mockedMutation.mutate({ itemId, invitations: [newInvitation] });
         await waitForMutation();
       });
 
@@ -94,7 +94,7 @@ describe('Invitations Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -106,7 +106,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, invitations: newInvitations });
+        mockedMutation.mutate({ itemId, invitations: newInvitations });
         await waitForMutation();
       });
 
@@ -125,7 +125,7 @@ describe('Invitations Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -137,7 +137,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, invitations: [newInvitation] });
+        mockedMutation.mutate({ itemId, invitations: [newInvitation] });
         await waitForMutation();
       });
 
@@ -159,7 +159,7 @@ describe('Invitations Mutations', () => {
       const endpoints = [
         {
           response: [newInvitationRecord, UNAUTHORIZED_RESPONSE],
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -171,7 +171,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, invitations: [newInvitation] });
+        mockedMutation.mutate({ itemId, invitations: [newInvitation] });
         await waitForMutation();
       });
 
@@ -209,7 +209,7 @@ describe('Invitations Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.PATCH,
+          method: HttpMethod.Patch,
           route,
         },
       ];
@@ -221,7 +221,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ ...newInvitation, itemId });
+        mockedMutation.mutate({ ...newInvitation, itemId });
         await waitForMutation();
       });
 
@@ -241,7 +241,7 @@ describe('Invitations Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.PATCH,
+          method: HttpMethod.Patch,
           route,
         },
       ];
@@ -253,7 +253,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ ...newInvitation, itemId });
+        mockedMutation.mutate({ ...newInvitation, itemId });
         await waitForMutation();
       });
 
@@ -292,7 +292,7 @@ describe('Invitations Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];
@@ -304,7 +304,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: invitationToDelete.id, itemId });
+        mockedMutation.mutate({ id: invitationToDelete.id, itemId });
         await waitForMutation();
       });
 
@@ -330,7 +330,7 @@ describe('Invitations Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];
@@ -342,7 +342,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: invitationToDelete.id, itemId });
+        mockedMutation.mutate({ id: invitationToDelete.id, itemId });
         await waitForMutation();
       });
 
@@ -374,7 +374,7 @@ describe('Invitations Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -386,7 +386,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: invitation.id, itemId });
+        mockedMutation.mutate({ id: invitation.id, itemId });
         await waitForMutation();
       });
 
@@ -400,7 +400,7 @@ describe('Invitations Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -412,7 +412,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: invitation.id, itemId });
+        mockedMutation.mutate({ id: invitation.id, itemId });
         await waitForMutation();
       });
 

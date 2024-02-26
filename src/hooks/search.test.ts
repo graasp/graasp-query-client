@@ -2,10 +2,11 @@ import { HttpMethod } from '@graasp/sdk';
 
 import axios from 'axios';
 import nock from 'nock';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { mockHook, setUpTest } from '../../test/utils';
-import { SEARCH_PUBLISHED_ITEMS_ROUTE } from '../api/routes';
-import { itemKeys } from '../config/keys';
+import { mockHook, setUpTest } from '../../test/utils.js';
+import { SEARCH_PUBLISHED_ITEMS_ROUTE } from '../api/routes.js';
+import { itemKeys } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -93,7 +94,7 @@ const RESPONSE = {
 describe('Published Search Hook', () => {
   afterEach(() => {
     nock.cleanAll();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     queryClient.clear();
   });
 
@@ -112,7 +113,7 @@ describe('Published Search Hook', () => {
         isPublishedRoot: true,
       });
       const response = RESPONSE;
-      const endpoints = [{ route, response, method: HttpMethod.POST }];
+      const endpoints = [{ route, response, method: HttpMethod.Post }];
       const { data } = await mockHook({
         endpoints,
         hook,
@@ -145,7 +146,8 @@ describe('Published Search Hook', () => {
       const query = 'some string';
       const categories = [['mycategoryid']];
       const isPublishedRoot = true;
-      const spy = jest.spyOn(axios, 'post');
+
+      const spy = vi.spyOn(axios, 'post');
       const key = itemKeys.search({
         isPublishedRoot,
         query,
@@ -160,7 +162,7 @@ describe('Published Search Hook', () => {
           page: 1,
         });
       const response = RESPONSE;
-      const endpoints = [{ route, response, method: HttpMethod.POST }];
+      const endpoints = [{ route, response, method: HttpMethod.Post }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
       expect(spy).toHaveBeenCalledWith(expect.stringContaining(route), {
@@ -196,7 +198,7 @@ describe('Published Search Hook', () => {
       const categories = [['mycategoryid']];
       const isPublishedRoot = true;
       const page = 3;
-      const spy = jest.spyOn(axios, 'post');
+      const spy = vi.spyOn(axios, 'post');
       const key = itemKeys.search({
         isPublishedRoot,
         query,
@@ -211,7 +213,7 @@ describe('Published Search Hook', () => {
           page,
         });
       const response = RESPONSE;
-      const endpoints = [{ route, response, method: HttpMethod.POST }];
+      const endpoints = [{ route, response, method: HttpMethod.Post }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
       expect(spy).toHaveBeenCalledWith(expect.stringContaining(route), {
@@ -260,7 +262,7 @@ describe('Published Search Hook', () => {
           enabled: false,
         });
       const response = RESPONSE;
-      const endpoints = [{ route, response, method: HttpMethod.POST }];
+      const endpoints = [{ route, response, method: HttpMethod.Post }];
       const { data, isFetched } = await mockHook({
         endpoints,
         hook,

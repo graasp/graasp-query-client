@@ -2,10 +2,10 @@ import { UUID, WebsocketClient } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
-import * as Api from '../api';
-import { buildItemChatKey } from '../config/keys';
-import { QueryClientConfig } from '../types';
-import { configureWsChatHooks } from '../ws';
+import * as Api from '../api/chat.js';
+import { buildItemChatKey } from '../config/keys.js';
+import { QueryClientConfig } from '../types.js';
+import { configureWsChatHooks } from '../ws/index.js';
 
 export default (
   queryConfig: QueryClientConfig,

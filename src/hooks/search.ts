@@ -2,10 +2,10 @@ import { Category } from '@graasp/sdk';
 
 import { useQuery } from 'react-query';
 
-import * as Api from '../api';
-import { itemKeys } from '../config/keys';
-import { QueryClientConfig } from '../types';
-import useDebounce from './useDebounce';
+import * as Api from '../api/search.js';
+import { itemKeys } from '../config/keys.js';
+import { QueryClientConfig } from '../types.js';
+import useDebounce from './useDebounce.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;

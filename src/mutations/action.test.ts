@@ -3,16 +3,17 @@ import { FolderItemFactory, HttpMethod } from '@graasp/sdk';
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { buildExportActions, buildPostItemAction } from '../api/routes';
-import { exportActionsRoutine, postActionRoutine } from '../routines';
+import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import { buildExportActions, buildPostItemAction } from '../api/routes.js';
+import { exportActionsRoutine, postActionRoutine } from '../routines/index.js';
 
 describe('Action Mutations', () => {
   const itemId = FolderItemFactory().id;
 
-  const mockedNotifier = jest.fn();
+  const mockedNotifier = vi.fn();
   const { wrapper, queryClient, mutations } = setUpTest({
     notifier: mockedNotifier,
   });
@@ -28,7 +29,7 @@ describe('Action Mutations', () => {
 
     it(`Export Actions`, async () => {
       const endpoints = [
-        { route, response: OK_RESPONSE, method: HttpMethod.POST },
+        { route, response: OK_RESPONSE, method: HttpMethod.Post },
       ];
 
       const mockedMutation = await mockMutation({
@@ -38,7 +39,7 @@ describe('Action Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(itemId);
+        mockedMutation.mutate(itemId);
         await waitForMutation();
       });
 
@@ -54,7 +55,7 @@ describe('Action Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];
@@ -66,7 +67,7 @@ describe('Action Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(itemId);
+        mockedMutation.mutate(itemId);
         await waitForMutation();
       });
 
@@ -85,7 +86,7 @@ describe('Action Mutations', () => {
 
     it(`Post Item Action`, async () => {
       const endpoints = [
-        { route, response: OK_RESPONSE, method: HttpMethod.POST },
+        { route, response: OK_RESPONSE, method: HttpMethod.Post },
       ];
 
       const mockedMutation = await mockMutation({
@@ -95,7 +96,7 @@ describe('Action Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, payload });
+        mockedMutation.mutate({ itemId, payload });
         await waitForMutation();
       });
 
@@ -111,7 +112,7 @@ describe('Action Mutations', () => {
         {
           route,
           response: UNAUTHORIZED_RESPONSE,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
       ];
@@ -123,7 +124,7 @@ describe('Action Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, payload });
+        mockedMutation.mutate({ itemId, payload });
         await waitForMutation();
       });
 

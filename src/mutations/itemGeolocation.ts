@@ -3,13 +3,13 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from 'react-query';
 
-import { deleteItemGeolocation, putItemGeolocation } from '../api';
-import { itemKeys, itemsWithGeolocationKeys } from '../config/keys';
+import * as Api from '../api/itemGeolocation.js';
+import { itemKeys, itemsWithGeolocationKeys } from '../config/keys.js';
 import {
   deleteItemGeolocationRoutine,
   putItemGeolocationRoutine,
-} from '../routines';
-import { QueryClientConfig } from '../types';
+} from '../routines/itemGeolocation.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const usePutItemGeolocation = () => {
@@ -19,7 +19,7 @@ export default (queryConfig: QueryClientConfig) => {
         itemId: DiscriminatedItem['id'];
         geolocation: Pick<ItemGeolocation, 'lat' | 'lng'> &
           Pick<Partial<ItemGeolocation>, 'country' | 'addressLabel'>;
-      }) => putItemGeolocation(payload, queryConfig),
+      }) => Api.putItemGeolocation(payload, queryConfig),
       {
         onSuccess: () => {
           queryConfig.notifier?.({
@@ -45,7 +45,7 @@ export default (queryConfig: QueryClientConfig) => {
     const queryClient = useQueryClient();
     return useMutation(
       (payload: { itemId: DiscriminatedItem['id'] }) =>
-        deleteItemGeolocation(payload, queryConfig),
+        Api.deleteItemGeolocation(payload, queryConfig),
       {
         onSuccess: () => {
           queryConfig.notifier?.({

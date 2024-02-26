@@ -13,15 +13,15 @@ import {
 } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
-import configureAxios from './api/axios';
+import configureAxios from './api/axios.js';
 import {
   CACHE_TIME_MILLISECONDS,
   STALE_TIME_MILLISECONDS,
-} from './config/constants';
-import configureHooks from './hooks';
-import configureMutations from './mutations';
-import type { QueryClientConfig } from './types';
-import { getHostname } from './utils/util';
+} from './config/constants.js';
+import configureHooks from './hooks/index.js';
+import configureMutations from './mutations/index.js';
+import type { QueryClientConfig } from './types.js';
+import { getHostname } from './utils/util.js';
 
 /* istanbul ignore next */
 // Query client retry function decides when and how many times a request should be retried

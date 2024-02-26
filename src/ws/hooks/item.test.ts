@@ -1,14 +1,16 @@
 import { DiscriminatedItem, FolderItemFactory } from '@graasp/sdk';
 
-import { generateFolders } from '../../../test/constants';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
+import { generateFolders } from '../../../test/constants.js';
 import {
   getHandlerByChannel,
   mockWsHook,
   setUpWsTest,
-} from '../../../test/wsUtils';
-import { OWN_ITEMS_KEY, itemKeys } from '../../config/keys';
-import { KINDS, OPS, TOPICS } from '../constants';
-import { configureWsItemHooks } from './item';
+} from '../../../test/wsUtils.js';
+import { OWN_ITEMS_KEY, itemKeys } from '../../config/keys.js';
+import { KINDS, OPS, TOPICS } from '../constants.js';
+import { configureWsItemHooks } from './item.js';
 
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsItemHooks,

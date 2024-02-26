@@ -5,17 +5,21 @@ import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
 import { v4 } from 'uuid';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { ITEM_GEOLOCATION, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { buildPutItemGeolocationRoute } from '../api/routes';
-import { itemKeys, itemsWithGeolocationKeys } from '../config/keys';
+import {
+  ITEM_GEOLOCATION,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import { buildPutItemGeolocationRoute } from '../api/routes.js';
+import { itemKeys, itemsWithGeolocationKeys } from '../config/keys.js';
 import {
   deleteItemGeolocationRoutine,
   putItemGeolocationRoutine,
-} from '../routines';
+} from '../routines/itemGeolocation.js';
 
-const mockedNotifier = jest.fn();
+const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
@@ -48,7 +52,7 @@ describe('Item Flag Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.PUT,
+          method: HttpMethod.Put,
           route,
         },
       ];
@@ -90,7 +94,7 @@ describe('Item Flag Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.PUT,
+          method: HttpMethod.Put,
           route,
         },
       ];
@@ -126,7 +130,7 @@ describe('Item Flag Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.PUT,
+          method: HttpMethod.Put,
           route,
         },
       ];
@@ -178,7 +182,7 @@ describe('Item Flag Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];
@@ -211,7 +215,7 @@ describe('Item Flag Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];

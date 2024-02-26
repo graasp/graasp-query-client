@@ -7,16 +7,16 @@ import {
 
 import { useQuery, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
-import { splitRequestByIdsAndReturn } from '../api/axios';
+import { splitRequestByIdsAndReturn } from '../api/axios.js';
+import * as Api from '../api/member.js';
 import {
   CONSTANT_KEY_STALE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
-} from '../config/constants';
-import { UndefinedArgument } from '../config/errors';
-import { memberKeys } from '../config/keys';
-import { getMembersRoutine } from '../routines/member';
-import { QueryClientConfig } from '../types';
+} from '../config/constants.js';
+import { UndefinedArgument } from '../config/errors.js';
+import { memberKeys } from '../config/keys.js';
+import { getMembersRoutine } from '../routines/member.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions, notifier } = queryConfig;

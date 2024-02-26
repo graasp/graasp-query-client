@@ -2,10 +2,13 @@ import { ItemLike, Member, UUID } from '@graasp/sdk';
 
 import { useMutation, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
-import { itemKeys, memberKeys } from '../config/keys';
-import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
-import { QueryClientConfig } from '../types';
+import * as Api from '../api/itemLike.js';
+import { itemKeys, memberKeys } from '../config/keys.js';
+import {
+  deleteItemLikeRoutine,
+  postItemLikeRoutine,
+} from '../routines/itemLike.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

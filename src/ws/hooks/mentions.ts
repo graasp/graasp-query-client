@@ -3,8 +3,8 @@ import { Channel, ChatMention, UUID, WebsocketClient } from '@graasp/sdk';
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 
-import { buildMentionKey } from '../../config/keys';
-import { OPS, TOPICS } from '../constants';
+import { buildMentionKey } from '../../config/keys.js';
+import { OPS, TOPICS } from '../constants.js';
 
 // todo: use graasp-types?
 interface MentionEvent {

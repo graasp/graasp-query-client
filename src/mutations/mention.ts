@@ -2,14 +2,14 @@ import { UUID } from '@graasp/sdk';
 
 import { useMutation, useQueryClient } from 'react-query';
 
-import * as Api from '../api/index';
-import { buildMentionKey } from '../config/keys';
+import * as Api from '../api/mention.js';
+import { buildMentionKey } from '../config/keys.js';
 import {
   clearMentionsRoutine,
   deleteMentionRoutine,
   patchMentionRoutine,
-} from '../routines/index';
-import { QueryClientConfig } from '../types';
+} from '../routines/index.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const usePatchMention = () => {

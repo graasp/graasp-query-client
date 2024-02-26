@@ -1,7 +1,7 @@
 import { DiscriminatedItem, ItemPublished, ResultOf, UUID } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types';
-import { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 import {
   buildGetAllPublishedItemsRoute,
   buildGetItemPublishedInformationRoute,
@@ -11,7 +11,7 @@ import {
   buildItemPublishRoute,
   buildItemUnpublishRoute,
   buildManyGetItemPublishedInformationsRoute,
-} from './routes';
+} from './routes.js';
 
 export const getAllPublishedItems = async (
   args: { categoryIds?: UUID[] },

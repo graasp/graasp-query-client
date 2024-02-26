@@ -10,6 +10,7 @@ import {
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   FILE_RESPONSE,
@@ -18,13 +19,13 @@ import {
   UNAUTHORIZED_RESPONSE,
   buildResultOfData,
   generateFolders,
-} from '../../test/constants';
+} from '../../test/constants.js';
 import {
   Endpoint,
   mockHook,
   setUpTest,
   splitEndpointByIds,
-} from '../../test/utils';
+} from '../../test/utils.js';
 import {
   GET_OWN_ITEMS_ROUTE,
   SHARED_ITEM_WITH_ROUTE,
@@ -35,8 +36,8 @@ import {
   buildGetItemParents,
   buildGetItemRoute,
   buildGetItemsRoute,
-} from '../api/routes';
-import { OWN_ITEMS_KEY, itemKeys } from '../config/keys';
+} from '../api/routes.js';
+import { OWN_ITEMS_KEY, itemKeys } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

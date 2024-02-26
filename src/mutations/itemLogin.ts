@@ -3,14 +3,14 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
-import { itemKeys } from '../config/keys';
+import * as Api from '../api/itemLogin.js';
+import { itemKeys } from '../config/keys.js';
 import {
   deleteItemLoginSchemaRoutine,
   postItemLoginRoutine,
   putItemLoginSchemaRoutine,
-} from '../routines';
-import type { QueryClientConfig } from '../types';
+} from '../routines/itemLogin.js';
+import type { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

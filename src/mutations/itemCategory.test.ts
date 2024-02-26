@@ -1,24 +1,27 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { HttpMethod } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { ITEM_CATEGORIES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import {
+  ITEM_CATEGORIES,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import {
   buildDeleteItemCategoryRoute,
   buildPostItemCategoryRoute,
-} from '../api/routes';
-import { itemKeys } from '../config/keys';
+} from '../api/routes.js';
+import { itemKeys } from '../config/keys.js';
 import {
   deleteItemCategoryRoutine,
   postItemCategoryRoutine,
-} from '../routines';
+} from '../routines/itemCategory.js';
 
-const mockedNotifier = jest.fn();
+const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
@@ -42,7 +45,7 @@ describe('Item Category Mutations', () => {
       const endpoints = [
         {
           response: { itemId: 'item-id', categoryId: 'new-category' },
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -54,7 +57,7 @@ describe('Item Category Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           itemId,
           categoryId,
         });
@@ -73,7 +76,7 @@ describe('Item Category Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -85,7 +88,7 @@ describe('Item Category Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, categoryId });
+        mockedMutation.mutate({ itemId, categoryId });
         await waitForMutation();
       });
 
@@ -114,7 +117,7 @@ describe('Item Category Mutations', () => {
       const endpoints = [
         {
           response: { itemId: 'item-id' },
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];
@@ -126,7 +129,7 @@ describe('Item Category Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           itemCategoryId,
           itemId,
         });
@@ -146,7 +149,7 @@ describe('Item Category Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -158,7 +161,7 @@ describe('Item Category Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemCategoryId, itemId });
+        mockedMutation.mutate({ itemCategoryId, itemId });
         await waitForMutation();
       });
 

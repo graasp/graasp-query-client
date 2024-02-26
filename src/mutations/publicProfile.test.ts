@@ -2,12 +2,13 @@ import { HttpMethod, MemberFactory } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import nock from 'nock';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { MEMBERS_ROUTE, PUBLIC_PROFILE_ROUTE } from '../api/routes';
-import { memberKeys } from '../config/keys';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import { MEMBERS_ROUTE, PUBLIC_PROFILE_ROUTE } from '../api/routes.js';
+import { memberKeys } from '../config/keys.js';
 
-const mockedNotifier = jest.fn();
+const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
@@ -37,7 +38,7 @@ describe('Public Profile Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -49,7 +50,7 @@ describe('Public Profile Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(newProfile);
+        mockedMutation.mutate(newProfile);
         await waitForMutation();
       });
 
@@ -75,7 +76,7 @@ describe('Public Profile Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.PATCH,
+          method: HttpMethod.Patch,
           route,
         },
       ];
@@ -88,7 +89,7 @@ describe('Public Profile Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(payload);
+        mockedMutation.mutate(payload);
         await waitForMutation();
       });
 

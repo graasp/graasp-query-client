@@ -1,21 +1,21 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { FolderItemFactory, HttpMethod, MemberFactory } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   ITEM_PUBLISHED_DATA,
   UNAUTHORIZED_RESPONSE,
   generateFolders,
-} from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
-import { buildItemPublishRoute } from '../api/routes';
-import { itemKeys, memberKeys } from '../config/keys';
-import { publishItemRoutine } from '../routines';
+} from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import { buildItemPublishRoute } from '../api/routes.js';
+import { itemKeys, memberKeys } from '../config/keys.js';
+import { publishItemRoutine } from '../routines/itemPublish.js';
 
-const mockedNotifier = jest.fn();
+const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
@@ -51,7 +51,7 @@ describe('Publish Item', () => {
       const endpoints = [
         {
           response: ITEM_PUBLISHED_DATA,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -63,7 +63,7 @@ describe('Publish Item', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           id: itemId,
           notification,
         });
@@ -107,7 +107,7 @@ describe('Publish Item', () => {
       const endpoints = [
         {
           response: ITEM_PUBLISHED_DATA,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -119,7 +119,7 @@ describe('Publish Item', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           id: itemId,
           notification: false,
         });
@@ -152,7 +152,7 @@ describe('Publish Item', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -164,7 +164,7 @@ describe('Publish Item', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({
+        mockedMutation.mutate({
           id: itemId,
           notification,
         });

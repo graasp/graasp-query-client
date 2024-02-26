@@ -4,11 +4,11 @@ import {
   AggregateMetric,
   Context,
   CountGroupBy,
-  Item,
+  DiscriminatedItem,
 } from '@graasp/sdk';
 
 export type AggregateActionsArgs<K extends AggregateBy[]> = {
-  itemId: Item['id'];
+  itemId: DiscriminatedItem['id'];
   view: `${Context}` | Context;
   requestedSampleSize: number;
   type?: string[];

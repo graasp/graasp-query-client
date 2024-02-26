@@ -3,24 +3,28 @@ import { FolderItemFactory, HttpMethod, MemberFactory } from '@graasp/sdk';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { act } from 'react-test-renderer';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+import { ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import {
   buildDeleteItemLikeRoute,
   buildPostItemLikeRoute,
-} from '../api/routes';
-import { memberKeys } from '../config/keys';
-import { deleteItemLikeRoutine, postItemLikeRoutine } from '../routines';
+} from '../api/routes.js';
+import { memberKeys } from '../config/keys.js';
+import {
+  deleteItemLikeRoutine,
+  postItemLikeRoutine,
+} from '../routines/itemLike.js';
 
-const mockedNotifier = jest.fn();
+const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 
 describe('Item Like Mutations', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     queryClient.clear();
     nock.cleanAll();
   });
@@ -40,7 +44,7 @@ describe('Item Like Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -52,7 +56,7 @@ describe('Item Like Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, memberId });
+        mockedMutation.mutate({ itemId, memberId });
         await waitForMutation();
       });
 
@@ -69,7 +73,7 @@ describe('Item Like Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -81,7 +85,7 @@ describe('Item Like Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, memberId });
+        mockedMutation.mutate({ itemId, memberId });
         await waitForMutation();
       });
 
@@ -108,7 +112,7 @@ describe('Item Like Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];
@@ -120,7 +124,7 @@ describe('Item Like Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, memberId });
+        mockedMutation.mutate({ itemId, memberId });
         await waitForMutation();
       });
 
@@ -137,7 +141,7 @@ describe('Item Like Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           route,
         },
       ];
@@ -149,7 +153,7 @@ describe('Item Like Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ itemId, memberId });
+        mockedMutation.mutate({ itemId, memberId });
         await waitForMutation();
       });
 

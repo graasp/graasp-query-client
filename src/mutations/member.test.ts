@@ -9,23 +9,28 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   AVATAR_BLOB_RESPONSE,
   OK_RESPONSE,
   UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils';
+} from '../../test/constants.js';
+import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import {
   SIGN_OUT_ROUTE,
   buildDeleteMemberRoute,
   buildPatchMember,
+  buildUpdateMemberPasswordRoute,
   buildUploadAvatarRoute,
-} from '../api/routes';
-import { memberKeys } from '../config/keys';
-import { uploadAvatarRoutine } from '../routines';
+} from '../api/routes.js';
+import { memberKeys } from '../config/keys.js';
+import {
+  updatePasswordRoutine,
+  uploadAvatarRoutine,
+} from '../routines/member.js';
 
-const mockedNotifier = jest.fn();
+const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
@@ -51,7 +56,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(undefined);
+        mockedMutation.mutate(undefined);
         await waitForMutation();
       });
 
@@ -67,7 +72,7 @@ describe('Member Mutations', () => {
       queryClient.setQueryData(memberKeys.current().content, member);
       const endpoints = [
         {
-          method: HttpMethod.GET,
+          method: HttpMethod.Get,
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
           route,
@@ -80,7 +85,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate(undefined);
+        mockedMutation.mutate(undefined);
         await waitForMutation();
       });
 
@@ -100,7 +105,7 @@ describe('Member Mutations', () => {
       const endpoints = [
         {
           route: `/${buildDeleteMemberRoute(memberId)}`,
-          method: HttpMethod.DELETE,
+          method: HttpMethod.Delete,
           response: OK_RESPONSE,
         },
         {
@@ -118,7 +123,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: memberId });
+        mockedMutation.mutate({ id: memberId });
         await waitForMutation(2000);
       });
 
@@ -134,7 +139,7 @@ describe('Member Mutations', () => {
       queryClient.setQueryData(memberKeys.current().content, member);
       const endpoints = [
         {
-          method: HttpMethod.GET,
+          method: HttpMethod.Get,
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
           route: `/${buildDeleteMemberRoute(memberId)}`,
@@ -147,7 +152,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: memberId });
+        mockedMutation.mutate({ id: memberId });
         await waitForMutation();
       });
 
@@ -172,7 +177,7 @@ describe('Member Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.PATCH,
+          method: HttpMethod.Patch,
           route,
         },
       ];
@@ -183,7 +188,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id, ...newMember });
+        mockedMutation.mutate({ id, ...newMember });
         await waitForMutation();
       });
 
@@ -201,7 +206,7 @@ describe('Member Mutations', () => {
         {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.PATCH,
+          method: HttpMethod.Patch,
           route,
         },
       ];
@@ -212,7 +217,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id, ...newMember });
+        mockedMutation.mutate({ id, ...newMember });
         await waitForMutation();
       });
 
@@ -244,7 +249,7 @@ describe('Member Mutations', () => {
       const endpoints = [
         {
           response,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -256,7 +261,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id, data: {} });
+        mockedMutation.mutate({ id, data: {} });
         await waitForMutation();
       });
 
@@ -287,7 +292,7 @@ describe('Member Mutations', () => {
         {
           response,
           statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.POST,
+          method: HttpMethod.Post,
           route,
         },
       ];
@@ -299,7 +304,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id, error: StatusCodes.UNAUTHORIZED });
+        mockedMutation.mutate({ id, error: StatusCodes.UNAUTHORIZED });
         await waitForMutation();
       });
 
@@ -314,6 +319,71 @@ describe('Member Mutations', () => {
         type: uploadAvatarRoutine.FAILURE,
         payload: { error: StatusCodes.UNAUTHORIZED },
       });
+    });
+  });
+
+  describe('useUpdatePassword', () => {
+    const route = `/${buildUpdateMemberPasswordRoute()}`;
+    const mutation = mutations.useUpdatePassword;
+    const password = 'ASDasd123';
+    const currentPassword = 'ASDasd123';
+    const name = 'myName';
+    const id = 'myId';
+    const email = 'myemail@email.com';
+
+    it(`Update password`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: { email, id, name },
+          statusCode: StatusCodes.OK,
+          method: HttpMethod.Patch,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({ currentPassword, password });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: updatePasswordRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
+      });
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          method: HttpMethod.Patch,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({ password, currentPassword });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: updatePasswordRoutine.FAILURE,
+        }),
+      );
     });
   });
 });

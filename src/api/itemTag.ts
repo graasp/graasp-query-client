@@ -1,14 +1,14 @@
 import { ItemTag, ItemTagType, ResultOf, UUID } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types';
-import { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 import {
   GET_TAGS_ROUTE,
   buildDeleteItemTagRoute,
   buildGetItemTagsRoute,
   buildGetItemsTagsRoute,
   buildPostItemTagRoute,
-} from './routes';
+} from './routes.js';
 
 export const getTags = async ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   axios.get(`${API_HOST}/${GET_TAGS_ROUTE}`).then(({ data }) => data);

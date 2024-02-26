@@ -4,7 +4,7 @@ import {
   PermissionLevel,
   ResultOf,
   UUID,
-  partition,
+  partitionArray as partition,
 } from '@graasp/sdk';
 import { FAILURE_MESSAGES, SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -12,19 +12,21 @@ import { AxiosError } from 'axios';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import { useMutation, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
+import * as InvitationApi from '../api/invitation.js';
+import * as MemberApi from '../api/member.js';
+import * as Api from '../api/membership.js';
 import {
   buildItemInvitationsKey,
   buildItemMembershipsKey,
   buildManyItemMembershipsKey,
-} from '../config/keys';
+} from '../config/keys.js';
+import { shareItemRoutine } from '../routines/member.js';
 import {
   deleteItemMembershipRoutine,
   editItemMembershipRoutine,
   postItemMembershipRoutine,
-  shareItemRoutine,
-} from '../routines';
-import { QueryClientConfig } from '../types';
+} from '../routines/membership.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -171,7 +173,7 @@ export default (queryConfig: QueryClientConfig) => {
 
         // check email has an associated account
         // assume will receive only one member per mail
-        const accounts = await Api.getMembersBy(
+        const accounts = await MemberApi.getMembersBy(
           { emails: dataWithEmail.map(({ email }) => email) },
           queryConfig,
         );
@@ -213,7 +215,7 @@ export default (queryConfig: QueryClientConfig) => {
             errors: [],
           };
           if (invitations.length) {
-            invitationsResult = await Api.postInvitations(
+            invitationsResult = await InvitationApi.postInvitations(
               {
                 itemId,
                 invitations,

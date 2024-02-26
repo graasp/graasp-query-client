@@ -2,10 +2,13 @@ import { UUID } from '@graasp/sdk';
 
 import { useMutation, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
-import { memberKeys } from '../config/keys';
-import { addFavoriteItemRoutine, deleteFavoriteItemRoutine } from '../routines';
-import { QueryClientConfig } from '../types';
+import * as Api from '../api/itemFavorite.js';
+import { memberKeys } from '../config/keys.js';
+import {
+  addFavoriteItemRoutine,
+  deleteFavoriteItemRoutine,
+} from '../routines/itemFavorite.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

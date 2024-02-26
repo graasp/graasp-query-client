@@ -9,21 +9,25 @@ import {
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   ITEM_TAGS,
   UNAUTHORIZED_RESPONSE,
   buildResultOfData,
   generateFolders,
-} from '../../test/constants';
+} from '../../test/constants.js';
 import {
   mockHook,
   setUpTest,
   splitEndpointByIds,
   splitEndpointByIdsForErrors,
-} from '../../test/utils';
-import { buildGetItemTagsRoute, buildGetItemsTagsRoute } from '../api/routes';
-import { itemKeys } from '../config/keys';
+} from '../../test/utils.js';
+import {
+  buildGetItemTagsRoute,
+  buildGetItemsTagsRoute,
+} from '../api/routes.js';
+import { itemKeys } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

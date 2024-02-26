@@ -1,7 +1,7 @@
 import { ItemFlag, UUID } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types';
-import { buildPostItemFlagRoute } from './routes';
+import { PartialQueryConfigForApi } from '../types.js';
+import { buildPostItemFlagRoute } from './routes.js';
 
 // payload: flagId, itemId
 // eslint-disable-next-line import/prefer-default-export

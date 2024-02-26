@@ -1,21 +1,30 @@
 import axios from 'axios';
+import {
+  MockInstance,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
-import configureAxios from './axios';
-import { searchPublishedItems } from './search';
+import configureAxios from './axios.js';
+import { searchPublishedItems } from './search.js';
 
 type SearchQuery = { queries: { q: string; filter: string }[] };
 
 describe('Search API', () => {
   describe('searchPublishedItems', () => {
-    let spy: jest.SpyInstance;
+    let spy: MockInstance;
     const axiosInstance = configureAxios();
 
     beforeEach(() => {
-      spy = jest.spyOn(axios, 'post').mockImplementation(async () => true);
+      spy = vi.spyOn(axios, 'post').mockImplementation(async () => true);
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it('correctly send request', async () => {

@@ -1,4 +1,4 @@
-import createRoutine from './utils';
+import createRoutine from './utils.js';
 
 export const changePlanRoutine = createRoutine('SUBSCRIPTION_CHANGE_PLAN');
 export const createSetupIntentRoutine = createRoutine(

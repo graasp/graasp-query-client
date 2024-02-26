@@ -13,9 +13,9 @@ import {
 
 import qs from 'qs';
 
-import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
-import { PaginationParams } from '../types';
-import { AggregateActionsArgs } from '../utils/action';
+import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
+import { PaginationParams } from '../types.js';
+import { AggregateActionsArgs } from '../utils/action.js';
 
 export const APPS_ROUTE = 'app-items';
 export const ITEMS_ROUTE = 'items';

@@ -1,7 +1,7 @@
 import { Category, INDEX_NAME, MeiliSearchResults } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types';
-import { SEARCH_PUBLISHED_ITEMS_ROUTE } from './routes';
+import { PartialQueryConfigForApi } from '../types.js';
+import { SEARCH_PUBLISHED_ITEMS_ROUTE } from './routes.js';
 
 export type MeiliSearchProps = {
   limit?: number;

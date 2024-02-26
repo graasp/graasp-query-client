@@ -10,16 +10,16 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
-      - name: install packages
+      - name: Install dependencies
         run: yarn
 
       - name: Check code style, lint and type-check code
         run: yarn check
 
-      - name: build
+      - name: Build
         run: yarn build
 
-      - name: jest test
+      - name: Test
         run: yarn test

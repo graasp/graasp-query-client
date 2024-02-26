@@ -3,20 +3,21 @@ import { Channel } from '@graasp/sdk';
 import { renderHook } from '@testing-library/react';
 import React from 'react';
 import { QueryClient } from 'react-query';
+import { vi } from 'vitest';
 
-import configureAxios from '../src/api/axios';
-import configureQueryClient from '../src/queryClient';
-import { Notifier, QueryClientConfig } from '../src/types';
-import { API_HOST, DOMAIN, WS_HOST } from './constants';
+import configureAxios from '../src/api/axios.js';
+import configureQueryClient from '../src/queryClient.js';
+import { Notifier, QueryClientConfig } from '../src/types.js';
+import { API_HOST, DOMAIN, WS_HOST } from './constants.js';
 
 export type Handler = { channel: Channel; handler: (event: unknown) => void };
 
 const MockedWebsocket = (handlers: Handler[]) => ({
-  subscribe: jest.fn((channel, handler) => {
+  subscribe: vi.fn((channel, handler) => {
     // eslint-disable-next-line no-param-reassign
     handlers.push({ channel, handler });
   }),
-  unsubscribe: jest.fn(),
+  unsubscribe: vi.fn(),
 });
 
 export const setUpWsTest = (args?: {

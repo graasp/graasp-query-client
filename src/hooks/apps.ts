@@ -1,9 +1,9 @@
 import { useQuery } from 'react-query';
 
-import * as Api from '../api';
-import { CONSTANT_KEY_STALE_TIME_MILLISECONDS } from '../config/constants';
-import { APPS_KEY } from '../config/keys';
-import { QueryClientConfig } from '../types';
+import * as Api from '../api/apps.js';
+import { CONSTANT_KEY_STALE_TIME_MILLISECONDS } from '../config/constants.js';
+import { APPS_KEY } from '../config/keys.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;

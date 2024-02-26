@@ -1,14 +1,19 @@
 import { ChatMention, MemberFactory, MentionStatus } from '@graasp/sdk';
 
-import { buildChatMention, buildMemberMentions } from '../../../test/constants';
+import { afterEach, describe, expect, it } from 'vitest';
+
+import {
+  buildChatMention,
+  buildMemberMentions,
+} from '../../../test/constants.js';
 import {
   getHandlerByChannel,
   mockWsHook,
   setUpWsTest,
-} from '../../../test/wsUtils';
-import { buildItemChatKey, buildMentionKey } from '../../config/keys';
-import { OPS, TOPICS } from '../constants';
-import { configureWsChatMentionsHooks } from './mentions';
+} from '../../../test/wsUtils.js';
+import { buildItemChatKey, buildMentionKey } from '../../config/keys.js';
+import { OPS, TOPICS } from '../constants.js';
+import { configureWsChatMentionsHooks } from './mentions.js';
 
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsChatMentionsHooks,

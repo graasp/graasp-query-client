@@ -3,8 +3,8 @@ import { Channel, ChatMessage, UUID, WebsocketClient } from '@graasp/sdk';
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 
-import { buildItemChatKey } from '../../config/keys';
-import { KINDS, OPS, TOPICS } from '../constants';
+import { buildItemChatKey } from '../../config/keys.js';
+import { KINDS, OPS, TOPICS } from '../constants.js';
 
 // todo: use graasp-types?
 interface ChatEvent {

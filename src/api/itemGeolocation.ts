@@ -1,14 +1,14 @@
-import { DiscriminatedItem, Item, ItemGeolocation, UUID } from '@graasp/sdk';
+import { DiscriminatedItem, ItemGeolocation, UUID } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types';
-import { verifyAuthentication } from './axios';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 import {
   buildDeleteItemGeolocationRoute,
   buildGetAddressFromCoordinatesRoute,
   buildGetItemGeolocationRoute,
   buildGetItemsInMapRoute,
   buildPutItemGeolocationRoute,
-} from './routes';
+} from './routes.js';
 
 export const getItemGeolocation = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
@@ -22,7 +22,7 @@ export const getItemGeolocation = async (
 
 export const putItemGeolocation = async (
   payload: {
-    itemId: Item['id'];
+    itemId: DiscriminatedItem['id'];
     geolocation: Pick<ItemGeolocation, 'lat' | 'lng'> &
       Pick<Partial<ItemGeolocation>, 'country' | 'addressLabel'>;
   },

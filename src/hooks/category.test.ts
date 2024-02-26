@@ -1,20 +1,20 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   CATEGORIES,
   ITEM_CATEGORIES,
   UNAUTHORIZED_RESPONSE,
-} from '../../test/constants';
-import { mockHook, setUpTest } from '../../test/utils';
+} from '../../test/constants.js';
+import { mockHook, setUpTest } from '../../test/utils.js';
 import {
   buildGetCategoriesRoute,
   buildGetCategoryRoute,
   buildGetItemCategoriesRoute,
   buildGetItemsInCategoryRoute,
-} from '../api/routes';
-import { categoryKeys, itemKeys } from '../config/keys';
+} from '../api/routes.js';
+import { categoryKeys, itemKeys } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

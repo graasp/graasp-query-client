@@ -1,5 +1,10 @@
-import { UNAUTHORIZED_RESPONSE, buildResultOfData } from '../../test/constants';
-import { splitRequestByIdsAndReturn } from './axios';
+import { describe, expect, it } from 'vitest';
+
+import {
+  UNAUTHORIZED_RESPONSE,
+  buildResultOfData,
+} from '../../test/constants.js';
+import { splitRequestByIdsAndReturn } from './axios.js';
 
 const chunkSize = 5;
 const ids = Array.from({ length: chunkSize * 3 + 1 }, (_, idx) =>

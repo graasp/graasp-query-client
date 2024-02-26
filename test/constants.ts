@@ -10,6 +10,7 @@ import {
   ExportedChatMessage,
   FlagType,
   FolderItemFactory,
+  FolderItemType,
   HttpMethod,
   Invitation,
   ItemBookmark,
@@ -82,7 +83,7 @@ export const buildResultOfData = <T>(
   };
 };
 
-export const generateFolders = (nb: number = 5) =>
+export const generateFolders = (nb: number = 5): FolderItemType[] =>
   Array.from({ length: nb }, () => FolderItemFactory());
 
 export const generateMembers = (nb: number = 5) =>
@@ -178,12 +179,12 @@ export const buildMentionResponse = (
   status?: MentionStatus,
 ): ChatMention => {
   switch (method) {
-    case HttpMethod.PATCH:
+    case HttpMethod.Patch:
       return {
         ...mention,
         status: status || mention.status,
       };
-    case HttpMethod.DELETE:
+    case HttpMethod.Delete:
       return mention;
     default:
       return mention;

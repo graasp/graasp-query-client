@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import * as Api from '../api';
-import { CURRENT_CUSTOMER_KEY, memberKeys } from '../config/keys';
+import * as Api from '../api/subscription.js';
+import { CURRENT_CUSTOMER_KEY, memberKeys } from '../config/keys.js';
 import {
   changePlanRoutine,
   createSetupIntentRoutine,
   setDefaultCardRoutine,
-} from '../routines';
-import { QueryClientConfig } from '../types';
+} from '../routines/subscription.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

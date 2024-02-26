@@ -6,14 +6,14 @@ import {
   UUID,
 } from '@graasp/sdk';
 
-import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants';
+import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
 import {
   Paginated,
   PaginationParams,
   PartialQueryConfigForApi,
-} from '../types';
-import { getParentsIdsFromPath } from '../utils/item';
-import { verifyAuthentication } from './axios';
+} from '../types.js';
+import { getParentsIdsFromPath } from '../utils/item.js';
+import { verifyAuthentication } from './axios.js';
 import {
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_DATA_ROUTE,
@@ -35,12 +35,12 @@ import {
   buildPostItemRoute,
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
-} from './routes';
+} from './routes.js';
 
 export const getItem = (
   id: UUID,
   { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
+): Promise<DiscriminatedItem> =>
   axios
     .get<DiscriminatedItem>(`${API_HOST}/${buildGetItemRoute(id)}`)
     .then(({ data }) => data);
@@ -95,7 +95,7 @@ export const postItem = async (
     geolocation,
   }: PostItemPayloadType,
   { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
+): Promise<DiscriminatedItem> =>
   verifyAuthentication(() =>
     axios
       .post<DiscriminatedItem>(`${API_HOST}/${buildPostItemRoute(parentId)}`, {
@@ -127,7 +127,7 @@ export const editItem = async (
       Pick<DiscriminatedItem, 'name' | 'description' | 'extra' | 'settings'>
     >,
   { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
+): Promise<DiscriminatedItem> =>
   verifyAuthentication(() =>
     axios
       .patch<DiscriminatedItem>(`${API_HOST}/${buildEditItemRoute(id)}`, {

@@ -2,9 +2,9 @@ import { UUID } from '@graasp/sdk';
 
 import { useMutation } from 'react-query';
 
-import * as Api from '../api';
-import { exportItemRoutine } from '../routines';
-import { QueryClientConfig } from '../types';
+import * as Api from '../api/itemExport.js';
+import { exportItemRoutine } from '../routines/itemExport.js';
+import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
