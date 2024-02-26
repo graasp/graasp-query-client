@@ -2,7 +2,7 @@ import { Channel } from '@graasp/sdk';
 
 import { renderHook } from '@testing-library/react';
 import React from 'react';
-import { QueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider, useMutation } from 'react-query';
 import { vi } from 'vitest';
 
 import configureAxios from '../src/api/axios.js';
@@ -50,8 +50,7 @@ export const setUpWsTest = (args?: {
     WS_HOST,
   };
 
-  const { QueryClientProvider, useMutation } =
-    configureQueryClient(queryConfig);
+  configureQueryClient(queryConfig);
 
   const handlers: Handler[] = [];
   const websocketClient = MockedWebsocket(handlers);

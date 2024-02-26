@@ -2,16 +2,7 @@ import { configureWebsocketClient } from '@graasp/sdk';
 
 import { AxiosError } from 'axios';
 import { StatusCodes } from 'http-status-codes';
-import {
-  Hydrate,
-  QueryClient,
-  QueryClientProvider,
-  dehydrate,
-  focusManager,
-  useMutation,
-  useQueryClient,
-} from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClient } from 'react-query';
 
 import configureAxios from './api/axios.js';
 import {
@@ -114,15 +105,8 @@ export default (config: ConfigureQueryClientConfig) => {
   return {
     queryConfig,
     queryClient,
-    useQueryClient,
-    QueryClientProvider,
     hooks,
-    useMutation,
-    ReactQueryDevtools,
-    dehydrate,
-    Hydrate,
     mutations,
     axios,
-    focusManager,
   };
 };

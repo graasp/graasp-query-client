@@ -6,6 +6,7 @@ import nock, { InterceptFunction, ReplyHeaders, Scope } from 'nock';
 import React from 'react';
 import {
   QueryClient,
+  QueryClientProvider,
   QueryObserverBaseResult,
   UseMutationResult,
 } from 'react-query';
@@ -41,7 +42,7 @@ export const setUpTest = (args?: Args) => {
     WS_HOST,
   };
 
-  const { QueryClientProvider, mutations } = configureQueryClient(queryConfig);
+  const { mutations } = configureQueryClient(queryConfig);
 
   // configure hooks
   const hooks = configureHooks(queryConfig);
