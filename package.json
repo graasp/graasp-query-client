@@ -8,10 +8,12 @@
   "source": "./src/index.ts",
   "types": "./dist/index.d.ts",
   "exports": {
-    "types": "./dist/index.d.ts",
-    "import": "./dist/index.js",
-    "require": null,
-    "default": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": null,
+      "default": "./dist/index.js"
+    }
   },
   "contributors": [
     "Kim Lan Phan Hoang",
