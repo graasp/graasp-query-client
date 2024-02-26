@@ -1,6 +1,6 @@
 import { UUID } from '@graasp/sdk';
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/itemValidation.js';
 import { itemKeys } from '../config/keys.js';

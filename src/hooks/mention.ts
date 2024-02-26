@@ -1,6 +1,6 @@
 import { CompleteMember, WebsocketClient } from '@graasp/sdk';
 
-import { UseQueryResult, useQuery } from 'react-query';
+import { UseQueryResult, useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/index.js';
 import { buildMentionKey } from '../config/keys.js';

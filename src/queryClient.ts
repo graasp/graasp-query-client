@@ -1,8 +1,17 @@
 import { configureWebsocketClient } from '@graasp/sdk';
 
-import { AxiosError } from 'axios';
+import {
+  Hydrate,
+  QueryClient,
+  QueryClientProvider,
+  dehydrate,
+  focusManager,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { AxiosError, AxiosStatic } from 'axios';
 import { StatusCodes } from 'http-status-codes';
-import { QueryClient } from 'react-query';
 
 import configureAxios from './api/axios.js';
 import {
@@ -54,7 +63,22 @@ export type ConfigureQueryClientConfig = Partial<
   >
 >;
 
-export default (config: ConfigureQueryClientConfig) => {
+export default (
+  config: ConfigureQueryClientConfig,
+): {
+  queryConfig: QueryClientConfig;
+  queryClient: QueryClient;
+  useQueryClient: typeof useQueryClient;
+  QueryClientProvider: typeof QueryClientProvider;
+  hooks: typeof hooks;
+  useMutation: typeof useMutation;
+  ReactQueryDevtools: typeof ReactQueryDevtools;
+  dehydrate: typeof dehydrate;
+  Hydrate: typeof Hydrate;
+  mutations: typeof mutations;
+  axios: AxiosStatic;
+  focusManager: typeof focusManager;
+} => {
   const baseConfig = {
     API_HOST: config.API_HOST || 'http://localhost:3000',
     SHOW_NOTIFICATIONS: config.SHOW_NOTIFICATIONS || false,
@@ -105,8 +129,15 @@ export default (config: ConfigureQueryClientConfig) => {
   return {
     queryConfig,
     queryClient,
+    useQueryClient,
+    QueryClientProvider,
     hooks,
+    useMutation,
+    ReactQueryDevtools,
+    dehydrate,
+    Hydrate,
     mutations,
     axios,
+    focusManager,
   };
 };

@@ -1,6 +1,6 @@
 import { UUID } from '@graasp/sdk';
 
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/category.js';
 import { CONSTANT_KEY_STALE_TIME_MILLISECONDS } from '../config/constants.js';

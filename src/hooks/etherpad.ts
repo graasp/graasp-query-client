@@ -1,6 +1,6 @@
 import { EtherpadItemType, ItemType } from '@graasp/sdk';
 
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/etherpad.js';
 import { UndefinedArgument } from '../config/errors.js';

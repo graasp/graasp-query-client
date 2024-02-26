@@ -4,7 +4,7 @@ import {
   WebsocketClient,
 } from '@graasp/sdk';
 
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import * as Api from '../api/membership.js';

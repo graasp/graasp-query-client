@@ -8,9 +8,9 @@ import {
 } from '@graasp/sdk';
 import { FAILURE_MESSAGES, SUCCESS_MESSAGES } from '@graasp/translations';
 
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { useMutation, useQueryClient } from 'react-query';
 
 import * as InvitationApi from '../api/invitation.js';
 import * as MemberApi from '../api/member.js';

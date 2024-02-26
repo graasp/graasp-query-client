@@ -1,6 +1,6 @@
 import { UUID } from '@graasp/sdk';
 
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { exportActions, postItemAction } from '../api/action.js';
 import { exportActionsRoutine, postActionRoutine } from '../routines/action.js';

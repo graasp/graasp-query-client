@@ -1,15 +1,14 @@
 import { HttpMethod, spliceIntoChunks } from '@graasp/sdk';
 
+import {
+  QueryClient,
+  QueryObserverBaseResult,
+  UseMutationResult,
+} from '@tanstack/react-query';
 import { RenderHookOptions, renderHook, waitFor } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock, { InterceptFunction, ReplyHeaders, Scope } from 'nock';
 import React from 'react';
-import {
-  QueryClient,
-  QueryClientProvider,
-  QueryObserverBaseResult,
-  UseMutationResult,
-} from 'react-query';
 import { expect } from 'vitest';
 
 import configureAxios from '../src/api/axios.js';
@@ -42,7 +41,7 @@ export const setUpTest = (args?: Args) => {
     WS_HOST,
   };
 
-  const { mutations } = configureQueryClient(queryConfig);
+  const { mutations, QueryClientProvider } = configureQueryClient(queryConfig);
 
   // configure hooks
   const hooks = configureHooks(queryConfig);

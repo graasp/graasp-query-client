@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/shortLink.js';
 import { UndefinedArgument } from '../config/errors.js';
