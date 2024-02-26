@@ -88,6 +88,7 @@
     "hooks:uninstall": "husky uninstall",
     "hooks:install": "husky install",
     "test": "yarn vitest",
+    "test:ci": "yarn vitest run",
     "lint": "eslint .",
     "post-commit": "git status",
     "type-check": "tsc --noEmit",
