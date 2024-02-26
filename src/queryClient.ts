@@ -93,7 +93,6 @@ export default (config: ConfigureQueryClientConfig) => {
       keepPreviousData: false,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-      notifyOnChangeProps: 'tracked',
       ...config.defaultQueryOptions,
     },
   };

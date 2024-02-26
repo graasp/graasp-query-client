@@ -1,7 +1,6 @@
 import { Invitation } from '@graasp/sdk';
 
 import { AxiosError, AxiosInstance } from 'axios';
-import { QueryObserverOptions } from 'react-query';
 
 export type Notifier = (e: {
   type: string;
@@ -33,7 +32,6 @@ export type QueryClientConfig = {
     refetchOnWindowFocus?: boolean;
     keepPreviousData?: boolean;
     refetchOnMount?: boolean;
-    notifyOnChangeProps?: QueryObserverOptions['notifyOnChangeProps']; // tracked will be removed in v4. https://tanstack.com/query/v4/docs/react/guides/migrating-to-react-query-4#notifyonchangeprops-property-no-longer-accepts-tracked-as-a-value
   };
 };
 
