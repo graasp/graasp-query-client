@@ -1,16 +1,23 @@
 name: Build and Test
-on: [push]
+
+on:
+  push:
+    branches:
+      - "main"
+  merge_group:
+  pull_request:
+
 jobs:
-  test-coverage:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: setup node
+      - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
 
       - name: Install dependencies
         run: yarn
