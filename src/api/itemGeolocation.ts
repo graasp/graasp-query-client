@@ -10,6 +10,18 @@ import {
   buildPutItemGeolocationRoute,
 } from './routes.js';
 
+export type AddressFromCoordinates = {
+  query: { lat: number; lon: number; plus_code: string };
+  results: {
+    formatted: string;
+    lat: number;
+    lon: number;
+    name: string;
+    country: string;
+    country_code: string;
+  }[];
+};
+
 export const getItemGeolocation = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
   id: UUID,
@@ -71,7 +83,7 @@ export const getAddressFromCoordinates = async (
   { axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<{ display_name: string; country_code: string }>(
+    .get<AddressFromCoordinates>(
       buildGetAddressFromCoordinatesRoute({ lat, lng, key }),
       {
         responseType: 'json',
