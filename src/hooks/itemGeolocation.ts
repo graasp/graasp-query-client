@@ -99,13 +99,13 @@ export default (queryConfig: QueryClientConfig) => {
     useQuery({
       queryKey: buildAddressFromCoordinatesKey({ lat, lng }),
       queryFn: () => {
-        if (!(lat || lat === 0) || !(lng || lng === 0)) {
-          throw new UndefinedArgument();
+        if (!(lat || lat === 0) || !(lng || lng === 0) || !key) {
+          throw new UndefinedArgument({ lat, lng, key });
         }
         return Api.getAddressFromCoordinates({ lat, lng, key }, queryConfig);
       },
       ...defaultQueryOptions,
-      enabled: Boolean((lat || lat === 0) && (lng || lng === 0)),
+      enabled: Boolean((lat || lat === 0) && (lng || lng === 0) && key),
       onError: (error) => {
         notifier?.({
           type: getAddressFromCoordinatesRoutine.FAILURE,
