@@ -497,8 +497,9 @@ export const buildGetItemsInMapRoute = ({
 export const buildGetAddressFromCoordinatesRoute = ({
   lat,
   lng,
-}: Pick<ItemGeolocation, 'lat' | 'lng'>) =>
-  `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+  key,
+}: Pick<ItemGeolocation, 'lat' | 'lng'> & { key: string }) =>
+  `https://api.geoapify.com/v1/geocode/reverse?format=jsonv2&lat=${lat}&lon=${lng}&apiKey=${key}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,

@@ -67,12 +67,12 @@ export const deleteItemGeolocation = async (
   );
 
 export const getAddressFromCoordinates = async (
-  { lat, lng }: Pick<ItemGeolocation, 'lat' | 'lng'>,
+  { lat, lng, key }: Pick<ItemGeolocation, 'lat' | 'lng'> & { key: string },
   { axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get<{ display_name: string; country_code: string }>(
-      buildGetAddressFromCoordinatesRoute({ lat, lng }),
+      buildGetAddressFromCoordinatesRoute({ lat, lng, key }),
       {
         responseType: 'json',
       },

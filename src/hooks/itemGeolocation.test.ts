@@ -79,7 +79,7 @@ describe('useItemGeolocation', () => {
 
 describe('useAddressFromGeolocation', () => {
   const response = { display_name: 'display_name' };
-  const payload = { lat: 1, lng: 1 };
+  const payload = { lat: 1, lng: 1, key: 'key' };
 
   const url = new URL(buildGetAddressFromCoordinatesRoute(payload));
   nock(url.origin)

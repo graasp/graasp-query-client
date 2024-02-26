@@ -94,14 +94,15 @@ export default (queryConfig: QueryClientConfig) => {
   const useAddressFromGeolocation = ({
     lat,
     lng,
-  }: Pick<ItemGeolocation, 'lat' | 'lng'>) =>
+    key,
+  }: Pick<ItemGeolocation, 'lat' | 'lng'> & { key: string }) =>
     useQuery({
       queryKey: buildAddressFromCoordinatesKey({ lat, lng }),
       queryFn: () => {
         if (!(lat || lat === 0) || !(lng || lng === 0)) {
           throw new UndefinedArgument();
         }
-        return Api.getAddressFromCoordinates({ lat, lng }, queryConfig);
+        return Api.getAddressFromCoordinates({ lat, lng, key }, queryConfig);
       },
       ...defaultQueryOptions,
       enabled: Boolean((lat || lat === 0) && (lng || lng === 0)),
