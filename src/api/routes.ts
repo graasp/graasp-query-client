@@ -499,7 +499,7 @@ export const buildGetAddressFromCoordinatesRoute = ({
   lng,
   key,
 }: Pick<ItemGeolocation, 'lat' | 'lng'> & { key: string }) =>
-  `https://api.geoapify.com/v1/geocode/reverse?format=jsonv2&lat=${lat}&lon=${lng}&apiKey=${key}`;
+  `https://api.geoapify.com/v1/geocode/reverse?format=json&lat=${lat}&lon=${lng}&apiKey=${key}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,
