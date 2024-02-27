@@ -31,7 +31,7 @@ import {
 import { PaginationParams, QueryClientConfig } from '../types.js';
 import { paginate } from '../utils/util.js';
 import { configureWsItemHooks } from '../ws/index.js';
-import useDebounce from './useDebounce.js';
+import { useDebounce } from './useDebounce.js';
 
 export default (
   queryConfig: QueryClientConfig,
