@@ -1,7 +1,7 @@
 import { Password, UUID, saveUrlForRedirection } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/authentication.js';
 import { memberKeys } from '../config/keys.js';

@@ -1,7 +1,7 @@
 import { ShortLinkPatchPayload, ShortLinkPostPayload } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/index.js';
 import { buildShortLinkKey, itemKeys } from '../config/keys.js';

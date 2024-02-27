@@ -1,6 +1,6 @@
 import { UUID } from '@graasp/sdk';
 
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/itemLogin.js';
 import { UndefinedArgument } from '../config/errors.js';

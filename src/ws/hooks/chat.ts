@@ -1,7 +1,7 @@
 import { Channel, ChatMessage, UUID, WebsocketClient } from '@graasp/sdk';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { useQueryClient } from 'react-query';
 
 import { buildItemChatKey } from '../../config/keys.js';
 import { KINDS, OPS, TOPICS } from '../constants.js';

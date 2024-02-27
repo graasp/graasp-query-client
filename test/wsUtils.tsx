@@ -1,8 +1,8 @@
 import { Channel } from '@graasp/sdk';
 
+import { QueryClient } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
 import React from 'react';
-import { QueryClient } from 'react-query';
 import { vi } from 'vitest';
 
 import configureAxios from '../src/api/axios.js';

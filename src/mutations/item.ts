@@ -8,7 +8,11 @@ import {
 } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { QueryClient, useMutation, useQueryClient } from 'react-query';
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import {
   splitRequestByIds,

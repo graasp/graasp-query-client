@@ -11,8 +11,8 @@ import {
 } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { useQueryClient } from 'react-query';
 
 import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../../config/keys.js';
 import {

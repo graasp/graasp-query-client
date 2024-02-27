@@ -1,7 +1,5 @@
 import { configureWebsocketClient } from '@graasp/sdk';
 
-import { AxiosError } from 'axios';
-import { StatusCodes } from 'http-status-codes';
 import {
   Hydrate,
   QueryClient,
@@ -10,8 +8,10 @@ import {
   focusManager,
   useMutation,
   useQueryClient,
-} from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+} from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { AxiosError, AxiosStatic } from 'axios';
+import { StatusCodes } from 'http-status-codes';
 
 import configureAxios from './api/axios.js';
 import {
@@ -63,7 +63,22 @@ export type ConfigureQueryClientConfig = Partial<
   >
 >;
 
-export default (config: ConfigureQueryClientConfig) => {
+export default (
+  config: ConfigureQueryClientConfig,
+): {
+  queryConfig: QueryClientConfig;
+  queryClient: QueryClient;
+  useQueryClient: typeof useQueryClient;
+  QueryClientProvider: typeof QueryClientProvider;
+  hooks: typeof hooks;
+  useMutation: typeof useMutation;
+  ReactQueryDevtools: typeof ReactQueryDevtools;
+  dehydrate: typeof dehydrate;
+  Hydrate: typeof Hydrate;
+  mutations: typeof mutations;
+  axios: AxiosStatic;
+  focusManager: typeof focusManager;
+} => {
   const baseConfig = {
     API_HOST: config.API_HOST || 'http://localhost:3000',
     SHOW_NOTIFICATIONS: config.SHOW_NOTIFICATIONS || false,
@@ -93,7 +108,6 @@ export default (config: ConfigureQueryClientConfig) => {
       keepPreviousData: false,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-      notifyOnChangeProps: 'tracked',
       ...config.defaultQueryOptions,
     },
   };

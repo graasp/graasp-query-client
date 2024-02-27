@@ -1,6 +1,6 @@
 import { DiscriminatedItem, ItemGeolocation } from '@graasp/sdk';
 
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/itemGeolocation.js';
 import { UndefinedArgument } from '../config/errors.js';

@@ -12,7 +12,7 @@ import {
   useInfiniteQuery,
   useQuery,
   useQueryClient,
-} from 'react-query';
+} from '@tanstack/react-query';
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import * as Api from '../api/item.js';
