@@ -1,4 +1,5 @@
 import { DiscriminatedItem, ItemGeolocation, UUID } from '@graasp/sdk';
+import { DEFAULT_LANG } from '@graasp/translations';
 
 import { PartialQueryConfigForApi } from '../types.js';
 import { verifyAuthentication } from './axios.js';
@@ -7,6 +8,7 @@ import {
   buildGetAddressFromCoordinatesRoute,
   buildGetItemGeolocationRoute,
   buildGetItemsInMapRoute,
+  buildGetSuggestionsForAddressRoute,
   buildPutItemGeolocationRoute,
 } from './routes.js';
 
@@ -67,14 +69,32 @@ export const deleteItemGeolocation = async (
   );
 
 export const getAddressFromCoordinates = async (
-  { lat, lng }: Pick<ItemGeolocation, 'lat' | 'lng'>,
-  { axios }: PartialQueryConfigForApi,
+  {
+    lat,
+    lng,
+    lang = DEFAULT_LANG,
+  }: Pick<ItemGeolocation, 'lat' | 'lng'> & { lang?: string },
+  { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<{ display_name: string; country_code: string }>(
-      buildGetAddressFromCoordinatesRoute({ lat, lng }),
+    .get<{
+      addressLabel: string;
+      country: string;
+    }>(`${API_HOST}/${buildGetAddressFromCoordinatesRoute({ lat, lng, lang })}`)
+    .then(({ data }) => data);
+
+export const getSuggestionsForAddress = async (
+  { address, lang = DEFAULT_LANG }: { address: string; lang?: string },
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
+  axios
+    .get<
       {
-        responseType: 'json',
-      },
-    )
+        addressLabel: string;
+        country?: string;
+        id: string;
+        lat: number;
+        lng: number;
+      }[]
+    >(`${API_HOST}/${buildGetSuggestionsForAddressRoute({ address, lang })}`)
     .then(({ data }) => data);

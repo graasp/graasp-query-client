@@ -7,6 +7,7 @@ import {
   UUID,
   UnionOfConst,
 } from '@graasp/sdk';
+import { DEFAULT_LANG } from '@graasp/translations';
 
 import { ItemSearchParams } from '../api/routes.js';
 import { PaginationParams } from '../types.js';
@@ -320,10 +321,17 @@ export const itemsWithGeolocationKeys = {
   ],
 };
 
-export const buildAddressFromCoordinatesKey = ({
-  lat,
-  lng,
-}: Pick<ItemGeolocation, 'lat' | 'lng'>) => ['address', { lat, lng }];
+export const buildAddressFromCoordinatesKey = (
+  payload: Pick<ItemGeolocation, 'lat' | 'lng'> | undefined,
+) => ['address', payload];
+
+export const buildSuggestionsForAddressKey = ({
+  address,
+  lang = DEFAULT_LANG,
+}: {
+  address?: string;
+  lang?: string;
+}) => ['address', { address, lang }];
 
 export const DATA_KEYS = {
   APPS_KEY,
@@ -338,4 +346,5 @@ export const DATA_KEYS = {
   CARDS_KEY,
   itemsWithGeolocationKeys,
   buildAddressFromCoordinatesKey,
+  buildSuggestionsForAddressKey,
 };

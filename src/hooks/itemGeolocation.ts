@@ -1,4 +1,5 @@
 import { DiscriminatedItem, ItemGeolocation } from '@graasp/sdk';
+import { DEFAULT_LANG } from '@graasp/translations';
 
 import { useQuery } from '@tanstack/react-query';
 
@@ -6,14 +7,17 @@ import * as Api from '../api/itemGeolocation.js';
 import { UndefinedArgument } from '../config/errors.js';
 import {
   buildAddressFromCoordinatesKey,
+  buildSuggestionsForAddressKey,
   itemKeys,
   itemsWithGeolocationKeys,
 } from '../config/keys.js';
 import {
   getAddressFromCoordinatesRoutine,
   getItemGeolocationRoutine,
+  getSuggestionsForAddressRoutine,
 } from '../routines/itemGeolocation.js';
 import { QueryClientConfig } from '../types.js';
+import useDebounce from './useDebounce.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier, defaultQueryOptions } = queryConfig;
@@ -91,20 +95,26 @@ export default (queryConfig: QueryClientConfig) => {
     });
   };
 
-  const useAddressFromGeolocation = ({
-    lat,
-    lng,
-  }: Pick<ItemGeolocation, 'lat' | 'lng'>) =>
-    useQuery({
-      queryKey: buildAddressFromCoordinatesKey({ lat, lng }),
+  const useAddressFromGeolocation = (
+    payload:
+      | (Pick<ItemGeolocation, 'lat' | 'lng'> & { lang?: string })
+      | undefined,
+    options: { enabled?: boolean } = {},
+  ) => {
+    const { enabled = true } = options;
+    const { lat, lng, lang } = payload ?? {};
+    return useQuery({
+      // to remove when endpoint is trusted
+      retry: false,
+      queryKey: buildAddressFromCoordinatesKey(payload),
       queryFn: () => {
         if (!(lat || lat === 0) || !(lng || lng === 0)) {
           throw new UndefinedArgument();
         }
-        return Api.getAddressFromCoordinates({ lat, lng }, queryConfig);
+        return Api.getAddressFromCoordinates({ lat, lng, lang }, queryConfig);
       },
       ...defaultQueryOptions,
-      enabled: Boolean((lat || lat === 0) && (lng || lng === 0)),
+      enabled: Boolean((lat || lat === 0) && (lng || lng === 0)) && enabled,
       onError: (error) => {
         notifier?.({
           type: getAddressFromCoordinatesRoutine.FAILURE,
@@ -112,6 +122,52 @@ export default (queryConfig: QueryClientConfig) => {
         });
       },
     });
+  };
 
-  return { useItemGeolocation, useItemsInMap, useAddressFromGeolocation };
+  const useSuggestionsForAddress = (
+    {
+      address,
+      lang = DEFAULT_LANG,
+    }: {
+      address?: string;
+      lang?: string;
+    },
+    options: { enabled?: boolean } = {},
+  ) => {
+    const { enabled = true } = options;
+    const debouncedAddress = useDebounce(address, 500);
+    return useQuery({
+      // to remove when endpoint is trusted
+      retry: false,
+      queryKey: buildSuggestionsForAddressKey({
+        address: debouncedAddress,
+        lang,
+      }),
+      queryFn: () => {
+        if (!debouncedAddress) {
+          throw new UndefinedArgument();
+        }
+
+        return Api.getSuggestionsForAddress(
+          { address: debouncedAddress, lang },
+          queryConfig,
+        );
+      },
+      ...defaultQueryOptions,
+      enabled: Boolean(debouncedAddress) && enabled,
+      onError: (error) => {
+        notifier?.({
+          type: getSuggestionsForAddressRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
+  };
+
+  return {
+    useItemGeolocation,
+    useItemsInMap,
+    useAddressFromGeolocation,
+    useSuggestionsForAddress,
+  };
 };

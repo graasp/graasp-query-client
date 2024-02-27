@@ -1,6 +1,4 @@
 import { StatusCodes } from 'http-status-codes';
-import nock from 'nock';
-import { URL } from 'url';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
@@ -11,9 +9,11 @@ import { mockHook, setUpTest } from '../../test/utils.js';
 import {
   ITEMS_ROUTE,
   buildGetAddressFromCoordinatesRoute,
+  buildGetSuggestionsForAddressRoute,
 } from '../api/routes.js';
 import {
   buildAddressFromCoordinatesKey,
+  buildSuggestionsForAddressKey,
   itemKeys,
   itemsWithGeolocationKeys,
 } from '../config/keys.js';
@@ -78,19 +78,10 @@ describe('useItemGeolocation', () => {
 });
 
 describe('useAddressFromGeolocation', () => {
-  const response = { display_name: 'display_name' };
+  const response = { addressLabel: 'display_name' };
   const payload = { lat: 1, lng: 1 };
-
-  const url = new URL(buildGetAddressFromCoordinatesRoute(payload));
-  nock(url.origin)
-    // this is needed for JSDOM to accept the cross origin request
-    .defaultReplyHeaders({
-      'access-control-allow-origin': '*',
-      'access-control-allow-credentials': 'true',
-    })
-    .get(url.pathname + url.search)
-    .reply(200, response)
-    .persist();
+  const route = `/${buildGetAddressFromCoordinatesRoute(payload)}`;
+  const endpoints = [{ route, response }];
 
   const hook = () => hooks.useAddressFromGeolocation(payload);
   const key = buildAddressFromCoordinatesKey(payload);
@@ -101,7 +92,7 @@ describe('useAddressFromGeolocation', () => {
 
   it(`Retrieve address for coordinates`, async () => {
     const { data, isSuccess } = await mockHook({
-      endpoints: [],
+      endpoints,
       hook,
       wrapper,
     });
@@ -115,8 +106,10 @@ describe('useAddressFromGeolocation', () => {
 
   it(`Undefined lat does not fetch`, async () => {
     const { data, isFetched } = await mockHook({
-      endpoints: [],
-      hook,
+      endpoints,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      hook: () => hooks.useAddressFromGeolocation({ lng: 1, lat: undefined }),
       wrapper,
       enabled: false,
     });
@@ -130,8 +123,89 @@ describe('useAddressFromGeolocation', () => {
 
   it(`Undefined lng does not fetch`, async () => {
     const { data, isFetched } = await mockHook({
-      endpoints: [],
+      endpoints,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      hook: () => hooks.useAddressFromGeolocation({ lat: 1, lng: undefined }),
+      wrapper,
+      enabled: false,
+    });
+
+    expect(isFetched).toBeFalsy();
+    expect(data).toBeFalsy();
+
+    // verify cache keys
+    expect(queryClient.getQueryData(key)).toBeFalsy();
+  });
+
+  it(`enabled=false does not fetch`, async () => {
+    const { data, isFetched } = await mockHook({
+      endpoints,
+      hook: () =>
+        hooks.useAddressFromGeolocation({ lat: 1, lng: 2 }, { enabled: false }),
+      wrapper,
+      enabled: false,
+    });
+
+    expect(isFetched).toBeFalsy();
+    expect(data).toBeFalsy();
+
+    // verify cache keys
+    expect(queryClient.getQueryData(key)).toBeFalsy();
+  });
+});
+
+describe('useSuggestionsForAddress', () => {
+  const response = { addressLabel: 'display_name' };
+  const payload = { address: 'address' };
+
+  const route = `/${buildGetSuggestionsForAddressRoute(payload)}`;
+  const endpoints = [{ route, response }];
+
+  const hook = () => hooks.useSuggestionsForAddress(payload);
+  const key = buildSuggestionsForAddressKey(payload);
+
+  beforeEach(() => {
+    queryClient.clear();
+  });
+
+  it(`Retrieve suggestions for address`, async () => {
+    const { data, isSuccess } = await mockHook({
+      endpoints,
       hook,
+      wrapper,
+    });
+
+    expect(data).toEqual(response);
+    expect(isSuccess).toBeTruthy();
+
+    // verify cache keys
+    expect(queryClient.getQueryData(key)).toMatchObject(response);
+  });
+
+  it(`Undefined address does not fetch`, async () => {
+    const { data, isFetched } = await mockHook({
+      endpoints,
+      hook: () => hooks.useSuggestionsForAddress({ address: undefined }),
+      wrapper,
+      enabled: false,
+    });
+
+    expect(isFetched).toBeFalsy();
+    expect(data).toBeFalsy();
+
+    // verify cache keys
+    expect(queryClient.getQueryData(key)).toBeFalsy();
+  });
+
+  it(`enabled=false does not fetch`, async () => {
+    const { data, isFetched } = await mockHook({
+      endpoints,
+      hook: () =>
+        hooks.useSuggestionsForAddress(
+          { address: 'address' },
+          { enabled: false },
+        ),
       wrapper,
       enabled: false,
     });
