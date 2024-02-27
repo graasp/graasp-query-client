@@ -1,6 +1,6 @@
 import { Invitation, PermissionLevel, UUID } from '@graasp/sdk';
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios.js';
 import {

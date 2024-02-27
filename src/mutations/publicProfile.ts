@@ -1,6 +1,6 @@
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import * as Api from '../api/publicProfile.js';
 import type { PostPublicProfilePayloadType } from '../api/publicProfile.js';

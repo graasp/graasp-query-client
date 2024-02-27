@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/subscription.js';
 import { CURRENT_CUSTOMER_KEY, memberKeys } from '../config/keys.js';

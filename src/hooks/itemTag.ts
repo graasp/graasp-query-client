@@ -1,6 +1,6 @@
 import { MAX_TARGETS_FOR_READ_REQUEST, UUID } from '@graasp/sdk';
 
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import * as Api from '../api/itemTag.js';

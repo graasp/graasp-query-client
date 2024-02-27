@@ -6,8 +6,8 @@ import {
   getIdsFromPath,
 } from '@graasp/sdk';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { useQueryClient } from 'react-query';
 
 import { buildItemMembershipsKey } from '../../config/keys.js';
 import { KINDS, OPS, TOPICS } from '../constants.js';

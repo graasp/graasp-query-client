@@ -1,6 +1,6 @@
 import { UUID, WebsocketClient } from '@graasp/sdk';
 
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/chat.js';
 import { buildItemChatKey } from '../config/keys.js';
