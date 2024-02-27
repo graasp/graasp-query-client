@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.1](https://github.com/graasp/graasp-query-client/compare/v2.7.0...v2.7.1) (2024-02-27)
+
+
+### Bug Fixes
+
+* move to query v4 ([#657](https://github.com/graasp/graasp-query-client/issues/657)) ([a014cb1](https://github.com/graasp/graasp-query-client/commit/a014cb10ae5031fd6e909f3108b81beb7092bfb3))
+
 ## [2.7.0](https://github.com/graasp/graasp-query-client/compare/v2.6.3...v2.7.0) (2024-02-26)
 
 
