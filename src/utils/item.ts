@@ -2,8 +2,6 @@
  * todo: use utils from a dedicated repo */
 import { UUID } from '@graasp/sdk';
 
-import CryptoJS from 'crypto-js';
-
 // eslint-disable-next-line no-useless-escape
 export const transformIdForPath = (id: UUID) => id.replace(/\-/g, '_');
 
@@ -45,6 +43,3 @@ export const getDirectParentId = (path: string) => {
   }
   return ids[parentIdx];
 };
-
-export const hashItemsIds = (ids?: UUID[]) =>
-  ids ? CryptoJS.SHA1([...ids].sort().join()).toString() : undefined;

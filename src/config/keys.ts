@@ -11,7 +11,6 @@ import {
 import { ItemSearchParams } from '../api/routes.js';
 import { PaginationParams } from '../types.js';
 import { AggregateActionsArgs } from '../utils/action.js';
-import { hashItemsIds } from '../utils/item.js';
 import { DEFAULT_THUMBNAIL_SIZE } from './constants.js';
 
 /**
@@ -51,7 +50,7 @@ export const itemKeys = {
       allChildren,
 
       // itemKeys.single(id).children([one, two])
-      children: (types?: UnionOfConst<typeof ItemType>[]) =>
+      children: (types: UnionOfConst<typeof ItemType>[] = []) =>
         [...allChildren, types] as const,
 
       // todo: add page and filtering options
@@ -260,7 +259,7 @@ export const buildItemMembershipsKey = (id?: UUID) => [
 export const buildManyItemMembershipsKey = (ids?: UUID[]) => [
   ITEMS_CONTEXT,
   'memberships',
-  hashItemsIds(ids),
+  ids,
 ];
 
 export const categoryKeys = {
