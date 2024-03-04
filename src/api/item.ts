@@ -4,6 +4,7 @@ import {
   RecycledItemData,
   ResultOf,
   UUID,
+  getParentFromPath,
 } from '@graasp/sdk';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
@@ -12,7 +13,6 @@ import {
   PaginationParams,
   PartialQueryConfigForApi,
 } from '../types.js';
-import { getParentsIdsFromPath } from '../utils/item.js';
 import { verifyAuthentication } from './axios.js';
 import {
   GET_OWN_ITEMS_ROUTE,
@@ -154,8 +154,8 @@ export const getParents = async (
 ) => {
   // shortcut to prevent fetching parents if path shows that item is a root
   if (path) {
-    const parentIds = getParentsIdsFromPath(path, { ignoreSelf: true });
-    if (!parentIds.length) {
+    const parentId = getParentFromPath(path);
+    if (!parentId) {
       return [];
     }
   }
