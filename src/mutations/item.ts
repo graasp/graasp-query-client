@@ -5,6 +5,8 @@ import {
   MAX_TARGETS_FOR_MODIFY_REQUEST,
   RecycledItemData,
   UUID,
+  buildPathFromIds,
+  getParentFromPath,
 } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -40,7 +42,6 @@ import {
   uploadItemThumbnailRoutine,
 } from '../routines/item.js';
 import type { QueryClientConfig } from '../types.js';
-import { buildPath, getDirectParentId } from '../utils/item.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -76,7 +77,7 @@ export default (queryConfig: QueryClientConfig) => {
   ): Promise<unknown> => {
     const { value } = args;
     const parentId =
-      'childPath' in args ? getDirectParentId(args.childPath) : args.id;
+      'childPath' in args ? getParentFromPath(args.childPath) : args.id;
 
     // get parent key
     const childrenKey = !parentId
@@ -198,7 +199,7 @@ export default (queryConfig: QueryClientConfig) => {
           if (context?.parent && context?.item) {
             const prevItem = context?.item;
             const parentKey = getKeyForParentId(
-              getDirectParentId(prevItem?.path),
+              getParentFromPath(prevItem?.path),
             );
             queryClient.setQueryData(parentKey, context.parent);
           }
@@ -211,7 +212,7 @@ export default (queryConfig: QueryClientConfig) => {
           const prevItem = context?.item;
           if (prevItem) {
             const parentKey = getKeyForParentId(
-              getDirectParentId(prevItem.path),
+              getParentFromPath(prevItem.path),
             );
             queryClient.invalidateQueries(parentKey);
           }
@@ -376,8 +377,8 @@ export default (queryConfig: QueryClientConfig) => {
           const toData = queryClient.getQueryData<DiscriminatedItem>(
             itemKeys.single(to).content,
           );
-          if (toData?.path) {
-            const toDataPath = toData.path;
+          if (toData?.id) {
+            const toDataId = toData.id;
             // update item's path
             itemIds.forEach(async (itemId: UUID) => {
               context[itemId] = await mutateItem({
@@ -385,10 +386,7 @@ export default (queryConfig: QueryClientConfig) => {
                 id: itemId,
                 value: (item: DiscriminatedItem) => ({
                   ...item,
-                  path: buildPath({
-                    prefix: toDataPath,
-                    ids: [itemId],
-                  }),
+                  path: buildPathFromIds(toDataId, itemId),
                 }),
               });
             });

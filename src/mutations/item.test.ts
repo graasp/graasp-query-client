@@ -6,6 +6,8 @@ import {
   MAX_TARGETS_FOR_MODIFY_REQUEST,
   RecycledItemData,
   ThumbnailSize,
+  buildPathFromIds,
+  getParentFromPath,
 } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -49,11 +51,6 @@ import {
   uploadFileRoutine,
   uploadItemThumbnailRoutine,
 } from '../routines/item.js';
-import {
-  buildPath,
-  getDirectParentId,
-  transformIdForPath,
-} from '../utils/item.js';
 
 const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
@@ -109,7 +106,7 @@ describe('Items Mutations', () => {
       const response = {
         ...newItem,
         id: 'someid',
-        path: buildPath({ prefix: parentItem.path, ids: ['someid'] }),
+        path: buildPathFromIds(parentItem.id, 'someid'),
       };
 
       // set default data
@@ -153,7 +150,7 @@ describe('Items Mutations', () => {
       const response = {
         ...newItem,
         id: 'someid',
-        path: buildPath({ prefix: parentItem.path, ids: ['someid'] }),
+        path: buildPathFromIds(parentItem.id, 'someid'),
       };
 
       // set default data
@@ -482,7 +479,7 @@ describe('Items Mutations', () => {
       moved.forEach((item) => {
         const itemKey = itemKeys.single(item.id).content;
         const path = queryClient.getQueryData<DiscriminatedItem>(itemKey)?.path;
-        expect(path).toEqual(`${to.path}.${transformIdForPath(item.id)}`);
+        expect(path).toEqual(`${to.path}.${buildPathFromIds(item.id)}`);
       });
 
       // Check new parent is not invalidated
@@ -534,7 +531,7 @@ describe('Items Mutations', () => {
       moved.forEach((item) => {
         const itemKey = itemKeys.single(item.id).content;
         const path = queryClient.getQueryData<DiscriminatedItem>(itemKey)?.path;
-        expect(path).toEqual(`${to.path}.${transformIdForPath(item.id)}`);
+        expect(path).toEqual(`${to.path}.${buildPathFromIds(item.id)}`);
       });
 
       // Check new parent is not invalidated
@@ -840,7 +837,7 @@ describe('Items Mutations', () => {
       items.forEach((item) => {
         const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
-        const parentKey = getKeyForParentId(getDirectParentId(item.path));
+        const parentKey = getKeyForParentId(getParentFromPath(item.path));
         queryClient.setQueryData(parentKey, [item]);
       });
       queryClient.setQueryData(memberKeys.current().recycled, response);
@@ -897,7 +894,7 @@ describe('Items Mutations', () => {
       items.forEach((item) => {
         const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
-        const parentKey = getKeyForParentId(getDirectParentId(item.path));
+        const parentKey = getKeyForParentId(getParentFromPath(item.path));
         queryClient.setQueryData(parentKey, [item]);
       });
       queryClient.setQueryData(memberKeys.current().recycled, response);
