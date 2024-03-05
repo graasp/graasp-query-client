@@ -82,7 +82,7 @@ export type PostItemPayloadType = Partial<DiscriminatedItem> &
   } & {
     geolocation?: Pick<ItemGeolocation, 'lat' | 'lng'>;
   } & {
-    settings?: Pick<DiscriminatedItem['settings'], 'descriptionPlacement'>;
+    settings?: DiscriminatedItem['settings'];
   };
 
 // payload = {name, type, description, extra, geolocation}
@@ -107,14 +107,7 @@ export const postItem = async (
         description,
         extra,
         geolocation,
-        // Define allowed settings in payload
-        ...(settings?.descriptionPlacement
-          ? {
-              settings: {
-                descriptionPlacement: settings?.descriptionPlacement,
-              },
-            }
-          : {}),
+        settings,
       })
       .then(({ data }) => data),
   );
