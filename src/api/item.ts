@@ -81,6 +81,8 @@ export type PostItemPayloadType = Partial<DiscriminatedItem> &
     parentId?: UUID;
   } & {
     geolocation?: Pick<ItemGeolocation, 'lat' | 'lng'>;
+  } & {
+    settings?: DiscriminatedItem['settings'];
   };
 
 // payload = {name, type, description, extra, geolocation}
@@ -93,6 +95,7 @@ export const postItem = async (
     extra,
     parentId,
     geolocation,
+    settings,
   }: PostItemPayloadType,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<DiscriminatedItem> =>
@@ -104,6 +107,7 @@ export const postItem = async (
         description,
         extra,
         geolocation,
+        settings,
       })
       .then(({ data }) => data),
   );
