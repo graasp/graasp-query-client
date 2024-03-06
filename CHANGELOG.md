@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.8.0](https://github.com/graasp/graasp-query-client/compare/v2.7.1...v2.8.0) (2024-03-06)
+
+
+### Features
+
+* add descriptionPlacement in postItem ([#668](https://github.com/graasp/graasp-query-client/issues/668)) ([76d3f13](https://github.com/graasp/graasp-query-client/commit/76d3f13eac17c2e7f60e0722803ffb28dea97ed6))
+
+
+### Bug Fixes
+
+* remove hashing item ids for keys ([#669](https://github.com/graasp/graasp-query-client/issues/669)) ([45e83d1](https://github.com/graasp/graasp-query-client/commit/45e83d17f87458f3bdc3de842ef88f173434d8da))
+
 ## [2.7.1](https://github.com/graasp/graasp-query-client/compare/v2.7.0...v2.7.1) (2024-02-27)
 
 
