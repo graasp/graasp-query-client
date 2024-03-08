@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.1](https://github.com/graasp/graasp-query-client/compare/v2.8.0...v2.8.1) (2024-03-08)
+
+
+### Bug Fixes
+
+* allow undefined in published info hook ([#676](https://github.com/graasp/graasp-query-client/issues/676)) ([4d4fc9a](https://github.com/graasp/graasp-query-client/commit/4d4fc9a175030ddeaccfab4f233dceed03f4b5bb))
+
 ## [2.8.0](https://github.com/graasp/graasp-query-client/compare/v2.7.1...v2.8.0) (2024-03-06)
 
 
