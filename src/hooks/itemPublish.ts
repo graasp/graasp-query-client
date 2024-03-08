@@ -71,15 +71,20 @@ export default (queryConfig: QueryClientConfig) => {
       }),
     useItemPublishedInformation: (
       args: {
-        itemId: UUID;
+        itemId?: UUID;
       },
       options?: { enabled?: boolean },
     ) => {
       const enabledValue = (options?.enabled ?? true) && Boolean(args.itemId);
       return useQuery({
         queryKey: itemKeys.single(args.itemId).publishedInformation,
-        queryFn: () =>
-          Api.getItemPublishedInformation(args.itemId, queryConfig),
+        queryFn: () => {
+          const { itemId } = args;
+          if (!itemId) {
+            throw new UndefinedArgument(args);
+          }
+          return Api.getItemPublishedInformation(itemId, queryConfig);
+        },
         ...defaultQueryOptions,
         enabled: enabledValue,
       });
