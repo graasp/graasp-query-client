@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.0](https://github.com/graasp/graasp-query-client/compare/v2.8.1...v2.9.0) (2024-03-11)
+
+
+### Features
+
+* add get suggestions for address and reverse geocoing  hooks ([#664](https://github.com/graasp/graasp-query-client/issues/664)) ([af1124a](https://github.com/graasp/graasp-query-client/commit/af1124a2c9d9e708fee09792e3766e5c8c432ed2))
+
 ## [2.8.1](https://github.com/graasp/graasp-query-client/compare/v2.8.0...v2.8.1) (2024-03-08)
 
 
