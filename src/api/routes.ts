@@ -10,6 +10,7 @@ import {
   UUID,
   UnionOfConst,
 } from '@graasp/sdk';
+import { DEFAULT_LANG } from '@graasp/translations';
 
 import qs from 'qs';
 
@@ -497,8 +498,17 @@ export const buildGetItemsInMapRoute = ({
 export const buildGetAddressFromCoordinatesRoute = ({
   lat,
   lng,
-}: Pick<ItemGeolocation, 'lat' | 'lng'>) =>
-  `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+  lang = DEFAULT_LANG,
+}: Pick<ItemGeolocation, 'lat' | 'lng'> & { lang?: string }) =>
+  `${ITEMS_ROUTE}/geolocation/reverse?lat=${lat}&lng=${lng}&lang=${lang}`;
+
+export const buildGetSuggestionsForAddressRoute = ({
+  address,
+  lang = DEFAULT_LANG,
+}: {
+  address: string;
+  lang?: string;
+}) => `${ITEMS_ROUTE}/geolocation/search?query=${address}&lang=${lang}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,
