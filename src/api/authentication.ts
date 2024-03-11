@@ -64,11 +64,32 @@ export const mobileSignInWithPassword = async (
     .then(({ data }) => data);
 
 export const signUp = async (
-  payload: { name: string; email: string; captcha: string; url?: string },
+  payload: {
+    name: string;
+    email: string;
+    captcha: string;
+    url?: string;
+  },
   { API_HOST, axios }: PartialQueryConfigForApi,
-) => axios.post<void>(`${API_HOST}/${SIGN_UP_ROUTE}`, payload);
+  query: { lang?: string },
+) => {
+  const url = new URL(SIGN_UP_ROUTE, API_HOST);
+  const { lang } = query;
+  if (lang) {
+    url.searchParams.set('lang', lang);
+  }
+  return axios.post<void>(url.toString(), payload);
+};
 
 export const mobileSignUp = async (
   payload: { name: string; email: string; challenge: string; captcha: string },
   { API_HOST, axios }: PartialQueryConfigForApi,
-) => axios.post<void>(`${API_HOST}/${MOBILE_SIGN_UP_ROUTE}`, payload);
+  query: { lang?: string },
+) => {
+  const url = new URL(MOBILE_SIGN_UP_ROUTE, API_HOST);
+  const { lang } = query;
+  if (lang) {
+    url.searchParams.set('lang', lang);
+  }
+  return axios.post<void>(url.toString(), payload);
+};
