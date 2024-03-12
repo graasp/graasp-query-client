@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.9.1](https://github.com/graasp/graasp-query-client/compare/v2.9.0...v2.9.1) (2024-03-12)
+
+
+### Bug Fixes
+
+* add langage on signup ([#680](https://github.com/graasp/graasp-query-client/issues/680)) ([cefa221](https://github.com/graasp/graasp-query-client/commit/cefa221c968f5368e51fc90a8792cbbdcd73978c))
+* **deps:** update dependency qs to v6.12.0 ([#675](https://github.com/graasp/graasp-query-client/issues/675)) ([e0cdd24](https://github.com/graasp/graasp-query-client/commit/e0cdd2408259d140723e35baf979b3a9cef2a0e2))
+
 ## [2.9.0](https://github.com/graasp/graasp-query-client/compare/v2.8.1...v2.9.0) (2024-03-11)
 
 
