@@ -124,7 +124,8 @@ export default (queryConfig: QueryClientConfig) => {
         email: string;
         captcha: string;
         url?: string;
-      }) => Api.signUp(payload, queryConfig),
+        lang?: string;
+      }) => Api.signUp(payload, queryConfig, { lang: payload.lang }),
       {
         onSuccess: () => {
           notifier?.({
@@ -148,7 +149,8 @@ export default (queryConfig: QueryClientConfig) => {
         email: string;
         challenge: string;
         captcha: string;
-      }) => Api.mobileSignUp(payload, queryConfig),
+        lang?: string;
+      }) => Api.mobileSignUp(payload, queryConfig, { lang: payload.lang }),
       {
         onSuccess: () => {
           notifier?.({
