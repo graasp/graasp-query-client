@@ -7,7 +7,7 @@ export * from './etherpad.js';
 export * from './invitation.js';
 export * from './item.js';
 export * from './itemExport.js';
-export * from './itemFavorite.js';
+export * from './itemBookmark.js';
 export * from './itemFlag.js';
 export * from './itemLike.js';
 export * from './itemLogin.js';

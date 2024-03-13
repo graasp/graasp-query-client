@@ -2,61 +2,61 @@ import { UUID } from '@graasp/sdk';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import * as Api from '../api/itemFavorite.js';
+import * as Api from '../api/itemBookmark.js';
 import { memberKeys } from '../config/keys.js';
 import {
-  addFavoriteItemRoutine,
-  deleteFavoriteItemRoutine,
-} from '../routines/itemFavorite.js';
+  addBookmarkedItemRoutine,
+  deleteBookmarkedItemRoutine,
+} from '../routines/itemBookmark.js';
 import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  const useAddFavoriteItem = () => {
+  const useAddBookmarkedItem = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (itemId: UUID) => Api.addFavoriteItem(itemId, queryConfig),
+      (itemId: UUID) => Api.addBookmarkedItem(itemId, queryConfig),
       {
         onSuccess: () => {
-          notifier?.({ type: addFavoriteItemRoutine.SUCCESS });
+          notifier?.({ type: addBookmarkedItemRoutine.SUCCESS });
         },
         onError: (error: Error) => {
           notifier?.({
-            type: addFavoriteItemRoutine.FAILURE,
+            type: addBookmarkedItemRoutine.FAILURE,
             payload: { error },
           });
         },
         onSettled: () => {
-          queryClient.invalidateQueries(memberKeys.current().favoriteItems);
+          queryClient.invalidateQueries(memberKeys.current().bookmarkedItems);
         },
       },
     );
   };
 
-  const useRemoveFavoriteItem = () => {
+  const useRemoveBookmarkedItem = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (itemId: UUID) => Api.removeFavoriteItem(itemId, queryConfig),
+      (itemId: UUID) => Api.removeBookmarkedItem(itemId, queryConfig),
       {
         onSuccess: () => {
-          notifier?.({ type: deleteFavoriteItemRoutine.SUCCESS });
+          notifier?.({ type: deleteBookmarkedItemRoutine.SUCCESS });
         },
         onError: (error: Error) => {
           notifier?.({
-            type: deleteFavoriteItemRoutine.FAILURE,
+            type: deleteBookmarkedItemRoutine.FAILURE,
             payload: { error },
           });
         },
         onSettled: () => {
-          queryClient.invalidateQueries(memberKeys.current().favoriteItems);
+          queryClient.invalidateQueries(memberKeys.current().bookmarkedItems);
         },
       },
     );
   };
 
   return {
-    useAddFavoriteItem,
-    useRemoveFavoriteItem,
+    useAddBookmarkedItem,
+    useRemoveBookmarkedItem,
   };
 };

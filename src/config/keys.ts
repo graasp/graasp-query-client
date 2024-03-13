@@ -220,9 +220,9 @@ export const memberKeys = {
       likedItems: [...currentBaseKey, 'likedItems'] as const,
 
       /**
-        Favorite items
+        Bookmarked items
       */
-      favoriteItems: [...currentBaseKey, 'favoriteItems'] as const,
+      bookmarkedItems: [...currentBaseKey, 'bookmarkedItems'] as const,
 
       /**
         This should hold RecycledItemData

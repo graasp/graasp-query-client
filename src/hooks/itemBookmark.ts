@@ -1,20 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 
-import * as Api from '../api/itemFavorite.js';
+import * as Api from '../api/itemBookmark.js';
 import { memberKeys } from '../config/keys.js';
 import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
 
-  const useFavoriteItems = () =>
+  const useBookmarkedItems = () =>
     useQuery({
-      queryKey: memberKeys.current().favoriteItems,
-      queryFn: () => Api.getFavoriteItems(queryConfig),
+      queryKey: memberKeys.current().bookmarkedItems,
+      queryFn: () => Api.getBookmarkedItems(queryConfig),
       ...defaultQueryOptions,
     });
 
   return {
-    useFavoriteItems,
+    useBookmarkedItems,
   };
 };

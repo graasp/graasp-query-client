@@ -7,31 +7,31 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { buildFavoriteItemRoute } from '../api/routes.js';
+import { buildBookmarkedItemRoute } from '../api/routes.js';
 import { memberKeys } from '../config/keys.js';
 import {
-  addFavoriteItemRoutine,
-  deleteFavoriteItemRoutine,
-} from '../routines/itemFavorite.js';
+  addBookmarkedItemRoutine,
+  deleteBookmarkedItemRoutine,
+} from '../routines/itemBookmark.js';
 
 const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
-describe('Favorite Mutations', () => {
+describe('Bookmarked Mutations', () => {
   afterEach(() => {
     queryClient.clear();
     nock.cleanAll();
   });
 
-  describe('useAddFavoriteItem', () => {
+  describe('useAddBookmarkedItem', () => {
     const itemId = 'item-id';
-    const route = `/${buildFavoriteItemRoute(itemId)}`;
-    const mutation = mutations.useAddFavoriteItem;
+    const route = `/${buildBookmarkedItemRoute(itemId)}`;
+    const mutation = mutations.useAddBookmarkedItem;
 
-    it(`Successfully add favorite item`, async () => {
+    it(`Successfully add bookmarked item`, async () => {
       // set random data in cache
-      queryClient.setQueryData(memberKeys.current().favoriteItems, 'mock');
+      queryClient.setQueryData(memberKeys.current().bookmarkedItems, 'mock');
       const endpoints = [
         {
           response: itemId,
@@ -51,11 +51,11 @@ describe('Favorite Mutations', () => {
       });
 
       expect(
-        queryClient.getQueryState(memberKeys.current().favoriteItems)
+        queryClient.getQueryState(memberKeys.current().bookmarkedItems)
           ?.isInvalidated,
       ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
-        type: addFavoriteItemRoutine.SUCCESS,
+        type: addBookmarkedItemRoutine.SUCCESS,
       });
     });
 
@@ -82,19 +82,19 @@ describe('Favorite Mutations', () => {
 
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: addFavoriteItemRoutine.FAILURE,
+          type: addBookmarkedItemRoutine.FAILURE,
         }),
       );
     });
   });
 
-  describe('useRemoveFavoriteItem', () => {
+  describe('useRemoveBookmarkedItem', () => {
     const itemId = 'item-id';
-    const route = `/${buildFavoriteItemRoute(itemId)}`;
-    const mutation = mutations.useRemoveFavoriteItem;
+    const route = `/${buildBookmarkedItemRoute(itemId)}`;
+    const mutation = mutations.useRemoveBookmarkedItem;
 
     it('Delete item like', async () => {
-      queryClient.setQueryData(memberKeys.current().favoriteItems, itemId);
+      queryClient.setQueryData(memberKeys.current().bookmarkedItems, itemId);
 
       const endpoints = [
         {
@@ -116,11 +116,11 @@ describe('Favorite Mutations', () => {
       });
 
       expect(
-        queryClient.getQueryState(memberKeys.current().favoriteItems)
+        queryClient.getQueryState(memberKeys.current().bookmarkedItems)
           ?.isInvalidated,
       ).toBeTruthy();
       expect(mockedNotifier).toHaveBeenCalledWith({
-        type: deleteFavoriteItemRoutine.SUCCESS,
+        type: deleteBookmarkedItemRoutine.SUCCESS,
       });
     });
 
@@ -147,7 +147,7 @@ describe('Favorite Mutations', () => {
 
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: deleteFavoriteItemRoutine.FAILURE,
+          type: deleteBookmarkedItemRoutine.FAILURE,
         }),
       );
     });

@@ -5,9 +5,9 @@ import chatMutations from './chat.js';
 import etherpadMutations from './etherpad.js';
 import invitationMutations from './invitation.js';
 import itemMutations from './item.js';
+import itemBookmarkMutations from './itemBookmark.js';
 import itemCategoryMutations from './itemCategory.js';
 import itemExportMutations from './itemExport.js';
-import itemFavoriteMutations from './itemFavorite.js';
 import flagsMutations from './itemFlag.js';
 import itemGeolocationMutations from './itemGeolocation.js';
 import itemLikeMutations from './itemLike.js';
@@ -30,7 +30,7 @@ const configureMutations = (queryConfig: QueryClientConfig) => ({
   ...invitationMutations(queryConfig),
   ...itemCategoryMutations(queryConfig),
   ...itemExportMutations(queryConfig),
-  ...itemFavoriteMutations(queryConfig),
+  ...itemBookmarkMutations(queryConfig),
   ...itemGeolocationMutations(queryConfig),
   ...itemLikeMutations(queryConfig),
   ...itemLoginMutations(queryConfig),

@@ -110,9 +110,9 @@ export const RECYCLED_ITEM_DATA: RecycledItemData[] = [
   },
 ];
 
-export const FAVORITE_ITEM: ItemBookmark[] = [
+export const BOOKMARKED_ITEM: ItemBookmark[] = [
   {
-    id: `favorite-item-id`,
+    id: `bookmarked-item-id`,
     item: FolderItemFactory(),
     createdAt: '2023-09-06T11:50:32.894Z',
   },

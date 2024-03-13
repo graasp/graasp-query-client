@@ -26,7 +26,7 @@ export const SUBSCRIPTION_ROUTE = 'subscriptions';
 export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const INVITATIONS_ROUTE = `invitations`;
 export const GET_RECYCLED_ITEMS_DATA_ROUTE = `${ITEMS_ROUTE}/recycled`;
-export const GET_FAVORITE_ITEMS_ROUTE = `${ITEMS_ROUTE}/favorite`;
+export const GET_BOOKMARKED_ITEMS_ROUTE = `${ITEMS_ROUTE}/favorite`;
 export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
 export const ETHERPAD_ROUTE = `${ITEMS_ROUTE}/etherpad`;
@@ -260,8 +260,8 @@ export const buildRecycleItemsRoute = (ids: UUID[]) =>
     },
   )}`;
 
-export const buildFavoriteItemRoute = (itemId: UUID) =>
-  `${GET_FAVORITE_ITEMS_ROUTE}/${itemId}`;
+export const buildBookmarkedItemRoute = (itemId: UUID) =>
+  `${GET_BOOKMARKED_ITEMS_ROUTE}/${itemId}`;
 
 export const buildRestoreItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/restore${qs.stringify(
@@ -535,7 +535,7 @@ export const API_ROUTES = {
   buildExportActions,
   buildExportItemChatRoute,
   buildExportItemRoute,
-  buildFavoriteItemRoute,
+  buildBookmarkedItemRoute,
   buildGetAccessibleItems,
   buildGetActions,
   buildGetAllPublishedItemsRoute,
@@ -604,7 +604,7 @@ export const API_ROUTES = {
   buildUploadItemThumbnailRoute,
   GET_CATEGORY_TYPES_ROUTE,
   GET_CURRENT_MEMBER_ROUTE,
-  GET_FAVORITE_ITEMS_ROUTE,
+  GET_BOOKMARKED_ITEMS_ROUTE,
   GET_FLAGS_ROUTE,
   GET_ITEM_VALIDATION_REVIEWS_ROUTE,
   GET_ITEM_VALIDATION_STATUSES_ROUTE,
