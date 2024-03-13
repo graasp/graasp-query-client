@@ -4,8 +4,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/itemBookmark.js';
 import { memberKeys } from '../config/keys.js';
-import { addBookmarkedItemRoutine } from '../routines/itemBookmark.js';
-import { deleteBookmarkedItemRoutine } from '../routines/itemBookmark.js';
+import {
+  addBookmarkedItemRoutine,
+  deleteBookmarkedItemRoutine,
+} from '../routines/itemBookmark.js';
 import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
