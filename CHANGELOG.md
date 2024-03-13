@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/graasp/graasp-query-client/compare/v2.9.1...v3.0.0) (2024-03-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* rename favorite to bookmark ([#683](https://github.com/graasp/graasp-query-client/issues/683))
+
+### Features
+
+* rename favorite to bookmark ([#683](https://github.com/graasp/graasp-query-client/issues/683)) ([3d0fabb](https://github.com/graasp/graasp-query-client/commit/3d0fabb32e20d9dd8e49d27f21bb590a05e05720))
+
 ## [2.9.1](https://github.com/graasp/graasp-query-client/compare/v2.9.0...v2.9.1) (2024-03-12)
 
 
