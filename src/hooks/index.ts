@@ -8,7 +8,7 @@ import configureChatHooks from './chat.js';
 import configureEtherpadHooks from './etherpad.js';
 import configureInvitationHooks from './invitation.js';
 import configureItemHooks from './item.js';
-import configureItemFavoriteHooks from './itemFavorite.js';
+import configureItemBookmarkHooks from './itemBookmark.js';
 import configureItemGeolocationHooks from './itemGeolocation.js';
 import configureItemLikeHooks from './itemLike.js';
 import configureItemLoginHooks from './itemLogin.js';
@@ -50,7 +50,7 @@ export default (
     ...configureItemLoginHooks(queryConfig),
     ...configureItemPublishedHooks(queryConfig),
     ...configureItemValidationHooks(queryConfig),
-    ...configureItemFavoriteHooks(queryConfig),
+    ...configureItemBookmarkHooks(queryConfig),
     ...configureAppsHooks(queryConfig),
     ...configureActionHooks(queryConfig),
     ...configureInvitationHooks(queryConfig),

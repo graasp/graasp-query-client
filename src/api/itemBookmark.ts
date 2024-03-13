@@ -1,35 +1,38 @@
-import { ItemFavorite, UUID } from '@graasp/sdk';
+import { ItemBookmark, UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types.js';
 import { verifyAuthentication } from './axios.js';
-import { GET_FAVORITE_ITEMS_ROUTE, buildFavoriteItemRoute } from './routes.js';
+import {
+  GET_BOOKMARKED_ITEMS_ROUTE,
+  buildBookmarkedItemRoute,
+} from './routes.js';
 
-export const getFavoriteItems = async ({
+export const getBookmarkedItems = async ({
   API_HOST,
   axios,
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
-      .get<ItemFavorite[]>(`${API_HOST}/${GET_FAVORITE_ITEMS_ROUTE}`)
+      .get<ItemBookmark[]>(`${API_HOST}/${GET_BOOKMARKED_ITEMS_ROUTE}`)
       .then(({ data }) => data),
   );
 
-export const addFavoriteItem = async (
+export const addBookmarkedItem = async (
   id: UUID,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
-      .post<ItemFavorite>(`${API_HOST}/${buildFavoriteItemRoute(id)}`)
+      .post<ItemBookmark>(`${API_HOST}/${buildBookmarkedItemRoute(id)}`)
       .then(({ data }) => data),
   );
 
-export const removeFavoriteItem = async (
+export const removeBookmarkedItem = async (
   id: UUID,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
-      .delete<UUID>(`${API_HOST}/${buildFavoriteItemRoute(id)}`)
+      .delete<UUID>(`${API_HOST}/${buildBookmarkedItemRoute(id)}`)
       .then(({ data }) => data),
   );

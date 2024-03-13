@@ -1,25 +1,28 @@
 import { StatusCodes } from 'http-status-codes';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { FAVORITE_ITEM, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
+import {
+  BOOKMARKED_ITEM,
+  UNAUTHORIZED_RESPONSE,
+} from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
-import { GET_FAVORITE_ITEMS_ROUTE } from '../api/routes.js';
+import { GET_BOOKMARKED_ITEMS_ROUTE } from '../api/routes.js';
 import { memberKeys } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
-describe('useFavoriteItems', () => {
-  const route = `/${GET_FAVORITE_ITEMS_ROUTE}`;
-  const key = memberKeys.current().favoriteItems;
+describe('useBookmarkedItems', () => {
+  const route = `/${GET_BOOKMARKED_ITEMS_ROUTE}`;
+  const key = memberKeys.current().bookmarkedItems;
 
-  const hook = () => hooks.useFavoriteItems();
+  const hook = () => hooks.useBookmarkedItems();
 
   beforeEach(() => {
     queryClient.clear();
   });
 
-  it(`Retrieve favorite items`, async () => {
-    const response = FAVORITE_ITEM;
+  it(`Retrieve bookmarked items`, async () => {
+    const response = BOOKMARKED_ITEM;
     const endpoints = [{ route, response }];
     await mockHook({ endpoints, hook, wrapper });
 
