@@ -33,7 +33,7 @@
     "@commitlint/cli": "19.1.0",
     "@commitlint/config-conventional": "19.1.0",
     "@graasp/sdk": "4.1.0",
-    "@graasp/translations": "1.25.2",
+    "@graasp/translations": "1.25.3",
     "@testing-library/dom": "9.3.4",
     "@testing-library/react": "14.2.1",
     "@testing-library/user-event": "14.5.2",
