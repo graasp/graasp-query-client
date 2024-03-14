@@ -548,4 +548,5 @@ export const ITEM_GEOLOCATION: ItemGeolocation = {
   createdAt: '2023-09-06T11:50:32.894Z',
   updatedAt: '2023-09-06T11:50:32.894Z',
   addressLabel: 'addressLabel',
+  helperLabel: 'helperLabel',
 };
