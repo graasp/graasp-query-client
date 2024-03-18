@@ -1,4 +1,4 @@
-import { UUID } from '@graasp/sdk';
+import { PublicProfile, UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types.js';
 import {
@@ -10,7 +10,9 @@ import {
 
 export const getOwnProfile = ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   axios
-    .get(`${API_HOST}/${MEMBERS_ROUTE}/${GET_OWN_PROFILE}`)
+    .get<PublicProfile | null>(
+      `${API_HOST}/${MEMBERS_ROUTE}/${GET_OWN_PROFILE}`,
+    )
     .then(({ data }) => data);
 
 export const getPublicProfile = (
@@ -18,7 +20,9 @@ export const getPublicProfile = (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get(`${API_HOST}/${MEMBERS_ROUTE}/${buildGetPublicProfileRoute(memberId)}`)
+    .get<PublicProfile | null>(
+      `${API_HOST}/${MEMBERS_ROUTE}/${buildGetPublicProfileRoute(memberId)}`,
+    )
     .then(({ data }) => data);
 
 export type PostPublicProfilePayloadType = {
