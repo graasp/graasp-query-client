@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.0.1](https://github.com/graasp/graasp-query-client/compare/v3.0.0...v3.0.1) (2024-03-18)
+
+
+### Bug Fixes
+
+* add public profile return type on api ([#693](https://github.com/graasp/graasp-query-client/issues/693)) ([2a0e774](https://github.com/graasp/graasp-query-client/commit/2a0e774f3a651d039af0e42e07a23ab1b5ecc80f))
+* **deps:** update dependency axios to v1.6.8 ([#691](https://github.com/graasp/graasp-query-client/issues/691)) ([a034f39](https://github.com/graasp/graasp-query-client/commit/a034f392441027e374b95b8e9ef3caadf859e0d3))
+
 ## [3.0.0](https://github.com/graasp/graasp-query-client/compare/v2.9.1...v3.0.0) (2024-03-13)
 
 
