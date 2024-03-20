@@ -595,12 +595,12 @@ __metadata:
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
     "@testing-library/dom": "npm:9.3.4"
-    "@testing-library/react": "npm:14.2.1"
+    "@testing-library/react": "npm:14.2.2"
     "@testing-library/user-event": "npm:14.5.2"
     "@trivago/prettier-plugin-sort-imports": "npm:4.3.0"
     "@types/jsdom": "npm:21.1.6"
-    "@types/qs": "npm:6.9.12"
-    "@types/react": "npm:18.2.66"
+    "@types/qs": "npm:6.9.14"
+    "@types/react": "npm:18.2.67"
     "@types/react-dom": "npm:18.2.22"
     "@types/react-test-renderer": "npm:18.0.7"
     "@types/uuid": "npm:9.0.8"
@@ -630,7 +630,7 @@ __metadata:
     react-test-renderer: "npm:18.2.0"
     ts-node: "npm:10.9.2"
     tsc-alias: "npm:1.8.8"
-    typescript: "npm:5.4.2"
+    typescript: "npm:5.4.3"
     uuid: "npm:9.0.1"
     vitest: "npm:1.4.0"
   peerDependencies:
@@ -999,9 +999,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:14.2.1":
-  version: 14.2.1
-  resolution: "@testing-library/react@npm:14.2.1"
+"@testing-library/react@npm:14.2.2":
+  version: 14.2.2
+  resolution: "@testing-library/react@npm:14.2.2"
   dependencies:
     "@babel/runtime": "npm:^7.12.5"
     "@testing-library/dom": "npm:^9.0.0"
@@ -1009,7 +1009,7 @@ __metadata:
   peerDependencies:
     react: ^18.0.0
     react-dom: ^18.0.0
-  checksum: 10/e02b2f32ae79665a79fc4d8ee053fd3832bfcd4753aa1dba05cdece1a9f59c72a0fae91e0a9387597dcb686d631a722729f2878e38dc95e6f23b291ad8d09b6c
+  checksum: 10/3605577fda8d5e27b8919f390f749af91494d03e7ba5ccaf6480ed1184248372c5a4e8fe1c8c3ad4c1a7b3536f37144ba4b4626900ed46dc9811312f280eee31
   languageName: node
   linkType: hard
 
@@ -1134,10 +1134,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/qs@npm:6.9.12":
-  version: 6.9.12
-  resolution: "@types/qs@npm:6.9.12"
-  checksum: 10/76be8068091058987bb49aca59e9714ff856661cdc2340499f9d502c78950ac08e7ecbca256c8a72c4c83714bce30e6aaad13f9f739e8c0c436c0eedb2a2627c
+"@types/qs@npm:6.9.14":
+  version: 6.9.14
+  resolution: "@types/qs@npm:6.9.14"
+  checksum: 10/d3b76021d36b86c0063ec4b7373e9fa470754914e486fbfe54b3a8866dad037800a2c2068ecbcaa9399ae3ed15772a26b07e67793ed2519cf2de199104014716
   languageName: node
   linkType: hard
 
@@ -1179,14 +1179,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:18.2.66":
-  version: 18.2.66
-  resolution: "@types/react@npm:18.2.66"
+"@types/react@npm:18.2.67":
+  version: 18.2.67
+  resolution: "@types/react@npm:18.2.67"
   dependencies:
     "@types/prop-types": "npm:*"
     "@types/scheduler": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: 10/8a82bda6c254681536fa8348dc15d52345d8203d5d322406feef865f74ebfe2475ebde0be4e2f9a18ffbb587dac946dfb5d0974b598779ff282259aff7e8209a
+  checksum: 10/d7e248dbe8d9d3b05f0d8e128d615fc9c85aa2c5d15634271d20cb9b343dbeffb0875f31a44e7ac63b42afc25949bd4c3633b7ebee45ee4666591ca934a8dffb
   languageName: node
   linkType: hard
 
@@ -6435,23 +6435,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.4.2":
-  version: 5.4.2
-  resolution: "typescript@npm:5.4.2"
+"typescript@npm:5.4.3":
+  version: 5.4.3
+  resolution: "typescript@npm:5.4.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10/f8cfdc630ab1672f004e9561eb2916935b2d267792d07ce93e97fc601c7a65191af32033d5e9c0169b7dc37da7db9bf320f7432bc84527cb7697effaa4e4559d
+  checksum: 10/de4c69f49a7ad4b1ea66a6dcc8b055ac34eb56af059a069d8988dd811c5e649be07e042e5bf573e8d0ac3ec2f30e6c999aa651cd09f6e9cbc6113749e8b6be20
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>":
-  version: 5.4.2
-  resolution: "typescript@patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>::version=5.4.2&hash=5adc0c"
+"typescript@patch:typescript@npm%3A5.4.3#optional!builtin<compat/typescript>":
+  version: 5.4.3
+  resolution: "typescript@patch:typescript@npm%3A5.4.3#optional!builtin<compat/typescript>::version=5.4.3&hash=5adc0c"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10/f5f9a4133c2670761f0166eae5b3bafbc4a3fc24f0f42a93c9c893d9e9d6e66ea066969c5e7483fa66b4ae0e99125592553f3b92fd3599484de8be13b0615176
+  checksum: 10/5aedd97595582b08aadb8a70e8e3ddebaf5a9c1e5ad4d6503c2fcfc15329b5cf8d01145b09913e9555683ac16c5123a96be32b6d72614098ebd42df520eed9b1
   languageName: node
   linkType: hard
 
