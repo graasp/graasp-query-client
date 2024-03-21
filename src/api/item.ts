@@ -60,7 +60,7 @@ export const getOwnItems = async ({
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
-      .get<PackedItem[]>(`${API_HOST}/${GET_OWN_ITEMS_ROUTE}`)
+      .get<DiscriminatedItem[]>(`${API_HOST}/${GET_OWN_ITEMS_ROUTE}`)
       .then(({ data }) => data),
   );
 
@@ -221,7 +221,7 @@ export const getSharedItems = async ({
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
-      .get<PackedItem[]>(`${API_HOST}/${SHARED_ITEM_WITH_ROUTE}`, {})
+      .get<DiscriminatedItem[]>(`${API_HOST}/${SHARED_ITEM_WITH_ROUTE}`, {})
       .then(({ data }) => data),
   );
 
