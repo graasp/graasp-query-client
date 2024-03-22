@@ -7,6 +7,7 @@ import {
   dehydrate,
   focusManager,
   useMutation,
+  useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -68,6 +69,7 @@ export default (
 ): {
   queryConfig: QueryClientConfig;
   queryClient: QueryClient;
+  useQuery: typeof useQuery;
   useQueryClient: typeof useQueryClient;
   QueryClientProvider: typeof QueryClientProvider;
   hooks: typeof hooks;
@@ -130,6 +132,7 @@ export default (
     queryConfig,
     queryClient,
     useQueryClient,
+    useQuery,
     QueryClientProvider,
     hooks,
     useMutation,
