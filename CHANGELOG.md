@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.2](https://github.com/graasp/graasp-query-client/compare/v3.0.1...v3.0.2) (2024-03-22)
+
+
+### Bug Fixes
+
+* export useQuery to be used in consumers ([#699](https://github.com/graasp/graasp-query-client/issues/699)) ([956264a](https://github.com/graasp/graasp-query-client/commit/956264a9c121abf108382e517572cca59d832cfc))
+
 ## [3.0.1](https://github.com/graasp/graasp-query-client/compare/v3.0.0...v3.0.1) (2024-03-18)
 
 
