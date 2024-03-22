@@ -30,6 +30,7 @@ import {
   Member,
   MemberFactory,
   MentionStatus,
+  PackedFolderItemFactory,
   PermissionLevel,
   RecycledItemData,
   ResultOf,
@@ -541,7 +542,7 @@ export const ITEM_PUBLISHED_DATA: ItemPublished = {
 
 export const ITEM_GEOLOCATION: ItemGeolocation = {
   id: 'item-published-id',
-  item: FolderItemFactory(),
+  item: PackedFolderItemFactory(),
   lat: 1,
   lng: 1,
   country: 'DE',
