@@ -590,7 +590,7 @@ __metadata:
   dependencies:
     "@commitlint/cli": "npm:19.2.1"
     "@commitlint/config-conventional": "npm:19.1.0"
-    "@graasp/sdk": "github:graasp/graasp-sdk#packed"
+    "@graasp/sdk": "npm:4.3.0"
     "@graasp/translations": "npm:1.25.3"
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
@@ -640,9 +640,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@github:graasp/graasp-sdk#packed":
-  version: 4.2.1
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=b75dcdf6bd46a7d509b8b483ca2add3fed042d63"
+"@graasp/sdk@npm:4.3.0":
+  version: 4.3.0
+  resolution: "@graasp/sdk@npm:4.3.0"
   dependencies:
     "@faker-js/faker": "npm:8.4.1"
     js-cookie: "npm:3.0.5"
@@ -650,7 +650,7 @@ __metadata:
   peerDependencies:
     date-fns: ^3
     uuid: ^9
-  checksum: 10/027a81948c7ec9aac0e2ebc398fab57e590145c5dbd488364ae1cc06ce616ac9882348771e0124e75980b7a3428cd3f65291cfe2dcf19ddd61af48e3c8a972f1
+  checksum: 10/ad42e060c0a8cca042b43343d275b23afdb97c45be31e6ca9645c0860d00abd348b6a8b058984d691dd1542553c0ce809b2fcc202bc175494830b15af55c0426
   languageName: node
   linkType: hard
 
