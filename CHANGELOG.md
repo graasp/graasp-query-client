@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/graasp/graasp-query-client/compare/v3.0.2...v3.1.0) (2024-03-25)
+
+
+### Features
+
+* add packed item and packed item geolocation ([#697](https://github.com/graasp/graasp-query-client/issues/697)) ([269d67a](https://github.com/graasp/graasp-query-client/commit/269d67a14d496aea4b6a90ba9673fd751354a114))
+
 ## [3.0.2](https://github.com/graasp/graasp-query-client/compare/v3.0.1...v3.0.2) (2024-03-22)
 
 
