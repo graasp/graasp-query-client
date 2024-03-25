@@ -1,7 +1,7 @@
 import {
   CompleteMember,
-  DiscriminatedItem,
   MAX_TARGETS_FOR_READ_REQUEST,
+  PackedItem,
   RecycledItemData,
   UUID,
   WebsocketClient,
@@ -124,7 +124,7 @@ export default (
       options?: {
         enabled?: boolean;
         getUpdates?: boolean;
-        placeholderData?: DiscriminatedItem[];
+        placeholderData?: PackedItem[];
       },
     ) => {
       const enabled = options?.enabled ?? true;
@@ -159,11 +159,11 @@ export default (
 
     useChildrenPaginated: (
       id: UUID | undefined,
-      children: DiscriminatedItem[],
+      children: PackedItem[],
       options?: {
         enabled?: boolean;
         itemsPerPage?: number;
-        filterFunction?: (items: DiscriminatedItem[]) => DiscriminatedItem[];
+        filterFunction?: (items: PackedItem[]) => PackedItem[];
       },
     ) => {
       const enabled = options?.enabled;
@@ -286,7 +286,7 @@ export default (
       id?: UUID,
       options?: {
         getUpdates?: boolean;
-        placeholderData?: DiscriminatedItem;
+        placeholderData?: PackedItem;
       },
     ) => {
       const getUpdates = options?.getUpdates ?? enableWebsocket;
@@ -430,9 +430,8 @@ export default (
       let shouldFetch = true;
       if (id) {
         shouldFetch =
-          queryClient.getQueryData<DiscriminatedItem>(
-            itemKeys.single(id).content,
-          )?.settings?.hasThumbnail ?? true;
+          queryClient.getQueryData<PackedItem>(itemKeys.single(id).content)
+            ?.settings?.hasThumbnail ?? true;
       }
       return useQuery({
         queryKey: itemKeys.single(id).thumbnail({ size, replyUrl: false }),
@@ -460,9 +459,8 @@ export default (
       let shouldFetch = true;
       if (id) {
         shouldFetch =
-          queryClient.getQueryData<DiscriminatedItem>(
-            itemKeys.single(id).content,
-          )?.settings?.hasThumbnail ?? true;
+          queryClient.getQueryData<PackedItem>(itemKeys.single(id).content)
+            ?.settings?.hasThumbnail ?? true;
       }
       return useQuery({
         queryKey: itemKeys.single(id).thumbnail({ size, replyUrl: true }),

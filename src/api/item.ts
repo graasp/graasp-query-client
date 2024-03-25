@@ -1,6 +1,7 @@
 import {
   DiscriminatedItem,
   ItemGeolocation,
+  PackedItem,
   RecycledItemData,
   ResultOf,
   UUID,
@@ -40,9 +41,9 @@ import {
 export const getItem = (
   id: UUID,
   { API_HOST, axios }: PartialQueryConfigForApi,
-): Promise<DiscriminatedItem> =>
+): Promise<PackedItem> =>
   axios
-    .get<DiscriminatedItem>(`${API_HOST}/${buildGetItemRoute(id)}`)
+    .get<PackedItem>(`${API_HOST}/${buildGetItemRoute(id)}`)
     .then(({ data }) => data);
 
 export const getItems = async (
@@ -50,7 +51,7 @@ export const getItems = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<ResultOf<DiscriminatedItem>>(`${API_HOST}/${buildGetItemsRoute(ids)}`)
+    .get<ResultOf<PackedItem>>(`${API_HOST}/${buildGetItemsRoute(ids)}`)
     .then(({ data }) => data);
 
 export const getOwnItems = async ({
@@ -71,7 +72,7 @@ export const getAccessibleItems = async (
   verifyAuthentication(() =>
     axios
       .get<
-        Paginated<DiscriminatedItem>
+        Paginated<PackedItem>
       >(`${API_HOST}/${buildGetAccessibleItems(params, pagination)}`)
       .then(({ data }) => data),
   );
@@ -147,9 +148,7 @@ export const getChildren = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<
-      DiscriminatedItem[]
-    >(`${API_HOST}/${buildGetChildrenRoute(id, params)}`)
+    .get<PackedItem[]>(`${API_HOST}/${buildGetChildrenRoute(id, params)}`)
     .then(({ data }) => data);
 
 export const getParents = async (
@@ -164,7 +163,7 @@ export const getParents = async (
     }
   }
   return axios
-    .get<DiscriminatedItem[]>(`${API_HOST}/${buildGetItemParents(id)}`)
+    .get<PackedItem[]>(`${API_HOST}/${buildGetItemParents(id)}`)
     .then(({ data }) => data);
 };
 
@@ -173,7 +172,7 @@ export const getDescendants = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<DiscriminatedItem[]>(`${API_HOST}/${buildGetItemDescendants(id)}`)
+    .get<PackedItem[]>(`${API_HOST}/${buildGetItemDescendants(id)}`)
     .then(({ data }) => data);
 
 export const moveItems = async (
