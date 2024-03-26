@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/graasp/graasp-query-client/compare/v3.1.0...v3.2.0) (2024-03-26)
+
+
+### Features
+
+* add helper label geoloc ([#704](https://github.com/graasp/graasp-query-client/issues/704)) ([ffbf3e8](https://github.com/graasp/graasp-query-client/commit/ffbf3e87952c733c3acb3764f63b8316c1fcb3f8))
+
 ## [3.1.0](https://github.com/graasp/graasp-query-client/compare/v3.0.2...v3.1.0) (2024-03-25)
 
 
