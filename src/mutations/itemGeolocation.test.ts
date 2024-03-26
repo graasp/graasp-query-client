@@ -121,6 +121,43 @@ describe('Item Flag Mutations', () => {
       });
     });
 
+    it('Put item geolocation with helper text and lat and lng', async () => {
+      // set some starting data
+      queryClient.setQueryData(key, ITEM_GEOLOCATION);
+      queryClient.setQueryData(singleKey, [ITEM_GEOLOCATION]);
+
+      const response = {};
+
+      const endpoints = [
+        {
+          response,
+          method: HttpMethod.Put,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({
+          geolocation: { lat: 1, lng: 2, helperLabel: 'helperlabel' },
+          itemId,
+        });
+        await waitForMutation();
+      });
+
+      expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
+      expect(queryClient.getQueryState(singleKey)?.isInvalidated).toBeTruthy();
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: putItemGeolocationRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.PUT_ITEM_GEOLOCATION },
+      });
+    });
+
     it('Unauthorized to put item geolocation', async () => {
       // set some starting data
       queryClient.setQueryData(key, ITEM_GEOLOCATION);
