@@ -147,10 +147,17 @@ export const getChildren = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<
-      DiscriminatedItem[]
-    >(`${API_HOST}/${buildGetChildrenRoute(id, params)}`)
-    .then(({ data }) => data);
+    .get<DiscriminatedItem[]>(
+      `${API_HOST}/${buildGetChildrenRoute(id, params)}`,
+    )
+    .then(({ data }) => data)
+    .catch((err) => {
+      if (err.code === 'GERR029') {
+        console.debug('requested children on an item that is not a folder');
+        return null;
+      }
+      throw err;
+    });
 
 export const getParents = async (
   { id, path }: { id: UUID; path?: string },
