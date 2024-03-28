@@ -78,7 +78,7 @@ export const getAccessibleItems = async (
   );
 
 export type PostItemPayloadType = Partial<DiscriminatedItem> &
-  Pick<DiscriminatedItem, 'type' | 'name' > & {
+  Pick<DiscriminatedItem, 'type' | 'name'> & {
     parentId?: UUID;
   } & {
     geolocation?: Pick<ItemGeolocation, 'lat' | 'lng'>;

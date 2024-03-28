@@ -68,7 +68,6 @@ describe('Items Mutations', () => {
     const mutation = mutations.usePostItem;
     const newItem = {
       name: 'new item',
-      displayName: 'new item - display name',
       type: ItemType.FOLDER,
     };
 
