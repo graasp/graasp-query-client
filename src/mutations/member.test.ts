@@ -7,6 +7,7 @@ import {
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { act } from '@testing-library/react';
+import axios from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -164,13 +165,12 @@ describe('Member Mutations', () => {
   });
 
   describe('useEditMember', () => {
-    const id = 'member-id';
-    const route = `/${buildPatchMember(id)}`;
+    const member = MemberFactory();
+    const route = `/${buildPatchMember(member.id)}`;
     const newMember = { name: 'newname' };
     const mutation = mutations.useEditMember;
-    const member = MemberFactory();
 
-    it(`Successfully edit member id = ${id}`, async () => {
+    it(`Successfully edit member id = ${member.id}`, async () => {
       const response = { ...member, name: newMember.name };
       // set random data in cache
       queryClient.setQueryData(memberKeys.current().content, member);
@@ -181,6 +181,7 @@ describe('Member Mutations', () => {
           route,
         },
       ];
+      const patchSpy = vi.spyOn(axios, 'patch');
       const mockedMutation = await mockMutation({
         mutation,
         wrapper,
@@ -188,9 +189,14 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ id, ...newMember });
+        mockedMutation.mutate({ id: member.id, ...newMember });
         await waitForMutation();
       });
+
+      expect(patchSpy).toHaveBeenCalledWith(
+        expect.stringContaining(member.id),
+        newMember,
+      );
 
       // verify cache keys
       const newData = queryClient.getQueryData<CompleteMember>(
@@ -217,7 +223,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ id, ...newMember });
+        mockedMutation.mutate({ id: member.id, ...newMember });
         await waitForMutation();
       });
 
