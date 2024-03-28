@@ -78,7 +78,7 @@ export const getAccessibleItems = async (
   );
 
 export type PostItemPayloadType = Partial<DiscriminatedItem> &
-  Pick<DiscriminatedItem, 'type' | 'name'> & {
+  Pick<DiscriminatedItem, 'type' | 'name' | 'displayName'> & {
     parentId?: UUID;
   } & {
     geolocation?: Pick<ItemGeolocation, 'lat' | 'lng'>;
@@ -91,6 +91,7 @@ export type PostItemPayloadType = Partial<DiscriminatedItem> &
 export const postItem = async (
   {
     name,
+    displayName,
     type,
     description,
     extra,
@@ -104,6 +105,7 @@ export const postItem = async (
     axios
       .post<DiscriminatedItem>(`${API_HOST}/${buildPostItemRoute(parentId)}`, {
         name: name.trim(),
+        displayName: displayName.trim(),
         type,
         description,
         extra,
