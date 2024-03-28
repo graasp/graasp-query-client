@@ -32,7 +32,7 @@
   "devDependencies": {
     "@commitlint/cli": "19.2.1",
     "@commitlint/config-conventional": "19.1.0",
-    "@graasp/sdk": "4.3.1",
+    "@graasp/sdk": "4.4.0",
     "@graasp/translations": "1.25.3",
     "@testing-library/dom": "9.3.4",
     "@testing-library/react": "14.2.2",
