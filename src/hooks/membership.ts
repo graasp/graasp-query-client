@@ -9,10 +9,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import * as Api from '../api/membership.js';
 import { UndefinedArgument } from '../config/errors.js';
-import {
-  buildItemMembershipsKey,
-  buildManyItemMembershipsKey,
-} from '../config/keys.js';
+import { buildManyItemMembershipsKey, itemKeys } from '../config/keys.js';
 import { QueryClientConfig } from '../types.js';
 import { configureWsMembershipHooks } from '../ws/index.js';
 
@@ -36,7 +33,7 @@ export default (
       );
 
       return useQuery({
-        queryKey: buildItemMembershipsKey(id),
+        queryKey: itemKeys.single(id).memberships,
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
@@ -78,7 +75,7 @@ export default (
           if (memberships) {
             ids?.forEach(async (id) => {
               queryClient.setQueryData(
-                buildItemMembershipsKey(id),
+                itemKeys.single(id).memberships,
                 memberships.data[id],
               );
             });

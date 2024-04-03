@@ -16,7 +16,7 @@ import {
   mockWsHook,
   setUpWsTest,
 } from '../../../test/wsUtils.js';
-import { buildItemMembershipsKey } from '../../config/keys.js';
+import { itemKeys } from '../../config/keys.js';
 import { KINDS, OPS, TOPICS } from '../constants.js';
 import { configureWsMembershipHooks } from './membership.js';
 
@@ -33,7 +33,7 @@ describe('Ws Membership Hooks', () => {
     const item = FolderItemFactory();
     const itemId = item.id;
     const member = MemberFactory();
-    const membershipsKey = buildItemMembershipsKey(itemId);
+    const membershipsKey = itemKeys.single(itemId).memberships;
     const newItemMembership = createMockMembership({
       item,
       member,

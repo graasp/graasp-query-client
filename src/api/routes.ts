@@ -126,6 +126,8 @@ export const buildGetItemMembershipsForItemsRoute = (ids: UUID[]) =>
   )}`;
 export const buildGetItemInvitationsForItemRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/invitations`;
+export const buildPostUserCSVUploadRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/invitations/upload-csv`;
 
 export const buildGetItemChatRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/chat`;
 export const buildExportItemChatRoute = (id: UUID) =>

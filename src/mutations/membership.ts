@@ -15,11 +15,7 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import * as InvitationApi from '../api/invitation.js';
 import * as MemberApi from '../api/member.js';
 import * as Api from '../api/membership.js';
-import {
-  buildItemInvitationsKey,
-  buildItemMembershipsKey,
-  buildManyItemMembershipsKey,
-} from '../config/keys.js';
+import { buildManyItemMembershipsKey, itemKeys } from '../config/keys.js';
 import { shareItemRoutine } from '../routines/member.js';
 import {
   deleteItemMembershipRoutine,
@@ -54,7 +50,7 @@ export default (queryConfig: QueryClientConfig) => {
           // todo: invalidate all pack of memberships containing the given id
           // this won't trigger too many errors as long as the stale time is low
           queryClient.invalidateQueries(buildManyItemMembershipsKey([id]));
-          queryClient.invalidateQueries(buildItemMembershipsKey(id));
+          queryClient.invalidateQueries(itemKeys.single(id).memberships);
         },
       },
     );
@@ -91,7 +87,7 @@ export default (queryConfig: QueryClientConfig) => {
         },
         // Always refetch after error or success:
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(buildItemMembershipsKey(itemId));
+          queryClient.invalidateQueries(itemKeys.single(itemId).memberships);
         },
       },
     );
@@ -108,7 +104,7 @@ export default (queryConfig: QueryClientConfig) => {
         Api.deleteItemMembership({ id }, queryConfig),
       {
         onMutate: ({ itemId, id }) => {
-          const membershipsKey = buildItemMembershipsKey(itemId);
+          const membershipsKey = itemKeys.single(itemId).memberships;
           const memberships =
             queryClient.getQueryData<ItemMembership[]>(membershipsKey);
 
@@ -126,7 +122,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onError: (error: Error, { itemId }, context) => {
-          const membershipsKey = buildItemMembershipsKey(itemId);
+          const membershipsKey = itemKeys.single(itemId).memberships;
           queryClient.setQueryData(membershipsKey, context?.memberships);
           notifier?.({
             type: deleteItemMembershipRoutine.FAILURE,
@@ -135,7 +131,7 @@ export default (queryConfig: QueryClientConfig) => {
         },
         // Always refetch after error or success:
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(buildItemMembershipsKey(itemId));
+          queryClient.invalidateQueries(itemKeys.single(itemId).memberships);
         },
       },
     );
@@ -268,8 +264,8 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(buildItemMembershipsKey(itemId));
-          queryClient.invalidateQueries(buildItemInvitationsKey(itemId));
+          queryClient.invalidateQueries(itemKeys.single(itemId).memberships);
+          queryClient.invalidateQueries(itemKeys.single(itemId).invitation);
         },
       },
     );

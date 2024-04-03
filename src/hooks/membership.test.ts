@@ -17,10 +17,7 @@ import {
 } from '../../test/constants.js';
 import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils.js';
 import { buildGetItemMembershipsForItemsRoute } from '../api/routes.js';
-import {
-  buildItemMembershipsKey,
-  buildManyItemMembershipsKey,
-} from '../config/keys.js';
+import { buildManyItemMembershipsKey, itemKeys } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -35,7 +32,7 @@ describe('Membership Hooks', () => {
     // this hook uses the many endpoint
     const response = buildResultOfData([ITEM_MEMBERSHIPS_RESPONSE]);
     const route = `/${buildGetItemMembershipsForItemsRoute([id])}`;
-    const key = buildItemMembershipsKey(id);
+    const key = itemKeys.single(id).memberships;
 
     it(`Receive one item's memberships`, async () => {
       const hook = () => hooks.useItemMemberships(id);

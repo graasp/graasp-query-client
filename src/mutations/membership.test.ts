@@ -33,12 +33,7 @@ import {
   buildPostItemMembershipRoute,
   buildPostManyItemMembershipsRoute,
 } from '../api/routes.js';
-import {
-  OWN_ITEMS_KEY,
-  buildItemInvitationsKey,
-  buildItemMembershipsKey,
-  itemKeys,
-} from '../config/keys.js';
+import { OWN_ITEMS_KEY, itemKeys } from '../config/keys.js';
 import { shareItemRoutine } from '../routines/member.js';
 import {
   deleteItemMembershipRoutine,
@@ -67,7 +62,7 @@ describe('Membership Mutations', () => {
   const item = items[0];
   const itemId = item.id;
   const memberships = ITEM_MEMBERSHIPS_RESPONSE;
-  const membershipsKey = buildItemMembershipsKey(itemId);
+  const membershipsKey = itemKeys.single(itemId).memberships;
   const membershipId = memberships[0].id;
   const permission = PermissionLevel.Read;
 
@@ -87,7 +82,7 @@ describe('Membership Mutations', () => {
       // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
-        buildItemMembershipsKey(itemId),
+        itemKeys.single(itemId).memberships,
         ITEM_MEMBERSHIPS_RESPONSE,
       );
 
@@ -118,7 +113,9 @@ describe('Membership Mutations', () => {
       });
 
       // check memberships invalidation
-      const data = queryClient.getQueryState(buildItemMembershipsKey(itemId));
+      const data = queryClient.getQueryState(
+        itemKeys.single(itemId).memberships,
+      );
       expect(data?.isInvalidated).toBeTruthy();
     });
 
@@ -133,7 +130,7 @@ describe('Membership Mutations', () => {
       // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
-        buildItemMembershipsKey(itemId),
+        itemKeys.single(itemId).memberships,
         ITEM_MEMBERSHIPS_RESPONSE,
       );
 
@@ -163,7 +160,9 @@ describe('Membership Mutations', () => {
       });
 
       // check memberships invalidation
-      const data = queryClient.getQueryState(buildItemMembershipsKey(itemId));
+      const data = queryClient.getQueryState(
+        itemKeys.single(itemId).memberships,
+      );
       expect(data?.isInvalidated).toBeTruthy();
     });
   });
@@ -331,11 +330,11 @@ describe('Membership Mutations', () => {
       // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
-        buildItemMembershipsKey(itemId),
+        itemKeys.single(itemId).memberships,
         ITEM_MEMBERSHIPS_RESPONSE,
       );
       queryClient.setQueryData(
-        buildItemInvitationsKey(itemId),
+        itemKeys.single(itemId).invitation,
         initialInvitations,
       );
 
@@ -370,9 +369,11 @@ describe('Membership Mutations', () => {
       });
 
       // check invalidations
-      const mem = queryClient.getQueryState(buildItemMembershipsKey(itemId));
+      const mem = queryClient.getQueryState(
+        itemKeys.single(itemId).memberships,
+      );
       expect(mem?.isInvalidated).toBeTruthy();
-      const inv = queryClient.getQueryState(buildItemInvitationsKey(itemId));
+      const inv = queryClient.getQueryState(itemKeys.single(itemId).invitation);
       expect(inv?.isInvalidated).toBeTruthy();
 
       // check notification trigger
@@ -391,11 +392,11 @@ describe('Membership Mutations', () => {
       // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
-        buildItemMembershipsKey(itemId),
+        itemKeys.single(itemId).memberships,
         ITEM_MEMBERSHIPS_RESPONSE,
       );
       queryClient.setQueryData(
-        buildItemInvitationsKey(itemId),
+        itemKeys.single(itemId).invitation,
         initialInvitations,
       );
 
@@ -436,9 +437,11 @@ describe('Membership Mutations', () => {
       });
 
       // check invalidations
-      const mem = queryClient.getQueryState(buildItemMembershipsKey(itemId));
+      const mem = queryClient.getQueryState(
+        itemKeys.single(itemId).memberships,
+      );
       expect(mem?.isInvalidated).toBeTruthy();
-      const inv = queryClient.getQueryState(buildItemInvitationsKey(itemId));
+      const inv = queryClient.getQueryState(itemKeys.single(itemId).invitation);
       expect(inv?.isInvalidated).toBeTruthy();
 
       // check notification trigger
@@ -463,11 +466,11 @@ describe('Membership Mutations', () => {
       // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
-        buildItemMembershipsKey(itemId),
+        itemKeys.single(itemId).memberships,
         ITEM_MEMBERSHIPS_RESPONSE,
       );
       queryClient.setQueryData(
-        buildItemInvitationsKey(itemId),
+        itemKeys.single(itemId).invitation,
         initialInvitations,
       );
 
@@ -493,9 +496,11 @@ describe('Membership Mutations', () => {
       });
 
       // check invalidations
-      const mem = queryClient.getQueryState(buildItemMembershipsKey(itemId));
+      const mem = queryClient.getQueryState(
+        itemKeys.single(itemId).memberships,
+      );
       expect(mem?.isInvalidated).toBeTruthy();
-      const inv = queryClient.getQueryState(buildItemInvitationsKey(itemId));
+      const inv = queryClient.getQueryState(itemKeys.single(itemId).invitation);
       expect(inv?.isInvalidated).toBeTruthy();
 
       // check notification trigger
@@ -514,11 +519,11 @@ describe('Membership Mutations', () => {
       // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
-        buildItemMembershipsKey(itemId),
+        itemKeys.single(itemId).memberships,
         ITEM_MEMBERSHIPS_RESPONSE,
       );
       queryClient.setQueryData(
-        buildItemInvitationsKey(itemId),
+        itemKeys.single(itemId).invitation,
         initialInvitations,
       );
 
@@ -554,9 +559,11 @@ describe('Membership Mutations', () => {
       });
 
       // check invalidations
-      const mem = queryClient.getQueryState(buildItemMembershipsKey(itemId));
+      const mem = queryClient.getQueryState(
+        itemKeys.single(itemId).memberships,
+      );
       expect(mem?.isInvalidated).toBeTruthy();
-      const inv = queryClient.getQueryState(buildItemInvitationsKey(itemId));
+      const inv = queryClient.getQueryState(itemKeys.single(itemId).invitation);
       expect(inv?.isInvalidated).toBeTruthy();
 
       // check notification trigger
@@ -574,11 +581,11 @@ describe('Membership Mutations', () => {
       // todo: change to Accessible ?
       queryClient.setQueryData(OWN_ITEMS_KEY, items);
       queryClient.setQueryData(
-        buildItemMembershipsKey(itemId),
+        itemKeys.single(itemId).memberships,
         ITEM_MEMBERSHIPS_RESPONSE,
       );
       queryClient.setQueryData(
-        buildItemInvitationsKey(itemId),
+        itemKeys.single(itemId).invitation,
         initialInvitations,
       );
 
@@ -614,9 +621,11 @@ describe('Membership Mutations', () => {
       });
 
       // check invalidations
-      const mem = queryClient.getQueryState(buildItemMembershipsKey(itemId));
+      const mem = queryClient.getQueryState(
+        itemKeys.single(itemId).memberships,
+      );
       expect(mem?.isInvalidated).toBeTruthy();
-      const inv = queryClient.getQueryState(buildItemInvitationsKey(itemId));
+      const inv = queryClient.getQueryState(itemKeys.single(itemId).invitation);
       expect(inv?.isInvalidated).toBeTruthy();
 
       // check notification trigger
