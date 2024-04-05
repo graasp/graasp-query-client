@@ -136,7 +136,12 @@ export default (queryConfig: QueryClientConfig) => {
           Partial<
             Pick<
               DiscriminatedItem,
-              'name' | 'description' | 'extra' | 'settings' | 'lang'
+              | 'name'
+              | 'displayName'
+              | 'description'
+              | 'extra'
+              | 'settings'
+              | 'lang'
             >
           >,
       ) => Api.editItem(item.id, item, queryConfig),
@@ -161,8 +166,12 @@ export default (queryConfig: QueryClientConfig) => {
             return {};
           }
 
-          // trim manually name because it does it in the backend
-          const newFullItem = { ...prevItem, name: prevItem?.name?.trim() };
+          // trim manually names because it does it in the backend
+          const newFullItem = {
+            ...prevItem,
+            name: prevItem.name.trim(),
+            displayName: prevItem.displayName.trim(),
+          };
           queryClient.setQueryData(itemKey, newFullItem);
 
           const previousItems = {
