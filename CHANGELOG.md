@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/graasp/graasp-query-client/compare/v3.2.1...v3.3.0) (2024-04-05)
+
+
+### Features
+
+* add displayName to postItem payload ([#711](https://github.com/graasp/graasp-query-client/issues/711)) ([7addf03](https://github.com/graasp/graasp-query-client/commit/7addf03d9c3fd6af1875451bfebabd70a479a09f))
+
 ## [3.2.1](https://github.com/graasp/graasp-query-client/compare/v3.2.0...v3.2.1) (2024-03-28)
 
 
