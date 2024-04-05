@@ -634,7 +634,7 @@ __metadata:
     uuid: "npm:9.0.1"
     vitest: "npm:1.4.0"
   peerDependencies:
-    "@graasp/sdk": "*"
+    "@graasp/sdk": ^4.0.0
     "@graasp/translations": ^1.23.0
     react: ^18.0.0
   languageName: unknown
