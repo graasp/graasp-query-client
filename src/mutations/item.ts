@@ -136,7 +136,12 @@ export default (queryConfig: QueryClientConfig) => {
           Partial<
             Pick<
               DiscriminatedItem,
-              'name' | 'description' | 'extra' | 'settings' | 'lang'
+              | 'name'
+              | 'displayName'
+              | 'description'
+              | 'extra'
+              | 'settings'
+              | 'lang'
             >
           >,
       ) => Api.editItem(item.id, item, queryConfig),
