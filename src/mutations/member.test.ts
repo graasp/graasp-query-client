@@ -205,6 +205,43 @@ describe('Member Mutations', () => {
       expect(newData).toMatchObject(response);
     });
 
+    it(`Successfully enable saveActions`, async () => {
+      const enableSaveActions = true;
+      const updateMember = { enableSaveActions };
+      const response = { ...member, ...updateMember };
+      // set random data in cache
+      queryClient.setQueryData(memberKeys.current().content, member);
+      const endpoints = [
+        {
+          response,
+          method: HttpMethod.Patch,
+          route,
+        },
+      ];
+      const patchSpy = vi.spyOn(axios, 'patch');
+      const mockedMutation = await mockMutation({
+        mutation,
+        wrapper,
+        endpoints,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({ id: member.id, ...updateMember });
+        await waitForMutation();
+      });
+
+      expect(patchSpy).toHaveBeenCalledWith(
+        expect.stringContaining(member.id),
+        updateMember,
+      );
+
+      // verify cache keys
+      const newData = queryClient.getQueryData<CompleteMember>(
+        memberKeys.current().content,
+      );
+      expect(newData).toMatchObject(response);
+    });
+
     it(`Unauthorized`, async () => {
       // set random data in cache
       queryClient.setQueryData(memberKeys.current().content, member);
