@@ -2,7 +2,6 @@ import {
   CompleteMember,
   MAX_TARGETS_FOR_READ_REQUEST,
   PackedItem,
-  RecycledItemData,
   UUID,
   WebsocketClient,
 } from '@graasp/sdk';
@@ -393,7 +392,7 @@ export default (
         queryKey: memberKeys.current().recycledItems,
         queryFn: () =>
           Api.getRecycledItemsData(queryConfig).then((data) =>
-            data?.map(({ item }: RecycledItemData) => item),
+            data?.map(({ item }) => item),
           ),
         ...defaultQueryOptions,
       });

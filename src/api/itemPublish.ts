@@ -1,4 +1,10 @@
-import { DiscriminatedItem, ItemPublished, ResultOf, UUID } from '@graasp/sdk';
+import {
+  DiscriminatedItem,
+  ItemPublished,
+  PackedItem,
+  ResultOf,
+  UUID,
+} from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types.js';
 import { verifyAuthentication } from './axios.js';
@@ -49,7 +55,7 @@ export const getPublishedItemsForMember = async (
 ) =>
   axios
     .get<
-      DiscriminatedItem[]
+      PackedItem[]
     >(`${API_HOST}/${buildGetPublishedItemsForMemberRoute(memberId)}`)
     .then(({ data }) => data);
 

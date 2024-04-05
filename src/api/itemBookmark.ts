@@ -1,4 +1,4 @@
-import { ItemBookmark, UUID } from '@graasp/sdk';
+import { ItemBookmark, PackedItemBookmark, UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types.js';
 import { verifyAuthentication } from './axios.js';
@@ -13,7 +13,7 @@ export const getBookmarkedItems = async ({
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
-      .get<ItemBookmark[]>(`${API_HOST}/${GET_BOOKMARKED_ITEMS_ROUTE}`)
+      .get<PackedItemBookmark[]>(`${API_HOST}/${GET_BOOKMARKED_ITEMS_ROUTE}`)
       .then(({ data }) => data),
   );
 

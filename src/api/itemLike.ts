@@ -1,4 +1,4 @@
-import { ItemLike, UUID } from '@graasp/sdk';
+import { ItemLike, PackedItemLike, UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types.js';
 import { verifyAuthentication } from './axios.js';
@@ -15,7 +15,9 @@ export const getLikedItems = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .get<ItemLike[]>(`${API_HOST}/${buildGetLikesForMemberRoute(memberId)}`)
+      .get<
+        PackedItemLike[]
+      >(`${API_HOST}/${buildGetLikesForMemberRoute(memberId)}`)
       .then(({ data }) => data),
   );
 
