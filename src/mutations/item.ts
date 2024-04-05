@@ -166,8 +166,12 @@ export default (queryConfig: QueryClientConfig) => {
             return {};
           }
 
-          // trim manually name because it does it in the backend
-          const newFullItem = { ...prevItem, name: prevItem?.name?.trim() };
+          // trim manually names because it does it in the backend
+          const newFullItem = {
+            ...prevItem,
+            name: prevItem.name.trim(),
+            displayName: prevItem.displayName.trim(),
+          };
           queryClient.setQueryData(itemKey, newFullItem);
 
           const previousItems = {
