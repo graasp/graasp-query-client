@@ -125,6 +125,7 @@ export default (queryConfig: QueryClientConfig) => {
         captcha: string;
         url?: string;
         lang?: string;
+        enableSaveActions?: boolean;
       }) => Api.signUp(payload, queryConfig, { lang: payload.lang }),
       {
         onSuccess: () => {
@@ -150,6 +151,7 @@ export default (queryConfig: QueryClientConfig) => {
         challenge: string;
         captcha: string;
         lang?: string;
+        enableSaveActions?: boolean;
       }) => Api.mobileSignUp(payload, queryConfig, { lang: payload.lang }),
       {
         onSuccess: () => {

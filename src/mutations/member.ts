@@ -60,6 +60,7 @@ export default (queryConfig: QueryClientConfig) => {
       (payload: {
         id: string;
         name?: string;
+        enableSaveActions?: boolean;
         extra?: CompleteMember['extra'];
       }) => Api.editMember(payload, queryConfig),
       {
@@ -77,6 +78,12 @@ export default (queryConfig: QueryClientConfig) => {
           if (newMember) {
             if (member.name) {
               newMember.name = member.name;
+            }
+            if (
+              member.enableSaveActions === true ||
+              member.enableSaveActions === false
+            ) {
+              newMember.enableSaveActions = member.enableSaveActions;
             }
             if (member.extra) {
               newMember.extra = member.extra;
