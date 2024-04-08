@@ -393,11 +393,11 @@ export const configureWsItemHooks = (
           const { item } = event;
           switch (event.op) {
             case OPS.CREATE: {
-              queryClient.setQueryData(itemKeys.single(item.id).content, item);
+              queryClient.invalidateQueries(itemKeys.single(item.id).content);
               break;
             }
             case OPS.UPDATE: {
-              queryClient.setQueryData(itemKeys.single(item.id).content, item);
+              queryClient.invalidateQueries(itemKeys.single(item.id).content);
               break;
             }
             case OPS.DELETE: {

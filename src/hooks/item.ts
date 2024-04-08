@@ -93,7 +93,6 @@ export default (
 
     /** @deprecated use useAccessibleItems */
     useOwnItems: (options?: { getUpdates?: boolean }) => {
-      const queryClient = useQueryClient();
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       const { data: currentMember } = useCurrentMember();
@@ -102,14 +101,6 @@ export default (
       return useQuery({
         queryKey: OWN_ITEMS_KEY,
         queryFn: () => Api.getOwnItems(queryConfig),
-        onSuccess: async (items) => {
-          // save items in their own key
-          // eslint-disable-next-line no-unused-expressions
-          items?.forEach(async (item) => {
-            const { id } = item;
-            queryClient.setQueryData(itemKeys.single(id).content, item);
-          });
-        },
         onError: (error) => {
           notifier?.({ type: getOwnItemsRoutine.FAILURE, payload: { error } });
         },
@@ -266,17 +257,9 @@ export default (
       const { data: currentMember } = useCurrentMember();
       itemWsHooks?.useSharedItemsUpdates(getUpdates ? currentMember?.id : null);
 
-      const queryClient = useQueryClient();
       return useQuery({
         queryKey: itemKeys.shared(),
         queryFn: () => Api.getSharedItems(queryConfig),
-        onSuccess: async (items) => {
-          // save items in their own key
-          items.forEach(async (item) => {
-            const { id } = item;
-            queryClient.setQueryData(itemKeys.single(id).content, item);
-          });
-        },
         ...defaultQueryOptions,
       });
     },
