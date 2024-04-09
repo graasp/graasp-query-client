@@ -14,7 +14,12 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../../config/keys.js';
+import {
+  HAS_CHANGES_KEY,
+  OWN_ITEMS_KEY,
+  itemKeys,
+  memberKeys,
+} from '../../config/keys.js';
 import {
   copyItemsRoutine,
   deleteItemsRoutine,
@@ -84,7 +89,7 @@ export const configureWsItemHooks = (
           if (current?.id === item.id) {
             switch (event.op) {
               case OPS.UPDATE: {
-                queryClient.setQueryData(itemKey, item);
+                queryClient.setQueryData(HAS_CHANGES_KEY, true);
                 break;
               }
               case OPS.DELETE: {
@@ -133,7 +138,7 @@ export const configureWsItemHooks = (
             if (current?.id === item.id) {
               switch (event.op) {
                 case OPS.UPDATE: {
-                  queryClient.setQueryData(itemKey, item);
+                  queryClient.setQueryData(HAS_CHANGES_KEY, true);
                   break;
                 }
                 case OPS.DELETE: {
@@ -190,23 +195,12 @@ export const configureWsItemHooks = (
             switch (event.op) {
               case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
-                  mutation = [...current, item];
-                  queryClient.setQueryData(parentChildrenKey, mutation);
-                  queryClient.setQueryData(
-                    itemKeys.single(item.id).content,
-                    item,
-                  );
+                  queryClient.setQueryData(HAS_CHANGES_KEY, true);
                 }
                 break;
               }
               case OPS.UPDATE: {
-                // replace value if it exists
-                mutation = current.map((i) => (i.id === item.id ? item : i));
-                queryClient.setQueryData(parentChildrenKey, mutation);
-                queryClient.setQueryData(
-                  itemKeys.single(item.id).content,
-                  item,
-                );
+                queryClient.setQueryData(HAS_CHANGES_KEY, true);
 
                 break;
               }
@@ -259,23 +253,13 @@ export const configureWsItemHooks = (
             switch (event.op) {
               case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
-                  mutation = [...current, item];
-                  queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
-                  queryClient.setQueryData(
-                    itemKeys.single(item.id).content,
-                    item,
-                  );
+                  queryClient.setQueryData(HAS_CHANGES_KEY, true);
                 }
                 break;
               }
               case OPS.UPDATE: {
                 // replace value if it exists
-                mutation = current.map((i) => (i.id === item.id ? item : i));
-                queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
-                queryClient.setQueryData(
-                  itemKeys.single(item.id).content,
-                  item,
-                );
+                queryClient.setQueryData(HAS_CHANGES_KEY, true);
 
                 break;
               }
@@ -328,23 +312,12 @@ export const configureWsItemHooks = (
             switch (event.op) {
               case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
-                  mutation = [...current, item];
-                  queryClient.setQueryData(itemKeys.shared(), mutation);
-                  queryClient.setQueryData(
-                    itemKeys.single(item.id).content,
-                    item,
-                  );
+                  queryClient.setQueryData(HAS_CHANGES_KEY, true);
                 }
                 break;
               }
               case OPS.UPDATE: {
-                // replace value if it exists
-                mutation = current.map((i) => (i.id === item.id ? item : i));
-                queryClient.setQueryData(itemKeys.shared(), mutation);
-                queryClient.setQueryData(
-                  itemKeys.single(item.id).content,
-                  item,
-                );
+                queryClient.setQueryData(HAS_CHANGES_KEY, true);
 
                 break;
               }
@@ -390,14 +363,13 @@ export const configureWsItemHooks = (
           // so it's easier to invalidate all queries
           queryClient.invalidateQueries(itemKeys.allAccessible());
 
-          const { item } = event;
           switch (event.op) {
             case OPS.CREATE: {
-              queryClient.invalidateQueries(itemKeys.single(item.id).content);
+              queryClient.setQueryData(HAS_CHANGES_KEY, true);
               break;
             }
             case OPS.UPDATE: {
-              queryClient.invalidateQueries(itemKeys.single(item.id).content);
+              queryClient.setQueryData(HAS_CHANGES_KEY, true);
               break;
             }
             case OPS.DELETE: {
@@ -441,11 +413,7 @@ export const configureWsItemHooks = (
             switch (event.op) {
               case OPS.CREATE: {
                 if (!current.find((i) => i.id === item.id)) {
-                  const mutation = [...current, item];
-                  queryClient.setQueryData(
-                    memberKeys.current().recycledItems,
-                    mutation,
-                  );
+                  queryClient.setQueryData(HAS_CHANGES_KEY, true);
                 }
                 break;
               }
