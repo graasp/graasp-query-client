@@ -1,5 +1,3 @@
-import { UUID } from '@graasp/sdk';
-
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/csvUserImport.js';
@@ -11,11 +9,8 @@ export default (queryConfig: QueryClientConfig) => {
   const useCSVUserImport = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (payload: {
-        file: File;
-        itemId: UUID;
-        templateItemId: UUID | undefined;
-      }) => Api.uploadUserCsv(queryConfig, payload),
+      (payload: Api.UploadCSVPayload) =>
+        Api.uploadUserCsv(queryConfig, payload),
       {
         onSuccess: () => {
           queryConfig.notifier?.({
