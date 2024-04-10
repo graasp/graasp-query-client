@@ -416,9 +416,7 @@ describe('Membership Mutations', () => {
           route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
         },
         {
-          response: buildResultOfData([initialInvitations[0]], (d) => d.email, [
-            UNAUTHORIZED_RESPONSE,
-          ]),
+          response: UNAUTHORIZED_RESPONSE,
           method: HttpMethod.Post,
           route: `/${buildPostInvitationsRoute(itemId)}`,
         },
@@ -443,13 +441,12 @@ describe('Membership Mutations', () => {
       expect(mem?.isInvalidated).toBeTruthy();
       const inv = queryClient.getQueryState(itemKeys.single(itemId).invitation);
       expect(inv?.isInvalidated).toBeTruthy();
-
       // check notification trigger
       const param = mockedNotifier.mock.calls[0][0];
       expect(param.type).toEqual(shareItemRoutine.SUCCESS);
       expect(param.payload).toMatchObject(
         buildResultOfData(
-          [ITEM_MEMBERSHIPS_RESPONSE[0], initialInvitations[0]],
+          [ITEM_MEMBERSHIPS_RESPONSE[0]],
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (d) => (d as any)?.member?.email || (d as any)?.email,
           [UNAUTHORIZED_RESPONSE, UNAUTHORIZED_RESPONSE],

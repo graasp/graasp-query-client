@@ -206,7 +206,10 @@ export default (queryConfig: QueryClientConfig) => {
           }
 
           // create invitations
-          let invitationsByEmail: ResultOf<Invitation>['data'] = {};
+          const invitationsResult: ResultOf<Invitation> = {
+            data: {},
+            errors: [],
+          };
           if (invitations.length) {
             const invitationsResponse = await InvitationApi.postInvitations(
               {
@@ -215,13 +218,16 @@ export default (queryConfig: QueryClientConfig) => {
               },
               queryConfig,
             );
-            invitationsByEmail = Object.fromEntries(
-              invitationsResponse.map((inv) => [inv.email, inv]),
-            );
+            if (Array.isArray(invitationsResponse)) {
+              invitationsResult.data = Object.fromEntries(
+                invitationsResponse.map((inv) => [inv.email, inv]),
+              );
+            } else {
+              invitationsResult.errors.push(invitationsResponse);
+            }
           }
-
           return {
-            data: { ...dataForMemberships.data, ...invitationsByEmail },
+            data: { ...dataForMemberships.data, ...invitationsResult.data },
             errors: [
               // create error shape from input
               // todo: use error constructor
@@ -231,8 +237,7 @@ export default (queryConfig: QueryClientConfig) => {
                 name: ReasonPhrases.BAD_REQUEST,
                 data: d,
               })),
-              // no errors are sent back from the API
-              // ...invitationsResult.errors,
+              ...invitationsResult.errors,
               ...dataForMemberships.errors,
             ],
           };
