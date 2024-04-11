@@ -80,7 +80,12 @@ export const getMemberStorage = async ({
   );
 
 export const editMember = async (
-  payload: { id: UUID; extra?: CompleteMember['extra']; name?: string },
+  payload: {
+    id: UUID;
+    extra?: CompleteMember['extra'];
+    name?: string;
+    enableSaveActions?: boolean;
+  },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
@@ -88,6 +93,7 @@ export const editMember = async (
       .patch<CompleteMember>(`${API_HOST}/${buildPatchMember(payload.id)}`, {
         extra: payload.extra,
         name: payload.name,
+        enableSaveActions: payload.enableSaveActions,
       })
       .then(({ data }) => data),
   );

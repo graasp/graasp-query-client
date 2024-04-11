@@ -2,6 +2,7 @@ import { HttpMethod } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { act } from '@testing-library/react';
+import axios from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -316,6 +317,39 @@ describe('Authentication Mutations', () => {
       });
     });
 
+    const testSignUpWithSaveActions = async (enableSaveActions: boolean) => {
+      const endpoints = [
+        { route, response: OK_RESPONSE, method: HttpMethod.Post },
+      ];
+
+      const postSpy = vi.spyOn(axios, 'post');
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({ email, name, captcha, enableSaveActions });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: signUpRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.SIGN_UP },
+      });
+      expect(postSpy).toHaveBeenCalledWith(
+        expect.stringContaining(route),
+        expect.objectContaining({ enableSaveActions }),
+      );
+    };
+
+    it(`Sign up with save actions enabled`, async () =>
+      testSignUpWithSaveActions(true));
+
+    it(`Sign up with save actions disabled`, async () =>
+      testSignUpWithSaveActions(false));
+
     it(`Unauthorized`, async () => {
       const endpoints = [
         {
@@ -370,6 +404,47 @@ describe('Authentication Mutations', () => {
         payload: { message: SUCCESS_MESSAGES.SIGN_UP },
       });
     });
+
+    const testSignUpMobileWithSaveActions = async (
+      enableSaveActions: boolean,
+    ) => {
+      const endpoints = [
+        { route, response: OK_RESPONSE, method: HttpMethod.Post },
+      ];
+
+      const postSpy = vi.spyOn(axios, 'post');
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({
+          email,
+          name,
+          captcha,
+          challenge,
+          enableSaveActions,
+        });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: signUpRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.SIGN_UP },
+      });
+      expect(postSpy).toHaveBeenCalledWith(
+        expect.stringContaining(route),
+        expect.objectContaining({ enableSaveActions }),
+      );
+    };
+
+    it(`Sign up mobile with save actions enabled`, async () =>
+      testSignUpMobileWithSaveActions(true));
+
+    it(`Sign up mobile with save actions disabled`, async () =>
+      testSignUpMobileWithSaveActions(false));
 
     it(`Unauthorized`, async () => {
       const endpoints = [
