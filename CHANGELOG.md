@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/graasp/graasp-query-client/compare/v3.3.0...v3.4.0) (2024-04-11)
+
+
+### Features
+
+* add enableSaveActions on sign up and member updates ([#718](https://github.com/graasp/graasp-query-client/issues/718)) ([65c9003](https://github.com/graasp/graasp-query-client/commit/65c90033aa4f5aa49abc7e6c38d6420c15633e66))
+
 ## [3.3.0](https://github.com/graasp/graasp-query-client/compare/v3.2.1...v3.3.0) (2024-04-05)
 
 
