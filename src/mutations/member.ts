@@ -79,10 +79,7 @@ export default (queryConfig: QueryClientConfig) => {
             if (member.name) {
               newMember.name = member.name;
             }
-            if (
-              member.enableSaveActions === true ||
-              member.enableSaveActions === false
-            ) {
+            if (typeof member.enableSaveActions === 'boolean') {
               newMember.enableSaveActions = member.enableSaveActions;
             }
             if (member.extra) {
