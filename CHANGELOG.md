@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.5.0](https://github.com/graasp/graasp-query-client/compare/v3.4.0...v3.5.0) (2024-04-11)
+## [3.4.1](https://github.com/graasp/graasp-query-client/compare/v3.4.0...v3.4.1) (2024-04-11)
 
 
 ### Features
