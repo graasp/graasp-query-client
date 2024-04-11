@@ -29,6 +29,7 @@ import {
 const captcha = 'captcha';
 const email = 'myemail@email.com';
 const challenge = '1234';
+const defaultSaveActions = true;
 
 describe('Authentication Mutations', () => {
   const mockedNotifier = vi.fn();
@@ -307,7 +308,12 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ email, name, captcha });
+        mockedMutation.mutate({
+          email,
+          name,
+          captcha,
+          enableSaveActions: defaultSaveActions,
+        });
         await waitForMutation();
       });
 
@@ -367,7 +373,12 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ email, name, captcha });
+        mockedMutation.mutate({
+          email,
+          name,
+          captcha,
+          enableSaveActions: defaultSaveActions,
+        });
         await waitForMutation();
       });
 
@@ -395,7 +406,13 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ email, name, captcha, challenge });
+        mockedMutation.mutate({
+          email,
+          name,
+          captcha,
+          challenge,
+          enableSaveActions: defaultSaveActions,
+        });
         await waitForMutation();
       });
 
@@ -463,7 +480,13 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ email, name, captcha, challenge });
+        mockedMutation.mutate({
+          email,
+          name,
+          captcha,
+          challenge,
+          enableSaveActions: defaultSaveActions,
+        });
         await waitForMutation();
       });
 
