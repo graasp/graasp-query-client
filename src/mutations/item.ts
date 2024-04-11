@@ -101,6 +101,34 @@ export default (queryConfig: QueryClientConfig) => {
     return null;
   };
 
+  const usePostItemWithThumbnail = () => {
+    const queryClient = useQueryClient();
+    return useMutation(
+      async (item: FormData) => Api.postItemWithThumbnail(item, queryConfig),
+      // we cannot optimistically add an item because we need its id
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: createItemRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
+          });
+        },
+        onError: (error: Error) => {
+          notifier?.({ type: createItemRoutine.FAILURE, payload: { error } });
+        },
+        // onSettled: (_data, _error, { geolocation, parentId }) => {
+        //   const key = getKeyForParentId(parentId);
+        //   queryClient.invalidateQueries(key);
+
+        //   // if item has geoloc, invalidate map related keys
+        //   if (geolocation) {
+        //     queryClient.invalidateQueries(itemsWithGeolocationKeys.allBounds);
+        //   }
+        // },
+      },
+    );
+  };
+
   const usePostItem = () => {
     const queryClient = useQueryClient();
     return useMutation(
@@ -588,6 +616,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   return {
     usePostItem,
+    usePostItemWithThumbnail,
     useEditItem,
     useRecycleItems,
     useDeleteItems,

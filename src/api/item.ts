@@ -116,6 +116,19 @@ export const postItem = async (
       .then(({ data }) => data),
   );
 
+export const postItemWithThumbnail = async (
+  formData: FormData,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+): Promise<DiscriminatedItem> =>
+  verifyAuthentication(() =>
+    axios
+      .post<DiscriminatedItem>(
+        `${API_HOST}/${buildPostItemRoute(formData.get('parentId') as string)}`,
+        formData,
+      )
+      .then(({ data }) => data),
+  );
+
 export const deleteItems = async (
   ids: UUID[],
   { API_HOST, axios }: PartialQueryConfigForApi,
