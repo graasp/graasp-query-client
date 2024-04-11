@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.0](https://github.com/graasp/graasp-query-client/compare/v3.4.0...v3.5.0) (2024-04-11)
+
+
+### Features
+
+* set enableSaveActions not null for sign up ([#727](https://github.com/graasp/graasp-query-client/issues/727)) ([90d11bc](https://github.com/graasp/graasp-query-client/commit/90d11bc59be42e4c372837fc03c78e57ce48b504))
+
 ## [3.4.0](https://github.com/graasp/graasp-query-client/compare/v3.3.0...v3.4.0) (2024-04-11)
 
 
