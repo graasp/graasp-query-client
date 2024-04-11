@@ -69,7 +69,7 @@ export const signUp = async (
     email: string;
     captcha: string;
     url?: string;
-    enableSaveActions?: boolean;
+    enableSaveActions: boolean;
   },
   { API_HOST, axios }: PartialQueryConfigForApi,
   query: { lang?: string },
@@ -88,7 +88,7 @@ export const mobileSignUp = async (
     email: string;
     challenge: string;
     captcha: string;
-    enableSaveActions?: boolean;
+    enableSaveActions: boolean;
   },
   { API_HOST, axios }: PartialQueryConfigForApi,
   query: { lang?: string },
