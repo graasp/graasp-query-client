@@ -101,9 +101,8 @@ export default (queryConfig: QueryClientConfig) => {
     return null;
   };
 
-  const usePostItemWithThumbnail = () => {
-    const queryClient = useQueryClient();
-    return useMutation(
+  const usePostItemWithThumbnail = () =>
+    useMutation(
       async (item: FormData) => Api.postItemWithThumbnail(item, queryConfig),
       // we cannot optimistically add an item because we need its id
       {
@@ -127,7 +126,6 @@ export default (queryConfig: QueryClientConfig) => {
         // },
       },
     );
-  };
 
   const usePostItem = () => {
     const queryClient = useQueryClient();
