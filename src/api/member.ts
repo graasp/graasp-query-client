@@ -92,7 +92,7 @@ export const editMember = async (
     axios
       .patch<CompleteMember>(`${API_HOST}/${buildPatchMember(payload.id)}`, {
         extra: payload.extra,
-        name: payload.name,
+        name: payload.name?.trim(),
         enableSaveActions: payload.enableSaveActions,
       })
       .then(({ data }) => data),
