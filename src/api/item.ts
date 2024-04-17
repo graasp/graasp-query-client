@@ -85,6 +85,8 @@ export type PostItemPayloadType = Partial<DiscriminatedItem> &
     geolocation?: Pick<ItemGeolocation, 'lat' | 'lng'>;
   } & {
     settings?: DiscriminatedItem['settings'];
+  } & {
+    thumbnail?: Blob;
   };
 
 // payload = {name, type, description, extra, geolocation}
@@ -117,17 +119,39 @@ export const postItem = async (
   );
 
 export const postItemWithThumbnail = async (
-  formData: FormData,
+  {
+    name,
+    displayName,
+    type,
+    description,
+    extra,
+    parentId,
+    geolocation,
+    settings,
+    thumbnail,
+  }: PostItemPayloadType,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<DiscriminatedItem> =>
-  verifyAuthentication(() =>
-    axios
-      .post<DiscriminatedItem>(
-        `${API_HOST}/${buildPostItemRoute(formData.get('parentId') as string)}`,
-        formData,
-      )
-      .then(({ data }) => data),
-  );
+  verifyAuthentication(() => {
+    const newFolder = new FormData();
+    newFolder.append('name', name);
+    newFolder.append('displayName', displayName || name);
+    newFolder.append('type', type);
+    newFolder.append('description', description || '');
+    newFolder.append('thumbnail', thumbnail || '');
+    return axios
+      .post<DiscriminatedItem>(`${API_HOST}/${buildPostItemRoute(parentId)}`, {
+        name: name.trim(),
+        displayName: displayName?.trim() ?? name.trim(),
+        type,
+        description,
+        extra,
+        geolocation,
+        settings,
+        thumbnail,
+      })
+      .then(({ data }) => data);
+  });
 
 export const deleteItems = async (
   ids: UUID[],
