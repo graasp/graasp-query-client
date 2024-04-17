@@ -205,8 +205,10 @@ describe('Member Mutations', () => {
       expect(newData).toMatchObject(response);
     });
 
-    it(`Successfully edit member's username and ensures trimming id = ${member.id}`, async () => {
-      const response = { ...member, name: newMember.name };
+    it(`Successfully edit member's username and ensures trimming`, async () => {
+      const newUsernameWithTrailingSpace = 'newname  ';
+      const trimmedUsrname = newUsernameWithTrailingSpace.trim();
+      const response = { ...member, name: trimmedUsrname };
       // set random data in cache
       queryClient.setQueryData(memberKeys.current().content, member);
       const endpoints = [
@@ -222,12 +224,11 @@ describe('Member Mutations', () => {
         wrapper,
         endpoints,
       });
-      const newUsernameWithTrailingSpace = 'newname  ';
 
       await act(async () => {
         mockedMutation.mutate({
           id: member.id,
-          name: newUsernameWithTrailingSpace.trim(),
+          name: newUsernameWithTrailingSpace,
         });
         await waitForMutation();
       });
