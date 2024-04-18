@@ -630,4 +630,5 @@ export const API_ROUTES = {
   buildDeleteItemGeolocationRoute,
   buildPutItemGeolocationRoute,
   buildGetAddressFromCoordinatesRoute,
+  buildDeleteItemThumbnailRoute,
 };
