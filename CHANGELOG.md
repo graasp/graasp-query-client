@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.2](https://github.com/graasp/graasp-query-client/compare/v3.4.1...v3.4.2) (2024-04-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency qs to v6.12.1 ([#729](https://github.com/graasp/graasp-query-client/issues/729)) ([b411985](https://github.com/graasp/graasp-query-client/commit/b4119856cddcbd4275447a249ab5f6889b93c118))
+* trim member name before posting to API ([#733](https://github.com/graasp/graasp-query-client/issues/733)) ([d9814e1](https://github.com/graasp/graasp-query-client/commit/d9814e15b7db657da0ae8e5a6b3c622298360829))
+
 ## [3.4.1](https://github.com/graasp/graasp-query-client/compare/v3.4.0...v3.4.1) (2024-04-11)
 
 
