@@ -22,6 +22,7 @@ import {
   ItemSearchParams,
   SHARED_ITEM_WITH_ROUTE,
   buildCopyItemsRoute,
+  buildDeleteItemThumbnailRoute,
   buildDeleteItemsRoute,
   buildDownloadFilesRoute,
   buildDownloadItemThumbnailRoute,
@@ -312,4 +313,12 @@ export const downloadItemThumbnailUrl = async (
         replyUrl: true,
       })}`,
     )
+    .then(({ data }) => data);
+
+export const deleteItemThumbnail = async (
+  id: UUID,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
+  axios
+    .delete<void>(`${API_HOST}/${buildDeleteItemThumbnailRoute(id)}`)
     .then(({ data }) => data);
