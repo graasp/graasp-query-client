@@ -568,6 +568,10 @@ export default (queryConfig: QueryClientConfig) => {
       (itemId: UUID) => Api.deleteItemThumbnail(itemId, queryConfig),
       {
         onSuccess: () => {
+          console.log(
+            'delete is done successfully ',
+            SUCCESS_MESSAGES.DELETE_ITEM_THUMBNAIL,
+          );
           notifier?.({
             type: deleteItemThumbnailRoutine.SUCCESS,
             payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_THUMBNAIL },
