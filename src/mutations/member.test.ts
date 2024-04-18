@@ -205,6 +205,45 @@ describe('Member Mutations', () => {
       expect(newData).toMatchObject(response);
     });
 
+    it(`Successfully edit member's username and ensures trimming`, async () => {
+      const newUsernameWithTrailingSpace = 'newname  ';
+      const trimmedUsername = newUsernameWithTrailingSpace.trim();
+      const response = { ...member, name: trimmedUsername };
+      // set random data in cache
+      queryClient.setQueryData(memberKeys.current().content, member);
+      const endpoints = [
+        {
+          response,
+          method: HttpMethod.Patch,
+          route,
+        },
+      ];
+      const patchSpy = vi.spyOn(axios, 'patch');
+      const mockedMutation = await mockMutation({
+        mutation,
+        wrapper,
+        endpoints,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({
+          id: member.id,
+          name: newUsernameWithTrailingSpace,
+        });
+        await waitForMutation();
+      });
+      const payload = patchSpy.mock.calls[0][1] as { name?: string };
+
+      // Assert that the name sent to the API is trimmed
+      expect(payload.name).toEqual(trimmedUsername);
+
+      // verify cache keys
+      const newData = queryClient.getQueryData<CompleteMember>(
+        memberKeys.current().content,
+      );
+      expect(newData).toMatchObject(response);
+    });
+
     it(`Successfully enable saveActions`, async () => {
       const enableSaveActions = true;
       const updateMember = { enableSaveActions };

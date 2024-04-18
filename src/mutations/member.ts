@@ -77,7 +77,7 @@ export default (queryConfig: QueryClientConfig) => {
           const newMember = previousMember;
           if (newMember) {
             if (member.name) {
-              newMember.name = member.name;
+              newMember.name = member.name.trim();
             }
             if (typeof member.enableSaveActions === 'boolean') {
               newMember.enableSaveActions = member.enableSaveActions;
