@@ -14,12 +14,8 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import {
-  HAS_CHANGES_KEY,
-  OWN_ITEMS_KEY,
-  itemKeys,
-  memberKeys,
-} from '../../config/keys.js';
+import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../../config/keys.js';
+import { addToChangesKeys } from '../../config/utils.js';
 import {
   copyItemsRoutine,
   deleteItemsRoutine,
@@ -89,7 +85,7 @@ export const configureWsItemHooks = (
           if (current?.id === item.id) {
             switch (event.op) {
               case OPS.UPDATE: {
-                queryClient.setQueryData(HAS_CHANGES_KEY, true);
+                addToChangesKeys(queryClient, itemKey);
                 break;
               }
               case OPS.DELETE: {
@@ -138,7 +134,7 @@ export const configureWsItemHooks = (
             if (current?.id === item.id) {
               switch (event.op) {
                 case OPS.UPDATE: {
-                  queryClient.setQueryData(HAS_CHANGES_KEY, true);
+                  addToChangesKeys(queryClient, itemKey);
                   break;
                 }
                 case OPS.DELETE: {
@@ -194,14 +190,11 @@ export const configureWsItemHooks = (
 
             switch (event.op) {
               case OPS.CREATE: {
-                if (!current.find((i) => i.id === item.id)) {
-                  queryClient.setQueryData(HAS_CHANGES_KEY, true);
-                }
+                addToChangesKeys(queryClient, parentChildrenKey);
                 break;
               }
               case OPS.UPDATE: {
-                queryClient.setQueryData(HAS_CHANGES_KEY, true);
-
+                addToChangesKeys(queryClient, parentChildrenKey);
                 break;
               }
               case OPS.DELETE: {
@@ -252,15 +245,12 @@ export const configureWsItemHooks = (
 
             switch (event.op) {
               case OPS.CREATE: {
-                if (!current.find((i) => i.id === item.id)) {
-                  queryClient.setQueryData(HAS_CHANGES_KEY, true);
-                }
+                addToChangesKeys(queryClient, OWN_ITEMS_KEY);
                 break;
               }
               case OPS.UPDATE: {
                 // replace value if it exists
-                queryClient.setQueryData(HAS_CHANGES_KEY, true);
-
+                addToChangesKeys(queryClient, OWN_ITEMS_KEY);
                 break;
               }
               case OPS.DELETE: {
@@ -311,14 +301,11 @@ export const configureWsItemHooks = (
 
             switch (event.op) {
               case OPS.CREATE: {
-                if (!current.find((i) => i.id === item.id)) {
-                  queryClient.setQueryData(HAS_CHANGES_KEY, true);
-                }
+                addToChangesKeys(queryClient, itemKeys.shared());
                 break;
               }
               case OPS.UPDATE: {
-                queryClient.setQueryData(HAS_CHANGES_KEY, true);
-
+                addToChangesKeys(queryClient, itemKeys.shared());
                 break;
               }
               case OPS.DELETE: {
@@ -365,11 +352,11 @@ export const configureWsItemHooks = (
 
           switch (event.op) {
             case OPS.CREATE: {
-              queryClient.setQueryData(HAS_CHANGES_KEY, true);
+              addToChangesKeys(queryClient, itemKeys.allAccessible());
               break;
             }
             case OPS.UPDATE: {
-              queryClient.setQueryData(HAS_CHANGES_KEY, true);
+              addToChangesKeys(queryClient, itemKeys.allAccessible());
               break;
             }
             case OPS.DELETE: {
@@ -412,9 +399,10 @@ export const configureWsItemHooks = (
 
             switch (event.op) {
               case OPS.CREATE: {
-                if (!current.find((i) => i.id === item.id)) {
-                  queryClient.setQueryData(HAS_CHANGES_KEY, true);
-                }
+                addToChangesKeys(
+                  queryClient,
+                  memberKeys.current().recycledItems,
+                );
                 break;
               }
               case OPS.DELETE: {
