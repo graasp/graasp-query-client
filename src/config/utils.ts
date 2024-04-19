@@ -2,7 +2,7 @@ import { QueryClient, QueryKey } from '@tanstack/react-query';
 
 import { HAS_CHANGES_KEY } from './keys.js';
 
-export const addToChangesKeys = (queryClient: QueryClient, key: QueryKey) => {
+export const addToChangesKey = (queryClient: QueryClient, key: QueryKey) => {
   const changedKeys =
     queryClient.getQueryData<Set<QueryKey>>(HAS_CHANGES_KEY) ??
     new Set<QueryKey>();
@@ -10,7 +10,7 @@ export const addToChangesKeys = (queryClient: QueryClient, key: QueryKey) => {
   queryClient.setQueryData(HAS_CHANGES_KEY, changedKeys);
 };
 
-export const isInChangesKeys = (queryClient: QueryClient, key: QueryKey) =>
+export const isInChangesKey = (queryClient: QueryClient, key: QueryKey) =>
   queryClient.getQueryData<Set<QueryKey>>(HAS_CHANGES_KEY)?.has(key);
 
 export const invalidateChangedQueries = (queryClient: QueryClient) => {

@@ -15,7 +15,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../../config/keys.js';
-import { addToChangesKeys } from '../../config/utils.js';
+import { addToChangesKey } from '../../config/utils.js';
 import {
   copyItemsRoutine,
   deleteItemsRoutine,
@@ -85,7 +85,7 @@ export const configureWsItemHooks = (
           if (current?.id === item.id) {
             switch (event.op) {
               case OPS.UPDATE: {
-                addToChangesKeys(queryClient, itemKey);
+                addToChangesKey(queryClient, itemKey);
                 break;
               }
               case OPS.DELETE: {
@@ -134,7 +134,7 @@ export const configureWsItemHooks = (
             if (current?.id === item.id) {
               switch (event.op) {
                 case OPS.UPDATE: {
-                  addToChangesKeys(queryClient, itemKey);
+                  addToChangesKey(queryClient, itemKey);
                   break;
                 }
                 case OPS.DELETE: {
@@ -190,11 +190,11 @@ export const configureWsItemHooks = (
 
             switch (event.op) {
               case OPS.CREATE: {
-                addToChangesKeys(queryClient, parentChildrenKey);
+                addToChangesKey(queryClient, parentChildrenKey);
                 break;
               }
               case OPS.UPDATE: {
-                addToChangesKeys(queryClient, parentChildrenKey);
+                addToChangesKey(queryClient, parentChildrenKey);
                 break;
               }
               case OPS.DELETE: {
@@ -245,12 +245,12 @@ export const configureWsItemHooks = (
 
             switch (event.op) {
               case OPS.CREATE: {
-                addToChangesKeys(queryClient, OWN_ITEMS_KEY);
+                addToChangesKey(queryClient, OWN_ITEMS_KEY);
                 break;
               }
               case OPS.UPDATE: {
                 // replace value if it exists
-                addToChangesKeys(queryClient, OWN_ITEMS_KEY);
+                addToChangesKey(queryClient, OWN_ITEMS_KEY);
                 break;
               }
               case OPS.DELETE: {
@@ -301,11 +301,11 @@ export const configureWsItemHooks = (
 
             switch (event.op) {
               case OPS.CREATE: {
-                addToChangesKeys(queryClient, itemKeys.shared());
+                addToChangesKey(queryClient, itemKeys.shared());
                 break;
               }
               case OPS.UPDATE: {
-                addToChangesKeys(queryClient, itemKeys.shared());
+                addToChangesKey(queryClient, itemKeys.shared());
                 break;
               }
               case OPS.DELETE: {
@@ -352,11 +352,11 @@ export const configureWsItemHooks = (
 
           switch (event.op) {
             case OPS.CREATE: {
-              addToChangesKeys(queryClient, itemKeys.allAccessible());
+              addToChangesKey(queryClient, itemKeys.allAccessible());
               break;
             }
             case OPS.UPDATE: {
-              addToChangesKeys(queryClient, itemKeys.allAccessible());
+              addToChangesKey(queryClient, itemKeys.allAccessible());
               break;
             }
             case OPS.DELETE: {
@@ -399,7 +399,7 @@ export const configureWsItemHooks = (
 
             switch (event.op) {
               case OPS.CREATE: {
-                addToChangesKeys(
+                addToChangesKey(
                   queryClient,
                   memberKeys.current().recycledItems,
                 );

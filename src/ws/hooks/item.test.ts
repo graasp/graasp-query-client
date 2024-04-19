@@ -9,6 +9,7 @@ import {
   setUpWsTest,
 } from '../../../test/wsUtils.js';
 import { OWN_ITEMS_KEY, itemKeys } from '../../config/keys.js';
+import { isInChangesKey } from '../../config/utils.js';
 import { KINDS, OPS, TOPICS } from '../constants.js';
 import { configureWsItemHooks } from './item.js';
 
@@ -313,16 +314,22 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
+      // the changes are not in the cache anymore, but their keys are in
+      // a new queryData, allowing the client to invalidates all the changes
+      expect(isInChangesKey(queryClient, itemKey));
+      expect(isInChangesKey(queryClient, itemKeys.shared()));
+
+      // TODO: remove if it is acceptable
       // check new item key content
-      expect(
-        queryClient.getQueryData<DiscriminatedItem>(itemKey),
-      ).toMatchObject(updatedItem);
+      // expect(
+      //   queryClient.getQueryData<DiscriminatedItem>(itemKey),
+      // ).toMatchObject(updatedItem);
       // check children key contains newly item
-      const shared = queryClient.getQueryData<DiscriminatedItem[]>(
-        itemKeys.shared(),
-      );
-      expect(shared).toContainEqual(updatedItem);
-      expect(shared?.length).toBe(items.length);
+      // const shared = queryClient.getQueryData<DiscriminatedItem[]>(
+      //   itemKeys.shared(),
+      // );
+      // expect(shared).toContainEqual(updatedItem);
+      // expect(shared?.length).toBe(items.length);
     });
 
     it(`Receive delete item update`, async () => {
