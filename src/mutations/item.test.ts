@@ -1074,10 +1074,12 @@ describe('Items Mutations', () => {
         mockedMutation.mutate(itemId);
         await waitForMutation();
       });
-      const data = queryClient.getQueryData(
-        itemKeys.single(itemId).allThumbnails,
-      );
-      expect(data).toBeTruthy();
+
+      expect(
+        queryClient.getQueryState(itemKeys.single(itemId).allThumbnails)
+          ?.isInvalidated,
+      ).toBeTruthy();
+
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: deleteItemThumbnailRoutine.SUCCESS,
