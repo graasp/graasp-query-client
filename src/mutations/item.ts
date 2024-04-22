@@ -105,6 +105,7 @@ export default (queryConfig: QueryClientConfig) => {
     const queryClient = useQueryClient();
     return useMutation(
       async (item: Api.PostItemPayloadType) => {
+        console.log('item', item)
         if (!item.thumbnail) {
           return Api.postItem(item, queryConfig);
         }
