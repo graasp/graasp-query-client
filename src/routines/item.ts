@@ -22,3 +22,6 @@ export const createEtherpadRoutine = createRoutine('CREATE_ETHERPAD');
 export const createShortLinkRoutine = createRoutine('CREATE_SHORT_LINK');
 export const patchShortLinkRoutine = createRoutine('PATCH_SHORT_LINK');
 export const deleteShortLinkRoutine = createRoutine('DELETE_SHORT_LINK');
+export const deleteItemThumbnailRoutine = createRoutine(
+  'DELETE_ITEM_THUMBNAIL',
+);

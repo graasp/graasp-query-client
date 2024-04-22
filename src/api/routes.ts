@@ -191,6 +191,9 @@ export const buildDownloadAvatarRoute = ({
   )}`;
 export const buildUploadItemThumbnailRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/thumbnails`;
+export const buildDeleteItemThumbnailRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/thumbnails`;
+
 export const buildDownloadItemThumbnailRoute = ({
   id,
   replyUrl,
@@ -627,4 +630,5 @@ export const API_ROUTES = {
   buildDeleteItemGeolocationRoute,
   buildPutItemGeolocationRoute,
   buildGetAddressFromCoordinatesRoute,
+  buildDeleteItemThumbnailRoute,
 };

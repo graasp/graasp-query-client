@@ -32,6 +32,7 @@ import {
 } from '../../test/utils.js';
 import {
   buildCopyItemsRoute,
+  buildDeleteItemThumbnailRoute,
   buildDeleteItemsRoute,
   buildEditItemRoute,
   buildMoveItemsRoute,
@@ -48,6 +49,7 @@ import {
   memberKeys,
 } from '../config/keys.js';
 import {
+  deleteItemThumbnailRoutine,
   uploadFileRoutine,
   uploadItemThumbnailRoutine,
 } from '../routines/item.js';
@@ -1039,6 +1041,50 @@ describe('Items Mutations', () => {
           error,
         },
       });
+    });
+  });
+
+  describe('useDeleteItemThumbnail', () => {
+    const mutation = mutations.useDeleteItemThumbnail;
+    const items = generateFolders(1);
+
+    const itemId = items[0].id;
+    it('Delete item thumbnail', async () => {
+      const route = `/${buildDeleteItemThumbnailRoute(itemId)}`;
+
+      queryClient.setQueryData(itemKeys.single(itemId).allThumbnails, items[0]);
+
+      const response = [StatusCodes.NO_CONTENT];
+
+      const endpoints = [
+        {
+          response,
+          method: HttpMethod.Delete,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate(itemId);
+        await waitForMutation();
+      });
+
+      expect(
+        queryClient.getQueryState(itemKeys.single(itemId).allThumbnails)
+          ?.isInvalidated,
+      ).toBeTruthy();
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: deleteItemThumbnailRoutine.SUCCESS,
+        }),
+      );
     });
   });
 });

@@ -31,6 +31,7 @@ import {
 import {
   copyItemsRoutine,
   createItemRoutine,
+  deleteItemThumbnailRoutine,
   deleteItemsRoutine,
   editItemRoutine,
   importH5PRoutine,
@@ -561,6 +562,30 @@ export default (queryConfig: QueryClientConfig) => {
     // invalidate only on error since endpoint is async
   };
 
+  const useDeleteItemThumbnail = () => {
+    const queryClient = useQueryClient();
+    return useMutation(
+      (itemId: UUID) => Api.deleteItemThumbnail(itemId, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: deleteItemThumbnailRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_THUMBNAIL },
+          });
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: deleteItemThumbnailRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+        onSettled: (_data, _error, id) => {
+          queryClient.invalidateQueries(itemKeys.single(id).allThumbnails);
+        },
+      },
+    );
+  };
+
   return {
     usePostItem,
     useEditItem,
@@ -573,5 +598,6 @@ export default (queryConfig: QueryClientConfig) => {
     useImportH5P,
     useImportZip,
     useMoveItems,
+    useDeleteItemThumbnail,
   };
 };
