@@ -139,16 +139,10 @@ export const postItemWithThumbnail = async (
     newFolder.append('type', type);
     newFolder.append('description', description || '');
     newFolder.append('thumbnail', thumbnail || '');
+    console.log('new folder', newFolder);
     return axios
-      .post<DiscriminatedItem>(`${API_HOST}/${buildPostItemRoute(parentId)}`, {
-        name: name.trim(),
-        displayName: displayName?.trim() ?? name.trim(),
-        type,
-        description,
-        extra,
-        geolocation,
-        settings,
-        thumbnail,
+      .post<DiscriminatedItem>(`${API_HOST}/${buildPostItemRoute(parentId)}`, newFolder, {
+        headers: {'Content-Type': 'multipart/form-data'}
       })
       .then(({ data }) => data);
   });
