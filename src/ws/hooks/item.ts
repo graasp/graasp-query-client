@@ -191,10 +191,12 @@ export const configureWsItemHooks = (
             switch (event.op) {
               case OPS.CREATE: {
                 addToChangesKey(queryClient, parentChildrenKey);
+                addToChangesKey(queryClient, itemKeys.single(item.id).content);
                 break;
               }
               case OPS.UPDATE: {
                 addToChangesKey(queryClient, parentChildrenKey);
+                addToChangesKey(queryClient, itemKeys.single(item.id).content);
                 break;
               }
               case OPS.DELETE: {
@@ -246,11 +248,13 @@ export const configureWsItemHooks = (
             switch (event.op) {
               case OPS.CREATE: {
                 addToChangesKey(queryClient, OWN_ITEMS_KEY);
+                addToChangesKey(queryClient, itemKeys.single(item.id).content);
                 break;
               }
               case OPS.UPDATE: {
                 // replace value if it exists
                 addToChangesKey(queryClient, OWN_ITEMS_KEY);
+                addToChangesKey(queryClient, itemKeys.single(item.id).content);
                 break;
               }
               case OPS.DELETE: {
@@ -302,10 +306,12 @@ export const configureWsItemHooks = (
             switch (event.op) {
               case OPS.CREATE: {
                 addToChangesKey(queryClient, itemKeys.shared());
+                addToChangesKey(queryClient, itemKeys.single(item.id).content);
                 break;
               }
               case OPS.UPDATE: {
                 addToChangesKey(queryClient, itemKeys.shared());
+                addToChangesKey(queryClient, itemKeys.single(item.id).content);
                 break;
               }
               case OPS.DELETE: {
@@ -346,17 +352,20 @@ export const configureWsItemHooks = (
         if (event.kind === KINDS.ACCESSIBLE) {
           // for over all accessible keys
 
-          // operations might change the result of the search and/or pagination
-          // so it's easier to invalidate all queries
-          queryClient.invalidateQueries(itemKeys.allAccessible());
-
+          const { item } = event;
           switch (event.op) {
             case OPS.CREATE: {
+              // operations might change the result of the search and/or pagination
+              // so it's easier to invalidate all queries
               addToChangesKey(queryClient, itemKeys.allAccessible());
+              // TODO: check this
+              addToChangesKey(queryClient, itemKeys.single(item.id).content);
               break;
             }
             case OPS.UPDATE: {
               addToChangesKey(queryClient, itemKeys.allAccessible());
+              // TODO: check this too
+              addToChangesKey(queryClient, itemKeys.single(item.id).content);
               break;
             }
             case OPS.DELETE: {
