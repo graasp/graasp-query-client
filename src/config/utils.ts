@@ -35,6 +35,14 @@ export class HashSet<T> {
   has(key: T) {
     return this.stringSet.has(JSON.stringify(key));
   }
+
+  /**
+   * Return a deep copy of the values.
+   * @returns A 2D string array.
+   */
+  values() {
+    return JSON.parse(JSON.stringify(Array.from(this.stringSet))) as string[][];
+  }
 }
 
 export const addToChangesKey = (queryClient: QueryClient, key: QueryKey) => {

@@ -7,6 +7,8 @@ import {
 } from '@graasp/sdk';
 
 import {
+  QueryClient,
+  QueryKey,
   UseQueryResult,
   useInfiniteQuery,
   useQuery,
@@ -22,7 +24,13 @@ import {
   PAGINATED_ITEMS_PER_PAGE,
 } from '../config/constants.js';
 import { UndefinedArgument } from '../config/errors.js';
-import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../config/keys.js';
+import {
+  HAS_CHANGES_KEY,
+  OWN_ITEMS_KEY,
+  itemKeys,
+  memberKeys,
+} from '../config/keys.js';
+import { HashSet } from '../config/utils.js';
 import {
   getAccessibleItemsRoutine,
   getOwnItemsRoutine,
@@ -459,5 +467,14 @@ export default (
     },
 
     useItemFeedbackUpdates: itemWsHooks?.useItemFeedbackUpdates,
+
+    useItemKeysChanges: () => {
+      const queryClient = new QueryClient();
+      return (
+        queryClient
+          .getQueryData<HashSet<QueryKey>>(HAS_CHANGES_KEY)
+          ?.values() ?? []
+      );
+    },
   };
 };
