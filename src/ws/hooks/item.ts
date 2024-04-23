@@ -220,6 +220,12 @@ export const configureWsItemHooks = (
                 console.error('unhandled event for useChildrenUpdates');
                 break;
             }
+
+            // TODO: when the backend is updated correctly with the web sockets,
+            // it will be possible to remove all the manipulations of the cache.
+            queryClient.invalidateQueries(
+              itemKeys.single(parentId).allChildren,
+            );
           }
         }
       };
