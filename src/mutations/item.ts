@@ -105,12 +105,9 @@ export default (queryConfig: QueryClientConfig) => {
     const queryClient = useQueryClient();
     return useMutation(
       async (item: Api.PostItemPayloadType) => {
-        console.log('item', item)
         if (!item.thumbnail) {
-          console.log('item goes this way')
           return Api.postItem(item, queryConfig);
         } 
-          console.log('item with thumbnail', item);
           return Api.postItemWithThumbnail(item, queryConfig)
       },
       //  we cannot optimistically add an item because we need its id
