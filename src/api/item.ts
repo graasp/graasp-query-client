@@ -139,6 +139,9 @@ export const postItemWithThumbnail = async (
     newFolder.append('type', type);
     newFolder.append('description', description || '');
     newFolder.append('thumbnail', thumbnail || '');
+    newFolder.append('geolocation', JSON.stringify(geolocation));
+    newFolder.append('settings', JSON.stringify(settings));
+    newFolder.append('extra', JSON.stringify(extra));
     console.log('new folder', newFolder);
     return axios
       .post<DiscriminatedItem>(`${API_HOST}/${buildPostItemRoute(parentId)}`, newFolder, {
