@@ -107,8 +107,8 @@ export default (queryConfig: QueryClientConfig) => {
       async (item: Api.PostItemPayloadType) => {
         if (!item.thumbnail) {
           return Api.postItem(item, queryConfig);
-        } 
-          return Api.postItemWithThumbnail(item, queryConfig)
+        }
+        return Api.postItemWithThumbnail(item, queryConfig);
       },
       //  we cannot optimistically add an item because we need its id
       {

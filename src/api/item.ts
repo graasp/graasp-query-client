@@ -144,9 +144,13 @@ export const postItemWithThumbnail = async (
     newFolder.append('extra', JSON.stringify(extra));
     console.log('new folder', newFolder);
     return axios
-      .post<DiscriminatedItem>(`${API_HOST}/${buildPostItemRoute(parentId)}`, newFolder, {
-        headers: {'Content-Type': 'multipart/form-data'}
-      })
+      .post<DiscriminatedItem>(
+        `${API_HOST}/${buildPostItemRoute(parentId)}`,
+        newFolder,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        },
+      )
       .then(({ data }) => data);
   });
 
