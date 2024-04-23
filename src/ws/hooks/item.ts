@@ -369,6 +369,7 @@ export const configureWsItemHooks = (
               break;
             }
             case OPS.DELETE: {
+              queryClient.invalidateQueries(itemKeys.allAccessible());
               break;
             }
             default:

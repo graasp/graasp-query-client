@@ -452,15 +452,18 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
+      expectIsInChangesKey(queryClient, itemKeys.allAccessible());
+
+      // TODO: remove if ok
       // check accessible items keys are all invalidated
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params1, pagination1))
-          ?.isInvalidated,
-      ).toBe(true);
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params2, pagination2))
-          ?.isInvalidated,
-      ).toBe(true);
+      // expect(
+      //   queryClient.getQueryState(itemKeys.accessiblePage(params1, pagination1))
+      //     ?.isInvalidated,
+      // ).toBe(true);
+      // expect(
+      //   queryClient.getQueryState(itemKeys.accessiblePage(params2, pagination2))
+      //     ?.isInvalidated,
+      // ).toBe(true);
       // check new item key
       // expect(
       //   queryClient.getQueryData<DiscriminatedItem>(itemKey),
@@ -480,19 +483,21 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
+      expectIsInChangesKey(queryClient, itemKeys.allAccessible());
+
       // check new item key content
       // expect(
       //   queryClient.getQueryData<DiscriminatedItem>(itemKey),
       // ).toMatchObject(updatedItem);
       // check accessible items keys are all invalidated
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params1, pagination1))
-          ?.isInvalidated,
-      ).toBe(true);
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params2, pagination2))
-          ?.isInvalidated,
-      ).toBe(true);
+      // expect(
+      //   queryClient.getQueryState(itemKeys.accessiblePage(params1, pagination1))
+      //     ?.isInvalidated,
+      // ).toBe(true);
+      // expect(
+      //   queryClient.getQueryState(itemKeys.accessiblePage(params2, pagination2))
+      //     ?.isInvalidated,
+      // ).toBe(true);
     });
 
     it(`Receive delete item update`, async () => {

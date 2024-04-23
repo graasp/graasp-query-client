@@ -57,6 +57,14 @@ export const invalidateChangedQueries = (queryClient: QueryClient) => {
   }
 };
 
+/**
+ * Expect to find or not the given key in the changes key.
+ *
+ * @param queryClient The QueryClient instance
+ * @param key The key who should (or not) be in the changes key.
+ * @param expectation If true, the key should be in, else the key should not be in.
+ * @returns Assertion<boolean>
+ */
 export const expectIsInChangesKey = (
   queryClient: QueryClient,
   key: QueryKey,
