@@ -1,5 +1,6 @@
 import { DiscriminatedItem, FolderItemFactory } from '@graasp/sdk';
 
+import { QueryKey } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { generateFolders } from '../../../test/constants.js';
@@ -9,13 +10,24 @@ import {
   setUpWsTest,
 } from '../../../test/wsUtils.js';
 import { OWN_ITEMS_KEY, itemKeys } from '../../config/keys.js';
-import { expectIsInChangesKey } from '../../config/utils.js';
+import { isInChangesKey } from '../../config/utils.js';
 import { KINDS, OPS, TOPICS } from '../constants.js';
 import { configureWsItemHooks } from './item.js';
 
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsItemHooks,
 });
+
+/**
+ * Expect to find or not the given key in the changes key.
+ *
+ * @param queryClient The QueryClient instance
+ * @param key The key who should (or not) be in the changes key.
+ * @param expectation If true, the key should be in, else the key should not be in.
+ * @returns Assertion<boolean>
+ */
+const expectIsInChangesKey = (key: QueryKey, expectation = true) =>
+  expect(isInChangesKey(queryClient, key)).toBe(expectation);
 
 describe('Ws Item Hooks', () => {
   afterEach(() => {
@@ -44,7 +56,7 @@ describe('Ws Item Hooks', () => {
 
       // the changes are not in the cache anymore, but their keys are in
       // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(queryClient, itemKey);
+      expectIsInChangesKey(itemKey);
     });
 
     it(`Receive delete item update`, async () => {
@@ -61,7 +73,7 @@ describe('Ws Item Hooks', () => {
 
       expect(queryClient.getQueryData<DiscriminatedItem>(itemKey)).toBeFalsy();
       // expect not in changes key
-      expectIsInChangesKey(queryClient, itemKey, false);
+      expectIsInChangesKey(itemKey, false);
     });
 
     it(`Does not update on other events`, async () => {
@@ -80,7 +92,7 @@ describe('Ws Item Hooks', () => {
         queryClient.getQueryData<DiscriminatedItem>(itemKey),
       ).toMatchObject(item);
       // not in changes key
-      expectIsInChangesKey(queryClient, itemKey, false);
+      expectIsInChangesKey(itemKey, false);
     });
   });
 
@@ -119,8 +131,8 @@ describe('Ws Item Hooks', () => {
 
       // the changes are not in the cache anymore, but their keys are in
       // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(queryClient, childrenKey);
-      expectIsInChangesKey(queryClient, targetItemKey);
+      expectIsInChangesKey(childrenKey);
+      expectIsInChangesKey(targetItemKey);
     });
 
     it(`Receive update child`, async () => {
@@ -140,8 +152,8 @@ describe('Ws Item Hooks', () => {
 
       // the changes are not in the cache anymore, but their keys are in
       // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(queryClient, childrenKey);
-      expectIsInChangesKey(queryClient, targetItemKey);
+      expectIsInChangesKey(childrenKey);
+      expectIsInChangesKey(targetItemKey);
 
       // TODO: remove if ok
       // check new item key content
@@ -173,7 +185,7 @@ describe('Ws Item Hooks', () => {
           ?.find(({ id }) => id === targetItem.id),
       ).toBeFalsy();
       // expect not in changes key
-      expectIsInChangesKey(queryClient, childrenKey, false);
+      expectIsInChangesKey(childrenKey, false);
     });
 
     it(`Does not update on other events`, async () => {
@@ -192,7 +204,7 @@ describe('Ws Item Hooks', () => {
         items,
       );
       // expect not in changes key
-      expectIsInChangesKey(queryClient, childrenKey, false);
+      expectIsInChangesKey(childrenKey, false);
     });
   });
 
@@ -218,8 +230,8 @@ describe('Ws Item Hooks', () => {
 
       // the changes are not in the cache anymore, but their keys are in
       // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(queryClient, OWN_ITEMS_KEY);
-      expectIsInChangesKey(queryClient, itemKey);
+      expectIsInChangesKey(OWN_ITEMS_KEY);
+      expectIsInChangesKey(itemKey);
       // TODO: remove if ok
       // check own items key contains new item
       // expect(
@@ -247,8 +259,8 @@ describe('Ws Item Hooks', () => {
 
       // the changes are not in the cache anymore, but their keys are in
       // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(queryClient, OWN_ITEMS_KEY);
-      expectIsInChangesKey(queryClient, itemKey);
+      expectIsInChangesKey(OWN_ITEMS_KEY);
+      expectIsInChangesKey(itemKey);
 
       // TODO: remove if ok
       // check new item key content
@@ -280,7 +292,7 @@ describe('Ws Item Hooks', () => {
         queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY);
       expect(children?.find(({ id }) => id === itemId)).toBeFalsy();
       // expect not in changes key
-      expectIsInChangesKey(queryClient, OWN_ITEMS_KEY, false);
+      expectIsInChangesKey(OWN_ITEMS_KEY, false);
     });
 
     it(`Does not update on other events`, async () => {
@@ -300,7 +312,7 @@ describe('Ws Item Hooks', () => {
         queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY),
       ).toMatchObject(items);
       // expect not in changes key
-      expectIsInChangesKey(queryClient, OWN_ITEMS_KEY, false);
+      expectIsInChangesKey(OWN_ITEMS_KEY, false);
     });
   });
 
@@ -327,8 +339,8 @@ describe('Ws Item Hooks', () => {
 
       // the changes are not in the cache anymore, but their keys are in
       // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(queryClient, itemKey);
-      expectIsInChangesKey(queryClient, itemKeys.shared());
+      expectIsInChangesKey(itemKey);
+      expectIsInChangesKey(itemKeys.shared());
 
       // TODO: remove if ok
       // check own items key contains new item
@@ -357,8 +369,8 @@ describe('Ws Item Hooks', () => {
 
       // the changes are not in the cache anymore, but their keys are in
       // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(queryClient, itemKeys.shared());
-      expectIsInChangesKey(queryClient, itemKey);
+      expectIsInChangesKey(itemKeys.shared());
+      expectIsInChangesKey(itemKey);
 
       // TODO: remove if it is acceptable
       // check new item key content
@@ -392,7 +404,7 @@ describe('Ws Item Hooks', () => {
       );
       expect(shared?.find(({ id }) => id === itemId)).toBeFalsy();
       // expect not in changes key
-      expectIsInChangesKey(queryClient, itemKeys.shared(), false);
+      expectIsInChangesKey(itemKeys.shared(), false);
     });
 
     it(`Does not update on other events`, async () => {
@@ -413,7 +425,7 @@ describe('Ws Item Hooks', () => {
       ).toEqual(items);
 
       // expect not in changes key
-      expectIsInChangesKey(queryClient, itemKeys.shared(), false);
+      expectIsInChangesKey(itemKeys.shared(), false);
     });
   });
 
@@ -452,7 +464,7 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expectIsInChangesKey(queryClient, itemKeys.allAccessible());
+      expectIsInChangesKey(itemKeys.allAccessible());
 
       // TODO: remove if ok
       // check accessible items keys are all invalidated
@@ -483,7 +495,7 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expectIsInChangesKey(queryClient, itemKeys.allAccessible());
+      expectIsInChangesKey(itemKeys.allAccessible());
 
       // check new item key content
       // expect(
@@ -523,13 +535,12 @@ describe('Ws Item Hooks', () => {
       ).toBe(true);
 
       // expect not in changes key
+      expectIsInChangesKey(itemKeys.allAccessible(), false);
       expectIsInChangesKey(
-        queryClient,
         itemKeys.accessiblePage(params1, pagination1),
         false,
       );
       expectIsInChangesKey(
-        queryClient,
         itemKeys.accessiblePage(params2, pagination2),
         false,
       );
@@ -564,13 +575,12 @@ describe('Ws Item Hooks', () => {
       ).toEqual({ data: items, totalCount: items.length });
 
       // expect not in changes key
+      expectIsInChangesKey(itemKeys.allAccessible(), false);
       expectIsInChangesKey(
-        queryClient,
         itemKeys.accessiblePage(params1, pagination1),
         false,
       );
       expectIsInChangesKey(
-        queryClient,
         itemKeys.accessiblePage(params2, pagination2),
         false,
       );

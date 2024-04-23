@@ -1,5 +1,4 @@
 import { QueryClient, QueryKey } from '@tanstack/react-query';
-import { expect } from 'vitest';
 
 import { HAS_CHANGES_KEY } from './keys.js';
 
@@ -64,17 +63,3 @@ export const invalidateChangedQueries = (queryClient: QueryClient) => {
     changes.clear();
   }
 };
-
-/**
- * Expect to find or not the given key in the changes key.
- *
- * @param queryClient The QueryClient instance
- * @param key The key who should (or not) be in the changes key.
- * @param expectation If true, the key should be in, else the key should not be in.
- * @returns Assertion<boolean>
- */
-export const expectIsInChangesKey = (
-  queryClient: QueryClient,
-  key: QueryKey,
-  expectation = true,
-) => expect(isInChangesKey(queryClient, key)).toBe(expectation);
