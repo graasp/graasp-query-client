@@ -186,22 +186,21 @@ export const configureWsItemHooks = (
 
           if (current) {
             const { item } = event;
-            let mutation;
 
             switch (event.op) {
               case OPS.CREATE: {
                 addToChangesKey(queryClient, parentChildrenKey);
-                addToChangesKey(queryClient, itemKeys.single(item.id).content);
                 break;
               }
               case OPS.UPDATE: {
                 addToChangesKey(queryClient, parentChildrenKey);
-                addToChangesKey(queryClient, itemKeys.single(item.id).content);
                 break;
               }
               case OPS.DELETE: {
-                mutation = current.filter((i) => i.id !== item.id);
-                queryClient.setQueryData(parentChildrenKey, mutation);
+                queryClient.setQueryData(
+                  parentChildrenKey,
+                  current.filter((i) => i.id !== item.id),
+                );
                 // question: reset item key
                 break;
               }
@@ -243,24 +242,21 @@ export const configureWsItemHooks = (
 
           if (current) {
             const { item } = event;
-            let mutation;
 
             switch (event.op) {
               case OPS.CREATE: {
                 addToChangesKey(queryClient, OWN_ITEMS_KEY);
-                addToChangesKey(queryClient, itemKeys.single(item.id).content);
                 break;
               }
               case OPS.UPDATE: {
-                // replace value if it exists
                 addToChangesKey(queryClient, OWN_ITEMS_KEY);
-                addToChangesKey(queryClient, itemKeys.single(item.id).content);
                 break;
               }
               case OPS.DELETE: {
-                mutation = current.filter((i) => i.id !== item.id);
-                queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
-
+                queryClient.setQueryData(
+                  OWN_ITEMS_KEY,
+                  current.filter((i) => i.id !== item.id),
+                );
                 break;
               }
               default:
@@ -301,23 +297,21 @@ export const configureWsItemHooks = (
 
           if (current) {
             const { item } = event;
-            let mutation;
 
             switch (event.op) {
               case OPS.CREATE: {
                 addToChangesKey(queryClient, itemKeys.shared());
-                addToChangesKey(queryClient, itemKeys.single(item.id).content);
                 break;
               }
               case OPS.UPDATE: {
                 addToChangesKey(queryClient, itemKeys.shared());
-                addToChangesKey(queryClient, itemKeys.single(item.id).content);
                 break;
               }
               case OPS.DELETE: {
-                mutation = current.filter((i) => i.id !== item.id);
-                queryClient.setQueryData(itemKeys.shared(), mutation);
-
+                queryClient.setQueryData(
+                  itemKeys.shared(),
+                  current.filter((i) => i.id !== item.id),
+                );
                 break;
               }
               default:
@@ -352,23 +346,20 @@ export const configureWsItemHooks = (
         if (event.kind === KINDS.ACCESSIBLE) {
           // for over all accessible keys
 
-          const { item } = event;
           switch (event.op) {
             case OPS.CREATE: {
               // operations might change the result of the search and/or pagination
               // so it's easier to invalidate all queries
               addToChangesKey(queryClient, itemKeys.allAccessible());
-              // TODO: check this
-              addToChangesKey(queryClient, itemKeys.single(item.id).content);
               break;
             }
             case OPS.UPDATE: {
               addToChangesKey(queryClient, itemKeys.allAccessible());
-              // TODO: check this too
-              addToChangesKey(queryClient, itemKeys.single(item.id).content);
               break;
             }
             case OPS.DELETE: {
+              // operations might change the result of the search and/or pagination
+              // so it's easier to invalidate all queries
               queryClient.invalidateQueries(itemKeys.allAccessible());
               break;
             }
@@ -416,10 +407,9 @@ export const configureWsItemHooks = (
                 break;
               }
               case OPS.DELETE: {
-                const mutation = current.filter((i) => i.id !== item.id);
                 queryClient.setQueryData(
                   memberKeys.current().recycledItems,
-                  mutation,
+                  current.filter((i) => i.id !== item.id),
                 );
                 break;
               }

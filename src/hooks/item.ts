@@ -7,7 +7,6 @@ import {
 } from '@graasp/sdk';
 
 import {
-  QueryClient,
   QueryKey,
   UseQueryResult,
   useInfiniteQuery,
@@ -468,13 +467,14 @@ export default (
 
     useItemFeedbackUpdates: itemWsHooks?.useItemFeedbackUpdates,
 
-    useItemKeysChanges: () => {
-      const queryClient = new QueryClient();
-      return (
-        queryClient
-          .getQueryData<HashSet<QueryKey>>(HAS_CHANGES_KEY)
-          ?.values() ?? []
-      );
-    },
+    // listen on the changed keys to allow a refetch
+    useItemKeysChanges: () =>
+      useQuery({
+        queryKey: HAS_CHANGES_KEY,
+        // set enabled to false to not have to set a queryFunction
+        enabled: false,
+        // transform the queryData to return a deep copy instead of the reference
+        select: (data) => (data as HashSet<QueryKey>).values(),
+      }),
   };
 };
