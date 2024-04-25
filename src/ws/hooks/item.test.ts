@@ -1,6 +1,5 @@
-import { DiscriminatedItem, FolderItemFactory } from '@graasp/sdk';
+import { FolderItemFactory } from '@graasp/sdk';
 
-import { QueryKey } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { generateFolders } from '../../../test/constants.js';
@@ -10,33 +9,12 @@ import {
   setUpWsTest,
 } from '../../../test/wsUtils.js';
 import { OWN_ITEMS_KEY, itemKeys } from '../../config/keys.js';
-import { isInChangesKey } from '../../config/utils.js';
 import { KINDS, OPS, TOPICS } from '../constants.js';
 import { configureWsItemHooks } from './item.js';
 
 const { hooks, wrapper, queryClient, handlers } = setUpWsTest({
   configureWsHooks: configureWsItemHooks,
 });
-
-/**
- * Expect to find the given key in the changes key.
- *
- * @param queryClient The QueryClient instance
- * @param key The key who should be in the changes key.
- * @returns Assertion<boolean>
- */
-const expectIsInChangesKey = (key: QueryKey) =>
-  expect(isInChangesKey(queryClient, key)).toBe(true);
-
-/**
- * Expect to not find the given key in the changes key.
- *
- * @param queryClient The QueryClient instance
- * @param key The key who not should be in the changes key.
- * @returns Assertion<boolean>
- */
-const expectNotInChangesKey = (key: QueryKey) =>
-  expect(isInChangesKey(queryClient, key)).toBe(false);
 
 describe('Ws Item Hooks', () => {
   afterEach(() => {
@@ -63,9 +41,7 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      // the changes are not in the cache anymore, but their keys are in
-      // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(itemKey);
+      expect(queryClient.getQueryState(itemKey)?.isInvalidated).toBe(true);
     });
 
     it(`Receive delete item update`, async () => {
@@ -80,8 +56,7 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(queryClient.getQueryData<DiscriminatedItem>(itemKey)).toBeFalsy();
-      expectNotInChangesKey(itemKey);
+      expect(queryClient.getQueryState(itemKey)?.isInvalidated).toBe(true);
     });
 
     it(`Does not update on other events`, async () => {
@@ -96,10 +71,7 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(
-        queryClient.getQueryData<DiscriminatedItem>(itemKey),
-      ).toMatchObject(item);
-      expectNotInChangesKey(itemKey);
+      expect(queryClient.getQueryState(itemKey)?.isInvalidated).toBe(false);
     });
   });
 
@@ -126,9 +98,7 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      // the changes are not in the cache anymore, but their keys are in
-      // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(childrenKey);
+      expect(queryClient.getQueryState(childrenKey)?.isInvalidated).toBe(true);
     });
 
     it(`Receive update child`, async () => {
@@ -146,9 +116,7 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      // the changes are not in the cache anymore, but their keys are in
-      // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(childrenKey);
+      expect(queryClient.getQueryState(childrenKey)?.isInvalidated).toBe(true);
     });
 
     it(`Receive delete item update`, async () => {
@@ -164,12 +132,7 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(
-        queryClient
-          .getQueryData<DiscriminatedItem[]>(childrenKey)
-          ?.find(({ id }) => id === targetItem.id),
-      ).toBeFalsy();
-      expectNotInChangesKey(childrenKey);
+      expect(queryClient.getQueryState(childrenKey)?.isInvalidated).toBe(true);
     });
 
     it(`Does not update on other events`, async () => {
@@ -184,10 +147,7 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(queryClient.getQueryData<DiscriminatedItem>(childrenKey)).toEqual(
-        items,
-      );
-      expectNotInChangesKey(childrenKey);
+      expect(queryClient.getQueryState(childrenKey)?.isInvalidated).toBe(false);
     });
   });
 
@@ -211,9 +171,9 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      // the changes are not in the cache anymore, but their keys are in
-      // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(OWN_ITEMS_KEY);
+      expect(queryClient.getQueryState(OWN_ITEMS_KEY)?.isInvalidated).toBe(
+        true,
+      );
     });
 
     it(`Receive update child`, async () => {
@@ -230,9 +190,9 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      // the changes are not in the cache anymore, but their keys are in
-      // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(OWN_ITEMS_KEY);
+      expect(queryClient.getQueryState(OWN_ITEMS_KEY)?.isInvalidated).toBe(
+        true,
+      );
     });
 
     it(`Receive delete item update`, async () => {
@@ -248,11 +208,9 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      // check own items key does not contain deleted item
-      const children =
-        queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY);
-      expect(children?.find(({ id }) => id === itemId)).toBeFalsy();
-      expectNotInChangesKey(OWN_ITEMS_KEY);
+      expect(queryClient.getQueryState(OWN_ITEMS_KEY)?.isInvalidated).toBe(
+        true,
+      );
     });
 
     it(`Does not update on other events`, async () => {
@@ -268,10 +226,9 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(
-        queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY),
-      ).toMatchObject(items);
-      expectNotInChangesKey(OWN_ITEMS_KEY);
+      expect(queryClient.getQueryState(OWN_ITEMS_KEY)?.isInvalidated).toBe(
+        false,
+      );
     });
   });
 
@@ -296,9 +253,9 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      // the changes are not in the cache anymore, but their keys are in
-      // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(itemKeys.shared());
+      expect(queryClient.getQueryState(itemKeys.shared())?.isInvalidated).toBe(
+        true,
+      );
     });
 
     it(`Receive update child`, async () => {
@@ -315,9 +272,9 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      // the changes are not in the cache anymore, but their keys are in
-      // a new queryData, allowing the client to invalidates all the changes
-      expectIsInChangesKey(itemKeys.shared());
+      expect(queryClient.getQueryState(itemKeys.shared())?.isInvalidated).toBe(
+        true,
+      );
     });
 
     it(`Receive delete item update`, async () => {
@@ -333,12 +290,9 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      // check own items key does not contain deleted item
-      const shared = queryClient.getQueryData<DiscriminatedItem[]>(
-        itemKeys.shared(),
+      expect(queryClient.getQueryState(itemKeys.shared())?.isInvalidated).toBe(
+        true,
       );
-      expect(shared?.find(({ id }) => id === itemId)).toBeFalsy();
-      expectNotInChangesKey(itemKeys.shared());
     });
 
     it(`Does not update on other events`, async () => {
@@ -354,10 +308,9 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expect(
-        queryClient.getQueryData<DiscriminatedItem[]>(itemKeys.shared()),
-      ).toEqual(items);
-      expectNotInChangesKey(itemKeys.shared());
+      expect(queryClient.getQueryState(itemKeys.shared())?.isInvalidated).toBe(
+        false,
+      );
     });
   });
 
@@ -374,12 +327,15 @@ describe('Ws Item Hooks', () => {
     const params2 = { name: 'name2' };
     const pagination2 = { page: 2 };
 
+    const accessibleKey1 = itemKeys.accessiblePage(params1, pagination1);
+    const accessibleKey2 = itemKeys.accessiblePage(params2, pagination2);
+
     beforeEach(() => {
-      queryClient.setQueryData(itemKeys.accessiblePage(params1, pagination1), {
+      queryClient.setQueryData(accessibleKey1, {
         data: items,
         totalCount: items.length,
       });
-      queryClient.setQueryData(itemKeys.accessiblePage(params2, pagination2), {
+      queryClient.setQueryData(accessibleKey2, {
         data: items,
         totalCount: items.length,
       });
@@ -396,7 +352,12 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expectIsInChangesKey(itemKeys.allAccessible());
+      expect(queryClient.getQueryState(accessibleKey1)?.isInvalidated).toBe(
+        true,
+      );
+      expect(queryClient.getQueryState(accessibleKey2)?.isInvalidated).toBe(
+        true,
+      );
     });
 
     it(`Receive update child`, async () => {
@@ -412,7 +373,12 @@ describe('Ws Item Hooks', () => {
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
-      expectIsInChangesKey(itemKeys.allAccessible());
+      expect(queryClient.getQueryState(accessibleKey1)?.isInvalidated).toBe(
+        true,
+      );
+      expect(queryClient.getQueryState(accessibleKey2)?.isInvalidated).toBe(
+        true,
+      );
     });
 
     it(`Receive delete item update`, async () => {
@@ -428,16 +394,12 @@ describe('Ws Item Hooks', () => {
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
 
       // check accessible items keys are all invalidated
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params1, pagination1))
-          ?.isInvalidated,
-      ).toBe(true);
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params2, pagination2))
-          ?.isInvalidated,
-      ).toBe(true);
-
-      expectNotInChangesKey(itemKeys.allAccessible());
+      expect(queryClient.getQueryState(accessibleKey1)?.isInvalidated).toBe(
+        true,
+      );
+      expect(queryClient.getQueryState(accessibleKey2)?.isInvalidated).toBe(
+        true,
+      );
     });
 
     it(`Does not update on other events`, async () => {
@@ -451,25 +413,12 @@ describe('Ws Item Hooks', () => {
       };
 
       getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-      // check accessible items keys still contain data and are not invalidated
-      // check accessible items keys are all invalidated
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params1, pagination1))
-          ?.isInvalidated,
-      ).toBe(false);
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params2, pagination2))
-          ?.isInvalidated,
-      ).toBe(false);
-      expect(
-        queryClient.getQueryData(itemKeys.accessiblePage(params1, pagination1)),
-      ).toEqual({ data: items, totalCount: items.length });
-      expect(
-        queryClient.getQueryData(itemKeys.accessiblePage(params2, pagination2)),
-      ).toEqual({ data: items, totalCount: items.length });
-
-      // expect not in changes key
-      expectNotInChangesKey(itemKeys.allAccessible());
+      expect(queryClient.getQueryState(accessibleKey1)?.isInvalidated).toBe(
+        false,
+      );
+      expect(queryClient.getQueryState(accessibleKey2)?.isInvalidated).toBe(
+        false,
+      );
     });
   });
 });

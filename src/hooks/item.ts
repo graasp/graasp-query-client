@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 import {
   CompleteMember,
   MAX_TARGETS_FOR_READ_REQUEST,
@@ -7,7 +8,6 @@ import {
 } from '@graasp/sdk';
 
 import {
-  QueryKey,
   UseQueryResult,
   useInfiniteQuery,
   useQuery,
@@ -23,13 +23,7 @@ import {
   PAGINATED_ITEMS_PER_PAGE,
 } from '../config/constants.js';
 import { UndefinedArgument } from '../config/errors.js';
-import {
-  HAS_CHANGES_KEY,
-  OWN_ITEMS_KEY,
-  itemKeys,
-  memberKeys,
-} from '../config/keys.js';
-import { HashSet } from '../config/utils.js';
+import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../config/keys.js';
 import {
   getAccessibleItemsRoutine,
   getOwnItemsRoutine,
@@ -466,15 +460,5 @@ export default (
     },
 
     useItemFeedbackUpdates: itemWsHooks?.useItemFeedbackUpdates,
-
-    // listen on the changed keys to allow a refetch
-    useItemKeysChanges: () =>
-      useQuery({
-        queryKey: HAS_CHANGES_KEY,
-        // set enabled to false to not have to set a queryFunction
-        enabled: false,
-        // transform the queryData to return a deep copy instead of the reference
-        select: (data) => (data as HashSet<QueryKey>).values(),
-      }),
   };
 };

@@ -15,7 +15,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../../config/keys.js';
-import { addToChangesKey } from '../../config/utils.js';
 import {
   copyItemsRoutine,
   deleteItemsRoutine,
@@ -83,21 +82,7 @@ export const configureWsItemHooks = (
           const { item } = event;
 
           if (current?.id === item.id) {
-            switch (event.op) {
-              case OPS.UPDATE: {
-                addToChangesKey(queryClient, itemKey);
-                break;
-              }
-              case OPS.DELETE: {
-                // should looks for keys that should be updated or invalidated further.
-                // leads to seeing an error message if this item was viewed in the builder for example.
-                queryClient.setQueryData(itemKey, null);
-                break;
-              }
-              default:
-                console.error('unhandled event for useItemUpdates');
-                break;
-            }
+            queryClient.invalidateQueries(itemKey);
           }
         }
       };
@@ -121,6 +106,7 @@ export const configureWsItemHooks = (
         return;
       }
 
+      // TODO: check maybe to merge or reuse useItemUpdates ?
       const unsubscribeFunctions = itemIds.map((itemId) => {
         const channel: Channel = { name: itemId, topic: TOPICS.ITEM };
         const itemKey = itemKeys.single(itemId).content;
@@ -132,19 +118,7 @@ export const configureWsItemHooks = (
             const { item } = event;
 
             if (current?.id === item.id) {
-              switch (event.op) {
-                case OPS.UPDATE: {
-                  addToChangesKey(queryClient, itemKey);
-                  break;
-                }
-                case OPS.DELETE: {
-                  queryClient.setQueryData(itemKey, null);
-                  break;
-                }
-                default:
-                  console.error('unhandled event for useItemUpdates');
-                  break;
-              }
+              queryClient.invalidateQueries(itemKey);
             }
           }
         };
@@ -185,29 +159,7 @@ export const configureWsItemHooks = (
             queryClient.getQueryData<DiscriminatedItem[]>(parentChildrenKey);
 
           if (current) {
-            const { item } = event;
-
-            switch (event.op) {
-              case OPS.CREATE: {
-                addToChangesKey(queryClient, parentChildrenKey);
-                break;
-              }
-              case OPS.UPDATE: {
-                addToChangesKey(queryClient, parentChildrenKey);
-                break;
-              }
-              case OPS.DELETE: {
-                queryClient.setQueryData(
-                  parentChildrenKey,
-                  current.filter((i) => i.id !== item.id),
-                );
-                // question: reset item key
-                break;
-              }
-              default:
-                console.error('unhandled event for useChildrenUpdates');
-                break;
-            }
+            queryClient.invalidateQueries(parentChildrenKey);
           }
         }
       };
@@ -241,28 +193,7 @@ export const configureWsItemHooks = (
             queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY);
 
           if (current) {
-            const { item } = event;
-
-            switch (event.op) {
-              case OPS.CREATE: {
-                addToChangesKey(queryClient, OWN_ITEMS_KEY);
-                break;
-              }
-              case OPS.UPDATE: {
-                addToChangesKey(queryClient, OWN_ITEMS_KEY);
-                break;
-              }
-              case OPS.DELETE: {
-                queryClient.setQueryData(
-                  OWN_ITEMS_KEY,
-                  current.filter((i) => i.id !== item.id),
-                );
-                break;
-              }
-              default:
-                console.error('unhandled event for useOwnItemsUpdates');
-                break;
-            }
+            queryClient.invalidateQueries(OWN_ITEMS_KEY);
           }
         }
       };
@@ -296,27 +227,7 @@ export const configureWsItemHooks = (
             queryClient.getQueryData(itemKeys.shared());
 
           if (current) {
-            const { item } = event;
-
-            switch (event.op) {
-              case OPS.CREATE: {
-                addToChangesKey(queryClient, itemKeys.shared());
-                break;
-              }
-              case OPS.UPDATE: {
-                addToChangesKey(queryClient, itemKeys.shared());
-                break;
-              }
-              case OPS.DELETE: {
-                queryClient.setQueryData(
-                  itemKeys.shared(),
-                  current.filter((i) => i.id !== item.id),
-                );
-                break;
-              }
-              default:
-                break;
-            }
+            queryClient.invalidateQueries(itemKeys.shared());
           }
         }
       };
@@ -346,27 +257,7 @@ export const configureWsItemHooks = (
         if (event.kind === KINDS.ACCESSIBLE) {
           // for over all accessible keys
 
-          switch (event.op) {
-            case OPS.CREATE: {
-              // operations might change the result of the search and/or pagination
-              // so it's easier to invalidate all queries
-              addToChangesKey(queryClient, itemKeys.allAccessible());
-              break;
-            }
-            case OPS.UPDATE: {
-              addToChangesKey(queryClient, itemKeys.allAccessible());
-              break;
-            }
-            case OPS.DELETE: {
-              // operations might change the result of the search and/or pagination
-              // so it's easier to invalidate all queries
-              queryClient.invalidateQueries(itemKeys.allAccessible());
-              break;
-            }
-            default:
-              console.error('unhandled event for useAccessibleItemsUpdates');
-              break;
-          }
+          queryClient.invalidateQueries(itemKeys.allAccessible());
         }
       };
 
@@ -396,27 +287,7 @@ export const configureWsItemHooks = (
           );
 
           if (current) {
-            const { item } = event;
-
-            switch (event.op) {
-              case OPS.CREATE: {
-                addToChangesKey(
-                  queryClient,
-                  memberKeys.current().recycledItems,
-                );
-                break;
-              }
-              case OPS.DELETE: {
-                queryClient.setQueryData(
-                  memberKeys.current().recycledItems,
-                  current.filter((i) => i.id !== item.id),
-                );
-                break;
-              }
-              default:
-                console.error('unhandled event for useRecycledItemsUpdates');
-                break;
-            }
+            queryClient.invalidateQueries(memberKeys.current().recycledItems);
           }
         }
       };
