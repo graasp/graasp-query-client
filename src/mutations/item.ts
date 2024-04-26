@@ -418,8 +418,8 @@ export default (queryConfig: QueryClientConfig) => {
 
   /**
    * this mutation is used for its callback and invalidate the keys
-   * @param {UUID} id parent item id wher the file is uploaded in
-   * @param {error} [error] error occured during the file uploading
+   * @param {UUID} id parent item id where the file is uploaded in
+   * @param {error} [error] error ocurred during the file uploading
    */
   const useUploadFiles = () => {
     const queryClient = useQueryClient();
