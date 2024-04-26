@@ -1,6 +1,5 @@
 import { App, UUID } from '@graasp/sdk';
 
-import member from '../hooks/member.js';
 import { PartialQueryConfigForApi } from '../types.js';
 import { verifyAuthentication } from './axios.js';
 import {
