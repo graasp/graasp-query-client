@@ -57,15 +57,8 @@ export default (
     useAccessibleItems: (
       params?: ItemSearchParams,
       pagination?: PaginationParams,
-      options?: { getUpdates?: boolean },
     ) => {
       const queryClient = useQueryClient();
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
-
-      const { data: currentMember } = useCurrentMember();
-      itemWsHooks?.useAccessibleItemsUpdates(
-        getUpdates ? currentMember?.id : null,
-      );
 
       const debouncedName = useDebounce(params?.name, 500);
       const finalParams = { ...params, name: debouncedName };
@@ -93,12 +86,7 @@ export default (
     },
 
     /** @deprecated use useAccessibleItems */
-    useOwnItems: (options?: { getUpdates?: boolean }) => {
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
-
-      const { data: currentMember } = useCurrentMember();
-      itemWsHooks?.useOwnItemsUpdates(getUpdates ? currentMember?.id : null);
-
+    useOwnItems: () => {
       return useQuery({
         queryKey: OWN_ITEMS_KEY,
         queryFn: () => Api.getOwnItems(queryConfig),
@@ -120,9 +108,7 @@ export default (
     ) => {
       const enabled = options?.enabled ?? true;
       const ordered = params?.ordered ?? true;
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
 
-      itemWsHooks?.useChildrenUpdates(enabled && getUpdates ? id : null);
       const queryClient = useQueryClient();
 
       return useQuery({
@@ -252,12 +238,7 @@ export default (
     },
 
     /** @deprecated use useAccessibleItems */
-    useSharedItems: (options?: { getUpdates?: boolean }) => {
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
-
-      const { data: currentMember } = useCurrentMember();
-      itemWsHooks?.useSharedItemsUpdates(getUpdates ? currentMember?.id : null);
-
+    useSharedItems: () => {
       return useQuery({
         queryKey: itemKeys.shared(),
         queryFn: () => Api.getSharedItems(queryConfig),
@@ -272,9 +253,6 @@ export default (
         placeholderData?: PackedItem;
       },
     ) => {
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
-      itemWsHooks?.useItemUpdates(getUpdates ? id : null);
-
       return useQuery({
         queryKey: itemKeys.single(id).content,
         queryFn: () => {
@@ -292,11 +270,7 @@ export default (
     },
 
     // todo: add optimisation to avoid fetching items already in cache
-    useItems: (ids: UUID[], options?: { getUpdates?: boolean }) => {
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
-
-      itemWsHooks?.useItemsUpdates(getUpdates ? ids : null);
-
+    useItems: (ids: UUID[]) => {
       const queryClient = useQueryClient();
       return useQuery({
         queryKey: itemKeys.many(ids).content,
