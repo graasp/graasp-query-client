@@ -23,7 +23,6 @@ const SHORT_LINKS_CONTEXT = 'shortLinks';
 const SUBSCRIPTION_CONTEXT = 'subscriptions';
 
 export const APPS_KEY = ['apps'];
-export const MOST_USED_APPS_KEY = ['most-used-apps'];
 export const OWN_ITEMS_KEY = [ITEMS_CONTEXT, 'own'];
 
 export const buildShortLinkKey = (alias: string | undefined) => [
@@ -203,6 +202,9 @@ export const memberKeys = {
 
       // items liked by the member
       likedItems: [...singleBaseKey, 'likedItems'] as const,
+
+      // apps used mostly by the member
+      mostUsedApps: [...singleBaseKey, 'mostUsedApps'] as const,
 
       // subscription plan for the member
       allSubscriptions,
