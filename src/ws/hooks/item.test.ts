@@ -3,14 +3,32 @@ import { afterEach, describe, it } from 'vitest';
 import { setUpWsTest } from '../../../test/wsUtils.js';
 import { configureWsItemHooks } from './item.js';
 
+// const { queryClient, handlers, hooks } = setUpWsTest({
+//   configureWsHooks: configureWsItemHooks,
+// });
+
 const { queryClient } = setUpWsTest({
   configureWsHooks: configureWsItemHooks,
 });
-
 describe('Ws Item Hooks', () => {
   afterEach(() => {
     queryClient.clear();
   });
+
+  // describe('useItemFeedbackUpdates', () => {
+  //   const item = FolderItemFactory();
+  //   const itemId = item?.id;
+  //   const itemKey = itemKeys.single(itemId).content;
+  //   const channel = { name: itemId, topic: TOPICS.ITEM };
+  //   const newItem = { ...item, description: 'new description' };
+  //   const hook = () => hooks.useItemFeedbackUpdates(itemId);
+
+  //   it('Receive feedback on items removed successfully', () => {
+  //     getHandlerByChannel(handlers, channel)?.handler(itemEvent);
+
+  //     expect(queryClient.getQueryState(itemKey)?.isInvalidated).toBe(true);
+  //   });
+  // });
 
   // TODO: implement test for feedback
   it('Dummy Test', () => {});

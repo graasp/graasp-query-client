@@ -20,6 +20,7 @@ export const OPS = {
   RESTORE: 'restore',
   UPDATE: 'update',
   VALIDATE: 'validate',
+  RECYCLE: 'recycle',
 };
 
 export const TOPICS = {
