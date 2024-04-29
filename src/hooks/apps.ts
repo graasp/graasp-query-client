@@ -21,7 +21,7 @@ export default (queryConfig: QueryClientConfig) => {
     useMostUsedApps: (memberId: UUID) =>
       useQuery({
         queryKey: memberKeys.single(memberId).mostUsedApps,
-        queryFn: () => Api.getMostUsedApps(memberId, queryConfig),
+        queryFn: () => Api.getMostUsedApps(queryConfig),
         ...defaultQueryOptions,
       }),
   };

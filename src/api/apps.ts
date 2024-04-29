@@ -15,15 +15,15 @@ export const getApps = async ({ API_HOST, axios }: PartialQueryConfigForApi) =>
       .then(({ data }) => data),
   );
 
-export const getMostUsedApps = async (
-  memberId: UUID,
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
+export const getMostUsedApps = async ({
+  API_HOST,
+  axios,
+}: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
       .get<
         { url: string; name: string; nbr: number }[]
-      >(`${API_HOST}/${buildMostUsedAppListRoute(memberId)}`)
+      >(`${API_HOST}/${buildMostUsedAppListRoute}`)
       .then(({ data }) => data),
   );
 
