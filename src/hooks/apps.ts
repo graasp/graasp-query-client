@@ -1,4 +1,4 @@
-import { Member, UUID } from '@graasp/sdk';
+import { Member } from '@graasp/sdk';
 
 import { useQuery } from '@tanstack/react-query';
 
