@@ -1,4 +1,4 @@
-import { UUID } from '@graasp/sdk';
+import { Member, UUID } from '@graasp/sdk';
 
 import { useQuery } from '@tanstack/react-query';
 
@@ -18,10 +18,10 @@ export default (queryConfig: QueryClientConfig) => {
         ...defaultQueryOptions,
         staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       }),
-    useMostUsedApps: (memberId: UUID) =>
+    useMostUsedApps: (member: Member) =>
       useQuery({
-        queryKey: memberKeys.single(memberId).mostUsedApps,
-        queryFn: () => Api.getMostUsedApps(memberId, queryConfig),
+        queryKey: memberKeys.single(member.id).mostUsedApps,
+        queryFn: () => Api.getMostUsedApps(member, queryConfig),
         ...defaultQueryOptions,
       }),
   };

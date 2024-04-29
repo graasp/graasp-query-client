@@ -1,4 +1,4 @@
-import { App, UUID } from '@graasp/sdk';
+import { App, Member, UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types.js';
 import { verifyAuthentication } from './axios.js';
@@ -16,14 +16,14 @@ export const getApps = async ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   );
 
 export const getMostUsedApps = async (
-  memberId: UUID,
+  member: Member,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
       .get<
         { url: string; name: string; nbr: number }[]
-      >(`${API_HOST}/${buildMostUsedAppListRoute(memberId)}`)
+      >(`${API_HOST}/${buildMostUsedAppListRoute(member)}`)
       .then(({ data }) => data),
   );
 
