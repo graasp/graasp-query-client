@@ -136,12 +136,20 @@ export const postItemWithThumbnail = async (
   verifyAuthentication(() => {
     const newFolder = new FormData();
     newFolder.append('name', name);
-    newFolder.append('displayName', displayName || name);
     newFolder.append('type', type);
-    newFolder.append('description', description || '');
-    newFolder.append('geolocation', JSON.stringify(geolocation));
-    newFolder.append('settings', JSON.stringify(settings));
-    newFolder.append('extra', JSON.stringify(extra));
+    newFolder.append('displayName', displayName ?? name);
+    if (description) {
+      newFolder.append('description', description);
+    }
+    if (geolocation) {
+      newFolder.append('geolocation', JSON.stringify(geolocation));
+    }
+    if (settings) {
+      newFolder.append('settings', JSON.stringify(settings));
+    }
+    if (extra) {
+      newFolder.append('extra', JSON.stringify(extra));
+    }
     // this file field needs to be the last one, otherwise the normal fields can not be read
     newFolder.append('thumbnail', thumbnail || '');
     return axios
