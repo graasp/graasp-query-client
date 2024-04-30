@@ -1,6 +1,5 @@
 /* eslint-disable arrow-body-style */
 import {
-  CompleteMember,
   MAX_TARGETS_FOR_READ_REQUEST,
   PackedItem,
   UUID,
@@ -8,7 +7,6 @@ import {
 } from '@graasp/sdk';
 
 import {
-  UseQueryResult,
   useInfiniteQuery,
   useQuery,
   useQueryClient,
@@ -35,7 +33,6 @@ import useDebounce from './useDebounce.js';
 
 export default (
   queryConfig: QueryClientConfig,
-  useCurrentMember: () => UseQueryResult<CompleteMember | null>,
   websocketClient?: WebsocketClient,
 ) => {
   const { enableWebsocket, notifier, defaultQueryOptions } = queryConfig;
@@ -338,14 +335,7 @@ export default (
         staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       }),
 
-    useRecycledItems: (options?: { getUpdates?: boolean }) => {
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
-
-      const { data: currentMember } = useCurrentMember();
-      itemWsHooks?.useRecycledItemsUpdates(
-        getUpdates ? currentMember?.id : null,
-      );
-
+    useRecycledItems: () => {
       return useQuery({
         queryKey: memberKeys.current().recycledItems,
         queryFn: () =>

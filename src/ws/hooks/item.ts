@@ -33,12 +33,6 @@ import createRoutine from '../../routines/utils.js';
 import { Notifier } from '../../types.js';
 import { KINDS, TOPICS } from '../constants.js';
 
-interface ItemEvent {
-  kind: string;
-  op: string;
-  item: DiscriminatedItem;
-}
-
 /**
  * Events from asynchronous background operations on given items
  */
@@ -82,6 +76,9 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
       queryClient.invalidateQueries(parentKey);
     }
   },
+  [FeedBackOP.RESTORE]: () => {
+    queryClient.invalidateQueries(memberKeys.current().recycledItems);
+  },
   [FeedBackOP.VALIDATE]: (itemIds: string[]) => {
     // todo: invalidate the validation query to refetch the validation status
     itemIds.map((itemId) =>
@@ -95,38 +92,6 @@ export const configureWsItemHooks = (
   websocketClient: WebsocketClient,
   notifier?: Notifier,
 ) => ({
-  // TODO: check if still used
-  useRecycledItemsUpdates: (userId?: UUID | null) => {
-    const queryClient = useQueryClient();
-    useEffect(() => {
-      if (!userId) {
-        return () => {
-          // do nothing
-        };
-      }
-
-      const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
-
-      const handler = (event: ItemEvent) => {
-        if (event.kind === KINDS.RECYCLE_BIN) {
-          const current = queryClient.getQueryData<DiscriminatedItem[]>(
-            memberKeys.current().recycledItems,
-          );
-
-          if (current) {
-            queryClient.invalidateQueries(memberKeys.current().recycledItems);
-          }
-        }
-      };
-
-      websocketClient.subscribe(channel, handler);
-
-      return function cleanup() {
-        websocketClient.unsubscribe(channel, handler);
-      };
-    }, [userId]);
-  },
-
   /**
    * React hook to subscribe to the feedback of async operations performed by the given user ID
    * @param userId The ID of the user on which to observe item feedback updates
@@ -185,7 +150,7 @@ export const configureWsItemHooks = (
             case isOperationEvent(event, FeedBackOP.RESTORE):
               routine = restoreItemsRoutine;
               message = SUCCESS_MESSAGES.RESTORE_ITEMS;
-              // nothing to invalidate ?
+              invalidateFeedback[event.op]();
               break;
             case isOperationEvent(event, FeedBackOP.VALIDATE):
               routine = postItemValidationRoutine;
