@@ -151,7 +151,7 @@ export const postItemWithThumbnail = async (
       newFolder.append('extra', JSON.stringify(extra));
     }
     // this file field needs to be the last one, otherwise the normal fields can not be read
-    newFolder.append('thumbnail', thumbnail || '');
+    newFolder.append('file', thumbnail || '');
     return axios
       .post<DiscriminatedItem>(
         `${API_HOST}/${buildPostItemWithThumbnailRoute(parentId)}`,
