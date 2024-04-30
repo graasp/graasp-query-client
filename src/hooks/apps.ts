@@ -18,7 +18,7 @@ export default (queryConfig: QueryClientConfig) => {
         ...defaultQueryOptions,
         staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       }),
-    useMostUsedApps: (memberId: UUID) =>
+    useMostUsedApps: (memberId?: UUID) =>
       useQuery({
         queryKey: memberKeys.single(memberId).mostUsedApps,
         queryFn: () => Api.getMostUsedApps(queryConfig),
