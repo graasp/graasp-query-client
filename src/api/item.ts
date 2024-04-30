@@ -35,6 +35,7 @@ import {
   buildGetItemsRoute,
   buildMoveItemsRoute,
   buildPostItemRoute,
+  buildPostItemWithThumbnailRoute,
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
 } from './routes.js';
@@ -138,14 +139,14 @@ export const postItemWithThumbnail = async (
     newFolder.append('displayName', displayName || name);
     newFolder.append('type', type);
     newFolder.append('description', description || '');
-    newFolder.append('thumbnail', thumbnail || '');
     newFolder.append('geolocation', JSON.stringify(geolocation));
     newFolder.append('settings', JSON.stringify(settings));
     newFolder.append('extra', JSON.stringify(extra));
-    console.log('new folder', newFolder);
+    // this file field needs to be the last one, otherwise the normal fields can not be read
+    newFolder.append('thumbnail', thumbnail || '');
     return axios
       .post<DiscriminatedItem>(
-        `${API_HOST}/${buildPostItemRoute(parentId)}`,
+        `${API_HOST}/${buildPostItemWithThumbnailRoute(parentId)}`,
         newFolder,
         {
           headers: { 'Content-Type': 'multipart/form-data' },

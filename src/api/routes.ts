@@ -75,6 +75,13 @@ export const buildPostItemRoute = (parentId?: UUID) => {
   }
   return url;
 };
+export const buildPostItemWithThumbnailRoute = (parentId?: UUID) => {
+  let url = `${ITEMS_ROUTE}/with-thumbnail`;
+  if (parentId) {
+    url += `?parentId=${parentId}`;
+  }
+  return url;
+};
 export const buildDeleteItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/delete`;
 export const buildDeleteItemsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}${qs.stringify(
