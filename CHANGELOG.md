@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.0](https://github.com/graasp/graasp-query-client/compare/v3.5.0...v3.6.0) (2024-05-01)
+
+
+### Features
+
+* add postItem hook with thumbnail ([#726](https://github.com/graasp/graasp-query-client/issues/726)) ([c05067d](https://github.com/graasp/graasp-query-client/commit/c05067de12b0c839e1878e9b88a88053f07e6544))
+
 ## [3.5.0](https://github.com/graasp/graasp-query-client/compare/v3.4.2...v3.5.0) (2024-04-22)
 
 
