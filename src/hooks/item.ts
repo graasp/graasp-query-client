@@ -1,4 +1,3 @@
-/* eslint-disable arrow-body-style */
 import {
   MAX_TARGETS_FOR_READ_REQUEST,
   PackedItem,
@@ -31,7 +30,7 @@ import { paginate } from '../utils/util.js';
 import { configureWsItemHooks } from '../ws/index.js';
 import useDebounce from './useDebounce.js';
 
-export default (
+const config = (
   queryConfig: QueryClientConfig,
   websocketClient?: WebsocketClient,
 ) => {
@@ -83,16 +82,15 @@ export default (
     },
 
     /** @deprecated use useAccessibleItems */
-    useOwnItems: () => {
-      return useQuery({
+    useOwnItems: () =>
+      useQuery({
         queryKey: OWN_ITEMS_KEY,
         queryFn: () => Api.getOwnItems(queryConfig),
         onError: (error) => {
           notifier?.({ type: getOwnItemsRoutine.FAILURE, payload: { error } });
         },
         ...defaultQueryOptions,
-      });
-    },
+      }),
 
     useChildren: (
       id?: UUID,
@@ -235,13 +233,12 @@ export default (
     },
 
     /** @deprecated use useAccessibleItems */
-    useSharedItems: () => {
-      return useQuery({
+    useSharedItems: () =>
+      useQuery({
         queryKey: itemKeys.shared(),
         queryFn: () => Api.getSharedItems(queryConfig),
         ...defaultQueryOptions,
-      });
-    },
+      }),
 
     useItem: (
       id?: UUID,
@@ -249,8 +246,8 @@ export default (
         getUpdates?: boolean;
         placeholderData?: PackedItem;
       },
-    ) => {
-      return useQuery({
+    ) =>
+      useQuery({
         queryKey: itemKeys.single(id).content,
         queryFn: () => {
           if (!id) {
@@ -263,8 +260,7 @@ export default (
         placeholderData: options?.placeholderData
           ? options?.placeholderData
           : undefined,
-      });
-    },
+      }),
 
     // todo: add optimisation to avoid fetching items already in cache
     useItems: (ids: UUID[]) => {
@@ -335,16 +331,15 @@ export default (
         staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       }),
 
-    useRecycledItems: () => {
-      return useQuery({
+    useRecycledItems: () =>
+      useQuery({
         queryKey: memberKeys.current().recycledItems,
         queryFn: () =>
           Api.getRecycledItemsData(queryConfig).then((data) =>
             data?.map(({ item }) => item),
           ),
         ...defaultQueryOptions,
-      });
-    },
+      }),
 
     useRecycledItemsData: () => {
       const queryClient = useQueryClient();
@@ -426,3 +421,5 @@ export default (
     useItemFeedbackUpdates: itemWsHooks?.useItemFeedbackUpdates,
   };
 };
+
+export default config;

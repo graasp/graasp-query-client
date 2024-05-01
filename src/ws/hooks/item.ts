@@ -5,8 +5,8 @@
 import {
   Channel,
   DiscriminatedItem,
-  FeedBackOP,
-  FeedBackOPType,
+  FeedBackOperation,
+  FeedBackOperationType,
   ItemOpFeedbackEvent as OpFeedbackEvent,
   UUID,
   WebsocketClient,
@@ -36,16 +36,19 @@ import { KINDS, TOPICS } from '../constants.js';
 /**
  * Events from asynchronous background operations on given items
  */
-type ItemOpFeedbackEvent<T extends FeedBackOPType = FeedBackOPType> =
-  OpFeedbackEvent<DiscriminatedItem, T>;
+type ItemOpFeedbackEvent<
+  T extends FeedBackOperationType = FeedBackOperationType,
+> = OpFeedbackEvent<DiscriminatedItem, T>;
 
 const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
-  [FeedBackOP.DELETE]: () => {
+  [FeedBackOperation.DELETE]: () => {
     // invalidate data displayed in the Trash screen
     queryClient.invalidateQueries(memberKeys.current().recycled);
     queryClient.invalidateQueries(memberKeys.current().recycledItems);
   },
-  [FeedBackOP.MOVE]: (event: ItemOpFeedbackEvent<typeof FeedBackOP.MOVE>) => {
+  [FeedBackOperation.MOVE]: (
+    event: ItemOpFeedbackEvent<typeof FeedBackOperation.MOVE>,
+  ) => {
     if (event.result) {
       const { items, moved } = event.result;
       const oldParentKey = getKeyForParentId(getParentFromPath(items[0].path));
@@ -55,7 +58,9 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
       queryClient.invalidateQueries(newParentKey);
     }
   },
-  [FeedBackOP.COPY]: (event: ItemOpFeedbackEvent<typeof FeedBackOP.COPY>) => {
+  [FeedBackOperation.COPY]: (
+    event: ItemOpFeedbackEvent<typeof FeedBackOperation.COPY>,
+  ) => {
     if (event.result) {
       const { copies } = event.result;
 
@@ -64,8 +69,8 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
       queryClient.invalidateQueries(newParentKey);
     }
   },
-  [FeedBackOP.RECYCLE]: (
-    event: ItemOpFeedbackEvent<typeof FeedBackOP.RECYCLE>,
+  [FeedBackOperation.RECYCLE]: (
+    event: ItemOpFeedbackEvent<typeof FeedBackOperation.RECYCLE>,
   ) => {
     if (event.result) {
       const items = event.result;
@@ -76,10 +81,10 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
       queryClient.invalidateQueries(parentKey);
     }
   },
-  [FeedBackOP.RESTORE]: () => {
+  [FeedBackOperation.RESTORE]: () => {
     queryClient.invalidateQueries(memberKeys.current().recycledItems);
   },
-  [FeedBackOP.VALIDATE]: (itemIds: string[]) => {
+  [FeedBackOperation.VALIDATE]: (itemIds: string[]) => {
     // todo: invalidate the validation query to refetch the validation status
     itemIds.map((itemId) =>
       queryClient.invalidateQueries(itemKeys.single(itemId).validation),
@@ -116,43 +121,43 @@ export const configureWsItemHooks = (
 
           switch (true) {
             // TODO: still used ?
-            case isOperationEvent(event, FeedBackOP.UPDATE):
+            case isOperationEvent(event, FeedBackOperation.UPDATE):
               routine = editItemRoutine;
               message = SUCCESS_MESSAGES.EDIT_ITEM;
               // todo: add invalidations for queries related to an update of the itemIds specified
               break;
-            case isOperationEvent(event, FeedBackOP.DELETE):
+            case isOperationEvent(event, FeedBackOperation.DELETE):
               routine = deleteItemsRoutine;
               message = SUCCESS_MESSAGES.DELETE_ITEMS;
               invalidateFeedback[event.op]();
               break;
-            case isOperationEvent(event, FeedBackOP.MOVE): {
+            case isOperationEvent(event, FeedBackOperation.MOVE): {
               routine = moveItemsRoutine;
               message = SUCCESS_MESSAGES.MOVE_ITEMS;
               invalidateFeedback[event.op](event);
               break;
             }
-            case isOperationEvent(event, FeedBackOP.COPY):
+            case isOperationEvent(event, FeedBackOperation.COPY):
               routine = copyItemsRoutine;
               message = SUCCESS_MESSAGES.COPY_ITEMS;
               invalidateFeedback[event.op](event);
               break;
-            case isOperationEvent(event, FeedBackOP.EXPORT):
+            case isOperationEvent(event, FeedBackOperation.EXPORT):
               routine = exportItemRoutine;
               message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
               // nothing to invalidate
               break;
-            case isOperationEvent(event, FeedBackOP.RECYCLE):
+            case isOperationEvent(event, FeedBackOperation.RECYCLE):
               routine = recycleItemsRoutine;
               message = SUCCESS_MESSAGES.RECYCLE_ITEMS;
               invalidateFeedback[event.op](event);
               break;
-            case isOperationEvent(event, FeedBackOP.RESTORE):
+            case isOperationEvent(event, FeedBackOperation.RESTORE):
               routine = restoreItemsRoutine;
               message = SUCCESS_MESSAGES.RESTORE_ITEMS;
               invalidateFeedback[event.op]();
               break;
-            case isOperationEvent(event, FeedBackOP.VALIDATE):
+            case isOperationEvent(event, FeedBackOperation.VALIDATE):
               routine = postItemValidationRoutine;
               message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
               invalidateFeedback[event.op](itemIds);
