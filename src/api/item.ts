@@ -80,15 +80,14 @@ export const getAccessibleItems = async (
   );
 
 export type PostItemPayloadType = Partial<DiscriminatedItem> &
-  Pick<DiscriminatedItem, 'type' | 'name'> & {
-    parentId?: UUID;
-  } & {
-    geolocation?: Pick<ItemGeolocation, 'lat' | 'lng'>;
-  } & {
-    settings?: DiscriminatedItem['settings'];
-  } & {
-    thumbnail?: Blob;
-  };
+  Pick<DiscriminatedItem, 'type' | 'name'> &
+  Partial<{
+    parentId: UUID;
+    geolocation: Pick<ItemGeolocation, 'lat' | 'lng'>;
+  }>;
+export type PostItemWithThumbnailPayloadType = PostItemPayloadType & {
+  thumbnail: Blob;
+};
 
 // payload = {name, type, description, extra, geolocation}
 // querystring = {parentId}
@@ -130,32 +129,38 @@ export const postItemWithThumbnail = async (
     geolocation,
     settings,
     thumbnail,
-  }: PostItemPayloadType,
+  }: PostItemWithThumbnailPayloadType,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<DiscriminatedItem> =>
   verifyAuthentication(() => {
-    const newFolder = new FormData();
-    newFolder.append('name', name);
-    newFolder.append('type', type);
-    newFolder.append('displayName', displayName ?? name);
+    const itemPayload = new FormData();
+    // name and type are required
+    itemPayload.append('name', name);
+    itemPayload.append('type', type);
+    if (displayName) {
+      itemPayload.append('displayName', displayName);
+    }
     if (description) {
-      newFolder.append('description', description);
+      itemPayload.append('description', description);
     }
     if (geolocation) {
-      newFolder.append('geolocation', JSON.stringify(geolocation));
+      itemPayload.append('geolocation', JSON.stringify(geolocation));
     }
     if (settings) {
-      newFolder.append('settings', JSON.stringify(settings));
+      itemPayload.append('settings', JSON.stringify(settings));
     }
     if (extra) {
-      newFolder.append('extra', JSON.stringify(extra));
+      itemPayload.append('extra', JSON.stringify(extra));
     }
-    // this file field needs to be the last one, otherwise the normal fields can not be read
-    newFolder.append('file', thumbnail || '');
+    /* WARNING: this file field needs to be the last one,
+     * otherwise the normal fields can not be read
+     * https://github.com/fastify/fastify-multipart?tab=readme-ov-file#usage
+     */
+    itemPayload.append('file', thumbnail);
     return axios
       .post<DiscriminatedItem>(
         `${API_HOST}/${buildPostItemWithThumbnailRoute(parentId)}`,
-        newFolder,
+        itemPayload,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
         },

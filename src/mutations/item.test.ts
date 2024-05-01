@@ -37,6 +37,7 @@ import {
   buildEditItemRoute,
   buildMoveItemsRoute,
   buildPostItemRoute,
+  buildPostItemWithThumbnailRoute,
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
   buildUploadItemThumbnailRoute,
@@ -141,7 +142,7 @@ describe('Items Mutations', () => {
       ).toBeTruthy();
     });
 
-    it('Post item with geoloc', async () => {
+    it('Post item with geolocation', async () => {
       const parentItem = FolderItemFactory();
       const singleKey = itemsWithGeolocationKeys.inBounds({
         lat1: 1,
@@ -189,6 +190,53 @@ describe('Items Mutations', () => {
           ?.isInvalidated,
       ).toBeTruthy();
       expect(queryClient.getQueryState(singleKey)?.isInvalidated).toBeTruthy();
+    });
+
+    it('Post item with thumbnail', async () => {
+      const parentItem = FolderItemFactory();
+      const newItemWithThumbnail = {
+        ...newItem,
+        thumbnail: new Blob(),
+      };
+
+      const response = {
+        ...newItem,
+        id: 'someid',
+        path: buildPathFromIds(parentItem.id, 'someid'),
+        settings: { hasThumbnail: true },
+      };
+
+      // set default data
+      queryClient.setQueryData(getKeyForParentId(parentItem.id), [
+        FolderItemFactory(),
+      ]);
+
+      const endpoints = [
+        {
+          response,
+          method: HttpMethod.Post,
+          route: `/${buildPostItemWithThumbnailRoute(parentItem.id)}`,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({
+          ...newItemWithThumbnail,
+          parentId: parentItem.id,
+        });
+        await waitForMutation();
+      });
+
+      expect(
+        queryClient.getQueryState(getKeyForParentId(parentItem.id))
+          ?.isInvalidated,
+      ).toBeTruthy();
     });
 
     it('Unauthorized', async () => {

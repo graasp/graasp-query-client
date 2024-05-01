@@ -66,7 +66,7 @@ export default (queryConfig: QueryClientConfig) => {
 
     queryClient.setQueryData(itemKey, value);
 
-    // Return a context object with the snapshotted value
+    // Return a context object with the snapshot value
     return prevValue;
   };
 
@@ -104,11 +104,14 @@ export default (queryConfig: QueryClientConfig) => {
   const usePostItem = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      async (item: Api.PostItemPayloadType) => {
-        if (!item.thumbnail) {
-          return Api.postItem(item, queryConfig);
+      async (
+        item: Api.PostItemPayloadType | Api.PostItemWithThumbnailPayloadType,
+      ) => {
+        // check if thumbnail was provided and if it is defined
+        if ('thumbnail' in item && item.thumbnail) {
+          return Api.postItemWithThumbnail(item, queryConfig);
         }
-        return Api.postItemWithThumbnail(item, queryConfig);
+        return Api.postItem(item, queryConfig);
       },
       //  we cannot optimistically add an item because we need its id
       {
@@ -125,7 +128,7 @@ export default (queryConfig: QueryClientConfig) => {
           const key = getKeyForParentId(parentId);
           queryClient.invalidateQueries(key);
 
-          // if item has geoloc, invalidate map related keys
+          // if item has geolocation, invalidate map related keys
           if (geolocation) {
             queryClient.invalidateQueries(itemsWithGeolocationKeys.allBounds);
           }
