@@ -4,7 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/action.js';
 import { UndefinedArgument } from '../config/errors.js';
-import { buildActionsKey, buildAggregateActionsKey } from '../config/keys.js';
+import {
+  buildActionsKey,
+  buildAggregateActionsKey,
+  buildMemberActionsFilteredByDateKey,
+} from '../config/keys.js';
 import { QueryClientConfig } from '../types.js';
 import { AggregateActionsArgs, MappedAggregateBy } from '../utils/action.js';
 
@@ -66,5 +70,12 @@ export default (queryConfig: QueryClientConfig) => {
     });
   };
 
-  return { useActions, useAggregateActions };
+  const useMemberActions = (args: { startDate: string; endDate: string }) =>
+    useQuery({
+      queryKey: buildMemberActionsFilteredByDateKey(args),
+      queryFn: () => Api.getMemberActionsFilteredByDate(args, queryConfig),
+      ...defaultQueryOptions,
+    });
+
+  return { useActions, useAggregateActions, useMemberActions };
 };

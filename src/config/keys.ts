@@ -282,6 +282,17 @@ export const buildActionsKey = (args: {
   },
 ];
 
+export const buildMemberActionsFilteredByDateKey = (args: {
+  startDate: string;
+  endDate: string;
+}) => [
+  'actions',
+  {
+    startDate: args.startDate,
+    endDate: args.endDate,
+  },
+];
+
 export const buildAggregateActionsKey = <K extends AggregateBy[]>(
   itemId: string | undefined,
   args: Omit<AggregateActionsArgs<K>, 'itemId'>,
