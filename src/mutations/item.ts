@@ -66,7 +66,7 @@ export default (queryConfig: QueryClientConfig) => {
 
     queryClient.setQueryData(itemKey, value);
 
-    // Return a context object with the snapshotted value
+    // Return a context object with the snapshot value
     return prevValue;
   };
 
@@ -104,8 +104,16 @@ export default (queryConfig: QueryClientConfig) => {
   const usePostItem = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      async (item: Api.PostItemPayloadType) => Api.postItem(item, queryConfig),
-      // we cannot optimistically add an item because we need its id
+      async (
+        item: Api.PostItemPayloadType | Api.PostItemWithThumbnailPayloadType,
+      ) => {
+        // check if thumbnail was provided and if it is defined
+        if ('thumbnail' in item && item.thumbnail) {
+          return Api.postItemWithThumbnail(item, queryConfig);
+        }
+        return Api.postItem(item, queryConfig);
+      },
+      //  we cannot optimistically add an item because we need its id
       {
         onSuccess: () => {
           notifier?.({
@@ -120,7 +128,7 @@ export default (queryConfig: QueryClientConfig) => {
           const key = getKeyForParentId(parentId);
           queryClient.invalidateQueries(key);
 
-          // if item has geoloc, invalidate map related keys
+          // if item has geolocation, invalidate map related keys
           if (geolocation) {
             queryClient.invalidateQueries(itemsWithGeolocationKeys.allBounds);
           }
@@ -413,8 +421,8 @@ export default (queryConfig: QueryClientConfig) => {
 
   /**
    * this mutation is used for its callback and invalidate the keys
-   * @param {UUID} id parent item id wher the file is uploaded in
-   * @param {error} [error] error occured during the file uploading
+   * @param {UUID} id parent item id where the file is uploaded in
+   * @param {error} [error] error ocurred during the file uploading
    */
   const useUploadFiles = () => {
     const queryClient = useQueryClient();

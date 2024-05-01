@@ -35,6 +35,7 @@ import {
   buildGetItemsRoute,
   buildMoveItemsRoute,
   buildPostItemRoute,
+  buildPostItemWithThumbnailRoute,
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
 } from './routes.js';
@@ -79,13 +80,14 @@ export const getAccessibleItems = async (
   );
 
 export type PostItemPayloadType = Partial<DiscriminatedItem> &
-  Pick<DiscriminatedItem, 'type' | 'name'> & {
-    parentId?: UUID;
-  } & {
-    geolocation?: Pick<ItemGeolocation, 'lat' | 'lng'>;
-  } & {
-    settings?: DiscriminatedItem['settings'];
-  };
+  Pick<DiscriminatedItem, 'type' | 'name'> &
+  Partial<{
+    parentId: UUID;
+    geolocation: Pick<ItemGeolocation, 'lat' | 'lng'>;
+  }>;
+export type PostItemWithThumbnailPayloadType = PostItemPayloadType & {
+  thumbnail: Blob;
+};
 
 // payload = {name, type, description, extra, geolocation}
 // querystring = {parentId}
@@ -115,6 +117,56 @@ export const postItem = async (
       })
       .then(({ data }) => data),
   );
+
+export const postItemWithThumbnail = async (
+  {
+    name,
+    displayName,
+    type,
+    description,
+    extra,
+    parentId,
+    geolocation,
+    settings,
+    thumbnail,
+  }: PostItemWithThumbnailPayloadType,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+): Promise<DiscriminatedItem> =>
+  verifyAuthentication(() => {
+    const itemPayload = new FormData();
+    // name and type are required
+    itemPayload.append('name', name);
+    itemPayload.append('type', type);
+    if (displayName) {
+      itemPayload.append('displayName', displayName);
+    }
+    if (description) {
+      itemPayload.append('description', description);
+    }
+    if (geolocation) {
+      itemPayload.append('geolocation', JSON.stringify(geolocation));
+    }
+    if (settings) {
+      itemPayload.append('settings', JSON.stringify(settings));
+    }
+    if (extra) {
+      itemPayload.append('extra', JSON.stringify(extra));
+    }
+    /* WARNING: this file field needs to be the last one,
+     * otherwise the normal fields can not be read
+     * https://github.com/fastify/fastify-multipart?tab=readme-ov-file#usage
+     */
+    itemPayload.append('file', thumbnail);
+    return axios
+      .post<DiscriminatedItem>(
+        `${API_HOST}/${buildPostItemWithThumbnailRoute(parentId)}`,
+        itemPayload,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        },
+      )
+      .then(({ data }) => data);
+  });
 
 export const deleteItems = async (
   ids: UUID[],
