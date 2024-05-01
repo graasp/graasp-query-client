@@ -22,7 +22,7 @@ export const getMostUsedApps = async ({
   verifyAuthentication(() =>
     axios
       .get<
-        { url: string; name: string; nbr: number }[]
+        { url: string; name: string; count: number }[]
       >(`${API_HOST}/${buildMostUsedAppListRoute}`)
       .then(({ data }) => data),
   );
