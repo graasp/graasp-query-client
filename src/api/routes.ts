@@ -524,7 +524,7 @@ export const buildGetSuggestionsForAddressRoute = ({
 }) => `${ITEMS_ROUTE}/geolocation/search?query=${address}&lang=${lang}`;
 
 export const buildGetEmbeddedLinkMetadata = (link: string) =>
-  `${EMBEDDED_LINKS_ROUTE}?link=${link}`;
+  `${EMBEDDED_LINKS_ROUTE}?link=${encodeURIComponent(link)}`;
 
 export const API_ROUTES = {
   APPS_ROUTE,
