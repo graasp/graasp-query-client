@@ -34,6 +34,7 @@ export const COLLECTIONS_ROUTE = `collections`;
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
 export const SHORT_LINKS_ROUTE = `${ITEMS_ROUTE}/short-links`;
 export const SHORT_LINKS_LIST_ROUTE = `${SHORT_LINKS_ROUTE}/list`;
+export const EMBEDDED_LINKS_ROUTE = `${ITEMS_ROUTE}/embedded-links/metadata`;
 
 export type ItemSearchParams =
   | {
@@ -522,6 +523,9 @@ export const buildGetSuggestionsForAddressRoute = ({
   lang?: string;
 }) => `${ITEMS_ROUTE}/geolocation/search?query=${address}&lang=${lang}`;
 
+export const buildGetEmbeddedLinkMetadata = (link: string) =>
+  `${EMBEDDED_LINKS_ROUTE}?link=${link}`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   buildAppListRoute,
@@ -641,4 +645,5 @@ export const API_ROUTES = {
   buildPutItemGeolocationRoute,
   buildGetAddressFromCoordinatesRoute,
   buildDeleteItemThumbnailRoute,
+  buildGetEmbeddedLinksMetadata: buildGetEmbeddedLinkMetadata,
 };
