@@ -70,10 +70,12 @@ export default (queryConfig: QueryClientConfig) => {
     });
   };
 
-  const useMemberActions = (args: { startDate: string; endDate: string }) =>
+  const useMemberActions = (
+    args: { startDate?: string; endDate?: string } = {},
+  ) =>
     useQuery({
       queryKey: buildMemberActionsFilteredByDateKey(args),
-      queryFn: () => Api.getMemberActionsFilteredByDate(args, queryConfig),
+      queryFn: () => Api.getMemberActionsFilteredByDate(queryConfig, args),
       ...defaultQueryOptions,
     });
 

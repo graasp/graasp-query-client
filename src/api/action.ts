@@ -19,8 +19,8 @@ export const getActions = async (
     .then(({ data }) => data);
 
 export const getMemberActionsFilteredByDate = async (
-  args: { startDate: string; endDate: string },
   { API_HOST, axios }: PartialQueryConfigForApi,
+  args: { startDate?: string; endDate?: string } = {},
 ) =>
   axios
     .get<ActionData>(`${API_HOST}/${buildGetMemberActions(args)}`)

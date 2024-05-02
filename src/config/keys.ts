@@ -283,8 +283,8 @@ export const buildActionsKey = (args: {
 ];
 
 export const buildMemberActionsFilteredByDateKey = (args: {
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
 }) => [
   'actions',
   {

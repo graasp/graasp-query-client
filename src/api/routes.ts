@@ -355,8 +355,8 @@ export const buildGetActions = (
   )}`;
 
 export const buildGetMemberActions = (args: {
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
 }) =>
   `${MEMBERS_ROUTE}/actions${qs.stringify(
     {
