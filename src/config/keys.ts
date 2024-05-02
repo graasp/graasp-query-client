@@ -203,9 +203,6 @@ export const memberKeys = {
       // items liked by the member
       likedItems: [...singleBaseKey, 'likedItems'] as const,
 
-      // apps used mostly by the member
-      mostUsedApps: [...singleBaseKey, 'mostUsedApps'] as const,
-
       // subscription plan for the member
       allSubscriptions,
       subscription: (planId: string) => [...allSubscriptions, planId] as const,
@@ -248,6 +245,9 @@ export const memberKeys = {
 
       // subscription plan for the current member
       subscription: [...currentBaseKey, 'subscription'] as const,
+
+       // apps used mostly by the member
+      mostUsedApps: [...currentBaseKey, 'mostUsedApps'] as const,
     };
   },
 };
