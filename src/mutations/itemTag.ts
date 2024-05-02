@@ -25,15 +25,13 @@ export default (queryConfig: QueryClientConfig) => {
             type: postItemTagRoutine.SUCCESS,
             payload: { message: SUCCESS_MESSAGES.POST_ITEM_TAG },
           });
-          // the following was needed in the builder
-          // probably because queryClient is not the same as the one we use higher in the scope
-          // await queryClient.invalidateQueries(DATA_KEYS.itemTagsKeys.many());
         },
         onError: (error: Error) => {
           notifier?.({ type: postItemTagRoutine.FAILURE, payload: { error } });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(itemKeys.single(itemId).tags);
+          // because with had PackItem now, we need to invalidate the whole item key
+          queryClient.invalidateQueries(itemKeys.single(itemId).content);
           // invalidate any "many" query targeting item tags
           queryClient.invalidateQueries(itemKeys.allMany());
         },
@@ -68,9 +66,6 @@ export default (queryConfig: QueryClientConfig) => {
             type: deleteItemTagRoutine.SUCCESS,
             payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_TAG },
           });
-          // the following was needed in the builder
-          // probably because queryClient is not the same as the one we use higher in the scope
-          // await queryClient.invalidateQueries(DATA_KEYS.itemTagsKeys.many());
         },
         onError: (error: Error, { itemId }, context) => {
           const itemKey = itemKeys.single(itemId).tags;
@@ -81,7 +76,8 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(itemKeys.single(itemId).tags);
+          // because with had PackItem now, we need to invalidate the whole item key
+          queryClient.invalidateQueries(itemKeys.single(itemId).content);
           // invalidate any "many" query that contains the id we modified
           queryClient.invalidateQueries(itemKeys.allMany());
         },
