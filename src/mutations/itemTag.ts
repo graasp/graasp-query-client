@@ -1,10 +1,14 @@
-import { ItemTag, ItemTagType, UUID } from '@graasp/sdk';
+import { ItemTag, ItemTagType, UUID, getParentFromPath } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import * as Api from '../api/itemTag.js';
-import { itemKeys } from '../config/keys.js';
+import { getKeyForParentId, itemKeys } from '../config/keys.js';
 import {
   deleteItemTagRoutine,
   postItemTagRoutine,
@@ -13,6 +17,25 @@ import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
+
+  const invalidateQueries = (
+    queryClient: QueryClient,
+    itemId: UUID,
+    // TODO: ItemTag doesn't correspond anymore with what the backend send
+    data: ItemTag | undefined,
+  ) => {
+    // because with had PackItem now, we need to invalidate the whole item key
+    queryClient.invalidateQueries(itemKeys.single(itemId).content);
+    // invalidate any "many" query that contains the id we modified
+    queryClient.invalidateQueries(itemKeys.allMany());
+    // because with use PackedItem, we also have to invalidate parent item for tables
+    const parentPath = data?.item
+      ? getParentFromPath(data.item.path)
+      : undefined;
+    const parentKey = getKeyForParentId(parentPath);
+
+    queryClient.invalidateQueries(parentKey);
+  };
 
   const usePostItemTag = () => {
     const queryClient = useQueryClient();
@@ -29,11 +52,8 @@ export default (queryConfig: QueryClientConfig) => {
         onError: (error: Error) => {
           notifier?.({ type: postItemTagRoutine.FAILURE, payload: { error } });
         },
-        onSettled: (_data, _error, { itemId }) => {
-          // because with had PackItem now, we need to invalidate the whole item key
-          queryClient.invalidateQueries(itemKeys.single(itemId).content);
-          // invalidate any "many" query targeting item tags
-          queryClient.invalidateQueries(itemKeys.allMany());
+        onSettled: (data, _error, { itemId }) => {
+          invalidateQueries(queryClient, itemId, data);
         },
       },
     );
@@ -75,11 +95,8 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { error },
           });
         },
-        onSettled: (_data, _error, { itemId }) => {
-          // because with had PackItem now, we need to invalidate the whole item key
-          queryClient.invalidateQueries(itemKeys.single(itemId).content);
-          // invalidate any "many" query that contains the id we modified
-          queryClient.invalidateQueries(itemKeys.allMany());
+        onSettled: (data, _error, { itemId }) => {
+          invalidateQueries(queryClient, itemId, data);
         },
       },
     );
