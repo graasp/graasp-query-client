@@ -604,6 +604,7 @@ export const API_ROUTES = {
   buildPostItemValidationRoute,
   buildPostManyItemMembershipsRoute,
   buildPostShortLinkRoute,
+  buildPostUserCSVUploadRoute,
   buildPutItemLoginSchemaRoute,
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
