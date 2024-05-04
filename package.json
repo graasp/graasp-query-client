@@ -30,7 +30,7 @@
     "qs": "6.12.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "19.2.2",
+    "@commitlint/cli": "19.3.0",
     "@commitlint/config-conventional": "19.2.2",
     "@graasp/sdk": "4.7.6",
     "@graasp/translations": "1.27.0",
