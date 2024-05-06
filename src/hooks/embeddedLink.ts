@@ -4,22 +4,25 @@ import * as Api from '../api/embeddedLink.js';
 import { UndefinedArgument } from '../config/errors.js';
 import { buildEmbeddedLinkMetadataKey } from '../config/keys.js';
 import { QueryClientConfig } from '../types.js';
+import useDebounce from './useDebounce.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
 
   return {
-    useMetadata: (link: string) =>
-      useQuery({
-        queryKey: buildEmbeddedLinkMetadataKey(link),
+    useMetadata: (link: string, debounceDelayMs = 500) => {
+      const debouncedLink = useDebounce(link, debounceDelayMs);
+      return useQuery({
+        queryKey: buildEmbeddedLinkMetadataKey(debouncedLink),
         queryFn: () => {
-          if (!link) {
+          if (!debouncedLink) {
             throw new UndefinedArgument();
           }
-          return Api.getEmbeddedLinkMetadata(link, queryConfig);
+          return Api.getEmbeddedLinkMetadata(debouncedLink, queryConfig);
         },
-        enabled: Boolean(link),
+        enabled: Boolean(debouncedLink),
         ...defaultQueryOptions,
-      }),
+      });
+    },
   };
 };
