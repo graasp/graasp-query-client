@@ -246,7 +246,7 @@ export const memberKeys = {
       // subscription plan for the current member
       subscription: [...currentBaseKey, 'subscription'] as const,
 
-       // apps used mostly by the member
+      // apps used mostly by the member
       mostUsedApps: [...currentBaseKey, 'mostUsedApps'] as const,
     };
   },
