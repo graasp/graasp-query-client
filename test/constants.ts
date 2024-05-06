@@ -58,6 +58,13 @@ export const UNAUTHORIZED_RESPONSE: MockFastifyError = {
   statusCode: StatusCodes.UNAUTHORIZED,
   origin: 'plugin',
 };
+export const BAD_REQUEST_RESPONSE: MockFastifyError = {
+  name: 'Bad Request',
+  code: 'ERRCODE',
+  message: 'Bad request error message',
+  statusCode: StatusCodes.BAD_REQUEST,
+  origin: 'plugin',
+};
 export const FILE_NOT_FOUND_RESPONSE: MockFastifyError = {
   name: 'unauthorized',
   code: 'GPFERR006',

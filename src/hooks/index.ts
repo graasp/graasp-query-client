@@ -5,6 +5,7 @@ import configureActionHooks from './action.js';
 import configureAppsHooks from './apps.js';
 import configureCategoryHooks from './category.js';
 import configureChatHooks from './chat.js';
+import configureEmbeddedLinkHooks from './embeddedLink.js';
 import configureEtherpadHooks from './etherpad.js';
 import configureInvitationHooks from './invitation.js';
 import configureItemHooks from './item.js';
@@ -59,5 +60,6 @@ export default (
     ...configurePublicProfileHooks(queryConfig),
     ...configureShortLinkHooks(queryConfig),
     ...configureItemGeolocationHooks(queryConfig),
+    ...configureEmbeddedLinkHooks(queryConfig),
   };
 };

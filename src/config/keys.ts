@@ -327,6 +327,12 @@ export const buildSuggestionsForAddressKey = ({
   lang?: string;
 }) => ['address', { address, lang }];
 
+export const buildEmbeddedLinkMetadataKey = (link: string) => [
+  'embedded-links',
+  'metadata',
+  link,
+];
+
 export const DATA_KEYS = {
   APPS_KEY,
   itemKeys,
