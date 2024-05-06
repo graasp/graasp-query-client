@@ -645,5 +645,5 @@ export const API_ROUTES = {
   buildPutItemGeolocationRoute,
   buildGetAddressFromCoordinatesRoute,
   buildDeleteItemThumbnailRoute,
-  buildGetEmbeddedLinksMetadata: buildGetEmbeddedLinkMetadata,
+  buildGetEmbeddedLinkMetadata,
 };
