@@ -1,14 +1,11 @@
 import {
-  CompleteMember,
   MAX_TARGETS_FOR_READ_REQUEST,
   PackedItem,
-  RecycledItemData,
   UUID,
   WebsocketClient,
 } from '@graasp/sdk';
 
 import {
-  UseQueryResult,
   useInfiniteQuery,
   useQuery,
   useQueryClient,
@@ -33,9 +30,8 @@ import { paginate } from '../utils/util.js';
 import { configureWsItemHooks } from '../ws/index.js';
 import useDebounce from './useDebounce.js';
 
-export default (
+const config = (
   queryConfig: QueryClientConfig,
-  useCurrentMember: () => UseQueryResult<CompleteMember | null>,
   websocketClient?: WebsocketClient,
 ) => {
   const { enableWebsocket, notifier, defaultQueryOptions } = queryConfig;
@@ -57,15 +53,8 @@ export default (
     useAccessibleItems: (
       params?: ItemSearchParams,
       pagination?: PaginationParams,
-      options?: { getUpdates?: boolean },
     ) => {
       const queryClient = useQueryClient();
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
-
-      const { data: currentMember } = useCurrentMember();
-      itemWsHooks?.useAccessibleItemsUpdates(
-        getUpdates ? currentMember?.id : null,
-      );
 
       const debouncedName = useDebounce(params?.name, 500);
       const finalParams = { ...params, name: debouncedName };
@@ -93,30 +82,15 @@ export default (
     },
 
     /** @deprecated use useAccessibleItems */
-    useOwnItems: (options?: { getUpdates?: boolean }) => {
-      const queryClient = useQueryClient();
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
-
-      const { data: currentMember } = useCurrentMember();
-      itemWsHooks?.useOwnItemsUpdates(getUpdates ? currentMember?.id : null);
-
-      return useQuery({
+    useOwnItems: () =>
+      useQuery({
         queryKey: OWN_ITEMS_KEY,
         queryFn: () => Api.getOwnItems(queryConfig),
-        onSuccess: async (items) => {
-          // save items in their own key
-          // eslint-disable-next-line no-unused-expressions
-          items?.forEach(async (item) => {
-            const { id } = item;
-            queryClient.setQueryData(itemKeys.single(id).content, item);
-          });
-        },
         onError: (error) => {
           notifier?.({ type: getOwnItemsRoutine.FAILURE, payload: { error } });
         },
         ...defaultQueryOptions,
-      });
-    },
+      }),
 
     useChildren: (
       id?: UUID,
@@ -129,9 +103,7 @@ export default (
     ) => {
       const enabled = options?.enabled ?? true;
       const ordered = params?.ordered ?? true;
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
 
-      itemWsHooks?.useChildrenUpdates(enabled && getUpdates ? id : null);
       const queryClient = useQueryClient();
 
       return useQuery({
@@ -261,26 +233,12 @@ export default (
     },
 
     /** @deprecated use useAccessibleItems */
-    useSharedItems: (options?: { getUpdates?: boolean }) => {
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
-
-      const { data: currentMember } = useCurrentMember();
-      itemWsHooks?.useSharedItemsUpdates(getUpdates ? currentMember?.id : null);
-
-      const queryClient = useQueryClient();
-      return useQuery({
+    useSharedItems: () =>
+      useQuery({
         queryKey: itemKeys.shared(),
         queryFn: () => Api.getSharedItems(queryConfig),
-        onSuccess: async (items) => {
-          // save items in their own key
-          items.forEach(async (item) => {
-            const { id } = item;
-            queryClient.setQueryData(itemKeys.single(id).content, item);
-          });
-        },
         ...defaultQueryOptions,
-      });
-    },
+      }),
 
     useItem: (
       id?: UUID,
@@ -288,11 +246,8 @@ export default (
         getUpdates?: boolean;
         placeholderData?: PackedItem;
       },
-    ) => {
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
-      itemWsHooks?.useItemUpdates(getUpdates ? id : null);
-
-      return useQuery({
+    ) =>
+      useQuery({
         queryKey: itemKeys.single(id).content,
         queryFn: () => {
           if (!id) {
@@ -305,15 +260,10 @@ export default (
         placeholderData: options?.placeholderData
           ? options?.placeholderData
           : undefined,
-      });
-    },
+      }),
 
     // todo: add optimisation to avoid fetching items already in cache
-    useItems: (ids: UUID[], options?: { getUpdates?: boolean }) => {
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
-
-      itemWsHooks?.useItemsUpdates(getUpdates ? ids : null);
-
+    useItems: (ids: UUID[]) => {
       const queryClient = useQueryClient();
       return useQuery({
         queryKey: itemKeys.many(ids).content,
@@ -381,23 +331,15 @@ export default (
         staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       }),
 
-    useRecycledItems: (options?: { getUpdates?: boolean }) => {
-      const getUpdates = options?.getUpdates ?? enableWebsocket;
-
-      const { data: currentMember } = useCurrentMember();
-      itemWsHooks?.useRecycledItemsUpdates(
-        getUpdates ? currentMember?.id : null,
-      );
-
-      return useQuery({
+    useRecycledItems: () =>
+      useQuery({
         queryKey: memberKeys.current().recycledItems,
         queryFn: () =>
           Api.getRecycledItemsData(queryConfig).then((data) =>
-            data?.map(({ item }: RecycledItemData) => item),
+            data?.map(({ item }) => item),
           ),
         ...defaultQueryOptions,
-      });
-    },
+      }),
 
     useRecycledItemsData: () => {
       const queryClient = useQueryClient();
@@ -479,3 +421,5 @@ export default (
     useItemFeedbackUpdates: itemWsHooks?.useItemFeedbackUpdates,
   };
 };
+
+export default config;

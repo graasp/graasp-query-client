@@ -7,7 +7,7 @@ export const KINDS = {
   SELF: 'self',
   ACCESSIBLE: 'accessible',
   SHARED: 'shared',
-};
+} as const;
 
 export const OPS = {
   CLEAR: 'clear',
@@ -20,7 +20,8 @@ export const OPS = {
   RESTORE: 'restore',
   UPDATE: 'update',
   VALIDATE: 'validate',
-};
+  RECYCLE: 'recycle',
+} as const;
 
 export const TOPICS = {
   CHAT_ITEM: 'chat/item',

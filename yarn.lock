@@ -611,7 +611,7 @@ __metadata:
   dependencies:
     "@commitlint/cli": "npm:19.3.0"
     "@commitlint/config-conventional": "npm:19.2.2"
-    "@graasp/sdk": "npm:4.7.6"
+    "@graasp/sdk": "npm:4.9.0"
     "@graasp/translations": "npm:1.27.0"
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
@@ -662,9 +662,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@npm:4.7.6":
-  version: 4.7.6
-  resolution: "@graasp/sdk@npm:4.7.6"
+"@graasp/sdk@npm:4.9.0":
+  version: 4.9.0
+  resolution: "@graasp/sdk@npm:4.9.0"
   dependencies:
     "@faker-js/faker": "npm:8.4.1"
     filesize: "npm:10.1.1"
@@ -673,7 +673,7 @@ __metadata:
   peerDependencies:
     date-fns: ^3
     uuid: ^9
-  checksum: 10/ac12c6438b0c71502b4b837f98b0dbc164c604a98c23064a5bc0ef233486be8012176fd4cbee3879db2cd468cefd5489678703709ae1b4e766f431ef3ac9f7b2
+  checksum: 10/921439fcfcc67e18c5e93ee1c405b82e1da9600cf33769a029efa4bacbaab78d30c357a0c19f98687e53101e4de19c924be78fad55eb4c9451ef734596d26b3c
   languageName: node
   linkType: hard
 

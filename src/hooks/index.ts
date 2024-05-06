@@ -38,11 +38,7 @@ export default (
       websocketClient,
     ),
     ...configureMembershipHooks(queryConfig, websocketClient),
-    ...configureItemHooks(
-      queryConfig,
-      memberHooks.useCurrentMember,
-      websocketClient,
-    ),
+    ...configureItemHooks(queryConfig, websocketClient),
     ...configureEtherpadHooks(queryConfig),
     ...configureItemTagHooks(queryConfig),
     ...configureCategoryHooks(queryConfig),

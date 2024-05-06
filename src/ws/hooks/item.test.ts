@@ -1,14 +1,19 @@
-import { DiscriminatedItem, FolderItemFactory } from '@graasp/sdk';
+import {
+  DiscriminatedItem,
+  FolderItemFactory,
+  ItemOpFeedbackEvent,
+  buildPathFromIds,
+  getParentFromPath,
+} from '@graasp/sdk';
 
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 
-import { generateFolders } from '../../../test/constants.js';
 import {
   getHandlerByChannel,
   mockWsHook,
   setUpWsTest,
 } from '../../../test/wsUtils.js';
-import { OWN_ITEMS_KEY, itemKeys } from '../../config/keys.js';
+import { getKeyForParentId, itemKeys, memberKeys } from '../../config/keys.js';
 import { KINDS, OPS, TOPICS } from '../constants.js';
 import { configureWsItemHooks } from './item.js';
 
@@ -21,477 +26,307 @@ describe('Ws Item Hooks', () => {
     queryClient.clear();
   });
 
-  describe('useItemUpdates', () => {
+  describe('useItemFeedbackUpdates', () => {
     const item = FolderItemFactory();
-    const itemId = item?.id;
-    const itemKey = itemKeys.single(itemId).content;
-    const channel = { name: itemId, topic: TOPICS.ITEM };
-    const newItem = { ...item, description: 'new description' };
-    const hook = () => hooks.useItemUpdates(itemId);
-
-    it(`Receive update item update`, async () => {
-      queryClient.setQueryData(itemKey, item);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.SELF,
-        op: OPS.UPDATE,
-        item: newItem,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      expect(
-        queryClient.getQueryData<DiscriminatedItem>(itemKey),
-      ).toMatchObject(newItem);
-    });
-
-    it(`Receive delete item update`, async () => {
-      queryClient.setQueryData(itemKey, item);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.SELF,
-        op: OPS.DELETE,
-        item: newItem,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      expect(queryClient.getQueryData<DiscriminatedItem>(itemKey)).toBeFalsy();
-    });
-
-    it(`Does not update on other events`, async () => {
-      queryClient.setQueryData(itemKey, item);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: 'kind',
-        op: OPS.UPDATE,
-        item: newItem,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      expect(
-        queryClient.getQueryData<DiscriminatedItem>(itemKey),
-      ).toMatchObject(item);
-    });
-  });
-
-  describe('useChildrenUpdates', () => {
-    // we need to use a different id for the channel to avoid handlers collision
-    const items = generateFolders();
-    const parent = FolderItemFactory();
-    const parentId = parent.id;
-    const childrenKey = itemKeys.single(parentId).children();
-    const channel = { name: parentId, topic: TOPICS.ITEM };
-    const targetItem = items[0];
-    const targetItemKey = itemKeys.single(targetItem.id).content;
-    const hook = () => hooks.useChildrenUpdates(parentId);
-
-    it(`Receive create child`, async () => {
-      queryClient.setQueryData(childrenKey, [FolderItemFactory()]);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.CHILD,
-        op: OPS.CREATE,
-        item: targetItem,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      // check children key contains new item
-      expect(
-        queryClient.getQueryData<DiscriminatedItem[]>(childrenKey),
-      ).toContainEqual(targetItem);
-      // check new item key
-      expect(
-        queryClient.getQueryData<DiscriminatedItem>(targetItemKey),
-      ).toMatchObject(targetItem);
-    });
-
-    it(`Receive update child`, async () => {
-      const updatedItem = { ...targetItem, description: 'new description' };
-
-      queryClient.setQueryData(targetItemKey, targetItem);
-      queryClient.setQueryData(childrenKey, items);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.CHILD,
-        op: OPS.UPDATE,
-        item: updatedItem,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      // check new item key content
-      expect(
-        queryClient.getQueryData<DiscriminatedItem>(targetItemKey),
-      ).toMatchObject(updatedItem);
-      // check children key contains newly item
-      const own = queryClient.getQueryData<DiscriminatedItem[]>(childrenKey);
-      expect(own).toContainEqual(updatedItem);
-      expect(own?.length).toBe(items.length);
-    });
-
-    it(`Receive delete item update`, async () => {
-      queryClient.setQueryData(targetItemKey, targetItem);
-      queryClient.setQueryData(childrenKey, items);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.CHILD,
-        op: OPS.DELETE,
-        item: targetItem,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      expect(
-        queryClient
-          .getQueryData<DiscriminatedItem[]>(childrenKey)
-          ?.find(({ id }) => id === targetItem.id),
-      ).toBeFalsy();
-    });
-
-    it(`Does not update on other events`, async () => {
-      queryClient.setQueryData(childrenKey, items);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: 'kind',
-        op: OPS.DELETE,
-        item: targetItem,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      expect(queryClient.getQueryData<DiscriminatedItem>(childrenKey)).toEqual(
-        items,
-      );
-    });
-  });
-
-  describe('useOwnItemsUpdates', () => {
-    const items = generateFolders();
-    const item = items[0];
-    const itemId = item.id;
-    const itemKey = itemKeys.single(itemId).content;
-    const channel = { name: itemId, topic: TOPICS.ITEM_MEMBER };
-    const hook = () => hooks.useOwnItemsUpdates(itemId);
-
-    it(`Receive create child`, async () => {
-      queryClient.setQueryData(OWN_ITEMS_KEY, [items[2]]);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.OWN,
-        op: OPS.CREATE,
-        item,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      // check own items key contains new item
-      expect(
-        queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY),
-      ).toContainEqual(item);
-      // check new item key
-      expect(
-        queryClient.getQueryData<DiscriminatedItem>(itemKey),
-      ).toMatchObject(item);
-    });
-
-    it(`Receive update child`, async () => {
-      const updatedItem = { ...item, description: 'new description' };
-      queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(OWN_ITEMS_KEY, items);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.OWN,
-        op: OPS.UPDATE,
-        item: updatedItem,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      // check new item key content
-      expect(
-        queryClient.getQueryData<DiscriminatedItem>(itemKey),
-      ).toMatchObject(updatedItem);
-      // check children key contains newly item
-      const children =
-        queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY);
-      expect(children).toContainEqual(updatedItem);
-      expect(children?.length).toBe(items.length);
-    });
-
-    it(`Receive delete item update`, async () => {
-      queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(OWN_ITEMS_KEY, items);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.OWN,
-        op: OPS.DELETE,
-        item,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      // check own items key does not contain deleted item
-      const children =
-        queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY);
-      expect(children?.find(({ id }) => id === itemId)).toBeFalsy();
-    });
-
-    it(`Does not update on other events`, async () => {
-      queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(OWN_ITEMS_KEY, items);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: 'kind',
-        op: OPS.UPDATE,
-        item,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      expect(
-        queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY),
-      ).toMatchObject(items);
-    });
-  });
-
-  describe('useSharedItemsUpdates', () => {
-    // we need to use a different id to avoid handler collision
-    const items = generateFolders();
-    const item = items[1];
-    const itemId = item.id;
-    const itemKey = itemKeys.single(itemId).content;
-    const channel = { name: itemId, topic: TOPICS.ITEM_MEMBER };
-    const hook = () => hooks.useSharedItemsUpdates(itemId);
-
-    it(`Receive create child`, async () => {
-      queryClient.setQueryData(itemKeys.shared(), [items[2]]);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.SHARED,
-        op: OPS.CREATE,
-        item,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      // check own items key contains new item
-      expect(
-        queryClient.getQueryData<DiscriminatedItem[]>(itemKeys.shared()),
-      ).toContainEqual(item);
-      // check new item key
-      expect(
-        queryClient.getQueryData<DiscriminatedItem>(itemKey),
-      ).toMatchObject(item);
-    });
-
-    it(`Receive update child`, async () => {
-      const updatedItem = { ...item, description: 'new description' };
-      queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(itemKeys.shared(), items);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.SHARED,
-        op: OPS.UPDATE,
-        item: updatedItem,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      // check new item key content
-      expect(
-        queryClient.getQueryData<DiscriminatedItem>(itemKey),
-      ).toMatchObject(updatedItem);
-      // check children key contains newly item
-      const shared = queryClient.getQueryData<DiscriminatedItem[]>(
-        itemKeys.shared(),
-      );
-      expect(shared).toContainEqual(updatedItem);
-      expect(shared?.length).toBe(items.length);
-    });
-
-    it(`Receive delete item update`, async () => {
-      queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(itemKeys.shared(), items);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.SHARED,
-        op: OPS.DELETE,
-        item,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      // check own items key does not contain deleted item
-      const shared = queryClient.getQueryData<DiscriminatedItem[]>(
-        itemKeys.shared(),
-      );
-      expect(shared?.find(({ id }) => id === itemId)).toBeFalsy();
-    });
-
-    it(`Does not update on other events`, async () => {
-      queryClient.setQueryData(itemKey, item);
-      queryClient.setQueryData(itemKeys.shared(), items);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: 'kind',
-        op: OPS.UPDATE,
-        item,
-      };
-
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-
-      expect(
-        queryClient.getQueryData<DiscriminatedItem[]>(itemKeys.shared()),
-      ).toEqual(items);
-    });
-  });
-
-  describe('useAccessibleItemsUpdates', () => {
-    const items = generateFolders();
-    const item = items[2];
-    const itemId = item.id;
-    const itemKey = itemKeys.single(itemId).content;
-    const channel = { name: itemId, topic: TOPICS.ITEM_MEMBER };
-    const hook = () => hooks.useAccessibleItemsUpdates(itemId);
-
-    const params1 = { name: 'name1' };
-    const pagination1 = { page: 1 };
-    const params2 = { name: 'name2' };
-    const pagination2 = { page: 2 };
-
-    beforeEach(() => {
-      queryClient.setQueryData(itemKeys.accessiblePage(params1, pagination1), {
-        data: items,
-        totalCount: items.length,
-      });
-      queryClient.setQueryData(itemKeys.accessiblePage(params2, pagination2), {
-        data: items,
-        totalCount: items.length,
+    const itemActorId = item.creator?.id ?? 'random-id';
+    const channel = { name: itemActorId, topic: TOPICS.ITEM_MEMBER };
+    const hook = () => hooks.useItemFeedbackUpdates(itemActorId);
+
+    const handleWS = (itemEvent: ItemOpFeedbackEvent<DiscriminatedItem>) => {
+      const handler = getHandlerByChannel(handlers, channel);
+      expect(handler).not.toBeUndefined();
+      handler?.handler(itemEvent);
+    };
+
+    describe('Delete Feedback', () => {
+      it(`Receive delete feedback`, async () => {
+        // If the keys are not set in the cache, they are never invalidated.
+        queryClient.setQueryData(memberKeys.current().recycled, []);
+        queryClient.setQueryData(memberKeys.current().recycledItems, []);
+
+        await mockWsHook({ hook, wrapper });
+
+        const itemEvent: ItemOpFeedbackEvent<
+          DiscriminatedItem,
+          typeof OPS.DELETE
+        > = {
+          kind: KINDS.FEEDBACK,
+          resource: [item.id],
+          op: OPS.DELETE,
+          errors: [],
+        };
+
+        handleWS(itemEvent);
+
+        expect(
+          queryClient.getQueryState(memberKeys.current().recycled)
+            ?.isInvalidated,
+        ).toBe(true);
+        expect(
+          queryClient.getQueryState(memberKeys.current().recycledItems)
+            ?.isInvalidated,
+        ).toBe(true);
       });
     });
 
-    it(`Receive create child`, async () => {
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.ACCESSIBLE,
-        op: OPS.CREATE,
-        item,
+    describe('Move Feedback', () => {
+      const setUpQueryCache = (
+        oldParentItemKey: readonly unknown[],
+        newParentItemKey: readonly unknown[],
+      ) => {
+        // If the keys are not set in the cache, they are never invalidated.
+        queryClient.setQueryData(oldParentItemKey, null);
+        queryClient.setQueryData(newParentItemKey, null);
       };
 
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
+      const MoveItemEventFactory = (
+        originalItem: DiscriminatedItem,
+        movedItem: DiscriminatedItem,
+      ): ItemOpFeedbackEvent<DiscriminatedItem, typeof OPS.MOVE> => ({
+        kind: KINDS.FEEDBACK,
+        resource: [originalItem.id],
+        op: OPS.MOVE,
+        result: {
+          items: [originalItem],
+          moved: [movedItem],
+        },
+        errors: [],
+      });
 
-      // check accessible items keys are all invalidated
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params1, pagination1))
-          ?.isInvalidated,
-      ).toBe(true);
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params2, pagination2))
-          ?.isInvalidated,
-      ).toBe(true);
-      // check new item key
-      expect(
-        queryClient.getQueryData<DiscriminatedItem>(itemKey),
-      ).toMatchObject(item);
+      const expectInvalidates = (
+        oldParentItemKey: readonly unknown[],
+        newParentItemKey: readonly unknown[],
+      ) => {
+        expect(queryClient.getQueryState(oldParentItemKey)?.isInvalidated).toBe(
+          true,
+        );
+        expect(queryClient.getQueryState(newParentItemKey)?.isInvalidated).toBe(
+          true,
+        );
+      };
+
+      it(`Receive move feedback when moving folder from accessible to another folder`, async () => {
+        const newParentItem = FolderItemFactory();
+        const oldParentItemKey = getKeyForParentId(
+          getParentFromPath(item.path),
+        );
+        const movedItem = {
+          ...item,
+          path: buildPathFromIds(newParentItem.id, item.id),
+        };
+        const newParentItemKey = itemKeys.single(newParentItem.id).allChildren;
+
+        setUpQueryCache(oldParentItemKey, newParentItemKey);
+        await mockWsHook({ hook, wrapper });
+        handleWS(MoveItemEventFactory(item, movedItem));
+        expectInvalidates(oldParentItemKey, newParentItemKey);
+      });
+
+      it(`Receive move feedback when moving folder from a subfolder to another folder`, async () => {
+        const oldParentItem = FolderItemFactory();
+        const oldItem = {
+          ...item,
+          path: buildPathFromIds(oldParentItem.id, item.id),
+        };
+        const oldParentItemKey = getKeyForParentId(
+          getParentFromPath(oldItem.path),
+        );
+        const newParentItem = FolderItemFactory();
+        const movedItem = {
+          ...item,
+          path: buildPathFromIds(newParentItem.id, item.id),
+        };
+        const newParentItemKey = itemKeys.single(newParentItem.id).allChildren;
+
+        setUpQueryCache(oldParentItemKey, newParentItemKey);
+        await mockWsHook({ hook, wrapper });
+        handleWS(MoveItemEventFactory(oldItem, movedItem));
+        expectInvalidates(oldParentItemKey, newParentItemKey);
+      });
+
+      it(`Receive move feedback when moving folder from a subfolder to accessible`, async () => {
+        const oldParentItem = FolderItemFactory();
+        const oldItem = {
+          ...item,
+          path: buildPathFromIds(oldParentItem.id, item.id),
+        };
+        const oldParentItemKey = getKeyForParentId(
+          getParentFromPath(oldItem.path),
+        );
+        const movedItem = {
+          ...item,
+          path: buildPathFromIds(item.id),
+        };
+        const newParentItemKey = getKeyForParentId(
+          getParentFromPath(movedItem.path),
+        );
+
+        setUpQueryCache(oldParentItemKey, newParentItemKey);
+        await mockWsHook({ hook, wrapper });
+        handleWS(MoveItemEventFactory(oldItem, movedItem));
+        expectInvalidates(oldParentItemKey, newParentItemKey);
+      });
     });
 
-    it(`Receive update child`, async () => {
-      const updatedItem = { ...item, description: 'new description' };
-      queryClient.setQueryData(itemKey, item);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.ACCESSIBLE,
-        op: OPS.UPDATE,
-        item: updatedItem,
+    describe('Copy Feedback', () => {
+      const setUpQueryCache = (newParentItemKey: readonly unknown[]) => {
+        // If the keys are not set in the cache, they are never invalidated.
+        queryClient.setQueryData(newParentItemKey, null);
       };
 
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
+      const CopyItemEventFactory = (
+        originalItem: DiscriminatedItem,
+        copiedItem: DiscriminatedItem,
+      ): ItemOpFeedbackEvent<DiscriminatedItem, typeof OPS.COPY> => ({
+        kind: KINDS.FEEDBACK,
+        resource: [originalItem.id],
+        op: OPS.COPY,
+        result: {
+          items: [originalItem],
+          copies: [copiedItem],
+        },
+        errors: [],
+      });
 
-      // check new item key content
-      expect(
-        queryClient.getQueryData<DiscriminatedItem>(itemKey),
-      ).toMatchObject(updatedItem);
-      // check accessible items keys are all invalidated
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params1, pagination1))
-          ?.isInvalidated,
-      ).toBe(true);
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params2, pagination2))
-          ?.isInvalidated,
-      ).toBe(true);
+      const expectInvalidates = (newParentItemKey: readonly unknown[]) => {
+        expect(queryClient.getQueryState(newParentItemKey)?.isInvalidated).toBe(
+          true,
+        );
+      };
+
+      it(`Receive copy feedback when copying folder to accessible`, async () => {
+        const copiedItem = {
+          ...item,
+          path: buildPathFromIds(item.id),
+        };
+        const newParentItemKey = itemKeys.allAccessible();
+
+        setUpQueryCache(newParentItemKey);
+        await mockWsHook({ hook, wrapper });
+        handleWS(CopyItemEventFactory(item, copiedItem));
+        expectInvalidates(newParentItemKey);
+      });
+
+      it(`Receive copy feedback when copying folder to the same folder`, async () => {
+        const originalParentItem = FolderItemFactory();
+        const originalItem = {
+          ...item,
+          path: buildPathFromIds(originalParentItem.id, item.id),
+        };
+        const copiedItem = {
+          ...originalItem,
+          id: 'copied-id',
+          path: buildPathFromIds(originalItem.id),
+        };
+        const newParentItemKey = getKeyForParentId(
+          getParentFromPath(copiedItem.path),
+        );
+
+        setUpQueryCache(newParentItemKey);
+        await mockWsHook({ hook, wrapper });
+        handleWS(CopyItemEventFactory(originalItem, copiedItem));
+        expectInvalidates(newParentItemKey);
+      });
+
+      it(`Receive copy feedback when copying folder to the another folder`, async () => {
+        const originalParentItem = FolderItemFactory();
+        const originalItem = {
+          ...item,
+          path: buildPathFromIds(originalParentItem.id, item.id),
+        };
+        const copiedItem = {
+          ...originalItem,
+          id: 'copied-id',
+          path: buildPathFromIds(FolderItemFactory().id),
+        };
+        const newParentItemKey = getKeyForParentId(
+          getParentFromPath(copiedItem.path),
+        );
+
+        setUpQueryCache(newParentItemKey);
+        await mockWsHook({ hook, wrapper });
+        handleWS(CopyItemEventFactory(originalItem, copiedItem));
+        expectInvalidates(newParentItemKey);
+      });
     });
 
-    it(`Receive delete item update`, async () => {
-      queryClient.setQueryData(itemKey, item);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: KINDS.ACCESSIBLE,
-        op: OPS.DELETE,
-        item,
+    describe('Recycle Feedback', () => {
+      const setUpQueryCache = (parentItemKey: readonly unknown[]) => {
+        // If the keys are not set in the cache, they are never invalidated.
+        queryClient.setQueryData(parentItemKey, null);
       };
 
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
+      const RecycleItemEventFactory = (
+        recycledItem: DiscriminatedItem,
+      ): ItemOpFeedbackEvent<DiscriminatedItem, typeof OPS.RECYCLE> => ({
+        kind: KINDS.FEEDBACK,
+        resource: [recycledItem.id],
+        op: OPS.RECYCLE,
+        result: { [recycledItem.id]: recycledItem },
+        errors: [],
+      });
 
-      // check accessible items keys are all invalidated
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params1, pagination1))
-          ?.isInvalidated,
-      ).toBe(true);
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params2, pagination2))
-          ?.isInvalidated,
-      ).toBe(true);
+      const expectInvalidates = (parentItemKey: readonly unknown[]) => {
+        expect(queryClient.getQueryState(parentItemKey)?.isInvalidated).toBe(
+          true,
+        );
+      };
+
+      it(`Receive recycle feedback when recycling folder in accessible`, async () => {
+        const parentItemKey = itemKeys.allAccessible();
+
+        setUpQueryCache(parentItemKey);
+        await mockWsHook({ hook, wrapper });
+        handleWS(RecycleItemEventFactory(item));
+        expectInvalidates(parentItemKey);
+      });
+
+      it(`Receive recycle feedback when recycling folder in a sub folder`, async () => {
+        const parentItem = FolderItemFactory();
+        const recycledItem = {
+          ...item,
+          path: buildPathFromIds(parentItem.id, item.id),
+        };
+        const parentItemKey = getKeyForParentId(
+          getParentFromPath(recycledItem.path),
+        );
+
+        setUpQueryCache(parentItemKey);
+        await mockWsHook({ hook, wrapper });
+        handleWS(RecycleItemEventFactory(recycledItem));
+        expectInvalidates(parentItemKey);
+      });
     });
 
-    it(`Does not update on other events`, async () => {
-      queryClient.setQueryData(itemKey, item);
-      await mockWsHook({ hook, wrapper });
-
-      const itemEvent = {
-        kind: 'kind',
-        op: OPS.UPDATE,
-        item,
+    describe('Restore Feedback', () => {
+      const setUpQueryCache = (parentItemKey: readonly unknown[]) => {
+        // If the keys are not set in the cache, they are never invalidated.
+        queryClient.setQueryData(parentItemKey, null);
       };
 
-      getHandlerByChannel(handlers, channel)?.handler(itemEvent);
-      // check accessible items keys still contain data and are not invalidated
-      // check accessible items keys are all invalidated
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params1, pagination1))
-          ?.isInvalidated,
-      ).toBe(false);
-      expect(
-        queryClient.getQueryState(itemKeys.accessiblePage(params2, pagination2))
-          ?.isInvalidated,
-      ).toBe(false);
-      expect(
-        queryClient.getQueryData(itemKeys.accessiblePage(params1, pagination1)),
-      ).toEqual({ data: items, totalCount: items.length });
-      expect(
-        queryClient.getQueryData(itemKeys.accessiblePage(params2, pagination2)),
-      ).toEqual({ data: items, totalCount: items.length });
+      const RestoreItemEventFactory = (
+        recycledItem: DiscriminatedItem,
+      ): ItemOpFeedbackEvent<DiscriminatedItem, typeof OPS.RESTORE> => ({
+        kind: KINDS.FEEDBACK,
+        resource: [recycledItem.id],
+        op: OPS.RESTORE,
+        errors: [],
+      });
+
+      const expectInvalidates = (parentItemKey: readonly unknown[]) => {
+        expect(queryClient.getQueryState(parentItemKey)?.isInvalidated).toBe(
+          true,
+        );
+      };
+
+      it(`Receive restore feedback when restoring a folder`, async () => {
+        const recycledItemsKey = memberKeys.current().recycledItems;
+
+        setUpQueryCache(recycledItemsKey);
+        await mockWsHook({ hook, wrapper });
+        handleWS(RestoreItemEventFactory(item));
+        expectInvalidates(recycledItemsKey);
+      });
     });
   });
 });
