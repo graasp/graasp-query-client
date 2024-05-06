@@ -23,7 +23,7 @@ export const getMemberActionsFilteredByDate = async (
   args: { startDate?: string; endDate?: string } = {},
 ) =>
   axios
-    .get<ActionData>(`${API_HOST}/${buildGetMemberActions(args)}`)
+    .get<Action[]>(`${API_HOST}/${buildGetMemberActions(args)}`)
     .then(({ data }) => data);
 
 export const getAggregateActions = async <K extends AggregateBy[]>(
