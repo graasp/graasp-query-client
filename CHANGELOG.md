@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.0](https://github.com/graasp/graasp-query-client/compare/v3.6.0...v3.7.0) (2024-05-06)
+
+
+### Features
+
+* add csv upload for users ([#715](https://github.com/graasp/graasp-query-client/issues/715)) ([c65138e](https://github.com/graasp/graasp-query-client/commit/c65138e68ee6257cb10f2e1495a06b6904341412))
+
 ## [3.6.0](https://github.com/graasp/graasp-query-client/compare/v3.5.0...v3.6.0) (2024-05-01)
 
 
