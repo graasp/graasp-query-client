@@ -26,8 +26,6 @@ export default (queryConfig: QueryClientConfig) => {
   ) => {
     // because with had PackItem now, we need to invalidate the whole item key
     queryClient.invalidateQueries(itemKeys.single(itemId).content);
-    // invalidate any "many" query that contains the id we modified
-    queryClient.invalidateQueries(itemKeys.allMany());
     // because with use PackedItem, we also have to invalidate parent item for tables
     const parentPath = data?.item
       ? getParentFromPath(data.item.path)
