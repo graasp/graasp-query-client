@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.8.0](https://github.com/graasp/graasp-query-client/compare/v3.7.0...v3.8.0) (2024-05-06)
+
+
+### Features
+
+* update type for more packed items ([#720](https://github.com/graasp/graasp-query-client/issues/720)) ([b84e326](https://github.com/graasp/graasp-query-client/commit/b84e32633f75ea1f5ff21abd253a46ce19d6636b))
+
 ## [3.7.0](https://github.com/graasp/graasp-query-client/compare/v3.6.0...v3.7.0) (2024-05-06)
 
 ### Features
