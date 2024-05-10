@@ -1,4 +1,10 @@
-import { Action, ActionData, AggregateBy, UUID } from '@graasp/sdk';
+import {
+  Action,
+  ActionData,
+  AggregateBy,
+  ExportActionsFormatting,
+  UUID,
+} from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types.js';
 import { AggregateActionsArgs, MappedAggregateBy } from '../utils/action.js';
@@ -31,9 +37,12 @@ export const getAggregateActions = async <K extends AggregateBy[]>(
     .then(({ data }) => data);
 
 export const exportActions = async (
-  args: { itemId: UUID },
+  args: { itemId: UUID; format?: ExportActionsFormatting },
   { API_HOST, axios }: PartialQueryConfigForApi,
-) => axios.post<void>(`${API_HOST}/${buildExportActions(args.itemId)}`);
+) =>
+  axios.post<void>(
+    `${API_HOST}/${buildExportActions(args.itemId, args.format)}`,
+  );
 
 export const postItemAction = async (
   itemId: UUID,

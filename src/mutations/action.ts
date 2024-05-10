@@ -1,4 +1,4 @@
-import { UUID } from '@graasp/sdk';
+import { ExportActionsFormatting, UUID } from '@graasp/sdk';
 
 import { useMutation } from '@tanstack/react-query';
 
@@ -29,19 +29,23 @@ export default (queryConfig: QueryClientConfig) => {
     );
 
   const useExportActions = () =>
-    useMutation((itemId: UUID) => exportActions({ itemId }, queryConfig), {
-      onSuccess: () => {
-        queryConfig.notifier?.({
-          type: exportActionsRoutine.SUCCESS,
-        });
+    useMutation(
+      (itemId: UUID, format?: ExportActionsFormatting) =>
+        exportActions({ itemId, format }, queryConfig),
+      {
+        onSuccess: () => {
+          queryConfig.notifier?.({
+            type: exportActionsRoutine.SUCCESS,
+          });
+        },
+        onError: (error: Error) => {
+          queryConfig.notifier?.({
+            type: exportActionsRoutine.FAILURE,
+            payload: { error },
+          });
+        },
       },
-      onError: (error: Error) => {
-        queryConfig.notifier?.({
-          type: exportActionsRoutine.FAILURE,
-          payload: { error },
-        });
-      },
-    });
+    );
 
   return {
     usePostItemAction,
