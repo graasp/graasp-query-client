@@ -39,10 +39,12 @@ export const getAggregateActions = async <K extends AggregateBy[]>(
 export const exportActions = async (
   args: { itemId: UUID; format?: ExportActionsFormatting },
   { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  axios.post<void>(
+) => {
+  console.log(args, 'from api');
+  return axios.post<void>(
     `${API_HOST}/${buildExportActions(args.itemId, args.format)}`,
   );
+};
 
 export const postItemAction = async (
   itemId: UUID,
