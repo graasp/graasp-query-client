@@ -30,8 +30,8 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useExportActions = () =>
     useMutation(
-      (itemId: UUID, format?: ExportActionsFormatting) =>
-        exportActions({ itemId, format }, queryConfig),
+      (payload: { itemId: UUID; format?: ExportActionsFormatting }) =>
+        exportActions(payload, queryConfig),
       {
         onSuccess: () => {
           queryConfig.notifier?.({
