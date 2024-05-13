@@ -354,7 +354,7 @@ export const buildGetActions = (
     },
   )}`;
 
-export const buildGetMemberActions = (args: {
+export const buildGetMemberActionsRoute = (args: {
   startDate?: string;
   endDate?: string;
 }) =>

@@ -21,12 +21,12 @@ import { mockHook, setUpTest } from '../../test/utils.js';
 import {
   buildGetActions,
   buildGetAggregateActions,
-  buildGetMemberActions,
+  buildGetMemberActionsRoute,
 } from '../api/routes.js';
 import {
   buildActionsKey,
   buildAggregateActionsKey,
-  buildMemberActionsFilteredByDateKey,
+  memberKeys,
 } from '../config/keys.js';
 
 type AggregateActionsResponse = {
@@ -180,8 +180,8 @@ describe('Action Hooks', () => {
       startDate: '2024-04-24T14:07:00.074Z',
       endDate: '2024-04-24T14:07:00.074Z',
     };
-    const route = `/${buildGetMemberActions(args)}`;
-    const key = buildMemberActionsFilteredByDateKey(args);
+    const route = `/${buildGetMemberActionsRoute(args)}`;
+    const key = memberKeys.current().actions(args);
 
     const response = ACTIONS_DATA;
 

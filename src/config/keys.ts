@@ -241,6 +241,16 @@ export const memberKeys = {
 
       // subscription plan for the current member
       subscription: [...currentBaseKey, 'subscription'] as const,
+
+      // actions for current member
+      actions: (args: { startDate?: string; endDate?: string }) => [
+        ...currentBaseKey,
+        'actions',
+        {
+          startDate: args.startDate,
+          endDate: args.endDate,
+        },
+      ],
     };
   },
 };
@@ -279,17 +289,6 @@ export const buildActionsKey = (args: {
   {
     view: args.view,
     size: args.requestedSampleSize,
-  },
-];
-
-export const buildMemberActionsFilteredByDateKey = (args: {
-  startDate?: string;
-  endDate?: string;
-}) => [
-  'actions',
-  {
-    startDate: args.startDate,
-    endDate: args.endDate,
   },
 ];
 

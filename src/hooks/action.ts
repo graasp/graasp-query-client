@@ -7,7 +7,7 @@ import { UndefinedArgument } from '../config/errors.js';
 import {
   buildActionsKey,
   buildAggregateActionsKey,
-  buildMemberActionsFilteredByDateKey,
+  memberKeys,
 } from '../config/keys.js';
 import { QueryClientConfig } from '../types.js';
 import { AggregateActionsArgs, MappedAggregateBy } from '../utils/action.js';
@@ -74,8 +74,8 @@ export default (queryConfig: QueryClientConfig) => {
     args: { startDate?: string; endDate?: string } = {},
   ) =>
     useQuery({
-      queryKey: buildMemberActionsFilteredByDateKey(args),
-      queryFn: () => Api.getMemberActionsFilteredByDate(queryConfig, args),
+      queryKey: memberKeys.current().actions(args),
+      queryFn: () => Api.getMemberActions(queryConfig, args),
       ...defaultQueryOptions,
     });
 
