@@ -32,6 +32,7 @@ export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
 export const ETHERPAD_ROUTE = `${ITEMS_ROUTE}/etherpad`;
 export const COLLECTIONS_ROUTE = `collections`;
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
+export const buildMostUsedAppListRoute = `${APPS_ROUTE}/most-used`;
 export const SHORT_LINKS_ROUTE = `${ITEMS_ROUTE}/short-links`;
 export const SHORT_LINKS_LIST_ROUTE = `${SHORT_LINKS_ROUTE}/list`;
 export const EMBEDDED_LINKS_ROUTE = `${ITEMS_ROUTE}/embedded-links/metadata`;
