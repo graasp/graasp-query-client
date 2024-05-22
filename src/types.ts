@@ -58,5 +58,6 @@ export type EmbeddedLinkMetadata = {
   description?: string;
   thumbnails: string[];
   icons: string[];
+  html?: string;
   isEmbeddingAllowed: boolean;
 };
