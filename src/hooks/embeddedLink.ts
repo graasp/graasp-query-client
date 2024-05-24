@@ -10,7 +10,7 @@ export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
 
   return {
-    useMetadata: (link: string, debounceDelayMs = 500) => {
+    useLinkMetadata: (link: string, debounceDelayMs = 500) => {
       const debouncedLink = useDebounce(link, debounceDelayMs);
       return useQuery({
         queryKey: buildEmbeddedLinkMetadataKey(debouncedLink),
