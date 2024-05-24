@@ -369,6 +369,31 @@ describe('Items Hooks', () => {
       expect(queryClient.getQueryData(key)).toMatchObject(response);
     });
 
+    it(`Receive accessible items for keywords`, async () => {
+      const paramsWithKeywords = { keywords: ['name'] };
+      const hookWithKeywords = () =>
+        hooks.useAccessibleItems(paramsWithKeywords);
+      const keyWithKeywords = itemKeys.accessiblePage(
+        paramsWithKeywords,
+        pagination,
+      );
+      const endpoints = [
+        {
+          route: `/${buildGetAccessibleItems(paramsWithKeywords, pagination)}`,
+          response,
+        },
+      ];
+      const { data } = await mockHook({
+        endpoints,
+        hook: hookWithKeywords,
+        wrapper,
+      });
+
+      expect(data).toMatchObject(response);
+      // verify cache keys
+      expect(queryClient.getQueryData(keyWithKeywords)).toMatchObject(response);
+    });
+
     it(`Route constrcuted correctly for accessible folders`, async () => {
       const typesParams = { types: [ItemType.FOLDER] };
       const url = `/${buildGetAccessibleItems(typesParams, {})}`;

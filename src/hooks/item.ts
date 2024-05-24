@@ -51,13 +51,22 @@ const config = (
      * @returns
      */
     useAccessibleItems: (
-      params?: ItemSearchParams,
+      params?: ItemSearchParams & {
+        /** @deprecated use keywords */
+        name?: string;
+      },
       pagination?: PaginationParams,
     ) => {
       const queryClient = useQueryClient();
 
-      const debouncedName = useDebounce(params?.name, 500);
-      const finalParams = { ...params, name: debouncedName };
+      const allKeywords = [params?.name, ...(params?.keywords ?? [])].filter(
+        (k) => k?.length,
+      ) as string[];
+      const finalParams = { ...params };
+      if (allKeywords.length) {
+        const debouncedKeywords = useDebounce(allKeywords, 500);
+        finalParams.keywords = debouncedKeywords;
+      }
       const paginationParams = { ...(pagination ?? {}) };
       return useQuery({
         queryKey: itemKeys.accessiblePage(finalParams, paginationParams),
