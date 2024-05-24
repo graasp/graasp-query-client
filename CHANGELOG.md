@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.9.0](https://github.com/graasp/graasp-query-client/compare/v3.8.0...v3.9.0) (2024-05-24)
+
+
+### Features
+
+* most used apps hook ([#747](https://github.com/graasp/graasp-query-client/issues/747)) ([1b5fb17](https://github.com/graasp/graasp-query-client/commit/1b5fb17b182f923a0f5c40f966234ef1158e57f4))
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v1.7.2 ([#763](https://github.com/graasp/graasp-query-client/issues/763)) ([457e646](https://github.com/graasp/graasp-query-client/commit/457e64651e7ec70c5fe3fbd07f058635e30273e0))
+* update type to include html key ([#767](https://github.com/graasp/graasp-query-client/issues/767)) ([ef0fa0f](https://github.com/graasp/graasp-query-client/commit/ef0fa0f4920587b234d989ad731b8db36957d6ee))
+
 ## [3.8.0](https://github.com/graasp/graasp-query-client/compare/v3.7.0...v3.8.0) (2024-05-06)
 
 
