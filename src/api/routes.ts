@@ -39,7 +39,9 @@ export const EMBEDDED_LINKS_ROUTE = `${ITEMS_ROUTE}/embedded-links/metadata`;
 export type ItemSearchParams =
   | {
       creatorId?: Member['id'];
+      /** @deprecated use keywords */
       name?: string;
+      keywords?: string[];
       ordering?: 'desc' | 'asc';
       sortBy?:
         | 'item.name'
