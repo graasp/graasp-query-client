@@ -1,6 +1,8 @@
 import { Password } from '@graasp/sdk';
 
 import {
+  FORGOT_PASSWORD_REQUEST_ROUTE,
+  FORGOT_PASSWORD_RESET_ROUTE,
   MOBILE_SIGN_IN_ROUTE,
   MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE,
   MOBILE_SIGN_UP_ROUTE,
@@ -99,4 +101,27 @@ export const mobileSignUp = async (
     url.searchParams.set('lang', lang);
   }
   return axios.post<void>(url.toString(), payload);
+};
+
+export const forgotPasswordRequest = async (
+  payload: {
+    email: string;
+    captcha: string;
+  },
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) => {
+  const url = new URL(FORGOT_PASSWORD_REQUEST_ROUTE, API_HOST);
+  return axios.post<void>(url.toString(), payload);
+};
+
+export const forgotPasswordReset = async (
+  payload: {
+    password: string;
+    token: string;
+  },
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) => {
+  const url = new URL(FORGOT_PASSWORD_RESET_ROUTE, API_HOST);
+  url.searchParams.set('t', payload.token);
+  return axios.patch<void>(url.toString(), { password: payload.password });
 };

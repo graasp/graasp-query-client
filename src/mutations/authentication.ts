@@ -6,6 +6,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Api from '../api/authentication.js';
 import { memberKeys } from '../keys.js';
 import {
+  forgotPasswordRequestRoutine,
+  forgotPasswordResetRoutine,
   signInRoutine,
   signInWithPasswordRoutine,
   signOutRoutine,
@@ -201,6 +203,66 @@ export default (queryConfig: QueryClientConfig) => {
     });
   };
 
+  const useResetPasswordRequest = (args: { email: string; captcha: string }) =>
+    useMutation(() => Api.forgotPasswordRequest(args, queryConfig), {
+      onSuccess: () => {
+        notifier?.({
+          type: forgotPasswordRequestRoutine.SUCCESS,
+          // TODO
+          payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
+        });
+
+        // // cookie operations only if window is defined (operation happens in the frontend)
+        // if (!isServer() && queryConfig.DOMAIN) {
+        //   // save current page for further redirection
+        //   saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
+        //   // remove cookie and stored session from browser when the logout is confirmed
+        //   // todo: find a way to do something equivalent but with httpOnly cookies
+        //   // setCurrentSession(null, queryConfig.DOMAIN);
+        //   // removeSession(currentMemberId, queryConfig.DOMAIN);
+        // }
+        // // Update when the server confirmed the logout, instead optimistically updating the member
+        // // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
+        // queryClient.setQueryData(memberKeys.current().content, undefined);
+      },
+      onError: (error: Error) => {
+        notifier?.({
+          type: forgotPasswordRequestRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
+
+  const useResetPasswordReset = (args: { password: string; token: string }) =>
+    useMutation(() => Api.forgotPasswordReset(args, queryConfig), {
+      onSuccess: () => {
+        notifier?.({
+          type: forgotPasswordResetRoutine.SUCCESS,
+          // TODO
+          payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
+        });
+
+        // // cookie operations only if window is defined (operation happens in the frontend)
+        // if (!isServer() && queryConfig.DOMAIN) {
+        //   // save current page for further redirection
+        //   saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
+        //   // remove cookie and stored session from browser when the logout is confirmed
+        //   // todo: find a way to do something equivalent but with httpOnly cookies
+        //   // setCurrentSession(null, queryConfig.DOMAIN);
+        //   // removeSession(currentMemberId, queryConfig.DOMAIN);
+        // }
+        // // Update when the server confirmed the logout, instead optimistically updating the member
+        // // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
+        // queryClient.setQueryData(memberKeys.current().content, undefined);
+      },
+      onError: (error: Error) => {
+        notifier?.({
+          type: forgotPasswordResetRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
+
   // disable feature: session should't be store in cookie and available to js
   // queryClient.setMutationDefaults(SWITCH_MEMBER, {
   //   mutationFn: async (args: { memberId: string; domain: string }) => {
@@ -240,5 +302,7 @@ export default (queryConfig: QueryClientConfig) => {
     useMobileSignUp,
     useMobileSignIn,
     useMobileSignInWithPassword,
+    useResetPasswordRequest,
+    useResetPasswordReset,
   };
 };

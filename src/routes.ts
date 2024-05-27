@@ -86,6 +86,8 @@ export const buildImportH5PRoute = (parentId?: UUID, previousItemId?: UUID) => {
 export const MOBILE_SIGN_UP_ROUTE = `m/register`;
 export const MOBILE_SIGN_IN_ROUTE = `m/login`;
 export const MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE = `m/login-password`;
+export const FORGOT_PASSWORD_REQUEST_ROUTE = `/password/reset`;
+export const FORGOT_PASSWORD_RESET_ROUTE = `/password/reset`;
 export const SIGN_IN_ROUTE = `login`;
 export const SIGN_IN_WITH_PASSWORD_ROUTE = `login-password`;
 export const SIGN_UP_ROUTE = `register`;
