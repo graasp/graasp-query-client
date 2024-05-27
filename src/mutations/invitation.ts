@@ -2,14 +2,8 @@ import { Invitation, PermissionLevel, UUID } from '@graasp/sdk';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { throwIfArrayContainsErrorOrReturn } from '../api/axios.js';
-import {
-  deleteInvitation,
-  patchInvitation,
-  postInvitations,
-  resendInvitation,
-} from '../api/invitation.js';
-import { buildItemInvitationsKey } from '../config/keys.js';
+import * as Api from '../api/invitation.js';
+import { itemKeys } from '../config/keys.js';
 import {
   deleteInvitationRoutine,
   patchInvitationRoutine,
@@ -23,10 +17,7 @@ export default (queryConfig: QueryClientConfig) => {
     const queryClient = useQueryClient();
     return useMutation(
       (payload: { itemId: UUID; invitations: NewInvitation[] }) =>
-        postInvitations(payload, queryConfig).then((invitations) => {
-          throwIfArrayContainsErrorOrReturn(invitations);
-          return invitations;
-        }),
+        Api.postInvitations(payload, queryConfig),
       {
         onSuccess: () => {
           queryConfig.notifier?.({
@@ -40,7 +31,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(buildItemInvitationsKey(itemId));
+          queryClient.invalidateQueries(itemKeys.single(itemId).invitation);
         },
       },
     );
@@ -59,7 +50,8 @@ export default (queryConfig: QueryClientConfig) => {
         id: UUID;
         permission: PermissionLevel;
         name?: string;
-      }) => patchInvitation({ itemId, id }, { permission, name }, queryConfig),
+      }) =>
+        Api.patchInvitation({ itemId, id }, { permission, name }, queryConfig),
       //     onMutate: async ({ itemId, id, permission, name }) => {
       //       const key = buildItemInvitationsKey(itemId);
 
@@ -95,7 +87,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(buildItemInvitationsKey(itemId));
+          queryClient.invalidateQueries(itemKeys.single(itemId).invitation);
         },
       },
     );
@@ -105,10 +97,10 @@ export default (queryConfig: QueryClientConfig) => {
     const queryClient = useQueryClient();
     return useMutation(
       (payload: { id: UUID; itemId: UUID }) =>
-        deleteInvitation(payload, queryConfig),
+        Api.deleteInvitation(payload, queryConfig),
       {
         onMutate: async ({ id, itemId }: { id: UUID; itemId: UUID }) => {
-          const key = buildItemInvitationsKey(itemId);
+          const key = itemKeys.single(itemId).invitation;
 
           const prevValue = queryClient.getQueryData<Invitation[]>(key);
 
@@ -128,7 +120,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onError: (error: Error, { itemId }, context) => {
-          const key = buildItemInvitationsKey(itemId);
+          const key = itemKeys.single(itemId).invitation;
           queryClient.setQueryData(key, context?.invitations);
           queryConfig.notifier?.({
             type: deleteInvitationRoutine.FAILURE,
@@ -136,7 +128,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(buildItemInvitationsKey(itemId));
+          queryClient.invalidateQueries(itemKeys.single(itemId).invitation);
         },
       },
     );
@@ -145,7 +137,7 @@ export default (queryConfig: QueryClientConfig) => {
   const useResendInvitation = () =>
     useMutation(
       (payload: { id: UUID; itemId: UUID }) =>
-        resendInvitation(payload, queryConfig),
+        Api.resendInvitation(payload, queryConfig),
       {
         onSuccess: () => {
           queryConfig.notifier?.({

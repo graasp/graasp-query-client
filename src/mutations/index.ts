@@ -2,6 +2,7 @@ import { QueryClientConfig } from '../types.js';
 import actionMutations from './action.js';
 import authenticationMutations from './authentication.js';
 import chatMutations from './chat.js';
+import csvUserImportMutations from './csvUserImport.js';
 import etherpadMutations from './etherpad.js';
 import invitationMutations from './invitation.js';
 import itemMutations from './item.js';
@@ -25,12 +26,13 @@ const configureMutations = (queryConfig: QueryClientConfig) => ({
   ...actionMutations(queryConfig),
   ...authenticationMutations(queryConfig),
   ...chatMutations(queryConfig),
+  ...csvUserImportMutations(queryConfig),
   ...etherpadMutations(queryConfig),
   ...flagsMutations(queryConfig),
   ...invitationMutations(queryConfig),
+  ...itemBookmarkMutations(queryConfig),
   ...itemCategoryMutations(queryConfig),
   ...itemExportMutations(queryConfig),
-  ...itemBookmarkMutations(queryConfig),
   ...itemGeolocationMutations(queryConfig),
   ...itemLikeMutations(queryConfig),
   ...itemLoginMutations(queryConfig),

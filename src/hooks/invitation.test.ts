@@ -13,7 +13,7 @@ import {
   buildGetInvitationRoute,
   buildGetItemInvitationsForItemRoute,
 } from '../api/routes.js';
-import { buildInvitationKey, buildItemInvitationsKey } from '../config/keys.js';
+import { buildInvitationKey, itemKeys } from '../config/keys.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 const item = FolderItemFactory();
@@ -83,7 +83,7 @@ describe('Invitation Hooks', () => {
   describe('useItemInvitations', () => {
     const itemId = FolderItemFactory().id;
     const route = `/${buildGetItemInvitationsForItemRoute(itemId)}`;
-    const key = buildItemInvitationsKey(itemId);
+    const key = itemKeys.single(itemId).invitation;
 
     const hook = () => hooks.useItemInvitations(itemId);
 

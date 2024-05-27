@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/invitation.js';
 import { UndefinedArgument } from '../config/errors.js';
-import { buildInvitationKey, buildItemInvitationsKey } from '../config/keys.js';
+import { buildInvitationKey, itemKeys } from '../config/keys.js';
 import { getInvitationRoutine } from '../routines/invitation.js';
 import { QueryClientConfig } from '../types.js';
 
@@ -27,17 +27,17 @@ export default (queryConfig: QueryClientConfig) => {
       },
     });
 
-  const useItemInvitations = (id?: UUID) =>
+  const useItemInvitations = (itemId?: UUID) =>
     useQuery({
-      queryKey: buildItemInvitationsKey(id),
+      queryKey: itemKeys.single(itemId).invitation,
       queryFn: () => {
-        if (!id) {
+        if (!itemId) {
           throw new UndefinedArgument();
         }
 
-        return Api.getInvitationsForItem(id, queryConfig);
+        return Api.getInvitationsForItem(itemId, queryConfig);
       },
-      enabled: Boolean(id),
+      enabled: Boolean(itemId),
       ...defaultQueryOptions,
     });
 

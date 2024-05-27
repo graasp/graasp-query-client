@@ -106,6 +106,10 @@ export const itemKeys = {
       publishedInformation: [...singleBaseKey, 'publishedInformation'] as const,
 
       validation: [...singleBaseKey, 'validation'] as const,
+
+      invitation: [...singleBaseKey, 'invitation'] as const,
+
+      memberships: [...singleBaseKey, 'memberships'] as const,
     };
   },
 
@@ -251,6 +255,8 @@ export const memberKeys = {
           endDate: args.endDate,
         },
       ],
+      // apps used mostly by the member
+      mostUsedApps: [...currentBaseKey, 'mostUsedApps'] as const,
     };
   },
 };
@@ -262,11 +268,6 @@ export const buildMentionKey = () => [MENTIONS_CONTEXT];
 export const getKeyForParentId = (parentId?: UUID | null) =>
   parentId ? itemKeys.single(parentId).allChildren : itemKeys.allAccessible();
 
-export const buildItemMembershipsKey = (id?: UUID) => [
-  ITEMS_CONTEXT,
-  'memberships',
-  id,
-];
 export const buildManyItemMembershipsKey = (ids?: UUID[]) => [
   ITEMS_CONTEXT,
   'memberships',
@@ -298,11 +299,6 @@ export const buildAggregateActionsKey = <K extends AggregateBy[]>(
 ) => ['aggregateActions', itemId, args];
 
 export const buildInvitationKey = (id?: UUID) => ['invitations', id];
-export const buildItemInvitationsKey = (id?: UUID) => [
-  ITEMS_CONTEXT,
-  id,
-  'invitations',
-];
 
 export const PLANS_KEY = [SUBSCRIPTION_CONTEXT, 'plans'];
 export const CARDS_KEY = [SUBSCRIPTION_CONTEXT, 'cards'];
@@ -343,16 +339,20 @@ export const buildSuggestionsForAddressKey = ({
   lang?: string;
 }) => ['address', { address, lang }];
 
+export const buildEmbeddedLinkMetadataKey = (link: string) => [
+  'embedded-links',
+  'metadata',
+  link,
+];
+
 export const DATA_KEYS = {
   APPS_KEY,
   itemKeys,
   buildItemChatKey,
   buildMentionKey,
   getKeyForParentId,
-  buildItemMembershipsKey,
   buildManyItemMembershipsKey,
   buildInvitationKey,
-  buildItemInvitationsKey,
   CARDS_KEY,
   itemsWithGeolocationKeys,
   buildAddressFromCoordinatesKey,

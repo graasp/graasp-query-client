@@ -2,7 +2,7 @@ import {
   DiscriminatedItem,
   ItemGeolocation,
   PackedItem,
-  RecycledItemData,
+  PackedRecycledItemData,
   ResultOf,
   UUID,
   getParentFromPath,
@@ -312,7 +312,9 @@ export const getRecycledItemsData = async ({
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
-      .get<RecycledItemData[]>(`${API_HOST}/${GET_RECYCLED_ITEMS_DATA_ROUTE}`)
+      .get<
+        PackedRecycledItemData[]
+      >(`${API_HOST}/${GET_RECYCLED_ITEMS_DATA_ROUTE}`)
       .then(({ data }) => data),
   );
 

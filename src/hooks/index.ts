@@ -5,6 +5,7 @@ import configureActionHooks from './action.js';
 import configureAppsHooks from './apps.js';
 import configureCategoryHooks from './category.js';
 import configureChatHooks from './chat.js';
+import configureEmbeddedLinkHooks from './embeddedLink.js';
 import configureEtherpadHooks from './etherpad.js';
 import configureInvitationHooks from './invitation.js';
 import configureItemHooks from './item.js';
@@ -37,11 +38,7 @@ export default (
       websocketClient,
     ),
     ...configureMembershipHooks(queryConfig, websocketClient),
-    ...configureItemHooks(
-      queryConfig,
-      memberHooks.useCurrentMember,
-      websocketClient,
-    ),
+    ...configureItemHooks(queryConfig, websocketClient),
     ...configureEtherpadHooks(queryConfig),
     ...configureItemTagHooks(queryConfig),
     ...configureCategoryHooks(queryConfig),
@@ -59,5 +56,6 @@ export default (
     ...configurePublicProfileHooks(queryConfig),
     ...configureShortLinkHooks(queryConfig),
     ...configureItemGeolocationHooks(queryConfig),
+    ...configureEmbeddedLinkHooks(queryConfig),
   };
 };

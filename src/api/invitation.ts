@@ -1,4 +1,4 @@
-import { Invitation, ResultOf, UUID } from '@graasp/sdk';
+import { Invitation, UUID } from '@graasp/sdk';
 
 import { NewInvitation, PartialQueryConfigForApi } from '../types.js';
 import { verifyAuthentication } from './axios.js';
@@ -27,7 +27,7 @@ export const postInvitations = async (
   verifyAuthentication(() =>
     axios
       .post<
-        ResultOf<Invitation>
+        Invitation[]
       >(`${API_HOST}/${buildPostInvitationsRoute(itemId)}`, { invitations })
       .then(({ data }) => data),
   );

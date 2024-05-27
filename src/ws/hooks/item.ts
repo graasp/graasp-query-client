@@ -5,16 +5,20 @@
 import {
   Channel,
   DiscriminatedItem,
-  ResultOf,
+  FeedBackOperation,
+  FeedBackOperationType,
+  ItemOpFeedbackEvent as OpFeedbackEvent,
   UUID,
   WebsocketClient,
+  getParentFromPath,
+  isOperationEvent,
 } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { useQueryClient } from '@tanstack/react-query';
+import { QueryClient, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../../config/keys.js';
+import { getKeyForParentId, itemKeys, memberKeys } from '../../config/keys.js';
 import {
   copyItemsRoutine,
   deleteItemsRoutine,
@@ -27,452 +31,72 @@ import {
 } from '../../routines/index.js';
 import createRoutine from '../../routines/utils.js';
 import { Notifier } from '../../types.js';
-import { KINDS, OPS, TOPICS } from '../constants.js';
+import { KINDS, TOPICS } from '../constants.js';
 
-interface ItemEvent {
-  kind: string;
-  op: string;
-  item: DiscriminatedItem;
-}
+/**
+ * Events from asynchronous background operations on given items
+ */
+type ItemOpFeedbackEvent<
+  T extends FeedBackOperationType = FeedBackOperationType,
+> = OpFeedbackEvent<DiscriminatedItem, T>;
 
-interface ItemOpFeedbackEvent {
-  kind: 'feedback';
-  op:
-    | 'update'
-    | 'delete'
-    | 'move'
-    | 'copy'
-    | 'export'
-    | 'recycle'
-    | 'restore'
-    | 'validate';
-  resource: DiscriminatedItem['id'][];
-  result:
-    | {
-        error: Error;
-      }
-    | ResultOf<DiscriminatedItem>;
-}
+const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
+  [FeedBackOperation.DELETE]: () => {
+    // invalidate data displayed in the Trash screen
+    queryClient.invalidateQueries(memberKeys.current().recycled);
+    queryClient.invalidateQueries(memberKeys.current().recycledItems);
+  },
+  [FeedBackOperation.MOVE]: (
+    event: ItemOpFeedbackEvent<typeof FeedBackOperation.MOVE>,
+  ) => {
+    if (event.result) {
+      const { items, moved } = event.result;
+      const oldParentKey = getKeyForParentId(getParentFromPath(items[0].path));
+      const newParentKey = getKeyForParentId(getParentFromPath(moved[0].path));
+      // invalidate queries for the source and destination
+      queryClient.invalidateQueries(oldParentKey);
+      queryClient.invalidateQueries(newParentKey);
+    }
+  },
+  [FeedBackOperation.COPY]: (
+    event: ItemOpFeedbackEvent<typeof FeedBackOperation.COPY>,
+  ) => {
+    if (event.result) {
+      const { copies } = event.result;
+
+      const newParentKey = getKeyForParentId(getParentFromPath(copies[0].path));
+      // invalidate queries for the destination
+      queryClient.invalidateQueries(newParentKey);
+    }
+  },
+  [FeedBackOperation.RECYCLE]: (
+    event: ItemOpFeedbackEvent<typeof FeedBackOperation.RECYCLE>,
+  ) => {
+    if (event.result) {
+      const items = event.result;
+      const parentKey = getKeyForParentId(
+        getParentFromPath(Object.values(items)[0].path),
+      );
+      // invalidate queries for the parent
+      queryClient.invalidateQueries(parentKey);
+    }
+  },
+  [FeedBackOperation.RESTORE]: () => {
+    queryClient.invalidateQueries(memberKeys.current().recycledItems);
+  },
+  [FeedBackOperation.VALIDATE]: (itemIds: string[]) => {
+    // todo: invalidate the validation query to refetch the validation status
+    itemIds.map((itemId) =>
+      queryClient.invalidateQueries(itemKeys.single(itemId).validation),
+    );
+  },
+});
 
 // eslint-disable-next-line import/prefer-default-export
 export const configureWsItemHooks = (
   websocketClient: WebsocketClient,
   notifier?: Notifier,
 ) => ({
-  /**
-   * React hook to subscribe to the updates of the given item ID
-   * @param itemId The ID of the item of which to observe updates
-   */
-  useItemUpdates: (itemId?: UUID | null) => {
-    const queryClient = useQueryClient();
-    useEffect(() => {
-      if (!itemId) {
-        return () => {
-          // do nothing
-        };
-      }
-
-      const channel: Channel = { name: itemId, topic: TOPICS.ITEM };
-      const itemKey = itemKeys.single(itemId).content;
-
-      const handler = (event: ItemEvent) => {
-        if (event.kind === KINDS.SELF) {
-          const current: DiscriminatedItem | undefined =
-            queryClient.getQueryData(itemKey);
-          const { item } = event;
-
-          if (current?.id === item.id) {
-            switch (event.op) {
-              case OPS.UPDATE: {
-                queryClient.setQueryData(itemKey, item);
-                break;
-              }
-              case OPS.DELETE: {
-                // should looks for keys that should be updated or invalidated further.
-                // leads to seeing an error message if this item was viewed in the builder for example.
-                queryClient.setQueryData(itemKey, null);
-                break;
-              }
-              default:
-                console.error('unhandled event for useItemUpdates');
-                break;
-            }
-          }
-        }
-      };
-
-      websocketClient.subscribe(channel, handler);
-
-      return function cleanup() {
-        websocketClient.unsubscribe(channel, handler);
-      };
-    }, [itemId]);
-  },
-
-  /**
-   * React hook to subscribe to the updates of the given item IDs
-   * @param itemIds The IDs of the items for which to observe updates
-   */
-  useItemsUpdates: (itemIds?: UUID[] | null) => {
-    const queryClient = useQueryClient();
-    useEffect(() => {
-      if (!itemIds?.length) {
-        return;
-      }
-
-      const unsubscribeFunctions = itemIds.map((itemId) => {
-        const channel: Channel = { name: itemId, topic: TOPICS.ITEM };
-        const itemKey = itemKeys.single(itemId).content;
-
-        const handler = (event: ItemEvent) => {
-          if (event.kind === KINDS.SELF) {
-            const current: DiscriminatedItem | undefined =
-              queryClient.getQueryData(itemKey);
-            const { item } = event;
-
-            if (current?.id === item.id) {
-              switch (event.op) {
-                case OPS.UPDATE: {
-                  queryClient.setQueryData(itemKey, item);
-                  break;
-                }
-                case OPS.DELETE: {
-                  queryClient.setQueryData(itemKey, null);
-                  break;
-                }
-                default:
-                  console.error('unhandled event for useItemUpdates');
-                  break;
-              }
-            }
-          }
-        };
-
-        websocketClient.subscribe(channel, handler);
-
-        return function cleanup() {
-          websocketClient.unsubscribe(channel, handler);
-        };
-      });
-
-      // eslint-disable-next-line consistent-return
-      return () => {
-        unsubscribeFunctions.forEach((f) => f());
-      };
-    }, [itemIds]);
-  },
-
-  /**
-   * React hook to subscribe to the children updates of the given parent item ID
-   * @param parentId The ID of the parent on which to observe children updates
-   */
-  useChildrenUpdates: (parentId?: UUID | null) => {
-    const queryClient = useQueryClient();
-    useEffect(() => {
-      if (!parentId) {
-        return () => {
-          // do nothing
-        };
-      }
-
-      const channel: Channel = { name: parentId, topic: TOPICS.ITEM };
-      const parentChildrenKey = itemKeys.single(parentId).children();
-
-      const handler = (event: ItemEvent) => {
-        if (event.kind === KINDS.CHILD) {
-          const current =
-            queryClient.getQueryData<DiscriminatedItem[]>(parentChildrenKey);
-
-          if (current) {
-            const { item } = event;
-            let mutation;
-
-            switch (event.op) {
-              case OPS.CREATE: {
-                if (!current.find((i) => i.id === item.id)) {
-                  mutation = [...current, item];
-                  queryClient.setQueryData(parentChildrenKey, mutation);
-                  queryClient.setQueryData(
-                    itemKeys.single(item.id).content,
-                    item,
-                  );
-                }
-                break;
-              }
-              case OPS.UPDATE: {
-                // replace value if it exists
-                mutation = current.map((i) => (i.id === item.id ? item : i));
-                queryClient.setQueryData(parentChildrenKey, mutation);
-                queryClient.setQueryData(
-                  itemKeys.single(item.id).content,
-                  item,
-                );
-
-                break;
-              }
-              case OPS.DELETE: {
-                mutation = current.filter((i) => i.id !== item.id);
-                queryClient.setQueryData(parentChildrenKey, mutation);
-                // question: reset item key
-                break;
-              }
-              default:
-                console.error('unhandled event for useChildrenUpdates');
-                break;
-            }
-          }
-        }
-      };
-
-      websocketClient.subscribe(channel, handler);
-
-      return function cleanup() {
-        websocketClient.unsubscribe(channel, handler);
-      };
-    }, [parentId]);
-  },
-
-  /**
-   * React hook to subscribe to the owned items updates of the given user ID
-   * @param userId The ID of the user on which to observe owned items updates
-   */
-  useOwnItemsUpdates: (userId?: UUID | null) => {
-    const queryClient = useQueryClient();
-    useEffect(() => {
-      if (!userId) {
-        return () => {
-          // do nothing
-        };
-      }
-
-      const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
-
-      const handler = (event: ItemEvent) => {
-        if (event.kind === KINDS.OWN) {
-          const current =
-            queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY);
-
-          if (current) {
-            const { item } = event;
-            let mutation;
-
-            switch (event.op) {
-              case OPS.CREATE: {
-                if (!current.find((i) => i.id === item.id)) {
-                  mutation = [...current, item];
-                  queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
-                  queryClient.setQueryData(
-                    itemKeys.single(item.id).content,
-                    item,
-                  );
-                }
-                break;
-              }
-              case OPS.UPDATE: {
-                // replace value if it exists
-                mutation = current.map((i) => (i.id === item.id ? item : i));
-                queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
-                queryClient.setQueryData(
-                  itemKeys.single(item.id).content,
-                  item,
-                );
-
-                break;
-              }
-              case OPS.DELETE: {
-                mutation = current.filter((i) => i.id !== item.id);
-                queryClient.setQueryData(OWN_ITEMS_KEY, mutation);
-
-                break;
-              }
-              default:
-                console.error('unhandled event for useOwnItemsUpdates');
-                break;
-            }
-          }
-        }
-      };
-
-      websocketClient.subscribe(channel, handler);
-
-      return function cleanup() {
-        websocketClient.unsubscribe(channel, handler);
-      };
-    }, [userId]);
-  },
-
-  /**
-   * React hook to subscribe to the shared items updates of the given user ID
-   * @param parentId The ID of the user on which to observe shared items updates
-   */
-  useSharedItemsUpdates: (userId?: UUID | null) => {
-    const queryClient = useQueryClient();
-    useEffect(() => {
-      if (!userId) {
-        return () => {
-          // do nothing
-        };
-      }
-
-      const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
-
-      const handler = (event: ItemEvent) => {
-        if (event.kind === KINDS.SHARED) {
-          const current: DiscriminatedItem[] | undefined =
-            queryClient.getQueryData(itemKeys.shared());
-
-          if (current) {
-            const { item } = event;
-            let mutation;
-
-            switch (event.op) {
-              case OPS.CREATE: {
-                if (!current.find((i) => i.id === item.id)) {
-                  mutation = [...current, item];
-                  queryClient.setQueryData(itemKeys.shared(), mutation);
-                  queryClient.setQueryData(
-                    itemKeys.single(item.id).content,
-                    item,
-                  );
-                }
-                break;
-              }
-              case OPS.UPDATE: {
-                // replace value if it exists
-                mutation = current.map((i) => (i.id === item.id ? item : i));
-                queryClient.setQueryData(itemKeys.shared(), mutation);
-                queryClient.setQueryData(
-                  itemKeys.single(item.id).content,
-                  item,
-                );
-
-                break;
-              }
-              case OPS.DELETE: {
-                mutation = current.filter((i) => i.id !== item.id);
-                queryClient.setQueryData(itemKeys.shared(), mutation);
-
-                break;
-              }
-              default:
-                break;
-            }
-          }
-        }
-      };
-
-      websocketClient.subscribe(channel, handler);
-
-      return function cleanup() {
-        websocketClient.unsubscribe(channel, handler);
-      };
-    }, [userId]);
-  },
-  /**
-   * React hook to subscribe to the accessible items updates
-   */
-  useAccessibleItemsUpdates: (userId?: UUID | null) => {
-    const queryClient = useQueryClient();
-    useEffect(() => {
-      if (!userId) {
-        return () => {
-          // do nothing
-        };
-      }
-
-      const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
-
-      const handlerAccessible = (event: ItemEvent) => {
-        if (event.kind === KINDS.ACCESSIBLE) {
-          // for over all accessible keys
-
-          // operations might change the result of the search and/or pagination
-          // so it's easier to invalidate all queries
-          queryClient.invalidateQueries(itemKeys.allAccessible());
-
-          const { item } = event;
-          switch (event.op) {
-            case OPS.CREATE: {
-              queryClient.setQueryData(itemKeys.single(item.id).content, item);
-              break;
-            }
-            case OPS.UPDATE: {
-              queryClient.setQueryData(itemKeys.single(item.id).content, item);
-              break;
-            }
-            case OPS.DELETE: {
-              break;
-            }
-            default:
-              console.error('unhandled event for useAccessibleItemsUpdates');
-              break;
-          }
-        }
-      };
-
-      websocketClient.subscribe(channel, handlerAccessible);
-
-      return function cleanup() {
-        websocketClient.unsubscribe(channel, handlerAccessible);
-      };
-    }, [userId]);
-  },
-
-  useRecycledItemsUpdates: (userId?: UUID | null) => {
-    const queryClient = useQueryClient();
-    useEffect(() => {
-      if (!userId) {
-        return () => {
-          // do nothing
-        };
-      }
-
-      const channel: Channel = { name: userId, topic: TOPICS.ITEM_MEMBER };
-
-      const handler = (event: ItemEvent) => {
-        if (event.kind === KINDS.RECYCLE_BIN) {
-          const current = queryClient.getQueryData<DiscriminatedItem[]>(
-            memberKeys.current().recycledItems,
-          );
-
-          if (current) {
-            const { item } = event;
-
-            switch (event.op) {
-              case OPS.CREATE: {
-                if (!current.find((i) => i.id === item.id)) {
-                  const mutation = [...current, item];
-                  queryClient.setQueryData(
-                    memberKeys.current().recycledItems,
-                    mutation,
-                  );
-                }
-                break;
-              }
-              case OPS.DELETE: {
-                const mutation = current.filter((i) => i.id !== item.id);
-                queryClient.setQueryData(
-                  memberKeys.current().recycledItems,
-                  mutation,
-                );
-                break;
-              }
-              default:
-                console.error('unhandled event for useRecycledItemsUpdates');
-                break;
-            }
-          }
-        }
-      };
-
-      websocketClient.subscribe(channel, handler);
-
-      return function cleanup() {
-        websocketClient.unsubscribe(channel, handler);
-      };
-    }, [userId]);
-  },
-
   /**
    * React hook to subscribe to the feedback of async operations performed by the given user ID
    * @param userId The ID of the user on which to observe item feedback updates
@@ -490,55 +114,53 @@ export const configureWsItemHooks = (
 
       const handler = (event: ItemOpFeedbackEvent) => {
         if (event.kind === KINDS.FEEDBACK) {
+          const invalidateFeedback = InvalidateItemOpFeedback(queryClient);
           let routine: ReturnType<typeof createRoutine> | undefined;
           let message: string | undefined;
           const itemIds = event.resource;
-          switch (event.op) {
-            case OPS.UPDATE:
+
+          switch (true) {
+            // TODO: still used ?
+            case isOperationEvent(event, FeedBackOperation.UPDATE):
               routine = editItemRoutine;
               message = SUCCESS_MESSAGES.EDIT_ITEM;
               // todo: add invalidations for queries related to an update of the itemIds specified
               break;
-            case OPS.DELETE:
+            case isOperationEvent(event, FeedBackOperation.DELETE):
               routine = deleteItemsRoutine;
               message = SUCCESS_MESSAGES.DELETE_ITEMS;
-              // invalidate data displayed in the Trash screen
-              queryClient.invalidateQueries(memberKeys.current().recycled);
-              queryClient.invalidateQueries(memberKeys.current().recycledItems);
+              invalidateFeedback[event.op]();
               break;
-            case OPS.MOVE:
+            case isOperationEvent(event, FeedBackOperation.MOVE): {
               routine = moveItemsRoutine;
               message = SUCCESS_MESSAGES.MOVE_ITEMS;
-              // todo: invalidate queries for the source and destination
+              invalidateFeedback[event.op](event);
               break;
-            case OPS.COPY:
+            }
+            case isOperationEvent(event, FeedBackOperation.COPY):
               routine = copyItemsRoutine;
               message = SUCCESS_MESSAGES.COPY_ITEMS;
-              // todo: invalidate queries for the destination
+              invalidateFeedback[event.op](event);
               break;
-            case OPS.EXPORT:
+            case isOperationEvent(event, FeedBackOperation.EXPORT):
               routine = exportItemRoutine;
               message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
+              // nothing to invalidate
               break;
-            case 'recycle':
+            case isOperationEvent(event, FeedBackOperation.RECYCLE):
               routine = recycleItemsRoutine;
               message = SUCCESS_MESSAGES.RECYCLE_ITEMS;
-              // todo: invalidate the queries related to the trash and to the original source
-
+              invalidateFeedback[event.op](event);
               break;
-            case OPS.RESTORE:
+            case isOperationEvent(event, FeedBackOperation.RESTORE):
               routine = restoreItemsRoutine;
               message = SUCCESS_MESSAGES.RESTORE_ITEMS;
+              invalidateFeedback[event.op]();
               break;
-            case OPS.VALIDATE:
+            case isOperationEvent(event, FeedBackOperation.VALIDATE):
               routine = postItemValidationRoutine;
               message = SUCCESS_MESSAGES.DEFAULT_SUCCESS;
-              // todo: invalidate the validation query to refetch the validation status
-              itemIds.map((itemId) =>
-                queryClient.invalidateQueries(
-                  itemKeys.single(itemId).validation,
-                ),
-              );
+              invalidateFeedback[event.op](itemIds);
               break;
             default: {
               console.error('unhandled event for useItemFeedbackUpdates');
@@ -546,11 +168,11 @@ export const configureWsItemHooks = (
             }
           }
           if (routine && message) {
-            if ('error' in event.result) {
+            if (event.errors.length > 0) {
               notifier?.({
                 type: routine.FAILURE,
                 payload: {
-                  error: event.result.error,
+                  error: event.errors[0], // TODO: check what to send if multiple errors
                 },
               });
             } else {

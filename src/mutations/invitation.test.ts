@@ -18,7 +18,7 @@ import {
   buildPostInvitationsRoute,
   buildResendInvitationRoute,
 } from '../api/routes.js';
-import { buildItemInvitationsKey } from '../config/keys.js';
+import { itemKeys } from '../config/keys.js';
 import {
   deleteInvitationRoutine,
   patchInvitationRoutine,
@@ -44,7 +44,7 @@ describe('Invitations Mutations', () => {
 
   describe('usePostInvitations', () => {
     const mutation = mutations.usePostInvitations;
-    const key = buildItemInvitationsKey(itemId);
+    const key = itemKeys.single(itemId).invitation;
     const route = `/${buildPostInvitationsRoute(itemId)}`;
 
     it('Invite with one email', async () => {
@@ -189,7 +189,7 @@ describe('Invitations Mutations', () => {
 
   describe('usePatchInvitation', () => {
     const mutation = mutations.usePatchInvitation;
-    const key = buildItemInvitationsKey(itemId);
+    const key = itemKeys.single(itemId).invitation;
     const newInvitation = buildInvitation({
       item,
       email: 'c',
@@ -270,7 +270,7 @@ describe('Invitations Mutations', () => {
 
   describe('useDeleteInvitation', () => {
     const mutation = mutations.useDeleteInvitation;
-    const key = buildItemInvitationsKey(itemId);
+    const key = itemKeys.single(itemId).invitation;
     const invitationToDelete = buildInvitation({ item });
     const invitationToDeleteRecord = buildInvitation({
       item,

@@ -52,3 +52,12 @@ export type PaginationParams = {
 export type Paginated<T> = { data: T[]; totalCount: number };
 
 export const defaultPagination: PaginationParams = { page: 1 };
+
+export type EmbeddedLinkMetadata = {
+  title?: string;
+  description?: string;
+  thumbnails: string[];
+  icons: string[];
+  html?: string;
+  isEmbeddingAllowed: boolean;
+};

@@ -2,12 +2,28 @@ import { App, UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types.js';
 import { verifyAuthentication } from './axios.js';
-import { buildAppListRoute, buildGetApiAccessTokenRoute } from './routes.js';
+import {
+  buildAppListRoute,
+  buildGetApiAccessTokenRoute,
+  buildMostUsedAppListRoute,
+} from './routes.js';
 
 export const getApps = async ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
       .get<App[]>(`${API_HOST}/${buildAppListRoute}`)
+      .then(({ data }) => data),
+  );
+
+export const getMostUsedApps = async ({
+  API_HOST,
+  axios,
+}: PartialQueryConfigForApi) =>
+  verifyAuthentication(() =>
+    axios
+      .get<
+        { url: string; name: string; count: number }[]
+      >(`${API_HOST}/${buildMostUsedAppListRoute}`)
       .then(({ data }) => data),
   );
 

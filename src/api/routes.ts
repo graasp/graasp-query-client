@@ -32,8 +32,10 @@ export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
 export const ETHERPAD_ROUTE = `${ITEMS_ROUTE}/etherpad`;
 export const COLLECTIONS_ROUTE = `collections`;
 export const buildAppListRoute = `${APPS_ROUTE}/list`;
+export const buildMostUsedAppListRoute = `${APPS_ROUTE}/most-used`;
 export const SHORT_LINKS_ROUTE = `${ITEMS_ROUTE}/short-links`;
 export const SHORT_LINKS_LIST_ROUTE = `${SHORT_LINKS_ROUTE}/list`;
+export const EMBEDDED_LINKS_ROUTE = `${ITEMS_ROUTE}/embedded-links/metadata`;
 
 export type ItemSearchParams =
   | {
@@ -126,6 +128,8 @@ export const buildGetItemMembershipsForItemsRoute = (ids: UUID[]) =>
   )}`;
 export const buildGetItemInvitationsForItemRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/invitations`;
+export const buildPostUserCSVUploadRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/invitations/upload-csv`;
 
 export const buildGetItemChatRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/chat`;
 export const buildExportItemChatRoute = (id: UUID) =>
@@ -535,6 +539,9 @@ export const buildGetSuggestionsForAddressRoute = ({
   lang?: string;
 }) => `${ITEMS_ROUTE}/geolocation/search?query=${address}&lang=${lang}`;
 
+export const buildGetEmbeddedLinkMetadata = (link: string) =>
+  `${EMBEDDED_LINKS_ROUTE}?link=${encodeURIComponent(link)}`;
+
 export const API_ROUTES = {
   APPS_ROUTE,
   buildAppListRoute,
@@ -617,6 +624,7 @@ export const API_ROUTES = {
   buildPostItemValidationRoute,
   buildPostManyItemMembershipsRoute,
   buildPostShortLinkRoute,
+  buildPostUserCSVUploadRoute,
   buildPutItemLoginSchemaRoute,
   buildRecycleItemRoute,
   buildRecycleItemsRoute,
@@ -653,4 +661,5 @@ export const API_ROUTES = {
   buildPutItemGeolocationRoute,
   buildGetAddressFromCoordinatesRoute,
   buildDeleteItemThumbnailRoute,
+  buildGetEmbeddedLinkMetadata,
 };

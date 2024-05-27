@@ -9,7 +9,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import { buildItemMembershipsKey } from '../../config/keys.js';
+import { itemKeys } from '../../config/keys.js';
 import { KINDS, OPS, TOPICS } from '../constants.js';
 
 // todo: use graasp-types?
@@ -39,7 +39,7 @@ export const configureWsMembershipHooks = (
           name: itemId,
           topic: TOPICS.MEMBERSHIPS_ITEM,
         };
-        const itemMembershipsKey = buildItemMembershipsKey(itemId);
+        const itemMembershipsKey = itemKeys.single(itemId).memberships;
 
         const handler = (event: MembershipEvent): void => {
           if (event.kind === KINDS.ITEM) {
