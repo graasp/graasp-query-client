@@ -19,7 +19,7 @@ describe('Embedded Links Hooks', () => {
     queryClient.clear();
   });
 
-  describe('useMetadata', () => {
+  describe('useLinkMetadata', () => {
     const url = 'https://example.com';
     const mockMetadata: EmbeddedLinkMetadata = {
       title: 'test',
@@ -31,7 +31,7 @@ describe('Embedded Links Hooks', () => {
     const route = `/${buildGetEmbeddedLinkMetadata(url)}`;
     const key = buildEmbeddedLinkMetadataKey(url);
 
-    const hook = () => hooks.useMetadata(url);
+    const hook = () => hooks.useLinkMetadata(url);
 
     it(`Receive metadata`, async () => {
       const response = mockMetadata;
@@ -78,7 +78,7 @@ describe('Embedded Links Hooks', () => {
       const invalidRoute = `/${buildGetEmbeddedLinkMetadata(invalidUrl)}`;
       const invalidKey = buildEmbeddedLinkMetadataKey(invalidUrl);
 
-      const invalidHook = () => hooks.useMetadata(invalidUrl);
+      const invalidHook = () => hooks.useLinkMetadata(invalidUrl);
 
       const endpoints = [
         {
