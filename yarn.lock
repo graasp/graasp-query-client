@@ -611,7 +611,7 @@ __metadata:
   dependencies:
     "@commitlint/cli": "npm:19.3.0"
     "@commitlint/config-conventional": "npm:19.2.2"
-    "@graasp/sdk": "https://github.com/graasp/graasp-sdk.git#516-export-action-formatting-enum"
+    "@graasp/sdk": "npm:4.12.0"
     "@graasp/translations": "npm:1.27.0"
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
@@ -662,18 +662,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@https://github.com/graasp/graasp-sdk.git#516-export-action-formatting-enum":
-  version: 4.9.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=758a7b5cfa043115b67800b2b948ac8f87d53ee2"
+"@graasp/sdk@npm:4.12.0":
+  version: 4.12.0
+  resolution: "@graasp/sdk@npm:4.12.0"
   dependencies:
     "@faker-js/faker": "npm:8.4.1"
-    filesize: "npm:10.1.1"
+    filesize: "npm:10.1.2"
     js-cookie: "npm:3.0.5"
-    validator: "npm:13.11.0"
+    validator: "npm:13.12.0"
   peerDependencies:
     date-fns: ^3
     uuid: ^9
-  checksum: 10/787cc84cc093f346dd13e1ab56da903191fc68e102c0d4d992fc04cbcc6591e876fd1fcd3295b41d6d0be51d2cf45b0b06015e76c3eee644027dc24c73f4e142
+  checksum: 10/10f37882a6d926d0fd1e8e26edaa312a6ef12d69df98e909f4841d7873a4e15a0b45eb04f3cb6e79eb112b6e37bc1e5993591e81a13ddf8eef96c6db57f6b826
   languageName: node
   linkType: hard
 
@@ -3134,10 +3134,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"filesize@npm:10.1.1":
-  version: 10.1.1
-  resolution: "filesize@npm:10.1.1"
-  checksum: 10/3d4d05930ec3de16d9cb8c8f4061df1218d3eac4d69521deb3f768cbe7451ff82fe4af3bbf562e1f3a491b96c42e445d65af3cefec90a5deff0ec302dda42ede
+"filesize@npm:10.1.2":
+  version: 10.1.2
+  resolution: "filesize@npm:10.1.2"
+  checksum: 10/47830a299cc8cfe7b90089a6c37790d2334f3057b98efd891e1e2e1683c8076962d9bd1d600eb77bb9bc33f5e7c4682e07ccb62281b8833b923d39c5c322e983
   languageName: node
   linkType: hard
 
@@ -6365,10 +6365,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"validator@npm:13.11.0":
-  version: 13.11.0
-  resolution: "validator@npm:13.11.0"
-  checksum: 10/4bf094641eb71729c06a42d669840e7189597ba655a8264adabac9bf03f95cd6fde5fbc894b0a13ee861bd4a852f56d2afdc9391aeaeb3fc0f9633a974140e12
+"validator@npm:13.12.0":
+  version: 13.12.0
+  resolution: "validator@npm:13.12.0"
+  checksum: 10/db6eb0725e2b67d60d30073ae8573982713b5903195d031dc3c7db7e82df8b74e8c13baef8e2106d146d979599fd61a06cde1fec5c148e4abd53d52817ff0fd9
   languageName: node
   linkType: hard
 
