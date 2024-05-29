@@ -169,10 +169,12 @@ describe('Items Hooks', () => {
     });
 
     it(`ordered=false fetch children`, async () => {
-      const unorderedRoute = `/${buildGetChildrenRoute(id, {
+      const paramsNonOrdered = {
         ordered: false,
-      })}`;
-      const hook = () => hooks.useChildren(id, { ordered: false });
+      };
+      const unorderedRoute = `/${buildGetChildrenRoute(id, paramsNonOrdered)}`;
+      const keyParams = itemKeys.single(id).children(paramsNonOrdered);
+      const hook = () => hooks.useChildren(id, paramsNonOrdered);
       const endpoints = [{ route: unorderedRoute, response }];
       const { data, isSuccess } = await mockHook({
         endpoints,
@@ -183,7 +185,32 @@ describe('Items Hooks', () => {
       expect(isSuccess).toBeTruthy();
       expect(data).toMatchObject(response);
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toMatchObject(response);
+      expect(queryClient.getQueryData(keyParams)).toMatchObject(response);
+      for (const item of response) {
+        expect(
+          queryClient.getQueryData(itemKeys.single(item.id).content),
+        ).toMatchObject(item);
+      }
+    });
+
+    it(`fetch children for keywords`, async () => {
+      const paramsKeywords = {
+        ordered: true,
+        keywords: ['keyword1', 'keyword2'],
+      };
+      const keywordsRoute = `/${buildGetChildrenRoute(id, paramsKeywords)}`;
+      const keyParams = itemKeys.single(id).children(paramsKeywords);
+      const hook = () => hooks.useChildren(id, paramsKeywords);
+      const endpoints = [{ route: keywordsRoute, response }];
+      const { data, isSuccess } = await mockHook({
+        endpoints,
+        hook,
+        wrapper,
+      });
+      expect(isSuccess).toBeTruthy();
+      expect(data).toMatchObject(response);
+      // verify cache keys
+      expect(queryClient.getQueryData(keyParams)).toMatchObject(response);
       for (const item of response) {
         expect(
           queryClient.getQueryData(itemKeys.single(item.id).content),

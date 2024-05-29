@@ -3,13 +3,11 @@ import {
   Category,
   DiscriminatedItem,
   ItemGeolocation,
-  ItemType,
   UUID,
-  UnionOfConst,
 } from '@graasp/sdk';
 import { DEFAULT_LANG } from '@graasp/translations';
 
-import { ItemSearchParams } from '../api/routes.js';
+import { ItemChildrenParams, ItemSearchParams } from '../api/routes.js';
 import { PaginationParams } from '../types.js';
 import { AggregateActionsArgs } from '../utils/action.js';
 import { DEFAULT_THUMBNAIL_SIZE } from './constants.js';
@@ -51,8 +49,8 @@ export const itemKeys = {
       allChildren,
 
       // itemKeys.single(id).children([one, two])
-      children: (types: UnionOfConst<typeof ItemType>[] = []) =>
-        [...allChildren, types] as const,
+      children: (params?: ItemChildrenParams) =>
+        [...allChildren, params ?? {}] as const,
 
       // todo: add page and filtering options
       // this is used in the infinite query for the player

@@ -116,7 +116,7 @@ const config = (
       const queryClient = useQueryClient();
 
       return useQuery({
-        queryKey: itemKeys.single(id).children(params?.types),
+        queryKey: itemKeys.single(id).children(params),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
