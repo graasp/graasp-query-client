@@ -2,14 +2,33 @@ import { Invitation } from '@graasp/sdk';
 
 import { AxiosError, AxiosInstance } from 'axios';
 
-export type Notifier = (e: {
-  type: string;
-  payload?: {
-    error?: Error | AxiosError;
-    message?: string;
-    [key: string]: unknown;
-  };
-}) => void;
+export enum NotificationStatus {
+  INFO = 'info',
+  SUCCESS = 'success',
+  ERROR = 'error',
+}
+export type EnableNotifications =
+  | {
+      [status in NotificationStatus]?: boolean;
+    }
+  | boolean;
+export type EnableNotificationsParam = {
+  enableNotifications: EnableNotifications;
+};
+
+export type NotifierOptions = Partial<EnableNotificationsParam>;
+
+export type Notifier = (
+  e: {
+    type: string;
+    payload?: {
+      error?: Error | AxiosError;
+      message?: string;
+      [key: string]: unknown;
+    };
+  },
+  options?: NotifierOptions,
+) => void;
 
 export type QueryClientConfig = {
   API_HOST: string;

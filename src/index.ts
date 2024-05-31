@@ -6,3 +6,4 @@ export { API_ROUTES } from './api/routes.js';
 
 export * from './types.js';
 export { MockWebSocket } from './ws/index.js';
+export * from './utils/notifications.js';
