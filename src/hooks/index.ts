@@ -23,6 +23,7 @@ import configurePublicProfileHooks from './publicProfile.js';
 import configureKeywordSearchHooks from './search.js';
 import configureShortLinkHooks from './shortLink.js';
 import configureSubscriptionHooks from './subscription.js';
+import useDebounce from './useDebounce.js';
 
 export default (
   queryConfig: QueryClientConfig,
@@ -57,5 +58,6 @@ export default (
     ...configureShortLinkHooks(queryConfig),
     ...configureItemGeolocationHooks(queryConfig),
     ...configureEmbeddedLinkHooks(queryConfig),
+    useDebounce,
   };
 };

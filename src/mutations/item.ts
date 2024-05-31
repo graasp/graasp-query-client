@@ -42,7 +42,11 @@ import {
   uploadFileRoutine,
   uploadItemThumbnailRoutine,
 } from '../routines/item.js';
-import type { QueryClientConfig } from '../types.js';
+import {
+  type EnableNotificationsParam,
+  type QueryClientConfig,
+} from '../types.js';
+import { DEFAULT_ENABLE_NOTIFICATIONS } from '../utils/notifications.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -137,7 +141,9 @@ export default (queryConfig: QueryClientConfig) => {
     );
   };
 
-  const useEditItem = () => {
+  const useEditItem = ({
+    enableNotifications,
+  }: EnableNotificationsParam = DEFAULT_ENABLE_NOTIFICATIONS) => {
     const queryClient = useQueryClient();
     return useMutation(
       (
@@ -208,10 +214,13 @@ export default (queryConfig: QueryClientConfig) => {
           return previousItems;
         },
         onSuccess: () => {
-          notifier?.({
-            type: editItemRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.EDIT_ITEM },
-          });
+          notifier?.(
+            {
+              type: editItemRoutine.SUCCESS,
+              payload: { message: SUCCESS_MESSAGES.EDIT_ITEM },
+            },
+            { enableNotifications },
+          );
         },
         onError: (error: Error, newItem, context) => {
           if (context?.parent && context?.item) {
@@ -224,7 +233,11 @@ export default (queryConfig: QueryClientConfig) => {
 
           const itemKey = itemKeys.single(newItem.id).content;
           queryClient.setQueryData(itemKey, context?.item);
-          notifier?.({ type: editItemRoutine.FAILURE, payload: { error } });
+
+          notifier?.(
+            { type: editItemRoutine.FAILURE, payload: { error } },
+            { enableNotifications },
+          );
         },
         onSettled: (_newItem, _error, { id, extra }, context) => {
           const prevItem = context?.item;
@@ -588,7 +601,15 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, id) => {
+          // invalidateQueries doesn't invalidate if the query is disabled
+          // so reset the query to avoid issues in the frontend (getting dirty cache).
+          queryClient.resetQueries({
+            queryKey: itemKeys.single(id).allThumbnails,
+          });
+          // try to invalidate the thumbnail (the invalidateQueries doesn't invalidate disabled queries)
           queryClient.invalidateQueries(itemKeys.single(id).allThumbnails);
+          // invalidate item to update settings.hasThumbnail
+          queryClient.invalidateQueries(itemKeys.single(id).content);
         },
       },
     );
