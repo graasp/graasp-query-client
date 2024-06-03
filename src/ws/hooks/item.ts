@@ -85,10 +85,13 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
     queryClient.invalidateQueries(memberKeys.current().recycledItems);
   },
   [FeedBackOperation.VALIDATE]: (itemIds: string[]) => {
-    // todo: invalidate the validation query to refetch the validation status
-    itemIds.map((itemId) =>
-      queryClient.invalidateQueries(itemKeys.single(itemId).validation),
-    );
+    itemIds.forEach((itemId) => {
+      queryClient.invalidateQueries(itemKeys.single(itemId).validation);
+      // TODO: maybe we should invalidates only on success
+      queryClient.invalidateQueries(
+        itemKeys.single(itemId).publishedInformation,
+      );
+    });
   },
 });
 
