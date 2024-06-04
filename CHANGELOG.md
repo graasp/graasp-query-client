@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.11.0](https://github.com/graasp/graasp-query-client/compare/v3.10.0...v3.11.0) (2024-05-31)
+
+
+### Features
+
+* update notifier to allow to enable/disable notifications ([#775](https://github.com/graasp/graasp-query-client/issues/775)) ([fd76c1d](https://github.com/graasp/graasp-query-client/commit/fd76c1d74a17a97a7bd60222b7d5c835bcf3078f))
+
+## [3.10.0](https://github.com/graasp/graasp-query-client/compare/v3.9.0...v3.10.0) (2024-05-29)
+
+
+### Features
+
+* add format as query string for export actions ([#760](https://github.com/graasp/graasp-query-client/issues/760)) ([b9ebcbc](https://github.com/graasp/graasp-query-client/commit/b9ebcbc7cdd23d0f0f80fbdc0347bec933825dd5))
+
 ## [3.9.0](https://github.com/graasp/graasp-query-client/compare/v3.8.0...v3.9.0) (2024-05-24)
 
 

@@ -39,7 +39,7 @@ describe('Action Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate(itemId);
+        mockedMutation.mutate({ itemId });
         await waitForMutation();
       });
 
@@ -67,7 +67,7 @@ describe('Action Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate(itemId);
+        mockedMutation.mutate({ itemId });
         await waitForMutation();
       });
 

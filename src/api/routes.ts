@@ -1,6 +1,7 @@
 import {
   AggregateBy,
   DiscriminatedItem,
+  ExportActionsFormatting,
   ItemGeolocation,
   ItemTag,
   ItemTagType,
@@ -390,8 +391,14 @@ export const buildGetAggregateActions = <K extends AggregateBy[]>(
       arrayFormat: 'repeat',
     },
   )}`;
-export const buildExportActions = (itemId: UUID) =>
-  `${ITEMS_ROUTE}/${itemId}/actions/export`;
+export const buildExportActions = (
+  itemId: UUID,
+  format?: ExportActionsFormatting,
+) =>
+  `${ITEMS_ROUTE}/${itemId}/actions/export${qs.stringify(
+    { format },
+    { addQueryPrefix: true },
+  )}`;
 export const buildPostItemAction = (itemId: UUID) =>
   `${ITEMS_ROUTE}/${itemId}/actions`;
 export const buildGetInvitationRoute = (id: UUID) =>
