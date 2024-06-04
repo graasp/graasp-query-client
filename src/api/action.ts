@@ -12,6 +12,7 @@ import {
   buildExportActions,
   buildGetActions,
   buildGetAggregateActions,
+  buildGetMemberActionsRoute,
   buildPostItemAction,
 } from './routes.js';
 
@@ -21,6 +22,14 @@ export const getActions = async (
 ) =>
   axios
     .get<ActionData>(`${API_HOST}/${buildGetActions(args.itemId, args)}`)
+    .then(({ data }) => data);
+
+export const getMemberActions = async (
+  { API_HOST, axios }: PartialQueryConfigForApi,
+  args: { startDate?: string; endDate?: string } = {},
+) =>
+  axios
+    .get<Action[]>(`${API_HOST}/${buildGetMemberActionsRoute(args)}`)
     .then(({ data }) => data);
 
 export const getAggregateActions = async <K extends AggregateBy[]>(

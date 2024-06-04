@@ -18,8 +18,16 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
-import { buildGetActions, buildGetAggregateActions } from '../api/routes.js';
-import { buildActionsKey, buildAggregateActionsKey } from '../config/keys.js';
+import {
+  buildGetActions,
+  buildGetAggregateActions,
+  buildGetMemberActionsRoute,
+} from '../api/routes.js';
+import {
+  buildActionsKey,
+  buildAggregateActionsKey,
+  memberKeys,
+} from '../config/keys.js';
 
 type AggregateActionsResponse = {
   aggregateResult: number;
@@ -147,6 +155,48 @@ describe('Action Hooks', () => {
 
     it(`Unauthorized`, async () => {
       const hook = () => hooks.useAggregateActions(itemId, args);
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        hook,
+        wrapper,
+        endpoints,
+      });
+
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+  });
+
+  describe('useMemberActions', () => {
+    const args = {
+      startDate: '2024-04-24T14:07:00.074Z',
+      endDate: '2024-04-24T14:07:00.074Z',
+    };
+    const route = `/${buildGetMemberActionsRoute(args)}`;
+    const key = memberKeys.current().actions(args);
+
+    const response = ACTIONS_DATA;
+
+    it(`Receive actions for current member`, async () => {
+      const hook = () => hooks.useMemberActions(args);
+      const endpoints = [{ route, response }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+      expect(data).toEqual(response);
+
+      // verify cache keys
+      expect(queryClient.getQueryData<ActionData>(key)).toEqual(response);
+    });
+
+    it(`Unauthorized`, async () => {
+      const hook = () => hooks.useMemberActions(args);
       const endpoints = [
         {
           route,

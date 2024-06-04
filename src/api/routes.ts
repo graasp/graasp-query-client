@@ -358,6 +358,21 @@ export const buildGetActions = (
       addQueryPrefix: true,
     },
   )}`;
+
+export const buildGetMemberActionsRoute = (args: {
+  startDate?: string;
+  endDate?: string;
+}) =>
+  `${MEMBERS_ROUTE}/actions${qs.stringify(
+    {
+      startDate: args.startDate,
+      endDate: args.endDate,
+    },
+    {
+      addQueryPrefix: true,
+    },
+  )}`;
+
 export const buildGetAggregateActions = <K extends AggregateBy[]>(
   args: AggregateActionsArgs<K>,
 ) =>
