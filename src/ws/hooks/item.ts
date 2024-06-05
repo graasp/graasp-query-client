@@ -86,8 +86,9 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
   },
   [FeedBackOperation.VALIDATE]: (itemIds: string[]) => {
     itemIds.forEach((itemId) => {
+      // invalidate the item content to get the public attribute
+      queryClient.invalidateQueries(itemKeys.single(itemId).content);
       queryClient.invalidateQueries(itemKeys.single(itemId).validation);
-      // TODO: maybe we should invalidates only on success
       queryClient.invalidateQueries(
         itemKeys.single(itemId).publishedInformation,
       );
