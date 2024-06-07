@@ -86,7 +86,7 @@
     "pre-commit": "yarn check",
     "hooks:uninstall": "husky uninstall",
     "hooks:install": "husky install",
-    "test": "yarn vitest src/hooks/action.test.ts",
+    "test": "yarn vitest",
     "test:ci": "yarn vitest run",
     "lint": "eslint .",
     "post-commit": "git status",
