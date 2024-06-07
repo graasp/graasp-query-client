@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.0](https://github.com/graasp/graasp-query-client/compare/v3.11.0...v3.12.0) (2024-06-07)
+
+
+### Features
+
+* create use memberAction hook ([#750](https://github.com/graasp/graasp-query-client/issues/750)) ([71b3c39](https://github.com/graasp/graasp-query-client/commit/71b3c3944047aa2aa95afd9dd379ea9f6aa69a75))
+
 ## [3.11.0](https://github.com/graasp/graasp-query-client/compare/v3.10.0...v3.11.0) (2024-05-31)
 
 
