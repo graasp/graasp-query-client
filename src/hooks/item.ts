@@ -14,7 +14,11 @@ import { useState } from 'react';
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import * as Api from '../api/item.js';
-import { ItemChildrenParams, ItemSearchParams } from '../api/routes.js';
+import {
+  AccessibleItemSearchParams,
+  ItemChildrenParams,
+  ItemSearchParams,
+} from '../api/routes.js';
 import {
   CONSTANT_KEY_STALE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
@@ -52,7 +56,7 @@ const config = (
      * @returns
      */
     useAccessibleItems: (
-      params?: ItemSearchParams,
+      params?: AccessibleItemSearchParams,
       pagination?: PaginationParams,
     ) => {
       const queryClient = useQueryClient();
