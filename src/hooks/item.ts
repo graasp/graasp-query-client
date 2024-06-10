@@ -306,7 +306,7 @@ const config = (
         queryFn: ({ pageParam }) =>
           Api.searchItems(
             args,
-            { page: pageParam, ...pagination },
+            { page: pageParam ?? 1, ...pagination },
             queryConfig,
           ),
         getNextPageParam: (_lastPage, pages) => pages.length,
