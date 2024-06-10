@@ -295,11 +295,18 @@ const config = (
 
     useSearchItems: (args: ItemSearchParams, pagination: PaginationParams) => {
       const [page, setPage] = useState(1);
-      const finalPagination = { ...pagination, page };
       return useInfiniteQuery({
-        queryKey: itemKeys.search(args, finalPagination),
-        queryFn: () => Api.searchItems(args, finalPagination, queryConfig),
-        getNextPageParam: () => page,
+        queryKey: itemKeys.search(args),
+        queryFn: ({ pageParam }) =>
+          Api.searchItems(
+            args,
+            { page: pageParam, ...pagination },
+            queryConfig,
+          ),
+        getNextPageParam: () => {
+          setPage((p) => p + 1);
+          return page;
+        },
       });
     },
 

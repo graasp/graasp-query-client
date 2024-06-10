@@ -140,8 +140,8 @@ export const itemKeys = {
   // shared items
   shared: () => [...itemKeys.all, 'shared'] as const,
 
-  search: (args: ItemSearchParams, pagination: PaginationParams) =>
-    [...itemKeys.all, 'search', args, pagination] as const,
+  search: (args: ItemSearchParams) =>
+    [...itemKeys.all, 'search', args] as const,
 
   publishedSearch: (args: {
     query?: string;
