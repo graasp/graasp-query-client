@@ -16,6 +16,7 @@ import {
 } from '../types.js';
 import { verifyAuthentication } from './axios.js';
 import {
+  AccessibleItemSearchParams,
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_DATA_ROUTE,
   ItemChildrenParams,
@@ -68,7 +69,7 @@ export const getOwnItems = async ({
   );
 
 export const getAccessibleItems = async (
-  params: ItemSearchParams,
+  params: AccessibleItemSearchParams,
   pagination: PaginationParams,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
