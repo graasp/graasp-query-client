@@ -10,6 +10,7 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
+import { useState } from 'react';
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import * as Api from '../api/item.js';
@@ -289,6 +290,16 @@ const config = (
         },
         enabled: ids && Boolean(ids.length) && ids.every((id) => Boolean(id)),
         ...defaultQueryOptions,
+      });
+    },
+
+    useSearchItems: (args: ItemSearchParams, pagination: PaginationParams) => {
+      const [page, setPage] = useState(1);
+      const finalPagination = { ...pagination, page };
+      return useInfiniteQuery({
+        queryKey: itemKeys.search(args, finalPagination),
+        queryFn: () => Api.searchItems(args, finalPagination, queryConfig),
+        getNextPageParam: () => page,
       });
     },
 

@@ -140,7 +140,10 @@ export const itemKeys = {
   // shared items
   shared: () => [...itemKeys.all, 'shared'] as const,
 
-  search: (args: {
+  search: (args: ItemSearchParams, pagination: PaginationParams) =>
+    [...itemKeys.all, 'search', args, pagination] as const,
+
+  publishedSearch: (args: {
     query?: string;
     categories?: Category['id'][][];
     isPublishedRoot?: boolean;
@@ -151,7 +154,11 @@ export const itemKeys = {
     highlightPostTag?: string;
     page?: number;
   }) =>
-    [...itemKeys.all, 'search', { isPublishedRoot: false, ...args }] as const,
+    [
+      ...itemKeys.all,
+      'publishedSearch',
+      { isPublishedRoot: false, ...args },
+    ] as const,
 
   published: () => {
     const publishedBaseKey = [...itemKeys.all, 'collections'] as const;

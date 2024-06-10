@@ -38,6 +38,7 @@ import {
   buildPostItemWithThumbnailRoute,
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
+  buildSearchItems,
 } from './routes.js';
 
 export const getItem = (
@@ -76,6 +77,19 @@ export const getAccessibleItems = async (
       .get<
         Paginated<PackedItem>
       >(`${API_HOST}/${buildGetAccessibleItems(params, pagination)}`)
+      .then(({ data }) => data),
+  );
+
+export const searchItems = async (
+  params: ItemSearchParams,
+  pagination: PaginationParams,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .get<
+        Paginated<DiscriminatedItem>
+      >(`${API_HOST}/${buildSearchItems(params, pagination)}`)
       .then(({ data }) => data),
   );
 
