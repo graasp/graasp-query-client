@@ -10,7 +10,6 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { useState } from 'react';
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import * as Api from '../api/item.js';
@@ -306,7 +305,7 @@ const config = (
             { page: pageParam, ...pagination },
             queryConfig,
           ),
-        getNextPageParam: (lastPage, pages) => pages.length,
+        getNextPageParam: (_lastPage, pages) => pages.length,
       }),
 
     /**
