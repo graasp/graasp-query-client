@@ -297,9 +297,8 @@ const config = (
       });
     },
 
-    useSearchItems: (args: ItemSearchParams, pagination: PaginationParams) => {
-      const [page, setPage] = useState(1);
-      return useInfiniteQuery({
+    useSearchItems: (args: ItemSearchParams, pagination: PaginationParams) =>
+      useInfiniteQuery({
         queryKey: itemKeys.search(args),
         queryFn: ({ pageParam }) =>
           Api.searchItems(
@@ -307,12 +306,8 @@ const config = (
             { page: pageParam, ...pagination },
             queryConfig,
           ),
-        getNextPageParam: () => {
-          setPage((p) => p + 1);
-          return page;
-        },
-      });
-    },
+        getNextPageParam: (lastPage, pages) => pages.length,
+      }),
 
     /**
      * @deprecated use url alternative when possible
