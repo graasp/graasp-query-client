@@ -5,7 +5,7 @@
 
 ### Features
 
-* invalidate publishedInfo on validate feedback ([#779](https://github.com/graasp/graasp-query-client/issues/779)) ([f363e14](https://github.com/graasp/graasp-query-client/commit/f363e14b73f21b3add94bffeaff1e931243985ef))
+* invalidate publishedInfo and item's content on validate feedback ([#779](https://github.com/graasp/graasp-query-client/issues/779)) ([f363e14](https://github.com/graasp/graasp-query-client/commit/f363e14b73f21b3add94bffeaff1e931243985ef))
 
 ## [3.12.0](https://github.com/graasp/graasp-query-client/compare/v3.11.0...v3.12.0) (2024-06-07)
 
