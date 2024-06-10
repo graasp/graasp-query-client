@@ -296,7 +296,11 @@ const config = (
       });
     },
 
-    useSearchItems: (args: ItemSearchParams, pagination: PaginationParams) =>
+    useSearchItems: (
+      args: ItemSearchParams,
+      pagination: PaginationParams,
+      options: { enabled?: boolean } = { enabled: true },
+    ) =>
       useInfiniteQuery({
         queryKey: itemKeys.search(args),
         queryFn: ({ pageParam }) =>
@@ -306,6 +310,7 @@ const config = (
             queryConfig,
           ),
         getNextPageParam: (_lastPage, pages) => pages.length,
+        enabled: options.enabled,
       }),
 
     /**
