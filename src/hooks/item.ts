@@ -309,7 +309,7 @@ const config = (
             { page: pageParam ?? 1, ...pagination },
             queryConfig,
           ),
-        getNextPageParam: (_lastPage, pages) => pages.length,
+        getNextPageParam: (_lastPage, pages) => pages.length + 1,
         enabled: options.enabled,
       }),
 
