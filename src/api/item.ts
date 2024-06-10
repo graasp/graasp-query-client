@@ -16,6 +16,7 @@ import {
 } from '../types.js';
 import { verifyAuthentication } from './axios.js';
 import {
+  AccessibleItemSearchParams,
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_DATA_ROUTE,
   ItemChildrenParams,
@@ -38,6 +39,7 @@ import {
   buildPostItemWithThumbnailRoute,
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
+  buildSearchItems,
 } from './routes.js';
 
 export const getItem = (
@@ -67,7 +69,7 @@ export const getOwnItems = async ({
   );
 
 export const getAccessibleItems = async (
-  params: ItemSearchParams,
+  params: AccessibleItemSearchParams,
   pagination: PaginationParams,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
@@ -76,6 +78,19 @@ export const getAccessibleItems = async (
       .get<
         Paginated<PackedItem>
       >(`${API_HOST}/${buildGetAccessibleItems(params, pagination)}`)
+      .then(({ data }) => data),
+  );
+
+export const searchItems = async (
+  params: ItemSearchParams,
+  pagination: PaginationParams,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .get<
+        Paginated<DiscriminatedItem>
+      >(`${API_HOST}/${buildSearchItems(params, pagination)}`)
       .then(({ data }) => data),
   );
 

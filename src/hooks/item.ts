@@ -13,7 +13,11 @@ import {
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import * as Api from '../api/item.js';
-import { ItemChildrenParams, ItemSearchParams } from '../api/routes.js';
+import {
+  AccessibleItemSearchParams,
+  ItemChildrenParams,
+  ItemSearchParams,
+} from '../api/routes.js';
 import {
   CONSTANT_KEY_STALE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
@@ -51,7 +55,7 @@ const config = (
      * @returns
      */
     useAccessibleItems: (
-      params?: ItemSearchParams,
+      params?: AccessibleItemSearchParams,
       pagination?: PaginationParams,
     ) => {
       const queryClient = useQueryClient();
@@ -291,6 +295,24 @@ const config = (
         ...defaultQueryOptions,
       });
     },
+
+    useSearchItems: (
+      args: ItemSearchParams,
+      pagination: PaginationParams,
+      options: { enabled?: boolean } = { enabled: true },
+    ) =>
+      useInfiniteQuery({
+        queryKey: itemKeys.search(args),
+        queryFn: ({ pageParam }) =>
+          Api.searchItems(
+            args,
+            { page: pageParam ?? 1, ...pagination },
+            queryConfig,
+          ),
+        getNextPageParam: (_lastPage, pages) => pages.length + 1,
+        enabled: options.enabled,
+        refetchOnWindowFocus: () => false,
+      }),
 
     /**
      * @deprecated use url alternative when possible

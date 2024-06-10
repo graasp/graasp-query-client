@@ -38,12 +38,29 @@ export const SHORT_LINKS_ROUTE = `${ITEMS_ROUTE}/short-links`;
 export const SHORT_LINKS_LIST_ROUTE = `${SHORT_LINKS_ROUTE}/list`;
 export const EMBEDDED_LINKS_ROUTE = `${ITEMS_ROUTE}/embedded-links/metadata`;
 
-export type ItemSearchParams =
+export type AccessibleItemSearchParams =
   | {
       creatorId?: Member['id'];
       name?: string;
       ordering?: 'desc' | 'asc';
       sortBy?:
+        | 'item.name'
+        | 'item.type'
+        | 'item.creator.name'
+        | 'item.created_at'
+        | 'item.updated_at';
+      permissions?: PermissionLevel[];
+      types?: UnionOfConst<typeof ItemType>[];
+    }
+  | undefined;
+
+export type ItemSearchParams =
+  | {
+      creatorId?: Member['id'];
+      keywords?: string[];
+      ordering?: 'desc' | 'asc';
+      sortBy?:
+        | 'rank'
         | 'item.name'
         | 'item.type'
         | 'item.creator.name'
@@ -60,10 +77,22 @@ export type ItemChildrenParams = {
 };
 
 export const buildGetAccessibleItems = (
-  params: ItemSearchParams,
+  params: AccessibleItemSearchParams,
   pagination: PaginationParams,
 ) =>
   `${ITEMS_ROUTE}/accessible${qs.stringify(
+    { ...params, ...pagination },
+    {
+      arrayFormat: 'repeat',
+      addQueryPrefix: true,
+    },
+  )}`;
+
+export const buildSearchItems = (
+  params: ItemSearchParams,
+  pagination: PaginationParams,
+) =>
+  `${ITEMS_ROUTE}/search${qs.stringify(
     { ...params, ...pagination },
     {
       arrayFormat: 'repeat',

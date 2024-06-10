@@ -34,7 +34,7 @@ export default (queryConfig: QueryClientConfig) => {
     } & Api.MeiliSearchProps) => {
       const debouncedQuery = useDebounce(query, 500);
       return useQuery({
-        queryKey: itemKeys.search({
+        queryKey: itemKeys.publishedSearch({
           query: debouncedQuery,
           categories,
           isPublishedRoot,

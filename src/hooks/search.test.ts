@@ -106,7 +106,7 @@ describe('Published Search Hook', () => {
       const categories = [['mycategoryid']];
       const hook = () =>
         hooks.useSearchPublishedItems({ query, categories, page: 1 });
-      const key = itemKeys.search({
+      const key = itemKeys.publishedSearch({
         query,
         categories,
         page: 1,
@@ -127,7 +127,7 @@ describe('Published Search Hook', () => {
 
     it(`does not fetch if no query nor categories is provided`, async () => {
       const hook = () => hooks.useSearchPublishedItems({});
-      const key = itemKeys.search({ page: 1 });
+      const key = itemKeys.publishedSearch({ page: 1 });
       const endpoints = [{ route, response: RESPONSE }];
       const { data, isFetched } = await mockHook({
         endpoints,
@@ -148,7 +148,7 @@ describe('Published Search Hook', () => {
       const isPublishedRoot = true;
 
       const spy = vi.spyOn(axios, 'post');
-      const key = itemKeys.search({
+      const key = itemKeys.publishedSearch({
         isPublishedRoot,
         query,
         categories,
@@ -199,7 +199,7 @@ describe('Published Search Hook', () => {
       const isPublishedRoot = true;
       const page = 3;
       const spy = vi.spyOn(axios, 'post');
-      const key = itemKeys.search({
+      const key = itemKeys.publishedSearch({
         isPublishedRoot,
         query,
         categories,
@@ -248,7 +248,7 @@ describe('Published Search Hook', () => {
       const query = 'some string';
       const categories = [['mycategoryid']];
       const isPublishedRoot = true;
-      const key = itemKeys.search({
+      const key = itemKeys.publishedSearch({
         isPublishedRoot,
         query,
         categories,
