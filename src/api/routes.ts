@@ -60,6 +60,7 @@ export type ItemSearchParams =
       keywords?: string[];
       ordering?: 'desc' | 'asc';
       sortBy?:
+        | 'rank'
         | 'item.name'
         | 'item.type'
         | 'item.creator.name'
