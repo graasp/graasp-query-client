@@ -85,10 +85,16 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
     queryClient.invalidateQueries(memberKeys.current().recycledItems);
   },
   [FeedBackOperation.VALIDATE]: (itemIds: string[]) => {
-    // todo: invalidate the validation query to refetch the validation status
-    itemIds.map((itemId) =>
-      queryClient.invalidateQueries(itemKeys.single(itemId).validation),
-    );
+    itemIds.forEach((itemId) => {
+      // Invalidates the item content to get the public attribute.
+      // Without that, the item is still in private (missing the public attribute),
+      // so the frontend can't display the new publication status.
+      queryClient.invalidateQueries(itemKeys.single(itemId).content);
+      queryClient.invalidateQueries(itemKeys.single(itemId).validation);
+      queryClient.invalidateQueries(
+        itemKeys.single(itemId).publishedInformation,
+      );
+    });
   },
 });
 
