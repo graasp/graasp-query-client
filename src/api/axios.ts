@@ -42,15 +42,17 @@ export default configureAxios;
  * @param {string[]} ids elements' id
  * @param {number} chunkSize maximum number of ids per request
  * @param {function} buildRequest builder for the request given the chunk ids
- * @param {boolean} [ignoreErrors=false] whether we ignore errors
  */
 export const splitRequestByIds = async <T>(
   ids: string[],
   chunkSize: number,
   buildRequest: (ids: string[]) => Promise<ResultOf<T> | void>,
 ) => {
-  const shunkedIds = spliceIntoChunks(ids, chunkSize);
-  return Promise.all(shunkedIds.map((groupedIds) => buildRequest(groupedIds)));
+  const chunkedIds = spliceIntoChunks(ids, chunkSize)
+    // filter out empty arrays
+    .filter((arr) => arr.length);
+
+  return Promise.all(chunkedIds.map((groupedIds) => buildRequest(groupedIds)));
 };
 
 /**
@@ -67,7 +69,7 @@ export const splitRequestByIdsAndReturn = <T>(
   chunkSize: number,
   buildRequest: (ids: string[]) => Promise<ResultOf<T> | void>,
   ignoreErrors = false,
-) =>
+): Promise<ResultOf<T>> =>
   splitRequestByIds(ids, chunkSize, buildRequest).then((responses) => {
     // only get request returns
     // todo: not ideal..
