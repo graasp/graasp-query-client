@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.13.1](https://github.com/graasp/graasp-query-client/compare/v3.13.0...v3.13.1) (2024-06-13)
+
+
+### Bug Fixes
+
+* add tests and ensure we do not send a request when array is empty ([#791](https://github.com/graasp/graasp-query-client/issues/791)) ([789a186](https://github.com/graasp/graasp-query-client/commit/789a186e74d76f3fa8ad6086b916f7de213f11ad))
+
 ## [3.13.0](https://github.com/graasp/graasp-query-client/compare/v3.12.0...v3.13.0) (2024-06-10)
 
 
