@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.13.3](https://github.com/graasp/graasp-query-client/compare/v3.13.2...v3.13.3) (2024-06-17)
+
+
+### Bug Fixes
+
+* add default option to refetch on reconnect ([#798](https://github.com/graasp/graasp-query-client/issues/798)) ([689b363](https://github.com/graasp/graasp-query-client/commit/689b363f822e601fa7fdc3204df2537848bf4ba4))
+
 ## [3.13.2](https://github.com/graasp/graasp-query-client/compare/v3.13.1...v3.13.2) (2024-06-17)
 
 
