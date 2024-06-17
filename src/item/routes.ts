@@ -116,3 +116,6 @@ export const buildRestoreItemsRoute = (ids: UUID[]) =>
       addQueryPrefix: true,
     },
   )}`;
+
+export const buildReorderItemRoute = (args: { id: string }) =>
+  `${ITEMS_ROUTE}/${args.id}/reorder`;

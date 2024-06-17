@@ -1,7 +1,5 @@
 import {
   DiscriminatedItem,
-  FolderItemExtra,
-  ItemType,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
   RecycledItemData,
   UUID,
@@ -36,6 +34,7 @@ import {
 } from './create/mutations.js';
 import { useImportH5P } from './h5p/mutations.js';
 import { useImportZip } from './import-zip/mutations.js';
+import { useReorderItem } from './reorder/mutations.js';
 import {
   copyItemsRoutine,
   deleteItemsRoutine,
@@ -205,18 +204,13 @@ export default (queryConfig: QueryClientConfig) => {
             { enableNotifications },
           );
         },
-        onSettled: (_newItem, _error, { id, extra }, context) => {
+        onSettled: (_newItem, _error, { id }, context) => {
           const prevItem = context?.item;
           if (prevItem) {
             const parentKey = getKeyForParentId(
               getParentFromPath(prevItem.path),
             );
             queryClient.invalidateQueries(parentKey);
-          }
-
-          // reorder affect children to change
-          if ((extra as FolderItemExtra)?.[ItemType.FOLDER]?.childrenOrder) {
-            queryClient.invalidateQueries(itemKeys.single(id).allChildren);
           }
 
           const itemKey = itemKeys.single(id).content;
@@ -430,6 +424,7 @@ export default (queryConfig: QueryClientConfig) => {
   };
 
   return {
+    useReorderItem: useReorderItem(queryConfig),
     usePostItem: usePostItem(queryConfig),
     useEditItem,
     useRecycleItems,
