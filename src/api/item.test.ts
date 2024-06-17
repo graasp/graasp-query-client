@@ -9,12 +9,12 @@ import { getDescendants } from './item.js';
 const API_HOST = 'https://localhost:3000';
 
 describe('getDescendants', () => {
-  it('without parameters', () => {
+  it('without parameters', async () => {
     const mockGet = vi.fn().mockResolvedValue({ data: { value: 'hello' } });
     const axios = {
       get: mockGet,
     } as unknown as AxiosInstance;
-    getDescendants({ id: v4() }, { API_HOST, axios });
+    await getDescendants({ id: v4() }, { API_HOST, axios });
     expect(mockGet).toHaveBeenCalledWith(expect.not.stringContaining('types'));
   });
 
@@ -37,12 +37,12 @@ describe('getDescendants', () => {
       inputs: { types: [ItemType.FOLDER, ItemType.APP], showHidden: true },
       query: 'types=folder&types=app&showHidden=true',
     },
-  ])('With parameters: $inputs', ({ inputs, query }) => {
+  ])('With parameters: $inputs', async ({ inputs, query }) => {
     const mockGet = vi.fn().mockResolvedValue({ data: { value: 'hello' } });
     const axios = {
       get: mockGet,
     } as unknown as AxiosInstance;
-    getDescendants({ id: v4(), ...inputs }, { API_HOST, axios });
+    await getDescendants({ id: v4(), ...inputs }, { API_HOST, axios });
     expect(mockGet).toHaveBeenCalledWith(expect.stringContaining(query));
   });
 });
