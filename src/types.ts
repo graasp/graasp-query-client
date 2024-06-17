@@ -49,6 +49,7 @@ export type QueryClientConfig = {
       | boolean
       | ((failureCount: number, error: Error) => boolean);
     refetchOnWindowFocus?: boolean;
+    refetchOnReconnect?: boolean;
     keepPreviousData?: boolean;
     refetchOnMount?: boolean;
   };
