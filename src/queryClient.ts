@@ -110,6 +110,7 @@ export default (
       keepPreviousData: false,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
       ...config.defaultQueryOptions,
     },
   };
