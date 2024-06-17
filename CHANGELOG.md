@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.13.2](https://github.com/graasp/graasp-query-client/compare/v3.13.1...v3.13.2) (2024-06-17)
+
+
+### Bug Fixes
+
+* add params to getDescendants ([#796](https://github.com/graasp/graasp-query-client/issues/796)) ([f7becea](https://github.com/graasp/graasp-query-client/commit/f7becea3fafba45f6960956e874afafc34403159))
+
 ## [3.13.1](https://github.com/graasp/graasp-query-client/compare/v3.13.0...v3.13.1) (2024-06-13)
 
 
