@@ -1,4 +1,5 @@
 import {
+  ItemTypeUnion,
   MAX_TARGETS_FOR_READ_REQUEST,
   PackedItem,
   UUID,
@@ -208,15 +209,25 @@ const config = (
       });
     },
 
-    useDescendants: ({ id, enabled }: { id?: UUID; enabled?: boolean }) => {
+    useDescendants: ({
+      id,
+      types,
+      showHidden,
+      enabled,
+    }: {
+      id?: UUID;
+      types?: ItemTypeUnion[];
+      showHidden?: boolean;
+      enabled?: boolean;
+    }) => {
       const queryClient = useQueryClient();
       return useQuery({
-        queryKey: itemKeys.single(id).descendants,
+        queryKey: itemKeys.single(id).descendants({ types, showHidden }),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getDescendants({ id }, queryConfig);
+          return Api.getDescendants({ id, types, showHidden }, queryConfig);
         },
         onSuccess: async (items) => {
           if (items?.length) {
@@ -231,14 +242,6 @@ const config = (
         enabled: enabled && Boolean(id),
       });
     },
-
-    /** @deprecated use useAccessibleItems */
-    useSharedItems: () =>
-      useQuery({
-        queryKey: itemKeys.shared(),
-        queryFn: () => Api.getSharedItems(queryConfig),
-        ...defaultQueryOptions,
-      }),
 
     useItem: (
       id?: UUID,

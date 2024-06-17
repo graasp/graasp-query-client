@@ -1,6 +1,7 @@
 import {
   DiscriminatedItem,
   ItemGeolocation,
+  ItemTypeUnion,
   PackedItem,
   PackedRecycledItemData,
   ResultOf,
@@ -227,12 +228,24 @@ export const getParents = async (
 };
 
 export const getDescendants = async (
-  { id }: { id: UUID },
+  {
+    id,
+    types,
+    showHidden,
+  }: { id: UUID; types?: ItemTypeUnion[]; showHidden?: boolean },
   { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  axios
-    .get<PackedItem[]>(`${API_HOST}/${buildGetItemDescendants(id)}`)
-    .then(({ data }) => data);
+) => {
+  const url = new URL(`${API_HOST}/${buildGetItemDescendants(id)}`);
+  if (types?.length) {
+    for (const itemType of types) {
+      url.searchParams.append('types', itemType);
+    }
+  }
+  if (showHidden !== undefined) {
+    url.searchParams.set('showHidden', showHidden.toString());
+  }
+  return axios.get<PackedItem[]>(url.toString()).then(({ data }) => data);
+};
 
 export const moveItems = async (
   {
