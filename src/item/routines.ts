@@ -9,6 +9,7 @@ export const moveItemsRoutine = createRoutine('MOVE_ITEMS');
 export const copyItemRoutine = createRoutine('COPY_ITEM');
 export const copyItemsRoutine = createRoutine('COPY_ITEMS');
 export const editItemRoutine = createRoutine('EDIT_ITEM');
+export const reorderItemRoutine = createRoutine('REORDER_ITEM');
 export const deleteItemsRoutine = createRoutine('DELETE_ITEMS');
 export const uploadFilesRoutine = createRoutine('UPLOAD_FILE');
 export const recycleItemsRoutine = createRoutine('RECYCLE_ITEMS');
