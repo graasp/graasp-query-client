@@ -4,6 +4,7 @@ import {
   DiscriminatedItem,
   ItemGeolocation,
   ItemType,
+  ItemTypeUnion,
   UUID,
   UnionOfConst,
 } from '@graasp/sdk';
@@ -60,7 +61,10 @@ export const itemKeys = {
       paginatedChildren: [...allChildren, 'paginated'] as const,
 
       // descendants
-      descendants: [...singleBaseKey, 'descendants'] as const,
+      descendants: (options?: {
+        types?: ItemTypeUnion[];
+        showHidden?: boolean;
+      }) => [...singleBaseKey, 'descendants', options].filter(Boolean),
 
       // parents
       parents: [...singleBaseKey, 'parents'] as const,
@@ -136,9 +140,6 @@ export const itemKeys = {
   allAccessible: () => [...itemKeys.all, 'accessible'] as const,
   accessiblePage: (params: ItemSearchParams, pagination: PaginationParams) =>
     [...itemKeys.allAccessible(), params, pagination] as const,
-
-  // shared items
-  shared: () => [...itemKeys.all, 'shared'] as const,
 
   search: (args: {
     query?: string;
