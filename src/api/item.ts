@@ -236,11 +236,10 @@ export const getDescendants = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) => {
   const url = new URL(`${API_HOST}/${buildGetItemDescendants(id)}`);
-  if (types?.length) {
-    for (const itemType of types) {
-      url.searchParams.append('types', itemType);
-    }
-  }
+  // add item types to the query as repeating parameters
+  types?.forEach((itemType) => {
+    url.searchParams.append('types', itemType);
+  });
   if (showHidden !== undefined) {
     url.searchParams.set('showHidden', showHidden.toString());
   }
