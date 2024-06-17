@@ -6,13 +6,15 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { getDescendants } from './item.js';
 
+const API_HOST = 'https://localhost:3000';
+
 describe('getDescendants', () => {
   it('without parameters', () => {
     const mockGet = vi.fn().mockResolvedValue({ data: { value: 'hello' } });
     const axios = {
       get: mockGet,
     } as unknown as AxiosInstance;
-    getDescendants({ id: v4() }, { API_HOST: 'https://localhost:3000', axios });
+    getDescendants({ id: v4() }, { API_HOST, axios });
     expect(mockGet).toHaveBeenCalledWith(expect.not.stringContaining('types'));
   });
 
@@ -40,10 +42,7 @@ describe('getDescendants', () => {
     const axios = {
       get: mockGet,
     } as unknown as AxiosInstance;
-    getDescendants(
-      { id: v4(), ...inputs },
-      { API_HOST: 'https://localhost:3000', axios },
-    );
+    getDescendants({ id: v4(), ...inputs }, { API_HOST, axios });
     expect(mockGet).toHaveBeenCalledWith(expect.stringContaining(query));
   });
 });
