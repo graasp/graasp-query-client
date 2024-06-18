@@ -4,7 +4,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/itemGeolocation.js';
-import { itemKeys, itemsWithGeolocationKeys } from '../config/keys.js';
+import { itemKeys, itemsWithGeolocationKeys } from '../keys.js';
 import {
   deleteItemGeolocationRoutine,
   putItemGeolocationRoutine,

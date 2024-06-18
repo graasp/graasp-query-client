@@ -23,7 +23,7 @@ import {
   splitEndpointByIds,
   splitEndpointByIdsForErrors,
 } from '../../test/utils.js';
-import { itemKeys } from '../config/keys.js';
+import { itemKeys } from '../keys.js';
 import { buildGetItemTagsRoute, buildGetItemsTagsRoute } from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();

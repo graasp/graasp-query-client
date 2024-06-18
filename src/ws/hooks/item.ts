@@ -18,7 +18,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import { getKeyForParentId, itemKeys, memberKeys } from '../../config/keys.js';
+import { getKeyForParentId, itemKeys, memberKeys } from '../../keys.js';
 import {
   copyItemsRoutine,
   deleteItemsRoutine,

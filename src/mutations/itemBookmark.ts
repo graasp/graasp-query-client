@@ -3,7 +3,7 @@ import { UUID } from '@graasp/sdk';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/itemBookmark.js';
-import { memberKeys } from '../config/keys.js';
+import { memberKeys } from '../keys.js';
 import {
   addBookmarkedItemRoutine,
   deleteBookmarkedItemRoutine,

@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
-import { buildItemChatKey } from '../config/keys.js';
+import { buildItemChatKey } from '../keys.js';
 import { buildGetItemChatRoute } from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();

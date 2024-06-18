@@ -9,7 +9,7 @@ import {
   generateFolders,
 } from '../../../test/constants.js';
 import { mockHook, setUpTest } from '../../../test/utils.js';
-import { itemKeys } from '../../config/keys.js';
+import { itemKeys } from '../../keys.js';
 import { buildGetItemDescendants } from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();

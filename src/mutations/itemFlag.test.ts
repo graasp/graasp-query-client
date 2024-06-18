@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ITEM_FLAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { itemKeys } from '../config/keys.js';
+import { itemKeys } from '../keys.js';
 import { buildPostItemFlagRoute } from '../routes.js';
 import { postItemFlagRoutine } from '../routines/itemFlag.js';
 

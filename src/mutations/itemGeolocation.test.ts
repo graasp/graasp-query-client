@@ -12,7 +12,7 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { itemKeys, itemsWithGeolocationKeys } from '../config/keys.js';
+import { itemKeys, itemsWithGeolocationKeys } from '../keys.js';
 import { buildPutItemGeolocationRoute } from '../routes.js';
 import {
   deleteItemGeolocationRoutine,

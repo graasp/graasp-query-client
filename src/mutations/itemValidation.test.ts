@@ -10,7 +10,7 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { itemKeys } from '../config/keys.js';
+import { itemKeys } from '../keys.js';
 import { buildPostItemValidationRoute } from '../routes.js';
 import { postItemValidationRoutine } from '../routines/itemValidation.js';
 

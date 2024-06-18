@@ -26,7 +26,7 @@ import {
   setUpTest,
   splitEndpointByIds,
 } from '../../test/utils.js';
-import { OWN_ITEMS_KEY, itemKeys } from '../config/keys.js';
+import { OWN_ITEMS_KEY, itemKeys } from '../keys.js';
 import {
   GET_OWN_ITEMS_ROUTE,
   buildDownloadFilesRoute,

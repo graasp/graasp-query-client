@@ -18,13 +18,13 @@ import {
   PAGINATED_ITEMS_PER_PAGE,
 } from '../config/constants.js';
 import { UndefinedArgument } from '../config/errors.js';
-import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../config/keys.js';
+import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import { paginate } from '../utils/util.js';
 import { configureWsItemHooks } from '../ws/index.js';
-import { useAccessibleItems } from './accessible/accessible.hook.js';
+import { useAccessibleItems } from './accessible/hooks.js';
 import * as Api from './api.js';
-import { useDescendants } from './descendants/descendants.hook.js';
+import { useDescendants } from './descendants/hooks.js';
 import { getOwnItemsRoutine } from './routines.js';
 import { ItemChildrenParams } from './types.js';
 

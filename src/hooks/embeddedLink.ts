@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/embeddedLink.js';
 import { UndefinedArgument } from '../config/errors.js';
-import { buildEmbeddedLinkMetadataKey } from '../config/keys.js';
+import { buildEmbeddedLinkMetadataKey } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import useDebounce from './useDebounce.js';
 

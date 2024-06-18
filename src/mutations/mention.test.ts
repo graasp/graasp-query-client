@@ -14,7 +14,7 @@ import {
   buildMentionResponse,
 } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { buildMentionKey } from '../config/keys.js';
+import { buildMentionKey } from '../keys.js';
 import {
   GET_CURRENT_MEMBER_ROUTE,
   buildClearMentionsRoute,

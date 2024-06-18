@@ -7,7 +7,7 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
-import { buildEmbeddedLinkMetadataKey } from '../config/keys.js';
+import { buildEmbeddedLinkMetadataKey } from '../keys.js';
 import { buildGetEmbeddedLinkMetadata } from '../routes.js';
 import { EmbeddedLinkMetadata } from '../types.js';
 

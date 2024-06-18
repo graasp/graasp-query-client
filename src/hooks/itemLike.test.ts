@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
-import { itemKeys, memberKeys } from '../config/keys.js';
+import { itemKeys, memberKeys } from '../keys.js';
 import {
   buildGetItemLikesRoute,
   buildGetLikesForMemberRoute,

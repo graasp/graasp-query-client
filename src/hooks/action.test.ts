@@ -22,7 +22,7 @@ import {
   buildActionsKey,
   buildAggregateActionsKey,
   memberKeys,
-} from '../config/keys.js';
+} from '../keys.js';
 import {
   buildGetActions,
   buildGetAggregateActions,

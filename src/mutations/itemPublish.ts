@@ -3,7 +3,7 @@ import { CompleteMember, UUID } from '@graasp/sdk';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/itemPublish.js';
-import { itemKeys, memberKeys } from '../config/keys.js';
+import { itemKeys, memberKeys } from '../keys.js';
 import {
   publishItemRoutine,
   unpublishItemRoutine,

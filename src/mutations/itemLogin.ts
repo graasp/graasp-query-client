@@ -4,7 +4,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/itemLogin.js';
-import { itemKeys } from '../config/keys.js';
+import { itemKeys } from '../keys.js';
 import {
   deleteItemLoginSchemaRoutine,
   postItemLoginRoutine,

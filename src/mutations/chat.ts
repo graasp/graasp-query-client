@@ -8,7 +8,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/chat.js';
-import { buildItemChatKey } from '../config/keys.js';
+import { buildItemChatKey } from '../keys.js';
 import {
   clearItemChatRoutine,
   deleteItemChatMessageRoutine,

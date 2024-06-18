@@ -11,7 +11,7 @@ import {
   generateFolders,
 } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { itemKeys, memberKeys } from '../config/keys.js';
+import { itemKeys, memberKeys } from '../keys.js';
 import { buildItemPublishRoute } from '../routes.js';
 import { publishItemRoutine } from '../routines/itemPublish.js';
 

@@ -3,7 +3,7 @@ import { Channel, ChatMention, UUID, WebsocketClient } from '@graasp/sdk';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import { buildMentionKey } from '../../config/keys.js';
+import { buildMentionKey } from '../../keys.js';
 import { OPS, TOPICS } from '../constants.js';
 
 // todo: use graasp-types?

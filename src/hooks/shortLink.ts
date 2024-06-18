@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/shortLink.js';
 import { UndefinedArgument } from '../config/errors.js';
-import { buildShortLinkKey, itemKeys } from '../config/keys.js';
+import { buildShortLinkKey, itemKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {

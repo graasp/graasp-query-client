@@ -3,7 +3,6 @@ import { ItemTypeUnion, PackedItem, UUID } from '@graasp/sdk';
 import { PartialQueryConfigForApi } from '../../types.js';
 import { buildGetItemDescendants } from '../routes.js';
 
-// eslint-disable-next-line import/prefer-default-export
 export const getDescendants = async (
   {
     id,

@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/itemLike.js';
 import { UndefinedArgument } from '../config/errors.js';
-import { itemKeys, memberKeys } from '../config/keys.js';
+import { itemKeys, memberKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {

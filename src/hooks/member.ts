@@ -14,7 +14,7 @@ import {
   DEFAULT_THUMBNAIL_SIZE,
 } from '../config/constants.js';
 import { UndefinedArgument } from '../config/errors.js';
-import { memberKeys } from '../config/keys.js';
+import { memberKeys } from '../keys.js';
 import { getMembersRoutine } from '../routines/member.js';
 import { QueryClientConfig } from '../types.js';
 

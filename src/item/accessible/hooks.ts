@@ -1,11 +1,11 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { itemKeys } from '../../config/keys.js';
 import useDebounce from '../../hooks/useDebounce.js';
+import { itemKeys } from '../../keys.js';
 import { PaginationParams, QueryClientConfig } from '../../types.js';
 import { getAccessibleItemsRoutine } from '../routines.js';
 import { ItemSearchParams } from '../types.js';
-import { getAccessibleItems } from './accessible.api.js';
+import { getAccessibleItems } from './api.js';
 
 /**
  * Returns items the highest in the tree you have access to
@@ -15,7 +15,6 @@ import { getAccessibleItems } from './accessible.api.js';
  * @param _options
  * @returns
  */
-// eslint-disable-next-line import/prefer-default-export
 export const useAccessibleItems =
   (queryConfig: QueryClientConfig) =>
   (params?: ItemSearchParams, pagination?: PaginationParams) => {

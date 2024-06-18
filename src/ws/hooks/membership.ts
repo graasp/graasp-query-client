@@ -9,7 +9,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import { itemKeys } from '../../config/keys.js';
+import { itemKeys } from '../../keys.js';
 import { KINDS, OPS, TOPICS } from '../constants.js';
 
 // todo: use graasp-types?

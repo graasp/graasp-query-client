@@ -13,7 +13,7 @@ import {
   mockWsHook,
   setUpWsTest,
 } from '../../../test/wsUtils.js';
-import { getKeyForParentId, itemKeys, memberKeys } from '../../config/keys.js';
+import { getKeyForParentId, itemKeys, memberKeys } from '../../keys.js';
 import { KINDS, OPS, TOPICS } from '../constants.js';
 import { configureWsItemHooks } from './item.js';
 

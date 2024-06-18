@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-query';
 
 import * as Api from '../api/itemTag.js';
-import { getKeyForParentId, itemKeys } from '../config/keys.js';
+import { getKeyForParentId, itemKeys } from '../keys.js';
 import {
   deleteItemTagRoutine,
   postItemTagRoutine,

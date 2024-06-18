@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/itemBookmark.js';
-import { memberKeys } from '../config/keys.js';
+import { memberKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {

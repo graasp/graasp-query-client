@@ -4,7 +4,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/index.js';
-import { buildShortLinkKey, itemKeys } from '../config/keys.js';
+import { buildShortLinkKey, itemKeys } from '../keys.js';
 import {
   createShortLinkRoutine,
   deleteShortLinkRoutine,

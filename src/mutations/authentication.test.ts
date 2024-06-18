@@ -9,7 +9,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { memberKeys } from '../config/keys.js';
+import { memberKeys } from '../keys.js';
 import {
   MOBILE_SIGN_IN_ROUTE,
   MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE,

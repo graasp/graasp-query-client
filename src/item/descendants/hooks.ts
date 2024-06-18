@@ -3,11 +3,10 @@ import { ItemTypeUnion, UUID } from '@graasp/sdk';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { UndefinedArgument } from '../../config/errors.js';
-import { itemKeys } from '../../config/keys.js';
+import { itemKeys } from '../../keys.js';
 import { QueryClientConfig } from '../../types.js';
-import { getDescendants } from './descendants.api.js';
+import { getDescendants } from './api.js';
 
-// eslint-disable-next-line import/prefer-default-export
 export const useDescendants =
   (queryConfig: QueryClientConfig) =>
   ({

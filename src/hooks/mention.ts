@@ -3,7 +3,7 @@ import { CompleteMember, WebsocketClient } from '@graasp/sdk';
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/index.js';
-import { buildMentionKey } from '../config/keys.js';
+import { buildMentionKey } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import { configureWsChatMentionsHooks } from '../ws/index.js';
 

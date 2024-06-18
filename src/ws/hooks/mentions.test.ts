@@ -11,7 +11,7 @@ import {
   mockWsHook,
   setUpWsTest,
 } from '../../../test/wsUtils.js';
-import { buildItemChatKey, buildMentionKey } from '../../config/keys.js';
+import { buildItemChatKey, buildMentionKey } from '../../keys.js';
 import { OPS, TOPICS } from '../constants.js';
 import { configureWsChatMentionsHooks } from './mentions.js';
 

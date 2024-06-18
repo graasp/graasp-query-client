@@ -3,7 +3,7 @@ import { UUID, WebsocketClient } from '@graasp/sdk';
 import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/chat.js';
-import { buildItemChatKey } from '../config/keys.js';
+import { buildItemChatKey } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import { configureWsChatHooks } from '../ws/index.js';
 

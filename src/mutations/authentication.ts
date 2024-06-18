@@ -4,7 +4,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/authentication.js';
-import { memberKeys } from '../config/keys.js';
+import { memberKeys } from '../keys.js';
 import {
   signInRoutine,
   signInWithPasswordRoutine,

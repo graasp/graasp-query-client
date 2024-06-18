@@ -11,7 +11,7 @@ import {
   buildSuggestionsForAddressKey,
   itemKeys,
   itemsWithGeolocationKeys,
-} from '../config/keys.js';
+} from '../keys.js';
 import {
   ITEMS_ROUTE,
   buildGetAddressFromCoordinatesRoute,

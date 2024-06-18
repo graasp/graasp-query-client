@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as AuthApi from '../api/authentication.js';
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios.js';
 import * as Api from '../api/member.js';
-import { memberKeys } from '../config/keys.js';
+import { memberKeys } from '../keys.js';
 import {
   deleteMemberRoutine,
   editMemberRoutine,

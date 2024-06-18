@@ -7,7 +7,7 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
-import { memberKeys } from '../config/keys.js';
+import { memberKeys } from '../keys.js';
 import {
   GET_OWN_PROFILE,
   MEMBERS_ROUTE,

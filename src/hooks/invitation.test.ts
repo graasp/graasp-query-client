@@ -9,7 +9,7 @@ import {
   buildInvitation,
 } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
-import { buildInvitationKey, itemKeys } from '../config/keys.js';
+import { buildInvitationKey, itemKeys } from '../keys.js';
 import {
   buildGetInvitationRoute,
   buildGetItemInvitationsForItemRoute,

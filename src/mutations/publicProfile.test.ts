@@ -5,7 +5,7 @@ import nock from 'nock';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { memberKeys } from '../config/keys.js';
+import { memberKeys } from '../keys.js';
 import { MEMBERS_ROUTE, PUBLIC_PROFILE_ROUTE } from '../routes.js';
 
 const mockedNotifier = vi.fn();

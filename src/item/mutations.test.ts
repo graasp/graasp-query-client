@@ -36,7 +36,7 @@ import {
   itemKeys,
   itemsWithGeolocationKeys,
   memberKeys,
-} from '../config/keys.js';
+} from '../keys.js';
 import {
   buildCopyItemsRoute,
   buildDeleteItemThumbnailRoute,

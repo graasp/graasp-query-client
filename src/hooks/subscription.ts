@@ -6,7 +6,7 @@ import {
   CURRENT_CUSTOMER_KEY,
   PLANS_KEY,
   memberKeys,
-} from '../config/keys.js';
+} from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {

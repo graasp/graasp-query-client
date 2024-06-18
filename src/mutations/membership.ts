@@ -15,7 +15,7 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import * as InvitationApi from '../api/invitation.js';
 import * as MemberApi from '../api/member.js';
 import * as Api from '../api/membership.js';
-import { buildManyItemMembershipsKey, itemKeys } from '../config/keys.js';
+import { buildManyItemMembershipsKey, itemKeys } from '../keys.js';
 import { shareItemRoutine } from '../routines/member.js';
 import {
   deleteItemMembershipRoutine,
