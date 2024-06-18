@@ -16,7 +16,7 @@ import {
   mockWsHook,
   setUpWsTest,
 } from '../../../test/wsUtils.js';
-import { itemKeys } from '../../config/keys.js';
+import { itemKeys } from '../../keys.js';
 import { KINDS, OPS, TOPICS } from '../constants.js';
 import { configureWsMembershipHooks } from './membership.js';
 

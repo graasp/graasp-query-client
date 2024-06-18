@@ -1,5 +1,6 @@
 import { WebsocketClient } from '@graasp/sdk';
 
+import configureItemHooks from '../item/hooks.js';
 import { QueryClientConfig } from '../types.js';
 import configureActionHooks from './action.js';
 import configureAppsHooks from './apps.js';
@@ -8,7 +9,6 @@ import configureChatHooks from './chat.js';
 import configureEmbeddedLinkHooks from './embeddedLink.js';
 import configureEtherpadHooks from './etherpad.js';
 import configureInvitationHooks from './invitation.js';
-import configureItemHooks from './item.js';
 import configureItemBookmarkHooks from './itemBookmark.js';
 import configureItemGeolocationHooks from './itemGeolocation.js';
 import configureItemLikeHooks from './itemLike.js';

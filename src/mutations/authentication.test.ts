@@ -9,6 +9,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import { memberKeys } from '../keys.js';
 import {
   MOBILE_SIGN_IN_ROUTE,
   MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE,
@@ -17,8 +18,7 @@ import {
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
   SIGN_UP_ROUTE,
-} from '../api/routes.js';
-import { memberKeys } from '../config/keys.js';
+} from '../routes.js';
 import {
   signInRoutine,
   signInWithPasswordRoutine,

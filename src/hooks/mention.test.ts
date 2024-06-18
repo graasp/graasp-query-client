@@ -5,11 +5,11 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { buildMemberMentions } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
+import { buildMentionKey } from '../keys.js';
 import {
   GET_CURRENT_MEMBER_ROUTE,
   buildGetMemberMentionsRoute,
-} from '../api/routes.js';
-import { buildMentionKey } from '../config/keys.js';
+} from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

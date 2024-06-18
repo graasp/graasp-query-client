@@ -6,15 +6,15 @@ import {
   UUID,
 } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types.js';
-import { verifyAuthentication } from './axios.js';
 import {
   buildClearItemChatRoute,
   buildDeleteItemChatMessageRoute,
   buildGetItemChatRoute,
   buildPatchItemChatMessageRoute,
   buildPostItemChatMessageRoute,
-} from './routes.js';
+} from '../routes.js';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 
 export const getItemChat = async (
   id: UUID,

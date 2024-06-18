@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import * as Api from '../api/itemTag.js';
 import { UndefinedArgument } from '../config/errors.js';
-import { itemKeys } from '../config/keys.js';
+import { itemKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {

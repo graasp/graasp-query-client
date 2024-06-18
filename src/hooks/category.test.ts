@@ -8,13 +8,13 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
+import { categoryKeys, itemKeys } from '../keys.js';
 import {
   buildGetCategoriesRoute,
   buildGetCategoryRoute,
   buildGetItemCategoriesRoute,
   buildGetItemsInCategoryRoute,
-} from '../api/routes.js';
-import { categoryKeys, itemKeys } from '../config/keys.js';
+} from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

@@ -3,7 +3,7 @@ import { UUID } from '@graasp/sdk';
 import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/itemValidation.js';
-import { itemKeys } from '../config/keys.js';
+import { itemKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {

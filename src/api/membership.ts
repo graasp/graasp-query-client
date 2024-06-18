@@ -1,16 +1,16 @@
 import { ItemMembership, PermissionLevel, ResultOf, UUID } from '@graasp/sdk';
 import { FAILURE_MESSAGES } from '@graasp/translations';
 
-import { PartialQueryConfigForApi } from '../types.js';
-import { verifyAuthentication } from './axios.js';
-import { getMembersBy } from './member.js';
 import {
   buildDeleteItemMembershipRoute,
   buildEditItemMembershipRoute,
   buildGetItemMembershipsForItemsRoute,
   buildPostItemMembershipRoute,
   buildPostManyItemMembershipsRoute,
-} from './routes.js';
+} from '../routes.js';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
+import { getMembersBy } from './member.js';
 
 export const getMembershipsForItems = async (
   ids: UUID[],

@@ -1,7 +1,7 @@
 import { Invitation, ItemMembership, UUID } from '@graasp/sdk';
 
+import { buildPostUserCSVUploadRoute } from '../routes.js';
 import { PartialQueryConfigForApi } from '../types.js';
-import { buildPostUserCSVUploadRoute } from './routes.js';
 
 type CSVInvitePayload = { file: File; itemId: UUID; templateItemId: undefined };
 type CSVStructurePayload = { file: File; itemId: UUID; templateItemId: UUID };

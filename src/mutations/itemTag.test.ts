@@ -13,11 +13,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ITEM_TAGS, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import {
-  buildDeleteItemTagRoute,
-  buildPostItemTagRoute,
-} from '../api/routes.js';
-import { itemKeys } from '../config/keys.js';
+import { itemKeys } from '../keys.js';
+import { buildDeleteItemTagRoute, buildPostItemTagRoute } from '../routes.js';
 import {
   deleteItemTagRoutine,
   postItemTagRoutine,

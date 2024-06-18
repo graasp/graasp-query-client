@@ -10,8 +10,6 @@ import {
 import { StatusCodes } from 'http-status-codes';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
-import { PartialQueryConfigForApi } from '../types.js';
-import { verifyAuthentication } from './axios.js';
 import {
   GET_CURRENT_MEMBER_ROUTE,
   buildDeleteMemberRoute,
@@ -23,7 +21,9 @@ import {
   buildPatchMember,
   buildUpdateMemberPasswordRoute,
   buildUploadAvatarRoute,
-} from './routes.js';
+} from '../routes.js';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 
 export const getMembersBy = async (
   { emails }: { emails: string[] },

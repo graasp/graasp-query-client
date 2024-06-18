@@ -3,7 +3,7 @@ import { UUID } from '@graasp/sdk';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/mention.js';
-import { buildMentionKey } from '../config/keys.js';
+import { buildMentionKey } from '../keys.js';
 import {
   clearMentionsRoutine,
   deleteMentionRoutine,

@@ -5,7 +5,7 @@ import { act } from 'react-test-renderer';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { buildExportItemRoute } from '../api/routes.js';
+import { buildExportItemRoute } from '../routes.js';
 import { exportItemRoutine } from '../routines/itemExport.js';
 
 const mockedNotifier = vi.fn();

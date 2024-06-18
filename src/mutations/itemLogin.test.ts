@@ -13,11 +13,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ITEM_LOGIN_RESPONSE } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../keys.js';
 import {
   buildPostItemLoginSignInRoute,
   buildPutItemLoginSchemaRoute,
-} from '../api/routes.js';
-import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../config/keys.js';
+} from '../routes.js';
 import {
   postItemLoginRoutine,
   putItemLoginSchemaRoutine,

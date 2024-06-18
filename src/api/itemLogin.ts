@@ -5,15 +5,15 @@ import {
   UUID,
 } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types.js';
-import { verifyAuthentication } from './axios.js';
 import {
   buildDeleteItemLoginSchemaRoute,
   buildGetItemLoginSchemaRoute,
   buildGetItemLoginSchemaTypeRoute,
   buildPostItemLoginSignInRoute,
   buildPutItemLoginSchemaRoute,
-} from './routes.js';
+} from '../routes.js';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 
 export const postItemLoginSignIn = async (
   {

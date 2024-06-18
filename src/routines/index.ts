@@ -2,7 +2,7 @@ export * from './action.js';
 export * from './authentication.js';
 export * from './chat.js';
 export * from './invitation.js';
-export * from './item.js';
+export * from '../item/routines.js';
 export * from './itemCategory.js';
 export * from './itemExport.js';
 export * from './itemBookmark.js';

@@ -4,7 +4,7 @@ import { AxiosInstance } from 'axios';
 import { v4 } from 'uuid';
 import { describe, expect, it, vi } from 'vitest';
 
-import { getDescendants } from './item.js';
+import { getDescendants } from './api.js';
 
 const API_HOST = 'https://localhost:3000';
 

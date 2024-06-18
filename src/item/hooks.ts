@@ -1,5 +1,4 @@
 import {
-  ItemTypeUnion,
   MAX_TARGETS_FOR_READ_REQUEST,
   PackedItem,
   UUID,
@@ -13,23 +12,21 @@ import {
 } from '@tanstack/react-query';
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
-import * as Api from '../api/item.js';
-import { ItemChildrenParams, ItemSearchParams } from '../api/routes.js';
 import {
   CONSTANT_KEY_STALE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
   PAGINATED_ITEMS_PER_PAGE,
 } from '../config/constants.js';
 import { UndefinedArgument } from '../config/errors.js';
-import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../config/keys.js';
-import {
-  getAccessibleItemsRoutine,
-  getOwnItemsRoutine,
-} from '../routines/item.js';
-import { PaginationParams, QueryClientConfig } from '../types.js';
+import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../keys.js';
+import { QueryClientConfig } from '../types.js';
 import { paginate } from '../utils/util.js';
 import { configureWsItemHooks } from '../ws/index.js';
-import useDebounce from './useDebounce.js';
+import { useAccessibleItems } from './accessible/hooks.js';
+import * as Api from './api.js';
+import { useDescendants } from './descendants/hooks.js';
+import { getOwnItemsRoutine } from './routines.js';
+import { ItemChildrenParams } from './types.js';
 
 const config = (
   queryConfig: QueryClientConfig,
@@ -43,44 +40,7 @@ const config = (
       : undefined;
 
   return {
-    /**
-     * Returns items the highest in the tree you have access to
-     * Is paginated by default
-     * @param params
-     * @param pagination
-     * @param _options
-     * @returns
-     */
-    useAccessibleItems: (
-      params?: ItemSearchParams,
-      pagination?: PaginationParams,
-    ) => {
-      const queryClient = useQueryClient();
-
-      const debouncedName = useDebounce(params?.name, 500);
-      const finalParams = { ...params, name: debouncedName };
-      const paginationParams = { ...(pagination ?? {}) };
-      return useQuery({
-        queryKey: itemKeys.accessiblePage(finalParams, paginationParams),
-        queryFn: () =>
-          Api.getAccessibleItems(finalParams, paginationParams, queryConfig),
-        onSuccess: async ({ data: items }) => {
-          // save items in their own key
-          // eslint-disable-next-line no-unused-expressions
-          items?.forEach(async (item) => {
-            const { id } = item;
-            queryClient.setQueryData(itemKeys.single(id).content, item);
-          });
-        },
-        onError: (error) => {
-          notifier?.({
-            type: getAccessibleItemsRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        ...defaultQueryOptions,
-      });
-    },
+    useAccessibleItems: useAccessibleItems(queryConfig),
 
     /** @deprecated use useAccessibleItems */
     useOwnItems: () =>
@@ -209,39 +169,7 @@ const config = (
       });
     },
 
-    useDescendants: ({
-      id,
-      types,
-      showHidden,
-      enabled,
-    }: {
-      id?: UUID;
-      types?: ItemTypeUnion[];
-      showHidden?: boolean;
-      enabled?: boolean;
-    }) => {
-      const queryClient = useQueryClient();
-      return useQuery({
-        queryKey: itemKeys.single(id).descendants({ types, showHidden }),
-        queryFn: () => {
-          if (!id) {
-            throw new UndefinedArgument();
-          }
-          return Api.getDescendants({ id, types, showHidden }, queryConfig);
-        },
-        onSuccess: async (items) => {
-          if (items?.length) {
-            // save items in their own key
-            items.forEach(async (item) => {
-              const { id: itemId } = item;
-              queryClient.setQueryData(itemKeys.single(itemId).content, item);
-            });
-          }
-        },
-        ...defaultQueryOptions,
-        enabled: enabled && Boolean(id),
-      });
-    },
+    useDescendants: useDescendants(queryConfig),
 
     useItem: (
       id?: UUID,

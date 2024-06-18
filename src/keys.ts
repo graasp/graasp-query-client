@@ -10,10 +10,10 @@ import {
 } from '@graasp/sdk';
 import { DEFAULT_LANG } from '@graasp/translations';
 
-import { ItemSearchParams } from '../api/routes.js';
-import { PaginationParams } from '../types.js';
-import { AggregateActionsArgs } from '../utils/action.js';
-import { DEFAULT_THUMBNAIL_SIZE } from './constants.js';
+import { DEFAULT_THUMBNAIL_SIZE } from './config/constants.js';
+import { ItemSearchParams } from './item/types.js';
+import { PaginationParams } from './types.js';
+import { AggregateActionsArgs } from './utils/action.js';
 
 /**
  * Contexts

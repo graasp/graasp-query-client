@@ -21,14 +21,14 @@ import {
   generateMembers,
 } from '../../test/constants.js';
 import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils.js';
+import { memberKeys } from '../keys.js';
 import {
   GET_CURRENT_MEMBER_ROUTE,
   buildDownloadAvatarRoute,
   buildGetMember,
   buildGetMemberStorage,
   buildGetMembersRoute,
-} from '../api/routes.js';
-import { memberKeys } from '../config/keys.js';
+} from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 describe('Member Hooks', () => {

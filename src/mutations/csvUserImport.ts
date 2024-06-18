@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/csvUserImport.js';
-import { itemKeys } from '../config/keys.js';
+import { itemKeys } from '../keys.js';
 import { postCsvUserImportRoutine } from '../routines/csvUserImport.js';
 import { QueryClientConfig } from '../types.js';
 

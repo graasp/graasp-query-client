@@ -1,3 +1,4 @@
+import itemMutations from '../item/mutations.js';
 import { QueryClientConfig } from '../types.js';
 import actionMutations from './action.js';
 import authenticationMutations from './authentication.js';
@@ -5,7 +6,6 @@ import chatMutations from './chat.js';
 import csvUserImportMutations from './csvUserImport.js';
 import etherpadMutations from './etherpad.js';
 import invitationMutations from './invitation.js';
-import itemMutations from './item.js';
 import itemBookmarkMutations from './itemBookmark.js';
 import itemCategoryMutations from './itemCategory.js';
 import itemExportMutations from './itemExport.js';

@@ -8,7 +8,7 @@ import {
   mockWsHook,
   setUpWsTest,
 } from '../../../test/wsUtils.js';
-import { buildItemChatKey } from '../../config/keys.js';
+import { buildItemChatKey } from '../../keys.js';
 import { KINDS, OPS, TOPICS } from '../constants.js';
 import { configureWsChatHooks } from './chat.js';
 

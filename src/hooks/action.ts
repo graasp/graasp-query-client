@@ -8,7 +8,7 @@ import {
   buildActionsKey,
   buildAggregateActionsKey,
   memberKeys,
-} from '../config/keys.js';
+} from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import { AggregateActionsArgs, MappedAggregateBy } from '../utils/action.js';
 

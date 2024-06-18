@@ -1,12 +1,12 @@
 import { PublicProfile, UUID } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types.js';
 import {
   GET_OWN_PROFILE,
   MEMBERS_ROUTE,
   PUBLIC_PROFILE_ROUTE,
   buildGetPublicProfileRoute,
-} from './routes.js';
+} from '../routes.js';
+import { PartialQueryConfigForApi } from '../types.js';
 
 export const getOwnProfile = ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   axios

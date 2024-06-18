@@ -5,8 +5,8 @@ import nock from 'nock';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { mockHook, setUpTest } from '../../test/utils.js';
-import { SEARCH_PUBLISHED_ITEMS_ROUTE } from '../api/routes.js';
-import { itemKeys } from '../config/keys.js';
+import { itemKeys } from '../keys.js';
+import { SEARCH_PUBLISHED_ITEMS_ROUTE } from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

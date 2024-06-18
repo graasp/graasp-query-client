@@ -6,8 +6,8 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { APPS, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
-import { buildAppListRoute } from '../api/routes.js';
-import { APPS_KEY } from '../config/keys.js';
+import { APPS_KEY } from '../keys.js';
+import { buildAppListRoute } from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

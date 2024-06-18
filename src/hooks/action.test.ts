@@ -19,15 +19,15 @@ import {
 } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
 import {
-  buildGetActions,
-  buildGetAggregateActions,
-  buildGetMemberActionsRoute,
-} from '../api/routes.js';
-import {
   buildActionsKey,
   buildAggregateActionsKey,
   memberKeys,
-} from '../config/keys.js';
+} from '../keys.js';
+import {
+  buildGetActions,
+  buildGetAggregateActions,
+  buildGetMemberActionsRoute,
+} from '../routes.js';
 
 type AggregateActionsResponse = {
   aggregateResult: number;

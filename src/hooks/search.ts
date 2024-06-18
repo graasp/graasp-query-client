@@ -3,7 +3,7 @@ import { Category } from '@graasp/sdk';
 import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/search.js';
-import { itemKeys } from '../config/keys.js';
+import { itemKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import useDebounce from './useDebounce.js';
 
