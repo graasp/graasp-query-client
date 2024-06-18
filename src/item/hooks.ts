@@ -25,8 +25,8 @@ import { configureWsItemHooks } from '../ws/index.js';
 import { useAccessibleItems } from './accessible/accessible.hook.js';
 import * as Api from './api.js';
 import { useDescendants } from './descendants/descendants.hook.js';
-import { ItemChildrenParams } from './routes.js';
 import { getOwnItemsRoutine } from './routines.js';
+import { ItemChildrenParams } from './types.js';
 
 const config = (
   queryConfig: QueryClientConfig,

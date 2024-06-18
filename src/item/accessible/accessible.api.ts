@@ -6,7 +6,8 @@ import {
   PaginationParams,
   PartialQueryConfigForApi,
 } from '../../types.js';
-import { ItemSearchParams, buildGetAccessibleItems } from '../routes.js';
+import { buildGetAccessibleItems } from '../routes.js';
+import { ItemSearchParams } from '../types.js';
 
 // eslint-disable-next-line import/prefer-default-export
 export const getAccessibleItems = async (

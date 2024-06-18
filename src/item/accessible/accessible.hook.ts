@@ -3,8 +3,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { itemKeys } from '../../config/keys.js';
 import useDebounce from '../../hooks/useDebounce.js';
 import { PaginationParams, QueryClientConfig } from '../../types.js';
-import { ItemSearchParams } from '../routes.js';
 import { getAccessibleItemsRoutine } from '../routines.js';
+import { ItemSearchParams } from '../types.js';
 import { getAccessibleItems } from './accessible.api.js';
 
 /**

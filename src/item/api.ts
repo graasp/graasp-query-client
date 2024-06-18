@@ -14,7 +14,6 @@ import { PartialQueryConfigForApi } from '../types.js';
 import {
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_DATA_ROUTE,
-  ItemChildrenParams,
   SHARED_ITEM_WITH_ROUTE,
   buildCopyItemsRoute,
   buildDeleteItemThumbnailRoute,
@@ -32,6 +31,7 @@ import {
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
 } from './routes.js';
+import { ItemChildrenParams } from './types.js';
 
 export const getItem = (
   id: UUID,
