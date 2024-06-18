@@ -34,6 +34,7 @@ cypress/videos
 
 # jetbrains
 .idea
+.vscode
 
 # react-app-env
 src/react-app-env.d.ts
