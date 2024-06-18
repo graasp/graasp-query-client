@@ -16,7 +16,7 @@ export const buildGetAccessibleItems = (
   pagination: PaginationParams,
 ) =>
   `${ITEMS_ROUTE}/accessible${qs.stringify(
-    { ...params, ...pagination },
+    { ...params, page: 1, ...pagination },
     {
       arrayFormat: 'repeat',
       addQueryPrefix: true,
