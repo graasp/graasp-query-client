@@ -16,8 +16,8 @@ import {
   generateFolders,
 } from '../../test/constants.js';
 import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils.js';
-import { buildGetItemMembershipsForItemsRoute } from '../api/routes.js';
 import { buildManyItemMembershipsKey, itemKeys } from '../config/keys.js';
+import { buildGetItemMembershipsForItemsRoute } from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

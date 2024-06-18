@@ -6,8 +6,6 @@ import {
   UUID,
 } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types.js';
-import { verifyAuthentication } from './axios.js';
 import {
   GET_CATEGORY_TYPES_ROUTE,
   buildDeleteItemCategoryRoute,
@@ -16,7 +14,9 @@ import {
   buildGetItemCategoriesRoute,
   buildGetItemsInCategoryRoute,
   buildPostItemCategoryRoute,
-} from './routes.js';
+} from '../routes.js';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 
 export const getCategoryTypes = async ({
   API_HOST,

@@ -1,5 +1,5 @@
+import { buildGetEmbeddedLinkMetadata } from '../routes.js';
 import { EmbeddedLinkMetadata, PartialQueryConfigForApi } from '../types.js';
-import { buildGetEmbeddedLinkMetadata } from './routes.js';
 
 // eslint-disable-next-line import/prefer-default-export
 export const getEmbeddedLinkMetadata = (

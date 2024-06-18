@@ -12,13 +12,13 @@ import {
   buildMockInvitations,
 } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import { itemKeys } from '../config/keys.js';
 import {
   buildDeleteInvitationRoute,
   buildPatchInvitationRoute,
   buildPostInvitationsRoute,
   buildResendInvitationRoute,
-} from '../api/routes.js';
-import { itemKeys } from '../config/keys.js';
+} from '../routes.js';
 import {
   deleteInvitationRoutine,
   patchInvitationRoutine,

@@ -1,4 +1,4 @@
-import createRoutine from './utils.js';
+import createRoutine from '../routines/utils.js';
 
 export const createItemRoutine = createRoutine('CREATE_ITEM');
 export const deleteItemRoutine = createRoutine('DELETE_ITEM');

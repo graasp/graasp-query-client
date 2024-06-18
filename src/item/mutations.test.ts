@@ -31,6 +31,13 @@ import {
   waitForMutation,
 } from '../../test/utils.js';
 import {
+  OWN_ITEMS_KEY,
+  getKeyForParentId,
+  itemKeys,
+  itemsWithGeolocationKeys,
+  memberKeys,
+} from '../config/keys.js';
+import {
   buildCopyItemsRoute,
   buildDeleteItemThumbnailRoute,
   buildDeleteItemsRoute,
@@ -41,19 +48,12 @@ import {
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
   buildUploadItemThumbnailRoute,
-} from '../api/routes.js';
-import {
-  OWN_ITEMS_KEY,
-  getKeyForParentId,
-  itemKeys,
-  itemsWithGeolocationKeys,
-  memberKeys,
-} from '../config/keys.js';
+} from './routes.js';
 import {
   deleteItemThumbnailRoutine,
   uploadFileRoutine,
   uploadItemThumbnailRoutine,
-} from '../routines/item.js';
+} from './routines.js';
 
 const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({

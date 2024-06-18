@@ -7,9 +7,9 @@ import {
 
 import axios from 'axios';
 
+import { buildGetEtherpadRoute, buildPostEtherpadRoute } from '../routes.js';
 import { QueryClientConfig } from '../types.js';
 import { verifyAuthentication } from './axios.js';
-import { buildGetEtherpadRoute, buildPostEtherpadRoute } from './routes.js';
 
 /**
  * This is a queue singleton class that manages querying etherpads

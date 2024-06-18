@@ -11,8 +11,8 @@ import {
   generateFolders,
 } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { buildItemPublishRoute } from '../api/routes.js';
 import { itemKeys, memberKeys } from '../config/keys.js';
+import { buildItemPublishRoute } from '../routes.js';
 import { publishItemRoutine } from '../routines/itemPublish.js';
 
 const mockedNotifier = vi.fn();

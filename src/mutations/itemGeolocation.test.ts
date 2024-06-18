@@ -12,8 +12,8 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { buildPutItemGeolocationRoute } from '../api/routes.js';
 import { itemKeys, itemsWithGeolocationKeys } from '../config/keys.js';
+import { buildPutItemGeolocationRoute } from '../routes.js';
 import {
   deleteItemGeolocationRoutine,
   putItemGeolocationRoutine,

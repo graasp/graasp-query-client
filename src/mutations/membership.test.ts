@@ -25,6 +25,7 @@ import {
   setUpTest,
   waitForMutation,
 } from '../../test/utils.js';
+import { OWN_ITEMS_KEY, itemKeys } from '../config/keys.js';
 import {
   buildDeleteItemMembershipRoute,
   buildEditItemMembershipRoute,
@@ -32,8 +33,7 @@ import {
   buildPostInvitationsRoute,
   buildPostItemMembershipRoute,
   buildPostManyItemMembershipsRoute,
-} from '../api/routes.js';
-import { OWN_ITEMS_KEY, itemKeys } from '../config/keys.js';
+} from '../routes.js';
 import { shareItemRoutine } from '../routines/member.js';
 import {
   deleteItemMembershipRoutine,

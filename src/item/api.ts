@@ -1,7 +1,6 @@
 import {
   DiscriminatedItem,
   ItemGeolocation,
-  ItemTypeUnion,
   PackedItem,
   PackedRecycledItemData,
   ResultOf,
@@ -9,18 +8,13 @@ import {
   getParentFromPath,
 } from '@graasp/sdk';
 
+import { verifyAuthentication } from '../api/axios.js';
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
-import {
-  Paginated,
-  PaginationParams,
-  PartialQueryConfigForApi,
-} from '../types.js';
-import { verifyAuthentication } from './axios.js';
+import { PartialQueryConfigForApi } from '../types.js';
 import {
   GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_DATA_ROUTE,
   ItemChildrenParams,
-  ItemSearchParams,
   SHARED_ITEM_WITH_ROUTE,
   buildCopyItemsRoute,
   buildDeleteItemThumbnailRoute,
@@ -28,9 +22,7 @@ import {
   buildDownloadFilesRoute,
   buildDownloadItemThumbnailRoute,
   buildEditItemRoute,
-  buildGetAccessibleItems,
   buildGetChildrenRoute,
-  buildGetItemDescendants,
   buildGetItemParents,
   buildGetItemRoute,
   buildGetItemsRoute,
@@ -64,19 +56,6 @@ export const getOwnItems = async ({
   verifyAuthentication(() =>
     axios
       .get<DiscriminatedItem[]>(`${API_HOST}/${GET_OWN_ITEMS_ROUTE}`)
-      .then(({ data }) => data),
-  );
-
-export const getAccessibleItems = async (
-  params: ItemSearchParams,
-  pagination: PaginationParams,
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  verifyAuthentication(() =>
-    axios
-      .get<
-        Paginated<PackedItem>
-      >(`${API_HOST}/${buildGetAccessibleItems(params, pagination)}`)
       .then(({ data }) => data),
   );
 
@@ -225,25 +204,6 @@ export const getParents = async (
   return axios
     .get<PackedItem[]>(`${API_HOST}/${buildGetItemParents(id)}`)
     .then(({ data }) => data);
-};
-
-export const getDescendants = async (
-  {
-    id,
-    types,
-    showHidden,
-  }: { id: UUID; types?: ItemTypeUnion[]; showHidden?: boolean },
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) => {
-  const url = new URL(`${API_HOST}/${buildGetItemDescendants(id)}`);
-  // add item types to the query as repeating parameters
-  types?.forEach((itemType) => {
-    url.searchParams.append('types', itemType);
-  });
-  if (showHidden !== undefined) {
-    url.searchParams.set('showHidden', showHidden.toString());
-  }
-  return axios.get<PackedItem[]>(url.toString()).then(({ data }) => data);
 };
 
 export const moveItems = async (

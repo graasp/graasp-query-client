@@ -20,7 +20,6 @@ import {
   splitRequestByIds,
   throwIfArrayContainsErrorOrReturn,
 } from '../api/axios.js';
-import * as Api from '../api/item.js';
 import {
   OWN_ITEMS_KEY,
   getKeyForParentId,
@@ -28,6 +27,12 @@ import {
   itemsWithGeolocationKeys,
   memberKeys,
 } from '../config/keys.js';
+import {
+  type EnableNotificationsParam,
+  type QueryClientConfig,
+} from '../types.js';
+import { DEFAULT_ENABLE_NOTIFICATIONS } from '../utils/notifications.js';
+import * as Api from './api.js';
 import {
   copyItemsRoutine,
   createItemRoutine,
@@ -41,12 +46,7 @@ import {
   restoreItemsRoutine,
   uploadFileRoutine,
   uploadItemThumbnailRoutine,
-} from '../routines/item.js';
-import {
-  type EnableNotificationsParam,
-  type QueryClientConfig,
-} from '../types.js';
-import { DEFAULT_ENABLE_NOTIFICATIONS } from '../utils/notifications.js';
+} from './routines.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

@@ -1,12 +1,12 @@
 import { App, UUID } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types.js';
-import { verifyAuthentication } from './axios.js';
 import {
   buildAppListRoute,
   buildGetApiAccessTokenRoute,
   buildMostUsedAppListRoute,
-} from './routes.js';
+} from '../routes.js';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 
 export const getApps = async ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>

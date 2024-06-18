@@ -18,14 +18,14 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import { memberKeys } from '../config/keys.js';
 import {
   SIGN_OUT_ROUTE,
   buildDeleteMemberRoute,
   buildPatchMember,
   buildUpdateMemberPasswordRoute,
   buildUploadAvatarRoute,
-} from '../api/routes.js';
-import { memberKeys } from '../config/keys.js';
+} from '../routes.js';
 import {
   updatePasswordRoutine,
   uploadAvatarRoutine,

@@ -5,15 +5,15 @@ import {
   ShortLinkPostPayload,
 } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types.js';
-import { verifyAuthentication } from './axios.js';
 import {
   buildDeleteShortLinkRoute,
   buildGetShortLinkAvailableRoute,
   buildGetShortLinksItemRoute,
   buildPatchShortLinkRoute,
   buildPostShortLinkRoute,
-} from './routes.js';
+} from '../routes.js';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 
 export const getShortLinkAvailable = (
   alias: string,

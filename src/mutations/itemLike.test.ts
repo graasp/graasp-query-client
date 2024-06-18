@@ -7,11 +7,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import {
-  buildDeleteItemLikeRoute,
-  buildPostItemLikeRoute,
-} from '../api/routes.js';
 import { memberKeys } from '../config/keys.js';
+import { buildDeleteItemLikeRoute, buildPostItemLikeRoute } from '../routes.js';
 import {
   deleteItemLikeRoutine,
   postItemLikeRoutine,

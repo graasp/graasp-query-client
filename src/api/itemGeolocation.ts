@@ -1,8 +1,6 @@
 import { DiscriminatedItem, ItemGeolocation, UUID } from '@graasp/sdk';
 import { DEFAULT_LANG } from '@graasp/translations';
 
-import { PartialQueryConfigForApi } from '../types.js';
-import { verifyAuthentication } from './axios.js';
 import {
   buildDeleteItemGeolocationRoute,
   buildGetAddressFromCoordinatesRoute,
@@ -10,7 +8,9 @@ import {
   buildGetItemsInMapRoute,
   buildGetSuggestionsForAddressRoute,
   buildPutItemGeolocationRoute,
-} from './routes.js';
+} from '../routes.js';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 
 export const getItemGeolocation = async (
   { API_HOST, axios }: PartialQueryConfigForApi,

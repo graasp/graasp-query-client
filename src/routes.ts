@@ -5,30 +5,23 @@ import {
   ItemGeolocation,
   ItemTag,
   ItemTagType,
-  ItemType,
-  Member,
-  PermissionLevel,
   UUID,
-  UnionOfConst,
 } from '@graasp/sdk';
 import { DEFAULT_LANG } from '@graasp/translations';
 
 import qs from 'qs';
 
-import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
-import { PaginationParams } from '../types.js';
-import { AggregateActionsArgs } from '../utils/action.js';
+import { DEFAULT_THUMBNAIL_SIZE } from './config/constants.js';
+import * as itemRoutes from './item/routes.js';
+import { AggregateActionsArgs } from './utils/action.js';
 
 export const APPS_ROUTE = 'app-items';
 export const ITEMS_ROUTE = 'items';
 export const ITEM_MEMBERSHIPS_ROUTE = 'item-memberships';
 export const MEMBERS_ROUTE = `members`;
 export const SUBSCRIPTION_ROUTE = 'subscriptions';
-export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const INVITATIONS_ROUTE = `invitations`;
-export const GET_RECYCLED_ITEMS_DATA_ROUTE = `${ITEMS_ROUTE}/recycled`;
 export const GET_BOOKMARKED_ITEMS_ROUTE = `${ITEMS_ROUTE}/favorite`;
-export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
 export const ETHERPAD_ROUTE = `${ITEMS_ROUTE}/etherpad`;
 export const COLLECTIONS_ROUTE = `collections`;
@@ -38,80 +31,6 @@ export const SHORT_LINKS_ROUTE = `${ITEMS_ROUTE}/short-links`;
 export const SHORT_LINKS_LIST_ROUTE = `${SHORT_LINKS_ROUTE}/list`;
 export const EMBEDDED_LINKS_ROUTE = `${ITEMS_ROUTE}/embedded-links/metadata`;
 
-export type ItemSearchParams =
-  | {
-      creatorId?: Member['id'];
-      name?: string;
-      ordering?: 'desc' | 'asc';
-      sortBy?:
-        | 'item.name'
-        | 'item.type'
-        | 'item.creator.name'
-        | 'item.created_at'
-        | 'item.updated_at';
-      permissions?: PermissionLevel[];
-      types?: UnionOfConst<typeof ItemType>[];
-    }
-  | undefined;
-
-export type ItemChildrenParams = {
-  ordered?: boolean;
-  types?: UnionOfConst<typeof ItemType>[];
-};
-
-export const buildGetAccessibleItems = (
-  params: ItemSearchParams,
-  pagination: PaginationParams,
-) =>
-  `${ITEMS_ROUTE}/accessible${qs.stringify(
-    { ...params, ...pagination },
-    {
-      arrayFormat: 'repeat',
-      addQueryPrefix: true,
-    },
-  )}`;
-
-export const buildPostItemRoute = (parentId?: UUID) => {
-  let url = ITEMS_ROUTE;
-  if (parentId) {
-    url += `?parentId=${parentId}`;
-  }
-  return url;
-};
-export const buildPostItemWithThumbnailRoute = (parentId?: UUID) => {
-  let url = `${ITEMS_ROUTE}/with-thumbnail`;
-  if (parentId) {
-    url += `?parentId=${parentId}`;
-  }
-  return url;
-};
-export const buildDeleteItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/delete`;
-export const buildDeleteItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}${qs.stringify(
-    { id: ids },
-    {
-      arrayFormat: 'repeat',
-      addQueryPrefix: true,
-    },
-  )}`;
-export const buildGetChildrenRoute = (id: UUID, params: ItemChildrenParams) =>
-  `${ITEMS_ROUTE}/${id}/children${qs.stringify(params, {
-    arrayFormat: 'repeat',
-    addQueryPrefix: true,
-  })}`;
-export const buildGetItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
-export const buildGetItemParents = (id: UUID) => `${ITEMS_ROUTE}/${id}/parents`;
-export const buildGetItemDescendants = (id: UUID) =>
-  `${ITEMS_ROUTE}/${id}/descendants`;
-export const buildGetItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
-export const buildMoveItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/move`;
-export const buildMoveItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}/move?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
-export const buildCopyItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/copy`;
-export const buildCopyItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}/copy?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
-export const buildEditItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}`;
 export const buildExportItemRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/zip-export/${id}`;
 export const buildPostItemMembershipRoute = (id: UUID) =>
@@ -185,8 +104,7 @@ export const buildImportH5PRoute = (parentId?: UUID) =>
     { parentId },
     { addQueryPrefix: true },
   )}`;
-export const buildDownloadFilesRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/${id}/download`;
+
 export const buildUploadAvatarRoute = () => `${MEMBERS_ROUTE}/avatar`;
 export const buildDownloadAvatarRoute = ({
   id,
@@ -198,24 +116,6 @@ export const buildDownloadAvatarRoute = ({
   size?: string;
 }) =>
   `${MEMBERS_ROUTE}/${id}/avatar/${size}${qs.stringify(
-    { replyUrl },
-    { addQueryPrefix: true },
-  )}`;
-export const buildUploadItemThumbnailRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/${id}/thumbnails`;
-export const buildDeleteItemThumbnailRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/${id}/thumbnails`;
-
-export const buildDownloadItemThumbnailRoute = ({
-  id,
-  replyUrl,
-  size = DEFAULT_THUMBNAIL_SIZE,
-}: {
-  id: UUID;
-  replyUrl?: boolean;
-  size?: string;
-}) =>
-  `${ITEMS_ROUTE}/${id}/thumbnails/${size}${qs.stringify(
     { replyUrl },
     { addQueryPrefix: true },
   )}`;
@@ -264,28 +164,9 @@ export const buildDeleteItemMembershipRoute = (id: UUID) =>
 export const GET_FLAGS_ROUTE = `${ITEMS_ROUTE}/flags`;
 export const buildPostItemFlagRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/flags`;
-export const buildRecycleItemRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/${id}/recycle`;
-export const buildRecycleItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}/recycle${qs.stringify(
-    { id: ids },
-    {
-      arrayFormat: 'repeat',
-      addQueryPrefix: true,
-    },
-  )}`;
 
 export const buildBookmarkedItemRoute = (itemId: UUID) =>
   `${GET_BOOKMARKED_ITEMS_ROUTE}/${itemId}`;
-
-export const buildRestoreItemsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}/restore${qs.stringify(
-    { id: ids },
-    {
-      arrayFormat: 'repeat',
-      addQueryPrefix: true,
-    },
-  )}`;
 
 export const GET_CATEGORY_TYPES_ROUTE = `${ITEMS_ROUTE}/category-types`;
 export const buildGetCategoriesRoute = (ids?: UUID[]) =>
@@ -550,38 +431,30 @@ export const buildGetEmbeddedLinkMetadata = (link: string) =>
   `${EMBEDDED_LINKS_ROUTE}?link=${encodeURIComponent(link)}`;
 
 export const API_ROUTES = {
+  ...itemRoutes,
   APPS_ROUTE,
   buildAppListRoute,
   buildClearItemChatRoute,
-  buildCopyItemRoute,
-  buildCopyItemsRoute,
   buildDeleteInvitationRoute,
   buildDeleteItemCategoryRoute,
   buildDeleteItemChatMessageRoute,
   buildDeleteItemLikeRoute,
   buildDeleteItemLoginSchemaRoute,
   buildDeleteItemMembershipRoute,
-  buildDeleteItemRoute,
-  buildDeleteItemsRoute,
   buildDeleteItemTagRoute,
   buildDeleteMemberRoute,
   buildDeleteShortLinkRoute,
   buildDownloadAvatarRoute,
-  buildDownloadFilesRoute,
-  buildDownloadItemThumbnailRoute,
   buildEditItemMembershipRoute,
-  buildEditItemRoute,
   buildExportActions,
   buildExportItemChatRoute,
   buildExportItemRoute,
   buildBookmarkedItemRoute,
-  buildGetAccessibleItems,
   buildGetActions,
   buildGetAllPublishedItemsRoute,
   buildGetApiAccessTokenRoute,
   buildGetCategoriesRoute,
   buildGetCategoryRoute,
-  buildGetChildrenRoute,
   buildGetEtherpadRoute,
   buildGetInvitationRoute,
   buildGetItemCategoriesRoute,
@@ -592,7 +465,6 @@ export const API_ROUTES = {
   buildGetItemLoginSchemaTypeRoute,
   buildGetItemMembershipsForItemsRoute,
   buildGetItemPublishedInformationRoute,
-  buildGetItemRoute,
   buildGetItemsInCategoryRoute,
   buildGetItemTagsRoute,
   buildGetLastItemValidationGroupRoute,
@@ -611,8 +483,6 @@ export const API_ROUTES = {
   buildItemPublishRoute,
   buildItemUnpublishRoute,
   buildManyGetItemPublishedInformationsRoute,
-  buildMoveItemRoute,
-  buildMoveItemsRoute,
   buildPatchInvitationRoute,
   buildPatchItemChatMessageRoute,
   buildPatchMember,
@@ -626,34 +496,26 @@ export const API_ROUTES = {
   buildPostItemLikeRoute,
   buildPostItemLoginSignInRoute,
   buildPostItemMembershipRoute,
-  buildPostItemRoute,
   buildPostItemTagRoute,
   buildPostItemValidationRoute,
   buildPostManyItemMembershipsRoute,
   buildPostShortLinkRoute,
   buildPostUserCSVUploadRoute,
   buildPutItemLoginSchemaRoute,
-  buildRecycleItemRoute,
-  buildRecycleItemsRoute,
   buildResendInvitationRoute,
-  buildRestoreItemsRoute,
   buildUpdateItemValidationReviewRoute,
   buildUpdateMemberPasswordRoute,
   buildUploadAvatarRoute,
   buildUploadFilesRoute,
-  buildUploadItemThumbnailRoute,
   GET_CATEGORY_TYPES_ROUTE,
   GET_CURRENT_MEMBER_ROUTE,
   GET_BOOKMARKED_ITEMS_ROUTE,
   GET_FLAGS_ROUTE,
   GET_ITEM_VALIDATION_REVIEWS_ROUTE,
   GET_ITEM_VALIDATION_STATUSES_ROUTE,
-  GET_OWN_ITEMS_ROUTE,
-  GET_RECYCLED_ITEMS_DATA_ROUTE,
   GET_TAGS_ROUTE,
   ITEMS_ROUTE,
   SEARCH_PUBLISHED_ITEMS_ROUTE,
-  SHARED_ITEM_WITH_ROUTE,
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
@@ -667,6 +529,5 @@ export const API_ROUTES = {
   buildDeleteItemGeolocationRoute,
   buildPutItemGeolocationRoute,
   buildGetAddressFromCoordinatesRoute,
-  buildDeleteItemThumbnailRoute,
   buildGetEmbeddedLinkMetadata,
 };

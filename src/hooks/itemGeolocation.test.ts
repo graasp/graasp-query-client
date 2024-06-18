@@ -7,16 +7,16 @@ import {
 } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
 import {
-  ITEMS_ROUTE,
-  buildGetAddressFromCoordinatesRoute,
-  buildGetSuggestionsForAddressRoute,
-} from '../api/routes.js';
-import {
   buildAddressFromCoordinatesKey,
   buildSuggestionsForAddressKey,
   itemKeys,
   itemsWithGeolocationKeys,
 } from '../config/keys.js';
+import {
+  ITEMS_ROUTE,
+  buildGetAddressFromCoordinatesRoute,
+  buildGetSuggestionsForAddressRoute,
+} from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

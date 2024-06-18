@@ -1,7 +1,5 @@
 import { Password } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types.js';
-import { verifyAuthentication } from './axios.js';
 import {
   MOBILE_SIGN_IN_ROUTE,
   MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE,
@@ -10,7 +8,9 @@ import {
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
   SIGN_UP_ROUTE,
-} from './routes.js';
+} from '../routes.js';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 
 export const signOut = ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>

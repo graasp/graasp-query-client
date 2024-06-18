@@ -1,11 +1,11 @@
 import { ItemBookmark, PackedItemBookmark, UUID } from '@graasp/sdk';
 
-import { PartialQueryConfigForApi } from '../types.js';
-import { verifyAuthentication } from './axios.js';
 import {
   GET_BOOKMARKED_ITEMS_ROUTE,
   buildBookmarkedItemRoute,
-} from './routes.js';
+} from '../routes.js';
+import { PartialQueryConfigForApi } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 
 export const getBookmarkedItems = async ({
   API_HOST,

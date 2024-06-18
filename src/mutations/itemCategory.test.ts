@@ -11,11 +11,11 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import { itemKeys } from '../config/keys.js';
 import {
   buildDeleteItemCategoryRoute,
   buildPostItemCategoryRoute,
-} from '../api/routes.js';
-import { itemKeys } from '../config/keys.js';
+} from '../routes.js';
 import {
   deleteItemCategoryRoutine,
   postItemCategoryRoutine,

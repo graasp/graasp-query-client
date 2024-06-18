@@ -12,13 +12,13 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
+import { buildItemChatKey } from '../config/keys.js';
 import {
   buildClearItemChatRoute,
   buildDeleteItemChatMessageRoute,
   buildPatchItemChatMessageRoute,
   buildPostItemChatMessageRoute,
-} from '../api/routes.js';
-import { buildItemChatKey } from '../config/keys.js';
+} from '../routes.js';
 import {
   clearItemChatRoutine,
   deleteItemChatMessageRoutine,

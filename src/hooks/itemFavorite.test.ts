@@ -6,8 +6,8 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
-import { GET_BOOKMARKED_ITEMS_ROUTE } from '../api/routes.js';
 import { memberKeys } from '../config/keys.js';
+import { GET_BOOKMARKED_ITEMS_ROUTE } from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

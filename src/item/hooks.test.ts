@@ -26,18 +26,16 @@ import {
   setUpTest,
   splitEndpointByIds,
 } from '../../test/utils.js';
+import { OWN_ITEMS_KEY, itemKeys } from '../config/keys.js';
 import {
   GET_OWN_ITEMS_ROUTE,
   buildDownloadFilesRoute,
   buildDownloadItemThumbnailRoute,
-  buildGetAccessibleItems,
   buildGetChildrenRoute,
-  buildGetItemDescendants,
   buildGetItemParents,
   buildGetItemRoute,
   buildGetItemsRoute,
-} from '../api/routes.js';
-import { OWN_ITEMS_KEY, itemKeys } from '../config/keys.js';
+} from './routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
@@ -320,60 +318,6 @@ describe('useParents', () => {
         queryClient.getQueryData(itemKeys.single(i.id).content),
       ).toBeFalsy();
     }
-  });
-});
-
-describe('useAccessibleItems', () => {
-  afterEach(() => {
-    nock.cleanAll();
-    queryClient.clear();
-  });
-
-  const params = {};
-  const pagination = {};
-  const route = `/${buildGetAccessibleItems(params, pagination)}`;
-  const items = generateFolders();
-  const response = { data: items, totalCount: items.length };
-  const hook = () => hooks.useAccessibleItems();
-  const key = itemKeys.accessiblePage(params, pagination);
-
-  it(`Receive accessible items`, async () => {
-    const endpoints = [{ route, response }];
-    const { data } = await mockHook({ endpoints, hook, wrapper });
-
-    expect(data).toMatchObject(response);
-    // verify cache keys
-    expect(queryClient.getQueryData(key)).toMatchObject(response);
-  });
-
-  it(`Route constructed correctly for accessible folders`, async () => {
-    const typesParams = { types: [ItemType.FOLDER] };
-    const url = `/${buildGetAccessibleItems(typesParams, {})}`;
-    const urlObject = new URL(url, 'https://no-existing-url.tmp');
-    const queryParams = urlObject.searchParams;
-    const typesValue = queryParams.get('types');
-
-    expect(typesValue).toEqual(ItemType.FOLDER);
-  });
-
-  it(`Unauthorized`, async () => {
-    const endpoints = [
-      {
-        route,
-        response: UNAUTHORIZED_RESPONSE,
-        statusCode: StatusCodes.UNAUTHORIZED,
-      },
-    ];
-    const { data, isError } = await mockHook({
-      hook,
-      endpoints,
-      wrapper,
-    });
-
-    expect(data).toBeFalsy();
-    expect(isError).toBeTruthy();
-    // verify cache keys
-    expect(queryClient.getQueryData(key)).toBeFalsy();
   });
 });
 
@@ -844,72 +788,6 @@ describe('useItemThumbnailUrl', () => {
   });
 
   it(`Unauthorized`, async () => {
-    const endpoints = [
-      {
-        route,
-        response: UNAUTHORIZED_RESPONSE,
-        statusCode: StatusCodes.UNAUTHORIZED,
-      },
-    ];
-    const { data, isError } = await mockHook({ endpoints, hook, wrapper });
-
-    expect(data).toBeFalsy();
-    expect(isError).toBeTruthy();
-    // verify cache keys
-    expect(queryClient.getQueryData(key)).toBeFalsy();
-  });
-});
-
-describe('useDescendants', () => {
-  afterEach(() => {
-    nock.cleanAll();
-    queryClient.clear();
-  });
-
-  const item = FolderItemFactory();
-  const response = { item, ...generateFolders(3) };
-
-  it('Gets descendants with type filter', async () => {
-    const types = [ItemType.FOLDER, ItemType.APP];
-    const key = itemKeys.single(item.id).descendants({ types });
-    const hook = () => hooks.useDescendants({ id: item.id, types });
-    const route = `/${buildGetItemDescendants(item.id)}?${types.map((t) => `types=${t}`).join('&')}`;
-    const endpoints = [
-      {
-        route,
-        response,
-      },
-    ];
-    const { data, isError } = await mockHook({ endpoints, hook, wrapper });
-
-    expect(data).toBeTruthy();
-    expect(isError).toBeFalsy();
-    // verify cache keys
-    expect(queryClient.getQueryData(key)).toBeTruthy();
-  });
-
-  it('Gets descendants with showHidden disabled', async () => {
-    const key = itemKeys.single(item.id).descendants({ showHidden: false });
-    const hook = () => hooks.useDescendants({ id: item.id, showHidden: false });
-    const route = `/${buildGetItemDescendants(item.id)}?showHidden=false`;
-    const endpoints = [
-      {
-        route,
-        response,
-      },
-    ];
-    const { data, isError } = await mockHook({ endpoints, hook, wrapper });
-
-    expect(data).toBeTruthy();
-    expect(isError).toBeFalsy();
-    // verify cache keys
-    expect(queryClient.getQueryData(key)).toBeTruthy();
-  });
-
-  it(`Unauthorized`, async () => {
-    const key = itemKeys.single(item.id).descendants();
-    const hook = () => hooks.useDescendants({ id: item.id });
-    const route = `/${buildGetItemDescendants(item.id)}`;
     const endpoints = [
       {
         route,

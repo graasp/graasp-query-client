@@ -7,8 +7,8 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
-import { buildGetLastItemValidationGroupRoute } from '../api/routes.js';
 import { itemKeys } from '../config/keys.js';
+import { buildGetLastItemValidationGroupRoute } from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

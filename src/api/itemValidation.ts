@@ -1,7 +1,5 @@
 import { ItemValidationGroup, UUID } from '@graasp/sdk';
 
-import { QueryClientConfig } from '../types.js';
-import { verifyAuthentication } from './axios.js';
 import {
   GET_ITEM_VALIDATION_REVIEWS_ROUTE,
   GET_ITEM_VALIDATION_REVIEW_STATUSES_ROUTE,
@@ -11,7 +9,9 @@ import {
   buildGetLastItemValidationGroupRoute,
   buildPostItemValidationRoute,
   buildUpdateItemValidationReviewRoute,
-} from './routes.js';
+} from '../routes.js';
+import { QueryClientConfig } from '../types.js';
+import { verifyAuthentication } from './axios.js';
 
 export const getItemValidationReviews = async ({
   API_HOST,

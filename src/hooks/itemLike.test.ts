@@ -6,11 +6,11 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { ITEM_LIKES, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
+import { itemKeys, memberKeys } from '../config/keys.js';
 import {
   buildGetItemLikesRoute,
   buildGetLikesForMemberRoute,
-} from '../api/routes.js';
-import { itemKeys, memberKeys } from '../config/keys.js';
+} from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 

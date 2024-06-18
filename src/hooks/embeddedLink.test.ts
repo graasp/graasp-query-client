@@ -7,8 +7,8 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
-import { buildGetEmbeddedLinkMetadata } from '../api/routes.js';
 import { buildEmbeddedLinkMetadataKey } from '../config/keys.js';
+import { buildGetEmbeddedLinkMetadata } from '../routes.js';
 import { EmbeddedLinkMetadata } from '../types.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();

@@ -7,8 +7,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { buildBookmarkedItemRoute } from '../api/routes.js';
 import { memberKeys } from '../config/keys.js';
+import { buildBookmarkedItemRoute } from '../routes.js';
 import {
   addBookmarkedItemRoutine,
   deleteBookmarkedItemRoutine,

@@ -9,11 +9,11 @@ import {
   buildInvitation,
 } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
+import { buildInvitationKey, itemKeys } from '../config/keys.js';
 import {
   buildGetInvitationRoute,
   buildGetItemInvitationsForItemRoute,
-} from '../api/routes.js';
-import { buildInvitationKey, itemKeys } from '../config/keys.js';
+} from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 const item = FolderItemFactory();
