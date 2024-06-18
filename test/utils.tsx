@@ -119,9 +119,9 @@ export const mockHook = async <
     return result.current;
   }
 
-  await waitFor(() =>
-    expect(result.current.isSuccess || result.current.isError).toBe(true),
-  );
+  await waitFor(() => {
+    expect(result.current.isSuccess || result.current.isError).toBe(true);
+  });
 
   // return hook data
   return result.current;

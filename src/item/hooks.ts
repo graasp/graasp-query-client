@@ -22,7 +22,10 @@ import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import { paginate } from '../utils/util.js';
 import { configureWsItemHooks } from '../ws/index.js';
-import { useAccessibleItems } from './accessible/hooks.js';
+import {
+  useAccessibleItems,
+  useInfiniteAccessibleItems,
+} from './accessible/hooks.js';
 import * as Api from './api.js';
 import { useDescendants } from './descendants/hooks.js';
 import { getOwnItemsRoutine } from './routines.js';
@@ -41,6 +44,7 @@ const config = (
 
   return {
     useAccessibleItems: useAccessibleItems(queryConfig),
+    useInfiniteAccessibleItems: useInfiniteAccessibleItems(queryConfig),
 
     /** @deprecated use useAccessibleItems */
     useOwnItems: () =>

@@ -1,4 +1,8 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import useDebounce from '../../hooks/useDebounce.js';
 import { itemKeys } from '../../keys.js';
@@ -11,7 +15,7 @@ import { getAccessibleItems } from './api.js';
  * Returns items the highest in the tree you have access to
  * Is paginated by default
  * @param params
- * @param pagination
+ * @param pagination  default and first page is 1
  * @param _options
  * @returns
  */
@@ -46,3 +50,25 @@ export const useAccessibleItems =
       ...defaultQueryOptions,
     });
   };
+
+/**
+ * Returns query and accummulated data through navigating the pages
+ * Is paginated by default
+ * @param params
+ * @param pagination default and first page is 1
+ * @returns
+ */
+export const useInfiniteAccessibleItems =
+  (queryConfig: QueryClientConfig) =>
+  (params?: ItemSearchParams, pagination?: PaginationParams) =>
+    useInfiniteQuery({
+      queryKey: itemKeys.infiniteAccessible(params),
+      queryFn: ({ pageParam }) =>
+        getAccessibleItems(
+          params,
+          { page: pageParam ?? 1, ...pagination },
+          queryConfig,
+        ),
+      getNextPageParam: (_lastPage, pages) => pages.length + 1,
+      refetchOnWindowFocus: () => false,
+    });
