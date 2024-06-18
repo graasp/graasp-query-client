@@ -139,7 +139,7 @@ export const itemKeys = {
   // accessible items
   allAccessible: () => [...itemKeys.all, 'accessible'] as const,
   infiniteAccessible: (params: ItemSearchParams) =>
-    [...itemKeys.all, 'infinite-accessible', params] as const,
+    [...itemKeys.allAccessible(), 'accessible', 'infinite', params] as const,
   accessiblePage: (params: ItemSearchParams, pagination: PaginationParams) =>
     [...itemKeys.allAccessible(), params, pagination] as const,
 
