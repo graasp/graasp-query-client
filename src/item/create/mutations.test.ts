@@ -29,7 +29,7 @@ import {
   buildPostItemRoute,
   buildPostItemWithThumbnailRoute,
 } from '../routes.js';
-import { uploadFileRoutine } from '../routines.js';
+import { uploadFilesRoutine } from '../routines.js';
 
 const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
@@ -269,7 +269,7 @@ describe('useUploadFilesFeedbackFeedback', () => {
 
     // check notification trigger
     expect(mockedNotifier).toHaveBeenCalledWith({
-      type: uploadFileRoutine.SUCCESS,
+      type: uploadFilesRoutine.SUCCESS,
       payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
     });
   });
@@ -302,7 +302,7 @@ describe('useUploadFilesFeedbackFeedback', () => {
 
     // check notification trigger
     expect(mockedNotifier).toHaveBeenCalledWith({
-      type: uploadFileRoutine.FAILURE,
+      type: uploadFilesRoutine.FAILURE,
       payload: { error },
     });
   });

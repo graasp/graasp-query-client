@@ -112,10 +112,6 @@ export const uploadFiles = async (
     if (previousItemId) {
       itemPayload.append('previousItemId', previousItemId);
     }
-    /* WARNING: this file field needs to be the last one,
-     * otherwise the normal fields can not be read
-     * https://github.com/fastify/fastify-multipart?tab=readme-ov-file#usage
-     */
     for (const f of files) {
       itemPayload.append('files', f);
     }
@@ -125,7 +121,6 @@ export const uploadFiles = async (
         itemPayload,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
-
           onUploadProgress: (progressEvent) => {
             args.onUploadProgress?.(progressEvent);
           },
