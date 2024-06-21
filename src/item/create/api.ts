@@ -115,6 +115,7 @@ export const uploadFiles = async (
     for (const f of files) {
       itemPayload.append('files', f);
     }
+    console.log('wefwefwefwefwef');
     return axios
       .post<DiscriminatedItem>(
         `${API_HOST}/${buildUploadFilesRoute(id)}`,
@@ -126,5 +127,8 @@ export const uploadFiles = async (
           },
         },
       )
-      .then(({ data }) => data);
+      .then((wef) => {
+        console.log('data', wef);
+        return wef.data;
+      });
   });
