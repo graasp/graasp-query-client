@@ -1,4 +1,8 @@
-import { DiscriminatedItem, MAX_FILE_SIZE } from '@graasp/sdk';
+import {
+  DiscriminatedItem,
+  MAX_FILE_SIZE,
+  MAX_NUMBER_OF_FILES_UPLOAD,
+} from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -11,7 +15,7 @@ import {
   PostItemPayloadType,
   PostItemWithThumbnailPayloadType,
 } from '../api.js';
-import { createItemRoutine, uploadFileRoutine } from '../routines.js';
+import { createItemRoutine, uploadFilesRoutine } from '../routines.js';
 import { postItem, postItemWithThumbnail, uploadFiles } from './api.js';
 
 export const usePostItem = (queryConfig: QueryClientConfig) => () => {
@@ -62,18 +66,20 @@ export const useUploadFilesFeedback =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async ({ error, data }: { error?: Error; data?: any; id?: string }) => {
         throwIfArrayContainsErrorOrReturn(data);
-        if (error) throw new Error(JSON.stringify(error));
+        if (error) {
+          throw new Error(JSON.stringify(error));
+        }
       },
       {
         onSuccess: () => {
           notifier?.({
-            type: uploadFileRoutine.SUCCESS,
+            type: uploadFilesRoutine.SUCCESS,
             payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
           });
         },
         onError: (axiosError: Error, { error }) => {
           notifier?.({
-            type: uploadFileRoutine.FAILURE,
+            type: uploadFilesRoutine.FAILURE,
             payload: { error: error ?? axiosError },
           });
         },
@@ -89,13 +95,13 @@ export const useUploadFiles = (queryConfig: QueryClientConfig) => () => {
   const queryClient = useQueryClient();
   const { notifier } = queryConfig;
   return useMutation(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async (args: {
       id?: DiscriminatedItem['id'];
       files: File[];
       previousItemId?: DiscriminatedItem['id'];
       onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
     }) => {
+      console.log(args.files);
       // cannot upload big files
       const finalFiles = args.files.filter(({ size }) => size < MAX_FILE_SIZE);
 
@@ -103,7 +109,7 @@ export const useUploadFiles = (queryConfig: QueryClientConfig) => () => {
         throw new Error('no file to upload');
       }
       // TODO: use SDK!!!
-      if (finalFiles.length > 20) {
+      if (finalFiles.length > MAX_NUMBER_OF_FILES_UPLOAD) {
         throw new Error('too many files to upload');
       }
 
@@ -112,13 +118,13 @@ export const useUploadFiles = (queryConfig: QueryClientConfig) => () => {
     {
       onSuccess: () => {
         notifier?.({
-          type: uploadFileRoutine.SUCCESS,
+          type: uploadFilesRoutine.SUCCESS,
           payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
         });
       },
       onError: (error: Error) => {
         notifier?.({
-          type: uploadFileRoutine.FAILURE,
+          type: uploadFilesRoutine.FAILURE,
           payload: { error },
         });
       },
