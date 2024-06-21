@@ -23,7 +23,7 @@ export const useImportH5P = (queryConfig: QueryClientConfig) => () => {
       onSuccess: () => {
         notifier?.({
           type: importH5PRoutine.SUCCESS,
-          payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
+          payload: { message: SUCCESS_MESSAGES.IMPORT_H5P },
         });
       },
       onError: (error: Error) => {

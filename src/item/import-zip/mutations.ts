@@ -1,16 +1,14 @@
 import { DiscriminatedItem } from '@graasp/sdk';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
+import { REQUEST_MESSAGES } from '@graasp/translations';
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { AxiosProgressEvent } from 'axios';
 
-import { getKeyForParentId } from '../../keys.js';
 import { type QueryClientConfig } from '../../types.js';
 import { importZipRoutine } from '../routines.js';
 import { importZip } from './api.js';
 
 export const useImportZip = (queryConfig: QueryClientConfig) => () => {
-  const queryClient = useQueryClient();
   const { notifier } = queryConfig;
   return useMutation(
     async (args: {
@@ -21,9 +19,10 @@ export const useImportZip = (queryConfig: QueryClientConfig) => () => {
     }) => importZip(args, queryConfig),
     {
       onSuccess: () => {
+        // async endpoint
         notifier?.({
           type: importZipRoutine.SUCCESS,
-          payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
+          payload: { message: REQUEST_MESSAGES.IMPORT_ZIP },
         });
       },
       onError: (error: Error) => {
@@ -31,10 +30,6 @@ export const useImportZip = (queryConfig: QueryClientConfig) => () => {
           type: importZipRoutine.FAILURE,
           payload: { error },
         });
-      },
-      onSettled: (_data, _error, { id }) => {
-        const parentKey = getKeyForParentId(id);
-        queryClient.invalidateQueries(parentKey);
       },
     },
   );
