@@ -2,14 +2,11 @@ import {
   DiscriminatedItem,
   FolderItemFactory,
   HttpMethod,
-  ItemType,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
   RecycledItemData,
-  ThumbnailSize,
   buildPathFromIds,
   getParentFromPath,
 } from '@graasp/sdk';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
@@ -17,10 +14,8 @@ import nock from 'nock';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
-  ITEM_GEOLOCATION,
   OK_RESPONSE,
   RECYCLED_ITEM_DATA,
-  THUMBNAIL_BLOB_RESPONSE,
   UNAUTHORIZED_RESPONSE,
   generateFolders,
 } from '../../test/constants.js';
@@ -34,26 +29,16 @@ import {
   OWN_ITEMS_KEY,
   getKeyForParentId,
   itemKeys,
-  itemsWithGeolocationKeys,
   memberKeys,
 } from '../keys.js';
 import {
   buildCopyItemsRoute,
-  buildDeleteItemThumbnailRoute,
   buildDeleteItemsRoute,
   buildEditItemRoute,
   buildMoveItemsRoute,
-  buildPostItemRoute,
-  buildPostItemWithThumbnailRoute,
   buildRecycleItemsRoute,
   buildRestoreItemsRoute,
-  buildUploadItemThumbnailRoute,
 } from './routes.js';
-import {
-  deleteItemThumbnailRoutine,
-  uploadFileRoutine,
-  uploadItemThumbnailRoutine,
-} from './routines.js';
 
 const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
@@ -65,208 +50,6 @@ describe('Items Mutations', () => {
     queryClient.clear();
     nock.cleanAll();
     mockedNotifier.mockClear();
-  });
-
-  describe('usePostItem', () => {
-    const mutation = mutations.usePostItem;
-    const newItem = {
-      name: 'new item',
-      type: ItemType.FOLDER,
-    };
-
-    it('Post item in root', async () => {
-      const route = `/${buildPostItemRoute()}`;
-      queryClient.setQueryData(itemKeys.allAccessible(), [FolderItemFactory()]);
-
-      const response = { ...newItem, id: 'someid', path: 'someid' };
-
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.Post,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        mockedMutation.mutate(newItem);
-        await waitForMutation();
-      });
-
-      expect(
-        queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
-      ).toBeTruthy();
-    });
-
-    it('Post item in item', async () => {
-      const parentItem = FolderItemFactory();
-      const response = {
-        ...newItem,
-        id: 'someid',
-        path: buildPathFromIds(parentItem.id, 'someid'),
-      };
-
-      // set default data
-      queryClient.setQueryData(getKeyForParentId(parentItem.id), [
-        FolderItemFactory(),
-      ]);
-
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.Post,
-          route: `/${buildPostItemRoute(parentItem.id)}`,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        mockedMutation.mutate({ ...newItem, parentId: parentItem.id });
-        await waitForMutation();
-      });
-
-      expect(
-        queryClient.getQueryState(getKeyForParentId(parentItem.id))
-          ?.isInvalidated,
-      ).toBeTruthy();
-    });
-
-    it('Post item with geolocation', async () => {
-      const parentItem = FolderItemFactory();
-      const singleKey = itemsWithGeolocationKeys.inBounds({
-        lat1: 1,
-        lat2: 2,
-        lng1: 1,
-        lng2: 2,
-      });
-      const response = {
-        ...newItem,
-        id: 'someid',
-        path: buildPathFromIds(parentItem.id, 'someid'),
-      };
-
-      // set default data
-      queryClient.setQueryData(getKeyForParentId(parentItem.id), [
-        FolderItemFactory(),
-      ]);
-      queryClient.setQueryData(singleKey, [ITEM_GEOLOCATION]);
-
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.Post,
-          route: `/${buildPostItemRoute(parentItem.id)}`,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        mockedMutation.mutate({
-          ...newItem,
-          parentId: parentItem.id,
-          geolocation: { lat: 1, lng: 1 },
-        });
-        await waitForMutation();
-      });
-
-      expect(
-        queryClient.getQueryState(getKeyForParentId(parentItem.id))
-          ?.isInvalidated,
-      ).toBeTruthy();
-      expect(queryClient.getQueryState(singleKey)?.isInvalidated).toBeTruthy();
-    });
-
-    it('Post item with thumbnail', async () => {
-      const parentItem = FolderItemFactory();
-      const newItemWithThumbnail = {
-        ...newItem,
-        thumbnail: new Blob(),
-      };
-
-      const response = {
-        ...newItem,
-        id: 'someid',
-        path: buildPathFromIds(parentItem.id, 'someid'),
-        settings: { hasThumbnail: true },
-      };
-
-      // set default data
-      queryClient.setQueryData(getKeyForParentId(parentItem.id), [
-        FolderItemFactory(),
-      ]);
-
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.Post,
-          route: `/${buildPostItemWithThumbnailRoute(parentItem.id)}`,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        mockedMutation.mutate({
-          ...newItemWithThumbnail,
-          parentId: parentItem.id,
-        });
-        await waitForMutation();
-      });
-
-      expect(
-        queryClient.getQueryState(getKeyForParentId(parentItem.id))
-          ?.isInvalidated,
-      ).toBeTruthy();
-    });
-
-    it('Unauthorized', async () => {
-      const route = `/${buildPostItemRoute()}`;
-      queryClient.setQueryData(itemKeys.allAccessible(), [FolderItemFactory()]);
-
-      const endpoints = [
-        {
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.Post,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        mockedMutation.mutate(newItem);
-        await waitForMutation();
-      });
-
-      expect(
-        queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
-      ).toBeTruthy();
-    });
   });
 
   describe('useEditItem', () => {
@@ -345,49 +128,6 @@ describe('Items Mutations', () => {
         queryClient.getQueryState(editedItemKey)?.isInvalidated,
       ).toBeTruthy();
       expect(queryClient.getQueryState(parentKey)?.isInvalidated).toBeTruthy();
-    });
-
-    it('Edit item extra children order invalidate children key', async () => {
-      // set default data
-      const editedItem = FolderItemFactory();
-      const editedItemKey = itemKeys.single(editedItem.id).content;
-      const editPayload = {
-        id: editedItem.id,
-        // these are dummy ids, in reality they should be UUIDs
-        extra: { folder: { childrenOrder: ['1', '2'] } },
-      };
-      const childrenKey = itemKeys.single(editedItem.id).children();
-      queryClient.setQueryData(childrenKey, [FolderItemFactory()]);
-      queryClient.setQueryData(editedItemKey, editedItem);
-
-      const route = `/${buildEditItemRoute(editedItem.id)}`;
-      const response = item;
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.Patch,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        mockedMutation.mutate(editPayload);
-        await waitForMutation();
-      });
-
-      expect(
-        queryClient.getQueryState(editedItemKey)?.isInvalidated,
-      ).toBeTruthy();
-      expect(
-        queryClient.getQueryState(itemKeys.single(editedItem.id).children())
-          ?.isInvalidated,
-      ).toBeTruthy();
     });
 
     it('Unauthorized', async () => {
@@ -804,76 +544,6 @@ describe('Items Mutations', () => {
     });
   });
 
-  describe('useUploadFiles', () => {
-    const mutation = mutations.useUploadFiles;
-    const items = generateFolders();
-    const { id } = items[0];
-
-    it('Upload one item', async () => {
-      // set data in cache
-      items.forEach((item) => {
-        const itemKey = itemKeys.single(item.id).content;
-        queryClient.setQueryData(itemKey, item);
-      });
-      queryClient.setQueryData(itemKeys.allAccessible(), items);
-      queryClient.setQueryData(itemKeys.single(id).children(), items);
-
-      const mockedMutation = await mockMutation({
-        endpoints: [],
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        mockedMutation.mutate({ data: [id], id });
-        await waitForMutation();
-      });
-
-      // check memberships invalidation
-      const data = queryClient.getQueryState(itemKeys.single(id).children());
-      expect(data?.isInvalidated).toBeTruthy();
-
-      // check notification trigger
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: uploadFileRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
-      });
-    });
-
-    it('Error while uploading an item', async () => {
-      // set data in cache
-      items.forEach((item) => {
-        const itemKey = itemKeys.single(item.id).content;
-        queryClient.setQueryData(itemKey, item);
-      });
-      queryClient.setQueryData(itemKeys.allAccessible(), items);
-      queryClient.setQueryData(itemKeys.single(id).children(), items);
-
-      const mockedMutation = await mockMutation({
-        endpoints: [],
-        mutation,
-        wrapper,
-      });
-
-      const error = new Error('an error');
-
-      await act(async () => {
-        mockedMutation.mutate({ id, error });
-        await waitForMutation();
-      });
-
-      // check memberships invalidation
-      const data = queryClient.getQueryState(itemKeys.single(id).children());
-      expect(data?.isInvalidated).toBeTruthy();
-
-      // check notification trigger
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: uploadFileRoutine.FAILURE,
-        payload: { error },
-      });
-    });
-  });
-
   describe('useRestoreItems', () => {
     const mutation = mutations.useRestoreItems;
 
@@ -991,148 +661,6 @@ describe('Items Mutations', () => {
           memberKeys.current().recycled,
         )!.length,
       ).toEqual(0);
-    });
-  });
-
-  describe('useUploadItemThumbnail', () => {
-    const mutation = mutations.useUploadItemThumbnail;
-    const { id } = FolderItemFactory();
-
-    it('Upload thumbnail', async () => {
-      const route = `/${buildUploadItemThumbnailRoute(id)}`;
-
-      // set data in cache
-      Object.values(ThumbnailSize).forEach((size) => {
-        const key = itemKeys.single(id).thumbnail({ size });
-        queryClient.setQueryData(key, Math.random());
-      });
-
-      const response = THUMBNAIL_BLOB_RESPONSE;
-
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.Post,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        mockedMutation.mutate({ id, data: [id] });
-        await waitForMutation();
-      });
-
-      // verify item is still available
-      // in real cases, the path should be different
-      for (const size of Object.values(ThumbnailSize)) {
-        const key = itemKeys.single(id).thumbnail({ size });
-        const state = queryClient.getQueryState(key);
-        expect(state?.isInvalidated).toBeTruthy();
-      }
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: uploadItemThumbnailRoutine.SUCCESS,
-        payload: { message: SUCCESS_MESSAGES.UPLOAD_ITEM_THUMBNAIL },
-      });
-    });
-
-    it('Unauthorized to upload a thumbnail', async () => {
-      const route = `/${buildUploadItemThumbnailRoute(id)}`;
-      // set data in cache
-      Object.values(ThumbnailSize).forEach((size) => {
-        const key = itemKeys.single(id).thumbnail({ size });
-        queryClient.setQueryData(key, Math.random());
-      });
-
-      const response = UNAUTHORIZED_RESPONSE;
-
-      const endpoints = [
-        {
-          response,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.Post,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      const error = new Error(`${StatusCodes.UNAUTHORIZED}`);
-
-      await act(async () => {
-        mockedMutation.mutate({
-          id,
-          error,
-        });
-        await waitForMutation();
-      });
-
-      // verify item is still available
-      // in real cases, the path should be different
-      for (const size of Object.values(ThumbnailSize)) {
-        const key = itemKeys.single(id).thumbnail({ size });
-        const state = queryClient.getQueryState(key);
-        expect(state?.isInvalidated).toBeTruthy();
-      }
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: uploadItemThumbnailRoutine.FAILURE,
-        payload: {
-          error,
-        },
-      });
-    });
-  });
-
-  describe('useDeleteItemThumbnail', () => {
-    const mutation = mutations.useDeleteItemThumbnail;
-    const items = generateFolders(1);
-
-    const itemId = items[0].id;
-    it('Delete item thumbnail', async () => {
-      const route = `/${buildDeleteItemThumbnailRoute(itemId)}`;
-
-      queryClient.setQueryData(itemKeys.single(itemId).allThumbnails, items[0]);
-
-      const response = [StatusCodes.NO_CONTENT];
-
-      const endpoints = [
-        {
-          response,
-          method: HttpMethod.Delete,
-          route,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        mockedMutation.mutate(itemId);
-        await waitForMutation();
-      });
-
-      expect(
-        queryClient.getQueryState(itemKeys.single(itemId).allThumbnails)
-          ?.isInvalidated,
-      ).toBeTruthy();
-
-      expect(mockedNotifier).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: deleteItemThumbnailRoutine.SUCCESS,
-        }),
-      );
     });
   });
 });
