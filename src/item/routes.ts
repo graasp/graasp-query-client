@@ -23,19 +23,30 @@ export const buildGetAccessibleItems = (
     },
   )}`;
 
-export const buildPostItemRoute = (parentId?: UUID) => {
-  let url = ITEMS_ROUTE;
+export const buildPostItemRoute = (parentId?: UUID, previousItemId?: UUID) => {
+  const url = ITEMS_ROUTE;
+  const params = new URLSearchParams();
   if (parentId) {
-    url += `?parentId=${parentId}`;
+    params.set('parentId', parentId);
   }
-  return url;
+  if (previousItemId) {
+    params.set('previousItemId', previousItemId);
+  }
+  return `${url}?${params.toString()}`;
 };
-export const buildPostItemWithThumbnailRoute = (parentId?: UUID) => {
-  let url = `${ITEMS_ROUTE}/with-thumbnail`;
+export const buildPostItemWithThumbnailRoute = (
+  parentId?: UUID,
+  previousItemId?: UUID,
+) => {
+  const url = `${ITEMS_ROUTE}/with-thumbnail`;
+  const params = new URLSearchParams();
   if (parentId) {
-    url += `?parentId=${parentId}`;
+    params.set('parentId', parentId);
   }
-  return url;
+  if (previousItemId) {
+    params.set('previousItemId', previousItemId);
+  }
+  return `${url}?${params.toString()}`;
 };
 export const buildDeleteItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/delete`;
 export const buildDeleteItemsRoute = (ids: UUID[]) =>

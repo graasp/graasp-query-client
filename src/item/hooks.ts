@@ -14,7 +14,6 @@ import {
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import {
   CONSTANT_KEY_STALE_TIME_MILLISECONDS,
-  DEFAULT_THUMBNAIL_SIZE,
   PAGINATED_ITEMS_PER_PAGE,
 } from '../config/constants.js';
 import { UndefinedArgument } from '../config/errors.js';
@@ -29,6 +28,7 @@ import {
 import * as Api from './api.js';
 import { useDescendants } from './descendants/hooks.js';
 import { getOwnItemsRoutine } from './routines.js';
+import { useItemThumbnail, useItemThumbnailUrl } from './thumbnail/hooks.js';
 import { ItemChildrenParams } from './types.js';
 
 const config = (
@@ -296,64 +296,10 @@ const config = (
       });
     },
 
-    useItemThumbnail: ({
-      id,
-      size = DEFAULT_THUMBNAIL_SIZE,
-    }: {
-      id?: UUID;
-      size?: string;
-    }) => {
-      const queryClient = useQueryClient();
-      let shouldFetch = true;
-      if (id) {
-        shouldFetch =
-          queryClient.getQueryData<PackedItem>(itemKeys.single(id).content)
-            ?.settings?.hasThumbnail ?? true;
-      }
-      return useQuery({
-        queryKey: itemKeys.single(id).thumbnail({ size, replyUrl: false }),
-        queryFn: () => {
-          if (!id) {
-            throw new UndefinedArgument();
-          }
-          return Api.downloadItemThumbnail({ id, size }, queryConfig);
-        },
-        ...defaultQueryOptions,
-        enabled: Boolean(id) && shouldFetch,
-        staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
-      });
-    },
-
-    // create a new thumbnail hook because of key content
-    useItemThumbnailUrl: ({
-      id,
-      size = DEFAULT_THUMBNAIL_SIZE,
-    }: {
-      id?: UUID;
-      size?: string;
-    }) => {
-      const queryClient = useQueryClient();
-      let shouldFetch = true;
-      if (id) {
-        shouldFetch =
-          queryClient.getQueryData<PackedItem>(itemKeys.single(id).content)
-            ?.settings?.hasThumbnail ?? true;
-      }
-      return useQuery({
-        queryKey: itemKeys.single(id).thumbnail({ size, replyUrl: true }),
-        queryFn: () => {
-          if (!id) {
-            throw new UndefinedArgument();
-          }
-          return Api.downloadItemThumbnailUrl({ id, size }, queryConfig);
-        },
-        ...defaultQueryOptions,
-        enabled: Boolean(id) && shouldFetch,
-        staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
-      });
-    },
-
     useItemFeedbackUpdates: itemWsHooks?.useItemFeedbackUpdates,
+
+    useItemThumbnail: useItemThumbnail(queryConfig),
+    useItemThumbnailUrl: useItemThumbnailUrl(queryConfig),
   };
 };
 
