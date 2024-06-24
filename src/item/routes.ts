@@ -46,7 +46,7 @@ export const buildPostItemWithThumbnailRoute = (
   if (previousItemId) {
     params.set('previousItemId', previousItemId);
   }
-  return `${url}?${params.toString()}`;
+  return `${url}${params.toString() ? `?${params.toString()}` : ''}`;
 };
 export const buildDeleteItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/delete`;
 export const buildDeleteItemsRoute = (ids: UUID[]) =>
