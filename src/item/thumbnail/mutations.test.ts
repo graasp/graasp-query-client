@@ -45,7 +45,7 @@ describe('useUploadItemThumbnailFeedback', () => {
     // set data in cache
     Object.values(ThumbnailSize).forEach((size) => {
       const key = itemKeys.single(id).thumbnail({ size });
-      queryClient.setQueryData(key, Math.random());
+      queryClient.setQueryData(key, 'thumbnail');
     });
 
     const response = THUMBNAIL_BLOB_RESPONSE;
@@ -87,7 +87,7 @@ describe('useUploadItemThumbnailFeedback', () => {
     // set data in cache
     Object.values(ThumbnailSize).forEach((size) => {
       const key = itemKeys.single(id).thumbnail({ size });
-      queryClient.setQueryData(key, Math.random());
+      queryClient.setQueryData(key, 'thumbnail');
     });
 
     const response = UNAUTHORIZED_RESPONSE;

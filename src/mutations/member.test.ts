@@ -323,7 +323,7 @@ describe('Member Mutations', () => {
       // set data in cache
       Object.values(ThumbnailSize).forEach((size) => {
         const key = memberKeys.single(id).avatar({ size, replyUrl });
-        queryClient.setQueryData(key, Math.random());
+        queryClient.setQueryData(key, 'thumbnail');
       });
 
       const response = AVATAR_BLOB_RESPONSE;
@@ -365,7 +365,7 @@ describe('Member Mutations', () => {
       // set data in cache
       Object.values(ThumbnailSize).forEach((size) => {
         const key = memberKeys.single(id).avatar({ size, replyUrl });
-        queryClient.setQueryData(key, Math.random());
+        queryClient.setQueryData(key, 'thumbnail');
       });
 
       const response = UNAUTHORIZED_RESPONSE;
