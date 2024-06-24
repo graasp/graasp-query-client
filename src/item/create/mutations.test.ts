@@ -1,13 +1,9 @@
-import {
-  FolderItemFactory,
-  HttpMethod,
-  ItemType,
-  buildPathFromIds,
-} from '@graasp/sdk';
+import * as sdk from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
+import { v4 } from 'uuid';
 import { describe, expect, it, vi } from 'vitest';
 
 import {
@@ -25,11 +21,14 @@ import {
   itemKeys,
   itemsWithGeolocationKeys,
 } from '../../keys.js';
+import { buildUploadFilesRoute } from '../../routes.js';
 import {
   buildPostItemRoute,
   buildPostItemWithThumbnailRoute,
 } from '../routes.js';
 import { uploadFilesRoutine } from '../routines.js';
+
+const { FolderItemFactory, HttpMethod, ItemType, buildPathFromIds } = sdk;
 
 const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
@@ -305,5 +304,184 @@ describe('useUploadFilesFeedbackFeedback', () => {
       type: uploadFilesRoutine.FAILURE,
       payload: { error },
     });
+  });
+});
+
+describe('useUploadFiles', () => {
+  const mutation = mutations.useUploadFiles;
+  const response = {
+    data: [
+      {
+        name: 'new item',
+        type: ItemType.FOLDER,
+        id: 'someid',
+      },
+    ],
+    errors: [],
+  };
+
+  it('Upload a file', async () => {
+    // set default data
+    queryClient.setQueryData(itemKeys.allAccessible(), []);
+
+    const endpoints = [
+      {
+        response,
+        method: HttpMethod.Post,
+        route: `/${buildUploadFilesRoute()}`,
+      },
+    ];
+
+    const mockedMutation = await mockMutation({
+      endpoints,
+      mutation,
+      wrapper,
+    });
+
+    await act(async () => {
+      mockedMutation.mutate({
+        files: [new File([], 'name')],
+      });
+      await waitForMutation();
+    });
+
+    expect(
+      queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
+    ).toBeTruthy();
+  });
+  it('Upload a file in parent', async () => {
+    const parentId = v4();
+    const childrenKey = itemKeys.single(parentId).allChildren;
+
+    // set default data
+    queryClient.setQueryData(childrenKey, []);
+
+    const endpoints = [
+      {
+        response,
+        method: HttpMethod.Post,
+        route: `/${buildUploadFilesRoute(parentId)}`,
+      },
+    ];
+
+    const mockedMutation = await mockMutation({
+      endpoints,
+      mutation,
+      wrapper,
+    });
+
+    await act(async () => {
+      mockedMutation.mutate({
+        id: parentId,
+        files: [new File([], 'name')],
+      });
+      await waitForMutation();
+    });
+
+    expect(queryClient.getQueryState(childrenKey)?.isInvalidated).toBeTruthy();
+  });
+  it('Upload 3 files', async () => {
+    // set default data
+    queryClient.setQueryData(itemKeys.allAccessible(), []);
+
+    const endpoints = [
+      {
+        response,
+        method: HttpMethod.Post,
+        route: `/${buildUploadFilesRoute()}`,
+      },
+    ];
+
+    const mockedMutation = await mockMutation({
+      endpoints,
+      mutation,
+      wrapper,
+    });
+
+    await act(async () => {
+      mockedMutation.mutate({
+        files: [
+          new File([], 'name'),
+          new File([], 'name'),
+          new File([], 'name'),
+        ],
+      });
+      await waitForMutation();
+    });
+
+    expect(
+      queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
+    ).toBeTruthy();
+  });
+  it('Warning for big files', async () => {
+    // set default data
+    queryClient.setQueryData(itemKeys.allAccessible(), []);
+
+    const endpoints = [
+      {
+        response,
+        method: HttpMethod.Post,
+        route: `/${buildUploadFilesRoute()}`,
+      },
+    ];
+
+    const mockedMutation = await mockMutation({
+      endpoints,
+      mutation,
+      wrapper,
+    });
+
+    // fake big file
+    const file = new File([], 'name');
+    Object.defineProperty(file, 'size', { value: sdk.MAX_FILE_SIZE + 10 });
+
+    await act(async () => {
+      mockedMutation.mutate({
+        files: [file, new File([], 'name'), new File([], 'name')],
+      });
+      await waitForMutation();
+    });
+
+    // notification of a big file
+    expect(mockedNotifier).toHaveBeenCalledWith(
+      expect.objectContaining({ type: uploadFilesRoutine.FAILURE }),
+    );
+    // still pass and upload the rest of the files
+    expect(mockedNotifier).toHaveBeenCalledWith(
+      expect.objectContaining({ type: uploadFilesRoutine.SUCCESS }),
+    );
+
+    expect(
+      queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
+    ).toBeTruthy();
+  });
+
+  it('Unauthorized', async () => {
+    const route = `/${buildPostItemRoute()}`;
+    queryClient.setQueryData(itemKeys.allAccessible(), [FolderItemFactory()]);
+
+    const endpoints = [
+      {
+        response: UNAUTHORIZED_RESPONSE,
+        statusCode: StatusCodes.UNAUTHORIZED,
+        method: HttpMethod.Post,
+        route,
+      },
+    ];
+
+    const mockedMutation = await mockMutation({
+      endpoints,
+      mutation,
+      wrapper,
+    });
+
+    await act(async () => {
+      mockedMutation.mutate({ files: [new File([], 'name')] });
+      await waitForMutation();
+    });
+
+    expect(
+      queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
+    ).toBeTruthy();
   });
 });

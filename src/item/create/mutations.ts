@@ -2,8 +2,9 @@ import {
   DiscriminatedItem,
   MAX_FILE_SIZE,
   MAX_NUMBER_OF_FILES_UPLOAD,
+  partitionArray,
 } from '@graasp/sdk';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
+import { FAILURE_MESSAGES, SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosProgressEvent } from 'axios';
@@ -54,6 +55,7 @@ export const usePostItem = (queryConfig: QueryClientConfig) => () => {
 };
 
 /**
+ * @deprecated use useUploadFiles
  * this mutation is used for its callback and invalidate the keys
  * @param {UUID} id parent item id where the file is uploaded in
  * @param {error} [error] error ocurred during the file uploading
@@ -91,6 +93,11 @@ export const useUploadFilesFeedback =
     );
   };
 
+/**
+ * Mutation to upload files
+ * bug: currently the backend only support one file at a time, when improving this we need to handle the resultOf's errors
+ * @param queryConfig
+ */
 export const useUploadFiles = (queryConfig: QueryClientConfig) => () => {
   const queryClient = useQueryClient();
   const { notifier } = queryConfig;
@@ -101,19 +108,28 @@ export const useUploadFiles = (queryConfig: QueryClientConfig) => () => {
       previousItemId?: DiscriminatedItem['id'];
       onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
     }) => {
-      console.log(args.files);
-      // cannot upload big files
-      const finalFiles = args.files.filter(({ size }) => size < MAX_FILE_SIZE);
+      // filter out big files to not upload them
+      const [validFiles, bigFiles] = partitionArray(
+        args.files,
+        ({ size }) => size < MAX_FILE_SIZE,
+      );
 
-      if (!finalFiles.length) {
-        throw new Error('no file to upload');
-      }
-      // TODO: use SDK!!!
-      if (finalFiles.length > MAX_NUMBER_OF_FILES_UPLOAD) {
-        throw new Error('too many files to upload');
+      if (bigFiles.length) {
+        // we only notify, we can continue with the valid files
+        notifier?.({
+          type: uploadFilesRoutine.FAILURE,
+          payload: {
+            error: new Error(FAILURE_MESSAGES.UPLOAD_BIG_FILES),
+            data: bigFiles,
+          },
+        });
       }
 
-      return uploadFiles(args, queryConfig);
+      if (validFiles.length > MAX_NUMBER_OF_FILES_UPLOAD) {
+        throw new Error(FAILURE_MESSAGES.UPLOAD_TOO_MANY_FILES);
+      }
+
+      return uploadFiles({ ...args, files: validFiles }, queryConfig);
     },
     {
       onSuccess: () => {

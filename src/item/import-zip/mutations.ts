@@ -19,7 +19,7 @@ export const useImportZip = (queryConfig: QueryClientConfig) => () => {
     }) => importZip(args, queryConfig),
     {
       onSuccess: () => {
-        // async endpoint
+        // send request notification, async endpoint
         notifier?.({
           type: importZipRoutine.SUCCESS,
           payload: { message: REQUEST_MESSAGES.IMPORT_ZIP },

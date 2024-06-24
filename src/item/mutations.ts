@@ -436,8 +436,10 @@ export default (queryConfig: QueryClientConfig) => {
     useDeleteItems,
     useCopyItems,
     useUploadFiles: useUploadFiles(queryConfig),
+    /** @deprecated use useUploadFiles */
     useUploadFilesFeedback: useUploadFilesFeedback(queryConfig),
     useUploadItemThumbnail: useUploadItemThumbnail(queryConfig),
+    /** @deprecated use useUploadItemThumbnail */
     useUploadItemThumbnailFeedback: useUploadItemThumbnailFeedback(queryConfig),
     useRestoreItems,
     useImportZip: useImportZip(queryConfig),
