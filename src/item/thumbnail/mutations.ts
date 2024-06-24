@@ -1,5 +1,5 @@
-import { UUID } from '@graasp/sdk';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
+import { MAX_FILE_SIZE, UUID } from '@graasp/sdk';
+import { FAILURE_MESSAGES, SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosProgressEvent } from 'axios';
@@ -21,7 +21,13 @@ export const useUploadItemThumbnail =
         id: UUID;
         file: Blob;
         onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
-      }) => uploadItemThumbnail(args, queryConfig),
+      }) => {
+        if (args.file.size > MAX_FILE_SIZE) {
+          throw new Error(FAILURE_MESSAGES.UPLOAD_BIG_FILES);
+        }
+
+        return uploadItemThumbnail(args, queryConfig);
+      },
       {
         onSuccess: () => {
           notifier?.({
@@ -44,6 +50,7 @@ export const useUploadItemThumbnail =
     );
   };
 /**
+ * @deprecated use useUploadItemThumbnail
  * this mutation is used for its callback and invalidate the keys
  * @param {UUID} id parent item id where the file is uploaded in
  * @param {error} [error] error occurred during the file uploading

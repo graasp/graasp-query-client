@@ -33,7 +33,7 @@
     "@commitlint/cli": "19.3.0",
     "@commitlint/config-conventional": "19.2.2",
     "@graasp/sdk": "4.14.0",
-    "@graasp/translations": "1.28.1",
+    "@graasp/translations": "github:graasp/graasp-translations#upload-files",
     "@testing-library/dom": "10.1.0",
     "@testing-library/react": "16.0.0",
     "@testing-library/user-event": "14.5.2",
@@ -74,7 +74,7 @@
   },
   "peerDependencies": {
     "@graasp/sdk": "^4.0.0",
-    "@graasp/translations": "^1.23.0",
+    "@graasp/translations": "*",
     "react": "^18.0.0"
   },
   "scripts": {
