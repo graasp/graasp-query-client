@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.14.0](https://github.com/graasp/graasp-query-client/compare/v3.13.3...v3.14.0) (2024-06-26)
+
+
+### Features
+
+* add accumulative accessible hook ([#757](https://github.com/graasp/graasp-query-client/issues/757)) ([e421291](https://github.com/graasp/graasp-query-client/commit/e421291a34560634f6f483394bbd3a3d8aee2803))
+* add upload files mutations ([#809](https://github.com/graasp/graasp-query-client/issues/809)) ([a8fa662](https://github.com/graasp/graasp-query-client/commit/a8fa6624c0b620fb87a64aba5b4cc5e5c147e9f2))
+
 ## [3.13.3](https://github.com/graasp/graasp-query-client/compare/v3.13.2...v3.13.3) (2024-06-17)
 
 
