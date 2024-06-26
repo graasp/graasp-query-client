@@ -16,15 +16,11 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
-import {
-  splitRequestByIds,
-  throwIfArrayContainsErrorOrReturn,
-} from '../api/axios.js';
+import { splitRequestByIds } from '../api/axios.js';
 import {
   OWN_ITEMS_KEY,
   getKeyForParentId,
   itemKeys,
-  itemsWithGeolocationKeys,
   memberKeys,
 } from '../keys.js';
 import {
@@ -34,19 +30,25 @@ import {
 import { DEFAULT_ENABLE_NOTIFICATIONS } from '../utils/notifications.js';
 import * as Api from './api.js';
 import {
+  usePostItem,
+  useUploadFiles,
+  useUploadFilesFeedback,
+} from './create/mutations.js';
+import { useImportH5P } from './h5p/mutations.js';
+import { useImportZip } from './import-zip/mutations.js';
+import {
   copyItemsRoutine,
-  createItemRoutine,
-  deleteItemThumbnailRoutine,
   deleteItemsRoutine,
   editItemRoutine,
-  importH5PRoutine,
-  importZipRoutine,
   moveItemsRoutine,
   recycleItemsRoutine,
   restoreItemsRoutine,
-  uploadFileRoutine,
-  uploadItemThumbnailRoutine,
 } from './routines.js';
+import {
+  useDeleteItemThumbnail,
+  useUploadItemThumbnail,
+  useUploadItemThumbnailFeedback,
+} from './thumbnail/mutations.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -103,42 +105,6 @@ export default (queryConfig: QueryClientConfig) => {
       return prevChildren;
     }
     return null;
-  };
-
-  const usePostItem = () => {
-    const queryClient = useQueryClient();
-    return useMutation(
-      async (
-        item: Api.PostItemPayloadType | Api.PostItemWithThumbnailPayloadType,
-      ) => {
-        // check if thumbnail was provided and if it is defined
-        if ('thumbnail' in item && item.thumbnail) {
-          return Api.postItemWithThumbnail(item, queryConfig);
-        }
-        return Api.postItem(item, queryConfig);
-      },
-      //  we cannot optimistically add an item because we need its id
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: createItemRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
-          });
-        },
-        onError: (error: Error) => {
-          notifier?.({ type: createItemRoutine.FAILURE, payload: { error } });
-        },
-        onSettled: (_data, _error, { geolocation, parentId }) => {
-          const key = getKeyForParentId(parentId);
-          queryClient.invalidateQueries(key);
-
-          // if item has geolocation, invalidate map related keys
-          if (geolocation) {
-            queryClient.invalidateQueries(itemsWithGeolocationKeys.allBounds);
-          }
-        },
-      },
-    );
   };
 
   const useEditItem = ({
@@ -432,126 +398,6 @@ export default (queryConfig: QueryClientConfig) => {
     );
   };
 
-  /**
-   * this mutation is used for its callback and invalidate the keys
-   * @param {UUID} id parent item id where the file is uploaded in
-   * @param {error} [error] error ocurred during the file uploading
-   */
-  const useUploadFiles = () => {
-    const queryClient = useQueryClient();
-    return useMutation(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      async ({ error, data }: { error?: Error; data?: any; id?: string }) => {
-        throwIfArrayContainsErrorOrReturn(data);
-        if (error) throw new Error(JSON.stringify(error));
-      },
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: uploadFileRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
-          });
-        },
-        onError: (axiosError: Error, { error }) => {
-          notifier?.({
-            type: uploadFileRoutine.FAILURE,
-            payload: { error: error ?? axiosError },
-          });
-        },
-        onSettled: (_data, _error, { id }) => {
-          const parentKey = getKeyForParentId(id);
-          queryClient.invalidateQueries(parentKey);
-        },
-      },
-    );
-  };
-
-  /**
-   * this mutation is used for its callback and invalidate the keys
-   * @param {UUID} id parent item id where the file is uploaded in
-   * @param {error} [error] error occurred during the file uploading
-   */
-  const useUploadItemThumbnail = () => {
-    const queryClient = useQueryClient();
-    return useMutation(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      async ({ error }: { id: string; error?: Error; data?: any }) => {
-        if (error) throw new Error(JSON.stringify(error));
-      },
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: uploadItemThumbnailRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.UPLOAD_ITEM_THUMBNAIL },
-          });
-        },
-        onError: (_error, { error }) => {
-          notifier?.({
-            type: uploadItemThumbnailRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error, { id }) => {
-          // invalidate item to update settings.hasThumbnail
-          queryClient.invalidateQueries(itemKeys.single(id).content);
-          queryClient.invalidateQueries(itemKeys.single(id).allThumbnails);
-        },
-      },
-    );
-  };
-
-  const useImportZip = () => {
-    const queryClient = useQueryClient();
-    return useMutation(
-      async ({ error }: { error?: Error; id: string }) => {
-        if (error) {
-          throw new Error(JSON.stringify(error));
-        }
-      },
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: importZipRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.IMPORT_ZIP },
-          });
-        },
-        onError: (_error, { error }) => {
-          notifier?.({ type: importZipRoutine.FAILURE, payload: { error } });
-        },
-        onSettled: (_data, _error, { id }) => {
-          const parentKey = getKeyForParentId(id);
-          queryClient.invalidateQueries(parentKey);
-        },
-      },
-    );
-  };
-
-  const useImportH5P = () => {
-    const queryClient = useQueryClient();
-    return useMutation(
-      async ({ error }: { error?: Error; id: string }) => {
-        if (error) {
-          throw new Error(JSON.stringify(error));
-        }
-      },
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: importH5PRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.IMPORT_H5P },
-          });
-        },
-        onError: (_error, { error }) => {
-          notifier?.({ type: importH5PRoutine.FAILURE, payload: { error } });
-        },
-        onSettled: (_data, _error, { id }) => {
-          const parentKey = getKeyForParentId(id);
-          queryClient.invalidateQueries(parentKey);
-        },
-      },
-    );
-  };
-
   const useRestoreItems = () => {
     const queryClient = useQueryClient();
     return useMutation(
@@ -583,50 +429,22 @@ export default (queryConfig: QueryClientConfig) => {
     // invalidate only on error since endpoint is async
   };
 
-  const useDeleteItemThumbnail = () => {
-    const queryClient = useQueryClient();
-    return useMutation(
-      (itemId: UUID) => Api.deleteItemThumbnail(itemId, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: deleteItemThumbnailRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_THUMBNAIL },
-          });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: deleteItemThumbnailRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error, id) => {
-          // invalidateQueries doesn't invalidate if the query is disabled
-          // so reset the query to avoid issues in the frontend (getting dirty cache).
-          queryClient.resetQueries({
-            queryKey: itemKeys.single(id).allThumbnails,
-          });
-          // try to invalidate the thumbnail (the invalidateQueries doesn't invalidate disabled queries)
-          queryClient.invalidateQueries(itemKeys.single(id).allThumbnails);
-          // invalidate item to update settings.hasThumbnail
-          queryClient.invalidateQueries(itemKeys.single(id).content);
-        },
-      },
-    );
-  };
-
   return {
-    usePostItem,
+    usePostItem: usePostItem(queryConfig),
     useEditItem,
     useRecycleItems,
     useDeleteItems,
     useCopyItems,
-    useUploadFiles,
-    useUploadItemThumbnail,
+    useUploadFiles: useUploadFiles(queryConfig),
+    /** @deprecated use useUploadFiles */
+    useUploadFilesFeedback: useUploadFilesFeedback(queryConfig),
+    useUploadItemThumbnail: useUploadItemThumbnail(queryConfig),
+    /** @deprecated use useUploadItemThumbnail */
+    useUploadItemThumbnailFeedback: useUploadItemThumbnailFeedback(queryConfig),
     useRestoreItems,
-    useImportH5P,
-    useImportZip,
+    useImportZip: useImportZip(queryConfig),
     useMoveItems,
-    useDeleteItemThumbnail,
+    useDeleteItemThumbnail: useDeleteItemThumbnail(queryConfig),
+    useImportH5P: useImportH5P(queryConfig),
   };
 };

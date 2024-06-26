@@ -611,8 +611,8 @@ __metadata:
   dependencies:
     "@commitlint/cli": "npm:19.3.0"
     "@commitlint/config-conventional": "npm:19.2.2"
-    "@graasp/sdk": "npm:4.13.0"
-    "@graasp/translations": "npm:1.28.1"
+    "@graasp/sdk": "npm:4.14.0"
+    "@graasp/translations": "npm:1.30.2"
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
     "@testing-library/dom": "npm:10.2.0"
@@ -657,14 +657,14 @@ __metadata:
     vitest: "npm:1.6.0"
   peerDependencies:
     "@graasp/sdk": ^4.0.0
-    "@graasp/translations": ^1.23.0
+    "@graasp/translations": "*"
     react: ^18.0.0
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@npm:4.13.0":
-  version: 4.13.0
-  resolution: "@graasp/sdk@npm:4.13.0"
+"@graasp/sdk@npm:4.14.0":
+  version: 4.14.0
+  resolution: "@graasp/sdk@npm:4.14.0"
   dependencies:
     "@faker-js/faker": "npm:8.4.1"
     filesize: "npm:10.1.2"
@@ -673,16 +673,16 @@ __metadata:
   peerDependencies:
     date-fns: ^3
     uuid: ^9 || ^10.0.0
-  checksum: 10/13ee13a6025172016efcecb36b1d7d052439dfb3daa0817559031f4c8b8bd6abc14cd328ffae174225378c51252cd63bee4195234d279605879e56971f90907c
+  checksum: 10/899b1003f605e944a00d306e7c0d1f9329e7d4cdf8f13ea2f731130ec16ab14e648ee2d884fbc1baa12ea167bd26f7e974b69031484cc243c615578cf69a74ea
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.28.1":
-  version: 1.28.1
-  resolution: "@graasp/translations@npm:1.28.1"
+"@graasp/translations@npm:1.30.2":
+  version: 1.30.2
+  resolution: "@graasp/translations@npm:1.30.2"
   peerDependencies:
     i18next: ^23.8.1
-  checksum: 10/bb46dbacde5167f70682b482a76de2ad5a49f0b4db6e580cd1966892d2e9c8ae4e3d865595d5e0c5e69a4d759b34d4ffdff4bdee943705442e58dca300bee6ce
+  checksum: 10/0e3d71849e260997a1a90629c2e6d7495ac434b18a9a927b9298a7a3284abe839ef189e2a62ea70723f90e6d34bb666cf0ebeedf4c288fdc95643594b539110e
   languageName: node
   linkType: hard
 
