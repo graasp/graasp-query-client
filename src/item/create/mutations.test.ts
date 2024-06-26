@@ -237,7 +237,7 @@ describe('usePostItem', () => {
   });
 });
 
-describe('useUploadFilesFeedbackFeedback', () => {
+describe('useUploadFilesFeedback', () => {
   const mutation = mutations.useUploadFilesFeedback;
   const items = generateFolders();
   const { id } = items[0];

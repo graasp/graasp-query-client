@@ -177,7 +177,7 @@ describe('useDeleteItemThumbnail', () => {
   });
 });
 
-describe('useUploadFiles', () => {
+describe('useUploadItemThumbnail', () => {
   const item = {
     name: 'new item',
     id: 'someid',

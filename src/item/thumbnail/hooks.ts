@@ -11,6 +11,9 @@ import { itemKeys } from '../../keys.js';
 import { QueryClientConfig } from '../../types.js';
 import { downloadItemThumbnail, downloadItemThumbnailUrl } from './api.js';
 
+/**
+ * @deprecated use useItemThumbnailUrl
+ */
 export const useItemThumbnail =
   (queryConfig: QueryClientConfig) =>
   ({ id, size = DEFAULT_THUMBNAIL_SIZE }: { id?: UUID; size?: string }) => {
