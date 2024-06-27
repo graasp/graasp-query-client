@@ -1,4 +1,5 @@
 import { UUID } from '@graasp/sdk';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -14,16 +15,20 @@ export const useReorderItem = (queryConfig: QueryClientConfig) => () => {
     (args: { id: UUID; parentItemId: UUID; previousItemId?: UUID }) =>
       reorderItem(args, queryConfig),
     {
-      onSuccess: (_data, args) => {
-        queryClient.invalidateQueries(
-          itemKeys.single(args.parentItemId).allChildren,
-        );
-        notifier?.({ type: reorderItemRoutine.SUCCESS });
+      onSuccess: () => {
+        notifier?.({
+          type: reorderItemRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.REORDER_ITEM },
+        });
       },
       onError: (error: Error) => {
         notifier?.({ type: reorderItemRoutine.FAILURE, payload: { error } });
-
         // does not settled since endpoint is async
+      },
+      onSettled: (_data, _error, args) => {
+        queryClient.invalidateQueries(
+          itemKeys.single(args.parentItemId).allChildren,
+        );
       },
     },
   );
