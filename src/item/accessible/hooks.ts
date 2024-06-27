@@ -60,15 +60,19 @@ export const useAccessibleItems =
  */
 export const useInfiniteAccessibleItems =
   (queryConfig: QueryClientConfig) =>
-  (params?: ItemSearchParams, pagination?: PaginationParams) =>
-    useInfiniteQuery({
-      queryKey: itemKeys.infiniteAccessible(params),
+  (params?: ItemSearchParams, pagination?: PaginationParams) => {
+    const debouncedName = useDebounce(params?.name, 500);
+    const finalParams = { ...params, name: debouncedName };
+
+    return useInfiniteQuery({
+      queryKey: itemKeys.infiniteAccessible(finalParams),
       queryFn: ({ pageParam }) =>
         getAccessibleItems(
-          params,
+          finalParams,
           { page: pageParam ?? 1, ...pagination },
           queryConfig,
         ),
       getNextPageParam: (_lastPage, pages) => pages.length + 1,
       refetchOnWindowFocus: () => false,
     });
+  };
