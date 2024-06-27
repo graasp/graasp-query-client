@@ -1,6 +1,7 @@
 import {
   DiscriminatedItem,
   MAX_TARGETS_FOR_MODIFY_REQUEST,
+  PackedItem,
   RecycledItemData,
   UUID,
   buildPathFromIds,
@@ -322,67 +323,55 @@ export default (queryConfig: QueryClientConfig) => {
   const useMoveItems = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      ({ ids, to }: { ids: UUID[]; to?: UUID }) =>
+      ({ items, to }: { items: PackedItem[]; to?: UUID }) =>
         splitRequestByIds<DiscriminatedItem>(
-          ids,
+          items.map((i) => i.id),
           MAX_TARGETS_FOR_MODIFY_REQUEST,
           (chunk) => Api.moveItems({ ids: chunk, to }, queryConfig),
         ),
       {
-        onMutate: async ({ ids, to }: { ids: UUID[]; to?: UUID }) => {
-          const itemIds = ids;
-          const itemsData = itemIds
-            .map((itemId: UUID) => {
-              const itemKey = itemKeys.single(itemId).content;
-              const itemData =
-                queryClient.getQueryData<DiscriminatedItem>(itemKey);
-              return itemData;
-            })
-            .filter(Boolean) as DiscriminatedItem[];
+        onMutate: async ({ items, to }) => {
+          const itemIds = items.map((i) => i.id);
+          if (items.length) {
+            // suppose items are at the same level
+            const { path } = items[0];
+            // add item in target item
+            await mutateParentChildren(
+              {
+                id: to,
+                value: (old: PackedItem[]) => old?.concat(items),
+              },
+              queryClient,
+            );
 
-          const { path } = itemsData[0];
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const context: any = {
-            ...(Boolean(itemsData) && {
-              // add item in target item
-              targetParent: await mutateParentChildren(
-                {
-                  id: to,
-                  value: (old: DiscriminatedItem[]) => old?.concat(itemsData),
-                },
-                queryClient,
-              ),
+            // remove item in original item
+            await mutateParentChildren(
+              {
+                childPath: path,
+                value: (old: PackedItem[]) =>
+                  old?.filter(({ id: oldId }) => !itemIds.includes(oldId)),
+              },
+              queryClient,
+            );
+          }
 
-              // remove item in original item
-              originalParent: await mutateParentChildren(
-                {
-                  childPath: path,
-                  value: (old: DiscriminatedItem[]) =>
-                    old?.filter(({ id: oldId }) => !itemIds.includes(oldId)),
-                },
-                queryClient,
-              ),
-            }),
-          };
-
-          const toData = queryClient.getQueryData<DiscriminatedItem>(
+          const toData = queryClient.getQueryData<PackedItem>(
             itemKeys.single(to).content,
           );
           if (toData?.id) {
             const toDataId = toData.id;
             // update item's path
             itemIds.forEach(async (itemId: UUID) => {
-              context[itemId] = await mutateItem({
+              await mutateItem({
                 queryClient,
                 id: itemId,
-                value: (item: DiscriminatedItem) => ({
+                value: (item: PackedItem) => ({
                   ...item,
                   path: buildPathFromIds(toDataId, itemId),
                 }),
               });
             });
           }
-          return context;
         },
         // If the mutation fails, use the context returned from onMutate to roll back
         onError: (error: Error) => {
