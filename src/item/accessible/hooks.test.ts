@@ -81,7 +81,7 @@ describe('useInfiniteAccessibleItems', () => {
   const hook = () => hooks.useInfiniteAccessibleItems(params);
   const key = itemKeys.infiniteAccessible(params);
 
-  it.only(`Receive accessible items`, async () => {
+  it(`Receive accessible items`, async () => {
     const endpoints = [{ route, response }];
     const { data } = await mockHook({ endpoints, hook, wrapper });
     expect(data!.pages[0]).toMatchObject(response);

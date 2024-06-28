@@ -413,7 +413,7 @@ describe('useUploadFiles', () => {
       queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
     ).toBeTruthy();
   });
-  it.only('Warning for big files', async () => {
+  it('Warning for big files', async () => {
     // set default data
     queryClient.setQueryData(itemKeys.allAccessible(), []);
 
