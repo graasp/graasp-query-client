@@ -19,17 +19,14 @@ import {
 } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import { memberKeys } from '../keys.js';
+import { SIGN_OUT_ROUTE } from '../routes.js';
 import {
-  SIGN_OUT_ROUTE,
   buildDeleteMemberRoute,
   buildPatchMember,
   buildUpdateMemberPasswordRoute,
   buildUploadAvatarRoute,
-} from '../routes.js';
-import {
-  updatePasswordRoutine,
-  uploadAvatarRoutine,
-} from '../routines/member.js';
+} from './routes.js';
+import { updatePasswordRoutine, uploadAvatarRoutine } from './routines.js';
 
 const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
@@ -39,62 +36,6 @@ describe('Member Mutations', () => {
   afterEach(() => {
     queryClient.clear();
     nock.cleanAll();
-  });
-
-  describe('useSignOut', () => {
-    const route = `/${SIGN_OUT_ROUTE}`;
-    const mutation = mutations.useSignOut;
-
-    it(`Successfully sign out`, async () => {
-      const endpoints = [{ route, response: OK_RESPONSE }];
-      // set random data in cache
-      queryClient.setQueryData(memberKeys.current().content, MemberFactory());
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      await act(async () => {
-        mockedMutation.mutate(undefined);
-        await waitForMutation();
-      });
-
-      // verify cache keys
-      expect(queryClient.getQueryData(memberKeys.current().content)).toEqual(
-        undefined,
-      );
-    });
-
-    it(`Unauthorized`, async () => {
-      // set random data in cache
-      const member = MemberFactory();
-      queryClient.setQueryData(memberKeys.current().content, member);
-      const endpoints = [
-        {
-          method: HttpMethod.Get,
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          route,
-        },
-      ];
-      const mockedMutation = await mockMutation({
-        mutation,
-        endpoints,
-        wrapper,
-      });
-
-      await act(async () => {
-        mockedMutation.mutate(undefined);
-        await waitForMutation();
-      });
-
-      // verify cache keys
-      expect(
-        queryClient.getQueryData(memberKeys.current().content),
-      ).toMatchObject(member);
-    });
   });
 
   describe('useDeleteMember', () => {

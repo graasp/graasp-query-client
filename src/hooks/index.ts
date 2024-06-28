@@ -1,6 +1,9 @@
 import { WebsocketClient } from '@graasp/sdk';
 
 import configureItemHooks from '../item/hooks.js';
+import configureMemberHooks from '../member/hooks.js';
+import configurePublicProfileHooks from '../member/publicProfile/hooks.js';
+import configureSubscriptionHooks from '../member/subscription/hooks.js';
 import { QueryClientConfig } from '../types.js';
 import configureActionHooks from './action.js';
 import configureAppsHooks from './apps.js';
@@ -16,13 +19,10 @@ import configureItemLoginHooks from './itemLogin.js';
 import configureItemPublishedHooks from './itemPublish.js';
 import configureItemTagHooks from './itemTag.js';
 import configureItemValidationHooks from './itemValidation.js';
-import configureMemberHooks from './member.js';
 import configureMembershipHooks from './membership.js';
 import configureMentionsHooks from './mention.js';
-import configurePublicProfileHooks from './publicProfile.js';
 import configureKeywordSearchHooks from './search.js';
 import configureShortLinkHooks from './shortLink.js';
-import configureSubscriptionHooks from './subscription.js';
 import useDebounce from './useDebounce.js';
 
 export default (

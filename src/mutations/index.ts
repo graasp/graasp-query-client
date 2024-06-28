@@ -1,4 +1,6 @@
 import itemMutations from '../item/mutations.js';
+import memberMutations from '../member/mutations.js';
+import publicProfileMutations from '../member/publicProfile/mutations.js';
 import { QueryClientConfig } from '../types.js';
 import actionMutations from './action.js';
 import authenticationMutations from './authentication.js';
@@ -16,10 +18,8 @@ import itemLoginMutations from './itemLogin.js';
 import itemPublishMutations from './itemPublish.js';
 import tagsMutations from './itemTag.js';
 import itemValidationMutations from './itemValidation.js';
-import memberMutations from './member.js';
 import itemMembershipMutations from './membership.js';
 import mentionMutations from './mention.js';
-import publicProfileMutations from './publicProfile.js';
 import shortLinksMutations from './shortLink.js';
 
 const configureMutations = (queryConfig: QueryClientConfig) => ({

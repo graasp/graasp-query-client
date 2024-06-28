@@ -11,15 +11,12 @@ import { DEFAULT_LANG } from '@graasp/translations';
 
 import qs from 'qs';
 
-import { DEFAULT_THUMBNAIL_SIZE } from './config/constants.js';
 import * as itemRoutes from './item/routes.js';
 import { AggregateActionsArgs } from './utils/action.js';
 
 export const APPS_ROUTE = 'app-items';
 export const ITEMS_ROUTE = 'items';
 export const ITEM_MEMBERSHIPS_ROUTE = 'item-memberships';
-export const MEMBERS_ROUTE = `members`;
-export const SUBSCRIPTION_ROUTE = 'subscriptions';
 export const INVITATIONS_ROUTE = `invitations`;
 export const GET_BOOKMARKED_ITEMS_ROUTE = `${ITEMS_ROUTE}/favorite`;
 export const CATEGORIES_ROUTE = `${ITEMS_ROUTE}/categories`;
@@ -72,23 +69,6 @@ export const buildDeleteMentionRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/mentions/${id}`;
 export const buildClearMentionsRoute = () => `${ITEMS_ROUTE}/mentions`;
 
-export const buildGetMembersBy = (emails: string[]) =>
-  `${MEMBERS_ROUTE}/search${qs.stringify(
-    { email: emails.map((e) => e.toLowerCase()) },
-    {
-      arrayFormat: 'repeat',
-      addQueryPrefix: true,
-    },
-  )}`;
-export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
-export const buildGetMembersRoute = (ids: UUID[]) =>
-  `${MEMBERS_ROUTE}?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
-export const buildGetMemberStorage = () => `${MEMBERS_ROUTE}/current/storage`;
-
-export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
-export const buildDeleteMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
-export const buildUpdateMemberPasswordRoute = () =>
-  `${MEMBERS_ROUTE}/update-password`;
 export const buildUploadFilesRoute = (parentId?: UUID) =>
   `${ITEMS_ROUTE}/upload${qs.stringify(
     { id: parentId },
@@ -105,22 +85,6 @@ export const buildImportH5PRoute = (parentId?: UUID) =>
     { addQueryPrefix: true },
   )}`;
 
-export const buildUploadAvatarRoute = () => `${MEMBERS_ROUTE}/avatar`;
-export const buildDownloadAvatarRoute = ({
-  id,
-  replyUrl,
-  size = DEFAULT_THUMBNAIL_SIZE,
-}: {
-  id: UUID;
-  replyUrl: boolean;
-  size?: string;
-}) =>
-  `${MEMBERS_ROUTE}/${id}/avatar/${size}${qs.stringify(
-    { replyUrl },
-    { addQueryPrefix: true },
-  )}`;
-
-export const GET_CURRENT_MEMBER_ROUTE = `${MEMBERS_ROUTE}/current`;
 export const MOBILE_SIGN_UP_ROUTE = `m/register`;
 export const MOBILE_SIGN_IN_ROUTE = `m/login`;
 export const MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE = `m/login-password`;
@@ -240,20 +204,6 @@ export const buildGetActions = (
     },
   )}`;
 
-export const buildGetMemberActionsRoute = (args: {
-  startDate?: string;
-  endDate?: string;
-}) =>
-  `${MEMBERS_ROUTE}/actions${qs.stringify(
-    {
-      startDate: args.startDate,
-      endDate: args.endDate,
-    },
-    {
-      addQueryPrefix: true,
-    },
-  )}`;
-
 export const buildGetAggregateActions = <K extends AggregateBy[]>(
   args: AggregateActionsArgs<K>,
 ) =>
@@ -293,17 +243,6 @@ export const buildPostInvitationsRoute = (itemId: UUID) =>
 export const buildResendInvitationRoute = (args: { itemId: UUID; id: UUID }) =>
   `${ITEMS_ROUTE}/${args.itemId}/${INVITATIONS_ROUTE}/${args.id}/send`;
 
-export const GET_PLANS_ROUTE = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/plans`;
-export const GET_OWN_PLAN_ROUTE = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/plans/own`;
-export const buildGetPlanRoute = (planId: string) =>
-  `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/plans/${planId}`;
-export const buildChangePlanRoute = (planId: string) =>
-  `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/plans/${planId}`;
-export const GET_CARDS_ROUTE = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/cards`;
-export const buildSetDefaultCardRoute = (cardId: string) =>
-  `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/cards/${cardId}/default`;
-export const CREATE_SETUP_INTENT_ROUTE = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/setup-intent`;
-export const GET_CURRENT_CUSTOMER = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/customer/current`;
 export const buildItemPublishRoute = (itemId: UUID, notification?: boolean) =>
   // do not include notification query string if false
   `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/${itemId}/publish${
@@ -355,10 +294,6 @@ export const buildGetEtherpadRoute = (itemId: UUID) =>
 
 export const SEARCH_PUBLISHED_ITEMS_ROUTE = `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/search`;
 
-export const PUBLIC_PROFILE_ROUTE = `profile`;
-export const GET_OWN_PROFILE = `${PUBLIC_PROFILE_ROUTE}/own`;
-export const buildGetPublicProfileRoute = (memberId: UUID) =>
-  `${PUBLIC_PROFILE_ROUTE}/${memberId}`;
 export const buildGetShortLinkAvailableRoute = (alias: string) =>
   `${SHORT_LINKS_ROUTE}/available/${alias}`;
 export const buildGetShortLinksItemRoute = (itemId: string) =>
@@ -442,9 +377,7 @@ export const API_ROUTES = {
   buildDeleteItemLoginSchemaRoute,
   buildDeleteItemMembershipRoute,
   buildDeleteItemTagRoute,
-  buildDeleteMemberRoute,
   buildDeleteShortLinkRoute,
-  buildDownloadAvatarRoute,
   buildEditItemMembershipRoute,
   buildExportActions,
   buildExportItemChatRoute,
@@ -469,12 +402,8 @@ export const API_ROUTES = {
   buildGetItemTagsRoute,
   buildGetLastItemValidationGroupRoute,
   buildGetLikesForMemberRoute,
-  buildGetMember,
-  buildGetMembersBy,
-  buildGetMembersRoute,
   buildGetMostLikedPublishedItemsRoute,
   buildGetMostRecentPublishedItemsRoute,
-  buildGetPlanRoute,
   buildGetPublishedItemsForMemberRoute,
   buildGetShortLinkAvailableRoute,
   buildGetShortLinksItemRoute,
@@ -485,7 +414,6 @@ export const API_ROUTES = {
   buildManyGetItemPublishedInformationsRoute,
   buildPatchInvitationRoute,
   buildPatchItemChatMessageRoute,
-  buildPatchMember,
   buildPatchShortLinkRoute,
   buildPostEtherpadRoute,
   buildPostInvitationsRoute,
@@ -504,11 +432,9 @@ export const API_ROUTES = {
   buildPutItemLoginSchemaRoute,
   buildResendInvitationRoute,
   buildUpdateItemValidationReviewRoute,
-  buildUpdateMemberPasswordRoute,
-  buildUploadAvatarRoute,
+
   buildUploadFilesRoute,
   GET_CATEGORY_TYPES_ROUTE,
-  GET_CURRENT_MEMBER_ROUTE,
   GET_BOOKMARKED_ITEMS_ROUTE,
   GET_FLAGS_ROUTE,
   GET_ITEM_VALIDATION_REVIEWS_ROUTE,
@@ -521,9 +447,6 @@ export const API_ROUTES = {
   SIGN_OUT_ROUTE,
   SIGN_UP_ROUTE,
   VALIDATION_ROUTE,
-  PUBLIC_PROFILE_ROUTE,
-  GET_OWN_PROFILE,
-  buildGetPublicProfileRoute,
   buildGetItemsInMapRoute,
   buildGetItemGeolocationRoute,
   buildDeleteItemGeolocationRoute,
