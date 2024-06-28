@@ -61,6 +61,7 @@ export const useAccessibleItems =
 export const useInfiniteAccessibleItems =
   (queryConfig: QueryClientConfig) =>
   (params?: ItemSearchParams, pagination?: PaginationParams) => {
+    const queryClient = useQueryClient();
     const debouncedName = useDebounce(params?.name, 500);
     const finalParams = { ...params, name: debouncedName };
 
@@ -72,6 +73,16 @@ export const useInfiniteAccessibleItems =
           { page: pageParam ?? 1, ...pagination },
           queryConfig,
         ),
+      onSuccess: async ({ pages }) => {
+        // save items in their own key
+        // eslint-disable-next-line no-unused-expressions
+        for (const p of pages) {
+          p?.data?.forEach(async (item) => {
+            const { id } = item;
+            queryClient.setQueryData(itemKeys.single(id).content, item);
+          });
+        }
+      },
       getNextPageParam: (_lastPage, pages) => pages.length + 1,
       refetchOnWindowFocus: () => false,
     });
