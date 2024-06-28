@@ -413,10 +413,42 @@ describe('useUploadFiles', () => {
       queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
     ).toBeTruthy();
   });
-  it('Warning for big files', async () => {
+  it.only('Warning for big files', async () => {
     // set default data
     queryClient.setQueryData(itemKeys.allAccessible(), []);
 
+    const endpoints = [
+      {
+        response,
+        method: HttpMethod.Post,
+        route: `/${buildUploadFilesRoute()}`,
+      },
+    ];
+
+    const mockedMutation = await mockMutation({
+      endpoints,
+      mutation,
+      wrapper,
+    });
+
+    await act(async () => {
+      mockedMutation.mutate({
+        files: [],
+      });
+      await waitForMutation();
+    });
+
+    // notification of a big file
+    expect(mockedNotifier).toHaveBeenCalledWith(
+      expect.objectContaining({ type: uploadFilesRoutine.FAILURE }),
+    );
+
+    expect(
+      queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
+    ).toBeTruthy();
+  });
+
+  it('Throw for no file', async () => {
     const endpoints = [
       {
         response,

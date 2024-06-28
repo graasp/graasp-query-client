@@ -23,7 +23,6 @@ export const useReorderItem = (queryConfig: QueryClientConfig) => () => {
       },
       onError: (error: Error) => {
         notifier?.({ type: reorderItemRoutine.FAILURE, payload: { error } });
-        // does not settled since endpoint is async
       },
       onSettled: (_data, _error, args) => {
         queryClient.invalidateQueries(

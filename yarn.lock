@@ -612,7 +612,7 @@ __metadata:
     "@commitlint/cli": "npm:19.3.0"
     "@commitlint/config-conventional": "npm:19.2.2"
     "@graasp/sdk": "npm:4.14.1"
-    "@graasp/translations": "github:graasp/graasp-translations#reorder-message"
+    "@graasp/translations": "npm:1.31.0"
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
     "@testing-library/dom": "npm:10.2.0"
@@ -677,12 +677,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graasp/translations@github:graasp/graasp-translations#reorder-message":
-  version: 1.30.3
-  resolution: "@graasp/translations@https://github.com/graasp/graasp-translations.git#commit=0a1640203a0c7ed7e86da0c11e2b5b311a6263e9"
+"@graasp/translations@npm:1.31.0":
+  version: 1.31.0
+  resolution: "@graasp/translations@npm:1.31.0"
   peerDependencies:
     i18next: ^23.8.1
-  checksum: 10/95212f09e5838791b8a4a0aa27cb696916fde4240121ababaa59306e630791ed47cece41787591318df82c781555bb823d231be9f62be161534c50c62d69863d
+  checksum: 10/32d0bd0a8ff50326195b573e95f645715bb66d96a21b1598f3fc30fba71ce0010f8db67003aebdfd1e521d7bafe82803b7b36f459aeca6265dd6f7bc6258a1ca
   languageName: node
   linkType: hard
 

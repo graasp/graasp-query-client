@@ -81,7 +81,7 @@ describe('useInfiniteAccessibleItems', () => {
   const hook = () => hooks.useInfiniteAccessibleItems(params);
   const key = itemKeys.infiniteAccessible(params);
 
-  it(`Receive accessible items`, async () => {
+  it.only(`Receive accessible items`, async () => {
     const endpoints = [{ route, response }];
     const { data } = await mockHook({ endpoints, hook, wrapper });
     expect(data!.pages[0]).toMatchObject(response);
@@ -90,6 +90,12 @@ describe('useInfiniteAccessibleItems', () => {
       queryClient.getQueryData<{ pages: Paginated<PackedItem>[] }>(key)!
         .pages[0],
     ).toMatchObject(response);
+
+    for (const item of response.data) {
+      expect(
+        queryClient.getQueryData<PackedItem>(itemKeys.single(item.id).content),
+      ).toMatchObject(item);
+    }
   });
 
   it(`calling nextPage accumulate items`, async () => {
