@@ -431,6 +431,38 @@ describe('useUploadFiles', () => {
       wrapper,
     });
 
+    await act(async () => {
+      mockedMutation.mutate({
+        files: [],
+      });
+      await waitForMutation();
+    });
+
+    // notification of a big file
+    expect(mockedNotifier).toHaveBeenCalledWith(
+      expect.objectContaining({ type: uploadFilesRoutine.FAILURE }),
+    );
+
+    expect(
+      queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
+    ).toBeTruthy();
+  });
+
+  it('Throw for no file', async () => {
+    const endpoints = [
+      {
+        response,
+        method: HttpMethod.Post,
+        route: `/${buildUploadFilesRoute()}`,
+      },
+    ];
+
+    const mockedMutation = await mockMutation({
+      endpoints,
+      mutation,
+      wrapper,
+    });
+
     // fake big file
     const file = new File([], 'name');
     Object.defineProperty(file, 'size', { value: sdk.MAX_FILE_SIZE + 10 });

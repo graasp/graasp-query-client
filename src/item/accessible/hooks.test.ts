@@ -90,6 +90,12 @@ describe('useInfiniteAccessibleItems', () => {
       queryClient.getQueryData<{ pages: Paginated<PackedItem>[] }>(key)!
         .pages[0],
     ).toMatchObject(response);
+
+    for (const item of response.data) {
+      expect(
+        queryClient.getQueryData<PackedItem>(itemKeys.single(item.id).content),
+      ).toMatchObject(item);
+    }
   });
 
   it(`calling nextPage accumulate items`, async () => {

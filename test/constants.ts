@@ -10,7 +10,6 @@ import {
   ExportedChatMessage,
   FlagType,
   FolderItemFactory,
-  FolderItemType,
   HttpMethod,
   Invitation,
   ItemBookmark,
@@ -91,8 +90,10 @@ export const buildResultOfData = <T>(
   };
 };
 
-export const generateFolders = (nb: number = 5): FolderItemType[] =>
-  Array.from({ length: nb }, () => FolderItemFactory());
+export const generateFolders = (
+  nb: number = 5,
+): ReturnType<typeof PackedFolderItemFactory>[] =>
+  Array.from({ length: nb }, () => PackedFolderItemFactory());
 
 export const generateMembers = (nb: number = 5) =>
   Array.from({ length: nb }, () => MemberFactory());

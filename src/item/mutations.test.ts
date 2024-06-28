@@ -260,7 +260,7 @@ describe('Items Mutations', () => {
       await act(async () => {
         mockedMutation.mutate({
           to: toId,
-          ids: movedIds,
+          items: moved,
         });
         await waitForMutation();
       });
@@ -312,7 +312,7 @@ describe('Items Mutations', () => {
       await act(async () => {
         mockedMutation.mutate({
           to: toId,
-          ids: movedIds,
+          items: moved,
         });
         await waitForMutation();
       });

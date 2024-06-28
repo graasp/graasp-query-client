@@ -125,6 +125,10 @@ export const useUploadFiles = (queryConfig: QueryClientConfig) => () => {
         });
       }
 
+      if (!validFiles.length) {
+        throw new Error(FAILURE_MESSAGES.UPLOAD_EMPTY_FILE);
+      }
+
       if (validFiles.length > MAX_NUMBER_OF_FILES_UPLOAD) {
         throw new Error(FAILURE_MESSAGES.UPLOAD_TOO_MANY_FILES);
       }
