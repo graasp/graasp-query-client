@@ -9,28 +9,29 @@ import {
 
 import { StatusCodes } from 'http-status-codes';
 
+import { verifyAuthentication } from '../api/axios.js';
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
+import { PartialQueryConfigForApi } from '../types.js';
 import {
-  GET_CURRENT_MEMBER_ROUTE,
   buildDeleteMemberRoute,
   buildDownloadAvatarRoute,
+  buildGetCurrentMember,
   buildGetMember,
   buildGetMemberStorage,
-  buildGetMembersBy,
-  buildGetMembersRoute,
+  buildGetMembersByEmail,
+  buildGetMembersById,
   buildPatchMember,
+  buildPostMemberEmailUpdate,
   buildUpdateMemberPasswordRoute,
   buildUploadAvatarRoute,
-} from '../routes.js';
-import { PartialQueryConfigForApi } from '../types.js';
-import { verifyAuthentication } from './axios.js';
+} from './routes.js';
 
-export const getMembersBy = async (
+export const getMembersByEmail = async (
   { emails }: { emails: string[] },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersBy(emails)}`)
+    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersByEmail(emails)}`)
     .then(({ data }) => data);
 
 export const getMember = async (
@@ -46,7 +47,7 @@ export const getMembers = (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersRoute(ids)}`)
+    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersById(ids)}`)
     .then(({ data }) => data);
 
 export const getCurrentMember = async ({
@@ -55,7 +56,7 @@ export const getCurrentMember = async ({
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
-      .get<CompleteMember>(`${API_HOST}/${GET_CURRENT_MEMBER_ROUTE}`)
+      .get<CompleteMember>(`${API_HOST}/${buildGetCurrentMember()}`)
       .then(({ data }) => data)
       .catch((error) => {
         if (error.response) {
@@ -164,3 +165,22 @@ export const downloadAvatarUrl = async (
       `${API_HOST}/${buildDownloadAvatarRoute({ id, size, replyUrl: true })}`,
     )
     .then(({ data }) => data);
+
+export const updateEmail = async (
+  email: string,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
+  axios.post<void>(`${API_HOST}/${buildPostMemberEmailUpdate()}`, {
+    email,
+  });
+
+export const validateEmailUpdate = async (
+  token: string,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
+  axios.patch<void>(
+    `${API_HOST}/${buildPostMemberEmailUpdate()}`,
+    {},
+    // send the JWT as a bearer auth
+    { headers: { Authorization: `Bearer ${token}` } },
+  );

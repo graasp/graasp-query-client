@@ -1,3 +1,5 @@
+import { verifyAuthentication } from '../../api/axios.js';
+import { PartialQueryConfigForApi } from '../../types.js';
 import {
   CREATE_SETUP_INTENT_ROUTE,
   GET_CARDS_ROUTE,
@@ -8,8 +10,6 @@ import {
   buildGetPlanRoute,
   buildSetDefaultCardRoute,
 } from '../routes.js';
-import { PartialQueryConfigForApi } from '../types.js';
-import { verifyAuthentication } from './axios.js';
 
 export const getPlan = async (
   { planId }: { planId: string },

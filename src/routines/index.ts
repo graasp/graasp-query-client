@@ -13,8 +13,5 @@ export * from './itemLogin.js';
 export * from './itemPublish.js';
 export * from './itemTag.js';
 export * from './itemValidation.js';
-export * from './member.js';
 export * from './membership.js';
 export * from './mentions.js';
-export * from './publicProfile.js';
-export * from './subscription.js';

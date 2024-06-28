@@ -6,11 +6,11 @@ import {
   UUID,
 } from '@graasp/sdk';
 
+import { buildGetMemberActionsRoute } from '../member/routes.js';
 import {
   buildExportActions,
   buildGetActions,
   buildGetAggregateActions,
-  buildGetMemberActionsRoute,
   buildPostItemAction,
 } from '../routes.js';
 import { PartialQueryConfigForApi } from '../types.js';
@@ -26,7 +26,7 @@ export const getActions = async (
 
 export const getMemberActions = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
-  args: { startDate?: string; endDate?: string } = {},
+  args: { startDate: string; endDate: string },
 ) =>
   axios
     .get<Action[]>(`${API_HOST}/${buildGetMemberActionsRoute(args)}`)

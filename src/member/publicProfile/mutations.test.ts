@@ -4,9 +4,16 @@ import { act } from '@testing-library/react';
 import nock from 'nock';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { memberKeys } from '../keys.js';
-import { MEMBERS_ROUTE, PUBLIC_PROFILE_ROUTE } from '../routes.js';
+import {
+  mockMutation,
+  setUpTest,
+  waitForMutation,
+} from '../../../test/utils.js';
+import { memberKeys } from '../../keys.js';
+import {
+  buildPatchPublicProfileRoute,
+  buildPostPublicProfileRoute,
+} from '../routes.js';
 
 const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
@@ -30,7 +37,7 @@ describe('Public Profile Mutations', () => {
     const mutation = mutations.usePostPublicProfile;
 
     it('Post profile', async () => {
-      const route = `/${MEMBERS_ROUTE}/${PUBLIC_PROFILE_ROUTE}`;
+      const route = `/${buildPostPublicProfileRoute()}`;
       const response = { ...newProfile, id: 'someid', member: MemberFactory() };
 
       queryClient.setQueryData(memberKeys.current().profile, response);
@@ -71,7 +78,7 @@ describe('Public Profile Mutations', () => {
     };
 
     it('Edit public profile', async () => {
-      const route = `/${MEMBERS_ROUTE}/${PUBLIC_PROFILE_ROUTE}`;
+      const route = `/${buildPatchPublicProfileRoute()}`;
       const response = null;
       const endpoints = [
         {

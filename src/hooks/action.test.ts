@@ -23,11 +23,8 @@ import {
   buildAggregateActionsKey,
   memberKeys,
 } from '../keys.js';
-import {
-  buildGetActions,
-  buildGetAggregateActions,
-  buildGetMemberActionsRoute,
-} from '../routes.js';
+import { buildGetMemberActionsRoute } from '../member/routes.js';
+import { buildGetActions, buildGetAggregateActions } from '../routes.js';
 
 type AggregateActionsResponse = {
   aggregateResult: number;
