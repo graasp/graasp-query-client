@@ -2,6 +2,7 @@ import { H5PItemFactory, HttpMethod } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
+import { v4 } from 'uuid';
 import { describe, expect, it, vi } from 'vitest';
 
 import { UNAUTHORIZED_RESPONSE } from '../../../test/constants.js';
@@ -52,6 +53,11 @@ describe('useImportH5P', () => {
       await waitForMutation();
     });
 
+    // notification of a big file
+    expect(mockedNotifier).toHaveBeenCalledWith(
+      expect.objectContaining({ type: importH5PRoutine.SUCCESS }),
+    );
+
     expect(
       queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
     ).toBeTruthy();
@@ -81,6 +87,49 @@ describe('useImportH5P', () => {
       });
       await waitForMutation();
     });
+
+    // notification of a big file
+    expect(mockedNotifier).toHaveBeenCalledWith(
+      expect.objectContaining({ type: importH5PRoutine.SUCCESS }),
+    );
+
+    expect(
+      queryClient.getQueryState(itemKeys.single(item.id).allChildren)
+        ?.isInvalidated,
+    ).toBeTruthy();
+  });
+
+  it('Upload a h5p file in item with previous item id', async () => {
+    const previousItemId = v4();
+    queryClient.setQueryData(itemKeys.single(item.id).allChildren, []);
+
+    const endpoints = [
+      {
+        response,
+        method: HttpMethod.Post,
+        route: `/${buildImportH5PRoute(item.id, previousItemId)}`,
+      },
+    ];
+
+    const mockedMutation = await mockMutation({
+      endpoints,
+      mutation,
+      wrapper,
+    });
+
+    await act(async () => {
+      mockedMutation.mutate({
+        file,
+        id: item.id,
+        previousItemId,
+      });
+      await waitForMutation();
+    });
+
+    // notification of a big file
+    expect(mockedNotifier).toHaveBeenCalledWith(
+      expect.objectContaining({ type: importH5PRoutine.SUCCESS }),
+    );
 
     expect(
       queryClient.getQueryState(itemKeys.single(item.id).allChildren)

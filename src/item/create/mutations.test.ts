@@ -207,6 +207,49 @@ describe('usePostItem', () => {
     ).toBeTruthy();
   });
 
+  it('Post item with previous item id', async () => {
+    const parentItem = FolderItemFactory();
+    const previousItem = FolderItemFactory({ parentItem });
+    const response = {
+      ...newItem,
+      id: 'someid',
+      path: buildPathFromIds(parentItem.id, 'someid'),
+    };
+
+    // set default data
+    queryClient.setQueryData(getKeyForParentId(parentItem.id), [
+      FolderItemFactory(),
+    ]);
+
+    const endpoints = [
+      {
+        response,
+        method: HttpMethod.Post,
+        route: `/${buildPostItemRoute(parentItem.id, previousItem.id)}`,
+      },
+    ];
+
+    const mockedMutation = await mockMutation({
+      endpoints,
+      mutation,
+      wrapper,
+    });
+
+    await act(async () => {
+      mockedMutation.mutate({
+        ...newItem,
+        parentId: parentItem.id,
+        previousItemId: previousItem.id,
+      });
+      await waitForMutation();
+    });
+
+    expect(
+      queryClient.getQueryState(getKeyForParentId(parentItem.id))
+        ?.isInvalidated,
+    ).toBeTruthy();
+  });
+
   it('Unauthorized', async () => {
     const route = `/${buildPostItemRoute()}`;
     queryClient.setQueryData(itemKeys.allAccessible(), [FolderItemFactory()]);
@@ -345,10 +388,16 @@ describe('useUploadFiles', () => {
       await waitForMutation();
     });
 
+    // notification of a big file
+    expect(mockedNotifier).toHaveBeenCalledWith(
+      expect.objectContaining({ type: uploadFilesRoutine.SUCCESS }),
+    );
+
     expect(
       queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
     ).toBeTruthy();
   });
+
   it('Upload a file in parent', async () => {
     const parentId = v4();
     const childrenKey = itemKeys.single(parentId).allChildren;
@@ -378,8 +427,53 @@ describe('useUploadFiles', () => {
       await waitForMutation();
     });
 
+    // notification of a big file
+    expect(mockedNotifier).toHaveBeenCalledWith(
+      expect.objectContaining({ type: uploadFilesRoutine.SUCCESS }),
+    );
+
     expect(queryClient.getQueryState(childrenKey)?.isInvalidated).toBeTruthy();
   });
+
+  it('Upload a file in parent with previous item id', async () => {
+    const parentId = v4();
+    const previousItemId = v4();
+    const childrenKey = itemKeys.single(parentId).allChildren;
+
+    // set default data
+    queryClient.setQueryData(childrenKey, []);
+
+    const endpoints = [
+      {
+        response,
+        method: HttpMethod.Post,
+        route: `/${buildUploadFilesRoute(parentId, previousItemId)}`,
+      },
+    ];
+
+    const mockedMutation = await mockMutation({
+      endpoints,
+      mutation,
+      wrapper,
+    });
+
+    await act(async () => {
+      mockedMutation.mutate({
+        id: parentId,
+        previousItemId,
+        files: [new File([], 'name')],
+      });
+      await waitForMutation();
+    });
+
+    // notification of a big file
+    expect(mockedNotifier).toHaveBeenCalledWith(
+      expect.objectContaining({ type: uploadFilesRoutine.SUCCESS }),
+    );
+
+    expect(queryClient.getQueryState(childrenKey)?.isInvalidated).toBeTruthy();
+  });
+
   it('Upload 3 files', async () => {
     // set default data
     queryClient.setQueryData(itemKeys.allAccessible(), []);
