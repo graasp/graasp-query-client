@@ -89,9 +89,9 @@ export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildDeleteMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildUpdateMemberPasswordRoute = () =>
   `${MEMBERS_ROUTE}/update-password`;
-export const buildUploadFilesRoute = (parentId?: UUID) =>
+export const buildUploadFilesRoute = (parentId?: UUID, previousItemId?: UUID) =>
   `${ITEMS_ROUTE}/upload${qs.stringify(
-    { id: parentId },
+    { id: parentId, previousItemId },
     { addQueryPrefix: true },
   )}`;
 export const buildImportZipRoute = (parentId?: UUID) =>
