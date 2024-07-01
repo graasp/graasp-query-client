@@ -109,6 +109,7 @@ export const uploadFiles = async (
     const { id, previousItemId, files } = args;
     const itemPayload = new FormData();
 
+    itemPayload.append('fields', JSON.stringify({}));
     for (const f of files) {
       itemPayload.append('files', f);
     }

@@ -94,14 +94,14 @@ export const buildUploadFilesRoute = (parentId?: UUID, previousItemId?: UUID) =>
     { id: parentId, previousItemId },
     { addQueryPrefix: true },
   )}`;
-export const buildImportZipRoute = (parentId?: UUID) =>
+export const buildImportZipRoute = (parentId?: UUID, previousItemId?: UUID) =>
   `${ITEMS_ROUTE}/zip-import${qs.stringify(
-    { parentId },
+    { parentId, previousItemId },
     { addQueryPrefix: true },
   )}`;
-export const buildImportH5PRoute = (parentId?: UUID) =>
+export const buildImportH5PRoute = (parentId?: UUID, previousItemId?: UUID) =>
   `${ITEMS_ROUTE}/h5p-import${qs.stringify(
-    { parentId },
+    { parentId, previousItemId },
     { addQueryPrefix: true },
   )}`;
 
