@@ -21,10 +21,10 @@ import {
   itemKeys,
   itemsWithGeolocationKeys,
 } from '../../keys.js';
-import { buildUploadFilesRoute } from '../../routes.js';
 import {
   buildPostItemRoute,
   buildPostItemWithThumbnailRoute,
+  buildUploadFilesRoute,
 } from '../routes.js';
 import { uploadFilesRoutine } from '../routines.js';
 
