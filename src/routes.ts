@@ -12,6 +12,7 @@ import { DEFAULT_LANG } from '@graasp/translations';
 import qs from 'qs';
 
 import * as itemRoutes from './item/routes.js';
+import * as memberRoutes from './member/routes.js';
 import { AggregateActionsArgs } from './utils/action.js';
 
 export const APPS_ROUTE = 'app-items';
@@ -367,6 +368,7 @@ export const buildGetEmbeddedLinkMetadata = (link: string) =>
 
 export const API_ROUTES = {
   ...itemRoutes,
+  ...memberRoutes,
   APPS_ROUTE,
   buildAppListRoute,
   buildClearItemChatRoute,
