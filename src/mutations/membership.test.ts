@@ -26,18 +26,18 @@ import {
   waitForMutation,
 } from '../../test/utils.js';
 import { OWN_ITEMS_KEY, itemKeys } from '../keys.js';
+import { buildGetMembersByEmail } from '../member/routes.js';
 import {
   buildDeleteItemMembershipRoute,
   buildEditItemMembershipRoute,
-  buildGetMembersBy,
   buildPostInvitationsRoute,
   buildPostItemMembershipRoute,
   buildPostManyItemMembershipsRoute,
 } from '../routes.js';
-import { shareItemRoutine } from '../routines/member.js';
 import {
   deleteItemMembershipRoutine,
   editItemMembershipRoutine,
+  shareItemRoutine,
 } from '../routines/membership.js';
 
 const mockedNotifier = vi.fn();
@@ -92,7 +92,7 @@ describe('Membership Mutations', () => {
         {
           response: [MemberFactory()],
           method: HttpMethod.Get,
-          route: `/${buildGetMembersBy([email])}`,
+          route: `/${buildGetMembersByEmail([email])}`,
         },
         {
           response,
@@ -138,7 +138,7 @@ describe('Membership Mutations', () => {
         {
           response: [MemberFactory()],
           method: HttpMethod.Get,
-          route: `/${buildGetMembersBy([email])}`,
+          route: `/${buildGetMembersByEmail([email])}`,
         },
         {
           response: UNAUTHORIZED_RESPONSE,
@@ -342,7 +342,7 @@ describe('Membership Mutations', () => {
         {
           response: buildResultOfData([MemberFactory()]),
           method: HttpMethod.Get,
-          route: `/${buildGetMembersBy(emails)}`,
+          route: `/${buildGetMembersByEmail(emails)}`,
         },
         {
           response: ITEM_MEMBERSHIPS_RESPONSE,
@@ -404,7 +404,7 @@ describe('Membership Mutations', () => {
         {
           response: buildResultOfData([{ email: emails[0], id: emails[0] }]),
           method: HttpMethod.Get,
-          route: `/${buildGetMembersBy(emails)}`,
+          route: `/${buildGetMembersByEmail(emails)}`,
         },
         {
           response: buildResultOfData(
@@ -476,7 +476,7 @@ describe('Membership Mutations', () => {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
           method: HttpMethod.Get,
-          route: `/${buildGetMembersBy(emails)}`,
+          route: `/${buildGetMembersByEmail(emails)}`,
         },
       ];
 
@@ -528,7 +528,7 @@ describe('Membership Mutations', () => {
         {
           response: buildResultOfData([{ email: emails[0], id: emails[0] }]),
           method: HttpMethod.Get,
-          route: `/${buildGetMembersBy(emails)}`,
+          route: `/${buildGetMembersByEmail(emails)}`,
         },
         {
           response: UNAUTHORIZED_RESPONSE,
@@ -590,7 +590,7 @@ describe('Membership Mutations', () => {
         {
           response: buildResultOfData([{ email: emails[0], id: emails[0] }]),
           method: HttpMethod.Get,
-          route: `/${buildGetMembersBy(emails)}`,
+          route: `/${buildGetMembersByEmail(emails)}`,
         },
         {
           response: buildResultOfData(ITEM_MEMBERSHIPS_RESPONSE),

@@ -5,15 +5,16 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as AuthApi from '../api/authentication.js';
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios.js';
-import * as Api from '../api/member.js';
 import { memberKeys } from '../keys.js';
+import { QueryClientConfig } from '../types.js';
+import * as Api from './api.js';
 import {
   deleteMemberRoutine,
   editMemberRoutine,
+  updateEmailRoutine,
   updatePasswordRoutine,
   uploadAvatarRoutine,
-} from '../routines/member.js';
-import { QueryClientConfig } from '../types.js';
+} from './routines.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -168,10 +169,47 @@ export default (queryConfig: QueryClientConfig) => {
       },
     );
 
+  const useUpdateMemberEmail = () =>
+    useMutation((newEmail: string) => Api.updateEmail(newEmail, queryConfig), {
+      onSuccess: () => {
+        notifier?.({
+          type: updateEmailRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.UPDATE_EMAIL },
+        });
+      },
+      onError: (error: Error) => {
+        notifier?.({
+          type: updateEmailRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
+
+  const useValidateEmailUpdate = () =>
+    useMutation(
+      (token: string) => Api.validateEmailUpdate(token, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: updateEmailRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.VALIDATE_EMAIL },
+          });
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: updateEmailRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
+
   return {
     useDeleteMember,
     useUploadAvatar,
     useEditMember,
     useUpdatePassword,
+    useUpdateMemberEmail,
+    useValidateEmailUpdate,
   };
 };

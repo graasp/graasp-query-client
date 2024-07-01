@@ -70,9 +70,7 @@ export default (queryConfig: QueryClientConfig) => {
     });
   };
 
-  const useMemberActions = (
-    args: { startDate?: string; endDate?: string } = {},
-  ) =>
+  const useMemberActions = (args: { startDate: string; endDate: string }) =>
     useQuery({
       queryKey: memberKeys.current().actions(args),
       queryFn: () => Api.getMemberActions(queryConfig, args),

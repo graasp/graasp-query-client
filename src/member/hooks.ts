@@ -8,15 +8,15 @@ import {
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
-import * as Api from '../api/member.js';
 import {
   CONSTANT_KEY_STALE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
 } from '../config/constants.js';
 import { UndefinedArgument } from '../config/errors.js';
 import { memberKeys } from '../keys.js';
-import { getMembersRoutine } from '../routines/member.js';
 import { QueryClientConfig } from '../types.js';
+import * as Api from './api.js';
+import { getMembersRoutine } from './routines.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions, notifier } = queryConfig;
