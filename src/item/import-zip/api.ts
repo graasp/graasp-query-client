@@ -16,17 +16,14 @@ export const importZip = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<DiscriminatedItem> =>
   verifyAuthentication(() => {
-    const { id, previousItemId, file } = args;
+    const { id, file } = args;
     const itemPayload = new FormData();
 
-    if (previousItemId) {
-      itemPayload.append('previousItemId', previousItemId);
-    }
     /* WARNING: this file field needs to be the last one,
      * otherwise the normal fields can not be read
      * https://github.com/fastify/fastify-multipart?tab=readme-ov-file#usage
      */
-    itemPayload.append('file', file);
+    itemPayload.append('files', file);
     return axios
       .post<DiscriminatedItem>(
         `${API_HOST}/${buildImportZipRoute(id)}`,

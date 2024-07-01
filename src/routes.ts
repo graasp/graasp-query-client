@@ -89,9 +89,9 @@ export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildDeleteMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildUpdateMemberPasswordRoute = () =>
   `${MEMBERS_ROUTE}/update-password`;
-export const buildUploadFilesRoute = (parentId?: UUID) =>
+export const buildUploadFilesRoute = (parentId?: UUID, previousItemId?: UUID) =>
   `${ITEMS_ROUTE}/upload${qs.stringify(
-    { id: parentId },
+    { id: parentId, previousItemId },
     { addQueryPrefix: true },
   )}`;
 export const buildImportZipRoute = (parentId?: UUID) =>
@@ -99,9 +99,9 @@ export const buildImportZipRoute = (parentId?: UUID) =>
     { parentId },
     { addQueryPrefix: true },
   )}`;
-export const buildImportH5PRoute = (parentId?: UUID) =>
+export const buildImportH5PRoute = (parentId?: UUID, previousItemId?: UUID) =>
   `${ITEMS_ROUTE}/h5p-import${qs.stringify(
-    { parentId },
+    { parentId, previousItemId },
     { addQueryPrefix: true },
   )}`;
 

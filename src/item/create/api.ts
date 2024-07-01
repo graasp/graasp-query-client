@@ -109,15 +109,12 @@ export const uploadFiles = async (
     const { id, previousItemId, files } = args;
     const itemPayload = new FormData();
 
-    if (previousItemId) {
-      itemPayload.append('previousItemId', previousItemId);
-    }
     for (const f of files) {
       itemPayload.append('files', f);
     }
     return axios
       .post<DiscriminatedItem>(
-        `${API_HOST}/${buildUploadFilesRoute(id)}`,
+        `${API_HOST}/${buildUploadFilesRoute(id, previousItemId)}`,
         itemPayload,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
