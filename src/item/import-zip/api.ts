@@ -19,9 +19,7 @@ export const importZip = async (
     const { id, previousItemId, file } = args;
     const itemPayload = new FormData();
 
-    if (previousItemId) {
-      itemPayload.append('previousItemId', previousItemId);
-    }
+    itemPayload.append('fields', JSON.stringify({}));
     /* WARNING: this file field needs to be the last one,
      * otherwise the normal fields can not be read
      * https://github.com/fastify/fastify-multipart?tab=readme-ov-file#usage
@@ -29,7 +27,7 @@ export const importZip = async (
     itemPayload.append('file', file);
     return axios
       .post<DiscriminatedItem>(
-        `${API_HOST}/${buildImportZipRoute(id)}`,
+        `${API_HOST}/${buildImportZipRoute(id, previousItemId)}`,
         itemPayload,
         {
           headers: { 'Content-Type': 'multipart/form-data' },

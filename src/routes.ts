@@ -70,14 +70,14 @@ export const buildDeleteMentionRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/mentions/${id}`;
 export const buildClearMentionsRoute = () => `${ITEMS_ROUTE}/mentions`;
 
-export const buildImportZipRoute = (parentId?: UUID) =>
+export const buildImportZipRoute = (parentId?: UUID, previousItemId?: UUID) =>
   `${ITEMS_ROUTE}/zip-import${qs.stringify(
-    { parentId },
+    { parentId, previousItemId },
     { addQueryPrefix: true },
   )}`;
-export const buildImportH5PRoute = (parentId?: UUID) =>
+export const buildImportH5PRoute = (parentId?: UUID, previousItemId?: UUID) =>
   `${ITEMS_ROUTE}/h5p-import${qs.stringify(
-    { parentId },
+    { parentId, previousItemId },
     { addQueryPrefix: true },
   )}`;
 
