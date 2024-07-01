@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.15.0](https://github.com/graasp/graasp-query-client/compare/v3.14.0...v3.15.0) (2024-07-01)
+
+
+### Features
+
+* update to support reorder mutations ([#812](https://github.com/graasp/graasp-query-client/issues/812)) ([f897846](https://github.com/graasp/graasp-query-client/commit/f8978467fed93e30377ab060627094c6e530bffe))
+
 ## [3.14.0](https://github.com/graasp/graasp-query-client/compare/v3.13.3...v3.14.0) (2024-06-26)
 
 
