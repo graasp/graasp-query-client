@@ -14,7 +14,6 @@ export const useImportZip = (queryConfig: QueryClientConfig) => () => {
     async (args: {
       id?: DiscriminatedItem['id'];
       file: Blob;
-      previousItemId?: DiscriminatedItem['id'];
       onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
     }) => importZip(args, queryConfig),
     {
