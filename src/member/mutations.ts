@@ -3,6 +3,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import * as AuthApi from '../api/authentication.js';
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios.js';
 import { memberKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
@@ -21,7 +22,10 @@ export default (queryConfig: QueryClientConfig) => {
   const useDeleteMember = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (payload: { id: UUID }) => Api.deleteMember(payload, queryConfig),
+      (payload: { id: UUID }) =>
+        Api.deleteMember(payload, queryConfig).then(() =>
+          AuthApi.signOut(queryConfig),
+        ),
       {
         onSuccess: () => {
           notifier?.({
