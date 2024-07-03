@@ -8,6 +8,8 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  # needed for the auto-tag
+  issues: write
 
 jobs:
   release-please:
