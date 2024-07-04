@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import * as Api from '../api/subscription.js';
-import { CURRENT_CUSTOMER_KEY, memberKeys } from '../keys.js';
+import { CURRENT_CUSTOMER_KEY, memberKeys } from '../../keys.js';
+import { QueryClientConfig } from '../../types.js';
+import * as Api from './api.js';
 import {
   changePlanRoutine,
   createSetupIntentRoutine,
   setDefaultCardRoutine,
-} from '../routines/subscription.js';
-import { QueryClientConfig } from '../types.js';
+} from './routines.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;

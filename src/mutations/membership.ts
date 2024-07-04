@@ -13,14 +13,14 @@ import { AxiosError } from 'axios';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 import * as InvitationApi from '../api/invitation.js';
-import * as MemberApi from '../api/member.js';
 import * as Api from '../api/membership.js';
 import { buildManyItemMembershipsKey, itemKeys } from '../keys.js';
-import { shareItemRoutine } from '../routines/member.js';
+import * as MemberApi from '../member/api.js';
 import {
   deleteItemMembershipRoutine,
   editItemMembershipRoutine,
   postItemMembershipRoutine,
+  shareItemRoutine,
 } from '../routines/membership.js';
 import { QueryClientConfig } from '../types.js';
 
@@ -169,7 +169,7 @@ export default (queryConfig: QueryClientConfig) => {
 
         // check email has an associated account
         // assume will receive only one member per mail
-        const accounts = await MemberApi.getMembersBy(
+        const accounts = await MemberApi.getMembersByEmail(
           { emails: dataWithEmail.map(({ email }) => email) },
           queryConfig,
         );

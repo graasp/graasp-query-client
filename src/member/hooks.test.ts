@@ -23,12 +23,12 @@ import {
 import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils.js';
 import { memberKeys } from '../keys.js';
 import {
-  GET_CURRENT_MEMBER_ROUTE,
   buildDownloadAvatarRoute,
-  buildGetMember,
-  buildGetMemberStorage,
-  buildGetMembersRoute,
-} from '../routes.js';
+  buildGetCurrentMemberRoute,
+  buildGetMemberRoute,
+  buildGetMemberStorageRoute,
+  buildGetMembersByIdRoute,
+} from './routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 describe('Member Hooks', () => {
@@ -38,7 +38,7 @@ describe('Member Hooks', () => {
   });
 
   describe('useCurrentMember', () => {
-    const route = `/${GET_CURRENT_MEMBER_ROUTE}`;
+    const route = `/${buildGetCurrentMemberRoute()}`;
     const hook = () => hooks.useCurrentMember();
 
     it(`Receive current member`, async () => {
@@ -81,7 +81,7 @@ describe('Member Hooks', () => {
     it(`Receive member id = ${id}`, async () => {
       const endpoints = [
         {
-          route: `/${buildGetMember(id)}`,
+          route: `/${buildGetMemberRoute(id)}`,
           response,
         },
       ];
@@ -103,7 +103,7 @@ describe('Member Hooks', () => {
       const hook = () => hooks.useMember(id);
       const endpoints = [
         {
-          route: `/${buildGetMember(id)}`,
+          route: `/${buildGetMemberRoute(id)}`,
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
@@ -131,7 +131,7 @@ describe('Member Hooks', () => {
       const emptyIds: UUID[] = [];
       const endpoints = [
         {
-          route: `/${buildGetMembersRoute(emptyIds)}`,
+          route: `/${buildGetMembersByIdRoute(emptyIds)}`,
           response,
         },
       ];
@@ -154,7 +154,7 @@ describe('Member Hooks', () => {
       const oneMemberIds = [m.id];
       const endpoints = [
         {
-          route: `/${buildGetMembersRoute(oneMemberIds)}`,
+          route: `/${buildGetMembersByIdRoute(oneMemberIds)}`,
           response: oneMemberResponse,
         },
       ];
@@ -181,7 +181,7 @@ describe('Member Hooks', () => {
       const endpointResponse = buildResultOfData(twoMembers);
       const endpoints = [
         {
-          route: `/${buildGetMembersRoute(twoIds)}`,
+          route: `/${buildGetMembersByIdRoute(twoIds)}`,
           response: endpointResponse,
         },
       ];
@@ -208,7 +208,7 @@ describe('Member Hooks', () => {
       const endpoints = splitEndpointByIds(
         ids,
         MAX_TARGETS_FOR_READ_REQUEST,
-        (chunk) => `/${buildGetMembersRoute(chunk)}`,
+        (chunk) => `/${buildGetMembersByIdRoute(chunk)}`,
         response,
       );
       const fullResponse = buildResultOfData(response);
@@ -236,7 +236,7 @@ describe('Member Hooks', () => {
       const hook = () => hooks.useMembers(ids);
       const endpoints = [
         {
-          route: `/${buildGetMembersRoute(ids)}`,
+          route: `/${buildGetMembersByIdRoute(ids)}`,
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
         },
@@ -469,7 +469,7 @@ describe('Member Hooks', () => {
 
   describe('useMemberStorage', () => {
     const response: MemberStorage = { current: 123, maximum: 123 };
-    const route = `/${buildGetMemberStorage()}`;
+    const route = `/${buildGetMemberStorageRoute()}`;
     const hook = () => hooks.useMemberStorage();
     const key = memberKeys.current().storage;
 

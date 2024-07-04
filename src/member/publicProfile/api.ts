@@ -1,18 +1,16 @@
 import { PublicProfile, UUID } from '@graasp/sdk';
 
+import { PartialQueryConfigForApi } from '../../types.js';
 import {
-  GET_OWN_PROFILE,
-  MEMBERS_ROUTE,
-  PUBLIC_PROFILE_ROUTE,
+  buildGetOwnPublicProfileRoute,
   buildGetPublicProfileRoute,
+  buildPatchPublicProfileRoute,
+  buildPostPublicProfileRoute,
 } from '../routes.js';
-import { PartialQueryConfigForApi } from '../types.js';
 
 export const getOwnProfile = ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   axios
-    .get<PublicProfile | null>(
-      `${API_HOST}/${MEMBERS_ROUTE}/${GET_OWN_PROFILE}`,
-    )
+    .get<PublicProfile | null>(`${API_HOST}/${buildGetOwnPublicProfileRoute()}`)
     .then(({ data }) => data);
 
 export const getPublicProfile = (
@@ -21,7 +19,7 @@ export const getPublicProfile = (
 ) =>
   axios
     .get<PublicProfile | null>(
-      `${API_HOST}/${MEMBERS_ROUTE}/${buildGetPublicProfileRoute(memberId)}`,
+      `${API_HOST}/${buildGetPublicProfileRoute(memberId)}`,
     )
     .then(({ data }) => data);
 
@@ -44,7 +42,7 @@ export const postPublicProfile = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .post(`${API_HOST}/${MEMBERS_ROUTE}/${PUBLIC_PROFILE_ROUTE}`, {
+    .post(`${API_HOST}/${buildPostPublicProfileRoute()}`, {
       bio,
       twitterID,
       facebookID,
@@ -58,5 +56,5 @@ export const patchPublicProfile = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .patch(`${API_HOST}/${MEMBERS_ROUTE}/${PUBLIC_PROFILE_ROUTE}`, arg)
+    .patch(`${API_HOST}/${buildPatchPublicProfileRoute()}`, arg)
     .then(({ data }) => data);

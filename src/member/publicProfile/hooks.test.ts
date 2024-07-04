@@ -5,12 +5,11 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   MEMBER_PUBLIC_PROFILE,
   UNAUTHORIZED_RESPONSE,
-} from '../../test/constants.js';
-import { mockHook, setUpTest } from '../../test/utils.js';
-import { memberKeys } from '../keys.js';
+} from '../../../test/constants.js';
+import { mockHook, setUpTest } from '../../../test/utils.js';
+import { memberKeys } from '../../keys.js';
 import {
-  GET_OWN_PROFILE,
-  MEMBERS_ROUTE,
+  buildGetOwnPublicProfileRoute,
   buildGetPublicProfileRoute,
 } from '../routes.js';
 
@@ -23,7 +22,7 @@ describe('Public Profile Hooks', () => {
   });
 
   describe('useOwnProfile', () => {
-    const route = `/${MEMBERS_ROUTE}/${GET_OWN_PROFILE}`;
+    const route = `/${buildGetOwnPublicProfileRoute()}`;
 
     const response = MEMBER_PUBLIC_PROFILE;
 
@@ -65,7 +64,7 @@ describe('Public Profile Hooks', () => {
     it(`Receive member public profile for member-id = ${id}`, async () => {
       const endpoints = [
         {
-          route: `/${MEMBERS_ROUTE}/${buildGetPublicProfileRoute(id)}`,
+          route: `/${buildGetPublicProfileRoute(id)}`,
           response,
         },
       ];

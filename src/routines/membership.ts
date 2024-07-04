@@ -5,3 +5,4 @@ export const editItemMembershipRoutine = createRoutine('EDIT_ITEM_MEMBERSHIP');
 export const deleteItemMembershipRoutine = createRoutine(
   'DELETE_ITEM_MEMBERSHIP',
 );
+export const shareItemRoutine = createRoutine('SHARE_ITEM');

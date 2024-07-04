@@ -15,8 +15,8 @@ import {
 } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import { buildMentionKey } from '../keys.js';
+import { buildGetCurrentMemberRoute } from '../member/routes.js';
 import {
-  GET_CURRENT_MEMBER_ROUTE,
   buildClearMentionsRoute,
   buildDeleteMentionRoute,
   buildPatchMentionRoute,
@@ -31,7 +31,7 @@ describe('Mention Mutations', () => {
   const mentionId = v4();
   const member = MemberFactory();
   const memberId = member.id;
-  const currentMemberRoute = `/${GET_CURRENT_MEMBER_ROUTE}`;
+  const currentMemberRoute = `/${buildGetCurrentMemberRoute()}`;
   const key = buildMentionKey();
   const MENTIONS = buildMemberMentions();
 
