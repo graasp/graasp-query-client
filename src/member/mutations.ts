@@ -170,14 +170,39 @@ export default (queryConfig: QueryClientConfig) => {
     );
   };
 
-  /**  mutation to update member password. suppose only you can edit yourself
+  /**
+   * Mutation to update the member password
    * @param {Password} password new password that user wants to set
-   * @param {Password} currentPassword current password already stored
+   * @param {Password} currentPassword current password already stored, needs to match old password
    */
   const useUpdatePassword = () =>
     useMutation(
       (payload: { password: Password; currentPassword: Password }) =>
         Api.updatePassword(payload, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: updatePasswordRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
+          });
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: updatePasswordRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
+
+  /**
+   * Mutation to create a member password
+   * @param {Password} password new password to set on current member
+   */
+  const useCreatePassword = () =>
+    useMutation(
+      (payload: { password: Password }) =>
+        Api.createPassword(payload, queryConfig),
       {
         onSuccess: () => {
           notifier?.({
@@ -235,6 +260,7 @@ export default (queryConfig: QueryClientConfig) => {
     useUploadAvatar,
     useEditMember,
     useUpdatePassword,
+    useCreatePassword,
     useUpdateMemberEmail,
     useValidateEmailUpdate,
   };

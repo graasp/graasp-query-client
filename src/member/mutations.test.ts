@@ -23,7 +23,7 @@ import { SIGN_OUT_ROUTE } from '../routes.js';
 import {
   buildDeleteMemberRoute,
   buildPatchMemberRoute,
-  buildUpdateMemberPasswordRoute,
+  buildPostMemberPasswordRoute,
   buildUploadAvatarRoute,
 } from './routes.js';
 import { updatePasswordRoutine, uploadAvatarRoutine } from './routines.js';
@@ -346,7 +346,7 @@ describe('Member Mutations', () => {
   });
 
   describe('useUpdatePassword', () => {
-    const route = `/${buildUpdateMemberPasswordRoute()}`;
+    const route = `/${buildPostMemberPasswordRoute()}`;
     const mutation = mutations.useUpdatePassword;
     const password = 'ASDasd123';
     const currentPassword = 'ASDasd123';
