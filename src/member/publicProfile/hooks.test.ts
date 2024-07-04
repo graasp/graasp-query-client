@@ -9,7 +9,7 @@ import {
 import { mockHook, setUpTest } from '../../../test/utils.js';
 import { memberKeys } from '../../keys.js';
 import {
-  buildGetOwnPublicProfile,
+  buildGetOwnPublicProfileRoute,
   buildGetPublicProfileRoute,
 } from '../routes.js';
 
@@ -22,7 +22,7 @@ describe('Public Profile Hooks', () => {
   });
 
   describe('useOwnProfile', () => {
-    const route = `/${buildGetOwnPublicProfile()}`;
+    const route = `/${buildGetOwnPublicProfileRoute()}`;
 
     const response = MEMBER_PUBLIC_PROFILE;
 

@@ -15,13 +15,13 @@ import { PartialQueryConfigForApi } from '../types.js';
 import {
   buildDeleteMemberRoute,
   buildDownloadAvatarRoute,
-  buildGetCurrentMember,
-  buildGetMember,
-  buildGetMemberStorage,
-  buildGetMembersByEmail,
-  buildGetMembersById,
-  buildPatchMember,
-  buildPostMemberEmailUpdate,
+  buildGetCurrentMemberRoute,
+  buildGetMemberRoute,
+  buildGetMemberStorageRoute,
+  buildGetMembersByEmailRoute,
+  buildGetMembersByIdRoute,
+  buildPatchMemberRoute,
+  buildPostMemberEmailUpdateRoute,
   buildUpdateMemberPasswordRoute,
   buildUploadAvatarRoute,
 } from './routes.js';
@@ -31,7 +31,7 @@ export const getMembersByEmail = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersByEmail(emails)}`)
+    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersByEmailRoute(emails)}`)
     .then(({ data }) => data);
 
 export const getMember = async (
@@ -39,7 +39,7 @@ export const getMember = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<Member>(`${API_HOST}/${buildGetMember(id)}`)
+    .get<Member>(`${API_HOST}/${buildGetMemberRoute(id)}`)
     .then(({ data }) => data);
 
 export const getMembers = (
@@ -47,7 +47,7 @@ export const getMembers = (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersById(ids)}`)
+    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersByIdRoute(ids)}`)
     .then(({ data }) => data);
 
 export const getCurrentMember = async ({
@@ -56,7 +56,7 @@ export const getCurrentMember = async ({
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
-      .get<CompleteMember>(`${API_HOST}/${buildGetCurrentMember()}`)
+      .get<CompleteMember>(`${API_HOST}/${buildGetCurrentMemberRoute()}`)
       .then(({ data }) => data)
       .catch((error) => {
         if (error.response) {
@@ -76,7 +76,7 @@ export const getMemberStorage = async ({
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
-      .get<MemberStorage>(`${API_HOST}/${buildGetMemberStorage()}`)
+      .get<MemberStorage>(`${API_HOST}/${buildGetMemberStorageRoute()}`)
       .then(({ data }) => data),
   );
 
@@ -91,11 +91,14 @@ export const editMember = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .patch<CompleteMember>(`${API_HOST}/${buildPatchMember(payload.id)}`, {
-        extra: payload.extra,
-        name: payload.name?.trim(),
-        enableSaveActions: payload.enableSaveActions,
-      })
+      .patch<CompleteMember>(
+        `${API_HOST}/${buildPatchMemberRoute(payload.id)}`,
+        {
+          extra: payload.extra,
+          name: payload.name?.trim(),
+          enableSaveActions: payload.enableSaveActions,
+        },
+      )
       .then(({ data }) => data),
   );
 
@@ -170,7 +173,7 @@ export const updateEmail = async (
   email: string,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
-  axios.post<void>(`${API_HOST}/${buildPostMemberEmailUpdate()}`, {
+  axios.post<void>(`${API_HOST}/${buildPostMemberEmailUpdateRoute()}`, {
     email,
   });
 
@@ -179,7 +182,7 @@ export const validateEmailUpdate = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios.patch<void>(
-    `${API_HOST}/${buildPostMemberEmailUpdate()}`,
+    `${API_HOST}/${buildPostMemberEmailUpdateRoute()}`,
     {},
     // send the JWT as a bearer auth
     { headers: { Authorization: `Bearer ${token}` } },

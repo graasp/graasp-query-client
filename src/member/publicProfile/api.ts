@@ -2,7 +2,7 @@ import { PublicProfile, UUID } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../../types.js';
 import {
-  buildGetOwnPublicProfile,
+  buildGetOwnPublicProfileRoute,
   buildGetPublicProfileRoute,
   buildPatchPublicProfileRoute,
   buildPostPublicProfileRoute,
@@ -10,7 +10,7 @@ import {
 
 export const getOwnProfile = ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   axios
-    .get<PublicProfile | null>(`${API_HOST}/${buildGetOwnPublicProfile()}`)
+    .get<PublicProfile | null>(`${API_HOST}/${buildGetOwnPublicProfileRoute()}`)
     .then(({ data }) => data);
 
 export const getPublicProfile = (

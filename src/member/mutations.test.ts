@@ -22,7 +22,7 @@ import { memberKeys } from '../keys.js';
 import { SIGN_OUT_ROUTE } from '../routes.js';
 import {
   buildDeleteMemberRoute,
-  buildPatchMember,
+  buildPatchMemberRoute,
   buildUpdateMemberPasswordRoute,
   buildUploadAvatarRoute,
 } from './routes.js';
@@ -107,7 +107,7 @@ describe('Member Mutations', () => {
 
   describe('useEditMember', () => {
     const member = MemberFactory();
-    const route = `/${buildPatchMember(member.id)}`;
+    const route = `/${buildPatchMemberRoute(member.id)}`;
     const newMember = { name: 'newname' };
     const mutation = mutations.useEditMember;
 

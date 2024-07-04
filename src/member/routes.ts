@@ -4,19 +4,19 @@ import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
 
 export const MEMBERS_ROUTE = `members`;
 
-export const buildGetCurrentMember = () => `${MEMBERS_ROUTE}/current`;
-export const buildPostMemberEmailUpdate = () =>
+export const buildGetCurrentMemberRoute = () => `${MEMBERS_ROUTE}/current`;
+export const buildPostMemberEmailUpdateRoute = () =>
   `${MEMBERS_ROUTE}/current/email/change`;
 
-export const buildGetMembersByEmail = (emails: string[]) =>
+export const buildGetMembersByEmailRoute = (emails: string[]) =>
   `${MEMBERS_ROUTE}/search?${new URLSearchParams(emails.map((e) => ['email', e.toLowerCase()]))}`;
 
-export const buildGetMembersById = (ids: UUID[]) =>
+export const buildGetMembersByIdRoute = (ids: UUID[]) =>
   `${MEMBERS_ROUTE}?${new URLSearchParams(ids.map((id) => ['id', id]))}`;
 
 // Member CRUD
-export const buildGetMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
-export const buildPatchMember = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
+export const buildGetMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
+export const buildPatchMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildDeleteMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 
 // Password
@@ -24,7 +24,8 @@ export const buildUpdateMemberPasswordRoute = () =>
   `${MEMBERS_ROUTE}/update-password`;
 
 // Storage
-export const buildGetMemberStorage = () => `${MEMBERS_ROUTE}/current/storage`;
+export const buildGetMemberStorageRoute = () =>
+  `${MEMBERS_ROUTE}/current/storage`;
 
 // Avatar
 export const buildUploadAvatarRoute = () => `${MEMBERS_ROUTE}/avatar`;
@@ -54,7 +55,7 @@ export const buildGetMemberActionsRoute = ({
 
 // Public Profile
 export const PUBLIC_PROFILE = `profile`;
-export const buildGetOwnPublicProfile = () =>
+export const buildGetOwnPublicProfileRoute = () =>
   `${MEMBERS_ROUTE}/${PUBLIC_PROFILE}/own`;
 export const buildPostPublicProfileRoute = () =>
   `${MEMBERS_ROUTE}/${PUBLIC_PROFILE}`;

@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { buildMemberMentions } from '../../test/constants.js';
 import { mockHook, setUpTest } from '../../test/utils.js';
 import { buildMentionKey } from '../keys.js';
-import { buildGetCurrentMember } from '../member/routes.js';
+import { buildGetCurrentMemberRoute } from '../member/routes.js';
 import { buildGetMemberMentionsRoute } from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
@@ -18,7 +18,7 @@ describe('Chat Mention Hooks', () => {
   });
 
   describe('useMentions', () => {
-    const currentMemberRoute = `/${buildGetCurrentMember()}`;
+    const currentMemberRoute = `/${buildGetCurrentMemberRoute()}`;
     const route = `/${buildGetMemberMentionsRoute()}`;
     const key = buildMentionKey();
 
