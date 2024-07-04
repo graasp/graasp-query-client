@@ -18,6 +18,9 @@ import {
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
+  /**
+   * @deprecated Please use the `useDeleteCurrentMember` instead
+   */
   const useDeleteMember = () => {
     const queryClient = useQueryClient();
     return useMutation(
@@ -48,6 +51,35 @@ export default (queryConfig: QueryClientConfig) => {
         },
       },
     );
+  };
+
+  const useDeleteCurrentMember = () => {
+    const queryClient = useQueryClient();
+    return useMutation(() => Api.deleteCurrentMember(queryConfig), {
+      onSuccess: () => {
+        notifier?.({
+          type: deleteMemberRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.DELETE_MEMBER },
+        });
+
+        queryClient.resetQueries();
+
+        // remove cookies from browser when logout succeeds
+        if (queryConfig.DOMAIN) {
+          // todo: find a way to do this with an httpOnly cookie
+          // removeSession(id, queryConfig.DOMAIN);
+          // setCurrentSession(null, queryConfig.DOMAIN);
+        }
+
+        // Update when the server confirmed the logout, instead optimistically updating the member
+        // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
+        queryClient.setQueryData(memberKeys.current().content, undefined);
+      },
+      // If the mutation fails, use the context returned from onMutate to roll back
+      onError: (error: Error, _args, _context) => {
+        notifier?.({ type: deleteMemberRoutine.FAILURE, payload: { error } });
+      },
+    });
   };
 
   // suppose you can only edit yourself
@@ -202,6 +234,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   return {
     useDeleteMember,
+    useDeleteCurrentMember,
     useUploadAvatar,
     useEditMember,
     useUpdatePassword,
