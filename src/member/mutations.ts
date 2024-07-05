@@ -8,6 +8,7 @@ import { memberKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import * as Api from './api.js';
 import {
+  deleteCurrentMemberRoutine,
   deleteMemberRoutine,
   editMemberRoutine,
   updateEmailRoutine,
@@ -58,18 +59,11 @@ export default (queryConfig: QueryClientConfig) => {
     return useMutation(() => Api.deleteCurrentMember(queryConfig), {
       onSuccess: () => {
         notifier?.({
-          type: deleteMemberRoutine.SUCCESS,
+          type: deleteCurrentMemberRoutine.SUCCESS,
           payload: { message: SUCCESS_MESSAGES.DELETE_MEMBER },
         });
 
         queryClient.resetQueries();
-
-        // remove cookies from browser when logout succeeds
-        if (queryConfig.DOMAIN) {
-          // todo: find a way to do this with an httpOnly cookie
-          // removeSession(id, queryConfig.DOMAIN);
-          // setCurrentSession(null, queryConfig.DOMAIN);
-        }
 
         // Update when the server confirmed the logout, instead optimistically updating the member
         // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
@@ -77,7 +71,10 @@ export default (queryConfig: QueryClientConfig) => {
       },
       // If the mutation fails, use the context returned from onMutate to roll back
       onError: (error: Error, _args, _context) => {
-        notifier?.({ type: deleteMemberRoutine.FAILURE, payload: { error } });
+        notifier?.({
+          type: deleteCurrentMemberRoutine.FAILURE,
+          payload: { error },
+        });
       },
     });
   };
