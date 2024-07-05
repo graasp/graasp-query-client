@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.15.1](https://github.com/graasp/graasp-query-client/compare/v3.15.0...v3.15.1) (2024-07-05)
+
+
+### Bug Fixes
+
+* add email update mutations and re-organize member files ([#815](https://github.com/graasp/graasp-query-client/issues/815)) ([f93d8b6](https://github.com/graasp/graasp-query-client/commit/f93d8b628f7e8b0b677f07eacbe1db6dbfa9977d))
+* release-please add issue permission ([#816](https://github.com/graasp/graasp-query-client/issues/816)) ([51edfc1](https://github.com/graasp/graasp-query-client/commit/51edfc1453c2e49aab2487c9cce7208074993d44))
+
 ## [3.15.0](https://github.com/graasp/graasp-query-client/compare/v3.14.0...v3.15.0) (2024-07-01)
 
 
