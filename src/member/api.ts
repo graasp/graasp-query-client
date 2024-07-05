@@ -119,7 +119,7 @@ export const deleteCurrentMember = async ({
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
-      .delete<Member>(`${API_HOST}/${buildDeleteCurrentMemberRoute()}`)
+      .delete<void>(`${API_HOST}/${buildDeleteCurrentMemberRoute()}`)
       .then(({ data }) => data),
   );
 
