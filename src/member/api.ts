@@ -13,6 +13,7 @@ import { verifyAuthentication } from '../api/axios.js';
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
 import { PartialQueryConfigForApi } from '../types.js';
 import {
+  buildDeleteCurrentMemberRoute,
   buildDeleteMemberRoute,
   buildDownloadAvatarRoute,
   buildGetCurrentMemberRoute,
@@ -109,6 +110,16 @@ export const deleteMember = async (
   verifyAuthentication(() =>
     axios
       .delete<Member>(`${API_HOST}/${buildDeleteMemberRoute(id)}`)
+      .then(({ data }) => data),
+  );
+
+export const deleteCurrentMember = async ({
+  API_HOST,
+  axios,
+}: PartialQueryConfigForApi) =>
+  verifyAuthentication(() =>
+    axios
+      .delete<void>(`${API_HOST}/${buildDeleteCurrentMemberRoute()}`)
       .then(({ data }) => data),
   );
 

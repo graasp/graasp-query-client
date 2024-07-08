@@ -3,12 +3,12 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import * as AuthApi from '../api/authentication.js';
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios.js';
 import { memberKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import * as Api from './api.js';
 import {
+  deleteCurrentMemberRoutine,
   deleteMemberRoutine,
   editMemberRoutine,
   updateEmailRoutine,
@@ -19,13 +19,13 @@ import {
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
+  /**
+   * @deprecated Please use the `useDeleteCurrentMember` instead
+   */
   const useDeleteMember = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (payload: { id: UUID }) =>
-        Api.deleteMember(payload, queryConfig).then(() =>
-          AuthApi.signOut(queryConfig),
-        ),
+      (payload: { id: UUID }) => Api.deleteMember(payload, queryConfig),
       {
         onSuccess: () => {
           notifier?.({
@@ -52,6 +52,31 @@ export default (queryConfig: QueryClientConfig) => {
         },
       },
     );
+  };
+
+  const useDeleteCurrentMember = () => {
+    const queryClient = useQueryClient();
+    return useMutation(() => Api.deleteCurrentMember(queryConfig), {
+      onSuccess: () => {
+        notifier?.({
+          type: deleteCurrentMemberRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.DELETE_MEMBER },
+        });
+
+        queryClient.resetQueries();
+
+        // Update when the server confirmed the logout, instead optimistically updating the member
+        // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
+        queryClient.setQueryData(memberKeys.current().content, undefined);
+      },
+      // If the mutation fails, use the context returned from onMutate to roll back
+      onError: (error: Error, _args, _context) => {
+        notifier?.({
+          type: deleteCurrentMemberRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
   };
 
   // suppose you can only edit yourself
@@ -206,6 +231,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   return {
     useDeleteMember,
+    useDeleteCurrentMember,
     useUploadAvatar,
     useEditMember,
     useUpdatePassword,
