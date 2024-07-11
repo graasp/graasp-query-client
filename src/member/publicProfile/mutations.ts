@@ -1,7 +1,8 @@
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { memberKeys } from '../../keys.js';
 import type { QueryClientConfig } from '../../types.js';
 import type { PostPublicProfilePayloadType } from './api.js';
 import * as Api from './api.js';
@@ -13,8 +14,10 @@ import {
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  const usePostPublicProfile = () =>
-    useMutation(
+  const usePostPublicProfile = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation(
       async (profileData: PostPublicProfilePayloadType) =>
         Api.postPublicProfile(profileData, queryConfig),
       {
@@ -23,6 +26,8 @@ export default (queryConfig: QueryClientConfig) => {
             type: postPublicProfileRoutine.SUCCESS,
             payload: { message: SUCCESS_MESSAGES.POST_PROFILE },
           });
+          // refetch profile information
+          queryClient.invalidateQueries(memberKeys.current().profile);
         },
         onError: (error: Error) => {
           notifier?.({
@@ -32,8 +37,11 @@ export default (queryConfig: QueryClientConfig) => {
         },
       },
     );
-  const usePatchPublicProfile = () =>
-    useMutation(
+  };
+  const usePatchPublicProfile = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation(
       (payload: Partial<PostPublicProfilePayloadType>) =>
         Api.patchPublicProfile(payload, queryConfig),
       {
@@ -42,6 +50,8 @@ export default (queryConfig: QueryClientConfig) => {
             type: patchPublicProfileRoutine.SUCCESS,
             payload: { message: SUCCESS_MESSAGES.PATCH_PROFILE },
           });
+          // refetch profile information
+          queryClient.invalidateQueries(memberKeys.current().profile);
         },
         onError: (error: Error) => {
           notifier?.({
@@ -51,6 +61,7 @@ export default (queryConfig: QueryClientConfig) => {
         },
       },
     );
+  };
 
   return {
     usePostPublicProfile,
