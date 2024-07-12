@@ -70,19 +70,14 @@ export const buildDeleteMentionRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/mentions/${id}`;
 export const buildClearMentionsRoute = () => `${ITEMS_ROUTE}/mentions`;
 
-export const buildUploadFilesRoute = (parentId?: UUID) =>
-  `${ITEMS_ROUTE}/upload${qs.stringify(
-    { id: parentId },
-    { addQueryPrefix: true },
-  )}`;
 export const buildImportZipRoute = (parentId?: UUID) =>
   `${ITEMS_ROUTE}/zip-import${qs.stringify(
     { parentId },
     { addQueryPrefix: true },
   )}`;
-export const buildImportH5PRoute = (parentId?: UUID) =>
+export const buildImportH5PRoute = (parentId?: UUID, previousItemId?: UUID) =>
   `${ITEMS_ROUTE}/h5p-import${qs.stringify(
-    { parentId },
+    { parentId, previousItemId },
     { addQueryPrefix: true },
   )}`;
 
@@ -435,7 +430,6 @@ export const API_ROUTES = {
   buildResendInvitationRoute,
   buildUpdateItemValidationReviewRoute,
 
-  buildUploadFilesRoute,
   GET_CATEGORY_TYPES_ROUTE,
   GET_BOOKMARKED_ITEMS_ROUTE,
   GET_FLAGS_ROUTE,

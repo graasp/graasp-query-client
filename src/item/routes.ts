@@ -119,3 +119,9 @@ export const buildRestoreItemsRoute = (ids: UUID[]) =>
 
 export const buildReorderItemRoute = (args: { id: string }) =>
   `${ITEMS_ROUTE}/${args.id}/reorder`;
+
+export const buildUploadFilesRoute = (parentId?: UUID, previousItemId?: UUID) =>
+  `${ITEMS_ROUTE}/upload${qs.stringify(
+    { id: parentId, previousItemId },
+    { addQueryPrefix: true },
+  )}`;
