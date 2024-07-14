@@ -57,6 +57,22 @@ const config = (
         ...defaultQueryOptions,
       }),
 
+      useAllMemberFiles: () =>useQuery({
+
+        queryKey: OWN_ITEMS_KEY,
+        queryFn: () => Api.fetchAllFiles(queryConfig),
+        onError: (error) => {
+          notifier?.({ type: 'FETCH_ALL_MEMBER_FILES_FAILURE', payload: { error } });
+        },
+        onSuccess: (items) => {
+          // Cache individual items if needed
+          items.forEach((item) => {
+            useQueryClient().setQueryData(['item', item.id], item);
+          });
+        },
+        ...defaultQueryOptions,
+      }),
+
     useChildren: (
       id?: UUID,
       params?: ItemChildrenParams,
@@ -300,6 +316,9 @@ const config = (
 
     useItemThumbnail: useItemThumbnail(queryConfig),
     useItemThumbnailUrl: useItemThumbnailUrl(queryConfig),
+
+    
+   
   };
 };
 

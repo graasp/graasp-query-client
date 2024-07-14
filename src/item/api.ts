@@ -226,3 +226,16 @@ export const restoreItems = async (
       .post<void>(`${API_HOST}/${buildRestoreItemsRoute(itemIds)}`)
       .then(({ data }) => data),
   );
+
+
+  export const fetchAllFiles = async ({
+    API_HOST,
+    axios,
+  }: PartialQueryConfigForApi): Promise<PackedItem[]> => {
+    const response = await verifyAuthentication(() =>
+      axios.get<PackedItem[]>(`${API_HOST}/files/all`)
+    );
+  
+    return response.data;
+  };
+  
