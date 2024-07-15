@@ -69,10 +69,17 @@ export const buildImportZipRoute = (parentId?: UUID) => {
   }
   return route;
 };
-export const buildImportH5PRoute = (parentId?: UUID) => {
+export const buildImportH5PRoute = (parentId?: UUID, previousItemId?: UUID) => {
   const route = `${ITEMS_ROUTE}/h5p-import`;
+  const query = new URLSearchParams();
   if (parentId) {
-    return `${route}?${new URLSearchParams({ id: parentId })}`;
+    query.set('id', parentId);
+  }
+  if (previousItemId) {
+    query.set('previousItemId', previousItemId);
+  }
+  if (query.toString()) {
+    return `${route}?${query.toString()}`;
   }
   return route;
 };
