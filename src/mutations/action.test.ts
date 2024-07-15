@@ -1,4 +1,8 @@
-import { FolderItemFactory, HttpMethod } from '@graasp/sdk';
+import {
+  ExportActionsFormatting,
+  FolderItemFactory,
+  HttpMethod,
+} from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
@@ -24,7 +28,7 @@ describe('Action Mutations', () => {
   });
 
   describe('useExportActions', () => {
-    const route = `/${buildExportActions(itemId)}`;
+    const route = `/${buildExportActions(itemId, ExportActionsFormatting.CSV)}`;
     const mutation = mutations.useExportActions;
 
     it(`Export Actions`, async () => {
@@ -39,7 +43,7 @@ describe('Action Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ itemId });
+        mockedMutation.mutate({ itemId, format: ExportActionsFormatting.CSV });
         await waitForMutation();
       });
 
@@ -67,7 +71,7 @@ describe('Action Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ itemId });
+        mockedMutation.mutate({ itemId, format: ExportActionsFormatting.CSV });
         await waitForMutation();
       });
 

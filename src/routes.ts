@@ -9,8 +9,6 @@ import {
 } from '@graasp/sdk';
 import { DEFAULT_LANG } from '@graasp/translations';
 
-import qs from 'qs';
-
 import * as itemRoutes from './item/routes.js';
 import * as memberRoutes from './member/routes.js';
 import { AggregateActionsArgs } from './utils/action.js';
@@ -32,18 +30,12 @@ export const EMBEDDED_LINKS_ROUTE = `${ITEMS_ROUTE}/embedded-links/metadata`;
 export const buildExportItemRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/zip-export/${id}`;
 export const buildPostItemMembershipRoute = (id: UUID) =>
-  `item-memberships?itemId=${id}`;
+  `item-memberships?${new URLSearchParams({ itemId: id })}`;
 export const buildPostManyItemMembershipsRoute = (id: UUID) =>
   `item-memberships/${id}`;
 export const buildInviteRoute = (id: UUID) => `invite/${id}`;
 export const buildGetItemMembershipsForItemsRoute = (ids: UUID[]) =>
-  `item-memberships${qs.stringify(
-    { itemId: ids },
-    {
-      addQueryPrefix: true,
-      arrayFormat: 'repeat',
-    },
-  )}`;
+  `item-memberships?${new URLSearchParams(ids.map((id) => ['itemId', id]))}`;
 export const buildGetItemInvitationsForItemRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/invitations`;
 export const buildPostUserCSVUploadRoute = (id: UUID) =>
@@ -70,16 +62,27 @@ export const buildDeleteMentionRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/mentions/${id}`;
 export const buildClearMentionsRoute = () => `${ITEMS_ROUTE}/mentions`;
 
-export const buildImportZipRoute = (parentId?: UUID) =>
-  `${ITEMS_ROUTE}/zip-import${qs.stringify(
-    { parentId },
-    { addQueryPrefix: true },
-  )}`;
-export const buildImportH5PRoute = (parentId?: UUID, previousItemId?: UUID) =>
-  `${ITEMS_ROUTE}/h5p-import${qs.stringify(
-    { parentId, previousItemId },
-    { addQueryPrefix: true },
-  )}`;
+export const buildImportZipRoute = (parentId?: UUID) => {
+  const route = `${ITEMS_ROUTE}/zip-import`;
+  if (parentId) {
+    return `${route}?${new URLSearchParams({ id: parentId })}`;
+  }
+  return route;
+};
+export const buildImportH5PRoute = (parentId?: UUID, previousItemId?: UUID) => {
+  const route = `${ITEMS_ROUTE}/h5p-import`;
+  const query = new URLSearchParams();
+  if (parentId) {
+    query.set('id', parentId);
+  }
+  if (previousItemId) {
+    query.set('previousItemId', previousItemId);
+  }
+  if (query.toString()) {
+    return `${route}?${query.toString()}`;
+  }
+  return route;
+};
 
 export const MOBILE_SIGN_UP_ROUTE = `m/register`;
 export const MOBILE_SIGN_IN_ROUTE = `m/login`;
@@ -90,7 +93,7 @@ export const SIGN_UP_ROUTE = `register`;
 export const SIGN_OUT_ROUTE = 'logout';
 export const buildGetItemTagsRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/tags`;
 export const buildGetItemsTagsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}/tags?${qs.stringify({ id: ids }, { arrayFormat: 'repeat' })}`;
+  `${ITEMS_ROUTE}/tags?${new URLSearchParams(ids.map((id) => ['id', id]))}`;
 export const buildPostItemTagRoute = ({
   itemId,
   type,
@@ -129,25 +132,24 @@ export const buildBookmarkedItemRoute = (itemId: UUID) =>
   `${GET_BOOKMARKED_ITEMS_ROUTE}/${itemId}`;
 
 export const GET_CATEGORY_TYPES_ROUTE = `${ITEMS_ROUTE}/category-types`;
-export const buildGetCategoriesRoute = (ids?: UUID[]) =>
-  `${CATEGORIES_ROUTE}${qs.stringify(
-    { typeId: ids },
-    {
-      arrayFormat: 'repeat',
-      addQueryPrefix: true,
-    },
-  )}`;
+export const buildGetCategoriesRoute = (ids?: UUID[]) => {
+  const route = CATEGORIES_ROUTE;
+  if (ids && ids.length) {
+    return `${route}?${new URLSearchParams(ids.map((id) => ['typeId', id]))}`;
+  }
+  return route;
+};
 export const buildGetCategoryRoute = (id: UUID) => `${CATEGORIES_ROUTE}/${id}`;
 export const buildGetItemCategoriesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/categories`;
-export const buildGetItemsInCategoryRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}/with-categories${qs.stringify(
-    { categoryId: ids },
-    {
-      arrayFormat: 'repeat',
-      addQueryPrefix: true,
-    },
-  )}`;
+export const buildGetItemsInCategoryRoute = (ids: UUID[]) => {
+  const route = `${ITEMS_ROUTE}/with-categories`;
+  if (ids && ids.length) {
+    return `${route}?${new URLSearchParams(ids.map((id) => ['categoryId', id]))}`;
+  }
+  return route;
+};
+
 export const buildPostItemCategoryRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/categories`;
 export const buildDeleteItemCategoryRoute = (args: {
@@ -159,12 +161,7 @@ export const buildGetApiAccessTokenRoute = (id: UUID) =>
   `${APPS_ROUTE}/${id}/api-access-token`;
 
 export const buildGetLikesForMemberRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/liked${qs.stringify(
-    { memberId: id },
-    {
-      addQueryPrefix: true,
-    },
-  )}`;
+  `${ITEMS_ROUTE}/liked?${new URLSearchParams({ memberId: id })}`;
 export const buildGetItemLikesRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/likes`;
 export const buildPostItemLikeRoute = (itemId: UUID) =>
@@ -190,42 +187,33 @@ export const buildGetActions = (
   itemId: UUID,
   options: { requestedSampleSize: number; view: string },
 ) =>
-  `${ITEMS_ROUTE}/${itemId}/actions${qs.stringify(
-    {
-      requestedSampleSize: options.requestedSampleSize,
-      view: options.view,
-    },
-    {
-      addQueryPrefix: true,
-    },
-  )}`;
+  `${ITEMS_ROUTE}/${itemId}/actions?${new URLSearchParams({
+    requestedSampleSize: options.requestedSampleSize.toString(),
+    view: options.view,
+  })}`;
 
 export const buildGetAggregateActions = <K extends AggregateBy[]>(
   args: AggregateActionsArgs<K>,
-) =>
-  `${ITEMS_ROUTE}/${args.itemId}/actions/aggregation${qs.stringify(
-    {
-      requestedSampleSize: args.requestedSampleSize,
-      view: args.view,
-      type: args.type,
-      countGroupBy: args.countGroupBy,
-      aggregateFunction: args.aggregateFunction,
-      aggregateMetric: args.aggregateMetric,
-      aggregateBy: args.aggregateBy,
-    },
-    {
-      addQueryPrefix: true,
-      arrayFormat: 'repeat',
-    },
-  )}`;
+) => {
+  const route = `${ITEMS_ROUTE}/${args.itemId}/actions/aggregation`;
+  const search = new URLSearchParams({
+    requestedSampleSize: args.requestedSampleSize.toString(),
+    view: args.view,
+    aggregateFunction: args.aggregateFunction,
+    aggregateMetric: args.aggregateMetric,
+  });
+  args.aggregateBy.forEach((by) => search.append('aggregateBy', by));
+  args.countGroupBy.forEach((by) => search.append('countGroupBy', by));
+  if (args.type) {
+    args.type.forEach((t) => search.append('type', t));
+  }
+  return `${route}`;
+};
 export const buildExportActions = (
   itemId: UUID,
-  format?: ExportActionsFormatting,
+  format: ExportActionsFormatting,
 ) =>
-  `${ITEMS_ROUTE}/${itemId}/actions/export${qs.stringify(
-    { format },
-    { addQueryPrefix: true },
-  )}`;
+  `${ITEMS_ROUTE}/${itemId}/actions/export?${new URLSearchParams({ format })}`;
 export const buildPostItemAction = (itemId: UUID) =>
   `${ITEMS_ROUTE}/${itemId}/actions`;
 export const buildGetInvitationRoute = (id: UUID) =>
@@ -239,52 +227,54 @@ export const buildPostInvitationsRoute = (itemId: UUID) =>
 export const buildResendInvitationRoute = (args: { itemId: UUID; id: UUID }) =>
   `${ITEMS_ROUTE}/${args.itemId}/${INVITATIONS_ROUTE}/${args.id}/send`;
 
-export const buildItemPublishRoute = (itemId: UUID, notification?: boolean) =>
+export const buildItemPublishRoute = (itemId: UUID, notification?: boolean) => {
+  const route = `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/${itemId}/publish`;
   // do not include notification query string if false
-  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/${itemId}/publish${
-    notification ? qs.stringify({ notification }, { addQueryPrefix: true }) : ''
-  }`;
+  if (notification) {
+    return `${route}?${new URLSearchParams({ notification: notification.toString() })}`;
+  }
+
+  return route;
+};
 export const buildItemUnpublishRoute = (itemId: UUID) =>
   `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/${itemId}/unpublish`;
 
 export const buildGetItemPublishedInformationRoute = (itemId: UUID) =>
   `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/${itemId}/informations`;
 export const buildManyGetItemPublishedInformationsRoute = (itemIds: UUID[]) =>
-  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/informations${qs.stringify(
-    { itemId: itemIds },
-    {
-      arrayFormat: 'repeat',
-      addQueryPrefix: true,
-    },
-  )}`;
-export const buildGetAllPublishedItemsRoute = (categoryIds?: UUID[]) =>
-  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}${
-    categoryIds?.length
-      ? qs.stringify(
-          { categoryId: categoryIds },
-          {
-            arrayFormat: 'repeat',
-            addQueryPrefix: true,
-          },
-        )
-      : ''
-  }`;
-export const buildGetMostLikedPublishedItemsRoute = (limit?: number) =>
-  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/liked${
-    limit ? qs.stringify({ limit }, { addQueryPrefix: true }) : ''
-  }`;
-export const buildGetMostRecentPublishedItemsRoute = (limit?: number) =>
-  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/recent${
-    limit ? qs.stringify({ limit }, { addQueryPrefix: true }) : ''
-  }`;
+  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/informations?${new URLSearchParams(itemIds.map((id) => ['itemId', id]))}`;
+export const buildGetAllPublishedItemsRoute = (categoryIds?: UUID[]) => {
+  const route = `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}`;
+  if (categoryIds && categoryIds.length) {
+    return `${route}?${new URLSearchParams(categoryIds.map((catId) => ['categoryId', catId]))}`;
+  }
+  return route;
+};
+export const buildGetMostLikedPublishedItemsRoute = (limit?: number) => {
+  const route = `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/liked`;
+  if (limit) {
+    return `${route}?${new URLSearchParams({ limit: limit.toString() })}`;
+  }
+  return route;
+};
+
+export const buildGetMostRecentPublishedItemsRoute = (limit?: number) => {
+  const route = `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/recent`;
+  if (limit) {
+    return `${route}?${new URLSearchParams({ limit: limit.toString() })}`;
+  }
+  return route;
+};
 export const buildGetPublishedItemsForMemberRoute = (memberId: UUID) =>
   `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/members/${memberId}`;
 
-export const buildPostEtherpadRoute = (parentId?: UUID) =>
-  `${ETHERPAD_ROUTE}/create${qs.stringify(
-    { parentId },
-    { addQueryPrefix: true },
-  )}`;
+export const buildPostEtherpadRoute = (parentId?: UUID) => {
+  const route = `${ETHERPAD_ROUTE}/create`;
+  if (parentId) {
+    return `${route}?${new URLSearchParams({ parentId })}`;
+  }
+  return route;
+};
 export const buildGetEtherpadRoute = (itemId: UUID) =>
   `${ETHERPAD_ROUTE}/view/${itemId}`;
 
