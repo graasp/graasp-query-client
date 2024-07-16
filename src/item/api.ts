@@ -227,31 +227,35 @@ export const restoreItems = async (
       .then(({ data }) => data),
   );
 
+export const getAllFilesRecursive = async (
+  parentId: UUID,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+): Promise<PackedItem[]> => {
+  const items: PackedItem[] = [];
 
- export  const getAllFilesRecursive = async (parentId: UUID, { API_HOST, axios }: PartialQueryConfigForApi): Promise<PackedItem[]> => {
-    const items: PackedItem[] = [];
-  
-    // Fonction récursive pour récupérer tous les fichiers
-    const retrieveFiles = async (id: UUID): Promise<void> => {
-      const children = await getChildren(id, { includeFiles: true, includeFolders: true }, { API_HOST, axios });
-  
-      for (const item of children) {
-        if (item.type === 'file') {
-          items.push(item);
-        } else if (item.type === 'folder') {
-          // eslint-disable-next-line no-await-in-loop
-          await retrieveFiles(item.id); // Appel récursif asynchrone pour explorer les sous-dossiers
-        }
+  // Fonction récursive pour récupérer tous les fichiers
+  const retrieveFiles = async (id: UUID): Promise<void> => {
+    const children = await getChildren(
+      id,
+      { includeFiles: true, includeFolders: true },
+      { API_HOST, axios },
+    );
+
+    for (const item of children) {
+      if (item.type === 'file') {
+        items.push(item);
+      } else if (item.type === 'folder') {
+        // eslint-disable-next-line no-await-in-loop
+        await retrieveFiles(item.id); // Appel récursif asynchrone pour explorer les sous-dossiers
       }
-    };
-  
-    // Appel initial pour récupérer les fichiers à partir du parentId
-    await retrieveFiles(parentId);
-  
-    return items;
+    }
   };
-  
 
+  // Appel initial pour récupérer les fichiers à partir du parentId
+  await retrieveFiles(parentId);
+
+  return items;
+};
 
 // // Define type guards to narrow down PackedItem to file types
 // const isFileItem = (item: PackedItem): item is PackedItem & { type: "file"; } => item.type === "file";

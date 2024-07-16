@@ -301,10 +301,10 @@ const config = (
     useItemThumbnail: useItemThumbnail(queryConfig),
     useItemThumbnailUrl: useItemThumbnailUrl(queryConfig),
 
-    useAllMemberFiles: () =>{
+    useAllMemberFiles: () => {
       const queryClient = useQueryClient();
 
-    return useQuery({
+      return useQuery({
         queryKey: itemKeys.allMemberFiles(),
         queryFn: async () => {
           const { API_HOST, axios } = queryConfig; // Adjust this according to your setup
@@ -314,7 +314,8 @@ const config = (
           const promises = rootItems.map(async (item) => {
             if (item.type === 'file') {
               return [item]; // Return the file wrapped in an array
-            } if (item.type === 'folder') {
+            }
+            if (item.type === 'folder') {
               return Api.getAllFilesRecursive(item.id, { API_HOST, axios }); // Recursive call for folders
             }
             return []; // Handle other types or scenarios as needed
@@ -333,9 +334,9 @@ const config = (
           return flatFiles;
         },
         ...defaultQueryOptions,
-      })
-    
-    }  } 
+      });
+    },
   };
+};
 
 export default config;

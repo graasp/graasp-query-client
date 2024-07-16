@@ -550,7 +550,6 @@ describe('useFileContent', () => {
   });
 });
 
-
 describe('useAllFiles', () => {
   afterEach(() => {
     nock.cleanAll();
