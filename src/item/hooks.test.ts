@@ -549,3 +549,63 @@ describe('useFileContent', () => {
     expect(queryClient.getQueryData(key)).toBeFalsy();
   });
 });
+
+
+describe('useAllFiles', () => {
+  afterEach(() => {
+    nock.cleanAll();
+    queryClient.clear();
+  });
+
+  const route = `/${GET_OWN_ITEMS_ROUTE}`;
+  const hook = () => hooks.useAllMemberFiles();
+
+  it(`Receive all files`, async () => {
+    const response = [
+      LocalFileItemFactory(),
+      LocalFileItemFactory(),
+      LocalFileItemFactory(),
+    ];
+    const endpoints = [{ route, response }];
+    const { data } = await mockHook({ endpoints, hook, wrapper });
+
+    expect(data).toEqual(response);
+
+    // Verify cache keys
+    expect(
+      queryClient.getQueryData<DiscriminatedItem[]>(itemKeys.allMemberFiles()),
+    ).toEqual(response);
+  });
+
+  it(`Unauthorized`, async () => {
+    const endpoints = [
+      {
+        route,
+        response: UNAUTHORIZED_RESPONSE,
+        statusCode: StatusCodes.UNAUTHORIZED,
+      },
+    ];
+    const { data, isError } = await mockHook({
+      hook,
+      wrapper,
+      endpoints,
+    });
+
+    expect(data).toBeFalsy();
+    expect(isError).toBeTruthy();
+
+    // Verify cache keys
+    expect(queryClient.getQueryData(itemKeys.allMemberFiles())).toBeFalsy();
+  });
+
+  it(`Empty response`, async () => {
+    const endpoints = [{ route, response: [] }];
+    const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
+
+    expect(data).toEqual([]);
+    expect(isSuccess).toBeTruthy();
+
+    // Verify cache keys
+    expect(queryClient.getQueryData(itemKeys.allMemberFiles())).toEqual([]);
+  });
+});

@@ -57,22 +57,6 @@ const config = (
         ...defaultQueryOptions,
       }),
 
-      useAllMemberFiles: () =>useQuery({
-
-        queryKey: OWN_ITEMS_KEY,
-        queryFn: () => Api.fetchAllFiles(queryConfig),
-        onError: (error) => {
-          notifier?.({ type: 'FETCH_ALL_MEMBER_FILES_FAILURE', payload: { error } });
-        },
-        onSuccess: (items) => {
-          // Cache individual items if needed
-          items.forEach((item) => {
-            useQueryClient().setQueryData(['item', item.id], item);
-          });
-        },
-        ...defaultQueryOptions,
-      }),
-
     useChildren: (
       id?: UUID,
       params?: ItemChildrenParams,
@@ -317,9 +301,41 @@ const config = (
     useItemThumbnail: useItemThumbnail(queryConfig),
     useItemThumbnailUrl: useItemThumbnailUrl(queryConfig),
 
+    useAllMemberFiles: () =>{
+      const queryClient = useQueryClient();
+
+    return useQuery({
+        queryKey: itemKeys.allMemberFiles(),
+        queryFn: async () => {
+          const { API_HOST, axios } = queryConfig; // Adjust this according to your setup
+          const rootItems = await Api.getOwnItems({ API_HOST, axios });
+
+          // Map each root item to a Promise that resolves to its files (recursively)
+          const promises = rootItems.map(async (item) => {
+            if (item.type === 'file') {
+              return [item]; // Return the file wrapped in an array
+            } if (item.type === 'folder') {
+              return Api.getAllFilesRecursive(item.id, { API_HOST, axios }); // Recursive call for folders
+            }
+            return []; // Handle other types or scenarios as needed
+          });
+
+          // Await all promises concurrently and flatten the resulting array of arrays into a single array
+          const nestedFiles = await Promise.all(promises);
+          const flatFiles = nestedFiles.flat();
+
+          // Save items in their own query keys
+          flatFiles.forEach(async (item) => {
+            const { id } = item;
+            queryClient.setQueryData(itemKeys.single(id).content, item);
+          });
+
+          return flatFiles;
+        },
+        ...defaultQueryOptions,
+      })
     
-   
+    }  } 
   };
-};
 
 export default config;

@@ -19,4 +19,6 @@ export type ItemSearchParams =
 export type ItemChildrenParams = {
   ordered?: boolean;
   types?: UnionOfConst<typeof ItemType>[];
+  includeFiles?: boolean;
+  includeFolders?: boolean;
 };

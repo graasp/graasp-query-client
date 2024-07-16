@@ -33,7 +33,7 @@ export const buildShortLinkKey = (alias: string | undefined) => [
 
 export const itemKeys = {
   all: [ITEMS_CONTEXT] as const,
-
+  allMemberFiles: () => [ITEMS_CONTEXT], 
   // all single item queries
   allSingles: () => [...itemKeys.all, 'one'] as const,
 
