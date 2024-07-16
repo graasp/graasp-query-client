@@ -30,7 +30,7 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useExportActions = () =>
     useMutation(
-      (payload: { itemId: UUID; format?: ExportActionsFormatting }) =>
+      (payload: { itemId: UUID; format: ExportActionsFormatting }) =>
         exportActions(payload, queryConfig),
       {
         onSuccess: () => {
