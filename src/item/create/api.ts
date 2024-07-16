@@ -3,7 +3,6 @@ import { DiscriminatedItem } from '@graasp/sdk';
 import { AxiosProgressEvent } from 'axios';
 
 import { verifyAuthentication } from '../../api/axios.js';
-import { buildUploadFilesRoute } from '../../routes.js';
 import { PartialQueryConfigForApi } from '../../types.js';
 import {
   PostItemPayloadType,
@@ -12,6 +11,7 @@ import {
 import {
   buildPostItemRoute,
   buildPostItemWithThumbnailRoute,
+  buildUploadFilesRoute,
 } from '../routes.js';
 
 export const postItem = async (
@@ -109,15 +109,12 @@ export const uploadFiles = async (
     const { id, previousItemId, files } = args;
     const itemPayload = new FormData();
 
-    if (previousItemId) {
-      itemPayload.append('previousItemId', previousItemId);
-    }
     for (const f of files) {
       itemPayload.append('files', f);
     }
     return axios
       .post<DiscriminatedItem>(
-        `${API_HOST}/${buildUploadFilesRoute(id)}`,
+        `${API_HOST}/${buildUploadFilesRoute(id, previousItemId)}`,
         itemPayload,
         {
           headers: { 'Content-Type': 'multipart/form-data' },

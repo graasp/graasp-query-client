@@ -46,7 +46,7 @@ export const getAggregateActions = async <K extends AggregateBy[]>(
     .then(({ data }) => data);
 
 export const exportActions = async (
-  args: { itemId: UUID; format?: ExportActionsFormatting },
+  args: { itemId: UUID; format: ExportActionsFormatting },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios.post<void>(

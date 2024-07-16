@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.15.2](https://github.com/graasp/graasp-query-client/compare/v3.15.1...v3.15.2) (2024-07-12)
+
+
+### Bug Fixes
+
+* do not call logout on delete member as the backend does it automatically ([#825](https://github.com/graasp/graasp-query-client/issues/825)) ([badce8f](https://github.com/graasp/graasp-query-client/commit/badce8fbc967c7429ffc4ee82988c4b401d2be43))
+* get previous item id from query url ([#817](https://github.com/graasp/graasp-query-client/issues/817)) ([d936a62](https://github.com/graasp/graasp-query-client/commit/d936a625e5ccbef74b304ca7100781683ae50c0b))
+
 ## [3.15.1](https://github.com/graasp/graasp-query-client/compare/v3.15.0...v3.15.1) (2024-07-05)
 
 
