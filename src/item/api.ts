@@ -233,7 +233,7 @@ export const getAllFilesRecursive = async (
 ): Promise<PackedItem[]> => {
   const items: PackedItem[] = [];
 
-  // Fonction récursive pour récupérer tous les fichiers
+  // Recursive function to retrieve all files
   const retrieveFiles = async (id: UUID): Promise<void> => {
     const children = await getChildren(
       id,
@@ -246,59 +246,13 @@ export const getAllFilesRecursive = async (
         items.push(item);
       } else if (item.type === 'folder') {
         // eslint-disable-next-line no-await-in-loop
-        await retrieveFiles(item.id); // Appel récursif asynchrone pour explorer les sous-dossiers
+        await retrieveFiles(item.id); 
       }
     }
   };
 
-  // Appel initial pour récupérer les fichiers à partir du parentId
+  // Initial call to retrieve files from parentId
   await retrieveFiles(parentId);
 
   return items;
 };
-
-// // Define type guards to narrow down PackedItem to file types
-// const isFileItem = (item: PackedItem): item is PackedItem & { type: "file"; } => item.type === "file";
-
-// const isS3FileItem = (item: PackedItem): item is PackedItem & { type: "s3File"; } => item.type === "s3File";
-
-// // Define a recursive function to fetch files
-// const fetchFilesRecursively = async (
-//   folderId: UUID | null,
-//   { API_HOST, axios }: PartialQueryConfigForApi
-// ): Promise<(PackedItem & { type: "file" | "s3File" })[]> => {
-//   const route = `${API_HOST}/member/files`;
-
-//   try {
-//     const response = await axios.get<PackedItem[]>(route);
-//     const items = response.data;
-
-//     // Log the response to inspect the data
-//     console.log('Fetched items:', items);
-
-//     if (!Array.isArray(items)) {
-//       throw new TypeError('Expected an array of items');
-//     }
-
-//     const files = items.filter(item => isFileItem(item) || isS3FileItem(item));
-//     const folders = items.filter(item => item.type === 'folder');
-
-//     // Fetch files from all folders concurrently
-//     const folderFilesPromises = folders.map(folder => fetchFilesRecursively(folder.id, { API_HOST, axios }));
-//     const nestedFiles = await Promise.all(folderFilesPromises);
-
-//     // Flatten the array of arrays
-//     nestedFiles.forEach(nested => files.push(...nested));
-
-//     return files;
-//   } catch (error) {
-//     console.error('Error fetching items:', error);
-//     throw error; // Re-throw the error after logging it
-//   }
-// };
-
-// // Define the main function to get all member files
-// export const getAllMemberFiles = async ({
-//   API_HOST,
-//   axios,
-// }: PartialQueryConfigForApi): Promise<(PackedItem & { type: "file" | "s3File" })[]> => verifyAuthentication(() => fetchFilesRecursively(null, { API_HOST, axios }));
