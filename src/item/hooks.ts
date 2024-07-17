@@ -307,17 +307,17 @@ const config = (
       return useQuery({
         queryKey: itemKeys.allMemberFiles(),
         queryFn: async () => {
-          const { API_HOST, axios } = queryConfig; 
+          const { API_HOST, axios } = queryConfig;
           const rootItems = await Api.getOwnItems({ API_HOST, axios });
 
           const promises = rootItems.map(async (item) => {
             if (item.type === 'file') {
-              return [item]; 
+              return [item];
             }
             if (item.type === 'folder') {
               return Api.getAllFilesRecursive(item.id, { API_HOST, axios }); // Recursive call for folders
             }
-            return []; 
+            return [];
           });
 
           // Await all promises concurrently and flatten the resulting array of arrays into a single array

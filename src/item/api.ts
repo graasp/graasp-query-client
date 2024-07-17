@@ -246,7 +246,7 @@ export const getAllFilesRecursive = async (
         items.push(item);
       } else if (item.type === 'folder') {
         // eslint-disable-next-line no-await-in-loop
-        await retrieveFiles(item.id); 
+        await retrieveFiles(item.id);
       }
     }
   };
