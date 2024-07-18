@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.16.0](https://github.com/graasp/graasp-query-client/compare/v3.15.2...v3.16.0) (2024-07-18)
+
+
+### Features
+
+* implement hook to get publication state ([#829](https://github.com/graasp/graasp-query-client/issues/829)) ([f85bf43](https://github.com/graasp/graasp-query-client/commit/f85bf435aaadb02eb91daacafe0dd4bdf827bed4))
+
+
+### Bug Fixes
+
+* add invalidation of profile on patch and post ([#831](https://github.com/graasp/graasp-query-client/issues/831)) ([9cccb99](https://github.com/graasp/graasp-query-client/commit/9cccb999c4c002c330aa51b08d50f40e265275ca))
+* **deps:** remove dependency qs ([#819](https://github.com/graasp/graasp-query-client/issues/819)) ([cf6a5da](https://github.com/graasp/graasp-query-client/commit/cf6a5da5985bc929a01df62184b59e48bb162379))
+
 ## [3.15.2](https://github.com/graasp/graasp-query-client/compare/v3.15.1...v3.15.2) (2024-07-12)
 
 
