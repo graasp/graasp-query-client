@@ -1,6 +1,7 @@
 import { WebsocketClient } from '@graasp/sdk';
 
 import configureItemHooks from '../item/hooks.js';
+import configureItemPublicationHooks from '../item/publication/hooks.js';
 import configureMemberHooks from '../member/hooks.js';
 import configurePublicProfileHooks from '../member/publicProfile/hooks.js';
 import configureSubscriptionHooks from '../member/subscription/hooks.js';
@@ -58,6 +59,7 @@ export default (
     ...configureShortLinkHooks(queryConfig),
     ...configureItemGeolocationHooks(queryConfig),
     ...configureEmbeddedLinkHooks(queryConfig),
+    ...configureItemPublicationHooks(queryConfig),
     useDebounce,
   };
 };

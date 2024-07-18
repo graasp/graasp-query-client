@@ -1,4 +1,9 @@
-import { FolderItemFactory, HttpMethod, MemberFactory } from '@graasp/sdk';
+import {
+  FolderItemFactory,
+  HttpMethod,
+  MemberFactory,
+  PublicationStatus,
+} from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
@@ -47,6 +52,10 @@ describe('Publish Item', () => {
       );
       queryClient.setQueryData(itemKeys.published().forCategories(), items);
       queryClient.setQueryData(memberKeys.current().content, currentMember);
+      queryClient.setQueryData(
+        itemKeys.single(itemId).publicationStatus,
+        PublicationStatus.Unpublished,
+      );
 
       const endpoints = [
         {
@@ -85,6 +94,10 @@ describe('Publish Item', () => {
         queryClient.getQueryState(itemKeys.published().forCategories())
           ?.isInvalidated,
       ).toBeTruthy();
+      expect(
+        queryClient.getQueryState(itemKeys.single(itemId).publicationStatus)
+          ?.isInvalidated,
+      ).toBeTruthy();
 
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: publishItemRoutine.SUCCESS,
@@ -103,6 +116,10 @@ describe('Publish Item', () => {
       );
       queryClient.setQueryData(itemKeys.published().forCategories(), items);
       queryClient.setQueryData(memberKeys.current().content, currentMember);
+      queryClient.setQueryData(
+        itemKeys.single(itemId).publicationStatus,
+        PublicationStatus.Unpublished,
+      );
 
       const endpoints = [
         {
@@ -137,6 +154,10 @@ describe('Publish Item', () => {
       ).toBeTruthy();
       expect(
         queryClient.getQueryState(itemKeys.published().forCategories())
+          ?.isInvalidated,
+      ).toBeTruthy();
+      expect(
+        queryClient.getQueryState(itemKeys.single(itemId).publicationStatus)
           ?.isInvalidated,
       ).toBeTruthy();
 

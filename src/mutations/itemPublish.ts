@@ -32,6 +32,7 @@ export default (queryConfig: QueryClientConfig) => {
           queryClient.invalidateQueries(
             itemKeys.single(id).publishedInformation,
           );
+          queryClient.invalidateQueries(itemKeys.single(id).publicationStatus);
           const currentMemberId = queryClient.getQueryData<CompleteMember>(
             memberKeys.current().content,
           )?.id;
@@ -64,6 +65,7 @@ export default (queryConfig: QueryClientConfig) => {
           queryClient.invalidateQueries(
             itemKeys.single(id).publishedInformation,
           );
+          queryClient.invalidateQueries(itemKeys.single(id).publicationStatus);
           const currentMemberId = queryClient.getQueryData<CompleteMember>(
             memberKeys.current().content,
           )?.id;
