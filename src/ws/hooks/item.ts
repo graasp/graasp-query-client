@@ -86,10 +86,8 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
   },
   [FeedBackOperation.VALIDATE]: (itemIds: string[]) => {
     itemIds.forEach((itemId) => {
-      // Invalidates the item content to get the public attribute.
-      // Without that, the item is still in private (missing the public attribute),
-      // so the frontend can't display the new publication status.
-      queryClient.invalidateQueries(itemKeys.single(itemId).content);
+      // Invalidates the publication status to get the new status after the validation.
+      queryClient.invalidateQueries(itemKeys.single(itemId).publicationStatus);
       queryClient.invalidateQueries(itemKeys.single(itemId).validation);
       queryClient.invalidateQueries(
         itemKeys.single(itemId).publishedInformation,

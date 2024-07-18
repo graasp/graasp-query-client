@@ -351,6 +351,9 @@ export const buildGetSuggestionsForAddressRoute = ({
 export const buildGetEmbeddedLinkMetadata = (link: string) =>
   `${EMBEDDED_LINKS_ROUTE}?link=${encodeURIComponent(link)}`;
 
+export const buildGetPublicationStatusRoute = (itemId: string) =>
+  `${ITEMS_ROUTE}/publication/${itemId}/status`;
+
 export const API_ROUTES = {
   ...itemRoutes,
   ...memberRoutes,
@@ -439,4 +442,5 @@ export const API_ROUTES = {
   buildPutItemGeolocationRoute,
   buildGetAddressFromCoordinatesRoute,
   buildGetEmbeddedLinkMetadata,
+  buildGetPublicationStatusRoute,
 };

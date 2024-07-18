@@ -2,6 +2,7 @@ import {
   DiscriminatedItem,
   FolderItemFactory,
   ItemOpFeedbackEvent,
+  PublicationStatus,
   buildPathFromIds,
   getParentFromPath,
 } from '@graasp/sdk';
@@ -326,6 +327,35 @@ describe('Ws Item Hooks', () => {
         await mockWsHook({ hook, wrapper });
         handleWS(RestoreItemEventFactory(item));
         expectInvalidates(recycledItemsKey);
+      });
+    });
+
+    describe('Validate Feedback', () => {
+      it(`Receive validate feedback`, async () => {
+        // If the keys are not set in the cache, they are never invalidated.
+        queryClient.setQueryData(
+          itemKeys.single(item.id).publicationStatus,
+          PublicationStatus.Unpublished,
+        );
+
+        await mockWsHook({ hook, wrapper });
+
+        const itemEvent: ItemOpFeedbackEvent<
+          DiscriminatedItem,
+          typeof OPS.VALIDATE
+        > = {
+          kind: KINDS.FEEDBACK,
+          resource: [item.id],
+          op: OPS.VALIDATE,
+          errors: [],
+        };
+
+        handleWS(itemEvent);
+
+        expect(
+          queryClient.getQueryState(itemKeys.single(item.id).publicationStatus)
+            ?.isInvalidated,
+        ).toBe(true);
       });
     });
   });
