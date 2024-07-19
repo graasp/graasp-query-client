@@ -2,6 +2,9 @@ import {
   CompleteMember,
   Member,
   MemberStorage,
+  MemberStorageItem,
+  Paginated,
+  Pagination,
   Password,
   ResultOf,
   UUID,
@@ -18,6 +21,7 @@ import {
   buildDownloadAvatarRoute,
   buildGetCurrentMemberRoute,
   buildGetMemberRoute,
+  buildGetMemberStorageFilesRoute,
   buildGetMemberStorageRoute,
   buildGetMembersByEmailRoute,
   buildGetMembersByIdRoute,
@@ -80,6 +84,16 @@ export const getMemberStorage = async ({
       .get<MemberStorage>(`${API_HOST}/${buildGetMemberStorageRoute()}`)
       .then(({ data }) => data),
   );
+
+export const getMemberStorageFiles = async (
+  pagination: Partial<Pagination>,
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
+  axios
+    .get<
+      Paginated<MemberStorageItem>
+    >(`${API_HOST}/${buildGetMemberStorageFilesRoute(pagination)}`)
+    .then(({ data }) => data);
 
 export const editMember = async (
   payload: {
