@@ -201,11 +201,15 @@ export const buildGetAggregateActions = <K extends AggregateBy[]>(
     view: args.view,
     aggregateFunction: args.aggregateFunction,
     aggregateMetric: args.aggregateMetric,
+    ...(args.startDate && { startDate: args.startDate }),
+    ...(args.endDate && { endDate: args.endDate }),
   });
   args.aggregateBy.forEach((by) => search.append('aggregateBy', by));
   args.countGroupBy.forEach((by) => search.append('countGroupBy', by));
   if (args.type) {
     args.type.forEach((t) => search.append('type', t));
+    // eslint-disable-next-line no-console
+    console.log(args, 'args', `${route}`, 'route');
   }
   return `${route}`;
 };
