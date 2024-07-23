@@ -211,7 +211,7 @@ export const buildGetAggregateActions = <K extends AggregateBy[]>(
     // eslint-disable-next-line no-console
     console.log(args, 'args', `${route}`, 'route');
   }
-  return `${route}`;
+  return `${route}?${search}`;
 };
 export const buildExportActions = (
   itemId: UUID,
