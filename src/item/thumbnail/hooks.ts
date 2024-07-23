@@ -42,7 +42,7 @@ export const useItemThumbnail =
 // create a new thumbnail hook because of key content
 /**
  * Fetch item's thumbnail url
- * @param id corresponding item's id for thumbnail, used to retrieve cache data and know if the item has a thumbnail
+ * @param id corresponding item's id for thumbnail, required
  * @param item corresponding item for thumbnail, used to know if the item has a thumbnail
  * @param size size of the thumbnail we want
  * @returns url of the thumbnail given size
@@ -65,7 +65,7 @@ export const useItemThumbnailUrl =
       shouldFetch =
         queryClient.getQueryData<PackedItem>(itemKeys.single(id).content)
           ?.settings?.hasThumbnail ?? true;
-    } else {
+    } else if (item) {
       shouldFetch = item?.settings?.hasThumbnail ?? true;
     }
 
@@ -78,7 +78,7 @@ export const useItemThumbnailUrl =
         return downloadItemThumbnailUrl({ id, size }, queryConfig);
       },
       ...defaultQueryOptions,
-      enabled: Boolean(id ?? item) && shouldFetch,
+      enabled: Boolean(id) && shouldFetch,
       staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
     });
   };

@@ -265,7 +265,11 @@ describe('useItemThumbnailUrl', () => {
     ];
     const { data, isFetched } = await mockHook({
       endpoints,
-      hook: () => hooks.useItemThumbnailUrl({ item: itemWithoutThumbnail }),
+      hook: () =>
+        hooks.useItemThumbnailUrl({
+          id: itemWithoutThumbnail.id,
+          item: itemWithoutThumbnail,
+        }),
       wrapper,
       enabled: false,
     });
