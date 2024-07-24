@@ -151,10 +151,7 @@ export const updatePassword = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .patch<void>(`${API_HOST}/${buildPatchMemberPasswordRoute()}`, {
-      password: payload.password,
-      currentPassword: payload.currentPassword,
-    })
+    .patch<void>(`${API_HOST}/${buildPatchMemberPasswordRoute()}`, payload)
     .then((data) => data);
 
 export const uploadAvatar = async (
