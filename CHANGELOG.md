@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.17.0](https://github.com/graasp/graasp-query-client/compare/v3.16.0...v3.17.0) (2024-07-24)
+
+
+### Features
+
+* check hasThumbnail on item for thumbnail ([#850](https://github.com/graasp/graasp-query-client/issues/850)) ([062ba4d](https://github.com/graasp/graasp-query-client/commit/062ba4d14a995d7b9ab0fbfd9b1895c94657b2eb))
+
 ## [3.16.0](https://github.com/graasp/graasp-query-client/compare/v3.15.2...v3.16.0) (2024-07-18)
 
 
