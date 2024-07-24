@@ -29,10 +29,10 @@ describe('Item Publication Hooks', () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
 
-      expect(data).toMatchObject(response);
+      expect(data).toEqual(response);
 
       // verify cache keys
-      expect(queryClient.getQueryData(key)).toMatchObject(response);
+      expect(queryClient.getQueryData<string>(key)).toEqual(response);
     });
     it(`Unauthorized`, async () => {
       const endpoints = [
