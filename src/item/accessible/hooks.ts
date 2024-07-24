@@ -1,3 +1,5 @@
+import { Pagination } from '@graasp/sdk';
+
 import {
   useInfiniteQuery,
   useQuery,
@@ -6,7 +8,7 @@ import {
 
 import useDebounce from '../../hooks/useDebounce.js';
 import { itemKeys } from '../../keys.js';
-import { PaginationParams, QueryClientConfig } from '../../types.js';
+import { QueryClientConfig } from '../../types.js';
 import { getAccessibleItemsRoutine } from '../routines.js';
 import { ItemSearchParams } from '../types.js';
 import { getAccessibleItems } from './api.js';
@@ -21,7 +23,7 @@ import { getAccessibleItems } from './api.js';
  */
 export const useAccessibleItems =
   (queryConfig: QueryClientConfig) =>
-  (params?: ItemSearchParams, pagination?: PaginationParams) => {
+  (params?: ItemSearchParams, pagination?: Partial<Pagination>) => {
     const { notifier, defaultQueryOptions } = queryConfig;
 
     const queryClient = useQueryClient();
@@ -60,7 +62,7 @@ export const useAccessibleItems =
  */
 export const useInfiniteAccessibleItems =
   (queryConfig: QueryClientConfig) =>
-  (params?: ItemSearchParams, pagination?: PaginationParams) => {
+  (params?: ItemSearchParams, pagination?: Partial<Pagination>) => {
     const queryClient = useQueryClient();
     const debouncedName = useDebounce(params?.name, 500);
     const finalParams = { ...params, name: debouncedName };

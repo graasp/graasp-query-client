@@ -1,4 +1,4 @@
-import { ItemType, PackedItem } from '@graasp/sdk';
+import { ItemType, PackedItem, Paginated } from '@graasp/sdk';
 
 import { waitFor } from '@testing-library/dom';
 import { act, renderHook } from '@testing-library/react';
@@ -13,7 +13,6 @@ import {
 } from '../../../test/constants.js';
 import { mockEndpoints, mockHook, setUpTest } from '../../../test/utils.js';
 import { itemKeys } from '../../keys.js';
-import { Paginated } from '../../types.js';
 import { buildGetAccessibleItems } from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
