@@ -267,7 +267,6 @@ describe('useItemThumbnailUrl', () => {
       endpoints,
       hook: () =>
         hooks.useItemThumbnailUrl({
-          id: itemWithoutThumbnail.id,
           item: itemWithoutThumbnail,
         }),
       wrapper,

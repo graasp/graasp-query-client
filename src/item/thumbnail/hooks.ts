@@ -41,8 +41,8 @@ export const useItemThumbnail =
 
 // create a new thumbnail hook because of key content
 /**
- * Fetch item's thumbnail url
- * @param id corresponding item's id for thumbnail, required
+ * Fetch item's thumbnail url. At least id or item should be provided.
+ * @param id corresponding item's id for thumbnail
  * @param item corresponding item for thumbnail, used to know if the item has a thumbnail
  * @param size size of the thumbnail we want
  * @returns url of the thumbnail given size
@@ -61,24 +61,26 @@ export const useItemThumbnailUrl =
     const { defaultQueryOptions } = queryConfig;
     const queryClient = useQueryClient();
     let shouldFetch = true;
-    if (id) {
+    const itemId = id ?? item?.id;
+
+    if (item) {
+      shouldFetch = item?.settings?.hasThumbnail ?? true;
+    } else if (itemId) {
       shouldFetch =
         queryClient.getQueryData<PackedItem>(itemKeys.single(id).content)
           ?.settings?.hasThumbnail ?? true;
-    } else if (item) {
-      shouldFetch = item?.settings?.hasThumbnail ?? true;
     }
 
     return useQuery({
       queryKey: itemKeys.single(id).thumbnail({ size, replyUrl: true }),
       queryFn: () => {
-        if (!id) {
+        if (!itemId) {
           throw new UndefinedArgument();
         }
-        return downloadItemThumbnailUrl({ id, size }, queryConfig);
+        return downloadItemThumbnailUrl({ id: itemId, size }, queryConfig);
       },
       ...defaultQueryOptions,
-      enabled: Boolean(id) && shouldFetch,
+      enabled: Boolean(itemId) && shouldFetch,
       staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
     });
   };
