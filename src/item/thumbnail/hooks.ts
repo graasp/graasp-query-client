@@ -72,7 +72,7 @@ export const useItemThumbnailUrl =
     }
 
     return useQuery({
-      queryKey: itemKeys.single(id).thumbnail({ size, replyUrl: true }),
+      queryKey: itemKeys.single(itemId).thumbnail({ size, replyUrl: true }),
       queryFn: () => {
         if (!itemId) {
           throw new UndefinedArgument();
