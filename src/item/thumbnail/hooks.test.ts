@@ -220,7 +220,7 @@ describe('useItemThumbnailUrl', () => {
     expect(queryClient.getQueryData(key)).toBeFalsy();
   });
 
-  it(`Does not fetch if item has no thumbnail given id`, async () => {
+  it(`Does not fetch if item has no thumbnail with corresponding id`, async () => {
     const itemWithoutThumbnail = {
       ...item,
       settings: { hasThumbnail: false },
@@ -248,7 +248,7 @@ describe('useItemThumbnailUrl', () => {
     expect(queryClient.getQueryData(key)).toBeFalsy();
   });
 
-  it(`Does not fetch if item has no thumbnail given item`, async () => {
+  it(`Does not fetch if item has no thumbnail with corresponding item`, async () => {
     const itemWithoutThumbnail = {
       ...item,
       settings: { hasThumbnail: false },
