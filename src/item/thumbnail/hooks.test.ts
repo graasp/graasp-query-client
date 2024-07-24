@@ -209,7 +209,7 @@ describe('useItemThumbnailUrl', () => {
     ];
     const { data, isFetched } = await mockHook({
       endpoints,
-      hook: () => hooks.useItemThumbnail({ id: undefined }),
+      hook: () => hooks.useItemThumbnailUrl({ id: undefined }),
       wrapper,
       enabled: false,
     });
@@ -220,7 +220,7 @@ describe('useItemThumbnailUrl', () => {
     expect(queryClient.getQueryData(key)).toBeFalsy();
   });
 
-  it(`Does not fetch if item has no thumbnail`, async () => {
+  it(`Does not fetch if item has no thumbnail with corresponding id`, async () => {
     const itemWithoutThumbnail = {
       ...item,
       settings: { hasThumbnail: false },
@@ -237,7 +237,38 @@ describe('useItemThumbnailUrl', () => {
     ];
     const { data, isFetched } = await mockHook({
       endpoints,
-      hook: () => hooks.useItemThumbnail({ id: itemWithoutThumbnail.id }),
+      hook: () => hooks.useItemThumbnailUrl({ id: itemWithoutThumbnail.id }),
+      wrapper,
+      enabled: false,
+    });
+
+    expect(data).toBeFalsy();
+    expect(isFetched).toBeFalsy();
+    // verify cache keys
+    expect(queryClient.getQueryData(key)).toBeFalsy();
+  });
+
+  it(`Does not fetch if item has no thumbnail with corresponding item`, async () => {
+    const itemWithoutThumbnail = {
+      ...item,
+      settings: { hasThumbnail: false },
+    };
+    queryClient.setQueryData(
+      itemKeys.single(itemWithoutThumbnail.id).content,
+      itemWithoutThumbnail,
+    );
+    const endpoints = [
+      {
+        route,
+        response,
+      },
+    ];
+    const { data, isFetched } = await mockHook({
+      endpoints,
+      hook: () =>
+        hooks.useItemThumbnailUrl({
+          item: itemWithoutThumbnail,
+        }),
       wrapper,
       enabled: false,
     });
