@@ -5,6 +5,7 @@ import {
   ItemGeolocation,
   ItemType,
   ItemTypeUnion,
+  Pagination,
   UUID,
   UnionOfConst,
 } from '@graasp/sdk';
@@ -12,7 +13,6 @@ import { DEFAULT_LANG } from '@graasp/translations';
 
 import { DEFAULT_THUMBNAIL_SIZE } from './config/constants.js';
 import { ItemSearchParams } from './item/types.js';
-import { PaginationParams } from './types.js';
 import { AggregateActionsArgs } from './utils/action.js';
 
 /**
@@ -142,7 +142,7 @@ export const itemKeys = {
   allAccessible: () => [...itemKeys.all, 'accessible'] as const,
   infiniteAccessible: (params: ItemSearchParams) =>
     [...itemKeys.allAccessible(), 'infinite', params] as const,
-  accessiblePage: (params: ItemSearchParams, pagination: PaginationParams) =>
+  accessiblePage: (params: ItemSearchParams, pagination: Partial<Pagination>) =>
     [...itemKeys.allAccessible(), params, pagination] as const,
 
   search: (args: {

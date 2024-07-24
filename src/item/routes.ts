@@ -1,7 +1,6 @@
-import { UUID } from '@graasp/sdk';
+import { Pagination, UUID } from '@graasp/sdk';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
-import { PaginationParams } from '../types.js';
 import { ItemChildrenParams, ItemSearchParams } from './types.js';
 
 export const ITEMS_ROUTE = 'items';
@@ -11,7 +10,7 @@ export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 
 export const buildGetAccessibleItems = (
   { creatorId, name, ordering, sortBy, permissions, types }: ItemSearchParams,
-  { page, pageSize }: PaginationParams,
+  { page, pageSize }: Partial<Pagination>,
 ) => {
   const searchParams = new URLSearchParams();
   // pagination params
