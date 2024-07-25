@@ -11,7 +11,6 @@ export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 export const buildGetAccessibleItems = (
   {
     creatorId,
-    name,
     ordering,
     sortBy,
     permissions,
@@ -29,9 +28,6 @@ export const buildGetAccessibleItems = (
   // searchParams
   if (creatorId) {
     searchParams.set('creatorId', creatorId);
-  }
-  if (name) {
-    searchParams.set('name', name);
   }
   if (sortBy) {
     searchParams.set('sortBy', sortBy);

@@ -2,7 +2,6 @@ import { ItemType, Member, PermissionLevel, UnionOfConst } from '@graasp/sdk';
 
 export type ItemSearchParams = {
   creatorId?: Member['id'];
-  name?: string;
   ordering?: 'desc' | 'asc';
   sortBy?:
     | 'item.name'

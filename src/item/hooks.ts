@@ -17,6 +17,7 @@ import {
   PAGINATED_ITEMS_PER_PAGE,
 } from '../config/constants.js';
 import { UndefinedArgument } from '../config/errors.js';
+import useDebounce from '../hooks/useDebounce.js';
 import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import { paginate } from '../utils/util.js';
@@ -71,13 +72,21 @@ const config = (
 
       const queryClient = useQueryClient();
 
+      const debouncedKeywords = useDebounce(params?.keywords, 500);
+
       return useQuery({
-        queryKey: itemKeys.single(id).children(params?.types),
+        queryKey: itemKeys
+          .single(id)
+          .children({ types: params?.types, keywords: debouncedKeywords }),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getChildren(id, { ...params, ordered }, queryConfig);
+          return Api.getChildren(
+            id,
+            { ...params, ordered, keywords: debouncedKeywords },
+            queryConfig,
+          );
         },
         onSuccess: async (items) => {
           if (items?.length) {

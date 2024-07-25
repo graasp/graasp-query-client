@@ -28,8 +28,8 @@ export const useAccessibleItems =
 
     const queryClient = useQueryClient();
 
-    const debouncedName = useDebounce(params?.name, 500);
-    const finalParams = { ...params, name: debouncedName };
+    const debouncedKeywords = useDebounce(params?.keywords, 500);
+    const finalParams = { ...params, keywords: debouncedKeywords };
     const paginationParams = { ...(pagination ?? {}) };
     return useQuery({
       queryKey: itemKeys.accessiblePage(finalParams, paginationParams),
@@ -64,8 +64,8 @@ export const useInfiniteAccessibleItems =
   (queryConfig: QueryClientConfig) =>
   (params?: ItemSearchParams, pagination?: Partial<Pagination>) => {
     const queryClient = useQueryClient();
-    const debouncedName = useDebounce(params?.name, 500);
-    const finalParams = { ...params, name: debouncedName };
+    const debouncedKeywords = useDebounce(params?.keywords, 500);
+    const finalParams = { ...params, keywords: debouncedKeywords };
 
     return useInfiniteQuery({
       queryKey: itemKeys.infiniteAccessible(finalParams),

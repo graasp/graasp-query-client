@@ -188,12 +188,13 @@ describe('useChildren', () => {
   });
 
   it(`search by keywords`, async () => {
+    const keywords = ['search', 'search1'];
+    const keyWithSearch = itemKeys.single(id).children({ keywords });
     const searchRoute = `/${buildGetChildrenRoute(id, {
-      keywords: ['search', 'search1'],
+      keywords,
       ordered: true,
     })}`;
-    const hook = () =>
-      hooks.useChildren(id, { keywords: ['search', 'search1'] });
+    const hook = () => hooks.useChildren(id, { keywords });
     const endpoints = [{ route: searchRoute, response }];
     const { data, isSuccess } = await mockHook({
       endpoints,
@@ -204,7 +205,7 @@ describe('useChildren', () => {
     expect(isSuccess).toBeTruthy();
     expect(data).toMatchObject(response);
     // verify cache keys
-    expect(queryClient.getQueryData(key)).toMatchObject(response);
+    expect(queryClient.getQueryData(keyWithSearch)).toMatchObject(response);
     for (const item of response) {
       expect(
         queryClient.getQueryData(itemKeys.single(item.id).content),
