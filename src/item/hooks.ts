@@ -72,12 +72,17 @@ const config = (
 
       const queryClient = useQueryClient();
 
-      const debouncedKeywords = useDebounce(params?.keywords, 500);
+      const debouncedKeywords = useDebounce(
+        params?.keywords?.join(' '),
+        500,
+      )?.split(' ');
 
       return useQuery({
-        queryKey: itemKeys
-          .single(id)
-          .children({ types: params?.types, keywords: debouncedKeywords }),
+        queryKey: itemKeys.single(id).children({
+          ordered,
+          types: params?.types,
+          keywords: debouncedKeywords,
+        }),
         queryFn: () => {
           if (!id) {
             throw new UndefinedArgument();

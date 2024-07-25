@@ -53,12 +53,14 @@ export const itemKeys = {
 
       // itemKeys.single(id).children([one, two])
       children: ({
+        ordered,
         types = [],
         keywords = [],
       }: {
+        ordered?: boolean;
         types?: UnionOfConst<typeof ItemType>[];
         keywords?: string[];
-      } = {}) => [...allChildren, { types, keywords }] as const,
+      } = {}) => [...allChildren, { ordered, types, keywords }] as const,
 
       // todo: add page and filtering options
       // this is used in the infinite query for the player
