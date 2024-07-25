@@ -3,6 +3,7 @@ import {
   Member,
   MemberFactory,
   MemberStorage,
+  Pagination,
   ResultOf,
   ThumbnailSize,
   UUID,
@@ -22,10 +23,12 @@ import {
 } from '../../test/constants.js';
 import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils.js';
 import { memberKeys } from '../keys.js';
+import { MEMBER_STORAGE_ITEM_RESPONSE } from './fixtures.js';
 import {
   buildDownloadAvatarRoute,
   buildGetCurrentMemberRoute,
   buildGetMemberRoute,
+  buildGetMemberStorageFilesRoute,
   buildGetMemberStorageRoute,
   buildGetMembersByIdRoute,
 } from './routes.js';
@@ -512,6 +515,65 @@ describe('Member Hooks', () => {
       ];
       const { data, isError } = await mockHook({ endpoints, hook, wrapper });
 
+      expect(data).toBeFalsy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+  });
+
+  describe('useMemberStorageFiles', () => {
+    const mockPagination: Pagination = {
+      page: 1,
+      pageSize: 10,
+    };
+    const route = `/${buildGetMemberStorageFilesRoute(mockPagination)}`;
+    const hook = () => hooks.useMemberStorageFiles(mockPagination);
+    const key = memberKeys.current().storageFiles(mockPagination);
+
+    it(`Receive member storage files`, async () => {
+      const response = MEMBER_STORAGE_ITEM_RESPONSE;
+      const endpoints = [{ route, response }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+      expect(data).toEqual(response);
+      expect(queryClient.getQueryData(key)).toEqual(response);
+    });
+
+    it(`Error getting storage files`, async () => {
+      const errorResponse = { error: 'error' };
+      const endpoints = [
+        {
+          route,
+          response: errorResponse,
+          statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+        },
+      ];
+      const { data, isFetched, isError } = await mockHook({
+        endpoints,
+        hook,
+        wrapper,
+      });
+      expect(data).toBeFalsy();
+      expect(isFetched).toBeTruthy();
+      expect(isError).toBeTruthy();
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toBeFalsy();
+    });
+
+    it(`Unauthorized`, async () => {
+      const unauthorizedResponse = UNAUTHORIZED_RESPONSE;
+      const endpoints = [
+        {
+          route,
+          response: unauthorizedResponse,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+      const { data, isError } = await mockHook({
+        endpoints,
+        hook,
+        wrapper,
+      });
       expect(data).toBeFalsy();
       expect(isError).toBeTruthy();
       // verify cache keys

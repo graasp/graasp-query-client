@@ -1,4 +1,4 @@
-import { UUID } from '@graasp/sdk';
+import { Pagination, UUID } from '@graasp/sdk';
 
 import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
 
@@ -28,6 +28,17 @@ export const buildUpdateMemberPasswordRoute = () =>
 export const buildGetMemberStorageRoute = () =>
   `${MEMBERS_ROUTE}/current/storage`;
 
+// Storage files
+export const buildGetMemberStorageFilesRoute = (
+  pagination: Partial<Pagination>,
+) => {
+  const searchParams = new URLSearchParams();
+
+  searchParams.set('page', (pagination.page ?? 1).toString());
+  searchParams.set('pageSize', (pagination.pageSize ?? 10).toString());
+
+  return `${MEMBERS_ROUTE}/current/storage/files?${searchParams}`;
+};
 // Avatar
 export const buildUploadAvatarRoute = () => `${MEMBERS_ROUTE}/avatar`;
 export const buildDownloadAvatarRoute = ({
