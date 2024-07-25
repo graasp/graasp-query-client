@@ -189,7 +189,7 @@ describe('useChildren', () => {
   });
 
   it(`search by keywords`, async () => {
-    const keywords = ['search', 'search1'];
+    const keywords = 'search search1';
     const keyWithSearch = itemKeys
       .single(id)
       .children({ ordered: true, keywords });

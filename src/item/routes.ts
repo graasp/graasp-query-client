@@ -35,7 +35,7 @@ export const buildGetAccessibleItems = (
   if (ordering) {
     searchParams.set('ordering', ordering);
   }
-  keywords?.forEach((k) => {
+  keywords?.split(' ')?.forEach((k) => {
     searchParams.append('keywords', k);
   });
   if (permissions && permissions.length) {
@@ -88,7 +88,7 @@ export const buildGetChildrenRoute = (
   if (types && types.length) {
     types.forEach((t) => search.append('types', t));
   }
-  keywords?.forEach((k) => {
+  keywords?.split(' ')?.forEach((k) => {
     search.append('keywords', k);
   });
   if (search.toString()) {

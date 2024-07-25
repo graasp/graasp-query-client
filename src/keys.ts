@@ -55,11 +55,11 @@ export const itemKeys = {
       children: ({
         ordered,
         types = [],
-        keywords = [],
+        keywords,
       }: {
         ordered?: boolean;
         types?: UnionOfConst<typeof ItemType>[];
-        keywords?: string[];
+        keywords?: string;
       } = {}) => [...allChildren, { ordered, types, keywords }] as const,
 
       // todo: add page and filtering options

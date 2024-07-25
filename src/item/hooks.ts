@@ -72,10 +72,8 @@ const config = (
 
       const queryClient = useQueryClient();
 
-      const debouncedKeywords = useDebounce(
-        params?.keywords?.join(' '),
-        500,
-      )?.split(' ');
+      // cannot debounce on array directly
+      const debouncedKeywords = useDebounce(params?.keywords, 500);
 
       return useQuery({
         queryKey: itemKeys.single(id).children({

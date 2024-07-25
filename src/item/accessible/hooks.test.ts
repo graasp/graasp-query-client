@@ -51,7 +51,7 @@ describe('useAccessibleItems', () => {
   });
 
   it(`Receive accessible folders for search`, async () => {
-    const keywords = ['search', 'search1'];
+    const keywords = 'search search1';
     const keyForSearch = itemKeys.accessiblePage({ keywords }, pagination);
     const endpoints = [
       {

@@ -11,11 +11,11 @@ export type ItemSearchParams = {
     | 'item.updated_at';
   permissions?: PermissionLevel[];
   types?: UnionOfConst<typeof ItemType>[];
-  keywords?: string[];
+  keywords?: string;
 };
 
 export type ItemChildrenParams = {
   ordered?: boolean;
   types?: UnionOfConst<typeof ItemType>[];
-  keywords?: string[];
+  keywords?: string;
 };
