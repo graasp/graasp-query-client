@@ -187,6 +187,31 @@ describe('useChildren', () => {
     }
   });
 
+  it(`search by keywords`, async () => {
+    const searchRoute = `/${buildGetChildrenRoute(id, {
+      keywords: ['search', 'search1'],
+      ordered: true,
+    })}`;
+    const hook = () =>
+      hooks.useChildren(id, { keywords: ['search', 'search1'] });
+    const endpoints = [{ route: searchRoute, response }];
+    const { data, isSuccess } = await mockHook({
+      endpoints,
+      hook,
+      wrapper,
+    });
+
+    expect(isSuccess).toBeTruthy();
+    expect(data).toMatchObject(response);
+    // verify cache keys
+    expect(queryClient.getQueryData(key)).toMatchObject(response);
+    for (const item of response) {
+      expect(
+        queryClient.getQueryData(itemKeys.single(item.id).content),
+      ).toMatchObject(item);
+    }
+  });
+
   it(`Unauthorized`, async () => {
     const endpoints = [
       {

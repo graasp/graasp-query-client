@@ -50,6 +50,25 @@ describe('useAccessibleItems', () => {
     expect(typesValue).toEqual(ItemType.FOLDER);
   });
 
+  it(`Receive accessible folders for search`, async () => {
+    const keywords = ['search', 'search1'];
+    const keyForSearch = itemKeys.accessiblePage({ keywords }, pagination);
+    const endpoints = [
+      {
+        route: `/${buildGetAccessibleItems({ keywords }, { page: 1 })}`,
+        response,
+      },
+    ];
+    const { data } = await mockHook({
+      endpoints,
+      hook: () => hooks.useAccessibleItems({ keywords }),
+      wrapper,
+    });
+    expect(data).toMatchObject(response);
+    // verify cache keys
+    expect(queryClient.getQueryData(keyForSearch)).toMatchObject(response);
+  });
+
   it(`Unauthorized`, async () => {
     const endpoints = [
       {

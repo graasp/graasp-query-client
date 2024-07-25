@@ -9,7 +9,15 @@ export const GET_RECYCLED_ITEMS_DATA_ROUTE = `${ITEMS_ROUTE}/recycled`;
 export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 
 export const buildGetAccessibleItems = (
-  { creatorId, name, ordering, sortBy, permissions, types }: ItemSearchParams,
+  {
+    creatorId,
+    name,
+    ordering,
+    sortBy,
+    permissions,
+    types,
+    keywords,
+  }: ItemSearchParams,
   { page, pageSize }: Partial<Pagination>,
 ) => {
   const searchParams = new URLSearchParams();
@@ -31,6 +39,9 @@ export const buildGetAccessibleItems = (
   if (ordering) {
     searchParams.set('ordering', ordering);
   }
+  keywords?.forEach((k) => {
+    searchParams.append('keywords', k);
+  });
   if (permissions && permissions.length) {
     permissions.forEach((p) => searchParams.append('permissions', p));
   }
@@ -71,7 +82,7 @@ export const buildDeleteItemsRoute = (ids: UUID[]) =>
 
 export const buildGetChildrenRoute = (
   id: UUID,
-  { ordered, types }: ItemChildrenParams,
+  { ordered, types, keywords }: ItemChildrenParams,
 ) => {
   const route = `${ITEMS_ROUTE}/${id}/children`;
   const search = new URLSearchParams();
@@ -81,6 +92,9 @@ export const buildGetChildrenRoute = (
   if (types && types.length) {
     types.forEach((t) => search.append('types', t));
   }
+  keywords?.forEach((k) => {
+    search.append('keywords', k);
+  });
   if (search.toString()) {
     return `${route}?${search}`;
   }
