@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.19.0](https://github.com/graasp/graasp-query-client/compare/v3.18.0...v3.19.0) (2024-07-26)
+
+
+### Features
+
+* add keywords got children and accessible ([#856](https://github.com/graasp/graasp-query-client/issues/856)) ([77507bf](https://github.com/graasp/graasp-query-client/commit/77507bffc3aee30d78e0e2122f6cfb8b960eef18))
+
 ## [3.18.0](https://github.com/graasp/graasp-query-client/compare/v3.17.0...v3.18.0) (2024-07-25)
 
 
