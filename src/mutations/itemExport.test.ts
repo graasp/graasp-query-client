@@ -41,7 +41,7 @@ describe('Export Zip', () => {
       });
 
       await act(async () => {
-        await mockedMutation.mutate({ id: itemId });
+        mockedMutation.mutate({ id: itemId });
         await waitForMutation();
       });
 
