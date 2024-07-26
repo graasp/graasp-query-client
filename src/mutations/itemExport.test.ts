@@ -30,6 +30,7 @@ describe('Export Zip', () => {
           response: { id: 'id', content: 'content' },
           method: HttpMethod.Get,
           route,
+          headers: { 'content-disposition': 'attachment; filename=binary.zip' },
         },
       ];
 
@@ -40,7 +41,7 @@ describe('Export Zip', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ id: itemId });
+        await mockedMutation.mutate({ id: itemId });
         await waitForMutation();
       });
 
