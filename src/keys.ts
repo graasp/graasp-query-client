@@ -252,6 +252,10 @@ export const memberKeys = {
       // current member storage usage
       storage: [...currentBaseKey, 'storage'] as const,
 
+      // storage files
+      storageFiles: (pagination: Partial<Pagination>) =>
+        [...currentBaseKey, 'storage', 'files', pagination] as const,
+
       // current member profile (can be non-public)
       profile: [...currentBaseKey, 'profile'] as const,
 
