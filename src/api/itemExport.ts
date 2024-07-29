@@ -14,6 +14,7 @@ export const exportItem = async (
     })
     .then(({ data, headers }) => {
       const name =
+        // content is usually: filename="name.png"
         headers['content-disposition']?.split('"')?.[1] ?? 'export-file';
       return { name, data };
     });

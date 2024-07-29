@@ -21,9 +21,5 @@ export default (queryConfig: QueryClientConfig) => {
 
   return {
     useExportItem,
-    /**
-     * @deprecated use useExportItem
-     */
-    useExportZip: useExportItem,
   };
 };
