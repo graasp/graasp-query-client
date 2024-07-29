@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.20.0](https://github.com/graasp/graasp-query-client/compare/v3.19.0...v3.20.0) (2024-07-29)
+
+
+### Features
+
+* update item export mutation to return filename ([#859](https://github.com/graasp/graasp-query-client/issues/859)) ([872a546](https://github.com/graasp/graasp-query-client/commit/872a546490e61ef77433db9074279c28278f2a71))
+
 ## [3.19.0](https://github.com/graasp/graasp-query-client/compare/v3.18.0...v3.19.0) (2024-07-26)
 
 
