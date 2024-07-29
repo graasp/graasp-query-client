@@ -55,7 +55,7 @@
     "eslint-plugin-jsx-a11y": "6.9.0",
     "eslint-plugin-react": "7.35.0",
     "eslint-plugin-react-hooks": "4.6.2",
-    "husky": "9.1.1",
+    "husky": "9.1.4",
     "i18next": "23.12.2",
     "jsdom": "24.1.1",
     "mock-socket": "9.3.1",
