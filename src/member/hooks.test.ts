@@ -1,4 +1,5 @@
 import {
+  AccountFactory,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
   MemberFactory,
@@ -79,7 +80,7 @@ describe('Member Hooks', () => {
 
   describe('useMember', () => {
     const id = 'member-id';
-    const response = MemberFactory();
+    const response = AccountFactory();
 
     it(`Receive member id = ${id}`, async () => {
       const endpoints = [
@@ -265,12 +266,12 @@ describe('Member Hooks', () => {
   });
 
   describe('useAvatar', () => {
-    const member = MemberFactory();
+    const account = AccountFactory();
     const replyUrl = false;
     const response = AVATAR_BLOB_RESPONSE;
-    const route = `/${buildDownloadAvatarRoute({ id: member.id, replyUrl })}`;
-    const hook = () => hooks.useAvatar({ id: member.id });
-    const key = memberKeys.single(member.id).avatar({ replyUrl });
+    const route = `/${buildDownloadAvatarRoute({ id: account.id, replyUrl })}`;
+    const hook = () => hooks.useAvatar({ id: account.id });
+    const key = memberKeys.single(account.id).avatar({ replyUrl });
 
     it(`Receive default avatar`, async () => {
       const endpoints = [
@@ -286,12 +287,12 @@ describe('Member Hooks', () => {
     it(`Receive large avatar`, async () => {
       const size = ThumbnailSize.Large;
       const routeLarge = `/${buildDownloadAvatarRoute({
-        id: member.id,
+        id: account.id,
         replyUrl,
         size,
       })}`;
-      const hookLarge = () => hooks.useAvatar({ id: member.id, size });
-      const keyLarge = memberKeys.single(member.id).avatar({ size, replyUrl });
+      const hookLarge = () => hooks.useAvatar({ id: account.id, size });
+      const keyLarge = memberKeys.single(account.id).avatar({ size, replyUrl });
 
       const endpoints = [
         {
@@ -341,7 +342,7 @@ describe('Member Hooks', () => {
       ];
       const { data, isFetched, isError } = await mockHook({
         endpoints,
-        hook: () => hooks.useAvatar({ id: member.id }),
+        hook: () => hooks.useAvatar({ id: account.id }),
         wrapper,
       });
 
@@ -370,7 +371,7 @@ describe('Member Hooks', () => {
   });
 
   describe('useAvatarUrl', () => {
-    const member = MemberFactory();
+    const member = AccountFactory();
     const replyUrl = true;
     const response = AVATAR_URL_RESPONSE;
     const route = `/${buildDownloadAvatarRoute({ id: member.id, replyUrl })}`;

@@ -1,8 +1,8 @@
 import {
+  AccountFactory,
   FolderItemFactory,
   HttpMethod,
   ItemTagType,
-  MemberFactory,
 } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
@@ -33,7 +33,7 @@ describe('Item Tag Mutations', () => {
 
   describe('usePostItemTag', () => {
     const itemId = FolderItemFactory().id;
-    const creator = MemberFactory().id;
+    const creator = AccountFactory().id;
     const tagType = ItemTagType.Hidden;
     const route = `/${buildPostItemTagRoute({ itemId, type: tagType })}`;
     const mutation = mutations.usePostItemTag;

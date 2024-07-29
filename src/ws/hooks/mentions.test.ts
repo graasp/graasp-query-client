@@ -1,4 +1,4 @@
-import { ChatMention, MemberFactory, MentionStatus } from '@graasp/sdk';
+import { AccountFactory, ChatMention, MentionStatus } from '@graasp/sdk';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
@@ -56,7 +56,7 @@ describe('Ws Mention Hooks', () => {
   });
 
   describe('useMentionsUpdates', () => {
-    const account = MemberFactory();
+    const account = AccountFactory();
     const chatKey = buildItemChatKey(account.id);
     const mentionKey = buildMentionKey();
     const channel = {
@@ -153,7 +153,7 @@ describe('Ws Mention Hooks', () => {
         hook,
         wrapper,
       });
-      const newMention = buildChatMention({ account: MemberFactory() });
+      const newMention = buildChatMention({ account: AccountFactory() });
       const mentionEvent = {
         op: 'unset op',
         mention: newMention,

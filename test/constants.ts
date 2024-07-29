@@ -1,4 +1,6 @@
 import {
+  Account,
+  AccountFactory,
   Action,
   ActionData,
   App,
@@ -26,11 +28,11 @@ import {
   ItemValidationGroup,
   ItemValidationProcess,
   ItemValidationStatus,
-  Member,
   MemberFactory,
   MentionStatus,
   PackedFolderItemFactory,
   PermissionLevel,
+  PublicProfile,
   RecycledItemData,
   ResultOf,
   UUID,
@@ -133,24 +135,24 @@ export const createMockMembership = (
   membership?: Partial<ItemMembership>,
 ): ItemMembership => ({
   id: 'membership-id',
-  account: MemberFactory(),
+  account: AccountFactory(),
   item: FolderItemFactory(),
   permission: PermissionLevel.Read,
   createdAt: '2023-04-26T08:46:34.812Z',
   updatedAt: '2023-04-26T08:46:34.812Z',
-  creator: MemberFactory(),
+  creator: AccountFactory(),
   ...membership,
 });
 
 const MEMBERSHIP_1: ItemMembership = createMockMembership({
   id: 'membership-id',
-  account: MemberFactory(),
+  account: AccountFactory(),
   permission: PermissionLevel.Read,
 });
 
 const MEMBERSHIP_2: ItemMembership = createMockMembership({
   id: 'membership-id1',
-  account: MemberFactory(),
+  account: AccountFactory(),
   permission: PermissionLevel.Admin,
 });
 
@@ -240,7 +242,7 @@ export const createMockChatMessage = (
 ): ChatMessage => ({
   id: '',
   body: 'some text',
-  creator: MemberFactory(),
+  creator: AccountFactory(),
   createdAt: '2023-09-06T11:50:32.894Z',
   updatedAt: '2023-09-06T11:50:32.894Z',
   item: FolderItemFactory(),
@@ -265,7 +267,7 @@ export const createMockMemberMentions = (
 ): ChatMention => ({
   id: 'UUID',
   message: createMockChatMessage(),
-  account: MemberFactory(),
+  account: AccountFactory(),
   createdAt: '2023-09-06T11:50:32.894Z',
   updatedAt: '2023-09-06T11:50:32.894Z',
   status: MentionStatus.Read,
@@ -274,11 +276,11 @@ export const createMockMemberMentions = (
 
 export const buildChatMention = ({
   id = v4(),
-  account = MemberFactory(),
+  account = AccountFactory(),
   status = MentionStatus.Unread,
 }: {
   id?: UUID;
-  account?: Member;
+  account?: Account;
   status?: MentionStatus;
 }): ChatMention => ({
   id,
@@ -290,14 +292,14 @@ export const buildChatMention = ({
     createdAt: '2023-09-06T11:50:32.894Z',
     updatedAt: '2023-09-06T11:50:32.894Z',
     body: 'somemessage here',
-    creator: MemberFactory(),
+    creator: AccountFactory(),
   },
   createdAt: '2023-09-06T11:50:32.894Z',
   updatedAt: '2023-09-06T11:50:32.894Z',
 });
 
 export const buildMemberMentions = (): ChatMention[] => {
-  const MEMBER_MENTIONS = [
+  const MEMBER_MENTIONS: ChatMention[] = [
     {
       id: 'someid',
       message: {
@@ -306,11 +308,11 @@ export const buildMemberMentions = (): ChatMention[] => {
         createdAt: '2023-09-06T11:50:32.894Z',
         updatedAt: '2023-09-06T11:50:32.894Z',
         body: 'somemessage here',
-        creator: MemberFactory(),
+        creator: AccountFactory(),
       },
       createdAt: '2023-09-06T11:50:32.894Z',
       updatedAt: '2023-09-06T11:50:32.894Z',
-      account: MemberFactory(),
+      account: AccountFactory(),
       status: MentionStatus.Unread,
     },
     {
@@ -321,11 +323,11 @@ export const buildMemberMentions = (): ChatMention[] => {
         createdAt: '2023-09-06T11:50:32.894Z',
         updatedAt: '2023-09-06T11:50:32.894Z',
         body: 'somemessage here',
-        creator: MemberFactory(),
+        creator: AccountFactory(),
       },
       createdAt: '2023-09-06T11:50:32.894Z',
       updatedAt: '2023-09-06T11:50:32.894Z',
-      account: MemberFactory(),
+      account: AccountFactory(),
       status: MentionStatus.Unread,
     },
   ];
@@ -362,7 +364,7 @@ export const CHAT_MESSAGES: ChatMessage[] = [
   {
     id: v4(),
     item: FolderItemFactory(),
-    creator: MemberFactory(),
+    creator: AccountFactory(),
     createdAt: '2023-09-06T11:50:32.894Z',
     updatedAt: '2023-09-06T11:50:32.894Z',
     body: 'text',
@@ -370,7 +372,7 @@ export const CHAT_MESSAGES: ChatMessage[] = [
   {
     id: v4(),
     item: FolderItemFactory(),
-    creator: MemberFactory(),
+    creator: AccountFactory(),
     createdAt: '2023-09-06T11:50:32.894Z',
     updatedAt: '2023-09-06T11:50:32.894Z',
     body: 'text of second message',
@@ -457,7 +459,7 @@ export const ITEM_VALIDATION_GROUP: ItemValidationGroup = {
 const ACTION_1: Action = {
   id: 'action-id',
   item: FolderItemFactory(),
-  account: MemberFactory(),
+  account: AccountFactory(),
   createdAt: '2023-09-06T11:50:32.894Z',
   view: Context.Analytics,
   type: 'action-type',
@@ -487,13 +489,16 @@ export const ACTIONS_DATA: ActionData = createMockActionData({
     requestedSampleSize: 24,
   },
 });
-export const MEMBER_PUBLIC_PROFILE = {
+export const MEMBER_PUBLIC_PROFILE: PublicProfile = {
+  id: v4(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
   member: MemberFactory(),
   bio: 'some random bio',
   visibility: true,
   linkedinID: 'user',
   facebookID: 'user',
-  twitterLink: 'user',
+  twitterID: 'user',
 };
 
 export const AGGREGATE_ACTIONS_DATA = [
