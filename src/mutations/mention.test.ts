@@ -1,4 +1,9 @@
-import { HttpMethod, MemberFactory, MentionStatus } from '@graasp/sdk';
+import {
+  AccountFactory,
+  HttpMethod,
+  MemberFactory,
+  MentionStatus,
+} from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
@@ -29,7 +34,7 @@ import {
 
 describe('Mention Mutations', () => {
   const mentionId = v4();
-  const account = MemberFactory();
+  const account = AccountFactory();
   const memberId = account.id;
   const currentMemberRoute = `/${buildGetCurrentMemberRoute()}`;
   const key = buildMentionKey();

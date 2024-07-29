@@ -1,4 +1,4 @@
-import { HttpMethod, MemberFactory } from '@graasp/sdk';
+import { HttpMethod, MemberFactory, PublicProfile } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import nock from 'nock';
@@ -38,7 +38,13 @@ describe('Public Profile Mutations', () => {
 
     it('Post profile', async () => {
       const route = `/${buildPostPublicProfileRoute()}`;
-      const response = { ...newProfile, id: 'someid', member: MemberFactory() };
+      const response: PublicProfile = {
+        ...newProfile,
+        id: 'someid',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        member: MemberFactory(),
+      };
 
       queryClient.setQueryData(memberKeys.current().profile, response);
 

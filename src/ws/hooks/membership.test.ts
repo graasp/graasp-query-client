@@ -1,7 +1,7 @@
 import {
+  AccountFactory,
   FolderItemFactory,
   ItemMembership,
-  MemberFactory,
   PermissionLevel,
 } from '@graasp/sdk';
 
@@ -32,7 +32,7 @@ describe('Ws Membership Hooks', () => {
   describe('useItemsMembershipsUpdates', () => {
     const item = FolderItemFactory();
     const itemId = item.id;
-    const account = MemberFactory();
+    const account = AccountFactory();
     const membershipsKey = itemKeys.single(itemId).memberships;
     const newItemMembership = createMockMembership({
       item,

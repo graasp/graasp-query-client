@@ -1,4 +1,9 @@
-import { FolderItemFactory, HttpMethod, MemberFactory } from '@graasp/sdk';
+import {
+  AccountFactory,
+  FolderItemFactory,
+  HttpMethod,
+  MemberFactory,
+} from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
@@ -28,7 +33,7 @@ describe('Item Like Mutations', () => {
 
   describe('usePostItemLike', () => {
     const itemId = FolderItemFactory().id;
-    const memberId = MemberFactory().id;
+    const memberId = AccountFactory().id;
     const likedItemsKey = memberKeys.single(memberId).likedItems;
     const route = `/${buildPostItemLikeRoute(itemId)}`;
     const mutation = mutations.usePostItemLike;

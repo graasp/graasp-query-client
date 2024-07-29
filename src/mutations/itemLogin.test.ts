@@ -1,4 +1,5 @@
 import {
+  AccountFactory,
   FolderItemFactory,
   HttpMethod,
   ItemLoginSchemaType,
@@ -34,7 +35,7 @@ describe('Item Login Mutations', () => {
     nock.cleanAll();
   });
 
-  const { name: username, id: memberId } = MemberFactory();
+  const { name: username, id: memberId } = AccountFactory();
   const password = 'password';
   const itemId = FolderItemFactory().id;
   const items = [FolderItemFactory(), FolderItemFactory(), FolderItemFactory()];
