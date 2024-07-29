@@ -32,15 +32,15 @@ describe('Ws Membership Hooks', () => {
   describe('useItemsMembershipsUpdates', () => {
     const item = FolderItemFactory();
     const itemId = item.id;
-    const member = MemberFactory();
+    const account = MemberFactory();
     const membershipsKey = itemKeys.single(itemId).memberships;
     const newItemMembership = createMockMembership({
       item,
-      member,
-      creator: member,
+      account,
+      creator: account,
     });
     const memberships = [
-      createMockMembership({ item, member, creator: member }),
+      createMockMembership({ item, account, creator: account }),
     ];
     const channel = { name: itemId, topic: TOPICS.MEMBERSHIPS_ITEM };
     const hook = () => hooks.useItemsMembershipsUpdates([itemId]);

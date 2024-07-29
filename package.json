@@ -31,7 +31,7 @@
   "devDependencies": {
     "@commitlint/cli": "19.4.0",
     "@commitlint/config-conventional": "19.2.2",
-    "@graasp/sdk": "4.25.1",
+    "@graasp/sdk": "github:graasp/graasp-sdk#568-new-membertype",
     "@graasp/translations": "1.35.0",
     "@testing-library/dom": "10.4.0",
     "@testing-library/react": "16.0.0",
