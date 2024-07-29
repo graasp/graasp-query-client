@@ -13,16 +13,16 @@ const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 
-describe('Export Zip', () => {
+describe('Export Item', () => {
   afterEach(() => {
     queryClient.clear();
     nock.cleanAll();
   });
 
-  describe('useExportZip', () => {
+  describe('useExportItem', () => {
     const itemId = 'item-id';
     const route = `/${buildExportItemRoute(itemId)}`;
-    const mutation = mutations.useExportZip;
+    const mutation = mutations.useExportItem;
 
     it('Export zip', async () => {
       const endpoints = [
@@ -30,6 +30,7 @@ describe('Export Zip', () => {
           response: { id: 'id', content: 'content' },
           method: HttpMethod.Get,
           route,
+          headers: { 'content-disposition': 'attachment; filename=binary.zip' },
         },
       ];
 

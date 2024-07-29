@@ -9,7 +9,7 @@ import { QueryClientConfig } from '../types.js';
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  const useExportZip = () =>
+  const useExportItem = () =>
     useMutation(({ id }: { id: UUID }) => Api.exportItem(id, queryConfig), {
       onSuccess: () => {
         notifier?.({ type: exportItemRoutine.SUCCESS });
@@ -20,6 +20,6 @@ export default (queryConfig: QueryClientConfig) => {
     });
 
   return {
-    useExportZip,
+    useExportItem,
   };
 };

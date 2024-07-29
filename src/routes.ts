@@ -27,8 +27,7 @@ export const SHORT_LINKS_ROUTE = `${ITEMS_ROUTE}/short-links`;
 export const SHORT_LINKS_LIST_ROUTE = `${SHORT_LINKS_ROUTE}/list`;
 export const EMBEDDED_LINKS_ROUTE = `${ITEMS_ROUTE}/embedded-links/metadata`;
 
-export const buildExportItemRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/zip-export/${id}`;
+export const buildExportItemRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/export`;
 export const buildPostItemMembershipRoute = (id: UUID) =>
   `item-memberships?${new URLSearchParams({ itemId: id })}`;
 export const buildPostManyItemMembershipsRoute = (id: UUID) =>
