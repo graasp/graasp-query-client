@@ -133,7 +133,7 @@ export const createMockMembership = (
   membership?: Partial<ItemMembership>,
 ): ItemMembership => ({
   id: 'membership-id',
-  member: MemberFactory(),
+  account: MemberFactory(),
   item: FolderItemFactory(),
   permission: PermissionLevel.Read,
   createdAt: '2023-04-26T08:46:34.812Z',
@@ -144,13 +144,13 @@ export const createMockMembership = (
 
 const MEMBERSHIP_1: ItemMembership = createMockMembership({
   id: 'membership-id',
-  member: MemberFactory(),
+  account: MemberFactory(),
   permission: PermissionLevel.Read,
 });
 
 const MEMBERSHIP_2: ItemMembership = createMockMembership({
   id: 'membership-id1',
-  member: MemberFactory(),
+  account: MemberFactory(),
   permission: PermissionLevel.Admin,
 });
 
@@ -265,7 +265,7 @@ export const createMockMemberMentions = (
 ): ChatMention => ({
   id: 'UUID',
   message: createMockChatMessage(),
-  member: MemberFactory(),
+  account: MemberFactory(),
   createdAt: '2023-09-06T11:50:32.894Z',
   updatedAt: '2023-09-06T11:50:32.894Z',
   status: MentionStatus.Read,
@@ -274,15 +274,15 @@ export const createMockMemberMentions = (
 
 export const buildChatMention = ({
   id = v4(),
-  member = MemberFactory(),
+  account = MemberFactory(),
   status = MentionStatus.Unread,
 }: {
   id?: UUID;
-  member?: Member;
+  account?: Member;
   status?: MentionStatus;
 }): ChatMention => ({
   id,
-  member,
+  account,
   status,
   message: {
     id: 'anotherid',
@@ -310,7 +310,7 @@ export const buildMemberMentions = (): ChatMention[] => {
       },
       createdAt: '2023-09-06T11:50:32.894Z',
       updatedAt: '2023-09-06T11:50:32.894Z',
-      member: MemberFactory(),
+      account: MemberFactory(),
       status: MentionStatus.Unread,
     },
     {
@@ -325,7 +325,7 @@ export const buildMemberMentions = (): ChatMention[] => {
       },
       createdAt: '2023-09-06T11:50:32.894Z',
       updatedAt: '2023-09-06T11:50:32.894Z',
-      member: MemberFactory(),
+      account: MemberFactory(),
       status: MentionStatus.Unread,
     },
   ];
@@ -457,7 +457,7 @@ export const ITEM_VALIDATION_GROUP: ItemValidationGroup = {
 const ACTION_1: Action = {
   id: 'action-id',
   item: FolderItemFactory(),
-  member: MemberFactory(),
+  account: MemberFactory(),
   createdAt: '2023-09-06T11:50:32.894Z',
   view: Context.Analytics,
   type: 'action-type',
