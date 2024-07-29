@@ -1,4 +1,4 @@
-import { Invitation } from '@graasp/sdk';
+import { Invitation, Pagination } from '@graasp/sdk';
 
 import { AxiosError, AxiosInstance } from 'axios';
 
@@ -64,14 +64,7 @@ export type PartialQueryConfigForApi = Pick<
 export type NewInvitation = Pick<Invitation, 'email' & 'permission'> &
   Partial<Invitation>;
 
-export type PaginationParams = {
-  page?: number;
-  pageSize?: number;
-};
-
-export type Paginated<T> = { data: T[]; totalCount: number };
-
-export const defaultPagination: PaginationParams = { page: 1 };
+export const defaultPagination: Partial<Pagination> = { page: 1 };
 
 export type EmbeddedLinkMetadata = {
   title?: string;

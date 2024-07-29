@@ -90,7 +90,7 @@ describe('useChildren', () => {
   const params = { ordered: true };
   const route = `/${buildGetChildrenRoute(id, params)}`;
   const response = generateFolders();
-  const key = itemKeys.single(id).children();
+  const key = itemKeys.single(id).children({ ordered: true });
 
   it(`Receive children of item by id`, async () => {
     const hook = () => hooks.useChildren(id);
@@ -168,6 +168,7 @@ describe('useChildren', () => {
     const unorderedRoute = `/${buildGetChildrenRoute(id, {
       ordered: false,
     })}`;
+    const keyUnordered = itemKeys.single(id).children({ ordered: false });
     const hook = () => hooks.useChildren(id, { ordered: false });
     const endpoints = [{ route: unorderedRoute, response }];
     const { data, isSuccess } = await mockHook({
@@ -179,7 +180,35 @@ describe('useChildren', () => {
     expect(isSuccess).toBeTruthy();
     expect(data).toMatchObject(response);
     // verify cache keys
-    expect(queryClient.getQueryData(key)).toMatchObject(response);
+    expect(queryClient.getQueryData(keyUnordered)).toMatchObject(response);
+    for (const item of response) {
+      expect(
+        queryClient.getQueryData(itemKeys.single(item.id).content),
+      ).toMatchObject(item);
+    }
+  });
+
+  it(`search by keywords`, async () => {
+    const keywords = 'search search1';
+    const keyWithSearch = itemKeys
+      .single(id)
+      .children({ ordered: true, keywords });
+    const searchRoute = `/${buildGetChildrenRoute(id, {
+      keywords,
+      ordered: true,
+    })}`;
+    const hook = () => hooks.useChildren(id, { keywords });
+    const endpoints = [{ route: searchRoute, response }];
+    const { data, isSuccess } = await mockHook({
+      endpoints,
+      hook,
+      wrapper,
+    });
+
+    expect(isSuccess).toBeTruthy();
+    expect(data).toMatchObject(response);
+    // verify cache keys
+    expect(queryClient.getQueryData(keyWithSearch)).toMatchObject(response);
     for (const item of response) {
       expect(
         queryClient.getQueryData(itemKeys.single(item.id).content),

@@ -5,6 +5,7 @@ import {
   ItemGeolocation,
   ItemType,
   ItemTypeUnion,
+  Pagination,
   UUID,
   UnionOfConst,
 } from '@graasp/sdk';
@@ -12,7 +13,6 @@ import { DEFAULT_LANG } from '@graasp/translations';
 
 import { DEFAULT_THUMBNAIL_SIZE } from './config/constants.js';
 import { ItemSearchParams } from './item/types.js';
-import { PaginationParams } from './types.js';
 import { AggregateActionsArgs } from './utils/action.js';
 
 /**
@@ -52,8 +52,15 @@ export const itemKeys = {
       allChildren,
 
       // itemKeys.single(id).children([one, two])
-      children: (types: UnionOfConst<typeof ItemType>[] = []) =>
-        [...allChildren, types] as const,
+      children: ({
+        ordered,
+        types = [],
+        keywords,
+      }: {
+        ordered?: boolean;
+        types?: UnionOfConst<typeof ItemType>[];
+        keywords?: string;
+      } = {}) => [...allChildren, { ordered, types, keywords }] as const,
 
       // todo: add page and filtering options
       // this is used in the infinite query for the player
@@ -142,7 +149,7 @@ export const itemKeys = {
   allAccessible: () => [...itemKeys.all, 'accessible'] as const,
   infiniteAccessible: (params: ItemSearchParams) =>
     [...itemKeys.allAccessible(), 'infinite', params] as const,
-  accessiblePage: (params: ItemSearchParams, pagination: PaginationParams) =>
+  accessiblePage: (params: ItemSearchParams, pagination: Partial<Pagination>) =>
     [...itemKeys.allAccessible(), params, pagination] as const,
 
   search: (args: {
@@ -244,6 +251,10 @@ export const memberKeys = {
 
       // current member storage usage
       storage: [...currentBaseKey, 'storage'] as const,
+
+      // storage files
+      storageFiles: (pagination: Partial<Pagination>) =>
+        [...currentBaseKey, 'storage', 'files', pagination] as const,
 
       // current member profile (can be non-public)
       profile: [...currentBaseKey, 'profile'] as const,

@@ -1,4 +1,4 @@
-import { ItemType, PackedItem } from '@graasp/sdk';
+import { ItemType, PackedItem, Paginated } from '@graasp/sdk';
 
 import { waitFor } from '@testing-library/dom';
 import { act, renderHook } from '@testing-library/react';
@@ -13,7 +13,6 @@ import {
 } from '../../../test/constants.js';
 import { mockEndpoints, mockHook, setUpTest } from '../../../test/utils.js';
 import { itemKeys } from '../../keys.js';
-import { Paginated } from '../../types.js';
 import { buildGetAccessibleItems } from '../routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
@@ -49,6 +48,25 @@ describe('useAccessibleItems', () => {
     const typesValue = queryParams.get('types');
 
     expect(typesValue).toEqual(ItemType.FOLDER);
+  });
+
+  it(`Receive accessible folders for search`, async () => {
+    const keywords = 'search search1';
+    const keyForSearch = itemKeys.accessiblePage({ keywords }, pagination);
+    const endpoints = [
+      {
+        route: `/${buildGetAccessibleItems({ keywords }, { page: 1 })}`,
+        response,
+      },
+    ];
+    const { data } = await mockHook({
+      endpoints,
+      hook: () => hooks.useAccessibleItems({ keywords }),
+      wrapper,
+    });
+    expect(data).toMatchObject(response);
+    // verify cache keys
+    expect(queryClient.getQueryData(keyForSearch)).toMatchObject(response);
   });
 
   it(`Unauthorized`, async () => {

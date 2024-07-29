@@ -1,5 +1,38 @@
 # Changelog
 
+## [3.20.0](https://github.com/graasp/graasp-query-client/compare/v3.19.0...v3.20.0) (2024-07-29)
+
+
+### Features
+
+* update item export mutation to return filename ([#859](https://github.com/graasp/graasp-query-client/issues/859)) ([872a546](https://github.com/graasp/graasp-query-client/commit/872a546490e61ef77433db9074279c28278f2a71))
+
+## [3.19.0](https://github.com/graasp/graasp-query-client/compare/v3.18.0...v3.19.0) (2024-07-26)
+
+
+### Features
+
+* add keywords got children and accessible ([#856](https://github.com/graasp/graasp-query-client/issues/856)) ([77507bf](https://github.com/graasp/graasp-query-client/commit/77507bffc3aee30d78e0e2122f6cfb8b960eef18))
+
+## [3.18.0](https://github.com/graasp/graasp-query-client/compare/v3.17.0...v3.18.0) (2024-07-25)
+
+
+### Features
+
+* add new hook useMemberStorageFiles ([#847](https://github.com/graasp/graasp-query-client/issues/847)) ([0bc4662](https://github.com/graasp/graasp-query-client/commit/0bc4662e2dc2af5dd621e2bba1016d8cca1459a6))
+
+
+### Bug Fixes
+
+* update pagination ([#854](https://github.com/graasp/graasp-query-client/issues/854)) ([bdfd728](https://github.com/graasp/graasp-query-client/commit/bdfd7285f9f6a15a2377c0511224ff7b33dc9bb8))
+
+## [3.17.0](https://github.com/graasp/graasp-query-client/compare/v3.16.0...v3.17.0) (2024-07-24)
+
+
+### Features
+
+* check hasThumbnail on item for thumbnail ([#850](https://github.com/graasp/graasp-query-client/issues/850)) ([062ba4d](https://github.com/graasp/graasp-query-client/commit/062ba4d14a995d7b9ab0fbfd9b1895c94657b2eb))
+
 ## [3.16.0](https://github.com/graasp/graasp-query-client/compare/v3.15.2...v3.16.0) (2024-07-18)
 
 

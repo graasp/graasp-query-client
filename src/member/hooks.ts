@@ -2,6 +2,7 @@ import {
   CompleteMember,
   MAX_TARGETS_FOR_READ_REQUEST,
   Member,
+  Pagination,
   UUID,
 } from '@graasp/sdk';
 
@@ -140,6 +141,13 @@ export default (queryConfig: QueryClientConfig) => {
       useQuery({
         queryKey: memberKeys.current().storage,
         queryFn: () => Api.getMemberStorage(queryConfig),
+        ...defaultQueryOptions,
+      }),
+
+    useMemberStorageFiles: (pagination: Partial<Pagination>) =>
+      useQuery({
+        queryKey: memberKeys.current().storageFiles(pagination),
+        queryFn: () => Api.getMemberStorageFiles(pagination, queryConfig),
         ...defaultQueryOptions,
       }),
   };
