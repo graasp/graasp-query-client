@@ -73,9 +73,14 @@ describe('Action Hooks', () => {
         endDate: getDatesFromNow(-2).toISOString(),
       };
       const newKey = buildActionsKey(newArgs);
-
+      const newRoute = `/${buildGetActions(itemId, {
+        view: newArgs.view,
+        requestedSampleSize: newArgs.requestedSampleSize,
+        startDate: newArgs.startDate,
+        endDate: newArgs.endDate,
+      })}`;
       const hook = () => hooks.useActions(newArgs);
-      const endpoints = [{ route, response }];
+      const endpoints = [{ route: newRoute, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
       expect(data).toEqual(response);
 
@@ -168,10 +173,11 @@ describe('Action Hooks', () => {
         startDate: getDatesFromNow(-7).toISOString(),
         endDate: getDatesFromNow(-2).toISOString(),
       };
-      const newKey = buildAggregateActionsKey(itemId, args);
+      const newKey = buildAggregateActionsKey(itemId, newArgs);
+      const newRoute = `/${buildGetAggregateActions({ itemId, ...newArgs })}`;
 
       const hook = () => hooks.useAggregateActions(itemId, newArgs);
-      const endpoints = [{ route, response }];
+      const endpoints = [{ route: newRoute, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
       expect(data).toEqual(response);
 
