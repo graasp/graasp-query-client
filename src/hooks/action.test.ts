@@ -34,6 +34,12 @@ type AggregateActionsResponse = {
 const { hooks, wrapper, queryClient } = setUpTest();
 const itemId = FolderItemFactory().id;
 
+const getDatesFromNow = (daysGap: number): Date => {
+  const date = new Date();
+  date.setDate(date.getDate() + daysGap);
+  return date;
+};
+
 describe('Action Hooks', () => {
   afterEach(() => {
     nock.cleanAll();
@@ -58,6 +64,23 @@ describe('Action Hooks', () => {
 
       // verify cache keys
       expect(queryClient.getQueryData<ActionData>(key)).toEqual(response);
+    });
+
+    it(`Receive actions for specific time period`, async () => {
+      const newArgs = {
+        ...args,
+        startDate: getDatesFromNow(-7).toISOString(),
+        endDate: getDatesFromNow(-2).toISOString(),
+      };
+      const newKey = buildActionsKey(newArgs);
+
+      const hook = () => hooks.useActions(newArgs);
+      const endpoints = [{ route, response }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+      expect(data).toEqual(response);
+
+      // verify cache keys
+      expect(queryClient.getQueryData<ActionData>(newKey)).toEqual(response);
     });
 
     it(`Sample size = 0 does not fetch`, async () => {
@@ -138,6 +161,26 @@ describe('Action Hooks', () => {
         response,
       );
     });
+
+    it(`Receive aggregate actions for item id within specific time`, async () => {
+      const newArgs = {
+        ...args,
+        startDate: getDatesFromNow(-7).toISOString(),
+        endDate: getDatesFromNow(-2).toISOString(),
+      };
+      const newKey = buildAggregateActionsKey(itemId, args);
+
+      const hook = () => hooks.useAggregateActions(itemId, newArgs);
+      const endpoints = [{ route, response }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+      expect(data).toEqual(response);
+
+      // verify cache keys
+      expect(
+        queryClient.getQueryData<AggregateActionsResponse>(newKey),
+      ).toEqual(response);
+    });
+
     it(`Receive aggregate actions for item id`, async () => {
       const hook = () => hooks.useAggregateActions(itemId, args);
       const endpoints = [{ route, response }];
