@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.20.1](https://github.com/graasp/graasp-query-client/compare/v3.20.0...v3.20.1) (2024-07-31)
+
+
+### Bug Fixes
+
+* add member password routes ([#824](https://github.com/graasp/graasp-query-client/issues/824)) ([5d2f744](https://github.com/graasp/graasp-query-client/commit/5d2f74444f3497d944e87b591b9f9e143139b751))
+
 ## [3.20.0](https://github.com/graasp/graasp-query-client/compare/v3.19.0...v3.20.0) (2024-07-29)
 
 
