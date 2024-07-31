@@ -25,9 +25,10 @@ import {
   buildGetMemberStorageRoute,
   buildGetMembersByEmailRoute,
   buildGetMembersByIdRoute,
+  buildPatchMemberPasswordRoute,
   buildPatchMemberRoute,
   buildPostMemberEmailUpdateRoute,
-  buildUpdateMemberPasswordRoute,
+  buildPostMemberPasswordRoute,
   buildUploadAvatarRoute,
 } from './routes.js';
 
@@ -137,18 +138,21 @@ export const deleteCurrentMember = async ({
       .then(({ data }) => data),
   );
 
+export const createPassword = async (
+  payload: { password: Password },
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
+  axios
+    .post<void>(`${API_HOST}/${buildPostMemberPasswordRoute()}`, payload)
+    .then((data) => data);
+
 export const updatePassword = async (
   payload: { password: Password; currentPassword: Password },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
-  verifyAuthentication(() =>
-    axios
-      .patch<void>(`${API_HOST}/${buildUpdateMemberPasswordRoute()}`, {
-        password: payload.password,
-        currentPassword: payload.currentPassword,
-      })
-      .then(({ data }) => data),
-  );
+  axios
+    .patch<void>(`${API_HOST}/${buildPatchMemberPasswordRoute()}`, payload)
+    .then((data) => data);
 
 export const uploadAvatar = async (
   {

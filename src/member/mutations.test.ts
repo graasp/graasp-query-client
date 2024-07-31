@@ -22,8 +22,9 @@ import { memberKeys } from '../keys.js';
 import { SIGN_OUT_ROUTE } from '../routes.js';
 import {
   buildDeleteMemberRoute,
+  buildPatchMemberPasswordRoute,
   buildPatchMemberRoute,
-  buildUpdateMemberPasswordRoute,
+  buildPostMemberPasswordRoute,
   buildUploadAvatarRoute,
 } from './routes.js';
 import { updatePasswordRoutine, uploadAvatarRoutine } from './routines.js';
@@ -346,20 +347,17 @@ describe('Member Mutations', () => {
   });
 
   describe('useUpdatePassword', () => {
-    const route = `/${buildUpdateMemberPasswordRoute()}`;
+    const route = `/${buildPatchMemberPasswordRoute()}`;
     const mutation = mutations.useUpdatePassword;
     const password = 'ASDasd123';
     const currentPassword = 'ASDasd123';
-    const name = 'myName';
-    const id = 'myId';
-    const email = 'myemail@email.com';
 
     it(`Update password`, async () => {
       const endpoints = [
         {
           route,
-          response: { email, id, name },
-          statusCode: StatusCodes.OK,
+          response: {},
+          statusCode: StatusCodes.NO_CONTENT,
           method: HttpMethod.Patch,
         },
       ];
@@ -399,6 +397,67 @@ describe('Member Mutations', () => {
 
       await act(async () => {
         mockedMutation.mutate({ password, currentPassword });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: updatePasswordRoutine.FAILURE,
+        }),
+      );
+    });
+  });
+
+  describe('useCreatePassword', () => {
+    const route = `/${buildPostMemberPasswordRoute()}`;
+    const mutation = mutations.useCreatePassword;
+    const password = 'ASDasd123';
+
+    it(`Update password`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: {},
+          statusCode: StatusCodes.NO_CONTENT,
+          method: HttpMethod.Post,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({ password });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: updatePasswordRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
+      });
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          method: HttpMethod.Post,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({ password });
         await waitForMutation();
       });
 

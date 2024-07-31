@@ -21,8 +21,8 @@ export const buildPatchMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildDeleteMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 
 // Password
-export const buildUpdateMemberPasswordRoute = () =>
-  `${MEMBERS_ROUTE}/update-password`;
+export const buildPostMemberPasswordRoute = () => `password`;
+export const buildPatchMemberPasswordRoute = () => `password`;
 
 // Storage
 export const buildGetMemberStorageRoute = () =>
