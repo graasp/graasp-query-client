@@ -21,8 +21,8 @@ export const getActions = async (
     itemId: UUID;
     requestedSampleSize: number;
     view: string;
-    startDate?: string;
-    endDate?: string;
+    startDate: string;
+    endDate: string;
   },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>

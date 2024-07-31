@@ -187,15 +187,15 @@ export const buildGetActions = (
   options: {
     requestedSampleSize: number;
     view: string;
-    startDate?: string;
-    endDate?: string;
+    startDate: string;
+    endDate: string;
   },
 ) =>
   `${ITEMS_ROUTE}/${itemId}/actions?${new URLSearchParams({
     requestedSampleSize: options.requestedSampleSize.toString(),
     view: options.view,
-    ...(options.startDate && { startDate: options.startDate }),
-    ...(options.endDate && { endDate: options.endDate }),
+    startDate: options.startDate,
+    endDate: options.endDate,
   })}`;
 
 export const buildGetAggregateActions = <K extends AggregateBy[]>(
@@ -207,8 +207,8 @@ export const buildGetAggregateActions = <K extends AggregateBy[]>(
     view: args.view,
     aggregateFunction: args.aggregateFunction,
     aggregateMetric: args.aggregateMetric,
-    ...(args.startDate && { startDate: args.startDate }),
-    ...(args.endDate && { endDate: args.endDate }),
+    startDate: args.startDate,
+    endDate: args.endDate,
   });
   args.aggregateBy.forEach((by) => search.append('aggregateBy', by));
   args.countGroupBy.forEach((by) => search.append('countGroupBy', by));

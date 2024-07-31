@@ -47,10 +47,18 @@ describe('Action Hooks', () => {
   });
 
   describe('useActions', () => {
-    const args = { itemId, view: 'builder', requestedSampleSize: 5 };
+    const args = {
+      itemId,
+      view: 'builder',
+      requestedSampleSize: 5,
+      startDate: getDatesFromNow(-7).toISOString(),
+      endDate: getDatesFromNow(-2).toISOString(),
+    };
     const route = `/${buildGetActions(itemId, {
       view: args.view,
       requestedSampleSize: args.requestedSampleSize,
+      startDate: args.startDate,
+      endDate: args.endDate,
     })}`;
     const key = buildActionsKey(args);
 
@@ -64,28 +72,6 @@ describe('Action Hooks', () => {
 
       // verify cache keys
       expect(queryClient.getQueryData<ActionData>(key)).toEqual(response);
-    });
-
-    it(`Receive actions for specific time period`, async () => {
-      const newArgs = {
-        ...args,
-        startDate: getDatesFromNow(-7).toISOString(),
-        endDate: getDatesFromNow(-2).toISOString(),
-      };
-      const newKey = buildActionsKey(newArgs);
-      const newRoute = `/${buildGetActions(itemId, {
-        view: newArgs.view,
-        requestedSampleSize: newArgs.requestedSampleSize,
-        startDate: newArgs.startDate,
-        endDate: newArgs.endDate,
-      })}`;
-      const hook = () => hooks.useActions(newArgs);
-      const endpoints = [{ route: newRoute, response }];
-      const { data } = await mockHook({ endpoints, hook, wrapper });
-      expect(data).toEqual(response);
-
-      // verify cache keys
-      expect(queryClient.getQueryData<ActionData>(newKey)).toEqual(response);
     });
 
     it(`Sample size = 0 does not fetch`, async () => {
@@ -150,6 +136,8 @@ describe('Action Hooks', () => {
       aggregateFunction: AggregateFunction.Avg,
       aggregateMetric: AggregateMetric.ActionCount,
       aggregateBy: [AggregateBy.CreatedDay],
+      startDate: getDatesFromNow(-7).toISOString(),
+      endDate: getDatesFromNow(-2).toISOString(),
     };
     const route = `/${buildGetAggregateActions({ itemId, ...args })}`;
     const key = buildAggregateActionsKey(itemId, args);
@@ -168,23 +156,15 @@ describe('Action Hooks', () => {
     });
 
     it(`Receive aggregate actions for item id within specific time`, async () => {
-      const newArgs = {
-        ...args,
-        startDate: getDatesFromNow(-7).toISOString(),
-        endDate: getDatesFromNow(-2).toISOString(),
-      };
-      const newKey = buildAggregateActionsKey(itemId, newArgs);
-      const newRoute = `/${buildGetAggregateActions({ itemId, ...newArgs })}`;
-
-      const hook = () => hooks.useAggregateActions(itemId, newArgs);
-      const endpoints = [{ route: newRoute, response }];
+      const hook = () => hooks.useAggregateActions(itemId, args);
+      const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
       expect(data).toEqual(response);
 
       // verify cache keys
-      expect(
-        queryClient.getQueryData<AggregateActionsResponse>(newKey),
-      ).toEqual(response);
+      expect(queryClient.getQueryData<AggregateActionsResponse>(key)).toEqual(
+        response,
+      );
     });
 
     it(`Receive aggregate actions for item id`, async () => {

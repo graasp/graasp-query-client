@@ -300,8 +300,8 @@ export const buildActionsKey = (args: {
   itemId?: UUID;
   view: string;
   requestedSampleSize: number;
-  startDate?: string;
-  endDate?: string;
+  startDate: string;
+  endDate: string;
 }) => [
   'actions',
   args.itemId,
