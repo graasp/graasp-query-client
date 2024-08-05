@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.20.3](https://github.com/graasp/graasp-query-client/compare/v3.20.2...v3.20.3) (2024-08-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v1.7.3 ([#869](https://github.com/graasp/graasp-query-client/issues/869)) ([d9d7e30](https://github.com/graasp/graasp-query-client/commit/d9d7e30699486a5a03f865fb4394d80edb8296be))
+
 ## [3.20.2](https://github.com/graasp/graasp-query-client/compare/v3.20.1...v3.20.2) (2024-08-05)
 
 
