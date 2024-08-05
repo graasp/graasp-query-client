@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.20.2](https://github.com/graasp/graasp-query-client/compare/v3.20.1...v3.20.2) (2024-08-05)
+
+
+### Bug Fixes
+
+* **params:** use parentId in search params of import zip and h5p ([#870](https://github.com/graasp/graasp-query-client/issues/870)) ([7a491cc](https://github.com/graasp/graasp-query-client/commit/7a491cc7e43ac236e564bd99c6b0bbc4060747ea))
+
 ## [3.20.1](https://github.com/graasp/graasp-query-client/compare/v3.20.0...v3.20.1) (2024-07-31)
 
 
