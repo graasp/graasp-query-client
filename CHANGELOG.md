@@ -2,6 +2,9 @@
 
 ## [3.20.3](https://github.com/graasp/graasp-query-client/compare/v3.20.2...v3.20.3) (2024-08-05)
 
+### Features
+
+* modify use aggregate actions accept date range ([91b724e](https://github.com/graasp/graasp-query-client/commit/91b724e9537b51544bca8e11aed232a9e2697b69))
 
 ### Bug Fixes
 
