@@ -184,11 +184,18 @@ export const buildUpdateItemValidationReviewRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${VALIDATION_ROUTE}/${id}/review`;
 export const buildGetActions = (
   itemId: UUID,
-  options: { requestedSampleSize: number; view: string },
+  options: {
+    requestedSampleSize: number;
+    view: string;
+    startDate: string;
+    endDate: string;
+  },
 ) =>
   `${ITEMS_ROUTE}/${itemId}/actions?${new URLSearchParams({
     requestedSampleSize: options.requestedSampleSize.toString(),
     view: options.view,
+    startDate: options.startDate,
+    endDate: options.endDate,
   })}`;
 
 export const buildGetAggregateActions = <K extends AggregateBy[]>(
@@ -200,13 +207,15 @@ export const buildGetAggregateActions = <K extends AggregateBy[]>(
     view: args.view,
     aggregateFunction: args.aggregateFunction,
     aggregateMetric: args.aggregateMetric,
+    startDate: args.startDate,
+    endDate: args.endDate,
   });
   args.aggregateBy.forEach((by) => search.append('aggregateBy', by));
   args.countGroupBy.forEach((by) => search.append('countGroupBy', by));
   if (args.type) {
     args.type.forEach((t) => search.append('type', t));
   }
-  return `${route}`;
+  return `${route}?${search}`;
 };
 export const buildExportActions = (
   itemId: UUID,

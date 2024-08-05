@@ -20,6 +20,8 @@ export default (queryConfig: QueryClientConfig) => {
       itemId?: UUID;
       view: string;
       requestedSampleSize: number;
+      startDate: string;
+      endDate: string;
     },
     options?: { enabled?: boolean },
   ) => {
@@ -39,6 +41,8 @@ export default (queryConfig: QueryClientConfig) => {
             itemId,
             view: args.view,
             requestedSampleSize: args.requestedSampleSize,
+            startDate: args.startDate,
+            endDate: args.endDate,
           },
           queryConfig,
         );

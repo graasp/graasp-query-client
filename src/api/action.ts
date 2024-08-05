@@ -17,7 +17,13 @@ import { PartialQueryConfigForApi } from '../types.js';
 import { AggregateActionsArgs, MappedAggregateBy } from '../utils/action.js';
 
 export const getActions = async (
-  args: { itemId: UUID; requestedSampleSize: number; view: string },
+  args: {
+    itemId: UUID;
+    requestedSampleSize: number;
+    view: string;
+    startDate: string;
+    endDate: string;
+  },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios

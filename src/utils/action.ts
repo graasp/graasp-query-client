@@ -16,6 +16,8 @@ export type AggregateActionsArgs<K extends AggregateBy[]> = {
   aggregateFunction: AggregateFunction;
   aggregateMetric: AggregateMetric;
   aggregateBy: K;
+  startDate: string;
+  endDate: string;
 };
 
 export type MappedAggregateBy = {
