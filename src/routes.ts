@@ -64,7 +64,7 @@ export const buildClearMentionsRoute = () => `${ITEMS_ROUTE}/mentions`;
 export const buildImportZipRoute = (parentId?: UUID) => {
   const route = `${ITEMS_ROUTE}/zip-import`;
   if (parentId) {
-    return `${route}?${new URLSearchParams({ id: parentId })}`;
+    return `${route}?${new URLSearchParams({ parentId })}`;
   }
   return route;
 };
@@ -72,7 +72,7 @@ export const buildImportH5PRoute = (parentId?: UUID, previousItemId?: UUID) => {
   const route = `${ITEMS_ROUTE}/h5p-import`;
   const query = new URLSearchParams();
   if (parentId) {
-    query.set('id', parentId);
+    query.set('parentId', parentId);
   }
   if (previousItemId) {
     query.set('previousItemId', previousItemId);
