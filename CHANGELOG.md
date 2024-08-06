@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.21.0](https://github.com/graasp/graasp-query-client/compare/v3.20.3...v3.21.0) (2024-08-06)
+
+
+### Features
+
+* move share item logic in backend ([#876](https://github.com/graasp/graasp-query-client/issues/876)) ([7e03976](https://github.com/graasp/graasp-query-client/commit/7e03976e212ae8b9e6d8f5f625f58b6fbf10ac72))
+
 ## [3.20.3](https://github.com/graasp/graasp-query-client/compare/v3.20.2...v3.20.3) (2024-08-05)
 
 ### Features
