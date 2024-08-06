@@ -20,7 +20,6 @@ import {
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import { memberKeys } from '../keys.js';
 import { SIGN_OUT_ROUTE } from '../routes.js';
-import { exportMemberDataRoutine } from '../routines/member.js';
 import {
   buildDeleteMemberRoute,
   buildExportMemberDataRoute,
@@ -29,7 +28,11 @@ import {
   buildPostMemberPasswordRoute,
   buildUploadAvatarRoute,
 } from './routes.js';
-import { updatePasswordRoutine, uploadAvatarRoutine } from './routines.js';
+import {
+  exportMemberDataRoutine,
+  updatePasswordRoutine,
+  uploadAvatarRoutine,
+} from './routines.js';
 
 const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({

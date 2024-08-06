@@ -5,13 +5,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios.js';
 import { memberKeys } from '../keys.js';
-import { exportMemberDataRoutine } from '../routines/member.js';
 import { QueryClientConfig } from '../types.js';
 import * as Api from './api.js';
 import {
   deleteCurrentMemberRoutine,
   deleteMemberRoutine,
   editMemberRoutine,
+  exportMemberDataRoutine,
   updateEmailRoutine,
   updatePasswordRoutine,
   uploadAvatarRoutine,
