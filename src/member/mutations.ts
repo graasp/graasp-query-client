@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { throwIfArrayContainsErrorOrReturn } from '../api/axios.js';
 import { memberKeys } from '../keys.js';
+import { exportMemberDataRoutine } from '../routines/member.js';
 import { QueryClientConfig } from '../types.js';
 import * as Api from './api.js';
 import {
@@ -254,6 +255,20 @@ export default (queryConfig: QueryClientConfig) => {
       },
     );
 
+  const useExportMemberData = () =>
+    useMutation(() => Api.exportMemberData(queryConfig), {
+      onSuccess: () => {
+        notifier?.({
+          type: exportMemberDataRoutine.SUCCESS,
+        });
+      },
+      onError: (error: Error) => {
+        notifier?.({
+          type: exportMemberDataRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
   return {
     useDeleteMember,
     useDeleteCurrentMember,
@@ -263,5 +278,6 @@ export default (queryConfig: QueryClientConfig) => {
     useCreatePassword,
     useUpdateMemberEmail,
     useValidateEmailUpdate,
+    useExportMemberData,
   };
 };

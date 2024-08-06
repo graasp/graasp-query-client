@@ -89,3 +89,8 @@ export const buildSetDefaultCardRoute = (cardId: string) =>
   `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/cards/${cardId}/default`;
 export const CREATE_SETUP_INTENT_ROUTE = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/setup-intent`;
 export const GET_CURRENT_CUSTOMER = `${MEMBERS_ROUTE}/${SUBSCRIPTION_ROUTE}/customer/current`;
+
+// Data export
+export const DATA_EXPORT_ROUTE = 'export-data';
+export const buildExportMemberDataRoute = () =>
+  `${MEMBERS_ROUTE}/${DATA_EXPORT_ROUTE}`;

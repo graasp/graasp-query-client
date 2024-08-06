@@ -20,8 +20,10 @@ import {
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import { memberKeys } from '../keys.js';
 import { SIGN_OUT_ROUTE } from '../routes.js';
+import { exportMemberDataRoutine } from '../routines/member.js';
 import {
   buildDeleteMemberRoute,
+  buildExportMemberDataRoute,
   buildPatchMemberPasswordRoute,
   buildPatchMemberRoute,
   buildPostMemberPasswordRoute,
@@ -466,6 +468,33 @@ describe('Member Mutations', () => {
           type: updatePasswordRoutine.FAILURE,
         }),
       );
+    });
+  });
+
+  describe('useExportMemberData', () => {
+    const mutation = mutations.useExportMemberData;
+    const response = 'Ok';
+    it('Export member data', async () => {
+      const endpoints = [
+        {
+          response,
+          route: `/${buildExportMemberDataRoute()}`,
+          method: HttpMethod.Post,
+        },
+      ];
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+      await act(async () => {
+        mockedMutation.mutate();
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: exportMemberDataRoutine.SUCCESS,
+      });
     });
   });
 });

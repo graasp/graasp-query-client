@@ -19,6 +19,7 @@ import {
   buildDeleteCurrentMemberRoute,
   buildDeleteMemberRoute,
   buildDownloadAvatarRoute,
+  buildExportMemberDataRoute,
   buildGetCurrentMemberRoute,
   buildGetMemberRoute,
   buildGetMemberStorageFilesRoute,
@@ -216,3 +217,12 @@ export const validateEmailUpdate = async (
     // send the JWT as a bearer auth
     { headers: { Authorization: `Bearer ${token}` } },
   );
+
+// Define the function to export member data
+export const exportMemberData = async ({
+  API_HOST,
+  axios,
+}: PartialQueryConfigForApi) =>
+  axios
+    .post<void>(`${API_HOST}/${buildExportMemberDataRoute()}`)
+    .then(({ data }) => data);
