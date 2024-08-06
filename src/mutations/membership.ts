@@ -1,21 +1,11 @@
-import {
-  Invitation,
-  ItemMembership,
-  PermissionLevel,
-  ResultOf,
-  UUID,
-  partitionArray as partition,
-} from '@graasp/sdk';
-import { FAILURE_MESSAGES, SUCCESS_MESSAGES } from '@graasp/translations';
+import { Invitation, ItemMembership, PermissionLevel, UUID } from '@graasp/sdk';
+import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 import * as InvitationApi from '../api/invitation.js';
 import * as Api from '../api/membership.js';
 import { buildManyItemMembershipsKey, itemKeys } from '../keys.js';
-import * as MemberApi from '../member/api.js';
 import {
   deleteItemMembershipRoutine,
   editItemMembershipRoutine,
@@ -146,116 +136,22 @@ export default (queryConfig: QueryClientConfig) => {
     const queryClient = useQueryClient();
     return useMutation(
       async ({
-        data,
+        invitations,
         itemId,
       }: {
-        data: Partial<Invitation>[];
+        invitations: Pick<Invitation, 'email' | 'permission'>[];
         itemId: UUID;
-      }): Promise<ResultOf<ItemMembership | Invitation>> => {
-        // validate has email, name and permission are optional
-        // force type with email
-        const [withEmail, withoutEmail] = partition(data, (d) =>
-          Boolean(d.email),
-        );
-        const dataWithEmail = withEmail as (Partial<Invitation> & {
-          email: string;
-        })[];
-
-        // no data with email: the column doesn't exist, or all empty
-        // return custom failure
-        if (!dataWithEmail.length) {
-          throw new Error('No data or no column email detected');
-        }
-
-        // check email has an associated account
-        // assume will receive only one member per mail
-        const accounts = await MemberApi.getMembersByEmail(
-          { emails: dataWithEmail.map(({ email }) => email) },
+      }): Promise<{
+        memberships: ItemMembership[];
+        invitations: Invitation[];
+      }> =>
+        InvitationApi.postInvitations(
+          {
+            itemId,
+            invitations,
+          },
           queryConfig,
-        );
-
-        // split between invitations and memberships
-        const dataWithMemberId = dataWithEmail.map((d) => ({
-          ...d,
-          memberId: accounts.data[d.email?.toLowerCase()]?.id,
-        }));
-        const [newMemberships, invitations] = partition(dataWithMemberId, (d) =>
-          Boolean(d.memberId),
-        );
-
-        try {
-          const dataForMemberships: ResultOf<ItemMembership> = {
-            data: {},
-            errors: [],
-          };
-          // create memberships
-          if (newMemberships.length) {
-            const membershipsResult: ResultOf<ItemMembership> =
-              await Api.postManyItemMemberships(
-                {
-                  memberships: newMemberships,
-                  itemId,
-                },
-                queryConfig,
-              );
-            // set map key to email
-            Object.values(membershipsResult.data).forEach((m) => {
-              dataForMemberships.data[m.member.email] = m;
-            });
-            dataForMemberships.errors = membershipsResult.errors;
-          }
-
-          // create invitations
-          const invitationsResult: ResultOf<Invitation> = {
-            data: {},
-            errors: [],
-          };
-          if (invitations.length) {
-            const invitationsResponse = await InvitationApi.postInvitations(
-              {
-                itemId,
-                invitations,
-              },
-              queryConfig,
-            );
-            if (Array.isArray(invitationsResponse)) {
-              invitationsResult.data = Object.fromEntries(
-                invitationsResponse.map((inv) => [inv.email, inv]),
-              );
-            } else {
-              invitationsResult.errors.push(invitationsResponse);
-            }
-          }
-          return {
-            data: { ...dataForMemberships.data, ...invitationsResult.data },
-            errors: [
-              // create error shape from input
-              // todo: use error constructor
-              ...withoutEmail.map((d) => ({
-                statusCode: StatusCodes.BAD_REQUEST,
-                message: ReasonPhrases.BAD_REQUEST,
-                name: ReasonPhrases.BAD_REQUEST,
-                data: d,
-              })),
-              ...invitationsResult.errors,
-              ...dataForMemberships.errors,
-            ],
-          };
-        } catch (e) {
-          console.error(e);
-          const errors = [];
-          if (e instanceof AxiosError) {
-            const error = e.response?.data;
-            errors.push(error);
-          } else {
-            errors.push({
-              name: 'error',
-              message: FAILURE_MESSAGES.UNEXPECTED_ERROR,
-            });
-          }
-          return { data: {}, errors };
-        }
-      },
+        ),
       {
         onSuccess: (results) => {
           notifier?.({
