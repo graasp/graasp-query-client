@@ -11,6 +11,7 @@ import {
   deleteCurrentMemberRoutine,
   deleteMemberRoutine,
   editMemberRoutine,
+  exportMemberDataRoutine,
   updateEmailRoutine,
   updatePasswordRoutine,
   uploadAvatarRoutine,
@@ -254,6 +255,20 @@ export default (queryConfig: QueryClientConfig) => {
       },
     );
 
+  const useExportMemberData = () =>
+    useMutation(() => Api.exportMemberData(queryConfig), {
+      onSuccess: () => {
+        notifier?.({
+          type: exportMemberDataRoutine.SUCCESS,
+        });
+      },
+      onError: (error: Error) => {
+        notifier?.({
+          type: exportMemberDataRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
   return {
     useDeleteMember,
     useDeleteCurrentMember,
@@ -263,5 +278,6 @@ export default (queryConfig: QueryClientConfig) => {
     useCreatePassword,
     useUpdateMemberEmail,
     useValidateEmailUpdate,
+    useExportMemberData,
   };
 };

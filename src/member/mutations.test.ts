@@ -8,7 +8,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { act } from '@testing-library/react';
 import axios from 'axios';
-import { StatusCodes } from 'http-status-codes';
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -22,12 +22,17 @@ import { memberKeys } from '../keys.js';
 import { SIGN_OUT_ROUTE } from '../routes.js';
 import {
   buildDeleteMemberRoute,
+  buildExportMemberDataRoute,
   buildPatchMemberPasswordRoute,
   buildPatchMemberRoute,
   buildPostMemberPasswordRoute,
   buildUploadAvatarRoute,
 } from './routes.js';
-import { updatePasswordRoutine, uploadAvatarRoutine } from './routines.js';
+import {
+  exportMemberDataRoutine,
+  updatePasswordRoutine,
+  uploadAvatarRoutine,
+} from './routines.js';
 
 const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
@@ -466,6 +471,33 @@ describe('Member Mutations', () => {
           type: updatePasswordRoutine.FAILURE,
         }),
       );
+    });
+  });
+
+  describe('useExportMemberData', () => {
+    const mutation = mutations.useExportMemberData;
+    const response = ReasonPhrases.OK;
+    it('Export member data', async () => {
+      const endpoints = [
+        {
+          response,
+          route: `/${buildExportMemberDataRoute()}`,
+          method: HttpMethod.Post,
+        },
+      ];
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+      await act(async () => {
+        mockedMutation.mutate();
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: exportMemberDataRoutine.SUCCESS,
+      });
     });
   });
 });
