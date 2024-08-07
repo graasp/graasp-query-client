@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.22.0](https://github.com/graasp/graasp-query-client/compare/v3.21.0...v3.22.0) (2024-08-07)
+
+
+### Features
+
+* add member export data mutation ([#877](https://github.com/graasp/graasp-query-client/issues/877)) ([126580b](https://github.com/graasp/graasp-query-client/commit/126580bee7d3fe16651a0c64fe81b38a5b4c008c))
+
 ## [3.21.0](https://github.com/graasp/graasp-query-client/compare/v3.20.3...v3.21.0) (2024-08-06)
 
 
