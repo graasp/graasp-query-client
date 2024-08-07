@@ -8,7 +8,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { act } from '@testing-library/react';
 import axios from 'axios';
-import { StatusCodes } from 'http-status-codes';
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -476,7 +476,7 @@ describe('Member Mutations', () => {
 
   describe('useExportMemberData', () => {
     const mutation = mutations.useExportMemberData;
-    const response = 'Ok';
+    const response = ReasonPhrases.OK;
     it('Export member data', async () => {
       const endpoints = [
         {
