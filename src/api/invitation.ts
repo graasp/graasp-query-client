@@ -1,4 +1,4 @@
-import { Invitation, UUID } from '@graasp/sdk';
+import { Invitation, ItemMembership, UUID } from '@graasp/sdk';
 
 import {
   buildDeleteInvitationRoute,
@@ -11,7 +11,6 @@ import {
 import { NewInvitation, PartialQueryConfigForApi } from '../types.js';
 import { verifyAuthentication } from './axios.js';
 
-// eslint-disable-next-line import/prefer-default-export
 export const getInvitation = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
   id: UUID,
@@ -26,9 +25,10 @@ export const postInvitations = async (
 ) =>
   verifyAuthentication(() =>
     axios
-      .post<
-        Invitation[]
-      >(`${API_HOST}/${buildPostInvitationsRoute(itemId)}`, { invitations })
+      .post<{
+        invitations: Invitation[];
+        memberships: ItemMembership[];
+      }>(`${API_HOST}/${buildPostInvitationsRoute(itemId)}`, { invitations })
       .then(({ data }) => data),
   );
 
