@@ -646,18 +646,17 @@ __metadata:
   linkType: soft
 
 "@graasp/sdk@github:graasp/graasp-sdk#568-new-membertype":
-  version: 4.22.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=7035c4fd119414c84ff6a1c8db2fb2bc37a2a7aa"
+  version: 4.24.0
+  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=3245190213b5edb24ed445380ff14d90b3c30ec9"
   dependencies:
     "@faker-js/faker": "npm:8.4.1"
     filesize: "npm:10.1.4"
     js-cookie: "npm:3.0.5"
-    mime-types: "npm:2.1.35"
     validator: "npm:13.12.0"
   peerDependencies:
     date-fns: ^3
     uuid: ^9 || ^10.0.0
-  checksum: 10/ff28362642590f406e6904f68864a5aec1e1a0d9a2ab4f4eb81c4ba13d6467019e2d844e426d5694ba07a2689e744dad85da9a3ab74258d11e76bc21874d31b6
+  checksum: 10/4834d18f9b49753e5a66c8d78bf39c712b95069580ea37795f9323e6705c5d0305d8182b6940fb6e5f68caf2b1837799554308e0218262b0972563fbf59c1766
   languageName: node
   linkType: hard
 
@@ -4427,7 +4426,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mime-types@npm:2.1.35, mime-types@npm:^2.1.12":
+"mime-types@npm:^2.1.12":
   version: 2.1.35
   resolution: "mime-types@npm:2.1.35"
   dependencies:
