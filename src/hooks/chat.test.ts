@@ -1,4 +1,4 @@
-import { ChatMessage, FolderItemFactory, MemberFactory } from '@graasp/sdk';
+import { AccountFactory, ChatMessage, FolderItemFactory } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
@@ -23,7 +23,7 @@ describe('Chat Hooks', () => {
       id: 'some-messageId',
       item: FolderItemFactory(),
       body: 'some content',
-      creator: MemberFactory(),
+      creator: AccountFactory(),
       createdAt: '2023-09-06T11:50:32.894Z',
       updatedAt: '2023-09-06T11:50:32.894Z',
     };
@@ -79,7 +79,7 @@ describe('Chat Hooks', () => {
       id: 'some-messageId',
       item: FolderItemFactory(),
       body: 'some content',
-      creator: MemberFactory(),
+      creator: AccountFactory(),
       createdAt: '2023-09-06T11:50:32.894Z',
       updatedAt: '2023-09-06T11:50:32.894Z',
     };
