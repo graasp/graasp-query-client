@@ -1,5 +1,4 @@
 import {
-  AccountFactory,
   FolderItemFactory,
   ItemMembership,
   PermissionLevel,
@@ -32,16 +31,11 @@ describe('Ws Membership Hooks', () => {
   describe('useItemsMembershipsUpdates', () => {
     const item = FolderItemFactory();
     const itemId = item.id;
-    const account = AccountFactory();
     const membershipsKey = itemKeys.single(itemId).memberships;
     const newItemMembership = createMockMembership({
       item,
-      account,
-      creator: account,
     });
-    const memberships = [
-      createMockMembership({ item, account, creator: account }),
-    ];
+    const memberships = [createMockMembership({ item })];
     const channel = { name: itemId, topic: TOPICS.MEMBERSHIPS_ITEM };
     const hook = () => hooks.useItemsMembershipsUpdates([itemId]);
 
@@ -50,13 +44,13 @@ describe('Ws Membership Hooks', () => {
 
       await mockWsHook({ hook, wrapper });
 
-      const chatEvent = {
+      const event = {
         kind: KINDS.ITEM,
         op: OPS.CREATE,
         membership: newItemMembership,
       };
 
-      getHandlerByChannel(handlers, channel)?.handler(chatEvent);
+      getHandlerByChannel(handlers, channel)?.handler(event);
 
       expect(
         queryClient.getQueryData<ItemMembership[]>(membershipsKey),

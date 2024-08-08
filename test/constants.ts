@@ -1,6 +1,7 @@
 import {
   Account,
   AccountFactory,
+  AccountType,
   Action,
   ActionData,
   App,
@@ -134,8 +135,8 @@ export const OK_RESPONSE = {};
 export const createMockMembership = (
   membership?: Partial<ItemMembership>,
 ): ItemMembership => ({
-  id: 'membership-id',
-  account: AccountFactory(),
+  id: membership?.id ?? v4(),
+  account: { ...AccountFactory(), type: AccountType.Guest },
   item: FolderItemFactory(),
   permission: PermissionLevel.Read,
   createdAt: '2023-04-26T08:46:34.812Z',
@@ -146,13 +147,13 @@ export const createMockMembership = (
 
 const MEMBERSHIP_1: ItemMembership = createMockMembership({
   id: 'membership-id',
-  account: AccountFactory(),
+  account: { ...AccountFactory(), type: AccountType.Guest },
   permission: PermissionLevel.Read,
 });
 
 const MEMBERSHIP_2: ItemMembership = createMockMembership({
   id: 'membership-id1',
-  account: AccountFactory(),
+  account: { ...AccountFactory(), type: AccountType.Guest },
   permission: PermissionLevel.Admin,
 });
 
