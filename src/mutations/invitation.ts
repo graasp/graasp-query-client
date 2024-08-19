@@ -16,8 +16,8 @@ export default (queryConfig: QueryClientConfig) => {
   const usePostInvitations = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (payload: { itemId: UUID; invitations: NewInvitation[] }) =>
-        Api.postInvitations(payload, queryConfig),
+      (args: { itemId: UUID; payload: NewInvitation[] }) =>
+        Api.postInvitations(args, queryConfig),
       {
         onSuccess: () => {
           queryConfig.notifier?.({

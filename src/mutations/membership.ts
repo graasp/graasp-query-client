@@ -12,7 +12,7 @@ import {
   postItemMembershipRoutine,
   shareItemRoutine,
 } from '../routines/membership.js';
-import { QueryClientConfig } from '../types.js';
+import { NewInvitation, QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -136,10 +136,10 @@ export default (queryConfig: QueryClientConfig) => {
     const queryClient = useQueryClient();
     return useMutation(
       async ({
-        invitations,
+        payload,
         itemId,
       }: {
-        invitations: Pick<Invitation, 'email' | 'permission'>[];
+        payload: NewInvitation[];
         itemId: UUID;
       }): Promise<{
         memberships: ItemMembership[];
@@ -148,7 +148,7 @@ export default (queryConfig: QueryClientConfig) => {
         InvitationApi.postInvitations(
           {
             itemId,
-            invitations,
+            payload,
           },
           queryConfig,
         ),
