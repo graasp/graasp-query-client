@@ -136,10 +136,10 @@ export default (queryConfig: QueryClientConfig) => {
     const queryClient = useQueryClient();
     return useMutation(
       async ({
-        payload,
+        invitations,
         itemId,
       }: {
-        payload: NewInvitation[];
+        invitations: NewInvitation[];
         itemId: UUID;
       }): Promise<{
         memberships: ItemMembership[];
@@ -148,7 +148,7 @@ export default (queryConfig: QueryClientConfig) => {
         InvitationApi.postInvitations(
           {
             itemId,
-            payload,
+            invitations,
           },
           queryConfig,
         ),

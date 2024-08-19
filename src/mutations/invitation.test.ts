@@ -70,7 +70,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ itemId, payload: [newInvitation] });
+        mockedMutation.mutate({ itemId, invitations: [newInvitation] });
         await waitForMutation();
       });
 
@@ -106,7 +106,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ itemId, payload: newInvitations });
+        mockedMutation.mutate({ itemId, invitations: newInvitations });
         await waitForMutation();
       });
 
@@ -137,7 +137,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ itemId, payload: [newInvitation] });
+        mockedMutation.mutate({ itemId, invitations: [newInvitation] });
         await waitForMutation();
       });
 
@@ -171,7 +171,7 @@ describe('Invitations Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ itemId, payload: [newInvitation] });
+        mockedMutation.mutate({ itemId, invitations: [newInvitation] });
         await waitForMutation();
       });
 

@@ -20,7 +20,7 @@ export const getInvitation = async (
     .then(({ data }) => data);
 
 export const postInvitations = async (
-  { itemId, payload }: { itemId: UUID; payload: NewInvitation[] },
+  { itemId, invitations }: { itemId: UUID; invitations: NewInvitation[] },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
@@ -28,7 +28,7 @@ export const postInvitations = async (
       .post<{
         invitations: Invitation[];
         memberships: ItemMembership[];
-      }>(`${API_HOST}/${buildPostInvitationsRoute(itemId)}`, payload)
+      }>(`${API_HOST}/${buildPostInvitationsRoute(itemId)}`, { invitations })
       .then(({ data }) => data),
   );
 

@@ -354,7 +354,7 @@ describe('Membership Mutations', () => {
 
       const invitations = emails.map((email) => ({ email, permission }));
       await act(async () => {
-        mockedMutation.mutate({ itemId, payload: invitations });
+        mockedMutation.mutate({ itemId, invitations });
         await waitForMutation();
       });
 
@@ -407,7 +407,7 @@ describe('Membership Mutations', () => {
 
       const invitations = emails.map((email) => ({ email, permission }));
       await act(async () => {
-        mockedMutation.mutate({ itemId, payload: invitations });
+        mockedMutation.mutate({ itemId, invitations });
         await waitForMutation();
       });
 
@@ -470,7 +470,7 @@ describe('Membership Mutations', () => {
 
       const invitations = emails.map((email) => ({ email, permission }));
       await act(async () => {
-        mockedMutation.mutate({ itemId, payload: invitations });
+        mockedMutation.mutate({ itemId, invitations });
         await waitForMutation();
       });
 
@@ -522,7 +522,7 @@ describe('Membership Mutations', () => {
 
       const invitations = emails.map((email) => ({ email, permission }));
       await act(async () => {
-        mockedMutation.mutate({ itemId, payload: invitations });
+        mockedMutation.mutate({ itemId, invitations });
         await waitForMutation();
       });
 
