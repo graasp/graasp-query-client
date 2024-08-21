@@ -621,8 +621,8 @@ __metadata:
   dependencies:
     "@commitlint/cli": "npm:19.4.0"
     "@commitlint/config-conventional": "npm:19.2.2"
-    "@graasp/sdk": "npm:4.22.0"
-    "@graasp/translations": "npm:1.33.0"
+    "@graasp/sdk": "npm:4.25.1"
+    "@graasp/translations": "npm:1.35.0"
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
     "@testing-library/dom": "npm:10.4.0"
@@ -670,28 +670,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@npm:4.22.0":
-  version: 4.22.0
-  resolution: "@graasp/sdk@npm:4.22.0"
+"@graasp/sdk@npm:4.25.1":
+  version: 4.25.1
+  resolution: "@graasp/sdk@npm:4.25.1"
   dependencies:
     "@faker-js/faker": "npm:8.4.1"
     filesize: "npm:10.1.4"
     js-cookie: "npm:3.0.5"
-    mime-types: "npm:2.1.35"
     validator: "npm:13.12.0"
   peerDependencies:
     date-fns: ^3
     uuid: ^9 || ^10.0.0
-  checksum: 10/c1e81d401f51a9c22eb4f5bc12057aa3ea249771701c390a11dc7c1609b814d9222926bbb7d9b19f70fda67bccb854f42045d890dd850f71bf4f9f8629fcb799
+  checksum: 10/07bcedf520d3eadd1c8851cb738a4e5d0c00ed719915a78035adfb614e7325897d816c7bacaa2ba56d515e42adb05c4d9e5a5efa5c433d5f020d72de12104148
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.33.0":
-  version: 1.33.0
-  resolution: "@graasp/translations@npm:1.33.0"
+"@graasp/translations@npm:1.35.0":
+  version: 1.35.0
+  resolution: "@graasp/translations@npm:1.35.0"
   peerDependencies:
     i18next: ^23.8.1
-  checksum: 10/fcbbd3a67c0e30a0a2e2da0207714e9e61ef7808ceaa241dbdf5ff73e5a98ecd7528cda269b8b14aa81b668cac97d06dfd564e4ade8312adde526f24feaddb98
+  checksum: 10/d5227f2ced80faaa7a852a1b4760c47ac592b8cfc2f8fba63e4bd45e27139f17451a060714020a8eb0f2a988d7e726b164fc609af4a056339a4f634866d45797
   languageName: node
   linkType: hard
 
@@ -4514,7 +4513,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mime-types@npm:2.1.35, mime-types@npm:^2.1.12":
+"mime-types@npm:^2.1.12":
   version: 2.1.35
   resolution: "mime-types@npm:2.1.35"
   dependencies:
