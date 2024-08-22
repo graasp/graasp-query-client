@@ -9,7 +9,7 @@ import { getInvitationRoutine } from '../routines/invitation.js';
 import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
-  const { notifier, defaultQueryOptions } = queryConfig;
+  const { defaultQueryOptions } = queryConfig;
 
   const useInvitation = (id?: UUID) =>
     useQuery({
@@ -20,11 +20,11 @@ export default (queryConfig: QueryClientConfig) => {
         }
         return Api.getInvitation(queryConfig, id);
       },
+      meta: {
+        routine: getInvitationRoutine,
+      },
       ...defaultQueryOptions,
       enabled: Boolean(id),
-      onError: (error) => {
-        notifier?.({ type: getInvitationRoutine.FAILURE, payload: { error } });
-      },
     });
 
   const useItemInvitations = (

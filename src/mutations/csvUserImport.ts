@@ -8,27 +8,29 @@ import { QueryClientConfig } from '../types.js';
 export default (queryConfig: QueryClientConfig) => {
   const useCSVUserImport = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (payload: Api.UploadCSVPayload) =>
+    return useMutation({
+      mutationFn: (payload: Api.UploadCSVPayload) =>
         Api.uploadUserCsv(queryConfig, payload),
-      {
-        onSuccess: () => {
-          queryConfig.notifier?.({
-            type: postCsvUserImportRoutine.SUCCESS,
-          });
-        },
-        onError: (error: Error) => {
-          queryConfig.notifier?.({
-            type: postCsvUserImportRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(itemKeys.single(itemId).invitation);
-          queryClient.invalidateQueries(itemKeys.single(itemId).memberships);
-        },
+      onSuccess: () => {
+        queryConfig.notifier?.({
+          type: postCsvUserImportRoutine.SUCCESS,
+        });
       },
-    );
+      onError: (error: Error) => {
+        queryConfig.notifier?.({
+          type: postCsvUserImportRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+      onSettled: (_data, _error, { itemId }) => {
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(itemId).invitation,
+        });
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(itemId).memberships,
+        });
+      },
+    });
   };
 
   return {

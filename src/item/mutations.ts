@@ -65,7 +65,7 @@ export default (queryConfig: QueryClientConfig) => {
   }): Promise<T | undefined> => {
     const itemKey = itemKeys.single(id).content;
 
-    await queryClient.cancelQueries(itemKey);
+    await queryClient.cancelQueries({ queryKey: itemKey });
 
     // Snapshot the previous value
     const prevValue = queryClient.getQueryData<T>(itemKey);
@@ -91,7 +91,7 @@ export default (queryConfig: QueryClientConfig) => {
       ? OWN_ITEMS_KEY
       : itemKeys.single(parentId).allChildren;
     // Cancel any outgoing re-fetches (so they don't overwrite our optimistic update)
-    await queryClient.cancelQueries(childrenKey);
+    await queryClient.cancelQueries({ queryKey: childrenKey });
 
     // Snapshot the previous value if exists
     // do not create entry if it doesn't exist
@@ -111,8 +111,8 @@ export default (queryConfig: QueryClientConfig) => {
     enableNotifications,
   }: EnableNotificationsParam = DEFAULT_ENABLE_NOTIFICATIONS) => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (
+    return useMutation({
+      mutationFn: (
         item: Pick<DiscriminatedItem, 'id'> &
           Partial<
             Pick<
@@ -127,287 +127,269 @@ export default (queryConfig: QueryClientConfig) => {
           >,
       ) => Api.editItem(item.id, item, queryConfig),
       // newItem contains all updatable properties
-      {
-        onMutate: async (
-          newItem: Partial<DiscriminatedItem> &
-            Pick<DiscriminatedItem, 'id'> & {
-              extra?: DiscriminatedItem['extra'];
-            },
-        ) => {
-          const itemKey = itemKeys.single(newItem.id).content;
+      onMutate: async (
+        newItem: Partial<DiscriminatedItem> &
+          Pick<DiscriminatedItem, 'id'> & {
+            extra?: DiscriminatedItem['extra'];
+          },
+      ) => {
+        const itemKey = itemKeys.single(newItem.id).content;
 
-          // invalidate key
-          await queryClient.cancelQueries(itemKey);
+        // invalidate key
+        await queryClient.cancelQueries({ queryKey: itemKey });
 
-          // build full item with new values
-          const prevItem = queryClient.getQueryData<DiscriminatedItem>(itemKey);
+        // build full item with new values
+        const prevItem = queryClient.getQueryData<DiscriminatedItem>(itemKey);
 
-          // if the item is not in the cache, we don't need to continue with optimistic mutation
-          if (!prevItem) {
-            return {};
-          }
+        // if the item is not in the cache, we don't need to continue with optimistic mutation
+        if (!prevItem) {
+          return {};
+        }
 
-          // trim manually names because it does it in the backend
-          const newFullItem = {
-            ...prevItem,
-            name: prevItem.name.trim(),
-            displayName: prevItem.displayName.trim(),
-          };
-          queryClient.setQueryData(itemKey, newFullItem);
+        // trim manually names because it does it in the backend
+        const newFullItem = {
+          ...prevItem,
+          name: prevItem.name.trim(),
+          displayName: prevItem.displayName.trim(),
+        };
+        queryClient.setQueryData(itemKey, newFullItem);
 
-          const previousItems = {
-            ...(Boolean(prevItem) && {
-              parent: await mutateParentChildren(
-                {
-                  childPath: prevItem?.path,
-                  value: (old: DiscriminatedItem[]) => {
-                    if (!old?.length) {
-                      return old;
-                    }
-                    const idx = old.findIndex(({ id }) => id === newItem.id);
-                    if (newFullItem && idx >= 0) {
-                      old[idx] = newFullItem;
-                    }
+        const previousItems = {
+          ...(Boolean(prevItem) && {
+            parent: await mutateParentChildren(
+              {
+                childPath: prevItem?.path,
+                value: (old: DiscriminatedItem[]) => {
+                  if (!old?.length) {
                     return old;
-                  },
+                  }
+                  const idx = old.findIndex(({ id }) => id === newItem.id);
+                  if (newFullItem && idx >= 0) {
+                    old[idx] = newFullItem;
+                  }
+                  return old;
                 },
-                queryClient,
-              ),
-              item: prevItem,
-            }),
-          };
-          return previousItems;
-        },
-        onSuccess: () => {
-          notifier?.(
-            {
-              type: editItemRoutine.SUCCESS,
-              payload: { message: SUCCESS_MESSAGES.EDIT_ITEM },
-            },
-            { enableNotifications },
-          );
-        },
-        onError: (error: Error, newItem, context) => {
-          if (context?.parent && context?.item) {
-            const prevItem = context?.item;
-            const parentKey = getKeyForParentId(
-              getParentFromPath(prevItem?.path),
-            );
-            queryClient.setQueryData(parentKey, context.parent);
-          }
-
-          const itemKey = itemKeys.single(newItem.id).content;
-          queryClient.setQueryData(itemKey, context?.item);
-
-          notifier?.(
-            { type: editItemRoutine.FAILURE, payload: { error } },
-            { enableNotifications },
-          );
-        },
-        onSettled: (_newItem, _error, { id }, context) => {
-          const prevItem = context?.item;
-          if (prevItem) {
-            const parentKey = getKeyForParentId(
-              getParentFromPath(prevItem.path),
-            );
-            queryClient.invalidateQueries(parentKey);
-          }
-
-          const itemKey = itemKeys.single(id).content;
-          queryClient.invalidateQueries(itemKey);
-        },
+              },
+              queryClient,
+            ),
+            item: prevItem,
+          }),
+        };
+        return previousItems;
       },
-    );
+      onSuccess: () => {
+        notifier?.(
+          {
+            type: editItemRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.EDIT_ITEM },
+          },
+          { enableNotifications },
+        );
+      },
+      onError: (error: Error, newItem, context) => {
+        if (context?.parent && context?.item) {
+          const prevItem = context?.item;
+          const parentKey = getKeyForParentId(
+            getParentFromPath(prevItem?.path),
+          );
+          queryClient.setQueryData(parentKey, context.parent);
+        }
+
+        const itemKey = itemKeys.single(newItem.id).content;
+        queryClient.setQueryData(itemKey, context?.item);
+
+        notifier?.(
+          { type: editItemRoutine.FAILURE, payload: { error } },
+          { enableNotifications },
+        );
+      },
+      onSettled: (_newItem, _error, { id }, context) => {
+        const prevItem = context?.item;
+        if (prevItem) {
+          const parentKey = getKeyForParentId(getParentFromPath(prevItem.path));
+          queryClient.invalidateQueries({ queryKey: parentKey });
+        }
+
+        const itemKey = itemKeys.single(id).content;
+        queryClient.invalidateQueries({ queryKey: itemKey });
+      },
+    });
   };
 
   const useRecycleItems = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (itemIds: UUID[]) =>
+    return useMutation({
+      mutationFn: (itemIds: UUID[]) =>
         splitRequestByIds(itemIds, MAX_TARGETS_FOR_MODIFY_REQUEST, (chunk) =>
           Api.recycleItems(chunk, queryConfig),
         ),
-      {
-        onMutate: async (itemIds: UUID[]) => {
-          // get path from first item and invalidate parent's children
-          const itemKey = itemKeys.single(itemIds[0]).content;
-          const itemData = queryClient.getQueryData<DiscriminatedItem>(itemKey);
-          const itemPath = itemData?.path;
-          const newParent = itemPath
-            ? {
-                parent: await mutateParentChildren(
-                  {
-                    childPath: itemPath,
-                    value: (old: DiscriminatedItem[]) =>
-                      old.filter(({ id }) => !itemIds.includes(id)),
-                  },
-                  queryClient,
-                ),
-              }
-            : {};
-          const previousItems = {
-            ...newParent,
-          };
-          // items themselves still exist but the path is different
-          return previousItems;
-        },
-        onError: (error: Error) => {
-          notifier?.({ type: recycleItemsRoutine.FAILURE, payload: { error } });
-
-          // does not settled since endpoint is async
-        },
+      onMutate: async (itemIds: UUID[]) => {
+        // get path from first item and invalidate parent's children
+        const itemKey = itemKeys.single(itemIds[0]).content;
+        const itemData = queryClient.getQueryData<DiscriminatedItem>(itemKey);
+        const itemPath = itemData?.path;
+        const newParent = itemPath
+          ? {
+              parent: await mutateParentChildren(
+                {
+                  childPath: itemPath,
+                  value: (old: DiscriminatedItem[]) =>
+                    old.filter(({ id }) => !itemIds.includes(id)),
+                },
+                queryClient,
+              ),
+            }
+          : {};
+        const previousItems = {
+          ...newParent,
+        };
+        // items themselves still exist but the path is different
+        return previousItems;
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({ type: recycleItemsRoutine.FAILURE, payload: { error } });
+
+        // does not settled since endpoint is async
+      },
+    });
   };
 
   const useDeleteItems = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (itemIds) =>
+    return useMutation({
+      mutationFn: (itemIds) =>
         splitRequestByIds<DiscriminatedItem>(
           itemIds,
           MAX_TARGETS_FOR_MODIFY_REQUEST,
           (chunk) => Api.deleteItems(chunk, queryConfig),
         ),
+      onMutate: async (itemIds: UUID[]) => {
+        // get path from first item
+        const itemKey = memberKeys.current().recycled;
+        const itemData = queryClient.getQueryData<RecycledItemData[]>(itemKey);
+        queryClient.setQueryData(
+          itemKey,
+          itemData?.filter(({ item: { id } }) => !itemIds.includes(id)),
+        );
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const previousItems: any = {
+          parent: itemData,
+        };
 
-      {
-        onMutate: async (itemIds: UUID[]) => {
-          // get path from first item
-          const itemKey = memberKeys.current().recycled;
-          const itemData =
-            queryClient.getQueryData<RecycledItemData[]>(itemKey);
-          queryClient.setQueryData(
-            itemKey,
-            itemData?.filter(({ item: { id } }) => !itemIds.includes(id)),
-          );
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const previousItems: any = {
-            parent: itemData,
-          };
-
-          itemIds.forEach(async (id) => {
-            previousItems[id] = await mutateItem({
-              queryClient,
-              id,
-              value: null,
-            });
+        itemIds.forEach(async (id) => {
+          previousItems[id] = await mutateItem({
+            queryClient,
+            id,
+            value: null,
           });
-          return previousItems;
-        },
-        onError: (error: Error) => {
-          notifier?.({ type: deleteItemsRoutine.FAILURE, payload: { error } });
-
-          // does not settled since endpoint is async
-        },
+        });
+        return previousItems;
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({ type: deleteItemsRoutine.FAILURE, payload: { error } });
+
+        // does not settled since endpoint is async
+      },
+    });
   };
 
   const useCopyItems = () =>
-    useMutation(
-      ({ ids, to }: { ids: UUID[]; to?: UUID }) =>
+    useMutation({
+      mutationFn: ({ ids, to }: { ids: UUID[]; to?: UUID }) =>
         splitRequestByIds(ids, MAX_TARGETS_FOR_MODIFY_REQUEST, (chunk) =>
           Api.copyItems({ ids: chunk, to }, queryConfig),
         ),
       // cannot mutate because it needs the id
-      {
-        onError: (error: Error) => {
-          notifier?.({ type: copyItemsRoutine.FAILURE, payload: { error } });
+      onError: (error: Error) => {
+        notifier?.({ type: copyItemsRoutine.FAILURE, payload: { error } });
 
-          // does not settled since endpoint is async
-        },
+        // does not settled since endpoint is async
       },
-    );
+    });
 
   const useMoveItems = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      ({ items, to }: { items: PackedItem[]; to?: UUID }) =>
+    return useMutation({
+      mutationFn: ({ items, to }: { items: PackedItem[]; to?: UUID }) =>
         splitRequestByIds<DiscriminatedItem>(
           items.map((i) => i.id),
           MAX_TARGETS_FOR_MODIFY_REQUEST,
           (chunk) => Api.moveItems({ ids: chunk, to }, queryConfig),
         ),
-      {
-        onMutate: async ({ items, to }) => {
-          const itemIds = items.map((i) => i.id);
-          if (items.length) {
-            // suppose items are at the same level
-            const { path } = items[0];
-            // add item in target item
-            await mutateParentChildren(
-              {
-                id: to,
-                value: (old: PackedItem[]) => old?.concat(items),
-              },
-              queryClient,
-            );
-
-            // remove item in original item
-            await mutateParentChildren(
-              {
-                childPath: path,
-                value: (old: PackedItem[]) =>
-                  old?.filter(({ id: oldId }) => !itemIds.includes(oldId)),
-              },
-              queryClient,
-            );
-          }
-
-          const toData = queryClient.getQueryData<PackedItem>(
-            itemKeys.single(to).content,
+      onMutate: async ({ items, to }) => {
+        const itemIds = items.map((i) => i.id);
+        if (items.length) {
+          // suppose items are at the same level
+          const { path } = items[0];
+          // add item in target item
+          await mutateParentChildren(
+            {
+              id: to,
+              value: (old: PackedItem[]) => old?.concat(items),
+            },
+            queryClient,
           );
-          if (toData?.id) {
-            const toDataId = toData.id;
-            // update item's path
-            itemIds.forEach(async (itemId: UUID) => {
-              await mutateItem({
-                queryClient,
-                id: itemId,
-                value: (item: PackedItem) => ({
-                  ...item,
-                  path: buildPathFromIds(toDataId, itemId),
-                }),
-              });
+
+          // remove item in original item
+          await mutateParentChildren(
+            {
+              childPath: path,
+              value: (old: PackedItem[]) =>
+                old?.filter(({ id: oldId }) => !itemIds.includes(oldId)),
+            },
+            queryClient,
+          );
+        }
+
+        const toData = queryClient.getQueryData<PackedItem>(
+          itemKeys.single(to).content,
+        );
+        if (toData?.id) {
+          const toDataId = toData.id;
+          // update item's path
+          itemIds.forEach(async (itemId: UUID) => {
+            await mutateItem({
+              queryClient,
+              id: itemId,
+              value: (item: PackedItem) => ({
+                ...item,
+                path: buildPathFromIds(toDataId, itemId),
+              }),
             });
-          }
-        },
-        // If the mutation fails, use the context returned from onMutate to roll back
-        onError: (error: Error) => {
-          notifier?.({ type: moveItemsRoutine.FAILURE, payload: { error } });
-        },
+          });
+        }
       },
-    );
+      // If the mutation fails, use the context returned from onMutate to roll back
+      onError: (error: Error) => {
+        notifier?.({ type: moveItemsRoutine.FAILURE, payload: { error } });
+      },
+    });
   };
 
   const useRestoreItems = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (itemIds: UUID[]) =>
+    return useMutation({
+      mutationFn: (itemIds: UUID[]) =>
         splitRequestByIds(itemIds, MAX_TARGETS_FOR_MODIFY_REQUEST, (chunk) =>
           Api.restoreItems(chunk, queryConfig),
         ),
-      {
-        onMutate: async (itemIds) => {
-          const key = memberKeys.current().recycled;
-          const recycleItemData =
-            queryClient.getQueryData<RecycledItemData[]>(key);
-          if (recycleItemData) {
-            queryClient.setQueryData(
-              key,
-              recycleItemData.filter(
-                ({ item: { id } }) => !itemIds.includes(id),
-              ),
-            );
-          }
-          return recycleItemData;
-        },
-
-        onError: (error: Error, _itemId) => {
-          notifier?.({ type: restoreItemsRoutine.FAILURE, payload: { error } });
-        },
+      onMutate: async (itemIds) => {
+        const key = memberKeys.current().recycled;
+        const recycleItemData =
+          queryClient.getQueryData<RecycledItemData[]>(key);
+        if (recycleItemData) {
+          queryClient.setQueryData(
+            key,
+            recycleItemData.filter(({ item: { id } }) => !itemIds.includes(id)),
+          );
+        }
+        return recycleItemData;
       },
-    );
+
+      onError: (error: Error, _itemId) => {
+        notifier?.({ type: restoreItemsRoutine.FAILURE, payload: { error } });
+      },
+    });
     // invalidate only on error since endpoint is async
   };
 

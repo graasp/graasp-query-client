@@ -15,32 +15,32 @@ import { NewInvitation, QueryClientConfig } from '../types.js';
 export default (queryConfig: QueryClientConfig) => {
   const usePostInvitations = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (payload: { itemId: UUID; invitations: NewInvitation[] }) =>
+    return useMutation({
+      mutationFn: (payload: { itemId: UUID; invitations: NewInvitation[] }) =>
         Api.postInvitations(payload, queryConfig),
-      {
-        onSuccess: () => {
-          queryConfig.notifier?.({
-            type: postInvitationsRoutine.SUCCESS,
-          });
-        },
-        onError: (error: Error) => {
-          queryConfig.notifier?.({
-            type: postInvitationsRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(itemKeys.single(itemId).invitation);
-        },
+      onSuccess: () => {
+        queryConfig.notifier?.({
+          type: postInvitationsRoutine.SUCCESS,
+        });
       },
-    );
+      onError: (error: Error) => {
+        queryConfig.notifier?.({
+          type: postInvitationsRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+      onSettled: (_data, _error, { itemId }) => {
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(itemId).invitation,
+        });
+      },
+    });
   };
 
   const usePatchInvitation = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      ({
+    return useMutation({
+      mutationFn: ({
         itemId,
         id,
         permission,
@@ -74,84 +74,82 @@ export default (queryConfig: QueryClientConfig) => {
       // }
       // return { invitations: prevValue };
       //     },
-      {
-        onSuccess: () => {
-          queryConfig.notifier?.({
-            type: patchInvitationRoutine.SUCCESS,
-          });
-        },
-        onError: (error: Error) => {
-          queryConfig.notifier?.({
-            type: patchInvitationRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(itemKeys.single(itemId).invitation);
-        },
+      onSuccess: () => {
+        queryConfig.notifier?.({
+          type: patchInvitationRoutine.SUCCESS,
+        });
       },
-    );
+      onError: (error: Error) => {
+        queryConfig.notifier?.({
+          type: patchInvitationRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+      onSettled: (_data, _error, { itemId }) => {
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(itemId).invitation,
+        });
+      },
+    });
   };
 
   const useDeleteInvitation = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (payload: { id: UUID; itemId: UUID }) =>
+    return useMutation({
+      mutationFn: (payload: { id: UUID; itemId: UUID }) =>
         Api.deleteInvitation(payload, queryConfig),
-      {
-        onMutate: async ({ id, itemId }: { id: UUID; itemId: UUID }) => {
-          const key = itemKeys.single(itemId).invitation;
+      onMutate: async ({ id, itemId }: { id: UUID; itemId: UUID }) => {
+        const key = itemKeys.single(itemId).invitation;
 
-          const prevValue = queryClient.getQueryData<Invitation[]>(key);
+        const prevValue = queryClient.getQueryData<Invitation[]>(key);
 
-          // remove invitation from list
-          if (prevValue) {
-            queryClient.setQueryData(
-              key,
-              prevValue.filter(({ id: iId }) => iId !== id),
-            );
-            return { invitations: prevValue };
-          }
-          return {};
-        },
-        onSuccess: () => {
-          queryConfig.notifier?.({
-            type: deleteInvitationRoutine.SUCCESS,
-          });
-        },
-        onError: (error: Error, { itemId }, context) => {
-          const key = itemKeys.single(itemId).invitation;
-          queryClient.setQueryData(key, context?.invitations);
-          queryConfig.notifier?.({
-            type: deleteInvitationRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(itemKeys.single(itemId).invitation);
-        },
+        // remove invitation from list
+        if (prevValue) {
+          queryClient.setQueryData(
+            key,
+            prevValue.filter(({ id: iId }) => iId !== id),
+          );
+          return { invitations: prevValue };
+        }
+        return {};
       },
-    );
+      onSuccess: () => {
+        queryConfig.notifier?.({
+          type: deleteInvitationRoutine.SUCCESS,
+        });
+      },
+      onError: (error: Error, { itemId }, context) => {
+        const key = itemKeys.single(itemId).invitation;
+        queryClient.setQueryData(key, context?.invitations);
+        queryConfig.notifier?.({
+          type: deleteInvitationRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+      onSettled: (_data, _error, { itemId }) => {
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(itemId).invitation,
+        });
+      },
+    });
   };
 
   const useResendInvitation = () =>
-    useMutation(
-      (payload: { id: UUID; itemId: UUID }) =>
+    useMutation({
+      mutationFn: (payload: { id: UUID; itemId: UUID }) =>
         Api.resendInvitation(payload, queryConfig),
-      {
-        onSuccess: () => {
-          queryConfig.notifier?.({
-            type: resendInvitationRoutine.SUCCESS,
-          });
-        },
-        onError: (error: Error) => {
-          queryConfig.notifier?.({
-            type: resendInvitationRoutine.FAILURE,
-            payload: { error },
-          });
-        },
+      onSuccess: () => {
+        queryConfig.notifier?.({
+          type: resendInvitationRoutine.SUCCESS,
+        });
       },
-    );
+      onError: (error: Error) => {
+        queryConfig.notifier?.({
+          type: resendInvitationRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
 
   return {
     useResendInvitation,

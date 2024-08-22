@@ -105,11 +105,6 @@ describe('useChildren', () => {
     expect(isSuccess).toBeTruthy();
     // verify cache keys
     expect(queryClient.getQueryData(key)).toEqual(response);
-    for (const item of response) {
-      expect(
-        queryClient.getQueryData(itemKeys.single(item.id).content),
-      ).toEqual(item);
-    }
   });
 
   it(`Route constructed correctly for children folders`, async () => {
@@ -181,11 +176,6 @@ describe('useChildren', () => {
     expect(data).toMatchObject(response);
     // verify cache keys
     expect(queryClient.getQueryData(keyUnordered)).toMatchObject(response);
-    for (const item of response) {
-      expect(
-        queryClient.getQueryData(itemKeys.single(item.id).content),
-      ).toMatchObject(item);
-    }
   });
 
   it(`search by keywords`, async () => {
@@ -209,11 +199,6 @@ describe('useChildren', () => {
     expect(data).toMatchObject(response);
     // verify cache keys
     expect(queryClient.getQueryData(keyWithSearch)).toMatchObject(response);
-    for (const item of response) {
-      expect(
-        queryClient.getQueryData(itemKeys.single(item.id).content),
-      ).toMatchObject(item);
-    }
   });
 
   it(`Unauthorized`, async () => {
@@ -268,11 +253,6 @@ describe('useParents', () => {
     expect(
       queryClient.getQueryData(itemKeys.single(childItem.id).parents),
     ).toMatchObject(response);
-    for (const i of response) {
-      expect(
-        queryClient.getQueryData(itemKeys.single(i.id).content),
-      ).toMatchObject(i);
-    }
   });
 
   it(`enabled=false does not fetch parents`, async () => {
@@ -446,12 +426,6 @@ describe('useItems', () => {
     expect(queryClient.getQueryData(itemKeys.many(ids).content)).toMatchObject(
       data!,
     );
-    for (const item of items) {
-      const itemById = items.find(({ id }) => id === item.id);
-      expect(
-        queryClient.getQueryData(itemKeys.single(item.id).content),
-      ).toMatchObject(itemById!);
-    }
   });
 
   it(`Receive many items`, async () => {
@@ -471,12 +445,6 @@ describe('useItems', () => {
     expect(queryClient.getQueryData(itemKeys.many(ids).content)).toMatchObject(
       data!,
     );
-    for (const item of items) {
-      const itemById = items.find(({ id }) => id === item.id);
-      expect(
-        queryClient.getQueryData(itemKeys.single(item.id).content),
-      ).toMatchObject(itemById!);
-    }
   });
 
   it(`Unauthorized`, async () => {

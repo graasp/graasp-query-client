@@ -174,9 +174,6 @@ describe('Member Hooks', () => {
       expect(queryClient.getQueryData(memberKeys.many(oneMemberIds))).toEqual(
         members,
       );
-      expect(
-        queryClient.getQueryData(memberKeys.single(m.id).content),
-      ).toMatchObject(m);
     });
 
     it(`Receive two members`, async () => {
@@ -201,11 +198,6 @@ describe('Member Hooks', () => {
       expect(
         queryClient.getQueryData<ResultOf<Member>>(memberKeys.many(twoIds)),
       ).toEqual(endpointResponse);
-      for (const id of twoIds) {
-        expect(
-          queryClient.getQueryData<Member>(memberKeys.single(id).content),
-        ).toMatchObject(twoMembers.find(({ id: thisId }) => thisId === id)!);
-      }
     });
 
     it(`Receive lots of members`, async () => {
@@ -229,11 +221,6 @@ describe('Member Hooks', () => {
       expect(
         queryClient.getQueryData<ResultOf<Member>>(memberKeys.many(ids)),
       ).toEqual(fullResponse);
-      for (const id of ids) {
-        expect(
-          queryClient.getQueryData<Member>(memberKeys.single(id).content),
-        ).toMatchObject(response.find(({ id: thisId }) => thisId === id)!);
-      }
     });
 
     it(`Unauthorized`, async () => {

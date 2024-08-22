@@ -14,52 +14,50 @@ import { QueryClientConfig } from '../types.js';
 export default (queryConfig: QueryClientConfig) => {
   const usePatchMention = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (args: { id: UUID; memberId: UUID; status: string }) =>
+    return useMutation({
+      mutationFn: (args: { id: UUID; memberId: UUID; status: string }) =>
         Api.patchMemberMentionsStatus(args, queryConfig),
-      {
-        onError: (error: Error) => {
-          queryConfig.notifier?.({
-            type: patchMentionRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error) => {
-          // invalidate keys only if websockets are disabled
-          // otherwise the cache is updated automatically
-          if (!queryConfig.enableWebsocket) {
-            queryClient.invalidateQueries(buildMentionKey());
-          }
-        },
+      onError: (error: Error) => {
+        queryConfig.notifier?.({
+          type: patchMentionRoutine.FAILURE,
+          payload: { error },
+        });
       },
-    );
+      onSettled: (_data, _error) => {
+        // invalidate keys only if websockets are disabled
+        // otherwise the cache is updated automatically
+        if (!queryConfig.enableWebsocket) {
+          queryClient.invalidateQueries({ queryKey: buildMentionKey() });
+        }
+      },
+    });
   };
 
   const useDeleteMention = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (mentionId: UUID) => Api.deleteMention(mentionId, queryConfig),
-      {
-        onError: (error: Error) => {
-          queryConfig.notifier?.({
-            type: deleteMentionRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error) => {
-          // invalidate keys only if websockets are disabled
-          // otherwise the cache is updated automatically
-          if (!queryConfig.enableWebsocket) {
-            queryClient.invalidateQueries(buildMentionKey());
-          }
-        },
+    return useMutation({
+      mutationFn: (mentionId: UUID) =>
+        Api.deleteMention(mentionId, queryConfig),
+      onError: (error: Error) => {
+        queryConfig.notifier?.({
+          type: deleteMentionRoutine.FAILURE,
+          payload: { error },
+        });
       },
-    );
+      onSettled: (_data, _error) => {
+        // invalidate keys only if websockets are disabled
+        // otherwise the cache is updated automatically
+        if (!queryConfig.enableWebsocket) {
+          queryClient.invalidateQueries({ queryKey: buildMentionKey() });
+        }
+      },
+    });
   };
 
   const useClearMentions = () => {
     const queryClient = useQueryClient();
-    return useMutation(() => Api.clearMentions(queryConfig), {
+    return useMutation({
+      mutationFn: () => Api.clearMentions(queryConfig),
       onError: (error: Error) => {
         queryConfig.notifier?.({
           type: clearMentionsRoutine.FAILURE,
@@ -70,7 +68,7 @@ export default (queryConfig: QueryClientConfig) => {
         // invalidate keys only if websockets are disabled
         // otherwise the cache is updated automatically
         if (!queryConfig.enableWebsocket) {
-          queryClient.invalidateQueries(buildMentionKey());
+          queryClient.invalidateQueries({ queryKey: buildMentionKey() });
         }
       },
     });

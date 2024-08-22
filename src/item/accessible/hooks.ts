@@ -1,10 +1,6 @@
 import { Pagination } from '@graasp/sdk';
 
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import useDebounce from '../../hooks/useDebounce.js';
 import { itemKeys } from '../../keys.js';
@@ -24,29 +20,17 @@ import { getAccessibleItems } from './api.js';
 export const useAccessibleItems =
   (queryConfig: QueryClientConfig) =>
   (params?: ItemSearchParams, pagination?: Partial<Pagination>) => {
-    const { notifier, defaultQueryOptions } = queryConfig;
-
-    const queryClient = useQueryClient();
-
+    const { defaultQueryOptions } = queryConfig;
     const debouncedKeywords = useDebounce(params?.keywords, 500);
     const finalParams = { ...params, keywords: debouncedKeywords };
     const paginationParams = { ...(pagination ?? {}) };
+
     return useQuery({
       queryKey: itemKeys.accessiblePage(finalParams, paginationParams),
       queryFn: () =>
         getAccessibleItems(finalParams, paginationParams, queryConfig),
-      onSuccess: async ({ data: items }) => {
-        // save items in their own key
-        items?.forEach(async (item) => {
-          const { id } = item;
-          queryClient.setQueryData(itemKeys.single(id).content, item);
-        });
-      },
-      onError: (error) => {
-        notifier?.({
-          type: getAccessibleItemsRoutine.FAILURE,
-          payload: { error },
-        });
+      meta: {
+        routine: getAccessibleItemsRoutine,
       },
       ...defaultQueryOptions,
     });
@@ -62,7 +46,6 @@ export const useAccessibleItems =
 export const useInfiniteAccessibleItems =
   (queryConfig: QueryClientConfig) =>
   (params?: ItemSearchParams, pagination?: Partial<Pagination>) => {
-    const queryClient = useQueryClient();
     const debouncedKeywords = useDebounce(params?.keywords, 500);
     const finalParams = { ...params, keywords: debouncedKeywords };
 
@@ -74,16 +57,8 @@ export const useInfiniteAccessibleItems =
           { page: pageParam ?? 1, ...pagination },
           queryConfig,
         ),
-      onSuccess: async ({ pages }) => {
-        // save items in their own key
-        for (const p of pages) {
-          p?.data?.forEach(async (item) => {
-            const { id } = item;
-            queryClient.setQueryData(itemKeys.single(id).content, item);
-          });
-        }
-      },
       getNextPageParam: (_lastPage, pages) => pages.length + 1,
       refetchOnWindowFocus: () => false,
+      initialPageParam: 1,
     });
   };

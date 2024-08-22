@@ -1,6 +1,6 @@
 import { MAX_TARGETS_FOR_READ_REQUEST, UUID } from '@graasp/sdk';
 
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import * as Api from '../api/itemTag.js';
@@ -25,7 +25,6 @@ export default (queryConfig: QueryClientConfig) => {
     });
 
   const useItemsTags = (ids?: UUID[]) => {
-    const queryClient = useQueryClient();
     return useQuery({
       queryKey: itemKeys.many(ids).tags,
       queryFn: () => {
@@ -39,16 +38,7 @@ export default (queryConfig: QueryClientConfig) => {
           true,
         );
       },
-      onSuccess: async (tags) => {
-        // save tags in their own key
-        ids?.forEach(async (id) => {
-          const itemTags = tags?.data?.[id];
-          if (itemTags?.length) {
-            queryClient.setQueryData(itemKeys.single(id).tags, itemTags);
-          }
-        });
-      },
-      enabled: Boolean(ids && ids.length),
+      enabled: Boolean(ids?.length),
       ...defaultQueryOptions,
     });
   };

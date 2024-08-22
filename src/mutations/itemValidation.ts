@@ -12,26 +12,26 @@ export default (queryConfig: QueryClientConfig) => {
 
   const usePostItemValidation = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (payload: { itemId: UUID }) =>
+    return useMutation({
+      mutationFn: (payload: { itemId: UUID }) =>
         Api.postItemValidation(payload, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: postItemValidationRoutine.SUCCESS,
-          });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: postItemValidationRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(itemKeys.single(itemId).validation);
-        },
+      onSuccess: () => {
+        notifier?.({
+          type: postItemValidationRoutine.SUCCESS,
+        });
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: postItemValidationRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+      onSettled: (_data, _error, { itemId }) => {
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(itemId).validation,
+        });
+      },
+    });
   };
 
   return {

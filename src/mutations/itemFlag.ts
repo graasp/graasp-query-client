@@ -13,25 +13,25 @@ export default (queryConfig: QueryClientConfig) => {
 
   const usePostItemFlag = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (payload: { type: FlagType; itemId: UUID }) =>
+    return useMutation({
+      mutationFn: (payload: { type: FlagType; itemId: UUID }) =>
         Api.postItemFlag(payload, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: postItemFlagRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.POST_ITEM_FLAG },
-          });
-        },
-        onError: (error: Error) => {
-          console.error(error);
-          notifier?.({ type: postItemFlagRoutine.FAILURE, payload: { error } });
-        },
-        onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(itemKeys.single(itemId).flags);
-        },
+      onSuccess: () => {
+        notifier?.({
+          type: postItemFlagRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.POST_ITEM_FLAG },
+        });
       },
-    );
+      onError: (error: Error) => {
+        console.error(error);
+        notifier?.({ type: postItemFlagRoutine.FAILURE, payload: { error } });
+      },
+      onSettled: (_data, _error, { itemId }) => {
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(itemId).flags,
+        });
+      },
+    });
   };
 
   return {

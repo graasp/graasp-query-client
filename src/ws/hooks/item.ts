@@ -43,8 +43,10 @@ type ItemOpFeedbackEvent<
 const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
   [FeedBackOperation.DELETE]: () => {
     // invalidate data displayed in the Trash screen
-    queryClient.invalidateQueries(memberKeys.current().recycled);
-    queryClient.invalidateQueries(memberKeys.current().recycledItems);
+    queryClient.invalidateQueries({ queryKey: memberKeys.current().recycled });
+    queryClient.invalidateQueries({
+      queryKey: memberKeys.current().recycledItems,
+    });
   },
   [FeedBackOperation.MOVE]: (
     event: ItemOpFeedbackEvent<typeof FeedBackOperation.MOVE>,
@@ -54,8 +56,8 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
       const oldParentKey = getKeyForParentId(getParentFromPath(items[0].path));
       const newParentKey = getKeyForParentId(getParentFromPath(moved[0].path));
       // invalidate queries for the source and destination
-      queryClient.invalidateQueries(oldParentKey);
-      queryClient.invalidateQueries(newParentKey);
+      queryClient.invalidateQueries({ queryKey: oldParentKey });
+      queryClient.invalidateQueries({ queryKey: newParentKey });
     }
   },
   [FeedBackOperation.COPY]: (
@@ -66,7 +68,7 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
 
       const newParentKey = getKeyForParentId(getParentFromPath(copies[0].path));
       // invalidate queries for the destination
-      queryClient.invalidateQueries(newParentKey);
+      queryClient.invalidateQueries({ queryKey: newParentKey });
     }
   },
   [FeedBackOperation.RECYCLE]: (
@@ -78,20 +80,26 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
         getParentFromPath(Object.values(items)[0].path),
       );
       // invalidate queries for the parent
-      queryClient.invalidateQueries(parentKey);
+      queryClient.invalidateQueries({ queryKey: parentKey });
     }
   },
   [FeedBackOperation.RESTORE]: () => {
-    queryClient.invalidateQueries(memberKeys.current().recycledItems);
+    queryClient.invalidateQueries({
+      queryKey: memberKeys.current().recycledItems,
+    });
   },
   [FeedBackOperation.VALIDATE]: (itemIds: string[]) => {
     itemIds.forEach((itemId) => {
       // Invalidates the publication status to get the new status after the validation.
-      queryClient.invalidateQueries(itemKeys.single(itemId).publicationStatus);
-      queryClient.invalidateQueries(itemKeys.single(itemId).validation);
-      queryClient.invalidateQueries(
-        itemKeys.single(itemId).publishedInformation,
-      );
+      queryClient.invalidateQueries({
+        queryKey: itemKeys.single(itemId).publicationStatus,
+      });
+      queryClient.invalidateQueries({
+        queryKey: itemKeys.single(itemId).validation,
+      });
+      queryClient.invalidateQueries({
+        queryKey: itemKeys.single(itemId).publishedInformation,
+      });
     });
   },
 });

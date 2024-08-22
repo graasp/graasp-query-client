@@ -20,7 +20,7 @@ import { QueryClientConfig } from '../types.js';
 import useDebounce from './useDebounce.js';
 
 export default (queryConfig: QueryClientConfig) => {
-  const { notifier, defaultQueryOptions } = queryConfig;
+  const { defaultQueryOptions } = queryConfig;
 
   const useItemGeolocation = (id?: DiscriminatedItem['id']) =>
     useQuery({
@@ -33,11 +33,8 @@ export default (queryConfig: QueryClientConfig) => {
       },
       ...defaultQueryOptions,
       enabled: Boolean(id),
-      onError: (error) => {
-        notifier?.({
-          type: getItemGeolocationRoutine.FAILURE,
-          payload: { error },
-        });
+      meta: {
+        routine: getItemGeolocationRoutine,
       },
     });
 
@@ -115,11 +112,8 @@ export default (queryConfig: QueryClientConfig) => {
       },
       ...defaultQueryOptions,
       enabled: Boolean((lat || lat === 0) && (lng || lng === 0)) && enabled,
-      onError: (error) => {
-        notifier?.({
-          type: getAddressFromCoordinatesRoutine.FAILURE,
-          payload: { error },
-        });
+      meta: {
+        routine: getAddressFromCoordinatesRoutine,
       },
     });
   };
@@ -155,11 +149,8 @@ export default (queryConfig: QueryClientConfig) => {
       },
       ...defaultQueryOptions,
       enabled: Boolean(debouncedAddress) && enabled,
-      onError: (error) => {
-        notifier?.({
-          type: getSuggestionsForAddressRoutine.FAILURE,
-          payload: { error },
-        });
+      meta: {
+        routine: getSuggestionsForAddressRoutine,
       },
     });
   };

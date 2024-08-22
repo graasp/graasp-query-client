@@ -16,50 +16,51 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useRequestMembership = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (payload: { id: UUID }) => requestMembership(payload, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: requestMembershipRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.REQUEST_MEMBERSHIP },
-          });
-        },
-        onError: (error: Error, _args, _context) => {
-          notifier?.({
-            type: requestMembershipRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error, { id }) => {
-          queryClient.invalidateQueries(membershipRequestsKeys.single(id));
-        },
+    return useMutation({
+      mutationFn: (payload: { id: UUID }) =>
+        requestMembership(payload, queryConfig),
+      onSuccess: () => {
+        notifier?.({
+          type: requestMembershipRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.REQUEST_MEMBERSHIP },
+        });
       },
-    );
+      onError: (error: Error, _args, _context) => {
+        notifier?.({
+          type: requestMembershipRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+      onSettled: (_data, _error, { id }) => {
+        queryClient.invalidateQueries({
+          queryKey: membershipRequestsKeys.single(id),
+        });
+      },
+    });
   };
   const useDeleteMembershipRequest = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (payload: { itemId: UUID; memberId: Member['id'] }) =>
+    return useMutation({
+      mutationFn: (payload: { itemId: UUID; memberId: Member['id'] }) =>
         deleteMembershipRequest(payload, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: deleteMembershipRequestRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.DELETE_MEMBERSHIP_REQUEST },
-          });
-        },
-        onError: (error: Error, _args, _context) => {
-          notifier?.({
-            type: deleteMembershipRequestRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error, { itemId }) => {
-          queryClient.invalidateQueries(membershipRequestsKeys.single(itemId));
-        },
+      onSuccess: () => {
+        notifier?.({
+          type: deleteMembershipRequestRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.DELETE_MEMBERSHIP_REQUEST },
+        });
       },
-    );
+      onError: (error: Error, _args, _context) => {
+        notifier?.({
+          type: deleteMembershipRequestRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+      onSettled: (_data, _error, { itemId }) => {
+        queryClient.invalidateQueries({
+          queryKey: membershipRequestsKeys.single(itemId),
+        });
+      },
+    });
   };
   return { useRequestMembership, useDeleteMembershipRequest };
 };

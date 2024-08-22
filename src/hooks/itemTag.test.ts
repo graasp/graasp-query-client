@@ -105,11 +105,6 @@ describe('Item Tags Hooks', () => {
       const { data, isSuccess } = await mockHook({ endpoints, hook, wrapper });
       expect(data).toEqual(response);
 
-      // verify cache keys
-      keys.forEach((key, idx) =>
-        expect(queryClient.getQueryData<ItemTag>(key)).toEqual(tags[idx]),
-      );
-
       expect(isSuccess).toBeTruthy();
     });
 
@@ -152,15 +147,6 @@ describe('Item Tags Hooks', () => {
       });
 
       expect(data).toEqual(response);
-
-      // verify cache keys
-      expect(
-        queryClient.getQueryData<ItemTag>(itemKeys.single(ids[0]).tags),
-      ).toEqual(tagsForItem);
-      expect(
-        queryClient.getQueryData(itemKeys.single(idWithError).tags),
-      ).toBeFalsy();
-
       expect(isSuccess).toBeTruthy();
     });
 

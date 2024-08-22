@@ -21,7 +21,8 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useDeleteCurrentMember = () => {
     const queryClient = useQueryClient();
-    return useMutation(() => Api.deleteCurrentMember(queryConfig), {
+    return useMutation({
+      mutationFn: () => Api.deleteCurrentMember(queryConfig),
       onSuccess: () => {
         notifier?.({
           type: deleteCurrentMemberRoutine.SUCCESS,
@@ -47,62 +48,64 @@ export default (queryConfig: QueryClientConfig) => {
   // suppose you can only edit yourself
   const useEditMember = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (payload: {
+    return useMutation({
+      mutationFn: (payload: {
         id: string;
         name?: string;
         enableSaveActions?: boolean;
         extra?: CompleteMember['extra'];
       }) => Api.editMember(payload, queryConfig),
-      {
-        onMutate: async (member) => {
-          // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-          await queryClient.cancelQueries(memberKeys.current().content);
+      onMutate: async (member) => {
+        // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+        await queryClient.cancelQueries({
+          queryKey: memberKeys.current().content,
+        });
 
-          // Snapshot the previous value
-          const previousMember = queryClient.getQueryData<CompleteMember>(
-            memberKeys.current().content,
-          );
+        // Snapshot the previous value
+        const previousMember = queryClient.getQueryData<CompleteMember>(
+          memberKeys.current().content,
+        );
 
-          // Optimistically update to the new value
-          const newMember = previousMember;
-          if (newMember) {
-            if (member.name) {
-              newMember.name = member.name.trim();
-            }
-            if (typeof member.enableSaveActions === 'boolean') {
-              newMember.enableSaveActions = member.enableSaveActions;
-            }
-            if (member.extra) {
-              newMember.extra = member.extra;
-            }
-            queryClient.setQueryData(memberKeys.current().content, newMember);
+        // Optimistically update to the new value
+        const newMember = previousMember;
+        if (newMember) {
+          if (member.name) {
+            newMember.name = member.name.trim();
           }
+          if (typeof member.enableSaveActions === 'boolean') {
+            newMember.enableSaveActions = member.enableSaveActions;
+          }
+          if (member.extra) {
+            newMember.extra = member.extra;
+          }
+          queryClient.setQueryData(memberKeys.current().content, newMember);
+        }
 
-          // Return a context object with the snapshotted value
-          return { previousMember };
-        },
-        onSuccess: () => {
-          notifier?.({
-            type: editMemberRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.EDIT_MEMBER },
-          });
-        },
-        // If the mutation fails, use the context returned from onMutate to roll back
-        onError: (error: Error, _, context) => {
-          notifier?.({ type: editMemberRoutine.FAILURE, payload: { error } });
-          queryClient.setQueryData(
-            memberKeys.current().content,
-            context?.previousMember,
-          );
-        },
-        // Always refetch after error or success:
-        onSettled: () => {
-          // invalidate all queries
-          queryClient.invalidateQueries(memberKeys.current().content);
-        },
+        // Return a context object with the snapshotted value
+        return { previousMember };
       },
-    );
+      onSuccess: () => {
+        notifier?.({
+          type: editMemberRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.EDIT_MEMBER },
+        });
+      },
+      // If the mutation fails, use the context returned from onMutate to roll back
+      onError: (error: Error, _, context) => {
+        notifier?.({ type: editMemberRoutine.FAILURE, payload: { error } });
+        queryClient.setQueryData(
+          memberKeys.current().content,
+          context?.previousMember,
+        );
+      },
+      // Always refetch after error or success:
+      onSettled: () => {
+        // invalidate all queries
+        queryClient.invalidateQueries({
+          queryKey: memberKeys.current().content,
+        });
+      },
+    });
   };
 
   // this mutation is used for its callback and invalidate the keys
@@ -112,27 +115,28 @@ export default (queryConfig: QueryClientConfig) => {
    */
   const useUploadAvatar = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      async ({ error, data }: { error?: any; data?: any; id: UUID }) => {
-        throwIfArrayContainsErrorOrReturn(data);
-        if (error) throw new Error(JSON.stringify(error));
+    return useMutation({
+      mutationFn:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        async ({ error, data }: { error?: any; data?: any; id: UUID }) => {
+          throwIfArrayContainsErrorOrReturn(data);
+          if (error) throw new Error(JSON.stringify(error));
+        },
+      onSuccess: () => {
+        notifier?.({
+          type: uploadAvatarRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.UPLOAD_AVATAR },
+        });
       },
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: uploadAvatarRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.UPLOAD_AVATAR },
-          });
-        },
-        onError: (_error, { error }) => {
-          notifier?.({ type: uploadAvatarRoutine.FAILURE, payload: { error } });
-        },
-        onSettled: (_data, _error, { id }) => {
-          queryClient.invalidateQueries(memberKeys.single(id).allAvatars);
-        },
+      onError: (_error, { error }) => {
+        notifier?.({ type: uploadAvatarRoutine.FAILURE, payload: { error } });
       },
-    );
+      onSettled: (_data, _error, { id }) => {
+        queryClient.invalidateQueries({
+          queryKey: memberKeys.single(id).allAvatars,
+        });
+      },
+    });
   };
 
   /**
@@ -141,51 +145,50 @@ export default (queryConfig: QueryClientConfig) => {
    * @param {Password} currentPassword current password already stored, needs to match old password
    */
   const useUpdatePassword = () =>
-    useMutation(
-      (payload: { password: Password; currentPassword: Password }) =>
-        Api.updatePassword(payload, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: updatePasswordRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
-          });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: updatePasswordRoutine.FAILURE,
-            payload: { error },
-          });
-        },
+    useMutation({
+      mutationFn: (payload: {
+        password: Password;
+        currentPassword: Password;
+      }) => Api.updatePassword(payload, queryConfig),
+      onSuccess: () => {
+        notifier?.({
+          type: updatePasswordRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
+        });
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: updatePasswordRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
 
   /**
    * Mutation to create a member password
    * @param {Password} password new password to set on current member
    */
   const useCreatePassword = () =>
-    useMutation(
-      (payload: { password: Password }) =>
+    useMutation({
+      mutationFn: (payload: { password: Password }) =>
         Api.createPassword(payload, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: updatePasswordRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
-          });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: updatePasswordRoutine.FAILURE,
-            payload: { error },
-          });
-        },
+      onSuccess: () => {
+        notifier?.({
+          type: updatePasswordRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.UPDATE_PASSWORD },
+        });
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: updatePasswordRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
 
   const useUpdateMemberEmail = () =>
-    useMutation((newEmail: string) => Api.updateEmail(newEmail, queryConfig), {
+    useMutation({
+      mutationFn: (newEmail: string) => Api.updateEmail(newEmail, queryConfig),
       onSuccess: () => {
         notifier?.({
           type: updateEmailRoutine.SUCCESS,
@@ -201,26 +204,26 @@ export default (queryConfig: QueryClientConfig) => {
     });
 
   const useValidateEmailUpdate = () =>
-    useMutation(
-      (token: string) => Api.validateEmailUpdate(token, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: updateEmailRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.VALIDATE_EMAIL },
-          });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: updateEmailRoutine.FAILURE,
-            payload: { error },
-          });
-        },
+    useMutation({
+      mutationFn: (token: string) =>
+        Api.validateEmailUpdate(token, queryConfig),
+      onSuccess: () => {
+        notifier?.({
+          type: updateEmailRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.VALIDATE_EMAIL },
+        });
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: updateEmailRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
 
   const useExportMemberData = () =>
-    useMutation(() => Api.exportMemberData(queryConfig), {
+    useMutation({
+      mutationFn: () => Api.exportMemberData(queryConfig),
       onSuccess: () => {
         notifier?.({
           type: exportMemberDataRoutine.SUCCESS,
