@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.22.1](https://github.com/graasp/graasp-query-client/compare/v3.22.0...v3.22.1) (2024-08-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v1.7.4 [security] ([#882](https://github.com/graasp/graasp-query-client/issues/882)) ([9b6fd2c](https://github.com/graasp/graasp-query-client/commit/9b6fd2c0606d369045253d1e0ca0eb069a9a4435))
+* remove deprecated react-test-renderer ([#884](https://github.com/graasp/graasp-query-client/issues/884)) ([33d477d](https://github.com/graasp/graasp-query-client/commit/33d477dec1792e85c5ed29247e20f4f8e397c459))
+
 ## [3.22.0](https://github.com/graasp/graasp-query-client/compare/v3.21.0...v3.22.0) (2024-08-07)
 
 
