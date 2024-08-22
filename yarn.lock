@@ -598,7 +598,7 @@ __metadata:
   dependencies:
     "@commitlint/cli": "npm:19.4.0"
     "@commitlint/config-conventional": "npm:19.2.2"
-    "@graasp/sdk": "github:graasp/graasp-sdk#568-new-membertype"
+    "@graasp/sdk": "npm:4.26.0"
     "@graasp/translations": "npm:1.35.0"
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
@@ -645,9 +645,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@github:graasp/graasp-sdk#568-new-membertype":
-  version: 4.24.0
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=3245190213b5edb24ed445380ff14d90b3c30ec9"
+"@graasp/sdk@npm:4.26.0":
+  version: 4.26.0
+  resolution: "@graasp/sdk@npm:4.26.0"
   dependencies:
     "@faker-js/faker": "npm:8.4.1"
     filesize: "npm:10.1.4"
@@ -655,8 +655,8 @@ __metadata:
     validator: "npm:13.12.0"
   peerDependencies:
     date-fns: ^3
-    uuid: ^9 || ^10.0.0
-  checksum: 10/4834d18f9b49753e5a66c8d78bf39c712b95069580ea37795f9323e6705c5d0305d8182b6940fb6e5f68caf2b1837799554308e0218262b0972563fbf59c1766
+    uuid: ^9 || ^10
+  checksum: 10/ec6ce2780dfc25a11c90ebe90b95e34cb5026f4cab2a918960eaa465b362cb67918bbc0a7c46f5a9a3dd83c855350148ccf91e12583668ece81e7e1c1cb5b824
   languageName: node
   linkType: hard
 
