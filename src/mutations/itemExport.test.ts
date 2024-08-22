@@ -1,7 +1,7 @@
 import { HttpMethod } from '@graasp/sdk';
 
+import { act } from '@testing-library/react';
 import nock from 'nock';
-import { act } from 'react-test-renderer';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
