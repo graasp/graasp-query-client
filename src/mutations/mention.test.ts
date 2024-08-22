@@ -1,4 +1,9 @@
-import { HttpMethod, MemberFactory, MentionStatus } from '@graasp/sdk';
+import {
+  AccountFactory,
+  HttpMethod,
+  MemberFactory,
+  MentionStatus,
+} from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
@@ -29,8 +34,8 @@ import {
 
 describe('Mention Mutations', () => {
   const mentionId = v4();
-  const member = MemberFactory();
-  const memberId = member.id;
+  const account = AccountFactory();
+  const memberId = account.id;
   const currentMemberRoute = `/${buildGetCurrentMemberRoute()}`;
   const key = buildMentionKey();
   const MENTIONS = buildMemberMentions();
@@ -103,7 +108,7 @@ describe('Mention Mutations', () => {
           },
         ];
         // set random data in cache
-        queryClient.setQueryData(key, buildChatMention({ member }));
+        queryClient.setQueryData(key, buildChatMention({ account }));
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -147,7 +152,7 @@ describe('Mention Mutations', () => {
           },
         ];
         // set random data in cache
-        queryClient.setQueryData(key, buildChatMention({ member }));
+        queryClient.setQueryData(key, buildChatMention({ account }));
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -178,7 +183,7 @@ describe('Mention Mutations', () => {
           },
         ];
         // set random data in cache
-        queryClient.setQueryData(key, buildChatMention({ member }));
+        queryClient.setQueryData(key, buildChatMention({ account }));
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -218,7 +223,7 @@ describe('Mention Mutations', () => {
           },
         ];
         // set random data in cache
-        queryClient.setQueryData(key, buildChatMention({ member }));
+        queryClient.setQueryData(key, buildChatMention({ account }));
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -245,7 +250,7 @@ describe('Mention Mutations', () => {
           },
         ];
         // set random data in cache
-        queryClient.setQueryData(key, buildChatMention({ member }));
+        queryClient.setQueryData(key, buildChatMention({ account }));
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -295,7 +300,7 @@ describe('Mention Mutations', () => {
           },
         ];
         // set random data in cache
-        queryClient.setQueryData(key, buildChatMention({ member }));
+        queryClient.setQueryData(key, buildChatMention({ account }));
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -333,7 +338,7 @@ describe('Mention Mutations', () => {
           },
         ];
         // set random data in cache
-        queryClient.setQueryData(key, buildChatMention({ member }));
+        queryClient.setQueryData(key, buildChatMention({ account }));
 
         const mockedMutation = await mockMutation({
           endpoints,
@@ -367,7 +372,7 @@ describe('Mention Mutations', () => {
           },
         ];
         // set random data in cache
-        queryClient.setQueryData(key, buildChatMention({ member }));
+        queryClient.setQueryData(key, buildChatMention({ account }));
 
         const mockedMutation = await mockMutation({
           endpoints,

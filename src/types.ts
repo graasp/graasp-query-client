@@ -61,9 +61,7 @@ export type PartialQueryConfigForApi = Pick<
 >;
 
 // todo: move per feature folders
-export type NewInvitation = Pick<Invitation, 'email' & 'permission'> &
-  Partial<Invitation>;
-
+export type NewInvitation = Pick<Invitation, 'email' | 'permission'>;
 export const defaultPagination: Partial<Pagination> = { page: 1 };
 
 export type EmbeddedLinkMetadata = {

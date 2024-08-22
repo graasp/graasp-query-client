@@ -12,7 +12,7 @@ import {
   postItemMembershipRoutine,
   shareItemRoutine,
 } from '../routines/membership.js';
-import { QueryClientConfig } from '../types.js';
+import { NewInvitation, QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
@@ -139,7 +139,7 @@ export default (queryConfig: QueryClientConfig) => {
         invitations,
         itemId,
       }: {
-        invitations: Pick<Invitation, 'email' | 'permission'>[];
+        invitations: NewInvitation[];
         itemId: UUID;
       }): Promise<{
         memberships: ItemMembership[];

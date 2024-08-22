@@ -1,4 +1,4 @@
-import { ChatMention, MemberFactory, MentionStatus } from '@graasp/sdk';
+import { AccountFactory, ChatMention, MentionStatus } from '@graasp/sdk';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
@@ -56,15 +56,15 @@ describe('Ws Mention Hooks', () => {
   });
 
   describe('useMentionsUpdates', () => {
-    const member = MemberFactory();
-    const chatKey = buildItemChatKey(member.id);
+    const account = AccountFactory();
+    const chatKey = buildItemChatKey(account.id);
     const mentionKey = buildMentionKey();
     const channel = {
-      name: member.id,
+      name: account.id,
       topic: TOPICS.MENTIONS,
     };
     const MENTIONS_QUERY_DATA = buildMemberMentions();
-    const hook = () => hooks.useMentionsUpdates(member.id);
+    const hook = () => hooks.useMentionsUpdates(account.id);
 
     it(`Receive mention update`, async () => {
       queryClient.setQueryData(mentionKey, MENTIONS_QUERY_DATA);
@@ -73,7 +73,7 @@ describe('Ws Mention Hooks', () => {
         wrapper,
       });
 
-      const newMention = buildChatMention({ member });
+      const newMention = buildChatMention({ account });
       const mentionEvent = {
         op: OPS.PUBLISH,
         mention: newMention,
@@ -153,7 +153,7 @@ describe('Ws Mention Hooks', () => {
         hook,
         wrapper,
       });
-      const newMention = buildChatMention({ member: MemberFactory() });
+      const newMention = buildChatMention({ account: AccountFactory() });
       const mentionEvent = {
         op: 'unset op',
         mention: newMention,
