@@ -12,7 +12,6 @@ interface MentionEvent {
   mention: ChatMention;
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export const configureWsChatMentionsHooks = (
   websocketClient: WebsocketClient,
 ): { useMentionsUpdates: (memberId: UUID | null) => void } => ({

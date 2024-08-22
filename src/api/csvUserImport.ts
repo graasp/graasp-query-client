@@ -17,7 +17,6 @@ type CSVStructureResponse = {
   memberships: ItemMembership[];
 }[];
 
-// eslint-disable-next-line import/prefer-default-export
 export const uploadUserCsv = async <K extends UploadCSVPayload>(
   { API_HOST, axios }: PartialQueryConfigForApi,
   { file, itemId, templateItemId }: K,

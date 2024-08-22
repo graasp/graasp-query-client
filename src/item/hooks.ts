@@ -295,7 +295,6 @@ const config = (
         queryFn: () => Api.getRecycledItemsData(queryConfig),
         onSuccess: async (items) => {
           // save items in their own key
-          // eslint-disable-next-line no-unused-expressions
           items?.forEach(async (item) => {
             const { item: recycledItem } = item;
             queryClient.setQueryData(

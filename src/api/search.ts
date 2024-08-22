@@ -15,7 +15,6 @@ export type MeiliSearchProps = {
   elementsPerPage?: number;
 };
 
-/* eslint-disable import/prefer-default-export */
 export const searchPublishedItems = async (
   {
     query: q,

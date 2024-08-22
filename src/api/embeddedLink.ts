@@ -1,7 +1,6 @@
 import { buildGetEmbeddedLinkMetadata } from '../routes.js';
 import { EmbeddedLinkMetadata, PartialQueryConfigForApi } from '../types.js';
 
-// eslint-disable-next-line import/prefer-default-export
 export const getEmbeddedLinkMetadata = (
   link: string,
   { API_HOST, axios }: PartialQueryConfigForApi,

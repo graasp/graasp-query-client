@@ -4,7 +4,6 @@ import { buildPostItemFlagRoute } from '../routes.js';
 import { PartialQueryConfigForApi } from '../types.js';
 
 // payload: flagId, itemId
-// eslint-disable-next-line import/prefer-default-export
 export const postItemFlag = async (
   { type, itemId }: { type: UUID; itemId: string },
   { API_HOST, axios }: PartialQueryConfigForApi,

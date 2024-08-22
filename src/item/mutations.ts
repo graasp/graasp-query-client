@@ -166,7 +166,6 @@ export default (queryConfig: QueryClientConfig) => {
                     }
                     const idx = old.findIndex(({ id }) => id === newItem.id);
                     if (newFullItem && idx >= 0) {
-                      // eslint-disable-next-line no-param-reassign
                       old[idx] = newFullItem;
                     }
                     return old;

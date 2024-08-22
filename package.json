@@ -32,6 +32,9 @@
   "devDependencies": {
     "@commitlint/cli": "19.4.0",
     "@commitlint/config-conventional": "19.2.2",
+    "@eslint/compat": "1.1.1",
+    "@eslint/eslintrc": "3.1.0",
+    "@eslint/js": "9.9.0",
     "@graasp/sdk": "4.26.0",
     "@graasp/translations": "1.35.1",
     "@testing-library/dom": "10.4.0",
@@ -42,19 +45,19 @@
     "@types/react": "18.3.4",
     "@types/react-dom": "18.3.0",
     "@types/uuid": "10.0.0",
-    "@typescript-eslint/eslint-plugin": "7.18.0",
-    "@typescript-eslint/parser": "7.18.0",
+    "@typescript-eslint/eslint-plugin": "8.2.0",
+    "@typescript-eslint/parser": "8.2.0",
     "@vitest/ui": "2.0.5",
     "date-fns": "3.6.0",
     "env-cmd": "10.1.0",
-    "eslint": "8.57.0",
-    "eslint-config-airbnb": "19.0.4",
+    "eslint": "9.9.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-import-resolver-typescript": "3.6.1",
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-jsx-a11y": "6.9.0",
     "eslint-plugin-react": "7.35.0",
     "eslint-plugin-react-hooks": "4.6.2",
+    "globals": "15.9.0",
     "husky": "9.1.5",
     "i18next": "23.14.0",
     "jsdom": "24.1.1",
@@ -89,9 +92,6 @@
     "post-commit": "git status",
     "type-check": "tsc --noEmit",
     "check": "yarn prettier:check && yarn type-check && yarn lint"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "files": [
     "dist"

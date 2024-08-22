@@ -19,7 +19,6 @@ interface MembershipEvent {
   membership: ItemMembership;
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export const configureWsMembershipHooks = (
   websocketClient: WebsocketClient,
 ): { useItemsMembershipsUpdates: (itemIds?: UUID[] | null) => void } => ({
@@ -93,7 +92,6 @@ export const configureWsMembershipHooks = (
 
       // todo: handle many memberships key
 
-      // eslint-disable-next-line consistent-return
       return () => {
         unsubscribeFunctions.forEach((f) => {
           f();
