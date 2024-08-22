@@ -13,7 +13,6 @@ interface ChatEvent {
   message: ChatMessage;
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export const configureWsChatHooks = (websocketClient: WebsocketClient) => ({
   /**
    * React hook to subscribe to the updates of the given chat ID

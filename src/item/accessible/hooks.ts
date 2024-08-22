@@ -37,7 +37,6 @@ export const useAccessibleItems =
         getAccessibleItems(finalParams, paginationParams, queryConfig),
       onSuccess: async ({ data: items }) => {
         // save items in their own key
-        // eslint-disable-next-line no-unused-expressions
         items?.forEach(async (item) => {
           const { id } = item;
           queryClient.setQueryData(itemKeys.single(id).content, item);
@@ -77,7 +76,6 @@ export const useInfiniteAccessibleItems =
         ),
       onSuccess: async ({ pages }) => {
         // save items in their own key
-        // eslint-disable-next-line no-unused-expressions
         for (const p of pages) {
           p?.data?.forEach(async (item) => {
             const { id } = item;

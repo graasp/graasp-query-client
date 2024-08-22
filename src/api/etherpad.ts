@@ -25,7 +25,6 @@ class EtherpadQueue {
   private lastPromise: Promise<void | Etherpad> = Promise.resolve();
 
   /** Ensure singleton with private constructor */
-  // eslint-disable-next-line no-useless-constructor, no-empty-function
   private constructor() {}
 
   public getEtherpad(

@@ -96,7 +96,6 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
   },
 });
 
-// eslint-disable-next-line import/prefer-default-export
 export const configureWsItemHooks = (
   websocketClient: WebsocketClient,
   notifier?: Notifier,

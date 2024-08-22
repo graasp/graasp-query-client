@@ -14,7 +14,6 @@ export type Handler = { channel: Channel; handler: (event: unknown) => void };
 
 const MockedWebsocket = (handlers: Handler[]) => ({
   subscribe: vi.fn((channel, handler) => {
-    // eslint-disable-next-line no-param-reassign
     handlers.push({ channel, handler });
   }),
   unsubscribe: vi.fn(),
@@ -23,7 +22,7 @@ const MockedWebsocket = (handlers: Handler[]) => ({
 export const setUpWsTest = (args?: {
   enableWebsocket?: boolean;
   notifier?: Notifier;
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   configureWsHooks: Function;
 }) => {
   const {

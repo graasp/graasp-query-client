@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-classes-per-file
 import { StatusCodes } from 'http-status-codes';
 
 export class UserIsSignedOut extends Error {
