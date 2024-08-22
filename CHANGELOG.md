@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.22.2](https://github.com/graasp/graasp-query-client/compare/v3.22.1...v3.22.2) (2024-08-22)
+
+
+### Bug Fixes
+
+* update with new sdk for item login changes ([#862](https://github.com/graasp/graasp-query-client/issues/862)) ([f1dda41](https://github.com/graasp/graasp-query-client/commit/f1dda411732e02e63e5a4e802103d162f6960f56))
+
 ## [3.22.1](https://github.com/graasp/graasp-query-client/compare/v3.22.0...v3.22.1) (2024-08-22)
 
 
