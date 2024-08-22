@@ -599,7 +599,7 @@ __metadata:
     "@commitlint/cli": "npm:19.4.0"
     "@commitlint/config-conventional": "npm:19.2.2"
     "@graasp/sdk": "npm:4.26.0"
-    "@graasp/translations": "npm:1.35.0"
+    "@graasp/translations": "npm:1.35.1"
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
     "@testing-library/dom": "npm:10.4.0"
@@ -660,12 +660,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.35.0":
-  version: 1.35.0
-  resolution: "@graasp/translations@npm:1.35.0"
+"@graasp/translations@npm:1.35.1":
+  version: 1.35.1
+  resolution: "@graasp/translations@npm:1.35.1"
   peerDependencies:
     i18next: ^23.8.1
-  checksum: 10/d5227f2ced80faaa7a852a1b4760c47ac592b8cfc2f8fba63e4bd45e27139f17451a060714020a8eb0f2a988d7e726b164fc609af4a056339a4f634866d45797
+  checksum: 10/cb702acaa9998fc3468532eedb62e4af0b5dd4f5a452dee53b23b5c4290d52d479bde115952774aaa073fc7a35e5ffaf06872c62e28caf501b318fbb8d76c058
   languageName: node
   linkType: hard
 
