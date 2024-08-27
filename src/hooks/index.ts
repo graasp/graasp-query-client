@@ -5,6 +5,7 @@ import configureItemPublicationHooks from '../item/publication/hooks.js';
 import configureMemberHooks from '../member/hooks.js';
 import configurePublicProfileHooks from '../member/publicProfile/hooks.js';
 import configureSubscriptionHooks from '../member/subscription/hooks.js';
+import configureMembershipRequestHooks from '../membership/request/hooks.js';
 import { QueryClientConfig } from '../types.js';
 import configureActionHooks from './action.js';
 import configureAppsHooks from './apps.js';
@@ -60,6 +61,7 @@ export default (
     ...configureItemGeolocationHooks(queryConfig),
     ...configureEmbeddedLinkHooks(queryConfig),
     ...configureItemPublicationHooks(queryConfig),
+    ...configureMembershipRequestHooks(queryConfig),
     useDebounce,
   };
 };

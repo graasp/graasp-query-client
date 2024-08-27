@@ -625,7 +625,7 @@ __metadata:
     "@eslint/eslintrc": "npm:3.1.0"
     "@eslint/js": "npm:9.10.0"
     "@graasp/sdk": "npm:4.29.1"
-    "@graasp/translations": "npm:1.37.1"
+    "@graasp/translations": "github:graasp/graasp-translations#membership-request"
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
     "@testing-library/dom": "npm:10.4.0"
@@ -686,12 +686,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.37.1":
-  version: 1.37.1
-  resolution: "@graasp/translations@npm:1.37.1"
+"@graasp/translations@github:graasp/graasp-translations#membership-request":
+  version: 1.35.1
+  resolution: "@graasp/translations@https://github.com/graasp/graasp-translations.git#commit=57d76422c3478307b0d136e4557002fb2491859b"
   peerDependencies:
     i18next: ^23.8.1
-  checksum: 10/9ccc50b2808ba11479b2ebcb231495f952b0d14118526e9c9080f28ba0be4955276b3846c53ab7eb66b82e0df0bdf69f32c0130cc970698d8d952edf954aa1ab
+  checksum: 10/a37fa9a51f98d3a77cd42b27ea7e17d8aed233f32b835f17ec9d89a35afbc9da46cc88052e0df39dd2d39a57b311595ae80172e895d3b30782049d516d0a9130
   languageName: node
   linkType: hard
 

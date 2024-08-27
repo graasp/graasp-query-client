@@ -36,7 +36,7 @@
     "@eslint/eslintrc": "3.1.0",
     "@eslint/js": "9.10.0",
     "@graasp/sdk": "4.29.1",
-    "@graasp/translations": "1.37.1",
+    "@graasp/translations": "github:graasp/graasp-translations#membership-request",
     "@testing-library/dom": "10.4.0",
     "@testing-library/react": "16.0.1",
     "@testing-library/user-event": "14.5.2",

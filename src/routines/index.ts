@@ -1,6 +1,7 @@
 export * from '../item/routines.js';
 export * from '../member/publicProfile/routines.js';
 export * from '../member/subscription/routines.js';
+export * from '../membership/request/routines.js';
 export * from '../member/routines.js';
 export * from './action.js';
 export * from './authentication.js';
