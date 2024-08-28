@@ -1,7 +1,11 @@
-import { ItemMembership, PermissionLevel, ResultOf, UUID } from '@graasp/sdk';
-import { FAILURE_MESSAGES } from '@graasp/translations';
+import {
+  Account,
+  ItemMembership,
+  PermissionLevel,
+  ResultOf,
+  UUID,
+} from '@graasp/sdk';
 
-import { getMembersByEmail } from '../member/api.js';
 import {
   buildDeleteItemMembershipRoute,
   buildEditItemMembershipRoute,
@@ -43,23 +47,18 @@ export const postManyItemMemberships = async (
 export const postItemMembership = async (
   {
     id,
-    email,
+    accountId,
     permission,
-  }: { id: UUID; email: string; permission: PermissionLevel },
+  }: { id: UUID; accountId: Account['id']; permission: PermissionLevel },
   config: PartialQueryConfigForApi,
 ) => {
   const { API_HOST, axios } = config;
-  const members = await getMembersByEmail({ emails: [email] }, config);
-
-  if (!members || !Object.values(members.data).length) {
-    throw new Error(FAILURE_MESSAGES.MEMBER_NOT_FOUND);
-  }
 
   return verifyAuthentication(() =>
     axios
       .post<ItemMembership>(`${API_HOST}/${buildPostItemMembershipRoute(id)}`, {
         // assume will receive only one member
-        memberId: Object.values(members.data)[0].id,
+        accountId,
         permission,
       })
       .then(({ data }) => data),

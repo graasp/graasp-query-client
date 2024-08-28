@@ -1,4 +1,10 @@
-import { Invitation, ItemMembership, PermissionLevel, UUID } from '@graasp/sdk';
+import {
+  Account,
+  Invitation,
+  ItemMembership,
+  PermissionLevel,
+  UUID,
+} from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -20,8 +26,11 @@ export default (queryConfig: QueryClientConfig) => {
   const usePostItemMembership = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (payload: { id: UUID; email: string; permission: PermissionLevel }) =>
-        Api.postItemMembership(payload, queryConfig),
+      (payload: {
+        id: UUID;
+        accountId: Account['id'];
+        permission: PermissionLevel;
+      }) => Api.postItemMembership(payload, queryConfig),
       {
         onSuccess: () => {
           notifier?.({
