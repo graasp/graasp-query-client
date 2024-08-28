@@ -69,7 +69,7 @@ describe('Membership Mutations', () => {
   describe('usePostItemMembership', () => {
     const mutation = mutations.usePostItemMembership;
 
-    const { email } = MemberFactory();
+    const { id: accountId } = MemberFactory();
 
     it('Create one membership', async () => {
       const route = `/${buildPostItemMembershipRoute(itemId)}`;
@@ -90,11 +90,6 @@ describe('Membership Mutations', () => {
 
       const endpoints = [
         {
-          response: [MemberFactory()],
-          method: HttpMethod.Get,
-          route: `/${buildGetMembersByEmailRoute([email])}`,
-        },
-        {
           response,
           method: HttpMethod.Post,
           route,
@@ -108,7 +103,7 @@ describe('Membership Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ id: itemId, email, permission });
+        mockedMutation.mutate({ id: itemId, accountId, permission });
         await waitForMutation();
       });
 
@@ -136,11 +131,6 @@ describe('Membership Mutations', () => {
 
       const endpoints = [
         {
-          response: [MemberFactory()],
-          method: HttpMethod.Get,
-          route: `/${buildGetMembersByEmailRoute([email])}`,
-        },
-        {
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
           method: HttpMethod.Post,
@@ -155,7 +145,7 @@ describe('Membership Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ id: itemId, email, permission });
+        mockedMutation.mutate({ id: itemId, accountId, permission });
         await waitForMutation();
       });
 
