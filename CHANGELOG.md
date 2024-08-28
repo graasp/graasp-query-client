@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.22.3](https://github.com/graasp/graasp-query-client/compare/v3.22.2...v3.22.3) (2024-08-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v1.7.5 ([#893](https://github.com/graasp/graasp-query-client/issues/893)) ([a0996a4](https://github.com/graasp/graasp-query-client/commit/a0996a4b99d38198c79d60854b6fec764570ca6b))
+* fix post item membership ([#903](https://github.com/graasp/graasp-query-client/issues/903)) ([7b14190](https://github.com/graasp/graasp-query-client/commit/7b14190c8bc32aa74f2ac44f041499dfc3b78c80))
+* update eslint for flat config ([#890](https://github.com/graasp/graasp-query-client/issues/890)) ([164ff44](https://github.com/graasp/graasp-query-client/commit/164ff444208cb182d5c7a46462029464dbf66204))
+
 ## [3.22.2](https://github.com/graasp/graasp-query-client/compare/v3.22.1...v3.22.2) (2024-08-22)
 
 
