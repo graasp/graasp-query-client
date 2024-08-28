@@ -1,10 +1,11 @@
 import { Member, UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { QueryClientConfig } from '../../types.js';
 import { deleteMembershipRequest, requestMembership } from './api.js';
+import { membershipRequestsKeys } from './keys.js';
 import {
   deleteMembershipRequestRoutine,
   requestMembershipRoutine,
@@ -14,6 +15,7 @@ export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   const useRequestMembership = () => {
+    const queryClient = useQueryClient();
     return useMutation(
       (payload: { id: UUID }) => requestMembership(payload, queryConfig),
       {
@@ -23,17 +25,20 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { message: SUCCESS_MESSAGES.REQUEST_MEMBERSHIP },
           });
         },
-        // If the mutation fails, use the context returned from onMutate to roll back
         onError: (error: Error, _args, _context) => {
           notifier?.({
             type: requestMembershipRoutine.FAILURE,
             payload: { error },
           });
         },
+        onSettled: (_data, _error, { id }) => {
+          queryClient.invalidateQueries(membershipRequestsKeys.own(id));
+        },
       },
     );
   };
   const useDeleteMembershipRequest = () => {
+    const queryClient = useQueryClient();
     return useMutation(
       (payload: { itemId: UUID; memberId: Member['id'] }) =>
         deleteMembershipRequest(payload, queryConfig),
@@ -44,12 +49,14 @@ export default (queryConfig: QueryClientConfig) => {
             payload: { message: SUCCESS_MESSAGES.DELETE_MEMBERSHIP_REQUEST },
           });
         },
-        // If the mutation fails, use the context returned from onMutate to roll back
         onError: (error: Error, _args, _context) => {
           notifier?.({
             type: deleteMembershipRequestRoutine.FAILURE,
             payload: { error },
           });
+        },
+        onSettled: (_data, _error, { itemId }) => {
+          queryClient.invalidateQueries(membershipRequestsKeys.single(itemId));
         },
       },
     );

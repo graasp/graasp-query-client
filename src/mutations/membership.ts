@@ -12,6 +12,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as InvitationApi from '../api/invitation.js';
 import * as Api from '../api/membership.js';
 import { buildManyItemMembershipsKey, itemKeys } from '../keys.js';
+import { membershipRequestsKeys } from '../membership/request/keys.js';
 import {
   deleteItemMembershipRoutine,
   editItemMembershipRoutine,
@@ -50,6 +51,9 @@ export default (queryConfig: QueryClientConfig) => {
           // this won't trigger too many errors as long as the stale time is low
           queryClient.invalidateQueries(buildManyItemMembershipsKey([id]));
           queryClient.invalidateQueries(itemKeys.single(id).memberships);
+
+          // membership might come from request, so we invalidate them
+          queryClient.invalidateQueries(membershipRequestsKeys.single(id));
         },
       },
     );

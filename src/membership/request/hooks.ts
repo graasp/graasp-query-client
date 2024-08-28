@@ -13,7 +13,7 @@ export default (queryConfig: QueryClientConfig) => {
   return {
     useOwnMembershipRequest: (itemId: UUID) =>
       useQuery({
-        queryKey: membershipRequestsKeys.own,
+        queryKey: membershipRequestsKeys.own(itemId),
         queryFn: () => getOwnMembershipRequest({ id: itemId }, queryConfig),
         ...defaultQueryOptions,
       }),

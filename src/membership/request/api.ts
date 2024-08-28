@@ -1,7 +1,7 @@
 import {
   CompleteMembershipRequest,
   Member,
-  SimpleMembershipRequest,
+  MembershipRequestStatus,
   UUID,
 } from '@graasp/sdk';
 
@@ -25,9 +25,9 @@ export const getOwnMembershipRequest = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
-    .get<SimpleMembershipRequest>(
-      `${API_HOST}/${buildGetOwnMembershipRequestRoute(id)}`,
-    )
+    .get<{
+      status: MembershipRequestStatus;
+    }>(`${API_HOST}/${buildGetOwnMembershipRequestRoute(id)}`)
     .then(({ data }) => data);
 
 export const getMembershipRequests = async (
