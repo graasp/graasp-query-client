@@ -18,7 +18,7 @@ export default (queryConfig: QueryClientConfig) => {
         ...defaultQueryOptions,
       }),
 
-    useMembershipRequests: (id?: UUID) =>
+    useMembershipRequests: (id?: UUID, options: { enabled?: boolean } = {}) =>
       useQuery({
         queryKey: membershipRequestsKeys.single(id),
         queryFn: () => {
@@ -27,7 +27,7 @@ export default (queryConfig: QueryClientConfig) => {
           }
           return getMembershipRequests({ id }, queryConfig);
         },
-        enabled: Boolean(id),
+        enabled: (options.enabled ?? true) && Boolean(id),
         ...defaultQueryOptions,
       }),
   };
