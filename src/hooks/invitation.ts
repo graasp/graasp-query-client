@@ -27,7 +27,10 @@ export default (queryConfig: QueryClientConfig) => {
       },
     });
 
-  const useItemInvitations = (itemId?: UUID) =>
+  const useItemInvitations = (
+    itemId?: UUID,
+    options: { enabled?: boolean } = {},
+  ) =>
     useQuery({
       queryKey: itemKeys.single(itemId).invitation,
       queryFn: () => {
@@ -37,7 +40,7 @@ export default (queryConfig: QueryClientConfig) => {
 
         return Api.getInvitationsForItem(itemId, queryConfig);
       },
-      enabled: Boolean(itemId),
+      enabled: Boolean(itemId) && (options?.enabled ?? true),
       ...defaultQueryOptions,
     });
 
