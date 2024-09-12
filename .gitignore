@@ -22,7 +22,6 @@ yarn-error.log*
 
 # cache
 .eslintcache
-.jest-cache
 
 # testing and coverage
 .jest-cache
@@ -47,5 +46,3 @@ example/src/react-app-env.d.ts
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-
-package-lock.json
