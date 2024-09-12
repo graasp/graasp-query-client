@@ -610,10 +610,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@faker-js/faker@npm:8.4.1":
-  version: 8.4.1
-  resolution: "@faker-js/faker@npm:8.4.1"
-  checksum: 10/5983c2ea64f26055ad6648de748878e11ebe2fb751e3c7435ae141cdffabc2dccfe4c4f49da69a3d2add71e21b415c683ac5fba196fab0d5ed6779fbec436c80
+"@faker-js/faker@npm:9.0.0":
+  version: 9.0.0
+  resolution: "@faker-js/faker@npm:9.0.0"
+  checksum: 10/aedd68affd27065450da3c19a0ea3050e6a16078e7d591faf38402e572dd555f5ae6b402d26456eceb6b793c44b8f83ea7b48804d1fcb841610acd4988c41f91
   languageName: node
   linkType: hard
 
@@ -626,8 +626,8 @@ __metadata:
     "@eslint/compat": "npm:1.1.1"
     "@eslint/eslintrc": "npm:3.1.0"
     "@eslint/js": "npm:9.9.1"
-    "@graasp/sdk": "npm:4.26.0"
-    "@graasp/translations": "npm:1.35.1"
+    "@graasp/sdk": "npm:4.27.0"
+    "@graasp/translations": "npm:1.36.1"
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
     "@testing-library/dom": "npm:10.4.0"
@@ -673,27 +673,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@npm:4.26.0":
-  version: 4.26.0
-  resolution: "@graasp/sdk@npm:4.26.0"
+"@graasp/sdk@npm:4.27.0":
+  version: 4.27.0
+  resolution: "@graasp/sdk@npm:4.27.0"
   dependencies:
-    "@faker-js/faker": "npm:8.4.1"
-    filesize: "npm:10.1.4"
+    "@faker-js/faker": "npm:9.0.0"
+    filesize: "npm:10.1.6"
     js-cookie: "npm:3.0.5"
     validator: "npm:13.12.0"
   peerDependencies:
     date-fns: ^3
     uuid: ^9 || ^10
-  checksum: 10/ec6ce2780dfc25a11c90ebe90b95e34cb5026f4cab2a918960eaa465b362cb67918bbc0a7c46f5a9a3dd83c855350148ccf91e12583668ece81e7e1c1cb5b824
+  checksum: 10/e218576d56de950d873a349f32744ae09185ee4862f8a383fa927339088795ebdccc8d3e4a626b3435fd99cb2291c7246b7897200c3becac8f4e4becaa510b08
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.35.1":
-  version: 1.35.1
-  resolution: "@graasp/translations@npm:1.35.1"
+"@graasp/translations@npm:1.36.1":
+  version: 1.36.1
+  resolution: "@graasp/translations@npm:1.36.1"
   peerDependencies:
     i18next: ^23.8.1
-  checksum: 10/cb702acaa9998fc3468532eedb62e4af0b5dd4f5a452dee53b23b5c4290d52d479bde115952774aaa073fc7a35e5ffaf06872c62e28caf501b318fbb8d76c058
+  checksum: 10/0d435c8c3355ce1f43151845c089c10ea9d99e51559d84db9271118805a8326401ba9c86e4e0a93220a39249c697c5c1d82408c92c47966d84607b41bdcb1681
   languageName: node
   linkType: hard
 
@@ -3090,10 +3090,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"filesize@npm:10.1.4":
-  version: 10.1.4
-  resolution: "filesize@npm:10.1.4"
-  checksum: 10/ac2b95f4ee8d42ad4b12f8f918baeb1127065dcb319abca30c0d9ef115b602e31a06c8150953b13dc52e52ebb1238e18e6001ab5fca14a10957e788bd6012f1c
+"filesize@npm:10.1.6":
+  version: 10.1.6
+  resolution: "filesize@npm:10.1.6"
+  checksum: 10/e800837c4fc02303f1944d5a4c7b706df1c5cd95d745181852604fb00a1c2d55d2d3921252722bd2f0c86b59c94edaba23fa224776bbf977455d4034e7be1f45
   languageName: node
   linkType: hard
 
