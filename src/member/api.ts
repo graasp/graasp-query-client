@@ -1,5 +1,6 @@
 import {
   CompleteMember,
+  CurrentAccount,
   Member,
   MemberStorage,
   MemberStorageItem,
@@ -63,7 +64,7 @@ export const getCurrentMember = async ({
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
-      .get<CompleteMember>(`${API_HOST}/${buildGetCurrentMemberRoute()}`)
+      .get<CurrentAccount>(`${API_HOST}/${buildGetCurrentMemberRoute()}`)
       .then(({ data }) => data)
       .catch((error) => {
         if (error.response) {
