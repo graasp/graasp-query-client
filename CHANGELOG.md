@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.22.4](https://github.com/graasp/graasp-query-client/compare/v3.22.3...v3.22.4) (2024-09-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v1.7.7 ([#904](https://github.com/graasp/graasp-query-client/issues/904)) ([b138b7b](https://github.com/graasp/graasp-query-client/commit/b138b7ba154d1a70294d5fc651f156d5a84095f9))
+* remove jest mentions ([e90653b](https://github.com/graasp/graasp-query-client/commit/e90653bca398dd91665a43935ae0be1a320dcb87))
+* update current member return type ([#912](https://github.com/graasp/graasp-query-client/issues/912)) ([8d20278](https://github.com/graasp/graasp-query-client/commit/8d20278ba7a3f07cb48cb97377eab62181667680))
+
 ## [3.22.3](https://github.com/graasp/graasp-query-client/compare/v3.22.2...v3.22.3) (2024-08-28)
 
 
