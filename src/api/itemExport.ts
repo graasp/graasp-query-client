@@ -13,8 +13,9 @@ export const exportItem = async (
       responseType: 'blob',
     })
     .then(({ data, headers }) => {
-      const name =
+      const [_, encodedFileName] =
         // content is usually: filename="name.png"
-        headers['content-disposition']?.split('"')?.[1] ?? 'export-file';
+        headers['content-disposition'].split('"');
+      const name = decodeURI(encodedFileName);
       return { name, data };
     });
