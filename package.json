@@ -1,6 +1,6 @@
 {
   "name": "@graasp/query-client",
-  "version": "3.22.3",
+  "version": "3.22.4",
   "author": "Graasp",
   "repository": "graasp/graasp-query-client",
   "type": "module",
