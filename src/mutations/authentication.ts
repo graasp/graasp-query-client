@@ -1,4 +1,4 @@
-import { Password, UUID, saveUrlForRedirection } from '@graasp/sdk';
+import { Password, saveUrlForRedirection } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -171,8 +171,8 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useSignOut = () => {
     const queryClient = useQueryClient();
-    return useMutation((_currentMemberId?: UUID) => Api.signOut(queryConfig), {
-      onSuccess: (_res, _currentMemberId) => {
+    return useMutation(() => Api.signOut(queryConfig), {
+      onSuccess: (_res) => {
         notifier?.({
           type: signOutRoutine.SUCCESS,
           payload: { message: SUCCESS_MESSAGES.SIGN_OUT },

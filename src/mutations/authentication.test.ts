@@ -501,7 +501,6 @@ describe('Authentication Mutations', () => {
   describe('useSignOut', () => {
     const route = `/${SIGN_OUT_ROUTE}`;
     const mutation = mutations.useSignOut;
-    const userId = 'userId';
 
     it(`Sign out`, async () => {
       // set random data in cache
@@ -518,7 +517,7 @@ describe('Authentication Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate(userId);
+        mockedMutation.mutate();
         await waitForMutation();
       });
 

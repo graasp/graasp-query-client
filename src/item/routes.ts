@@ -85,12 +85,14 @@ export const buildGetChildrenRoute = (
   if (ordered) {
     search.set('ordered', ordered.toString());
   }
-  if (types && types.length) {
+  if (types?.length) {
     types.forEach((t) => search.append('types', t));
   }
-  keywords?.split(' ')?.forEach((k) => {
-    search.append('keywords', k);
-  });
+  if (keywords?.length) {
+    keywords.split(' ')?.forEach((k) => {
+      search.append('keywords', k);
+    });
+  }
   if (search.toString()) {
     return `${route}?${search}`;
   }

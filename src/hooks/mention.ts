@@ -1,4 +1,4 @@
-import { CompleteMember, WebsocketClient } from '@graasp/sdk';
+import { CurrentAccount, WebsocketClient } from '@graasp/sdk';
 
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
 
@@ -9,7 +9,7 @@ import { configureWsChatMentionsHooks } from '../ws/index.js';
 
 export default (
   queryConfig: QueryClientConfig,
-  useCurrentMember: () => UseQueryResult<CompleteMember | null>,
+  useCurrentMember: () => UseQueryResult<CurrentAccount | null>,
   websocketClient?: WebsocketClient,
 ) => {
   const { enableWebsocket, defaultQueryOptions } = queryConfig;
