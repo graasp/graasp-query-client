@@ -21,7 +21,7 @@ import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import { memberKeys } from '../keys.js';
 import { SIGN_OUT_ROUTE } from '../routes.js';
 import {
-  buildDeleteMemberRoute,
+  buildDeleteCurrentMemberRoute,
   buildExportMemberDataRoute,
   buildPatchMemberPasswordRoute,
   buildPatchMemberRoute,
@@ -44,15 +44,13 @@ describe('Member Mutations', () => {
     nock.cleanAll();
   });
 
-  describe('useDeleteMember', () => {
-    const memberId = 'member-id';
-
-    const mutation = mutations.useDeleteMember;
+  describe('useDeleteCurrentMember', () => {
+    const mutation = mutations.useDeleteCurrentMember;
 
     it(`Successfully delete member`, async () => {
       const endpoints = [
         {
-          route: `/${buildDeleteMemberRoute(memberId)}`,
+          route: `/${buildDeleteCurrentMemberRoute()}`,
           method: HttpMethod.Delete,
           response: OK_RESPONSE,
         },
@@ -71,7 +69,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ id: memberId });
+        mockedMutation.mutate();
         await waitForMutation(2000);
       });
 
@@ -90,7 +88,7 @@ describe('Member Mutations', () => {
           method: HttpMethod.Get,
           response: UNAUTHORIZED_RESPONSE,
           statusCode: StatusCodes.UNAUTHORIZED,
-          route: `/${buildDeleteMemberRoute(memberId)}`,
+          route: `/${buildDeleteCurrentMemberRoute()}`,
         },
       ];
       const mockedMutation = await mockMutation({
@@ -100,7 +98,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ id: memberId });
+        mockedMutation.mutate();
         await waitForMutation();
       });
 
