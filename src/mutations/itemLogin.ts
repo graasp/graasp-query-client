@@ -4,6 +4,7 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import * as Api from '../api/itemLogin.js';
+import { useEnroll } from '../item/itemLogin/mutations.js';
 import { itemKeys } from '../keys.js';
 import {
   deleteItemLoginSchemaRoutine,
@@ -106,6 +107,7 @@ export default (queryConfig: QueryClientConfig) => {
   };
 
   return {
+    useEnroll: useEnroll(queryConfig),
     usePostItemLogin,
     useDeleteItemLoginSchema,
     usePutItemLoginSchema,
