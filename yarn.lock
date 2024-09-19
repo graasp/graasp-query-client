@@ -687,11 +687,11 @@ __metadata:
   linkType: hard
 
 "@graasp/translations@github:graasp/graasp-translations#membership-request":
-  version: 1.35.1
-  resolution: "@graasp/translations@https://github.com/graasp/graasp-translations.git#commit=1fbf1efe79ea27cc6f358764042cd52fbcd4ccc3"
+  version: 1.37.1
+  resolution: "@graasp/translations@https://github.com/graasp/graasp-translations.git#commit=6f8b2c4ff14aaae4edd591065f6b268d64c11f86"
   peerDependencies:
     i18next: ^23.8.1
-  checksum: 10/29a3f90424fee23527c4ed3de3c918ca445d91401d3f5790e7e5488533b14a8f1a54fecd46f49c47cb2f95e0225a1706d8bf3c7bcbe6a00208f0786c7c61174e
+  checksum: 10/b23827c4d3355b5796581a4f2227ea085fa0139dcda163e62ddc205b0a53d2d54d71c89f0152bc93b923cc92016bcda2867a3d7da16e169007e550dea58a8ebe
   languageName: node
   linkType: hard
 

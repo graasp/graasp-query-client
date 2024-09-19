@@ -8,7 +8,7 @@ import { QueryClientConfig } from '../../types.js';
 import { enroll } from './api.js';
 import { enrollRoutine } from './routines.js';
 
-export const useEnroll = (queryConfig: QueryClientConfig) => {
+export const useEnroll = (queryConfig: QueryClientConfig) => () => {
   const { notifier } = queryConfig;
 
   const queryClient = useQueryClient();
