@@ -18,7 +18,6 @@ export const buildGetMembersByIdRoute = (ids: UUID[]) =>
 // Member CRUD
 export const buildGetMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 export const buildPatchMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
-export const buildDeleteMemberRoute = (id: UUID) => `${MEMBERS_ROUTE}/${id}`;
 
 // Password
 export const buildPostMemberPasswordRoute = () => `password`;

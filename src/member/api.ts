@@ -18,7 +18,6 @@ import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
 import { PartialQueryConfigForApi } from '../types.js';
 import {
   buildDeleteCurrentMemberRoute,
-  buildDeleteMemberRoute,
   buildDownloadAvatarRoute,
   buildExportMemberDataRoute,
   buildGetCurrentMemberRoute,
@@ -117,16 +116,6 @@ export const editMember = async (
           enableSaveActions: payload.enableSaveActions,
         },
       )
-      .then(({ data }) => data),
-  );
-
-export const deleteMember = async (
-  { id }: { id: UUID },
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  verifyAuthentication(() =>
-    axios
-      .delete<Member>(`${API_HOST}/${buildDeleteMemberRoute(id)}`)
       .then(({ data }) => data),
   );
 
