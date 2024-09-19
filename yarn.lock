@@ -625,7 +625,7 @@ __metadata:
     "@eslint/eslintrc": "npm:3.1.0"
     "@eslint/js": "npm:9.10.0"
     "@graasp/sdk": "npm:4.29.1"
-    "@graasp/translations": "npm:1.37.0"
+    "@graasp/translations": "github:graasp/graasp-translations#add-password-reset-messages"
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
     "@testing-library/dom": "npm:10.4.0"
@@ -686,12 +686,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.37.0":
+"@graasp/translations@github:graasp/graasp-translations#add-password-reset-messages":
   version: 1.37.0
-  resolution: "@graasp/translations@npm:1.37.0"
+  resolution: "@graasp/translations@https://github.com/graasp/graasp-translations.git#commit=a7902f2c89425454f134a04af0529474373c9be7"
   peerDependencies:
     i18next: ^23.8.1
-  checksum: 10/a1026d4098cc1a84ced835352fd0672a305cdebe69562d2b885d5ac9bee0cbcfe2894b943855e65b74d464d031e72feaab5296d604e182abe1adf1edc731f791
+  checksum: 10/11a01df822452855ffd99938f4db48e62aac07a99d7994bcb93ca5d40c389a6687e307e5cb1d9908970686bc7df362cc7a18edbbb6f8b6be86391b63c4084cea
   languageName: node
   linkType: hard
 

@@ -83,15 +83,15 @@ export const buildImportH5PRoute = (parentId?: UUID, previousItemId?: UUID) => {
   return route;
 };
 
-export const MOBILE_SIGN_UP_ROUTE = `m/register`;
-export const MOBILE_SIGN_IN_ROUTE = `m/login`;
-export const MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE = `m/login-password`;
-export const FORGOT_PASSWORD_REQUEST_ROUTE = `/password/reset`;
-export const FORGOT_PASSWORD_RESET_ROUTE = `/password/reset`;
-export const SIGN_IN_ROUTE = `login`;
-export const SIGN_IN_WITH_PASSWORD_ROUTE = `login-password`;
-export const SIGN_UP_ROUTE = `register`;
-export const SIGN_OUT_ROUTE = 'logout';
+export const MOBILE_SIGN_UP_ROUTE = `/m/register`;
+export const MOBILE_SIGN_IN_ROUTE = `/m/login`;
+export const MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE = `/m/login-password`;
+export const PASSWORD_RESET_REQUEST_ROUTE = '/password/reset';
+export const PASSWORD_RESET_ROUTE = '/password/reset';
+export const SIGN_IN_ROUTE = '/login';
+export const SIGN_IN_WITH_PASSWORD_ROUTE = '/login-password';
+export const SIGN_UP_ROUTE = '/register';
+export const SIGN_OUT_ROUTE = '/logout';
 export const buildGetItemTagsRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/tags`;
 export const buildGetItemsTagsRoute = (ids: UUID[]) =>
   `${ITEMS_ROUTE}/tags?${new URLSearchParams(ids.map((id) => ['id', id]))}`;
@@ -445,6 +445,8 @@ export const API_ROUTES = {
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
   SIGN_UP_ROUTE,
+  PASSWORD_RESET_REQUEST_ROUTE,
+  PASSWORD_RESET_ROUTE,
   VALIDATION_ROUTE,
   buildGetItemsInMapRoute,
   buildGetItemGeolocationRoute,

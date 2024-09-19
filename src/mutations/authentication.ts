@@ -6,8 +6,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Api from '../api/authentication.js';
 import { memberKeys } from '../keys.js';
 import {
-  forgotPasswordRequestRoutine,
-  forgotPasswordResetRoutine,
+  passwordResetRequestRoutine,
+  passwordResetRoutine,
   signInRoutine,
   signInWithPasswordRoutine,
   signOutRoutine,
@@ -203,96 +203,45 @@ export default (queryConfig: QueryClientConfig) => {
     });
   };
 
-  const useResetPasswordRequest = (args: { email: string; captcha: string }) =>
-    useMutation(() => Api.forgotPasswordRequest(args, queryConfig), {
-      onSuccess: () => {
-        notifier?.({
-          type: forgotPasswordRequestRoutine.SUCCESS,
-          // TODO
-          payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
-        });
-
-        // // cookie operations only if window is defined (operation happens in the frontend)
-        // if (!isServer() && queryConfig.DOMAIN) {
-        //   // save current page for further redirection
-        //   saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
-        //   // remove cookie and stored session from browser when the logout is confirmed
-        //   // todo: find a way to do something equivalent but with httpOnly cookies
-        //   // setCurrentSession(null, queryConfig.DOMAIN);
-        //   // removeSession(currentMemberId, queryConfig.DOMAIN);
-        // }
-        // // Update when the server confirmed the logout, instead optimistically updating the member
-        // // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
-        // queryClient.setQueryData(memberKeys.current().content, undefined);
+  const usePasswordResetRequest = () =>
+    useMutation(
+      (args: { email: string; captcha: string }) =>
+        Api.passwordResetRequest(args, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: passwordResetRequestRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET_REQUEST },
+          });
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: passwordResetRequestRoutine.FAILURE,
+            payload: { error },
+          });
+        },
       },
-      onError: (error: Error) => {
-        notifier?.({
-          type: forgotPasswordRequestRoutine.FAILURE,
-          payload: { error },
-        });
-      },
-    });
+    );
 
-  const useResetPasswordReset = (args: { password: string; token: string }) =>
-    useMutation(() => Api.forgotPasswordReset(args, queryConfig), {
-      onSuccess: () => {
-        notifier?.({
-          type: forgotPasswordResetRoutine.SUCCESS,
-          // TODO
-          payload: { message: SUCCESS_MESSAGES.SIGN_OUT },
-        });
-
-        // // cookie operations only if window is defined (operation happens in the frontend)
-        // if (!isServer() && queryConfig.DOMAIN) {
-        //   // save current page for further redirection
-        //   saveUrlForRedirection(window.location.href, queryConfig.DOMAIN);
-        //   // remove cookie and stored session from browser when the logout is confirmed
-        //   // todo: find a way to do something equivalent but with httpOnly cookies
-        //   // setCurrentSession(null, queryConfig.DOMAIN);
-        //   // removeSession(currentMemberId, queryConfig.DOMAIN);
-        // }
-        // // Update when the server confirmed the logout, instead optimistically updating the member
-        // // This prevents logout loop (redirect to logout -> still cookie -> logs back in)
-        // queryClient.setQueryData(memberKeys.current().content, undefined);
+  const usePasswordReset = () =>
+    useMutation(
+      (args: { password: string; token: string }) =>
+        Api.passwordReset(args, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: passwordResetRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET },
+          });
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: passwordResetRoutine.FAILURE,
+            payload: { error },
+          });
+        },
       },
-      onError: (error: Error) => {
-        notifier?.({
-          type: forgotPasswordResetRoutine.FAILURE,
-          payload: { error },
-        });
-      },
-    });
-
-  // disable feature: session should't be store in cookie and available to js
-  // queryClient.setMutationDefaults(SWITCH_MEMBER, {
-  //   mutationFn: async (args: { memberId: string; domain: string }) => {
-  //     // get token from stored sessions given memberId
-  //     const sessions = getStoredSessions();
-  //     const session = sessions?.find(
-  //       ({ id: thisId }) => args.memberId === thisId,
-  //     );
-  //     if (!session) {
-  //       throw new Error('Session is invalid');
-  //     }
-  //     setCurrentSession(session.token, args.domain);
-  //     return args.memberId;
-  //   },
-  //   onSuccess: () => {
-  //     notifier?.({ type: switchMemberRoutine.SUCCESS });
-  //     // reset queries to take into account the new token
-  //     queryClient.resetQueries();
-  //   },
-  //   onError: (error) => {
-  //     notifier?.({
-  //       type: switchMemberRoutine.FAILURE,
-  //       payload: { error },
-  //     });
-  //   },
-  // });
-  // const useSwitchMember = () =>
-  //   useMutation<void, unknown, { memberId: string; domain: string }>(
-  //     SWITCH_MEMBER,
-  //   );
+    );
 
   return {
     useSignIn,
@@ -302,7 +251,7 @@ export default (queryConfig: QueryClientConfig) => {
     useMobileSignUp,
     useMobileSignIn,
     useMobileSignInWithPassword,
-    useResetPasswordRequest,
-    useResetPasswordReset,
+    usePasswordResetRequest,
+    usePasswordReset,
   };
 };
