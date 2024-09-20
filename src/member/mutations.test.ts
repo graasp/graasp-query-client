@@ -55,7 +55,7 @@ describe('Member Mutations', () => {
           response: OK_RESPONSE,
         },
         {
-          route: `/${SIGN_OUT_ROUTE}`,
+          route: SIGN_OUT_ROUTE,
           response: OK_RESPONSE,
         },
       ];

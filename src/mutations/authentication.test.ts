@@ -14,12 +14,15 @@ import {
   MOBILE_SIGN_IN_ROUTE,
   MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE,
   MOBILE_SIGN_UP_ROUTE,
+  PASSWORD_RESET_REQUEST_ROUTE,
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
   SIGN_UP_ROUTE,
 } from '../routes.js';
 import {
+  createPasswordResetRequestRoutine,
+  resolvePasswordResetRequestRoutine,
   signInRoutine,
   signInWithPasswordRoutine,
   signOutRoutine,
@@ -44,7 +47,7 @@ describe('Authentication Mutations', () => {
   });
 
   describe('useSignIn', () => {
-    const route = `/${SIGN_IN_ROUTE}`;
+    const route = SIGN_IN_ROUTE;
     const mutation = mutations.useSignIn;
 
     it(`Sign in`, async () => {
@@ -99,7 +102,7 @@ describe('Authentication Mutations', () => {
   });
 
   describe('useMobileSignIn', () => {
-    const route = `/${MOBILE_SIGN_IN_ROUTE}`;
+    const route = MOBILE_SIGN_IN_ROUTE;
     const mutation = mutations.useMobileSignIn;
 
     it(`Sign in`, async () => {
@@ -154,7 +157,7 @@ describe('Authentication Mutations', () => {
   });
 
   describe('useSignInWithPassword', () => {
-    const route = `/${SIGN_IN_WITH_PASSWORD_ROUTE}`;
+    const route = SIGN_IN_WITH_PASSWORD_ROUTE;
     const mutation = mutations.useSignInWithPassword;
     const password = 'password';
     const link = 'mylink';
@@ -223,7 +226,7 @@ describe('Authentication Mutations', () => {
   });
 
   describe('useMobileSignInWithPassword', () => {
-    const route = `/${MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE}`;
+    const route = MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE;
     const mutation = mutations.useMobileSignInWithPassword;
     const password = 'password';
     const link = 'mylink';
@@ -292,7 +295,7 @@ describe('Authentication Mutations', () => {
   });
 
   describe('useSignUp', () => {
-    const route = `/${SIGN_UP_ROUTE}`;
+    const route = SIGN_UP_ROUTE;
     const mutation = mutations.useSignUp;
     const name = 'name';
 
@@ -389,8 +392,9 @@ describe('Authentication Mutations', () => {
       );
     });
   });
+
   describe('useMobileSignUp', () => {
-    const route = `/${MOBILE_SIGN_UP_ROUTE}`;
+    const route = MOBILE_SIGN_UP_ROUTE;
     const mutation = mutations.useMobileSignUp;
     const name = 'name';
 
@@ -499,7 +503,7 @@ describe('Authentication Mutations', () => {
   });
 
   describe('useSignOut', () => {
-    const route = `/${SIGN_OUT_ROUTE}`;
+    const route = SIGN_OUT_ROUTE;
     const mutation = mutations.useSignOut;
 
     it(`Sign out`, async () => {
@@ -557,6 +561,132 @@ describe('Authentication Mutations', () => {
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: signOutRoutine.FAILURE,
+        }),
+      );
+    });
+  });
+
+  describe('useCreatePasswordResetRequest', () => {
+    const route = PASSWORD_RESET_REQUEST_ROUTE;
+    const mutation = mutations.useCreatePasswordResetRequest;
+
+    it(`Sign out`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: OK_RESPONSE,
+          method: HttpMethod.Post,
+          statusCode: StatusCodes.NO_CONTENT,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({ email: 'test@email.com', captcha: 'captcha' });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: createPasswordResetRequestRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET_REQUEST },
+      });
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          method: HttpMethod.Post,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({
+          email: 'email@test.com',
+          captcha: 'wrong-captcha',
+        });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: createPasswordResetRequestRoutine.FAILURE,
+        }),
+      );
+    });
+  });
+
+  describe('useResolvePasswordResetRequest', () => {
+    const route = PASSWORD_RESET_REQUEST_ROUTE;
+    const mutation = mutations.useResolvePasswordResetRequest;
+
+    it(`Sign out`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: OK_RESPONSE,
+          method: HttpMethod.Patch,
+          statusCode: StatusCodes.NO_CONTENT,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({ password: 'newpassword', token: 'token' });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: resolvePasswordResetRequestRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET },
+      });
+    });
+
+    it(`Unauthorized`, async () => {
+      const endpoints = [
+        {
+          route,
+          response: UNAUTHORIZED_RESPONSE,
+          method: HttpMethod.Post,
+          statusCode: StatusCodes.UNAUTHORIZED,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({
+          password: 'newpassword',
+          token: 'no-token',
+        });
+        await waitForMutation();
+      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: resolvePasswordResetRequestRoutine.FAILURE,
         }),
       );
     });

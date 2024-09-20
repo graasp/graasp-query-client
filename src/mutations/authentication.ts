@@ -6,6 +6,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Api from '../api/authentication.js';
 import { memberKeys } from '../keys.js';
 import {
+  createPasswordResetRequestRoutine,
+  resolvePasswordResetRequestRoutine,
   signInRoutine,
   signInWithPasswordRoutine,
   signOutRoutine,
@@ -201,36 +203,45 @@ export default (queryConfig: QueryClientConfig) => {
     });
   };
 
-  // disable feature: session should't be store in cookie and available to js
-  // queryClient.setMutationDefaults(SWITCH_MEMBER, {
-  //   mutationFn: async (args: { memberId: string; domain: string }) => {
-  //     // get token from stored sessions given memberId
-  //     const sessions = getStoredSessions();
-  //     const session = sessions?.find(
-  //       ({ id: thisId }) => args.memberId === thisId,
-  //     );
-  //     if (!session) {
-  //       throw new Error('Session is invalid');
-  //     }
-  //     setCurrentSession(session.token, args.domain);
-  //     return args.memberId;
-  //   },
-  //   onSuccess: () => {
-  //     notifier?.({ type: switchMemberRoutine.SUCCESS });
-  //     // reset queries to take into account the new token
-  //     queryClient.resetQueries();
-  //   },
-  //   onError: (error) => {
-  //     notifier?.({
-  //       type: switchMemberRoutine.FAILURE,
-  //       payload: { error },
-  //     });
-  //   },
-  // });
-  // const useSwitchMember = () =>
-  //   useMutation<void, unknown, { memberId: string; domain: string }>(
-  //     SWITCH_MEMBER,
-  //   );
+  const useCreatePasswordResetRequest = () =>
+    useMutation(
+      (args: { email: string; captcha: string }) =>
+        Api.createPasswordResetRequest(args, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: createPasswordResetRequestRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET_REQUEST },
+          });
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: createPasswordResetRequestRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
+
+  const useResolvePasswordResetRequest = () =>
+    useMutation(
+      (args: { password: string; token: string }) =>
+        Api.resolvePasswordResetRequest(args, queryConfig),
+      {
+        onSuccess: () => {
+          notifier?.({
+            type: resolvePasswordResetRequestRoutine.SUCCESS,
+            payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET },
+          });
+        },
+        onError: (error: Error) => {
+          notifier?.({
+            type: resolvePasswordResetRequestRoutine.FAILURE,
+            payload: { error },
+          });
+        },
+      },
+    );
 
   return {
     useSignIn,
@@ -240,5 +251,7 @@ export default (queryConfig: QueryClientConfig) => {
     useMobileSignUp,
     useMobileSignIn,
     useMobileSignInWithPassword,
+    useCreatePasswordResetRequest,
+    useResolvePasswordResetRequest,
   };
 };
