@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.23.0](https://github.com/graasp/graasp-query-client/compare/v3.22.4...v3.23.0) (2024-09-20)
+
+
+### Features
+
+* password reset request mutations ([#772](https://github.com/graasp/graasp-query-client/issues/772)) ([7e1c541](https://github.com/graasp/graasp-query-client/commit/7e1c541b0dca1f1054c0bddc69a36fe1c6d3850c))
+
+
+### Bug Fixes
+
+* decode exported filename ([#919](https://github.com/graasp/graasp-query-client/issues/919)) ([128e036](https://github.com/graasp/graasp-query-client/commit/128e036783c2b5174336c014111d0777a5d7c6df))
+* update to remove delete member hook as it is deprecated ([#921](https://github.com/graasp/graasp-query-client/issues/921)) ([fc07cdf](https://github.com/graasp/graasp-query-client/commit/fc07cdf4ed3e16512beb4d01d3948e0190305669))
+
 ## [3.22.4](https://github.com/graasp/graasp-query-client/compare/v3.22.3...v3.22.4) (2024-09-18)
 
 
