@@ -43,7 +43,7 @@ export const signInWithPassword = async (
   return axios
     .post<{ resource: string }>(url.toString(), payload, {
       data: payload,
-      // Resolve only if the status code is less than 500
+      // Resolve only if the status code is less than 400
       validateStatus: (status: number) => status >= 200 && status < 400,
     })
     .then(({ data }) => data);
@@ -61,7 +61,7 @@ export const mobileSignInWithPassword = async (
   const url = new URL(MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE, API_HOST);
   return axios
     .post<{ resource: string }>(url.toString(), payload, {
-      // Resolve only if the status code is less than 500
+      // Resolve only if the status code is less than 400
       validateStatus: (status) => status >= 200 && status < 400,
     })
     .then(({ data }) => data);
