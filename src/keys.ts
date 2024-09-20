@@ -24,7 +24,6 @@ const SHORT_LINKS_CONTEXT = 'shortLinks';
 const SUBSCRIPTION_CONTEXT = 'subscriptions';
 
 export const APPS_KEY = ['apps'];
-export const OWN_ITEMS_KEY = [ITEMS_CONTEXT, 'own'];
 
 export const buildShortLinkKey = (alias: string | undefined) => [
   SHORT_LINKS_CONTEXT,

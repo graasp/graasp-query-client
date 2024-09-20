@@ -4,7 +4,6 @@ import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
 import { ItemChildrenParams, ItemSearchParams } from './types.js';
 
 export const ITEMS_ROUTE = 'items';
-export const GET_OWN_ITEMS_ROUTE = `${ITEMS_ROUTE}/own`;
 export const GET_RECYCLED_ITEMS_DATA_ROUTE = `${ITEMS_ROUTE}/recycled`;
 export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 

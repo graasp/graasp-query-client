@@ -15,7 +15,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ITEM_LOGIN_RESPONSE } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
-import { OWN_ITEMS_KEY, itemKeys, memberKeys } from '../keys.js';
+import { itemKeys, memberKeys } from '../keys.js';
 import {
   buildPostItemLoginSignInRoute,
   buildPutItemLoginSchemaRoute,
@@ -45,8 +45,7 @@ describe('Item Login Mutations', () => {
     const mutation = mutations.usePostItemLogin;
     it('Post item login', async () => {
       queryClient.setQueryData(memberKeys.current().content, MemberFactory());
-      // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, items);
+      queryClient.setQueryData(itemKeys.accessiblePage({}, {}), items);
 
       const endpoints = [
         {
@@ -76,14 +75,14 @@ describe('Item Login Mutations', () => {
       expect(
         queryClient.getQueryData(memberKeys.current().content),
       ).toBeFalsy();
-      // todo: change to Accessible
-      expect(queryClient.getQueryData(OWN_ITEMS_KEY)).toBeFalsy();
+      expect(
+        queryClient.getQueryData(itemKeys.accessiblePage({}, {})),
+      ).toBeFalsy();
     });
 
     it('Unauthorized to post item login', async () => {
       queryClient.setQueryData(memberKeys.current().content, MemberFactory());
-      // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, items);
+      queryClient.setQueryData(itemKeys.accessiblePage({}, {}), items);
 
       const endpoints = [
         {
@@ -114,8 +113,9 @@ describe('Item Login Mutations', () => {
       expect(
         queryClient.getQueryData(memberKeys.current().content),
       ).toBeFalsy();
-      // todo: change to Accessible ?
-      expect(queryClient.getQueryData(OWN_ITEMS_KEY)).toBeFalsy();
+      expect(
+        queryClient.getQueryData(itemKeys.accessiblePage({}, {})),
+      ).toBeFalsy();
 
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({

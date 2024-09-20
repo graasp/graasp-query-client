@@ -2,7 +2,6 @@ export const KINDS = {
   CHILD: 'child',
   FEEDBACK: 'feedback',
   ITEM: 'item',
-  OWN: 'own',
   RECYCLE_BIN: 'recycle_bin',
   SELF: 'self',
   ACCESSIBLE: 'accessible',

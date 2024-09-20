@@ -11,7 +11,6 @@ import {
 import { verifyAuthentication } from '../api/axios.js';
 import { PartialQueryConfigForApi } from '../types.js';
 import {
-  GET_OWN_ITEMS_ROUTE,
   GET_RECYCLED_ITEMS_DATA_ROUTE,
   SHARED_ITEM_WITH_ROUTE,
   buildCopyItemsRoute,
@@ -43,16 +42,6 @@ export const getItems = async (
   axios
     .get<ResultOf<PackedItem>>(`${API_HOST}/${buildGetItemsRoute(ids)}`)
     .then(({ data }) => data);
-
-export const getOwnItems = async ({
-  API_HOST,
-  axios,
-}: PartialQueryConfigForApi) =>
-  verifyAuthentication(() =>
-    axios
-      .get<DiscriminatedItem[]>(`${API_HOST}/${GET_OWN_ITEMS_ROUTE}`)
-      .then(({ data }) => data),
-  );
 
 export type PostItemPayloadType = Partial<DiscriminatedItem> &
   Pick<DiscriminatedItem, 'type' | 'name'> &

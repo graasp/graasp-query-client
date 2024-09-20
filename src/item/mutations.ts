@@ -16,12 +16,7 @@ import {
 } from '@tanstack/react-query';
 
 import { splitRequestByIds } from '../api/axios.js';
-import {
-  OWN_ITEMS_KEY,
-  getKeyForParentId,
-  itemKeys,
-  memberKeys,
-} from '../keys.js';
+import { getKeyForParentId, itemKeys, memberKeys } from '../keys.js';
 import {
   type EnableNotificationsParam,
   type QueryClientConfig,
@@ -88,7 +83,8 @@ export default (queryConfig: QueryClientConfig) => {
 
     // get parent key
     const childrenKey = !parentId
-      ? OWN_ITEMS_KEY
+      ? // todo: this should be removed when we remove this function, previously was OWN_ITEMS
+        ['']
       : itemKeys.single(parentId).allChildren;
     // Cancel any outgoing re-fetches (so they don't overwrite our optimistic update)
     await queryClient.cancelQueries({ queryKey: childrenKey });

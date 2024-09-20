@@ -25,7 +25,7 @@ import {
   setUpTest,
   waitForMutation,
 } from '../../test/utils.js';
-import { OWN_ITEMS_KEY, itemKeys } from '../keys.js';
+import { itemKeys } from '../keys.js';
 import { buildGetMembersByEmailRoute } from '../member/routes.js';
 import {
   buildDeleteItemMembershipRoute,
@@ -79,8 +79,7 @@ describe('Membership Mutations', () => {
         const itemKey = itemKeys.single(i.id).content;
         queryClient.setQueryData(itemKey, i);
       });
-      // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, items);
+      queryClient.setQueryData(itemKeys.accessiblePage({}, {}), items);
       queryClient.setQueryData(
         itemKeys.single(itemId).memberships,
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -122,8 +121,7 @@ describe('Membership Mutations', () => {
         const itemKey = itemKeys.single(i.id).content;
         queryClient.setQueryData(itemKey, i);
       });
-      // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, items);
+      queryClient.setQueryData(itemKeys.accessiblePage({}, {}), items);
       queryClient.setQueryData(
         itemKeys.single(itemId).memberships,
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -317,8 +315,7 @@ describe('Membership Mutations', () => {
         const itemKey = itemKeys.single(i.id).content;
         queryClient.setQueryData(itemKey, i);
       });
-      // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, items);
+      queryClient.setQueryData(itemKeys.accessiblePage({}, {}), items);
       queryClient.setQueryData(
         itemKeys.single(itemId).memberships,
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -369,8 +366,7 @@ describe('Membership Mutations', () => {
         const itemKey = itemKeys.single(i.id).content;
         queryClient.setQueryData(itemKey, i);
       });
-      // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, items);
+      queryClient.setQueryData(itemKeys.accessiblePage({}, {}), items);
       queryClient.setQueryData(
         itemKeys.single(itemId).memberships,
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -422,8 +418,7 @@ describe('Membership Mutations', () => {
         const itemKey = itemKeys.single(i.id).content;
         queryClient.setQueryData(itemKey, i);
       });
-      // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, items);
+      queryClient.setQueryData(itemKeys.accessiblePage({}, {}), items);
       queryClient.setQueryData(
         itemKeys.single(itemId).memberships,
         ITEM_MEMBERSHIPS_RESPONSE,
@@ -484,8 +479,7 @@ describe('Membership Mutations', () => {
         const itemKey = itemKeys.single(i.id).content;
         queryClient.setQueryData(itemKey, i);
       });
-      // todo: change to Accessible ?
-      queryClient.setQueryData(OWN_ITEMS_KEY, items);
+      queryClient.setQueryData(itemKeys.accessiblePage({}, {}), items);
       queryClient.setQueryData(
         itemKeys.single(itemId).memberships,
         ITEM_MEMBERSHIPS_RESPONSE,
