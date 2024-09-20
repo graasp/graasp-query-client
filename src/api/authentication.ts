@@ -5,7 +5,6 @@ import {
   MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE,
   MOBILE_SIGN_UP_ROUTE,
   PASSWORD_RESET_REQUEST_ROUTE,
-  PASSWORD_RESET_ROUTE,
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
@@ -106,7 +105,7 @@ export const mobileSignUp = async (
   return axios.post<void>(url.toString(), payload);
 };
 
-export const passwordResetRequest = async (
+export const createPasswordResetRequest = async (
   payload: {
     email: string;
     captcha: string;
@@ -117,14 +116,14 @@ export const passwordResetRequest = async (
   return axios.post<void>(url.toString(), payload).then(({ data }) => data);
 };
 
-export const passwordReset = async (
+export const resolvePasswordResetRequest = async (
   payload: {
     password: string;
     token: string;
   },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) => {
-  const url = new URL(PASSWORD_RESET_ROUTE, API_HOST);
+  const url = new URL(PASSWORD_RESET_REQUEST_ROUTE, API_HOST);
   return axios
     .patch<void>(
       url.toString(),

@@ -15,15 +15,14 @@ import {
   MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE,
   MOBILE_SIGN_UP_ROUTE,
   PASSWORD_RESET_REQUEST_ROUTE,
-  PASSWORD_RESET_ROUTE,
   SIGN_IN_ROUTE,
   SIGN_IN_WITH_PASSWORD_ROUTE,
   SIGN_OUT_ROUTE,
   SIGN_UP_ROUTE,
 } from '../routes.js';
 import {
-  passwordResetRequestRoutine,
-  passwordResetRoutine,
+  createPasswordResetRequestRoutine,
+  resolvePasswordResetRequestRoutine,
   signInRoutine,
   signInWithPasswordRoutine,
   signOutRoutine,
@@ -567,9 +566,9 @@ describe('Authentication Mutations', () => {
     });
   });
 
-  describe('usePasswordResetRequest', () => {
+  describe('useCreatePasswordResetRequest', () => {
     const route = PASSWORD_RESET_REQUEST_ROUTE;
-    const mutation = mutations.usePasswordResetRequest;
+    const mutation = mutations.useCreatePasswordResetRequest;
 
     it(`Sign out`, async () => {
       const endpoints = [
@@ -593,7 +592,7 @@ describe('Authentication Mutations', () => {
       });
 
       expect(mockedNotifier).toHaveBeenCalledWith({
-        type: passwordResetRequestRoutine.SUCCESS,
+        type: createPasswordResetRequestRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET_REQUEST },
       });
     });
@@ -624,15 +623,15 @@ describe('Authentication Mutations', () => {
 
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: passwordResetRequestRoutine.FAILURE,
+          type: createPasswordResetRequestRoutine.FAILURE,
         }),
       );
     });
   });
 
-  describe('usePasswordReset', () => {
-    const route = PASSWORD_RESET_ROUTE;
-    const mutation = mutations.usePasswordReset;
+  describe('useResolvePasswordResetRequest', () => {
+    const route = PASSWORD_RESET_REQUEST_ROUTE;
+    const mutation = mutations.useResolvePasswordResetRequest;
 
     it(`Sign out`, async () => {
       const endpoints = [
@@ -656,7 +655,7 @@ describe('Authentication Mutations', () => {
       });
 
       expect(mockedNotifier).toHaveBeenCalledWith({
-        type: passwordResetRoutine.SUCCESS,
+        type: resolvePasswordResetRequestRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET },
       });
     });
@@ -687,7 +686,7 @@ describe('Authentication Mutations', () => {
 
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: passwordResetRoutine.FAILURE,
+          type: resolvePasswordResetRequestRoutine.FAILURE,
         }),
       );
     });

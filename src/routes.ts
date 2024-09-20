@@ -87,7 +87,6 @@ export const MOBILE_SIGN_UP_ROUTE = `/m/register`;
 export const MOBILE_SIGN_IN_ROUTE = `/m/login`;
 export const MOBILE_SIGN_IN_WITH_PASSWORD_ROUTE = `/m/login-password`;
 export const PASSWORD_RESET_REQUEST_ROUTE = '/password/reset';
-export const PASSWORD_RESET_ROUTE = '/password/reset';
 export const SIGN_IN_ROUTE = '/login';
 export const SIGN_IN_WITH_PASSWORD_ROUTE = '/login-password';
 export const SIGN_UP_ROUTE = '/register';
@@ -446,7 +445,6 @@ export const API_ROUTES = {
   SIGN_OUT_ROUTE,
   SIGN_UP_ROUTE,
   PASSWORD_RESET_REQUEST_ROUTE,
-  PASSWORD_RESET_ROUTE,
   VALIDATION_ROUTE,
   buildGetItemsInMapRoute,
   buildGetItemGeolocationRoute,

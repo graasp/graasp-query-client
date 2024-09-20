@@ -6,8 +6,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Api from '../api/authentication.js';
 import { memberKeys } from '../keys.js';
 import {
-  passwordResetRequestRoutine,
-  passwordResetRoutine,
+  createPasswordResetRequestRoutine,
+  resolvePasswordResetRequestRoutine,
   signInRoutine,
   signInWithPasswordRoutine,
   signOutRoutine,
@@ -203,40 +203,40 @@ export default (queryConfig: QueryClientConfig) => {
     });
   };
 
-  const usePasswordResetRequest = () =>
+  const useCreatePasswordResetRequest = () =>
     useMutation(
       (args: { email: string; captcha: string }) =>
-        Api.passwordResetRequest(args, queryConfig),
+        Api.createPasswordResetRequest(args, queryConfig),
       {
         onSuccess: () => {
           notifier?.({
-            type: passwordResetRequestRoutine.SUCCESS,
+            type: createPasswordResetRequestRoutine.SUCCESS,
             payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET_REQUEST },
           });
         },
         onError: (error: Error) => {
           notifier?.({
-            type: passwordResetRequestRoutine.FAILURE,
+            type: createPasswordResetRequestRoutine.FAILURE,
             payload: { error },
           });
         },
       },
     );
 
-  const usePasswordReset = () =>
+  const useResolvePasswordResetRequest = () =>
     useMutation(
       (args: { password: string; token: string }) =>
-        Api.passwordReset(args, queryConfig),
+        Api.resolvePasswordResetRequest(args, queryConfig),
       {
         onSuccess: () => {
           notifier?.({
-            type: passwordResetRoutine.SUCCESS,
+            type: resolvePasswordResetRequestRoutine.SUCCESS,
             payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET },
           });
         },
         onError: (error: Error) => {
           notifier?.({
-            type: passwordResetRoutine.FAILURE,
+            type: resolvePasswordResetRequestRoutine.FAILURE,
             payload: { error },
           });
         },
@@ -251,7 +251,7 @@ export default (queryConfig: QueryClientConfig) => {
     useMobileSignUp,
     useMobileSignIn,
     useMobileSignInWithPassword,
-    usePasswordResetRequest,
-    usePasswordReset,
+    useCreatePasswordResetRequest,
+    useResolvePasswordResetRequest,
   };
 };
