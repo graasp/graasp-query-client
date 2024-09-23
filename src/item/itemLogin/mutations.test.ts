@@ -4,48 +4,46 @@ import { SUCCESS_MESSAGES } from '@graasp/translations';
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
-import { v4 } from 'uuid';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { UNAUTHORIZED_RESPONSE } from '../../../test/constants.js';
+import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../../test/constants.js';
 import {
   mockMutation,
   setUpTest,
   waitForMutation,
 } from '../../../test/utils.js';
 import { itemKeys } from '../../keys.js';
-import { buildReorderItemRoute } from '../routes.js';
-import { reorderItemRoutine } from '../routines.js';
+import { buildEnroll } from './routes.js';
+import { enrollRoutine } from './routines.js';
 
 const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
 });
 
-const child = FolderItemFactory();
-const response = [FolderItemFactory(), child];
-const previousItemId = v4();
+const item = FolderItemFactory();
+const itemId = item.id;
+const key = itemKeys.single(itemId).content;
+const membershipKey = itemKeys.single(itemId).memberships;
 
-describe('useReorderItem', () => {
-  const mutation = mutations.useReorderItem;
-  const { id: parentItemId } = FolderItemFactory();
+describe('useEnroll', () => {
+  const mutation = mutations.useEnroll;
+  const route = `/${buildEnroll(itemId)}`;
 
   afterEach(() => {
     nock.cleanAll();
     queryClient.clear();
   });
 
-  it('Reorder item', async () => {
-    const route = `/${buildReorderItemRoute({ id: child.id })}`;
-
+  it('Enroll', async () => {
     // set data in cache
-    const key = itemKeys.single(parentItemId).allChildren;
-    queryClient.setQueryData(key, [child, FolderItemFactory()]);
+    queryClient.setQueryData(key, item);
+    queryClient.setQueryData(membershipKey, [{}]);
 
     const endpoints = [
       {
-        response,
-        method: HttpMethod.Patch,
+        response: OK_RESPONSE,
+        method: HttpMethod.Post,
         route,
       },
     ];
@@ -57,25 +55,25 @@ describe('useReorderItem', () => {
     });
 
     await act(async () => {
-      mockedMutation.mutate({ id: child.id, parentItemId, previousItemId });
+      mockedMutation.mutate({ itemId });
       await waitForMutation();
     });
 
-    const state = queryClient.getQueryState(key);
-    expect(state?.isInvalidated).toBeTruthy();
-
     expect(mockedNotifier).toHaveBeenCalledWith({
-      type: reorderItemRoutine.SUCCESS,
-      payload: { message: SUCCESS_MESSAGES.REORDER_ITEM },
+      type: enrollRoutine.SUCCESS,
+      payload: { message: SUCCESS_MESSAGES.ENROLL },
     });
+
+    expect(queryClient.getQueryState(key)?.isInvalidated).toBeTruthy();
+    expect(
+      queryClient.getQueryState(membershipKey)?.isInvalidated,
+    ).toBeTruthy();
   });
 
-  it('Unauthorized to upload a thumbnail', async () => {
-    const route = `/${buildReorderItemRoute({ id: child.id })}`;
-
+  it('Unauthorized to enroll', async () => {
     // set data in cache
-    const key = itemKeys.single(parentItemId).allChildren;
-    queryClient.setQueryData(key, [child, FolderItemFactory()]);
+    queryClient.setQueryData(key, item);
+    queryClient.setQueryData(membershipKey, [{}]);
 
     const endpoints = [
       {
@@ -93,7 +91,7 @@ describe('useReorderItem', () => {
     });
 
     await act(async () => {
-      mockedMutation.mutate({ id: child.id, parentItemId, previousItemId });
+      mockedMutation.mutate({ itemId });
       await waitForMutation();
     });
 
@@ -101,7 +99,7 @@ describe('useReorderItem', () => {
     expect(state?.isInvalidated).toBeTruthy();
 
     expect(mockedNotifier).toHaveBeenCalledWith({
-      type: reorderItemRoutine.FAILURE,
+      type: enrollRoutine.FAILURE,
       payload: expect.anything(),
     });
   });

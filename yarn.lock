@@ -625,7 +625,7 @@ __metadata:
     "@eslint/eslintrc": "npm:3.1.0"
     "@eslint/js": "npm:9.10.0"
     "@graasp/sdk": "npm:4.29.1"
-    "@graasp/translations": "npm:1.37.1"
+    "@graasp/translations": "npm:1.38.0"
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
     "@testing-library/dom": "npm:10.4.0"
@@ -686,12 +686,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graasp/translations@npm:1.37.1":
-  version: 1.37.1
-  resolution: "@graasp/translations@npm:1.37.1"
+"@graasp/translations@npm:1.38.0":
+  version: 1.38.0
+  resolution: "@graasp/translations@npm:1.38.0"
   peerDependencies:
     i18next: ^23.8.1
-  checksum: 10/9ccc50b2808ba11479b2ebcb231495f952b0d14118526e9c9080f28ba0be4955276b3846c53ab7eb66b82e0df0bdf69f32c0130cc970698d8d952edf954aa1ab
+  checksum: 10/4ba3ce113c2df86d1fe7a8c379a23ae015d6ada7f5bcafa96b53212e1016af6ba92679235fbaafcb0b074ddf7f535510573a3a7c944af89eb5d46eb9bfe64c08
   languageName: node
   linkType: hard
 
