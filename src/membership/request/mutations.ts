@@ -32,7 +32,7 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: (_data, _error, { id }) => {
-          queryClient.invalidateQueries(membershipRequestsKeys.own(id));
+          queryClient.invalidateQueries(membershipRequestsKeys.single(id));
         },
       },
     );

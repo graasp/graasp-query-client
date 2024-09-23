@@ -18,7 +18,7 @@ export const useEnroll = (queryConfig: QueryClientConfig) => () => {
       onSuccess: () => {
         notifier?.({
           type: enrollRoutine.SUCCESS,
-          payload: { message: SUCCESS_MESSAGES.REQUEST_MEMBERSHIP },
+          payload: { message: SUCCESS_MESSAGES.ENROLL },
         });
       },
       onError: (error: Error, _args, _context) => {
@@ -29,7 +29,8 @@ export const useEnroll = (queryConfig: QueryClientConfig) => () => {
       },
       onSettled: (_data, _error, { itemId }) => {
         // on success, enroll should have given membership to the user
-        queryClient.invalidateQueries(itemKeys.single(itemId).memberships);
+        // invalidate full item because of packed
+        queryClient.invalidateQueries(itemKeys.single(itemId).content);
       },
     },
   );
