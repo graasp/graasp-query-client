@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.24.0](https://github.com/graasp/graasp-query-client/compare/v3.23.0...v3.24.0) (2024-09-23)
+
+
+### Features
+
+* add mutations and hooks for membership request ([#899](https://github.com/graasp/graasp-query-client/issues/899)) ([24098c9](https://github.com/graasp/graasp-query-client/commit/24098c93ee00bd76291d49a0f4308238d197d97a))
+
 ## [3.23.0](https://github.com/graasp/graasp-query-client/compare/v3.22.4...v3.23.0) (2024-09-20)
 
 
