@@ -169,7 +169,7 @@ export const ITEM_LOGIN_RESPONSE: ItemLoginSchema = {
   createdAt: '2023-09-06T11:50:32.894Z',
   updatedAt: '2023-09-06T11:50:32.894Z',
   id: 'login-schema-id',
-  state: ItemLoginSchemaState.Active,
+  status: ItemLoginSchemaState.Active,
 };
 
 const BlobMock = {

@@ -45,7 +45,7 @@ export default (queryConfig: QueryClientConfig) => {
       (payload: {
         itemId: UUID;
         type?: ItemLoginSchemaType;
-        state?: ItemLoginSchemaState;
+        status?: ItemLoginSchemaState;
       }) => Api.putItemLoginSchema(payload, queryConfig),
       {
         onSuccess: () => {

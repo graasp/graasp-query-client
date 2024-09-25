@@ -54,8 +54,12 @@ export const putItemLoginSchema = async (
   {
     itemId,
     type,
-    state,
-  }: { itemId: UUID; type?: ItemLoginSchemaType; state?: ItemLoginSchemaState },
+    status,
+  }: {
+    itemId: UUID;
+    type?: ItemLoginSchemaType;
+    status?: ItemLoginSchemaState;
+  },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
@@ -64,7 +68,7 @@ export const putItemLoginSchema = async (
         `${API_HOST}/${buildPutItemLoginSchemaRoute(itemId)}`,
         {
           type,
-          state,
+          status,
         },
       )
       .then(({ data }) => data),

@@ -182,7 +182,10 @@ describe('Item Login Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ itemId, state: ItemLoginSchemaState.Disabled });
+        mockedMutation.mutate({
+          itemId,
+          status: ItemLoginSchemaState.Disabled,
+        });
         await waitForMutation();
       });
 
