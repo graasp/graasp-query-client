@@ -2,6 +2,7 @@ import {
   AccountFactory,
   FolderItemFactory,
   HttpMethod,
+  ItemLoginSchemaState,
   ItemLoginSchemaType,
   MemberFactory,
 } from '@graasp/sdk';
@@ -131,7 +132,7 @@ describe('Item Login Mutations', () => {
     const itemLoginKey = itemKeys.single(itemId).itemLoginSchema.content;
     const newLoginSchema = ItemLoginSchemaType.UsernameAndPassword;
 
-    it('Put item login schema', async () => {
+    it('Update item login schema type', async () => {
       queryClient.setQueryData(itemLoginKey, loginSchema);
 
       const endpoints = [
@@ -150,6 +151,38 @@ describe('Item Login Mutations', () => {
 
       await act(async () => {
         mockedMutation.mutate({ itemId, type: newLoginSchema });
+        await waitForMutation();
+      });
+
+      // check all set keys are reset
+      expect(
+        queryClient.getQueryState(itemLoginKey)?.isInvalidated,
+      ).toBeTruthy();
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: putItemLoginSchemaRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.PUT_ITEM_LOGIN_SCHEMA },
+      });
+    });
+
+    it('Update item login schema status', async () => {
+      queryClient.setQueryData(itemLoginKey, loginSchema);
+
+      const endpoints = [
+        {
+          response: {},
+          method: HttpMethod.Put,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({ itemId, state: ItemLoginSchemaState.Disabled });
         await waitForMutation();
       });
 

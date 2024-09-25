@@ -35,7 +35,7 @@
     "@eslint/compat": "1.1.1",
     "@eslint/eslintrc": "3.1.0",
     "@eslint/js": "9.10.0",
-    "@graasp/sdk": "4.29.1",
+    "@graasp/sdk": "graasp/graasp-sdk#665-item-login-schema-state",
     "@graasp/translations": "1.38.0",
     "@testing-library/dom": "10.4.0",
     "@testing-library/react": "16.0.1",
