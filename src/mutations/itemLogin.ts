@@ -32,7 +32,6 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: () => {
-          // reset all queries when trying to sign in
           queryClient.resetQueries();
         },
       },
