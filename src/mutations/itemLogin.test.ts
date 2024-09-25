@@ -2,7 +2,7 @@ import {
   AccountFactory,
   FolderItemFactory,
   HttpMethod,
-  ItemLoginSchemaState,
+  ItemLoginSchemaStatus,
   ItemLoginSchemaType,
   MemberFactory,
 } from '@graasp/sdk';
@@ -184,7 +184,7 @@ describe('Item Login Mutations', () => {
       await act(async () => {
         mockedMutation.mutate({
           itemId,
-          status: ItemLoginSchemaState.Disabled,
+          status: ItemLoginSchemaStatus.Disabled,
         });
         await waitForMutation();
       });

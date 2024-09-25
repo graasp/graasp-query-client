@@ -1,4 +1,4 @@
-import { ItemLoginSchemaState, ItemLoginSchemaType, UUID } from '@graasp/sdk';
+import { ItemLoginSchemaStatus, ItemLoginSchemaType, UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -45,7 +45,7 @@ export default (queryConfig: QueryClientConfig) => {
       (payload: {
         itemId: UUID;
         type?: ItemLoginSchemaType;
-        status?: ItemLoginSchemaState;
+        status?: ItemLoginSchemaStatus;
       }) => Api.putItemLoginSchema(payload, queryConfig),
       {
         onSuccess: () => {

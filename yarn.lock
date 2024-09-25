@@ -673,7 +673,7 @@ __metadata:
 
 "@graasp/sdk@graasp/graasp-sdk#665-item-login-schema-state":
   version: 4.29.1
-  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=f1355a336a5e725d50945717bc779c3c15407827"
+  resolution: "@graasp/sdk@https://github.com/graasp/graasp-sdk.git#commit=d175fd2cbe80a52f6815d92677d2033f6773ca7d"
   dependencies:
     "@faker-js/faker": "npm:9.0.1"
     filesize: "npm:10.1.6"
@@ -682,7 +682,7 @@ __metadata:
   peerDependencies:
     date-fns: ^3 || ^4.0.0
     uuid: ^9 || ^10
-  checksum: 10/aa31ed6a6eca307f497ee14e2c91fa2f0cb33e5aa19c5c3ca951da97fa13eb095a01d67e82bf80559d37c7b31cf5ef3639f44f4dee0125b81898066a42329f31
+  checksum: 10/d20af446aa276624b612081d88260196b774e6160dacae0e9830c0fe81a8a99cffcf2573bc2969a537eef8f996b6581c1fb9b0d4ccc10414c34162b024a7ffcd
   languageName: node
   linkType: hard
 

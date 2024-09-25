@@ -1,6 +1,6 @@
 import {
   ItemLoginSchema,
-  ItemLoginSchemaState,
+  ItemLoginSchemaStatus,
   ItemLoginSchemaType,
   Member,
   UUID,
@@ -58,7 +58,7 @@ export const putItemLoginSchema = async (
   }: {
     itemId: UUID;
     type?: ItemLoginSchemaType;
-    status?: ItemLoginSchemaState;
+    status?: ItemLoginSchemaStatus;
   },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
