@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.25.0](https://github.com/graasp/graasp-query-client/compare/v3.24.0...v3.25.0) (2024-09-26)
+
+
+### Features
+
+* remove delete item login schema, update state ([#933](https://github.com/graasp/graasp-query-client/issues/933)) ([f6b57dd](https://github.com/graasp/graasp-query-client/commit/f6b57ddfc8337efeb74d07e755d4d033312eb5c8))
+
 ## [3.24.0](https://github.com/graasp/graasp-query-client/compare/v3.23.0...v3.24.0) (2024-09-23)
 
 
