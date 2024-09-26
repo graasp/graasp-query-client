@@ -1,4 +1,4 @@
-import { ItemLoginSchemaType, UUID } from '@graasp/sdk';
+import { ItemLoginSchemaStatus, ItemLoginSchemaType, UUID } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -7,7 +7,6 @@ import * as Api from '../api/itemLogin.js';
 import { useEnroll } from '../item/itemLogin/mutations.js';
 import { itemKeys } from '../keys.js';
 import {
-  deleteItemLoginSchemaRoutine,
   postItemLoginRoutine,
   putItemLoginSchemaRoutine,
 } from '../routines/itemLogin.js';
@@ -33,7 +32,6 @@ export default (queryConfig: QueryClientConfig) => {
           });
         },
         onSettled: () => {
-          // reset all queries when trying to sign in
           queryClient.resetQueries();
         },
       },
@@ -43,8 +41,11 @@ export default (queryConfig: QueryClientConfig) => {
   const usePutItemLoginSchema = () => {
     const queryClient = useQueryClient();
     return useMutation(
-      (payload: { itemId: UUID; type: ItemLoginSchemaType }) =>
-        Api.putItemLoginSchema(payload, queryConfig),
+      (payload: {
+        itemId: UUID;
+        type?: ItemLoginSchemaType;
+        status?: ItemLoginSchemaStatus;
+      }) => Api.putItemLoginSchema(payload, queryConfig),
       {
         onSuccess: () => {
           notifier?.({
@@ -67,49 +68,9 @@ export default (queryConfig: QueryClientConfig) => {
     );
   };
 
-  const useDeleteItemLoginSchema = () => {
-    const queryClient = useQueryClient();
-    return useMutation(
-      (payload: { itemId: UUID }) =>
-        Api.deleteItemLoginSchema(payload, queryConfig),
-      {
-        onMutate: ({ itemId }) => {
-          const key = itemKeys.single(itemId).itemLoginSchema.content;
-          const previous = queryClient.getQueryData(key);
-          queryClient.setQueryData(key, null);
-          return previous;
-        },
-        onSuccess: () => {
-          notifier?.({
-            type: deleteItemLoginSchemaRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_LOGIN_SCHEMA },
-          });
-        },
-        onError: (error: Error, { itemId }, previous) => {
-          notifier?.({
-            type: deleteItemLoginSchemaRoutine.FAILURE,
-            payload: { error },
-          });
-          queryClient.setQueryData(
-            itemKeys.single(itemId).itemLoginSchema.content,
-            previous,
-          );
-        },
-        onSettled: (_data, _error, { itemId }) => {
-          // it is not necessary to update the cache for the given item login schema
-          // because the item login only applies if the user is signed out
-          queryClient.invalidateQueries(
-            itemKeys.single(itemId).itemLoginSchema.content,
-          );
-        },
-      },
-    );
-  };
-
   return {
     useEnroll: useEnroll(queryConfig),
     usePostItemLogin,
-    useDeleteItemLoginSchema,
     usePutItemLoginSchema,
   };
 };

@@ -81,7 +81,7 @@ export const itemKeys = {
 
       // item login
       itemLoginSchema: {
-        content: [...itemLoginSchema, 'content'] as const,
+        content: [...itemLoginSchema] as const,
         type: [...itemLoginSchema, 'type'] as const,
       },
 

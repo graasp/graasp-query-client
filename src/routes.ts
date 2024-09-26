@@ -117,8 +117,6 @@ export const buildDeleteItemTagRoute = ({
 export const buildPostItemLoginSignInRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login`;
 export const GET_TAGS_ROUTE = `${ITEMS_ROUTE}/tags/list`;
-export const buildDeleteItemLoginSchemaRoute = (id: UUID) =>
-  `${ITEMS_ROUTE}/${id}/login-schema`;
 export const buildEditItemMembershipRoute = (id: UUID) =>
   `${ITEM_MEMBERSHIPS_ROUTE}/${id}`;
 export const buildDeleteItemMembershipRoute = (id: UUID) =>
@@ -373,7 +371,6 @@ export const API_ROUTES = {
   buildDeleteItemCategoryRoute,
   buildDeleteItemChatMessageRoute,
   buildDeleteItemLikeRoute,
-  buildDeleteItemLoginSchemaRoute,
   buildDeleteItemMembershipRoute,
   buildDeleteItemTagRoute,
   buildDeleteShortLinkRoute,

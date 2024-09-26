@@ -1,12 +1,12 @@
 import {
   ItemLoginSchema,
+  ItemLoginSchemaStatus,
   ItemLoginSchemaType,
   Member,
   UUID,
 } from '@graasp/sdk';
 
 import {
-  buildDeleteItemLoginSchemaRoute,
   buildGetItemLoginSchemaRoute,
   buildGetItemLoginSchemaTypeRoute,
   buildPostItemLoginSignInRoute,
@@ -51,7 +51,15 @@ export const getItemLoginSchemaType = async (
     .then(({ data }) => data);
 
 export const putItemLoginSchema = async (
-  { itemId, type }: { itemId: UUID; type: ItemLoginSchemaType },
+  {
+    itemId,
+    type,
+    status,
+  }: {
+    itemId: UUID;
+    type?: ItemLoginSchemaType;
+    status?: ItemLoginSchemaStatus;
+  },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
@@ -60,17 +68,8 @@ export const putItemLoginSchema = async (
         `${API_HOST}/${buildPutItemLoginSchemaRoute(itemId)}`,
         {
           type,
+          status,
         },
       )
       .then(({ data }) => data),
-  );
-
-export const deleteItemLoginSchema = async (
-  { itemId }: { itemId: UUID },
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  verifyAuthentication(() =>
-    axios.delete<void>(
-      `${API_HOST}/${buildDeleteItemLoginSchemaRoute(itemId)}`,
-    ),
   );
