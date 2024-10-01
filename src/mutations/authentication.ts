@@ -21,107 +21,102 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useSignIn = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (payload: { email: string; captcha: string; url?: string }) =>
+    return useMutation({
+      mutationFn: (payload: { email: string; captcha: string; url?: string }) =>
         Api.signIn(payload, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: signInRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.SIGN_IN },
-          });
-          queryClient.resetQueries();
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: signInRoutine.FAILURE,
-            payload: { error },
-          });
-        },
+      onSuccess: () => {
+        notifier?.({
+          type: signInRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.SIGN_IN },
+        });
+        queryClient.resetQueries();
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: signInRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
   };
 
   const useMobileSignIn = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (payload: { email: string; captcha: string; challenge: string }) =>
-        Api.mobileSignIn(payload, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: signInRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.SIGN_IN },
-          });
-          queryClient.resetQueries();
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: signInRoutine.FAILURE,
-            payload: { error },
-          });
-        },
+    return useMutation({
+      mutationFn: (payload: {
+        email: string;
+        captcha: string;
+        challenge: string;
+      }) => Api.mobileSignIn(payload, queryConfig),
+      onSuccess: () => {
+        notifier?.({
+          type: signInRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.SIGN_IN },
+        });
+        queryClient.resetQueries();
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: signInRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
   };
 
   const useSignInWithPassword = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (payload: {
+    return useMutation({
+      mutationFn: (payload: {
         email: string;
         password: Password;
         captcha: string;
         url?: string;
       }) => Api.signInWithPassword(payload, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: signInWithPasswordRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.SIGN_IN_WITH_PASSWORD },
-          });
-          queryClient.resetQueries();
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: signInWithPasswordRoutine.FAILURE,
-            payload: { error },
-          });
-        },
+      onSuccess: () => {
+        notifier?.({
+          type: signInWithPasswordRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.SIGN_IN_WITH_PASSWORD },
+        });
+        queryClient.resetQueries();
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: signInWithPasswordRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
   };
 
   const useMobileSignInWithPassword = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (payload: {
+    return useMutation({
+      mutationFn: (payload: {
         email: string;
         password: string;
         captcha: string;
         challenge: string;
       }) => Api.mobileSignInWithPassword(payload, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: signInWithPasswordRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.SIGN_IN_WITH_PASSWORD },
-          });
-          queryClient.resetQueries();
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: signInWithPasswordRoutine.FAILURE,
-            payload: { error },
-          });
-        },
+      onSuccess: () => {
+        notifier?.({
+          type: signInWithPasswordRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.SIGN_IN_WITH_PASSWORD },
+        });
+        queryClient.resetQueries();
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: signInWithPasswordRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
   };
 
   const useSignUp = () =>
-    useMutation(
-      (payload: {
+    useMutation({
+      mutationFn: (payload: {
         name: string;
         email: string;
         captcha: string;
@@ -129,25 +124,23 @@ export default (queryConfig: QueryClientConfig) => {
         lang?: string;
         enableSaveActions: boolean;
       }) => Api.signUp(payload, queryConfig, { lang: payload.lang }),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: signUpRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.SIGN_UP },
-          });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: signUpRoutine.FAILURE,
-            payload: { error },
-          });
-        },
+      onSuccess: () => {
+        notifier?.({
+          type: signUpRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.SIGN_UP },
+        });
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: signUpRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
 
   const useMobileSignUp = () =>
-    useMutation(
-      (payload: {
+    useMutation({
+      mutationFn: (payload: {
         name: string;
         email: string;
         challenge: string;
@@ -155,25 +148,25 @@ export default (queryConfig: QueryClientConfig) => {
         lang?: string;
         enableSaveActions: boolean;
       }) => Api.mobileSignUp(payload, queryConfig, { lang: payload.lang }),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: signUpRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.SIGN_UP },
-          });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: signUpRoutine.FAILURE,
-            payload: { error },
-          });
-        },
+      onSuccess: () => {
+        notifier?.({
+          type: signUpRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.SIGN_UP },
+        });
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: signUpRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
 
   const useSignOut = () => {
     const queryClient = useQueryClient();
-    return useMutation(() => Api.signOut(queryConfig), {
+
+    return useMutation({
+      mutationFn: () => Api.signOut(queryConfig),
       onSuccess: (_res) => {
         notifier?.({
           type: signOutRoutine.SUCCESS,
@@ -204,44 +197,40 @@ export default (queryConfig: QueryClientConfig) => {
   };
 
   const useCreatePasswordResetRequest = () =>
-    useMutation(
-      (args: { email: string; captcha: string }) =>
+    useMutation({
+      mutationFn: (args: { email: string; captcha: string }) =>
         Api.createPasswordResetRequest(args, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: createPasswordResetRequestRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET_REQUEST },
-          });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: createPasswordResetRequestRoutine.FAILURE,
-            payload: { error },
-          });
-        },
+      onSuccess: () => {
+        notifier?.({
+          type: createPasswordResetRequestRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET_REQUEST },
+        });
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: createPasswordResetRequestRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
 
   const useResolvePasswordResetRequest = () =>
-    useMutation(
-      (args: { password: string; token: string }) =>
+    useMutation({
+      mutationFn: (args: { password: string; token: string }) =>
         Api.resolvePasswordResetRequest(args, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: resolvePasswordResetRequestRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET },
-          });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: resolvePasswordResetRequestRoutine.FAILURE,
-            payload: { error },
-          });
-        },
+      onSuccess: () => {
+        notifier?.({
+          type: resolvePasswordResetRequestRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.PASSWORD_RESET },
+        });
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: resolvePasswordResetRequestRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+    });
 
   return {
     useSignIn,

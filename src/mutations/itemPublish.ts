@@ -18,66 +18,66 @@ export default (queryConfig: QueryClientConfig) => {
    */
   const usePublishItem = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      ({ id, notification }: { id: UUID; notification: boolean }) =>
+    return useMutation({
+      mutationFn: ({ id, notification }: { id: UUID; notification: boolean }) =>
         Api.publishItem(id, queryConfig, notification),
-      {
-        onSuccess: () => {
-          notifier?.({ type: publishItemRoutine.SUCCESS });
-        },
-        onError: (error: Error) => {
-          notifier?.({ type: publishItemRoutine.FAILURE, payload: { error } });
-        },
-        onSettled: (_data, _error, { id }) => {
-          queryClient.invalidateQueries(
-            itemKeys.single(id).publishedInformation,
-          );
-          queryClient.invalidateQueries(itemKeys.single(id).publicationStatus);
-          const currentMemberId = queryClient.getQueryData<CompleteMember>(
-            memberKeys.current().content,
-          )?.id;
-          if (currentMemberId) {
-            queryClient.invalidateQueries(
-              itemKeys.published().byMember(currentMemberId),
-            );
-          }
-          queryClient.invalidateQueries(itemKeys.published().all);
-        },
+      onSuccess: () => {
+        notifier?.({ type: publishItemRoutine.SUCCESS });
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({ type: publishItemRoutine.FAILURE, payload: { error } });
+      },
+      onSettled: (_data, _error, { id }) => {
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(id).publishedInformation,
+        });
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(id).publicationStatus,
+        });
+        const currentMemberId = queryClient.getQueryData<CompleteMember>(
+          memberKeys.current().content,
+        )?.id;
+        if (currentMemberId) {
+          queryClient.invalidateQueries({
+            queryKey: itemKeys.published().byMember(currentMemberId),
+          });
+        }
+        queryClient.invalidateQueries({ queryKey: itemKeys.published().all });
+      },
+    });
   };
 
   const useUnpublishItem = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      ({ id }: { id: UUID }) => Api.unpublishItem(id, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({ type: unpublishItemRoutine.SUCCESS });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: unpublishItemRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error, { id }) => {
-          queryClient.invalidateQueries(
-            itemKeys.single(id).publishedInformation,
-          );
-          queryClient.invalidateQueries(itemKeys.single(id).publicationStatus);
-          const currentMemberId = queryClient.getQueryData<CompleteMember>(
-            memberKeys.current().content,
-          )?.id;
-          if (currentMemberId) {
-            queryClient.invalidateQueries(
-              itemKeys.published().byMember(currentMemberId),
-            );
-          }
-          queryClient.invalidateQueries(itemKeys.published().all);
-        },
+    return useMutation({
+      mutationFn: ({ id }: { id: UUID }) => Api.unpublishItem(id, queryConfig),
+      onSuccess: () => {
+        notifier?.({ type: unpublishItemRoutine.SUCCESS });
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: unpublishItemRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+      onSettled: (_data, _error, { id }) => {
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(id).publishedInformation,
+        });
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(id).publicationStatus,
+        });
+        const currentMemberId = queryClient.getQueryData<CompleteMember>(
+          memberKeys.current().content,
+        )?.id;
+        if (currentMemberId) {
+          queryClient.invalidateQueries({
+            queryKey: itemKeys.published().byMember(currentMemberId),
+          });
+        }
+        queryClient.invalidateQueries({ queryKey: itemKeys.published().all });
+      },
+    });
   };
 
   return {

@@ -32,7 +32,7 @@ export const setUpTest = (args?: Args) => {
     axios: configureAxios(),
     defaultQueryOptions: {
       retry: 0,
-      cacheTime: 0,
+      gcTime: 0,
       staleTime: 0,
     },
     SHOW_NOTIFICATIONS: false,

@@ -20,7 +20,7 @@ import * as Api from './api.js';
 import { getMembersRoutine } from './routines.js';
 
 export default (queryConfig: QueryClientConfig) => {
-  const { defaultQueryOptions, notifier } = queryConfig;
+  const { defaultQueryOptions } = queryConfig;
 
   return {
     useCurrentMember: () =>
@@ -44,7 +44,6 @@ export default (queryConfig: QueryClientConfig) => {
       }),
 
     useMembers: (ids: UUID[]) => {
-      const queryClient = useQueryClient();
       return useQuery({
         queryKey: memberKeys.many(ids),
         queryFn: async () =>
@@ -53,17 +52,8 @@ export default (queryConfig: QueryClientConfig) => {
             MAX_TARGETS_FOR_READ_REQUEST,
             (chunk) => Api.getMembers({ ids: chunk }, queryConfig),
           ),
-        onSuccess: async (members) => {
-          // save members in their own key
-          if (members?.data) {
-            Object.values(members?.data).forEach(async (member) => {
-              const { id } = member;
-              queryClient.setQueryData(memberKeys.single(id).content, member);
-            });
-          }
-        },
-        onError: (error) => {
-          notifier?.({ type: getMembersRoutine.FAILURE, payload: { error } });
+        meta: {
+          routine: getMembersRoutine,
         },
         enabled: Boolean(ids?.length),
         ...defaultQueryOptions,

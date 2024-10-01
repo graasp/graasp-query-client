@@ -5,11 +5,7 @@ import {
   WebsocketClient,
 } from '@graasp/sdk';
 
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import {
@@ -52,8 +48,8 @@ const config = (
       useQuery({
         queryKey: OWN_ITEMS_KEY,
         queryFn: () => Api.getOwnItems(queryConfig),
-        onError: (error) => {
-          notifier?.({ type: getOwnItemsRoutine.FAILURE, payload: { error } });
+        meta: {
+          routine: getOwnItemsRoutine,
         },
         ...defaultQueryOptions,
       }),
@@ -69,8 +65,6 @@ const config = (
     ) => {
       const enabled = options?.enabled ?? true;
       const ordered = params?.ordered ?? true;
-
-      const queryClient = useQueryClient();
 
       // cannot debounce on array directly
       const debouncedKeywords = useDebounce(params?.keywords, 500);
@@ -90,15 +84,6 @@ const config = (
             { ...params, ordered, keywords: debouncedKeywords },
             queryConfig,
           );
-        },
-        onSuccess: async (items) => {
-          if (items?.length) {
-            // save items in their own key
-            items.forEach(async (item) => {
-              const { id: itemId } = item;
-              queryClient.setQueryData(itemKeys.single(itemId).content, item);
-            });
-          }
         },
         ...defaultQueryOptions,
         enabled: Boolean(id) && enabled,
@@ -121,27 +106,26 @@ const config = (
         ...defaultQueryOptions,
       };
 
-      return useInfiniteQuery(
-        itemKeys.single(id).paginatedChildren,
-        ({ pageParam = 1 }) =>
+      return useInfiniteQuery({
+        queryKey: itemKeys.single(id).paginatedChildren,
+        queryFn: ({ pageParam = 1 }) =>
           paginate(
             children,
             options?.itemsPerPage || PAGINATED_ITEMS_PER_PAGE,
             pageParam,
             options?.filterFunction,
           ),
-        {
-          enabled,
-          getNextPageParam: (lastPage) => {
-            const { pageNumber } = lastPage;
-            if (pageNumber !== -1) {
-              return pageNumber + 1;
-            }
-            return undefined;
-          },
-          ...childrenPaginatedOptions,
+        getNextPageParam: (lastPage) => {
+          const { pageNumber } = lastPage;
+          if (pageNumber !== -1) {
+            return pageNumber + 1;
+          }
+          return undefined;
         },
-      );
+        initialPageParam: 1,
+        enabled,
+        ...childrenPaginatedOptions,
+      });
     },
 
     /**
@@ -159,26 +143,14 @@ const config = (
       path?: string;
       enabled?: boolean;
     }) => {
-      const queryClient = useQueryClient();
       return useQuery({
         queryKey: itemKeys.single(id).parents,
-        queryFn: () => {
+        queryFn: async () => {
           if (!id) {
             throw new UndefinedArgument();
           }
 
-          return Api.getParents({ id, path }, queryConfig).then(
-            (items) => items,
-          );
-        },
-        onSuccess: async (items) => {
-          if (items?.length) {
-            // save items in their own key
-            items.forEach(async (item) => {
-              const { id: itemId } = item;
-              queryClient.setQueryData(itemKeys.single(itemId).content, item);
-            });
-          }
+          return Api.getParents({ id, path }, queryConfig);
         },
         ...defaultQueryOptions,
         enabled: enabled && Boolean(id),
@@ -187,13 +159,7 @@ const config = (
 
     useDescendants: useDescendants(queryConfig),
 
-    useItem: (
-      id?: UUID,
-      options?: {
-        getUpdates?: boolean;
-        placeholderData?: PackedItem;
-      },
-    ) =>
+    useItem: (id?: UUID) =>
       useQuery({
         queryKey: itemKeys.single(id).content,
         queryFn: () => {
@@ -204,14 +170,9 @@ const config = (
         },
         enabled: Boolean(id),
         ...defaultQueryOptions,
-        placeholderData: options?.placeholderData
-          ? options?.placeholderData
-          : undefined,
       }),
 
-    // todo: add optimisation to avoid fetching items already in cache
     useItems: (ids: UUID[]) => {
-      const queryClient = useQueryClient();
       return useQuery({
         queryKey: itemKeys.many(ids).content,
         queryFn: () => {
@@ -224,15 +185,6 @@ const config = (
             (chunk) => Api.getItems(chunk, queryConfig),
             true,
           );
-        },
-        onSuccess: async (items) => {
-          // save items in their own key
-          if (items?.data) {
-            Object.values(items?.data)?.forEach(async (item) => {
-              const { id } = item;
-              queryClient.setQueryData(itemKeys.single(id).content, item);
-            });
-          }
         },
         enabled: ids && Boolean(ids.length) && ids.every((id) => Boolean(id)),
         ...defaultQueryOptions,
@@ -289,20 +241,9 @@ const config = (
       }),
 
     useRecycledItemsData: () => {
-      const queryClient = useQueryClient();
       return useQuery({
         queryKey: memberKeys.current().recycled,
         queryFn: () => Api.getRecycledItemsData(queryConfig),
-        onSuccess: async (items) => {
-          // save items in their own key
-          items?.forEach(async (item) => {
-            const { item: recycledItem } = item;
-            queryClient.setQueryData(
-              itemKeys.single(recycledItem.id).content,
-              recycledItem,
-            );
-          });
-        },
         ...defaultQueryOptions,
       });
     },

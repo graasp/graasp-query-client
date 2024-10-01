@@ -1,11 +1,13 @@
 import { configureWebsocketClient } from '@graasp/sdk';
 
 import {
-  Hydrate,
+  HydrationBoundary,
+  QueryCache,
   QueryClient,
   QueryClientProvider,
   dehydrate,
   focusManager,
+  keepPreviousData,
   useMutation,
   useQuery,
   useQueryClient,
@@ -76,7 +78,7 @@ export default (
   useMutation: typeof useMutation;
   ReactQueryDevtools: typeof ReactQueryDevtools;
   dehydrate: typeof dehydrate;
-  Hydrate: typeof Hydrate;
+  Hydrate: typeof HydrationBoundary;
   mutations: typeof mutations;
   axios: AxiosStatic;
   focusManager: typeof focusManager;
@@ -106,8 +108,10 @@ export default (
     defaultQueryOptions: {
       retry,
       staleTime: STALE_TIME_MILLISECONDS,
-      cacheTime: CACHE_TIME_MILLISECONDS,
-      keepPreviousData: false,
+      gcTime: CACHE_TIME_MILLISECONDS,
+      placeholderData: config.defaultQueryOptions?.keepPreviousData
+        ? keepPreviousData
+        : undefined,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
@@ -116,7 +120,19 @@ export default (
   };
 
   // create queryclient
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    queryCache: new QueryCache({
+      onError(error, query) {
+        const { routine } = query.meta ?? {};
+        if (routine) {
+          queryConfig.notifier?.({
+            type: routine.FAILURE,
+            payload: { error },
+          });
+        }
+      },
+    }),
+  });
 
   // set up mutations given config
   // mutations are attached to queryClient
@@ -139,7 +155,7 @@ export default (
     useMutation,
     ReactQueryDevtools,
     dehydrate,
-    Hydrate,
+    Hydrate: HydrationBoundary,
     mutations,
     axios,
     focusManager,

@@ -13,32 +13,30 @@ export default (queryConfig: QueryClientConfig) => {
 
   const usePostEtherpad = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      async (
+    return useMutation({
+      mutationFn: async (
         params: Pick<DiscriminatedItem, 'name'> & {
           parentId?: string;
         },
       ) => Api.postEtherpad(params, queryConfig),
       // we cannot optimistically add an item because we need its id
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: createEtherpadRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
-          });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: createEtherpadRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: (_data, _error, { parentId }) => {
-          const key = getKeyForParentId(parentId);
-          queryClient.invalidateQueries(key);
-        },
+      onSuccess: () => {
+        notifier?.({
+          type: createEtherpadRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
+        });
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: createEtherpadRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+      onSettled: (_data, _error, { parentId }) => {
+        const key = getKeyForParentId(parentId);
+        queryClient.invalidateQueries({ queryKey: key });
+      },
+    });
   };
   return {
     usePostEtherpad,

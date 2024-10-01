@@ -1,5 +1,6 @@
 import { Invitation, Pagination } from '@graasp/sdk';
 
+import { keepPreviousData } from '@tanstack/react-query';
 import { AxiosError, AxiosInstance } from 'axios';
 
 export enum NotificationStatus {
@@ -43,7 +44,7 @@ export type QueryClientConfig = {
     // time until data in cache considered stale if cache not invalidated
     staleTime?: number;
     // time before cache labeled as inactive to be garbage collected
-    cacheTime?: number;
+    gcTime?: number;
     retry?:
       | number
       | boolean
@@ -51,6 +52,7 @@ export type QueryClientConfig = {
     refetchOnWindowFocus?: boolean;
     refetchOnReconnect?: boolean;
     keepPreviousData?: boolean;
+    placeholderData?: typeof keepPreviousData;
     refetchOnMount?: boolean;
   };
 };
@@ -71,4 +73,12 @@ export type EmbeddedLinkMetadata = {
   icons: string[];
   html?: string;
   isEmbeddingAllowed: boolean;
+};
+
+export type Routine = {
+  TRIGGER: string;
+  REQUEST: string;
+  FAILURE: string;
+  SUCCESS: string;
+  FULFILL: string;
 };

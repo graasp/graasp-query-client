@@ -11,24 +11,25 @@ import { reorderItem } from './api.js';
 export const useReorderItem = (queryConfig: QueryClientConfig) => () => {
   const { notifier } = queryConfig;
   const queryClient = useQueryClient();
-  return useMutation(
-    (args: { id: UUID; parentItemId: UUID; previousItemId?: UUID }) =>
-      reorderItem(args, queryConfig),
-    {
-      onSuccess: () => {
-        notifier?.({
-          type: reorderItemRoutine.SUCCESS,
-          payload: { message: SUCCESS_MESSAGES.REORDER_ITEM },
-        });
-      },
-      onError: (error: Error) => {
-        notifier?.({ type: reorderItemRoutine.FAILURE, payload: { error } });
-      },
-      onSettled: (_data, _error, args) => {
-        queryClient.invalidateQueries(
-          itemKeys.single(args.parentItemId).allChildren,
-        );
-      },
+  return useMutation({
+    mutationFn: (args: {
+      id: UUID;
+      parentItemId: UUID;
+      previousItemId?: UUID;
+    }) => reorderItem(args, queryConfig),
+    onSuccess: () => {
+      notifier?.({
+        type: reorderItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.REORDER_ITEM },
+      });
     },
-  );
+    onError: (error: Error) => {
+      notifier?.({ type: reorderItemRoutine.FAILURE, payload: { error } });
+    },
+    onSettled: (_data, _error, args) => {
+      queryClient.invalidateQueries({
+        queryKey: itemKeys.single(args.parentItemId).allChildren,
+      });
+    },
+  });
 };

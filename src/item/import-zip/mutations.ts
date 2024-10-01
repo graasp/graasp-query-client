@@ -10,26 +10,24 @@ import { importZip } from './api.js';
 
 export const useImportZip = (queryConfig: QueryClientConfig) => () => {
   const { notifier } = queryConfig;
-  return useMutation(
-    async (args: {
+  return useMutation({
+    mutationFn: async (args: {
       id?: DiscriminatedItem['id'];
       file: Blob;
       onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
     }) => importZip(args, queryConfig),
-    {
-      onSuccess: () => {
-        // send request notification, async endpoint
-        notifier?.({
-          type: importZipRoutine.SUCCESS,
-          payload: { message: REQUEST_MESSAGES.IMPORT_ZIP },
-        });
-      },
-      onError: (error: Error) => {
-        notifier?.({
-          type: importZipRoutine.FAILURE,
-          payload: { error },
-        });
-      },
+    onSuccess: () => {
+      // send request notification, async endpoint
+      notifier?.({
+        type: importZipRoutine.SUCCESS,
+        payload: { message: REQUEST_MESSAGES.IMPORT_ZIP },
+      });
     },
-  );
+    onError: (error: Error) => {
+      notifier?.({
+        type: importZipRoutine.FAILURE,
+        payload: { error },
+      });
+    },
+  });
 };

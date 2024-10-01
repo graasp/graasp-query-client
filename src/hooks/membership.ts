@@ -4,7 +4,7 @@ import {
   WebsocketClient,
 } from '@graasp/sdk';
 
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import * as Api from '../api/membership.js';
@@ -52,7 +52,6 @@ export default (
       ids?: UUID[],
       options?: { getUpdates?: boolean },
     ) => {
-      const queryClient = useQueryClient();
       const getUpdates = options?.getUpdates ?? enableWebsocket;
 
       membershipWsHooks?.useItemsMembershipsUpdates(getUpdates ? ids : null);
@@ -69,17 +68,6 @@ export default (
             MAX_TARGETS_FOR_READ_REQUEST,
             (chunk) => Api.getMembershipsForItems(chunk, queryConfig),
           );
-        },
-        onSuccess: async (memberships) => {
-          // save memberships in their own key
-          if (memberships) {
-            ids?.forEach(async (id) => {
-              queryClient.setQueryData(
-                itemKeys.single(id).memberships,
-                memberships.data[id],
-              );
-            });
-          }
         },
         enabled: Boolean(ids?.length) && ids?.every((id) => Boolean(id)),
         ...defaultQueryOptions,

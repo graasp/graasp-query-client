@@ -22,8 +22,10 @@ import { postItem, postItemWithThumbnail, uploadFiles } from './api.js';
 export const usePostItem = (queryConfig: QueryClientConfig) => () => {
   const queryClient = useQueryClient();
   const { notifier } = queryConfig;
-  return useMutation(
-    async (item: PostItemPayloadType | PostItemWithThumbnailPayloadType) => {
+  return useMutation({
+    mutationFn: async (
+      item: PostItemPayloadType | PostItemWithThumbnailPayloadType,
+    ) => {
       // check if thumbnail was provided and if it is defined
       if ('thumbnail' in item && item.thumbnail) {
         return postItemWithThumbnail(item, queryConfig);
@@ -31,27 +33,27 @@ export const usePostItem = (queryConfig: QueryClientConfig) => () => {
       return postItem(item, queryConfig);
     },
     //  we cannot optimistically add an item because we need its id
-    {
-      onSuccess: () => {
-        notifier?.({
-          type: createItemRoutine.SUCCESS,
-          payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
-        });
-      },
-      onError: (error: Error) => {
-        notifier?.({ type: createItemRoutine.FAILURE, payload: { error } });
-      },
-      onSettled: (_data, _error, { geolocation, parentId }) => {
-        const key = getKeyForParentId(parentId);
-        queryClient.invalidateQueries(key);
-
-        // if item has geolocation, invalidate map related keys
-        if (geolocation) {
-          queryClient.invalidateQueries(itemsWithGeolocationKeys.allBounds);
-        }
-      },
+    onSuccess: () => {
+      notifier?.({
+        type: createItemRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.CREATE_ITEM },
+      });
     },
-  );
+    onError: (error: Error) => {
+      notifier?.({ type: createItemRoutine.FAILURE, payload: { error } });
+    },
+    onSettled: (_data, _error, { geolocation, parentId }) => {
+      const key = getKeyForParentId(parentId);
+      queryClient.invalidateQueries({ queryKey: key });
+
+      // if item has geolocation, invalidate map related keys
+      if (geolocation) {
+        queryClient.invalidateQueries({
+          queryKey: itemsWithGeolocationKeys.allBounds,
+        });
+      }
+    },
+  });
 };
 
 /**
@@ -64,33 +66,32 @@ export const useUploadFilesFeedback =
   (queryConfig: QueryClientConfig) => () => {
     const queryClient = useQueryClient();
     const { notifier } = queryConfig;
-    return useMutation(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      async ({ error, data }: { error?: Error; data?: any; id?: string }) => {
-        throwIfArrayContainsErrorOrReturn(data);
-        if (error) {
-          throw new Error(JSON.stringify(error));
-        }
+    return useMutation({
+      mutationFn:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        async ({ error, data }: { error?: Error; data?: any; id?: string }) => {
+          throwIfArrayContainsErrorOrReturn(data);
+          if (error) {
+            throw new Error(JSON.stringify(error));
+          }
+        },
+      onSuccess: () => {
+        notifier?.({
+          type: uploadFilesRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
+        });
       },
-      {
-        onSuccess: () => {
-          notifier?.({
-            type: uploadFilesRoutine.SUCCESS,
-            payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
-          });
-        },
-        onError: (axiosError: Error, { error }) => {
-          notifier?.({
-            type: uploadFilesRoutine.FAILURE,
-            payload: { error: error ?? axiosError },
-          });
-        },
-        onSettled: (_data, _error, { id }) => {
-          const parentKey = getKeyForParentId(id);
-          queryClient.invalidateQueries(parentKey);
-        },
+      onError: (axiosError: Error, { error }) => {
+        notifier?.({
+          type: uploadFilesRoutine.FAILURE,
+          payload: { error: error ?? axiosError },
+        });
       },
-    );
+      onSettled: (_data, _error, { id }) => {
+        const parentKey = getKeyForParentId(id);
+        queryClient.invalidateQueries({ queryKey: parentKey });
+      },
+    });
   };
 
 /**
@@ -101,8 +102,8 @@ export const useUploadFilesFeedback =
 export const useUploadFiles = (queryConfig: QueryClientConfig) => () => {
   const queryClient = useQueryClient();
   const { notifier } = queryConfig;
-  return useMutation(
-    async (args: {
+  return useMutation({
+    mutationFn: async (args: {
       id?: DiscriminatedItem['id'];
       files: File[];
       previousItemId?: DiscriminatedItem['id'];
@@ -135,23 +136,21 @@ export const useUploadFiles = (queryConfig: QueryClientConfig) => () => {
 
       return uploadFiles({ ...args, files: validFiles }, queryConfig);
     },
-    {
-      onSuccess: () => {
-        notifier?.({
-          type: uploadFilesRoutine.SUCCESS,
-          payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
-        });
-      },
-      onError: (error: Error) => {
-        notifier?.({
-          type: uploadFilesRoutine.FAILURE,
-          payload: { error },
-        });
-      },
-      onSettled: (_data, _error, { id }) => {
-        const parentKey = getKeyForParentId(id);
-        queryClient.invalidateQueries(parentKey);
-      },
+    onSuccess: () => {
+      notifier?.({
+        type: uploadFilesRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.UPLOAD_FILES },
+      });
     },
-  );
+    onError: (error: Error) => {
+      notifier?.({
+        type: uploadFilesRoutine.FAILURE,
+        payload: { error },
+      });
+    },
+    onSettled: (_data, _error, { id }) => {
+      const parentKey = getKeyForParentId(id);
+      queryClient.invalidateQueries({ queryKey: parentKey });
+    },
+  });
 };

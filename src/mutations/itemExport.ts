@@ -10,7 +10,8 @@ export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   const useExportItem = () =>
-    useMutation(({ id }: { id: UUID }) => Api.exportItem(id, queryConfig), {
+    useMutation({
+      mutationFn: ({ id }: { id: UUID }) => Api.exportItem(id, queryConfig),
       onSuccess: () => {
         notifier?.({ type: exportItemRoutine.SUCCESS });
       },

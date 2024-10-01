@@ -1,6 +1,6 @@
 import { ItemPublished, MAX_TARGETS_FOR_READ_REQUEST, UUID } from '@graasp/sdk';
 
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import * as Api from '../api/itemPublish.js';
@@ -97,7 +97,7 @@ export default (queryConfig: QueryClientConfig) => {
     ) => {
       const enabled =
         (options?.enabled ?? true) && Boolean(args.itemIds.length);
-      const queryClient = useQueryClient();
+
       return useQuery({
         queryKey: itemKeys.many(args.itemIds).publishedInformation,
         queryFn: () =>
@@ -107,18 +107,6 @@ export default (queryConfig: QueryClientConfig) => {
             (chunk) => Api.getManyItemPublishedInformations(chunk, queryConfig),
             true,
           ),
-        onSuccess: async (publishedData) => {
-          // save items in their own key
-          if (publishedData?.data) {
-            Object.values(publishedData?.data)?.forEach(async (p) => {
-              const { id } = p.item;
-              queryClient.setQueryData(
-                itemKeys.single(id).publishedInformation,
-                p,
-              );
-            });
-          }
-        },
         ...defaultQueryOptions,
         enabled,
       });

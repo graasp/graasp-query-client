@@ -19,7 +19,8 @@ export default (queryConfig: QueryClientConfig) => {
       ItemLike,
       Error,
       { itemId: UUID; memberId: Member['id'] }
-    >(({ itemId }) => Api.postItemLike(itemId, queryConfig), {
+    >({
+      mutationFn: ({ itemId }) => Api.postItemLike(itemId, queryConfig),
       onSuccess: () => {
         notifier?.({ type: postItemLikeRoutine.SUCCESS });
       },
@@ -27,8 +28,12 @@ export default (queryConfig: QueryClientConfig) => {
         notifier?.({ type: postItemLikeRoutine.FAILURE, payload: { error } });
       },
       onSettled: (_data, _error, { memberId, itemId }) => {
-        queryClient.invalidateQueries(memberKeys.single(memberId).likedItems);
-        queryClient.invalidateQueries(itemKeys.single(itemId).likes);
+        queryClient.invalidateQueries({
+          queryKey: memberKeys.single(memberId).likedItems,
+        });
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(itemId).likes,
+        });
       },
     });
   };
@@ -39,7 +44,8 @@ export default (queryConfig: QueryClientConfig) => {
       ItemLike,
       Error,
       { itemId: UUID; memberId: Member['id'] }
-    >(({ itemId }) => Api.deleteItemLike(itemId, queryConfig), {
+    >({
+      mutationFn: ({ itemId }) => Api.deleteItemLike(itemId, queryConfig),
       onSuccess: () => {
         notifier?.({ type: deleteItemLikeRoutine.SUCCESS });
       },
@@ -50,8 +56,12 @@ export default (queryConfig: QueryClientConfig) => {
         });
       },
       onSettled: (_data, _error, { memberId, itemId }) => {
-        queryClient.invalidateQueries(memberKeys.single(memberId).likedItems);
-        queryClient.invalidateQueries(itemKeys.single(itemId).likes);
+        queryClient.invalidateQueries({
+          queryKey: memberKeys.single(memberId).likedItems,
+        });
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(itemId).likes,
+        });
       },
     });
   };

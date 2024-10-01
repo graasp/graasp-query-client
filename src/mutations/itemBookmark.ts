@@ -15,44 +15,45 @@ export default (queryConfig: QueryClientConfig) => {
 
   const useAddBookmarkedItem = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (itemId: UUID) => Api.addBookmarkedItem(itemId, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({ type: addBookmarkedItemRoutine.SUCCESS });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: addBookmarkedItemRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: () => {
-          queryClient.invalidateQueries(memberKeys.current().bookmarkedItems);
-        },
+    return useMutation({
+      mutationFn: (itemId: UUID) => Api.addBookmarkedItem(itemId, queryConfig),
+      onSuccess: () => {
+        notifier?.({ type: addBookmarkedItemRoutine.SUCCESS });
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: addBookmarkedItemRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({
+          queryKey: memberKeys.current().bookmarkedItems,
+        });
+      },
+    });
   };
 
   const useRemoveBookmarkedItem = () => {
     const queryClient = useQueryClient();
-    return useMutation(
-      (itemId: UUID) => Api.removeBookmarkedItem(itemId, queryConfig),
-      {
-        onSuccess: () => {
-          notifier?.({ type: deleteBookmarkedItemRoutine.SUCCESS });
-        },
-        onError: (error: Error) => {
-          notifier?.({
-            type: deleteBookmarkedItemRoutine.FAILURE,
-            payload: { error },
-          });
-        },
-        onSettled: () => {
-          queryClient.invalidateQueries(memberKeys.current().bookmarkedItems);
-        },
+    return useMutation({
+      mutationFn: (itemId: UUID) =>
+        Api.removeBookmarkedItem(itemId, queryConfig),
+      onSuccess: () => {
+        notifier?.({ type: deleteBookmarkedItemRoutine.SUCCESS });
       },
-    );
+      onError: (error: Error) => {
+        notifier?.({
+          type: deleteBookmarkedItemRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({
+          queryKey: memberKeys.current().bookmarkedItems,
+        });
+      },
+    });
   };
 
   return {
