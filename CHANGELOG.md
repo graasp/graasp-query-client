@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.26.0](https://github.com/graasp/graasp-query-client/compare/v3.25.0...v3.26.0) (2024-10-01)
+
+
+### Features
+
+* migrate Tanstack Query to v5 ([#892](https://github.com/graasp/graasp-query-client/issues/892)) ([1195d18](https://github.com/graasp/graasp-query-client/commit/1195d18216c7a74b447f4a485d2dd81481c8aa16))
+
 ## [3.25.0](https://github.com/graasp/graasp-query-client/compare/v3.24.0...v3.25.0) (2024-09-26)
 
 
