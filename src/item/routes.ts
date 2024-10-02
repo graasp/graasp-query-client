@@ -4,10 +4,10 @@ import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
 import { ItemChildrenParams, ItemSearchParams } from './types.js';
 
 export const ITEMS_ROUTE = 'items';
-export const GET_RECYCLED_ITEMS_DATA_ROUTE = `${ITEMS_ROUTE}/recycled`;
+
 export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 
-export const buildGetAccessibleItems = (
+export const setSearchQueryParams = (
   {
     creatorId,
     ordering,
@@ -43,6 +43,14 @@ export const buildGetAccessibleItems = (
   if (types && types.length) {
     types.forEach((t) => searchParams.append('types', t));
   }
+  return searchParams;
+};
+
+export const buildGetAccessibleItems = (
+  params: ItemSearchParams,
+  pagination: Partial<Pagination>,
+) => {
+  const searchParams = setSearchQueryParams(params, pagination);
   return `${ITEMS_ROUTE}/accessible?${searchParams}`;
 };
 

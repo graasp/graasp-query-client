@@ -2,6 +2,7 @@ import { WebsocketClient } from '@graasp/sdk';
 
 import configureItemHooks from '../item/hooks.js';
 import configureItemPublicationHooks from '../item/publication/hooks.js';
+import { configureRecycledHooks } from '../item/recycled/hooks.js';
 import configureMemberHooks from '../member/hooks.js';
 import configureMemberPasswordHooks from '../member/password/hooks.js';
 import configurePublicProfileHooks from '../member/publicProfile/hooks.js';
@@ -64,6 +65,7 @@ export default (
     ...configureItemPublicationHooks(queryConfig),
     ...configureMembershipRequestHooks(queryConfig),
     ...configureMemberPasswordHooks(queryConfig),
+    ...configureRecycledHooks(queryConfig),
     useDebounce,
   };
 };

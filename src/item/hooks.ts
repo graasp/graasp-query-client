@@ -14,7 +14,7 @@ import {
 } from '../config/constants.js';
 import { UndefinedArgument } from '../config/errors.js';
 import useDebounce from '../hooks/useDebounce.js';
-import { itemKeys, memberKeys } from '../keys.js';
+import { itemKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import { paginate } from '../utils/util.js';
 import { configureWsItemHooks } from '../ws/index.js';
@@ -208,24 +208,6 @@ const config = (
         ...defaultQueryOptions,
         staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       }),
-
-    useRecycledItems: () =>
-      useQuery({
-        queryKey: memberKeys.current().recycledItems,
-        queryFn: () =>
-          Api.getRecycledItemsData(queryConfig).then((data) =>
-            data?.map(({ item }) => item),
-          ),
-        ...defaultQueryOptions,
-      }),
-
-    useRecycledItemsData: () => {
-      return useQuery({
-        queryKey: memberKeys.current().recycled,
-        queryFn: () => Api.getRecycledItemsData(queryConfig),
-        ...defaultQueryOptions,
-      });
-    },
 
     useItemFeedbackUpdates: itemWsHooks?.useItemFeedbackUpdates,
 
