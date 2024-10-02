@@ -23,9 +23,8 @@ import {
   setUpTest,
   splitEndpointByIds,
 } from '../../test/utils.js';
-import { OWN_ITEMS_KEY, itemKeys } from '../keys.js';
+import { itemKeys } from '../keys.js';
 import {
-  GET_OWN_ITEMS_ROUTE,
   buildDownloadFilesRoute,
   buildGetChildrenRoute,
   buildGetItemParents,
@@ -34,52 +33,6 @@ import {
 } from './routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
-
-describe('useOwnItems', () => {
-  afterEach(() => {
-    nock.cleanAll();
-    queryClient.clear();
-  });
-  const route = `/${GET_OWN_ITEMS_ROUTE}`;
-  const hook = () => hooks.useOwnItems();
-
-  it(`Receive own items`, async () => {
-    const response = [
-      FolderItemFactory(),
-      FolderItemFactory(),
-      FolderItemFactory(),
-    ];
-    const endpoints = [{ route, response }];
-    const { data } = await mockHook({ endpoints, hook, wrapper });
-
-    expect(data).toMatchObject(response);
-
-    // verify cache keys
-    expect(
-      queryClient.getQueryData<DiscriminatedItem[]>(OWN_ITEMS_KEY),
-    ).toEqual(response);
-  });
-
-  it(`Unauthorized`, async () => {
-    const endpoints = [
-      {
-        route,
-        response: UNAUTHORIZED_RESPONSE,
-        statusCode: StatusCodes.UNAUTHORIZED,
-      },
-    ];
-    const { data, isError } = await mockHook({
-      hook,
-      wrapper,
-      endpoints,
-    });
-
-    expect(data).toBeFalsy();
-    expect(isError).toBeTruthy();
-    // verify cache keys
-    expect(queryClient.getQueryData(OWN_ITEMS_KEY)).toBeFalsy();
-  });
-});
 
 describe('useChildren', () => {
   afterEach(() => {

@@ -25,12 +25,7 @@ import {
   splitEndpointByIds,
   waitForMutation,
 } from '../../test/utils.js';
-import {
-  OWN_ITEMS_KEY,
-  getKeyForParentId,
-  itemKeys,
-  memberKeys,
-} from '../keys.js';
+import { getKeyForParentId, itemKeys, memberKeys } from '../keys.js';
 import {
   buildCopyItemsRoute,
   buildDeleteItemsRoute,
@@ -347,8 +342,7 @@ describe('Items Mutations', () => {
         const itemKey = itemKeys.single(item.id).content;
         queryClient.setQueryData(itemKey, item);
       });
-      // todo: change to use Accessible items
-      queryClient.setQueryData(OWN_ITEMS_KEY, items);
+      queryClient.setQueryData(itemKeys.accessiblePage({}, {}), items);
 
       const response = items;
 
