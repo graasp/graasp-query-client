@@ -46,17 +46,16 @@ export default (queryConfig: QueryClientConfig) => {
   };
 
   // suppose you can only edit yourself
-  const useEditMember = () => {
+  const useEditCurrentMember = () => {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: (payload: {
-        id: string;
         name?: string;
         enableSaveActions?: boolean;
         extra?: CompleteMember['extra'];
-      }) => Api.editMember(payload, queryConfig),
+      }) => Api.editCurrentMember(payload, queryConfig),
       onMutate: async (member) => {
-        // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+        // Cancel any outgoing refetch (so they don't overwrite our optimistic update)
         await queryClient.cancelQueries({
           queryKey: memberKeys.current().content,
         });
@@ -239,7 +238,11 @@ export default (queryConfig: QueryClientConfig) => {
   return {
     useDeleteCurrentMember,
     useUploadAvatar,
-    useEditMember,
+    useEditCurrentMember,
+    /**
+     * @deprecated use useEditCurrentMember
+     */
+    useEditMember: useEditCurrentMember,
     useUpdatePassword,
     useCreatePassword,
     useUpdateMemberEmail,

@@ -23,8 +23,8 @@ import { SIGN_OUT_ROUTE } from '../routes.js';
 import {
   buildDeleteCurrentMemberRoute,
   buildExportMemberDataRoute,
+  buildPatchCurrentMemberRoute,
   buildPatchMemberPasswordRoute,
-  buildPatchMemberRoute,
   buildPostMemberPasswordRoute,
   buildUploadAvatarRoute,
 } from './routes.js';
@@ -109,11 +109,11 @@ describe('Member Mutations', () => {
     });
   });
 
-  describe('useEditMember', () => {
+  describe('useEditCurrentMember', () => {
     const member = MemberFactory();
-    const route = `/${buildPatchMemberRoute(member.id)}`;
+    const route = `/${buildPatchCurrentMemberRoute()}`;
     const newMember = { name: 'newname' };
-    const mutation = mutations.useEditMember;
+    const mutation = mutations.useEditCurrentMember;
 
     it(`Successfully edit member id = ${member.id}`, async () => {
       const response = { ...member, name: newMember.name };
@@ -134,14 +134,11 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ id: member.id, ...newMember });
+        mockedMutation.mutate(newMember);
         await waitForMutation();
       });
 
-      expect(patchSpy).toHaveBeenCalledWith(
-        expect.stringContaining(member.id),
-        newMember,
-      );
+      expect(patchSpy).toHaveBeenCalledWith(expect.anything(), newMember);
 
       // verify cache keys
       const newData = queryClient.getQueryData<CompleteMember>(
@@ -172,7 +169,6 @@ describe('Member Mutations', () => {
 
       await act(async () => {
         mockedMutation.mutate({
-          id: member.id,
           name: newUsernameWithTrailingSpace,
         });
         await waitForMutation();
@@ -210,14 +206,11 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ id: member.id, ...updateMember });
+        mockedMutation.mutate(updateMember);
         await waitForMutation();
       });
 
-      expect(patchSpy).toHaveBeenCalledWith(
-        expect.stringContaining(member.id),
-        updateMember,
-      );
+      expect(patchSpy).toHaveBeenCalledWith(expect.anything(), updateMember);
 
       // verify cache keys
       const newData = queryClient.getQueryData<CompleteMember>(
@@ -244,7 +237,7 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ id: member.id, ...newMember });
+        mockedMutation.mutate(newMember);
         await waitForMutation();
       });
 
