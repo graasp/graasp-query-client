@@ -60,5 +60,6 @@ export const useInfiniteAccessibleItems =
       getNextPageParam: (_lastPage, pages) => pages.length + 1,
       refetchOnWindowFocus: () => false,
       initialPageParam: 1,
+      ...queryConfig.defaultQueryOptions,
     });
   };
