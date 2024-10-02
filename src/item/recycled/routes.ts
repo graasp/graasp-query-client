@@ -8,5 +8,5 @@ export const buildGetOwnRecycledItemData = (
   pagination: Partial<Pagination>,
 ) => {
   const searchParams = setSearchQueryParams(params, pagination);
-  return `${ITEMS_ROUTE}/recycled${searchParams.toString()}`;
+  return `${ITEMS_ROUTE}/recycled?${searchParams.toString()}`;
 };
