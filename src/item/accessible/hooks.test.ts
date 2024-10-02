@@ -172,6 +172,23 @@ describe('useInfiniteAccessibleItems', () => {
     await waitFor(() => expect(result.current.data!.pages.length).toEqual(1));
   });
 
+  it(`Unauthorized`, async () => {
+    const endpoints = [
+      {
+        route,
+        response: UNAUTHORIZED_RESPONSE,
+        statusCode: StatusCodes.UNAUTHORIZED,
+      },
+    ];
+    const { isError } = await mockHook({
+      hook,
+      wrapper,
+      endpoints,
+    });
+
+    expect(isError).toBeTruthy();
+  });
+
   it(`Route constructed correctly for accessible folders`, async () => {
     const typesParams = { types: [ItemType.FOLDER] };
     const url = `/${buildGetAccessibleItems(typesParams, {})}`;

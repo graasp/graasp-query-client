@@ -3,7 +3,7 @@ import { Paginated, Pagination, RecycledItemData } from '@graasp/sdk';
 import { verifyAuthentication } from '../../api/axios.js';
 import { PartialQueryConfigForApi } from '../../types.js';
 import { ItemSearchParams } from '../types.js';
-import { buildGetOwnRecycledItemData } from './routes.js';
+import { buildGetOwnRecycledItemDataRoute } from './routes.js';
 
 export const getOwnRecycledItemsData = async (
   params: ItemSearchParams,
@@ -14,6 +14,6 @@ export const getOwnRecycledItemsData = async (
     axios
       .get<
         Paginated<RecycledItemData>
-      >(`${API_HOST}/${buildGetOwnRecycledItemData(params, pagination)}`)
+      >(`${API_HOST}/${buildGetOwnRecycledItemDataRoute(params, pagination)}`)
       .then(({ data }) => data),
   );

@@ -3,7 +3,7 @@ import { Pagination } from '@graasp/sdk';
 import { ITEMS_ROUTE, setSearchQueryParams } from '../routes.js';
 import { ItemSearchParams } from '../types.js';
 
-export const buildGetOwnRecycledItemData = (
+export const buildGetOwnRecycledItemDataRoute = (
   params: ItemSearchParams,
   pagination: Partial<Pagination>,
 ) => {

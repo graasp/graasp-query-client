@@ -44,12 +44,17 @@ import { getOwnRecycledItemsData } from './api.js';
  */
 export const useInfiniteOwnRecycledItemData =
   (queryConfig: QueryClientConfig) =>
-  (params?: ItemSearchParams, pagination?: Partial<Pagination>) => {
+  (
+    params?: Omit<ItemSearchParams, 'creatorId'>,
+    pagination?: Partial<Pagination>,
+  ) => {
+    const { defaultQueryOptions } = queryConfig;
+
     const debouncedKeywords = useDebounce(params?.keywords, 500);
     const finalParams = { ...params, keywords: debouncedKeywords };
 
     return useInfiniteQuery({
-      queryKey: memberKeys.current().infiniteRecycled(finalParams),
+      queryKey: memberKeys.current().infiniteRecycledItemData(finalParams),
       queryFn: ({ pageParam }) =>
         getOwnRecycledItemsData(
           finalParams,
@@ -59,6 +64,7 @@ export const useInfiniteOwnRecycledItemData =
       getNextPageParam: (_lastPage, pages) => pages.length + 1,
       refetchOnWindowFocus: () => false,
       initialPageParam: 1,
+      ...defaultQueryOptions,
     });
   };
 
