@@ -2,7 +2,6 @@ import {
   DiscriminatedItem,
   ItemGeolocation,
   PackedItem,
-  PackedRecycledItemData,
   ResultOf,
   UUID,
   getParentFromPath,
@@ -11,7 +10,6 @@ import {
 import { verifyAuthentication } from '../api/axios.js';
 import { PartialQueryConfigForApi } from '../types.js';
 import {
-  GET_RECYCLED_ITEMS_DATA_ROUTE,
   SHARED_ITEM_WITH_ROUTE,
   buildCopyItemsRoute,
   buildDeleteItemsRoute,
@@ -183,18 +181,6 @@ export const getFileContentUrl = async (
       },
     })
     .then(({ data }) => data);
-
-export const getRecycledItemsData = async ({
-  API_HOST,
-  axios,
-}: PartialQueryConfigForApi) =>
-  verifyAuthentication(() =>
-    axios
-      .get<
-        PackedRecycledItemData[]
-      >(`${API_HOST}/${GET_RECYCLED_ITEMS_DATA_ROUTE}`)
-      .then(({ data }) => data),
-  );
 
 export const recycleItems = async (
   ids: UUID[],
