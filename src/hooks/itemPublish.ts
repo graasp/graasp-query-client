@@ -1,6 +1,6 @@
 import { ItemPublished, MAX_TARGETS_FOR_READ_REQUEST, UUID } from '@graasp/sdk';
 
-import { useQuery } from '@tanstack/react-query';
+import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import * as Api from '../api/itemPublish.js';
@@ -10,6 +10,52 @@ import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
+
+  const publishedItemsForMemberOptions = (
+    memberId?: UUID,
+    options?: { enabled?: boolean },
+  ) =>
+    queryOptions({
+      queryKey: itemKeys.published().byMember(memberId),
+      queryFn: () => {
+        if (!memberId) {
+          throw new UndefinedArgument();
+        }
+        return Api.getPublishedItemsForMember(memberId!, queryConfig);
+      },
+      ...defaultQueryOptions,
+      enabled: Boolean(memberId) && (options?.enabled ?? true),
+    });
+
+  const mostLikedPublishedItemsOptions = (
+    args?: {
+      limit?: number;
+    },
+    options?: { enabled?: boolean },
+  ) => {
+    const enabledValue = options?.enabled ?? true;
+    return queryOptions({
+      queryKey: itemKeys.published().mostLiked(args?.limit),
+      queryFn: () => Api.getMostLikedPublishedItems(args ?? {}, queryConfig),
+      ...defaultQueryOptions,
+      enabled: enabledValue,
+    });
+  };
+
+  const mostRecentPublishedItemsOptions = (
+    args?: {
+      limit?: number;
+    },
+    options?: { enabled?: boolean },
+  ) => {
+    const enabledValue = options?.enabled ?? true;
+    return queryOptions({
+      queryKey: itemKeys.published().mostRecent(args?.limit),
+      queryFn: () => Api.getMostRecentPublishedItems(args ?? {}, queryConfig),
+      ...defaultQueryOptions,
+      enabled: enabledValue,
+    });
+  };
 
   return {
     useAllPublishedItems: (
@@ -26,49 +72,25 @@ export default (queryConfig: QueryClientConfig) => {
         enabled: enabledValue,
       });
     },
+    mostLikedPublishedItemsOptions,
     useMostLikedPublishedItems: (
       args?: {
         limit?: number;
       },
       options?: { enabled?: boolean },
-    ) => {
-      const enabledValue = options?.enabled ?? true;
-      return useQuery({
-        queryKey: itemKeys.published().mostLiked(args?.limit),
-        queryFn: () => Api.getMostLikedPublishedItems(args ?? {}, queryConfig),
-        ...defaultQueryOptions,
-        enabled: enabledValue,
-      });
-    },
+    ) => useQuery(mostLikedPublishedItemsOptions(args, options)),
+    mostRecentPublishedItemsOptions,
     useMostRecentPublishedItems: (
       args?: {
         limit?: number;
       },
       options?: { enabled?: boolean },
-    ) => {
-      const enabledValue = options?.enabled ?? true;
-      return useQuery({
-        queryKey: itemKeys.published().mostRecent(args?.limit),
-        queryFn: () => Api.getMostRecentPublishedItems(args ?? {}, queryConfig),
-        ...defaultQueryOptions,
-        enabled: enabledValue,
-      });
-    },
+    ) => useQuery(mostRecentPublishedItemsOptions(args, options)),
+    publishedItemsForMemberOptions,
     usePublishedItemsForMember: (
       memberId?: UUID,
       options?: { enabled?: boolean },
-    ) =>
-      useQuery({
-        queryKey: itemKeys.published().byMember(memberId),
-        queryFn: () => {
-          if (!memberId) {
-            throw new UndefinedArgument();
-          }
-          return Api.getPublishedItemsForMember(memberId, queryConfig);
-        },
-        ...defaultQueryOptions,
-        enabled: Boolean(memberId) && (options?.enabled ?? true),
-      }),
+    ) => useQuery(publishedItemsForMemberOptions(memberId, options)),
     useItemPublishedInformation: (
       args: {
         itemId?: UUID;
