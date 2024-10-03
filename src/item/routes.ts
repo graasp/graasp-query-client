@@ -7,23 +7,16 @@ export const ITEMS_ROUTE = 'items';
 
 export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 
-export const setSearchQueryParams = (
-  {
-    creatorId,
-    ordering,
-    sortBy,
-    permissions,
-    types,
-    keywords,
-  }: ItemSearchParams,
-  { page, pageSize }: Partial<Pagination>,
-) => {
+export const setSearchQueryParams = ({
+  creatorId,
+  ordering,
+  sortBy,
+  permissions,
+  types,
+  keywords,
+}: ItemSearchParams) => {
   const searchParams = new URLSearchParams();
-  // pagination params
-  searchParams.set('page', (page ?? 1).toString());
-  if (pageSize) {
-    searchParams.set('pageSize', pageSize.toString());
-  }
+
   // searchParams
   if (creatorId) {
     searchParams.set('creatorId', creatorId);
@@ -48,9 +41,16 @@ export const setSearchQueryParams = (
 
 export const buildGetAccessibleItems = (
   params: ItemSearchParams,
-  pagination: Partial<Pagination>,
+  { page, pageSize }: Partial<Pagination>,
 ) => {
-  const searchParams = setSearchQueryParams(params, pagination);
+  const searchParams = setSearchQueryParams(params);
+
+  // pagination params
+  searchParams.set('page', (page ?? 1).toString());
+  if (pageSize) {
+    searchParams.set('pageSize', pageSize.toString());
+  }
+
   return `${ITEMS_ROUTE}/accessible?${searchParams}`;
 };
 
