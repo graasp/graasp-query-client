@@ -243,8 +243,8 @@ export const memberKeys = {
         This should hold RecycledItemData
       */
       allRecycled: () => [...currentBaseKey, 'recycled'] as const,
-      infiniteRecycledItemData: (params: ItemSearchParams) =>
-        [...memberKeys.current().allRecycled(), 'infinite', params] as const,
+      infiniteRecycledItemData: () =>
+        [...memberKeys.current().allRecycled(), 'infinite'] as const,
       // recycledPage: (
       //   params: ItemSearchParams,
       //   pagination: Partial<Pagination>,
