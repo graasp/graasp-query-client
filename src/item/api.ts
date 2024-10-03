@@ -5,7 +5,6 @@ import {
   PackedRecycledItemData,
   ResultOf,
   UUID,
-  getParentFromPath,
 } from '@graasp/sdk';
 
 import { verifyAuthentication } from '../api/axios.js';
@@ -97,16 +96,9 @@ export const getChildren = async (
     .then(({ data }) => data);
 
 export const getParents = async (
-  { id, path }: { id: UUID; path?: string },
+  { id }: { id: UUID },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) => {
-  // shortcut to prevent fetching parents if path shows that item is a root
-  if (path) {
-    const parentId = getParentFromPath(path);
-    if (!parentId) {
-      return [];
-    }
-  }
   return axios
     .get<PackedItem[]>(`${API_HOST}/${buildGetItemParents(id)}`)
     .then(({ data }) => data);

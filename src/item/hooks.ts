@@ -119,18 +119,9 @@ const config = (
     /**
      * return parents for given item id
      * @param id {string} item id
-     * @param path {string} item path, used to prevent fetching if no parent is defined
      * @returns immutable list of parent items
      */
-    useParents: ({
-      id,
-      path,
-      enabled,
-    }: {
-      id?: UUID;
-      path?: string;
-      enabled?: boolean;
-    }) => {
+    useParents: ({ id, enabled }: { id?: UUID; enabled?: boolean }) => {
       return useQuery({
         queryKey: itemKeys.single(id).parents,
         queryFn: async () => {
@@ -138,7 +129,7 @@ const config = (
             throw new UndefinedArgument();
           }
 
-          return Api.getParents({ id, path }, queryConfig);
+          return Api.getParents({ id }, queryConfig);
         },
         ...defaultQueryOptions,
         enabled: enabled && Boolean(id),
