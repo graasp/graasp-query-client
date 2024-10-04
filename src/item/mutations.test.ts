@@ -51,7 +51,10 @@ describe('Items Mutations', () => {
     const item = FolderItemFactory();
     const mutation = mutations.useEditItem;
     const itemKey = itemKeys.single(item.id).content;
-    const payload = { id: item.id, description: 'new description' };
+    const payload = {
+      id: item.id,
+      description: 'new description',
+    };
 
     it('Edit item in root', async () => {
       // set default data
