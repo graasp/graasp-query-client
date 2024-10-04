@@ -102,7 +102,7 @@ describe('Items Mutations', () => {
       queryClient.setQueryData(parentKey, [FolderItemFactory()]);
 
       const route = `/${buildEditItemRoute(editedItem.id)}`;
-      const response = item;
+      const response = editedItem;
       const endpoints = [
         {
           response,
