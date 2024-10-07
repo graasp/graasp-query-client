@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.0.0](https://github.com/graasp/graasp-query-client/compare/v3.26.0...v4.0.0) (2024-10-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove deprecated own items ([#927](https://github.com/graasp/graasp-query-client/issues/927))
+
+### Bug Fixes
+
+* **deps:** update tanstack-query monorepo to v5.59.0 ([#939](https://github.com/graasp/graasp-query-client/issues/939)) ([3b5fafa](https://github.com/graasp/graasp-query-client/commit/3b5fafad9cb42ad8d0d3f49b93353c02e4435442))
+* remove deprecated own items ([#927](https://github.com/graasp/graasp-query-client/issues/927)) ([1639e2a](https://github.com/graasp/graasp-query-client/commit/1639e2a59f6032405216608d600704b1b146fffe))
+* update edit ([#951](https://github.com/graasp/graasp-query-client/issues/951)) ([16126c0](https://github.com/graasp/graasp-query-client/commit/16126c01a99ca62be513ed1767d1b41fb812f0df))
+
 ## [3.26.0](https://github.com/graasp/graasp-query-client/compare/v3.25.0...v3.26.0) (2024-10-01)
 
 
