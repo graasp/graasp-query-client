@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1](https://github.com/graasp/graasp-query-client/compare/v4.0.0...v4.0.1) (2024-10-07)
+
+
+### Bug Fixes
+
+* deprecate useEditMember in favor of useEditCurrentMember ([#925](https://github.com/graasp/graasp-query-client/issues/925)) ([71ac265](https://github.com/graasp/graasp-query-client/commit/71ac265dbbe6fb87e7b51be2c32f52e4aa9f3e91))
+
 ## [4.0.0](https://github.com/graasp/graasp-query-client/compare/v3.26.0...v4.0.0) (2024-10-07)
 
 
