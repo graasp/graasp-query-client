@@ -122,57 +122,6 @@ export default (queryConfig: QueryClientConfig) => {
             >
           >,
       ) => Api.editItem(item.id, item, queryConfig),
-      // newItem contains all updatable properties
-      onMutate: async (
-        newItem: Partial<DiscriminatedItem> &
-          Pick<DiscriminatedItem, 'id'> & {
-            extra?: DiscriminatedItem['extra'];
-          },
-      ) => {
-        const itemKey = itemKeys.single(newItem.id).content;
-
-        // invalidate key
-        await queryClient.cancelQueries({ queryKey: itemKey });
-
-        // build full item with new values
-        const prevItem = queryClient.getQueryData<DiscriminatedItem>(itemKey);
-
-        // if the item is not in the cache, we don't need to continue with optimistic mutation
-        if (!prevItem) {
-          return {};
-        }
-
-        // trim manually names because it does it in the backend
-        const newFullItem = {
-          ...prevItem,
-          name: prevItem.name.trim(),
-          displayName: prevItem.displayName.trim(),
-        };
-        queryClient.setQueryData(itemKey, newFullItem);
-
-        const previousItems = {
-          ...(Boolean(prevItem) && {
-            parent: await mutateParentChildren(
-              {
-                childPath: prevItem?.path,
-                value: (old: DiscriminatedItem[]) => {
-                  if (!old?.length) {
-                    return old;
-                  }
-                  const idx = old.findIndex(({ id }) => id === newItem.id);
-                  if (newFullItem && idx >= 0) {
-                    old[idx] = newFullItem;
-                  }
-                  return old;
-                },
-              },
-              queryClient,
-            ),
-            item: prevItem,
-          }),
-        };
-        return previousItems;
-      },
       onSuccess: () => {
         notifier?.(
           {
@@ -182,30 +131,17 @@ export default (queryConfig: QueryClientConfig) => {
           { enableNotifications },
         );
       },
-      onError: (error: Error, newItem, context) => {
-        if (context?.parent && context?.item) {
-          const prevItem = context?.item;
-          const parentKey = getKeyForParentId(
-            getParentFromPath(prevItem?.path),
-          );
-          queryClient.setQueryData(parentKey, context.parent);
-        }
-
-        const itemKey = itemKeys.single(newItem.id).content;
-        queryClient.setQueryData(itemKey, context?.item);
-
+      onError: (error: Error) => {
         notifier?.(
           { type: editItemRoutine.FAILURE, payload: { error } },
           { enableNotifications },
         );
       },
-      onSettled: (_newItem, _error, { id }, context) => {
-        const prevItem = context?.item;
-        if (prevItem) {
-          const parentKey = getKeyForParentId(getParentFromPath(prevItem.path));
+      onSettled: (newItem, _error, { id }) => {
+        if (newItem) {
+          const parentKey = getKeyForParentId(getParentFromPath(newItem.path));
           queryClient.invalidateQueries({ queryKey: parentKey });
         }
-
         const itemKey = itemKeys.single(id).content;
         queryClient.invalidateQueries({ queryKey: itemKey });
       },

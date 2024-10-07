@@ -51,7 +51,10 @@ describe('Items Mutations', () => {
     const item = FolderItemFactory();
     const mutation = mutations.useEditItem;
     const itemKey = itemKeys.single(item.id).content;
-    const payload = { id: item.id, description: 'new description' };
+    const payload = {
+      id: item.id,
+      description: 'new description',
+    };
 
     it('Edit item in root', async () => {
       // set default data
@@ -85,6 +88,36 @@ describe('Items Mutations', () => {
       ).toBeTruthy();
     });
 
+    it('Edit item in root without item in cache', async () => {
+      // set default data
+      queryClient.setQueryData(itemKeys.allAccessible(), [FolderItemFactory()]);
+
+      const route = `/${buildEditItemRoute(item.id)}`;
+      const response = item;
+      const endpoints = [
+        {
+          response,
+          method: HttpMethod.Patch,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate(payload);
+        await waitForMutation();
+      });
+
+      expect(
+        queryClient.getQueryState(itemKeys.allAccessible())?.isInvalidated,
+      ).toBeTruthy();
+    });
+
     it('Edit item in item', async () => {
       // set default data
       const parentItem = FolderItemFactory();
@@ -99,7 +132,7 @@ describe('Items Mutations', () => {
       queryClient.setQueryData(parentKey, [FolderItemFactory()]);
 
       const route = `/${buildEditItemRoute(editedItem.id)}`;
-      const response = item;
+      const response = editedItem;
       const endpoints = [
         {
           response,
