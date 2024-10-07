@@ -26,8 +26,8 @@ import {
   buildGetMemberStorageRoute,
   buildGetMembersByEmailRoute,
   buildGetMembersByIdRoute,
+  buildPatchCurrentMemberRoute,
   buildPatchMemberPasswordRoute,
-  buildPatchMemberRoute,
   buildPostMemberEmailUpdateRoute,
   buildPostMemberPasswordRoute,
   buildUploadAvatarRoute,
@@ -97,27 +97,40 @@ export const getMemberStorageFiles = async (
     >(`${API_HOST}/${buildGetMemberStorageFilesRoute(pagination)}`)
     .then(({ data }) => data);
 
-export const editMember = async (
-  payload: {
-    id: UUID;
+export const editCurrentMember = async (
+  {
+    name,
+    extra,
+    enableSaveActions,
+  }: {
     extra?: CompleteMember['extra'];
     name?: string;
     enableSaveActions?: boolean;
   },
   { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  verifyAuthentication(() =>
-    axios
-      .patch<CompleteMember>(
-        `${API_HOST}/${buildPatchMemberRoute(payload.id)}`,
-        {
-          extra: payload.extra,
-          name: payload.name?.trim(),
-          enableSaveActions: payload.enableSaveActions,
-        },
-      )
-      .then(({ data }) => data),
-  );
+) => {
+  const url = new URL(buildPatchCurrentMemberRoute(), API_HOST);
+  const body: Partial<
+    Pick<CompleteMember, 'extra' | 'name' | 'enableSaveActions'>
+  > = {};
+  if (name && name.trim() !== '') {
+    // trim name
+    body.name = name.trim();
+  }
+  if (extra && Object.keys(extra).length) {
+    body.extra = extra;
+  }
+  if (enableSaveActions !== undefined) {
+    body.enableSaveActions = enableSaveActions;
+  }
+  if (Object.keys(body).length) {
+    return axios
+      .patch<CompleteMember>(url.toString(), body)
+      .then(({ data }) => data);
+  } else {
+    return null;
+  }
+};
 
 export const deleteCurrentMember = async ({
   API_HOST,
