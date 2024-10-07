@@ -12,11 +12,7 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import nock from 'nock';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  AVATAR_BLOB_RESPONSE,
-  OK_RESPONSE,
-  UNAUTHORIZED_RESPONSE,
-} from '../../test/constants.js';
+import { OK_RESPONSE, UNAUTHORIZED_RESPONSE } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import { memberKeys } from '../keys.js';
 import { SIGN_OUT_ROUTE } from '../routes.js';
@@ -254,23 +250,25 @@ describe('Member Mutations', () => {
     const member = MemberFactory();
     const replyUrl = true;
     const { id } = member;
+    const file = new Blob();
 
     it('Upload avatar', async () => {
       const route = `/${buildUploadAvatarRoute()}`;
 
-      // set data in cache
+      // set data in cache for current member (necessary for query invalidation)
+      queryClient.setQueryData(memberKeys.current().content, member);
+      // set query in cache for thumbnail from currentMember
       Object.values(ThumbnailSize).forEach((size) => {
         const key = memberKeys.single(id).avatar({ size, replyUrl });
         queryClient.setQueryData(key, 'thumbnail');
       });
 
-      const response = AVATAR_BLOB_RESPONSE;
-
       const endpoints = [
         {
-          response,
+          statusCode: StatusCodes.NO_CONTENT,
           method: HttpMethod.Post,
           route,
+          response: {},
         },
       ];
 
@@ -281,14 +279,12 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ id, data: {} });
+        mockedMutation.mutate({ file });
         await waitForMutation();
       });
 
-      // verify member is still available
-      // in real cases, the path should be different
       for (const size of Object.values(ThumbnailSize)) {
-        const key = memberKeys.single(id).avatar({ size, replyUrl });
+        const key = memberKeys.single(id).avatar({ size, replyUrl: true });
         const state = queryClient.getQueryState(key);
         expect(state?.isInvalidated).toBeTruthy();
       }
@@ -300,7 +296,8 @@ describe('Member Mutations', () => {
 
     it('Unauthorized to upload an avatar', async () => {
       const route = `/${buildUploadAvatarRoute()}`;
-      // set data in cache
+      // set data in cache for current member (necessary for query invalidation)
+      queryClient.setQueryData(memberKeys.current().content, member);
       Object.values(ThumbnailSize).forEach((size) => {
         const key = memberKeys.single(id).avatar({ size, replyUrl });
         queryClient.setQueryData(key, 'thumbnail');
@@ -324,21 +321,19 @@ describe('Member Mutations', () => {
       });
 
       await act(async () => {
-        mockedMutation.mutate({ id, error: StatusCodes.UNAUTHORIZED });
+        mockedMutation.mutate({ file });
         await waitForMutation();
       });
 
-      // verify member is still available
-      // in real cases, the path should be different
       for (const size of Object.values(ThumbnailSize)) {
         const key = memberKeys.single(id).avatar({ size, replyUrl });
         const state = queryClient.getQueryState(key);
-        expect(state?.isInvalidated).toBeTruthy();
+        expect(state?.isInvalidated).toBeFalsy();
       }
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: uploadAvatarRoutine.FAILURE,
-        payload: { error: StatusCodes.UNAUTHORIZED },
-      });
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({ type: uploadAvatarRoutine.FAILURE }),
+      );
     });
   });
 

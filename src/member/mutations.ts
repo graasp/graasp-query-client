@@ -1,9 +1,14 @@
-import { CompleteMember, Password, UUID } from '@graasp/sdk';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
+import {
+  CompleteMember,
+  CurrentAccount,
+  MAX_THUMBNAIL_SIZE,
+  Password,
+} from '@graasp/sdk';
+import { FAILURE_MESSAGES, SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosProgressEvent } from 'axios';
 
-import { throwIfArrayContainsErrorOrReturn } from '../api/axios.js';
 import { memberKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import * as Api from './api.js';
@@ -107,33 +112,40 @@ export default (queryConfig: QueryClientConfig) => {
     });
   };
 
-  // this mutation is used for its callback and invalidate the keys
   /**
-   * @param {UUID} id parent item id where the file is uploaded in
-   * @param {error} [error] error occurred during the file uploading
+   * Uploads the member profile picture
    */
   const useUploadAvatar = () => {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        async ({ error, data }: { error?: any; data?: any; id: UUID }) => {
-          throwIfArrayContainsErrorOrReturn(data);
-          if (error) throw new Error(JSON.stringify(error));
-        },
+      mutationFn: (args: {
+        file: Blob;
+        onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
+      }) => {
+        if (args.file.size > MAX_THUMBNAIL_SIZE) {
+          throw new Error(FAILURE_MESSAGES.UPLOAD_BIG_FILES);
+        }
+
+        return Api.uploadAvatar(args, queryConfig);
+      },
       onSuccess: () => {
+        // get memberId from query data
+        const memberId = queryClient.getQueryData<CurrentAccount>(
+          memberKeys.current().content,
+        )?.id;
+        if (memberId) {
+          // if we know the memberId we invalidate the avatars to refresh the queries
+          queryClient.invalidateQueries({
+            queryKey: memberKeys.single(memberId).allAvatars,
+          });
+        }
         notifier?.({
           type: uploadAvatarRoutine.SUCCESS,
           payload: { message: SUCCESS_MESSAGES.UPLOAD_AVATAR },
         });
       },
-      onError: (_error, { error }) => {
+      onError: (error) => {
         notifier?.({ type: uploadAvatarRoutine.FAILURE, payload: { error } });
-      },
-      onSettled: (_data, _error, { id }) => {
-        queryClient.invalidateQueries({
-          queryKey: memberKeys.single(id).allAvatars,
-        });
       },
     });
   };

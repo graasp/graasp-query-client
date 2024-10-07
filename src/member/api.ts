@@ -11,6 +11,7 @@ import {
   UUID,
 } from '@graasp/sdk';
 
+import { AxiosProgressEvent } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 
 import { verifyAuthentication } from '../api/axios.js';
@@ -159,25 +160,29 @@ export const updatePassword = async (
     .then((data) => data);
 
 export const uploadAvatar = async (
-  {
-    filename,
-    contentType,
-  }: { itemId: UUID; filename: string; contentType: string },
+  args: {
+    file: Blob;
+    onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
+  },
   { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  verifyAuthentication(() =>
-    axios
-      .post(`${API_HOST}/${buildUploadAvatarRoute()}`, {
-        // Send and receive JSON.
-        headers: {
-          accept: 'application/json',
-          'content-type': 'application/json',
-        },
-        filename,
-        contentType,
-      })
-      .then(({ data }) => data),
-  );
+) => {
+  const { file } = args;
+  const itemPayload = new FormData();
+
+  /* WARNING: this file field needs to be the last one,
+   * otherwise the normal fields can not be read
+   * https://github.com/fastify/fastify-multipart?tab=readme-ov-file#usage
+   */
+  itemPayload.append('file', file);
+  return axios
+    .post<void>(`${API_HOST}/${buildUploadAvatarRoute()}`, itemPayload, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (progressEvent) => {
+        args.onUploadProgress?.(progressEvent);
+      },
+    })
+    .then(({ data }) => data);
+};
 
 export const downloadAvatar = async (
   { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
