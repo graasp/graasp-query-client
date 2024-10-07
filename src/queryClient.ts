@@ -23,6 +23,7 @@ import {
 } from './config/constants.js';
 import configureHooks from './hooks/index.js';
 import configureMutations from './mutations/index.js';
+import configureQueryOptions from './queryOptions/index.js';
 import type { QueryClientConfig } from './types.js';
 import { getHostname } from './utils/util.js';
 
@@ -76,6 +77,7 @@ export default (
   QueryClientProvider: typeof QueryClientProvider;
   hooks: typeof hooks;
   useMutation: typeof useMutation;
+  queryOptions: typeof queryOptions;
   ReactQueryDevtools: typeof ReactQueryDevtools;
   dehydrate: typeof dehydrate;
   Hydrate: typeof HydrationBoundary;
@@ -144,6 +146,9 @@ export default (
     : undefined;
   const hooks = configureHooks(queryConfig, websocketClient);
 
+  // set up options
+  const queryOptions = configureQueryOptions(queryConfig);
+
   // returns the queryClient and relative instances
   return {
     queryConfig,
@@ -153,6 +158,7 @@ export default (
     QueryClientProvider,
     hooks,
     useMutation,
+    queryOptions,
     ReactQueryDevtools,
     dehydrate,
     Hydrate: HydrationBoundary,
