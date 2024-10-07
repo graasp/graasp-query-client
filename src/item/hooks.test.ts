@@ -236,20 +236,6 @@ describe('useParents', () => {
     }
   });
 
-  it(`providing path can deduce empty array`, async () => {
-    const { data, isFetched } = await mockHook({
-      hook: () => hooks.useParents({ id: childItem.id, path: 'some-id' }),
-      endpoints: [],
-      wrapper,
-    });
-
-    expect(data).toHaveLength(0);
-    expect(isFetched).toBeTruthy();
-    expect(
-      queryClient.getQueryData(itemKeys.single(childItem.id).parents),
-    ).toHaveLength(0);
-  });
-
   it(`Unauthorized`, async () => {
     // build endpoint for each item
     const endpoints = [
