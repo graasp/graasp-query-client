@@ -167,8 +167,9 @@ export default (queryConfig: QueryClientConfig) => {
    * Mutation to create a member password
    * @param {Password} password new password to set on current member
    */
-  const useCreatePassword = () =>
-    useMutation({
+  const useCreatePassword = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
       mutationFn: (payload: { password: Password }) =>
         Api.createPassword(payload, queryConfig),
       onSuccess: () => {
@@ -183,7 +184,13 @@ export default (queryConfig: QueryClientConfig) => {
           payload: { error },
         });
       },
+      onSettled: () => {
+        queryClient.invalidateQueries({
+          queryKey: memberKeys.current().passwordStatus,
+        });
+      },
     });
+  };
 
   const useUpdateMemberEmail = () =>
     useMutation({
