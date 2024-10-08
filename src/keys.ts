@@ -272,6 +272,9 @@ export const memberKeys = {
       ],
       // apps used mostly by the member
       mostUsedApps: [...currentBaseKey, 'mostUsedApps'] as const,
+
+      // password status
+      passwordStatus: [...currentBaseKey, 'passwordStatus'],
     };
   },
 };
