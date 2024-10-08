@@ -36,8 +36,7 @@ export default (queryConfig: QueryClientConfig) => {
       return queryOptions({
         queryKey: itemKeys.published().mostLiked(args?.limit),
         queryFn: () => Api.getMostLikedPublishedItems(args ?? {}, queryConfig),
-        // TODO: currently not working in Library if defaults are enable (not refetching)...
-        // ...defaultQueryOptions,
+        ...defaultQueryOptions,
         enabled: enabledValue,
       });
     },
