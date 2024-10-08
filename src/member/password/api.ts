@@ -9,4 +9,4 @@ export const getPasswordStatus = async ({
     .get<{
       hasPassword: boolean;
     }>(`${API_HOST}/${buildGetPasswordStatusRoute()}`)
-    .then((data) => data);
+    .then(({ data }) => data);
