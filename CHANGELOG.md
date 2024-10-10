@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.0.2](https://github.com/graasp/graasp-query-client/compare/v4.0.1...v4.0.2) (2024-10-10)
+
+
+### Bug Fixes
+
+* update deps ([af6894b](https://github.com/graasp/graasp-query-client/commit/af6894bb8c44e284dc46fe9494a287c414c77b8c))
+* update upload avatar mutation ([#956](https://github.com/graasp/graasp-query-client/issues/956)) ([a2a296f](https://github.com/graasp/graasp-query-client/commit/a2a296fcbe6f6d06c388345a4a3bc2a6bdd6f335))
+
 ## [4.0.1](https://github.com/graasp/graasp-query-client/compare/v4.0.0...v4.0.1) (2024-10-07)
 
 
