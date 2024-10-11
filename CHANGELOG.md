@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/graasp/graasp-query-client/compare/v4.0.2...v4.1.0) (2024-10-11)
+
+
+### Features
+
+* add password status hook ([#958](https://github.com/graasp/graasp-query-client/issues/958)) ([e1542e4](https://github.com/graasp/graasp-query-client/commit/e1542e460dbfc334a1e1cf02ff2c901657172af4))
+
 ## [4.0.2](https://github.com/graasp/graasp-query-client/compare/v4.0.1...v4.0.2) (2024-10-10)
 
 
