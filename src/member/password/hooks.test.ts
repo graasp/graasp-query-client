@@ -16,7 +16,7 @@ describe('Member Hooks', () => {
 
   describe('usePasswordStatus', () => {
     const route = `/${buildGetPasswordStatusRoute()}`;
-    const hook = () => hooks.usePasswordStatus();
+    const hook = hooks.usePasswordStatus;
     const key = memberKeys.current().passwordStatus;
 
     it(`Receive password status`, async () => {
