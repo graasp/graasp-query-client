@@ -492,7 +492,7 @@ describe('Items Mutations', () => {
         queryClient.setQueryData(itemKey, item);
       });
       queryClient.setQueryData(
-        memberKeys.current().allRecycled(),
+        memberKeys.current().allRecycled,
         RECYCLED_ITEM_DATA,
       );
 
@@ -526,7 +526,7 @@ describe('Items Mutations', () => {
       }
 
       expect(
-        queryClient.getQueryData(memberKeys.current().allRecycled()),
+        queryClient.getQueryData(memberKeys.current().allRecycled),
       ).toEqual([RECYCLED_ITEM_DATA[1]]);
     });
 
@@ -587,10 +587,10 @@ describe('Items Mutations', () => {
         const parentKey = getKeyForParentId(getParentFromPath(item.path));
         queryClient.setQueryData(parentKey, [item]);
       });
-      queryClient.setQueryData(memberKeys.current().allRecycled(), response);
+      queryClient.setQueryData(memberKeys.current().allRecycled, response);
       expect(
         queryClient.getQueryData<RecycledItemData[]>(
-          memberKeys.current().allRecycled(),
+          memberKeys.current().allRecycled,
         )!.length,
       ).not.toEqual(0);
 
@@ -623,12 +623,12 @@ describe('Items Mutations', () => {
 
       // check recycle bin key
       expect(
-        queryClient.getQueryState(memberKeys.current().allRecycled())
+        queryClient.getQueryState(memberKeys.current().allRecycled)
           ?.isInvalidated,
       ).toBeFalsy();
       expect(
         queryClient.getQueryData<RecycledItemData[]>(
-          memberKeys.current().allRecycled(),
+          memberKeys.current().allRecycled,
         )!.length,
       ).toEqual(0);
     });
@@ -645,10 +645,10 @@ describe('Items Mutations', () => {
         const parentKey = getKeyForParentId(getParentFromPath(item.path));
         queryClient.setQueryData(parentKey, [item]);
       });
-      queryClient.setQueryData(memberKeys.current().allRecycled(), response);
+      queryClient.setQueryData(memberKeys.current().allRecycled, response);
       expect(
         queryClient.getQueryData<RecycledItemData[]>(
-          memberKeys.current().allRecycled(),
+          memberKeys.current().allRecycled,
         )!.length,
       ).not.toEqual(0);
 
@@ -682,12 +682,12 @@ describe('Items Mutations', () => {
 
       // check original parent is invalidated
       expect(
-        queryClient.getQueryState(memberKeys.current().allRecycled())
+        queryClient.getQueryState(memberKeys.current().allRecycled)
           ?.isInvalidated,
       ).toBeFalsy();
       expect(
         queryClient.getQueryData<RecycledItemData[]>(
-          memberKeys.current().allRecycled(),
+          memberKeys.current().allRecycled,
         )!.length,
       ).toEqual(0);
     });

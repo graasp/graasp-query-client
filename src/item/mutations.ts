@@ -197,7 +197,7 @@ export default (queryConfig: QueryClientConfig) => {
         ),
       onMutate: async (itemIds: UUID[]) => {
         // get path from first item
-        const itemKey = memberKeys.current().allRecycled();
+        const itemKey = memberKeys.current().allRecycled;
         const itemData = queryClient.getQueryData<RecycledItemData[]>(itemKey);
         queryClient.setQueryData(
           itemKey,
@@ -306,7 +306,7 @@ export default (queryConfig: QueryClientConfig) => {
           Api.restoreItems(chunk, queryConfig),
         ),
       onMutate: async (itemIds) => {
-        const key = memberKeys.current().allRecycled();
+        const key = memberKeys.current().allRecycled;
         const recycleItemData =
           queryClient.getQueryData<RecycledItemData[]>(key);
         if (recycleItemData) {

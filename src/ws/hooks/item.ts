@@ -44,7 +44,7 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
   [FeedBackOperation.DELETE]: () => {
     // invalidate data displayed in the Trash screen
     queryClient.invalidateQueries({
-      queryKey: memberKeys.current().allRecycled(),
+      queryKey: memberKeys.current().allRecycled,
     });
   },
   [FeedBackOperation.MOVE]: (
@@ -84,7 +84,7 @@ const InvalidateItemOpFeedback = (queryClient: QueryClient) => ({
   },
   [FeedBackOperation.RESTORE]: () => {
     queryClient.invalidateQueries({
-      queryKey: memberKeys.current().allRecycled(),
+      queryKey: memberKeys.current().allRecycled,
     });
   },
   [FeedBackOperation.VALIDATE]: (itemIds: string[]) => {
