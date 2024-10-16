@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.0](https://github.com/graasp/graasp-query-client/compare/v4.1.0...v4.2.0) (2024-10-16)
+
+
+### Features
+
+* add pagination to recycled ([#943](https://github.com/graasp/graasp-query-client/issues/943)) ([782c1fc](https://github.com/graasp/graasp-query-client/commit/782c1fc9a1470e9fa9a8819b3d0e7f79736ecc01))
+
 ## [4.1.0](https://github.com/graasp/graasp-query-client/compare/v4.0.2...v4.1.0) (2024-10-11)
 
 
