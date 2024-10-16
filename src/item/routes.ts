@@ -4,26 +4,19 @@ import { DEFAULT_THUMBNAIL_SIZE } from '../config/constants.js';
 import { ItemChildrenParams, ItemSearchParams } from './types.js';
 
 export const ITEMS_ROUTE = 'items';
-export const GET_RECYCLED_ITEMS_DATA_ROUTE = `${ITEMS_ROUTE}/recycled`;
+
 export const SHARED_ITEM_WITH_ROUTE = `${ITEMS_ROUTE}/shared-with`;
 
-export const buildGetAccessibleItems = (
-  {
-    creatorId,
-    ordering,
-    sortBy,
-    permissions,
-    types,
-    keywords,
-  }: ItemSearchParams,
-  { page, pageSize }: Partial<Pagination>,
-) => {
+export const setSearchQueryParams = ({
+  creatorId,
+  ordering,
+  sortBy,
+  permissions,
+  types,
+  keywords,
+}: ItemSearchParams) => {
   const searchParams = new URLSearchParams();
-  // pagination params
-  searchParams.set('page', (page ?? 1).toString());
-  if (pageSize) {
-    searchParams.set('pageSize', pageSize.toString());
-  }
+
   // searchParams
   if (creatorId) {
     searchParams.set('creatorId', creatorId);
@@ -43,6 +36,21 @@ export const buildGetAccessibleItems = (
   if (types && types.length) {
     types.forEach((t) => searchParams.append('types', t));
   }
+  return searchParams;
+};
+
+export const buildGetAccessibleItems = (
+  params: ItemSearchParams,
+  { page, pageSize }: Partial<Pagination>,
+) => {
+  const searchParams = setSearchQueryParams(params);
+
+  // pagination params
+  searchParams.set('page', (page ?? 1).toString());
+  if (pageSize) {
+    searchParams.set('pageSize', pageSize.toString());
+  }
+
   return `${ITEMS_ROUTE}/accessible?${searchParams}`;
 };
 

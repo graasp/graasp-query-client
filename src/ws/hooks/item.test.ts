@@ -42,8 +42,7 @@ describe('Ws Item Hooks', () => {
     describe('Delete Feedback', () => {
       it(`Receive delete feedback`, async () => {
         // If the keys are not set in the cache, they are never invalidated.
-        queryClient.setQueryData(memberKeys.current().recycled, []);
-        queryClient.setQueryData(memberKeys.current().recycledItems, []);
+        queryClient.setQueryData(memberKeys.current().allRecycled, []);
 
         await mockWsHook({ hook, wrapper });
 
@@ -60,11 +59,7 @@ describe('Ws Item Hooks', () => {
         handleWS(itemEvent);
 
         expect(
-          queryClient.getQueryState(memberKeys.current().recycled)
-            ?.isInvalidated,
-        ).toBe(true);
-        expect(
-          queryClient.getQueryState(memberKeys.current().recycledItems)
+          queryClient.getQueryState(memberKeys.current().allRecycled)
             ?.isInvalidated,
         ).toBe(true);
       });
@@ -321,7 +316,7 @@ describe('Ws Item Hooks', () => {
       };
 
       it(`Receive restore feedback when restoring a folder`, async () => {
-        const recycledItemsKey = memberKeys.current().recycledItems;
+        const recycledItemsKey = memberKeys.current().allRecycled;
 
         setUpQueryCache(recycledItemsKey);
         await mockWsHook({ hook, wrapper });
