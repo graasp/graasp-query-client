@@ -11,6 +11,9 @@ import { QueryClientConfig } from '../types.js';
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
 
+  /**
+   * @deprecated
+   */
   const useItemTags = (id?: UUID) =>
     useQuery({
       queryKey: itemKeys.single(id).tags,
@@ -24,6 +27,9 @@ export default (queryConfig: QueryClientConfig) => {
       ...defaultQueryOptions,
     });
 
+  /**
+   * @deprecated
+   */
   const useItemsTags = (ids?: UUID[]) => {
     return useQuery({
       queryKey: itemKeys.many(ids).tags,
