@@ -1,11 +1,10 @@
 import { Invitation, ItemMembership, UUID } from '@graasp/sdk';
 
-import { buildPostUserCSVUploadRoute } from '../routes.js';
+import {
+  buildPostUserCSVUploadRoute,
+  buildPostUserCSVUploadWithTemplateRoute,
+} from '../routes.js';
 import { PartialQueryConfigForApi } from '../types.js';
-
-type CSVInvitePayload = { file: File; itemId: UUID; templateItemId: undefined };
-type CSVStructurePayload = { file: File; itemId: UUID; templateItemId: UUID };
-export type UploadCSVPayload = CSVInvitePayload | CSVStructurePayload;
 
 type CSVInviteResponse = {
   invitations: Invitation[];
@@ -17,23 +16,40 @@ type CSVStructureResponse = {
   memberships: ItemMembership[];
 }[];
 
-export const uploadUserCsv = async <K extends UploadCSVPayload>(
+export const uploadUserCsv = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
-  { file, itemId, templateItemId }: K,
+  { file, itemId }: { file: File; itemId: UUID },
 ) => {
   const formData = new FormData();
   formData.append('file', file);
 
   const url = new URL(buildPostUserCSVUploadRoute(itemId), API_HOST);
-  if (templateItemId) {
-    url.searchParams.set('templateId', templateItemId);
-  }
+
   return axios
-    .post<
-      K['templateItemId'] extends string
-        ? CSVStructureResponse
-        : CSVInviteResponse
-    >(url.toString(), formData, {
+    .post<CSVInviteResponse>(url.toString(), formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    .then(({ data }) => data);
+};
+
+export const uploadUserCsvWithTemplate = async (
+  { API_HOST, axios }: PartialQueryConfigForApi,
+  {
+    file,
+    itemId,
+    templateItemId,
+  }: { file: File; itemId: UUID; templateItemId: UUID },
+) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const url = new URL(
+    buildPostUserCSVUploadWithTemplateRoute(itemId),
+    API_HOST,
+  );
+  url.searchParams.set('templateId', templateItemId);
+  return axios
+    .post<CSVStructureResponse>(url.toString(), formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
     .then(({ data }) => data);
