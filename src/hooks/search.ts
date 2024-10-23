@@ -26,13 +26,13 @@ export default (queryConfig: QueryClientConfig) => {
       limit,
       offset,
       elementsPerPage = 24,
-      lang,
+      langs,
     }: {
       categories?: Category['id'][][];
       enabled?: boolean;
       isPublishedRoot?: boolean;
       query?: string;
-      lang?: string;
+      langs?: string[];
     } & Api.MeiliSearchProps) => {
       const debouncedQuery = useDebounce(query, 500);
       return useQuery({
@@ -44,7 +44,7 @@ export default (queryConfig: QueryClientConfig) => {
           highlightPreTag,
           highlightPostTag,
           page,
-          lang,
+          langs,
         }),
         queryFn: () =>
           Api.searchPublishedItems(
@@ -59,7 +59,7 @@ export default (queryConfig: QueryClientConfig) => {
               sort,
               highlightPreTag,
               highlightPostTag,
-              lang,
+              langs,
             },
             queryConfig,
           ),
