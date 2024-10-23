@@ -27,10 +27,12 @@ export const searchPublishedItems = async (
     cropLength,
     highlightPreTag,
     highlightPostTag,
+    lang,
   }: {
     query?: string;
     categories?: Category['id'][][];
     isPublishedRoot?: boolean;
+    lang?: string;
   } & MeiliSearchProps,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) => {
@@ -62,7 +64,8 @@ export const searchPublishedItems = async (
   const isPublishedFilter = isPublishedRoot
     ? `isPublishedRoot = ${isPublishedRoot}`
     : '';
-  const filters = [categoriesFilter, isPublishedFilter]
+  const langFilter = lang ? `lang = ${lang}` : '';
+  const filters = [categoriesFilter, isPublishedFilter, langFilter]
     .filter((v) => v)
     .join(' AND ');
 
