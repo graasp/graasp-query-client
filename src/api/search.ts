@@ -64,7 +64,7 @@ export const searchPublishedItems = async (
   const isPublishedFilter = isPublishedRoot
     ? `isPublishedRoot = ${isPublishedRoot}`
     : '';
-  const langsFilter = langs ? `lang IN [${langs.join(',')}]` : '';
+  const langsFilter = langs?.length ? `lang IN [${langs.join(',')}]` : '';
   const filters = [categoriesFilter, isPublishedFilter, langsFilter]
     .filter((v) => v)
     .join(' AND ');
