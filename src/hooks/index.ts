@@ -21,7 +21,6 @@ import configureItemGeolocationHooks from './itemGeolocation.js';
 import configureItemLikeHooks from './itemLike.js';
 import configureItemLoginHooks from './itemLogin.js';
 import configureItemPublishedHooks from './itemPublish.js';
-import configureItemTagHooks from './itemTag.js';
 import configureItemValidationHooks from './itemValidation.js';
 import configureMembershipHooks from './membership.js';
 import configureMentionsHooks from './mention.js';
@@ -45,7 +44,6 @@ export default (
     ...configureMembershipHooks(queryConfig, websocketClient),
     ...configureItemHooks(queryConfig, websocketClient),
     ...configureEtherpadHooks(queryConfig),
-    ...configureItemTagHooks(queryConfig),
     ...configureCategoryHooks(queryConfig),
     ...configureKeywordSearchHooks(queryConfig),
     ...configureItemLikeHooks(queryConfig),

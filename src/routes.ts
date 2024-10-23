@@ -91,9 +91,6 @@ export const SIGN_IN_ROUTE = '/login';
 export const SIGN_IN_WITH_PASSWORD_ROUTE = '/login-password';
 export const SIGN_UP_ROUTE = '/register';
 export const SIGN_OUT_ROUTE = '/logout';
-export const buildGetItemTagsRoute = (id: UUID) => `${ITEMS_ROUTE}/${id}/tags`;
-export const buildGetItemsTagsRoute = (ids: UUID[]) =>
-  `${ITEMS_ROUTE}/tags?${new URLSearchParams(ids.map((id) => ['id', id]))}`;
 export const buildPostItemTagRoute = ({
   itemId,
   type,
@@ -395,7 +392,6 @@ export const API_ROUTES = {
   buildGetItemMembershipsForItemsRoute,
   buildGetItemPublishedInformationRoute,
   buildGetItemsInCategoryRoute,
-  buildGetItemTagsRoute,
   buildGetLastItemValidationGroupRoute,
   buildGetLikesForMemberRoute,
   buildGetMostLikedPublishedItemsRoute,
