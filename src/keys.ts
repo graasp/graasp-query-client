@@ -161,6 +161,7 @@ export const itemKeys = {
     highlightPreTag?: string;
     highlightPostTag?: string;
     page?: number;
+    langs?: string[];
   }) =>
     [...itemKeys.all, 'search', { isPublishedRoot: false, ...args }] as const,
 
