@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.0.0](https://github.com/graasp/graasp-query-client/compare/v4.2.0...v5.0.0) (2024-10-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* deprecate get tags ([#968](https://github.com/graasp/graasp-query-client/issues/968))
+
+### Features
+
+* deprecate get tags ([#968](https://github.com/graasp/graasp-query-client/issues/968)) ([3da2541](https://github.com/graasp/graasp-query-client/commit/3da254119ee0ebe671ef808165b43a4450e61e1e))
+* upload csv mutations ([#969](https://github.com/graasp/graasp-query-client/issues/969)) ([b068cc7](https://github.com/graasp/graasp-query-client/commit/b068cc7a0471a0fa686c56a479fcb37cfc9179b9))
+
 ## [4.2.0](https://github.com/graasp/graasp-query-client/compare/v4.1.0...v4.2.0) (2024-10-16)
 
 
