@@ -244,6 +244,49 @@ describe('Published Search Hook', () => {
       expect(queryClient.getQueryData(key)).toEqual(response);
     });
 
+    it(`search for langs`, async () => {
+      const isPublishedRoot = true;
+      const page = 3;
+      const langs = ['en', 'fr'];
+      const spy = vi.spyOn(axios, 'post');
+      const key = itemKeys.search({
+        isPublishedRoot,
+        langs,
+        page,
+      });
+      const hook = () =>
+        hooks.useSearchPublishedItems({ langs, isPublishedRoot, page });
+      const response = RESPONSE;
+      const endpoints = [{ route, response, method: HttpMethod.Post }];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+
+      expect(spy).toHaveBeenCalledWith(expect.stringContaining(route), {
+        queries: [
+          {
+            indexUid: 'itemIndex',
+            attributesToHighlight: [
+              'name',
+              'description',
+              'content',
+              'creator',
+            ],
+            filter: 'isPublishedRoot = true AND lang IN [en,fr]',
+            limit: 24,
+            offset: 48, // (3 - 1) * 24
+            attributesToCrop: undefined,
+            highlightPostTag: undefined,
+            highlightPreTag: undefined,
+            sort: undefined,
+          },
+        ],
+      });
+
+      expect(data).toEqual(response);
+
+      // verify cache keys
+      expect(queryClient.getQueryData(key)).toEqual(response);
+    });
+
     it(`does not fetch for enabled = false`, async () => {
       const query = 'some string';
       const categories = [['mycategoryid']];
