@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.0](https://github.com/graasp/graasp-query-client/compare/v5.0.0...v5.1.0) (2024-10-25)
+
+
+### Features
+
+* add langs in search hook ([#971](https://github.com/graasp/graasp-query-client/issues/971)) ([2668182](https://github.com/graasp/graasp-query-client/commit/2668182affbf8e543b1da60274faeefb7c655426))
+
 ## [5.0.0](https://github.com/graasp/graasp-query-client/compare/v4.2.0...v5.0.0) (2024-10-24)
 
 
