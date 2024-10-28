@@ -10,9 +10,6 @@ export const buildPatchCurrentMemberRoute = () => `${MEMBERS_ROUTE}/current`;
 export const buildPostMemberEmailUpdateRoute = () =>
   `${MEMBERS_ROUTE}/current/email/change`;
 
-export const buildGetMembersByEmailRoute = (emails: string[]) =>
-  `${MEMBERS_ROUTE}/search?${new URLSearchParams(emails.map((e) => ['email', e.toLowerCase()]))}`;
-
 export const buildGetMembersByIdRoute = (ids: UUID[]) =>
   `${MEMBERS_ROUTE}?${new URLSearchParams(ids.map((id) => ['id', id]))}`;
 

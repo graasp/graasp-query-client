@@ -26,7 +26,6 @@ import {
   buildGetMemberRoute,
   buildGetMemberStorageFilesRoute,
   buildGetMemberStorageRoute,
-  buildGetMembersByEmailRoute,
   buildGetMembersByIdRoute,
   buildPatchCurrentMemberRoute,
   buildPatchMemberPasswordRoute,
@@ -35,28 +34,12 @@ import {
   buildUploadAvatarRoute,
 } from './routes.js';
 
-export const getMembersByEmail = async (
-  { emails }: { emails: string[] },
-  { API_HOST }: PartialQueryConfigForApi,
-) =>
-  axios
-    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersByEmailRoute(emails)}`)
-    .then(({ data }) => data);
+export const getMember = async ({ id }: { id: UUID }) =>
+  axios.get<Member>(`/api/${buildGetMemberRoute(id)}`).then(({ data }) => data);
 
-export const getMember = async (
-  { id }: { id: UUID },
-  { API_HOST }: PartialQueryConfigForApi,
-) =>
+export const getMembers = ({ ids }: { ids: UUID[] }) =>
   axios
-    .get<Member>(`${API_HOST}/${buildGetMemberRoute(id)}`)
-    .then(({ data }) => data);
-
-export const getMembers = (
-  { ids }: { ids: UUID[] },
-  { API_HOST }: PartialQueryConfigForApi,
-) =>
-  axios
-    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersByIdRoute(ids)}`)
+    .get<ResultOf<Member>>(`/api/${buildGetMembersByIdRoute(ids)}`)
     .then(({ data }) => data);
 
 export const getCurrentMember = async () =>
@@ -76,23 +59,18 @@ export const getCurrentMember = async () =>
       }),
   );
 
-export const getMemberStorage = async ({
-  API_HOST,
-}: PartialQueryConfigForApi) =>
+export const getMemberStorage = async () =>
   verifyAuthentication(() =>
     axios
-      .get<MemberStorage>(`${API_HOST}/${buildGetMemberStorageRoute()}`)
+      .get<MemberStorage>(`/api/${buildGetMemberStorageRoute()}`)
       .then(({ data }) => data),
   );
 
-export const getMemberStorageFiles = async (
-  pagination: Partial<Pagination>,
-  { API_HOST }: PartialQueryConfigForApi,
-) =>
+export const getMemberStorageFiles = async (pagination: Partial<Pagination>) =>
   axios
     .get<
       Paginated<MemberStorageItem>
-    >(`${API_HOST}/${buildGetMemberStorageFilesRoute(pagination)}`)
+    >(`/api/${buildGetMemberStorageFilesRoute(pagination)}`)
     .then(({ data }) => data);
 
 export const editCurrentMember = async (
@@ -193,13 +171,16 @@ export const downloadAvatar = async (
     )
     .then(({ data }) => data);
 
-export const downloadAvatarUrl = async (
-  { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
-  { API_HOST }: PartialQueryConfigForApi,
-) =>
+export const downloadAvatarUrl = async ({
+  id,
+  size = DEFAULT_THUMBNAIL_SIZE,
+}: {
+  id: UUID;
+  size?: string;
+}) =>
   axios
     .get<string>(
-      `${API_HOST}/${buildDownloadAvatarRoute({ id, size, replyUrl: true })}`,
+      `/api/${buildDownloadAvatarRoute({ id, size, replyUrl: true })}`,
     )
     .then(({ data }) => data);
 

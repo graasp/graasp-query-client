@@ -37,7 +37,7 @@ export default (queryConfig: QueryClientConfig) => {
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.getMember({ id }, queryConfig);
+          return Api.getMember({ id });
         },
         enabled: Boolean(id),
         ...defaultQueryOptions,
@@ -50,46 +50,13 @@ export default (queryConfig: QueryClientConfig) => {
           splitRequestByIdsAndReturn(
             ids,
             MAX_TARGETS_FOR_READ_REQUEST,
-            (chunk) => Api.getMembers({ ids: chunk }, queryConfig),
+            (chunk) => Api.getMembers({ ids: chunk }),
           ),
         meta: {
           routine: getMembersRoutine,
         },
         enabled: Boolean(ids?.length),
         ...defaultQueryOptions,
-      });
-    },
-
-    useAvatar: ({
-      id,
-      size = DEFAULT_THUMBNAIL_SIZE,
-    }: {
-      id?: UUID;
-      size?: string;
-    }) => {
-      const queryClient = useQueryClient();
-      let shouldFetch = true;
-      if (id) {
-        // TODO: this casting is totally wrong, but allows to work for current member
-        // to be fixed
-        shouldFetch =
-          (
-            queryClient.getQueryData<Member>(
-              memberKeys.single(id).content,
-            ) as CompleteMember
-          )?.extra?.hasAvatar ?? true;
-      }
-      return useQuery({
-        queryKey: memberKeys.single(id).avatar({ size, replyUrl: false }),
-        queryFn: () => {
-          if (!id) {
-            throw new UndefinedArgument();
-          }
-          return Api.downloadAvatar({ id, size }, queryConfig);
-        },
-        ...defaultQueryOptions,
-        enabled: Boolean(id) && shouldFetch,
-        staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
       });
     },
 
@@ -119,7 +86,7 @@ export default (queryConfig: QueryClientConfig) => {
           if (!id) {
             throw new UndefinedArgument();
           }
-          return Api.downloadAvatarUrl({ id, size }, queryConfig);
+          return Api.downloadAvatarUrl({ id, size });
         },
         ...defaultQueryOptions,
         enabled: Boolean(id) && shouldFetch,
@@ -130,14 +97,14 @@ export default (queryConfig: QueryClientConfig) => {
     useMemberStorage: () =>
       useQuery({
         queryKey: memberKeys.current().storage,
-        queryFn: () => Api.getMemberStorage(queryConfig),
+        queryFn: () => Api.getMemberStorage(),
         ...defaultQueryOptions,
       }),
 
     useMemberStorageFiles: (pagination: Partial<Pagination>) =>
       useQuery({
         queryKey: memberKeys.current().storageFiles(pagination),
-        queryFn: () => Api.getMemberStorageFiles(pagination, queryConfig),
+        queryFn: () => Api.getMemberStorageFiles(pagination),
         ...defaultQueryOptions,
       }),
   };
