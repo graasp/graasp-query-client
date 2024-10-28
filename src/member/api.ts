@@ -11,7 +11,8 @@ import {
   UUID,
 } from '@graasp/sdk';
 
-import { AxiosProgressEvent } from 'axios';
+import axios from 'axios';
+import type { AxiosProgressEvent } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 
 import { verifyAuthentication } from '../api/axios.js';
@@ -25,7 +26,6 @@ import {
   buildGetMemberRoute,
   buildGetMemberStorageFilesRoute,
   buildGetMemberStorageRoute,
-  buildGetMembersByEmailRoute,
   buildGetMembersByIdRoute,
   buildPatchCurrentMemberRoute,
   buildPatchMemberPasswordRoute,
@@ -34,37 +34,18 @@ import {
   buildUploadAvatarRoute,
 } from './routes.js';
 
-export const getMembersByEmail = async (
-  { emails }: { emails: string[] },
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
+export const getMember = async ({ id }: { id: UUID }) =>
+  axios.get<Member>(`/api/${buildGetMemberRoute(id)}`).then(({ data }) => data);
+
+export const getMembers = ({ ids }: { ids: UUID[] }) =>
   axios
-    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersByEmailRoute(emails)}`)
+    .get<ResultOf<Member>>(`/api/${buildGetMembersByIdRoute(ids)}`)
     .then(({ data }) => data);
 
-export const getMember = async (
-  { id }: { id: UUID },
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  axios
-    .get<Member>(`${API_HOST}/${buildGetMemberRoute(id)}`)
-    .then(({ data }) => data);
-
-export const getMembers = (
-  { ids }: { ids: UUID[] },
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  axios
-    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersByIdRoute(ids)}`)
-    .then(({ data }) => data);
-
-export const getCurrentMember = async ({
-  API_HOST,
-  axios,
-}: PartialQueryConfigForApi) =>
+export const getCurrentMember = async () =>
   verifyAuthentication(() =>
     axios
-      .get<CurrentAccount>(`${API_HOST}/${buildGetCurrentMemberRoute()}`)
+      .get<CurrentAccount>(`/api/${buildGetCurrentMemberRoute()}`)
       .then(({ data }) => data)
       .catch((error) => {
         if (error.response) {
@@ -78,24 +59,18 @@ export const getCurrentMember = async ({
       }),
   );
 
-export const getMemberStorage = async ({
-  API_HOST,
-  axios,
-}: PartialQueryConfigForApi) =>
+export const getMemberStorage = async () =>
   verifyAuthentication(() =>
     axios
-      .get<MemberStorage>(`${API_HOST}/${buildGetMemberStorageRoute()}`)
+      .get<MemberStorage>(`/api/${buildGetMemberStorageRoute()}`)
       .then(({ data }) => data),
   );
 
-export const getMemberStorageFiles = async (
-  pagination: Partial<Pagination>,
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
+export const getMemberStorageFiles = async (pagination: Partial<Pagination>) =>
   axios
     .get<
       Paginated<MemberStorageItem>
-    >(`${API_HOST}/${buildGetMemberStorageFilesRoute(pagination)}`)
+    >(`/api/${buildGetMemberStorageFilesRoute(pagination)}`)
     .then(({ data }) => data);
 
 export const editCurrentMember = async (
@@ -108,7 +83,7 @@ export const editCurrentMember = async (
     name?: string;
     enableSaveActions?: boolean;
   },
-  { API_HOST, axios }: PartialQueryConfigForApi,
+  { API_HOST }: PartialQueryConfigForApi,
 ) => {
   const url = new URL(buildPatchCurrentMemberRoute(), API_HOST);
   const body: Partial<
@@ -135,7 +110,6 @@ export const editCurrentMember = async (
 
 export const deleteCurrentMember = async ({
   API_HOST,
-  axios,
 }: PartialQueryConfigForApi) =>
   verifyAuthentication(() =>
     axios
@@ -145,7 +119,7 @@ export const deleteCurrentMember = async ({
 
 export const createPassword = async (
   payload: { password: Password },
-  { API_HOST, axios }: PartialQueryConfigForApi,
+  { API_HOST }: PartialQueryConfigForApi,
 ) =>
   axios
     .post<void>(`${API_HOST}/${buildPostMemberPasswordRoute()}`, payload)
@@ -153,7 +127,7 @@ export const createPassword = async (
 
 export const updatePassword = async (
   payload: { password: Password; currentPassword: Password },
-  { API_HOST, axios }: PartialQueryConfigForApi,
+  { API_HOST }: PartialQueryConfigForApi,
 ) =>
   axios
     .patch<void>(`${API_HOST}/${buildPatchMemberPasswordRoute()}`, payload)
@@ -164,7 +138,7 @@ export const uploadAvatar = async (
     file: Blob;
     onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
   },
-  { API_HOST, axios }: PartialQueryConfigForApi,
+  { API_HOST }: PartialQueryConfigForApi,
 ) => {
   const { file } = args;
   const itemPayload = new FormData();
@@ -186,7 +160,7 @@ export const uploadAvatar = async (
 
 export const downloadAvatar = async (
   { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
-  { API_HOST, axios }: PartialQueryConfigForApi,
+  { API_HOST }: PartialQueryConfigForApi,
 ) =>
   axios
     .get<Blob>(
@@ -197,19 +171,22 @@ export const downloadAvatar = async (
     )
     .then(({ data }) => data);
 
-export const downloadAvatarUrl = async (
-  { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
+export const downloadAvatarUrl = async ({
+  id,
+  size = DEFAULT_THUMBNAIL_SIZE,
+}: {
+  id: UUID;
+  size?: string;
+}) =>
   axios
     .get<string>(
-      `${API_HOST}/${buildDownloadAvatarRoute({ id, size, replyUrl: true })}`,
+      `/api/${buildDownloadAvatarRoute({ id, size, replyUrl: true })}`,
     )
     .then(({ data }) => data);
 
 export const updateEmail = async (
   email: string,
-  { API_HOST, axios }: PartialQueryConfigForApi,
+  { API_HOST }: PartialQueryConfigForApi,
 ) =>
   axios.post<void>(`${API_HOST}/${buildPostMemberEmailUpdateRoute()}`, {
     email,
@@ -217,7 +194,7 @@ export const updateEmail = async (
 
 export const validateEmailUpdate = async (
   token: string,
-  { API_HOST, axios }: PartialQueryConfigForApi,
+  { API_HOST }: PartialQueryConfigForApi,
 ) =>
   axios.patch<void>(
     `${API_HOST}/${buildPostMemberEmailUpdateRoute()}`,
@@ -229,7 +206,6 @@ export const validateEmailUpdate = async (
 // Define the function to export member data
 export const exportMemberData = async ({
   API_HOST,
-  axios,
 }: PartialQueryConfigForApi) =>
   axios
     .post<void>(`${API_HOST}/${buildExportMemberDataRoute()}`)
