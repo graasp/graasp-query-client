@@ -26,7 +26,7 @@ export default (queryConfig: QueryClientConfig) => {
     useCurrentMember: () =>
       useQuery({
         queryKey: memberKeys.current().content,
-        queryFn: () => Api.getCurrentMember(queryConfig),
+        queryFn: () => Api.getCurrentMember(),
         ...defaultQueryOptions,
       }),
 

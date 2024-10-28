@@ -18,7 +18,7 @@ describe('Chat Mention Hooks', () => {
   });
 
   describe('useMentions', () => {
-    const currentMemberRoute = `/${buildGetCurrentMemberRoute()}`;
+    const currentMemberRoute = `/api/${buildGetCurrentMemberRoute()}`;
     const route = `/${buildGetMemberMentionsRoute()}`;
     const key = buildMentionKey();
 

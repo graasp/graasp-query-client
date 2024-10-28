@@ -42,7 +42,7 @@ describe('Member Hooks', () => {
   });
 
   describe('useCurrentMember', () => {
-    const route = `/${buildGetCurrentMemberRoute()}`;
+    const route = `/api/${buildGetCurrentMemberRoute()}`;
     const hook = () => hooks.useCurrentMember();
 
     it(`Receive current member`, async () => {
