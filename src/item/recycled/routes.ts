@@ -2,7 +2,7 @@ import { Pagination } from '@graasp/sdk';
 
 import { ITEMS_ROUTE } from '../routes.js';
 
-export const buildGetOwnRecycledItemDataRoute = ({
+export const buildGetOwnRecycledItemRoute = ({
   pageSize,
   page,
 }: Partial<Pagination>) => {

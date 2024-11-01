@@ -1,4 +1,4 @@
-import { Paginated, RecycledItemData } from '@graasp/sdk';
+import { DiscriminatedItem, Paginated } from '@graasp/sdk';
 
 import { waitFor } from '@testing-library/dom';
 import { act, renderHook } from '@testing-library/react';
@@ -12,30 +12,30 @@ import {
 } from '../../../test/constants.js';
 import { mockEndpoints, mockHook, setUpTest } from '../../../test/utils.js';
 import { memberKeys } from '../../keys.js';
-import { buildGetOwnRecycledItemDataRoute } from './routes.js';
+import { buildGetOwnRecycledItemRoute } from './routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
 
-describe('useInfiniteOwnRecycledItemData', () => {
+describe('useInfiniteOwnRecycledItems', () => {
   afterEach(() => {
     nock.cleanAll();
     queryClient.clear();
   });
 
   const pagination = { page: 1 };
-  const route = `/${buildGetOwnRecycledItemDataRoute(pagination)}`;
+  const route = `/${buildGetOwnRecycledItemRoute(pagination)}`;
   const items = generateFolders();
   const response = { data: items, totalCount: items.length };
-  const hook = () => hooks.useInfiniteOwnRecycledItemData(pagination);
+  const hook = () => hooks.useInfiniteOwnRecycledItems(pagination);
   const key = memberKeys.current().infiniteRecycledItemData();
 
-  it(`Receive recycled item data`, async () => {
+  it(`Receive recycled items`, async () => {
     const endpoints = [{ route, response }];
     const { data } = await mockHook({ endpoints, hook, wrapper });
     expect(data!.pages[0]).toMatchObject(response);
     // verify cache keys
     expect(
-      queryClient.getQueryData<{ pages: Paginated<RecycledItemData>[] }>(key)!
+      queryClient.getQueryData<{ pages: Paginated<DiscriminatedItem>[] }>(key)!
         .pages[0],
     ).toMatchObject(response);
   });
