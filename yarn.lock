@@ -620,10 +620,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@faker-js/faker@npm:9.0.3":
-  version: 9.0.3
-  resolution: "@faker-js/faker@npm:9.0.3"
-  checksum: 10/60ea71c31d6bd6317184736de17daee415e229cab5e10a4146a19622f3eb22f49f42345ff339dc9261f0214ca1f9b019c63fd9aac842a2d359f135102788ec90
+"@faker-js/faker@npm:9.1.0":
+  version: 9.1.0
+  resolution: "@faker-js/faker@npm:9.1.0"
+  checksum: 10/2f8f8386b7ae1ed35b885563d7b051bc2b9b9048bf8f96111d3dddf1c621bc28523132290049eb02093ce5c6e8d21df43736afeadf353e7f041153911c28ef05
   languageName: node
   linkType: hard
 
@@ -636,7 +636,7 @@ __metadata:
     "@eslint/compat": "npm:1.2.0"
     "@eslint/eslintrc": "npm:3.1.0"
     "@eslint/js": "npm:9.12.0"
-    "@graasp/sdk": "npm:4.33.0"
+    "@graasp/sdk": "npm:4.33.2"
     "@graasp/translations": "npm:1.40.0"
     "@tanstack/react-query": "npm:5.59.8"
     "@tanstack/react-query-devtools": "npm:5.59.8"
@@ -683,18 +683,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@npm:4.33.0":
-  version: 4.33.0
-  resolution: "@graasp/sdk@npm:4.33.0"
+"@graasp/sdk@npm:4.33.2":
+  version: 4.33.2
+  resolution: "@graasp/sdk@npm:4.33.2"
   dependencies:
-    "@faker-js/faker": "npm:9.0.3"
+    "@faker-js/faker": "npm:9.1.0"
     filesize: "npm:10.1.6"
     js-cookie: "npm:3.0.5"
     validator: "npm:13.12.0"
   peerDependencies:
     date-fns: ^3 || ^4.0.0
-    uuid: ^9 || ^10
-  checksum: 10/6e0b0f661f52e1ca97b48c4b90ddc3c18e2afe7b8d3bf7818010b24bbc57f3c1ddc9bfa90c6fe2a1c05535f73ffe15956523b2557906b4a21a9a9f8b61d1647a
+    uuid: ^9 || ^10 || ^11.0.0
+  checksum: 10/0c239f62e088ff91c7bbb11b0a4c105d4de06ffe9fb5d15752e6ab4192b02ca8da6fd5a6b6e7a02bb66912b173c88d2db51668e75df83b956447b5a388e5d4bf
   languageName: node
   linkType: hard
 
