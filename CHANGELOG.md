@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.2.0](https://github.com/graasp/graasp-query-client/compare/v5.1.0...v5.2.0) (2024-11-04)
+
+
+### Features
+
+* get items for get own recycled items ([#977](https://github.com/graasp/graasp-query-client/issues/977)) ([fb56742](https://github.com/graasp/graasp-query-client/commit/fb56742b949242134208eb25a87e4847613267fb))
+
 ## [5.1.0](https://github.com/graasp/graasp-query-client/compare/v5.0.0...v5.1.0) (2024-10-25)
 
 
