@@ -107,7 +107,7 @@ export const itemKeys = {
       geolocation: [...singleBaseKey, 'geolocation'] as const,
 
       // short links
-      shortLinks: [...singleBaseKey, 'shortLink'] as const,
+      shortLinks: [...singleBaseKey, 'shortLinks'] as const,
 
       // likes
       likes: [...singleBaseKey, 'likes'] as const,

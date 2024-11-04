@@ -1,4 +1,4 @@
-import { ShortLinkPatchPayload, ShortLinkPostPayload } from '@graasp/sdk';
+import { ShortLink, UpdateShortLink } from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -18,7 +18,7 @@ export default (queryConfig: QueryClientConfig) => {
   const usePostShortLink = () => {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn: async (shortLink: ShortLinkPostPayload) =>
+      mutationFn: async (shortLink: ShortLink) =>
         Api.postShortLink(shortLink, queryConfig),
       onSuccess: (_data, variables) => {
         notifier?.({
@@ -49,7 +49,7 @@ export default (queryConfig: QueryClientConfig) => {
         shortLink,
       }: {
         alias: string;
-        shortLink: ShortLinkPatchPayload;
+        shortLink: UpdateShortLink;
       }) => Api.patchShortLink(alias, shortLink, queryConfig),
       onSuccess: (data) => {
         notifier?.({
@@ -57,7 +57,7 @@ export default (queryConfig: QueryClientConfig) => {
           payload: { message: SUCCESS_MESSAGES.EDIT_SHORT_LINK },
         });
         queryClient.invalidateQueries({
-          queryKey: itemKeys.single(data.item.id).shortLinks,
+          queryKey: itemKeys.single(data.itemId).shortLinks,
         });
         queryClient.invalidateQueries({
           queryKey: buildShortLinkKey(data.alias),
@@ -83,7 +83,7 @@ export default (queryConfig: QueryClientConfig) => {
           payload: { message: SUCCESS_MESSAGES.DELETE_SHORT_LINK },
         });
         queryClient.invalidateQueries({
-          queryKey: itemKeys.single(data.item.id).shortLinks,
+          queryKey: itemKeys.single(data.itemId).shortLinks,
         });
         queryClient.invalidateQueries({
           queryKey: buildShortLinkKey(data.alias),
