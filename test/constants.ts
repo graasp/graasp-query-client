@@ -352,13 +352,13 @@ const createMockItemVisibilities = (
 });
 
 const ITEM_VISIBILITY_1: ItemVisibility = createMockItemVisibilities({
-  id: 'tag-id',
+  id: 'visibility-id',
   item: FolderItemFactory(),
   type: ItemVisibilityType.Public,
 });
 
 const ITEM_VISIBILITY_2: ItemVisibility = createMockItemVisibilities({
-  id: 'tag-id1',
+  id: 'visibility-id1',
   item: FolderItemFactory(),
   type: ItemVisibilityType.Public,
 });
