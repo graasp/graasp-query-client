@@ -93,7 +93,7 @@ export const itemKeys = {
           options.replyUrl ? 'url' : 'blob',
         ] as const,
 
-      tags: [...singleBaseKey, 'tags'] as const,
+      visibilities: [...singleBaseKey, 'visibilities'] as const,
 
       flags: [...singleBaseKey, 'flags'] as const,
 
@@ -129,7 +129,7 @@ export const itemKeys = {
   allMany: () => [...itemKeys.all, 'many'] as const,
   many: (ids?: UUID[]) => {
     const manyBaseKey = [...itemKeys.allMany(), ids] as const;
-    const allTags = [...manyBaseKey, 'tags'] as const;
+    const allVisibilities = [...manyBaseKey, 'visibilities'] as const;
     return {
       // data for the items requested
       content: [...manyBaseKey, 'content'],
@@ -140,7 +140,7 @@ export const itemKeys = {
       // published info
       publishedInformation: [...manyBaseKey, 'publishedInformation'],
 
-      tags: allTags,
+      visibilities: allVisibilities,
     };
   },
 
@@ -158,8 +158,8 @@ export const itemKeys = {
     limit?: number;
     offset?: number;
     sort?: string[];
-    highlightPreTag?: string;
-    highlightPostTag?: string;
+    highlightPreVisibility?: string;
+    highlightPostVisibility?: string;
     page?: number;
     langs?: string[];
   }) =>

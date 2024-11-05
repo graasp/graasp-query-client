@@ -9,8 +9,8 @@ export type MeiliSearchProps = {
   sort?: string[];
   attributesToCrop?: string[];
   cropLength?: number;
-  highlightPreTag?: string;
-  highlightPostTag?: string;
+  highlightPreVisibility?: string;
+  highlightPostVisibility?: string;
   page?: number;
   elementsPerPage?: number;
 };
@@ -25,8 +25,8 @@ export const searchPublishedItems = async (
     sort,
     attributesToCrop,
     cropLength,
-    highlightPreTag,
-    highlightPostTag,
+    highlightPreVisibility,
+    highlightPostVisibility,
     langs,
   }: {
     query?: string;
@@ -50,8 +50,8 @@ export const searchPublishedItems = async (
     limit,
     offset,
     sort,
-    highlightPreTag,
-    highlightPostTag,
+    highlightPreVisibility,
+    highlightPostVisibility,
   };
 
   // handle filters

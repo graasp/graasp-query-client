@@ -25,11 +25,11 @@ import {
   ItemLoginSchemaType,
   ItemMembership,
   ItemPublished,
-  ItemTag,
-  ItemTagType,
   ItemValidationGroup,
   ItemValidationProcess,
   ItemValidationStatus,
+  ItemVisibility,
+  ItemVisibilityType,
   MemberFactory,
   MentionStatus,
   PackedFolderItemFactory,
@@ -337,31 +337,33 @@ export const buildMemberMentions = (): ChatMention[] => {
   return MEMBER_MENTIONS;
 };
 
-const defaultItemTagsValues: ItemTag = {
+const defaultItemVisibilitiesValues: ItemVisibility = {
   id: 'tag-id',
   item: FolderItemFactory(),
-  type: ItemTagType.Public,
+  type: ItemVisibilityType.Public,
   createdAt: '2023-09-06T11:50:32.894Z',
   creator: MemberFactory(),
 };
-const createMockItemTags = (values: Partial<ItemTag>): ItemTag => ({
-  ...defaultItemTagsValues,
+const createMockItemVisibilities = (
+  values: Partial<ItemVisibility>,
+): ItemVisibility => ({
+  ...defaultItemVisibilitiesValues,
   ...values,
 });
 
-const ITEM_TAG_1: ItemTag = createMockItemTags({
+const ITEM_VISIBILITY_1: ItemVisibility = createMockItemVisibilities({
   id: 'tag-id',
   item: FolderItemFactory(),
-  type: ItemTagType.Public,
+  type: ItemVisibilityType.Public,
 });
 
-const ITEM_TAG_2: ItemTag = createMockItemTags({
+const ITEM_VISIBILITY_2: ItemVisibility = createMockItemVisibilities({
   id: 'tag-id1',
   item: FolderItemFactory(),
-  type: ItemTagType.Public,
+  type: ItemVisibilityType.Public,
 });
 
-export const ITEM_TAGS = [ITEM_TAG_1, ITEM_TAG_2];
+export const ITEM_VISIBILITIES = [ITEM_VISIBILITY_1, ITEM_VISIBILITY_2];
 
 export const CHAT_MESSAGES: ChatMessage[] = [
   {

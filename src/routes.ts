@@ -3,8 +3,8 @@ import {
   DiscriminatedItem,
   ExportActionsFormatting,
   ItemGeolocation,
-  ItemTag,
-  ItemTagType,
+  ItemVisibility,
+  ItemVisibilityType,
   UUID,
 } from '@graasp/sdk';
 import { DEFAULT_LANG } from '@graasp/translations';
@@ -93,29 +93,29 @@ export const SIGN_IN_ROUTE = '/login';
 export const SIGN_IN_WITH_PASSWORD_ROUTE = '/login-password';
 export const SIGN_UP_ROUTE = '/register';
 export const SIGN_OUT_ROUTE = '/logout';
-export const buildPostItemTagRoute = ({
+export const buildPostItemVisibilityRoute = ({
   itemId,
   type,
 }: {
   itemId: UUID;
-  type: ItemTagType;
-}) => `${ITEMS_ROUTE}/${itemId}/tags/${type}`;
+  type: ItemVisibilityType;
+}) => `${ITEMS_ROUTE}/${itemId}/visibilities/${type}`;
 export const buildPutItemLoginSchemaRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema`;
 export const buildGetItemLoginSchemaRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema`;
 export const buildGetItemLoginSchemaTypeRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema-type`;
-export const buildDeleteItemTagRoute = ({
+export const buildDeleteItemVisibilityRoute = ({
   itemId,
   type,
 }: {
   itemId: DiscriminatedItem['id'];
-  type: ItemTag['type'];
-}) => `${ITEMS_ROUTE}/${itemId}/tags/${type}`;
+  type: ItemVisibility['type'];
+}) => `${ITEMS_ROUTE}/${itemId}/visibilities/${type}`;
 export const buildPostItemLoginSignInRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login`;
-export const GET_TAGS_ROUTE = `${ITEMS_ROUTE}/tags/list`;
+export const GET_TAGS_ROUTE = `${ITEMS_ROUTE}/visibilities/list`;
 export const buildEditItemMembershipRoute = (id: UUID) =>
   `${ITEM_MEMBERSHIPS_ROUTE}/${id}`;
 export const buildDeleteItemMembershipRoute = (id: UUID) =>
@@ -371,7 +371,7 @@ export const API_ROUTES = {
   buildDeleteItemChatMessageRoute,
   buildDeleteItemLikeRoute,
   buildDeleteItemMembershipRoute,
-  buildDeleteItemTagRoute,
+  buildDeleteItemVisibilityRoute,
   buildDeleteShortLinkRoute,
   buildEditItemMembershipRoute,
   buildExportActions,
@@ -418,7 +418,7 @@ export const API_ROUTES = {
   buildPostItemLikeRoute,
   buildPostItemLoginSignInRoute,
   buildPostItemMembershipRoute,
-  buildPostItemTagRoute,
+  buildPostItemVisibilityRoute,
   buildPostItemValidationRoute,
   buildPostManyItemMembershipsRoute,
   buildPostShortLinkRoute,

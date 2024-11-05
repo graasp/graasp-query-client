@@ -17,8 +17,8 @@ import itemGeolocationMutations from './itemGeolocation.js';
 import itemLikeMutations from './itemLike.js';
 import itemLoginMutations from './itemLogin.js';
 import itemPublishMutations from './itemPublish.js';
-import tagsMutations from './itemTag.js';
 import itemValidationMutations from './itemValidation.js';
+import visibilitiesMutations from './itemVisibility.js';
 import itemMembershipMutations from './membership.js';
 import mentionMutations from './mention.js';
 import shortLinksMutations from './shortLink.js';
@@ -45,7 +45,7 @@ const configureMutations = (queryConfig: QueryClientConfig) => ({
   ...mentionMutations(queryConfig),
   ...publicProfileMutations(queryConfig),
   ...shortLinksMutations(queryConfig),
-  ...tagsMutations(queryConfig),
+  ...visibilitiesMutations(queryConfig),
   ...membershipRequestsMutations(queryConfig),
 });
 

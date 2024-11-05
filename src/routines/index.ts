@@ -15,7 +15,7 @@ export * from './itemGeolocation.js';
 export * from './itemLike.js';
 export * from './itemLogin.js';
 export * from './itemPublish.js';
-export * from './itemTag.js';
+export * from './itemVisibility.js';
 export * from './itemValidation.js';
 export * from './membership.js';
 export * from './mentions.js';
