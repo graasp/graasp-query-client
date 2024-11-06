@@ -1,4 +1,9 @@
-import { ItemTag, ItemTagType, UUID, getParentFromPath } from '@graasp/sdk';
+import {
+  ItemVisibility,
+  ItemVisibilityType,
+  UUID,
+  getParentFromPath,
+} from '@graasp/sdk';
 import { SUCCESS_MESSAGES } from '@graasp/translations';
 
 import {
@@ -7,12 +12,12 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
-import * as Api from '../api/itemTag.js';
+import * as Api from '../api/itemVisibility.js';
 import { getKeyForParentId, itemKeys } from '../keys.js';
 import {
-  deleteItemTagRoutine,
-  postItemTagRoutine,
-} from '../routines/itemTag.js';
+  deleteItemVisibilityRoutine,
+  postItemVisibilityRoutine,
+} from '../routines/itemVisibility.js';
 import { QueryClientConfig } from '../types.js';
 
 export default (queryConfig: QueryClientConfig) => {
@@ -21,10 +26,9 @@ export default (queryConfig: QueryClientConfig) => {
   const invalidateQueries = (
     queryClient: QueryClient,
     itemId: UUID,
-    // TODO: ItemTag doesn't correspond anymore with what the backend send
-    data: ItemTag | undefined,
+    data: ItemVisibility | undefined,
   ) => {
-    // because with had PackItem now, we need to invalidate the whole item key
+    // because with had PackedItem now, we need to invalidate the whole item key
     queryClient.invalidateQueries({
       queryKey: itemKeys.single(itemId).content,
     });
@@ -37,22 +41,25 @@ export default (queryConfig: QueryClientConfig) => {
     queryClient.invalidateQueries({ queryKey: parentKey });
   };
 
-  const usePostItemTag = () => {
+  const usePostItemVisibility = () => {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: (payload: {
         creator?: UUID;
         itemId: UUID;
-        type: ItemTagType;
-      }) => Api.postItemTag(payload, queryConfig),
+        type: ItemVisibilityType;
+      }) => Api.postItemVisibility(payload, queryConfig),
       onSuccess: () => {
         notifier?.({
-          type: postItemTagRoutine.SUCCESS,
-          payload: { message: SUCCESS_MESSAGES.POST_ITEM_TAG },
+          type: postItemVisibilityRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.POST_ITEM_VISIBILITY },
         });
       },
       onError: (error: Error) => {
-        notifier?.({ type: postItemTagRoutine.FAILURE, payload: { error } });
+        notifier?.({
+          type: postItemVisibilityRoutine.FAILURE,
+          payload: { error },
+        });
       },
       onSettled: (data, _error, { itemId }) => {
         invalidateQueries(queryClient, itemId, data);
@@ -60,40 +67,39 @@ export default (queryConfig: QueryClientConfig) => {
     });
   };
 
-  const useDeleteItemTag = () => {
+  const useDeleteItemVisibility = () => {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn: (payload: {
-        itemId: UUID;
-        type: `${ItemTagType}` | ItemTagType;
-      }) => Api.deleteItemTag(payload, queryConfig),
+      mutationFn: (payload: { itemId: UUID; type: ItemVisibility['type'] }) =>
+        Api.deleteItemVisibility(payload, queryConfig),
       onMutate: async ({ itemId, type }) => {
-        const itemTagKey = itemKeys.single(itemId).tags;
-        await queryClient.cancelQueries({ queryKey: itemTagKey });
+        const itemVisibilityKey = itemKeys.single(itemId).visibilities;
+        await queryClient.cancelQueries({ queryKey: itemVisibilityKey });
 
         // Snapshot the previous value
-        const prevValue = queryClient.getQueryData<ItemTag[]>(itemTagKey);
+        const prevValue =
+          queryClient.getQueryData<ItemVisibility[]>(itemVisibilityKey);
 
-        // remove tag from list
+        // remove visibility from list
         if (prevValue) {
           queryClient.setQueryData(
-            itemTagKey,
+            itemVisibilityKey,
             prevValue.filter(({ type: ttype }) => ttype !== type),
           );
         }
-        return { itemTags: prevValue };
+        return { itemVisibilities: prevValue };
       },
       onSuccess: () => {
         notifier?.({
-          type: deleteItemTagRoutine.SUCCESS,
-          payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_TAG },
+          type: deleteItemVisibilityRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_VISIBILITY },
         });
       },
       onError: (error: Error, { itemId }, context) => {
-        const itemKey = itemKeys.single(itemId).tags;
-        queryClient.setQueryData(itemKey, context?.itemTags);
+        const itemKey = itemKeys.single(itemId).visibilities;
+        queryClient.setQueryData(itemKey, context?.itemVisibilities);
         notifier?.({
-          type: deleteItemTagRoutine.FAILURE,
+          type: deleteItemVisibilityRoutine.FAILURE,
           payload: { error },
         });
       },
@@ -104,7 +110,7 @@ export default (queryConfig: QueryClientConfig) => {
   };
 
   return {
-    usePostItemTag,
-    useDeleteItemTag,
+    usePostItemVisibility,
+    useDeleteItemVisibility,
   };
 };

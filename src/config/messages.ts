@@ -33,9 +33,9 @@ export const SIGN_OUT_ERROR_MESSAGE = 'There was an error while signing out.';
 export const SIGN_OUT_SUCCESS_MESSAGE = 'You successfully signed out.';
 
 // todo: customize settings
-export const DELETE_ITEM_TAG_ERROR_MESSAGE =
-  'There was an error while deleting the tag.';
-export const POST_ITEM_TAG_ERROR_MESSAGE =
-  'There was an error while posting the tag.';
+export const DELETE_ITEM_VISIBILITY_ERROR_MESSAGE =
+  'There was an error while deleting the visibility.';
+export const POST_ITEM_VISIBILITY_ERROR_MESSAGE =
+  'There was an error while posting the visibility.';
 export const ITEM_LOGIN_SIGN_IN_ERROR_MESSAGE =
   'There was an error while signing in.';
