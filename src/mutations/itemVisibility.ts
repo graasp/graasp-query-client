@@ -26,10 +26,9 @@ export default (queryConfig: QueryClientConfig) => {
   const invalidateQueries = (
     queryClient: QueryClient,
     itemId: UUID,
-    // TODO: ItemVisibility doesn't correspond anymore with what the backend send
     data: ItemVisibility | undefined,
   ) => {
-    // because with had PackItem now, we need to invalidate the whole item key
+    // because with had PackedItem now, we need to invalidate the whole item key
     queryClient.invalidateQueries({
       queryKey: itemKeys.single(itemId).content,
     });
@@ -71,10 +70,8 @@ export default (queryConfig: QueryClientConfig) => {
   const useDeleteItemVisibility = () => {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn: (payload: {
-        itemId: UUID;
-        type: `${ItemVisibilityType}` | ItemVisibilityType;
-      }) => Api.deleteItemVisibility(payload, queryConfig),
+      mutationFn: (payload: { itemId: UUID; type: ItemVisibility['type'] }) =>
+        Api.deleteItemVisibility(payload, queryConfig),
       onMutate: async ({ itemId, type }) => {
         const itemVisibilityKey = itemKeys.single(itemId).visibilities;
         await queryClient.cancelQueries({ queryKey: itemVisibilityKey });

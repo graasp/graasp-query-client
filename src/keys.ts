@@ -158,8 +158,8 @@ export const itemKeys = {
     limit?: number;
     offset?: number;
     sort?: string[];
-    highlightPreVisibility?: string;
-    highlightPostVisibility?: string;
+    highlightPreTag?: string;
+    highlightPostTag?: string;
     page?: number;
     langs?: string[];
   }) =>

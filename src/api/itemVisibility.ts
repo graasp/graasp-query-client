@@ -1,4 +1,4 @@
-import { ItemVisibility, ItemVisibilityType, UUID } from '@graasp/sdk';
+import { ItemVisibility, UUID } from '@graasp/sdk';
 
 import {
   buildDeleteItemVisibilityRoute,
@@ -7,9 +7,8 @@ import {
 import { PartialQueryConfigForApi } from '../types.js';
 import { verifyAuthentication } from './axios.js';
 
-// payload: visibilityId, itemPath, creator
 export const postItemVisibility = async (
-  { itemId, type }: { itemId: UUID; type: ItemVisibilityType },
+  { itemId, type }: { itemId: UUID; type: ItemVisibility['type'] },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
@@ -21,10 +20,7 @@ export const postItemVisibility = async (
   );
 
 export const deleteItemVisibility = async (
-  {
-    itemId,
-    type,
-  }: { itemId: UUID; type: `${ItemVisibilityType}` | ItemVisibilityType },
+  { itemId, type }: { itemId: UUID; type: ItemVisibility['type'] },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>

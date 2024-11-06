@@ -4,7 +4,6 @@ import {
   ExportActionsFormatting,
   ItemGeolocation,
   ItemVisibility,
-  ItemVisibilityType,
   UUID,
 } from '@graasp/sdk';
 import { DEFAULT_LANG } from '@graasp/translations';
@@ -98,7 +97,7 @@ export const buildPostItemVisibilityRoute = ({
   type,
 }: {
   itemId: UUID;
-  type: ItemVisibilityType;
+  type: ItemVisibility['type'];
 }) => `${ITEMS_ROUTE}/${itemId}/visibilities/${type}`;
 export const buildPutItemLoginSchemaRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema`;
