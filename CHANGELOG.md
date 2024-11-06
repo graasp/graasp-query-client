@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.0](https://github.com/graasp/graasp-query-client/compare/v5.2.0...v5.3.0) (2024-11-06)
+
+
+### Features
+
+* **refactor:** update ShortLink types from SDK ([#979](https://github.com/graasp/graasp-query-client/issues/979)) ([c091d50](https://github.com/graasp/graasp-query-client/commit/c091d505dce2a7a5ec725c03da477e3c8554c780))
+
 ## [5.2.0](https://github.com/graasp/graasp-query-client/compare/v5.1.0...v5.2.0) (2024-11-04)
 
 
