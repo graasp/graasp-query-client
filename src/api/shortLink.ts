@@ -1,8 +1,8 @@
 import {
   ShortLink,
   ShortLinkAvailable,
-  ShortLinkPatchPayload,
-  ShortLinkPostPayload,
+  ShortLinksOfItem,
+  UpdateShortLink,
 } from '@graasp/sdk';
 
 import {
@@ -33,7 +33,9 @@ export const getShortLinksItem = (
 ) =>
   verifyAuthentication(() =>
     axios
-      .get<ShortLink[]>(`${API_HOST}/${buildGetShortLinksItemRoute(itemId)}`)
+      .get<ShortLinksOfItem>(
+        `${API_HOST}/${buildGetShortLinksItemRoute(itemId)}`,
+      )
       .then(({ data }) => data),
   );
 
@@ -48,26 +50,25 @@ export const deleteShortLink = (
   );
 
 export const postShortLink = async (
-  shortLink: ShortLinkPostPayload,
+  shortLink: ShortLink,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
-      .post<ShortLink>(`${API_HOST}/${buildPostShortLinkRoute()}`, {
-        ...shortLink,
-      })
+      .post<ShortLink>(`${API_HOST}/${buildPostShortLinkRoute()}`, shortLink)
       .then(({ data }) => data),
   );
 
 export const patchShortLink = (
   alias: string,
-  updatedPayload: ShortLinkPatchPayload,
+  updatedPayload: UpdateShortLink,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   verifyAuthentication(() =>
     axios
-      .patch<ShortLink>(`${API_HOST}/${buildPatchShortLinkRoute(alias)}`, {
-        ...updatedPayload,
-      })
+      .patch<ShortLink>(
+        `${API_HOST}/${buildPatchShortLinkRoute(alias)}`,
+        updatedPayload,
+      )
       .then(({ data }) => data),
   );

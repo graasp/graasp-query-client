@@ -26,7 +26,7 @@ export default (queryConfig: QueryClientConfig) => {
       useQuery({
         queryKey: itemKeys.single(itemId).shortLinks,
         queryFn: () => Api.getShortLinksItem(itemId, queryConfig),
-        enabled: true,
+        enabled: Boolean(itemId),
         ...defaultQueryOptions,
       }),
   };
