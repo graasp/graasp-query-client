@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.0](https://github.com/graasp/graasp-query-client/compare/v5.3.0...v5.4.0) (2024-11-06)
+
+
+### Features
+
+* rename item tag to item visibility ([#980](https://github.com/graasp/graasp-query-client/issues/980)) ([ad0ae18](https://github.com/graasp/graasp-query-client/commit/ad0ae18bf7dfb974b94448d98d81fcf1c592e954))
+
 ## [5.3.0](https://github.com/graasp/graasp-query-client/compare/v5.2.0...v5.3.0) (2024-11-06)
 
 
