@@ -26,13 +26,11 @@ import {
   waitForMutation,
 } from '../../test/utils.js';
 import { itemKeys } from '../keys.js';
-import { buildGetMembersByEmailRoute } from '../member/routes.js';
 import {
   buildDeleteItemMembershipRoute,
   buildEditItemMembershipRoute,
   buildPostInvitationsRoute,
   buildPostItemMembershipRoute,
-  buildPostManyItemMembershipsRoute,
 } from '../routes.js';
 import {
   deleteItemMembershipRoutine,
@@ -360,58 +358,6 @@ describe('Membership Mutations', () => {
       });
     });
 
-    it('Unauthorized to search members', async () => {
-      // set data in cache
-      items.forEach((i) => {
-        const itemKey = itemKeys.single(i.id).content;
-        queryClient.setQueryData(itemKey, i);
-      });
-      queryClient.setQueryData(itemKeys.accessiblePage({}, {}), items);
-      queryClient.setQueryData(
-        itemKeys.single(itemId).memberships,
-        ITEM_MEMBERSHIPS_RESPONSE,
-      );
-      queryClient.setQueryData(
-        itemKeys.single(itemId).invitation,
-        initialInvitations,
-      );
-
-      const endpoints = [
-        {
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.Get,
-          route: `/${buildGetMembersByEmailRoute(emails)}`,
-        },
-      ];
-
-      const mockedMutation = await mockMutation({
-        endpoints,
-        mutation,
-        wrapper,
-      });
-
-      const invitations = emails.map((email) => ({ email, permission }));
-      await act(async () => {
-        mockedMutation.mutate({ itemId, invitations });
-        await waitForMutation();
-      });
-
-      // check invalidations
-      const mem = queryClient.getQueryState(
-        itemKeys.single(itemId).memberships,
-      );
-      expect(mem?.isInvalidated).toBeTruthy();
-      const inv = queryClient.getQueryState(itemKeys.single(itemId).invitation);
-      expect(inv?.isInvalidated).toBeTruthy();
-
-      // check notification trigger
-      expect(mockedNotifier).toHaveBeenCalledWith({
-        type: shareItemRoutine.FAILURE,
-        payload: expect.anything(),
-      });
-    });
-
     it('Unauthorized to post memberships', async () => {
       // set data in cache
       items.forEach((i) => {
@@ -429,17 +375,6 @@ describe('Membership Mutations', () => {
       );
 
       const endpoints: Endpoint[] = [
-        {
-          response: buildResultOfData([{ email: emails[0], id: emails[0] }]),
-          method: HttpMethod.Get,
-          route: `/${buildGetMembersByEmailRoute(emails)}`,
-        },
-        {
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-          method: HttpMethod.Post,
-          route: `/${buildPostManyItemMembershipsRoute(itemId)}`,
-        },
         {
           response: buildResultOfData(initialInvitations),
           method: HttpMethod.Post,

@@ -1,14 +1,7 @@
-import {
-  CompleteMember,
-  MAX_TARGETS_FOR_READ_REQUEST,
-  Member,
-  Pagination,
-  UUID,
-} from '@graasp/sdk';
+import { CompleteMember, Member, Pagination, UUID } from '@graasp/sdk';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { splitRequestByIdsAndReturn } from '../api/axios.js';
 import {
   CONSTANT_KEY_STALE_TIME_MILLISECONDS,
   DEFAULT_THUMBNAIL_SIZE,
@@ -17,7 +10,6 @@ import { UndefinedArgument } from '../config/errors.js';
 import { memberKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import * as Api from './api.js';
-import { getMembersRoutine } from './routines.js';
 
 export default (queryConfig: QueryClientConfig) => {
   const { defaultQueryOptions } = queryConfig;
@@ -42,23 +34,6 @@ export default (queryConfig: QueryClientConfig) => {
         enabled: Boolean(id),
         ...defaultQueryOptions,
       }),
-
-    useMembers: (ids: UUID[]) => {
-      return useQuery({
-        queryKey: memberKeys.many(ids),
-        queryFn: async () =>
-          splitRequestByIdsAndReturn(
-            ids,
-            MAX_TARGETS_FOR_READ_REQUEST,
-            (chunk) => Api.getMembers({ ids: chunk }, queryConfig),
-          ),
-        meta: {
-          routine: getMembersRoutine,
-        },
-        enabled: Boolean(ids?.length),
-        ...defaultQueryOptions,
-      });
-    },
 
     useAvatar: ({
       id,
