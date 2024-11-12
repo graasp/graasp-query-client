@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.1](https://github.com/graasp/graasp-query-client/compare/v5.4.0...v5.4.1) (2024-11-12)
+
+
+### Bug Fixes
+
+* **deps:** update tanstack-query monorepo to v5.59.20 ([#960](https://github.com/graasp/graasp-query-client/issues/960)) ([dc4b996](https://github.com/graasp/graasp-query-client/commit/dc4b996ef4b393e71617944dc8365ba8239e762e))
+
 ## [5.4.0](https://github.com/graasp/graasp-query-client/compare/v5.3.0...v5.4.0) (2024-11-06)
 
 
