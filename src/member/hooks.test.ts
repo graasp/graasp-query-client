@@ -1,13 +1,9 @@
 import {
   AccountFactory,
-  MAX_TARGETS_FOR_READ_REQUEST,
-  Member,
   MemberFactory,
   MemberStorage,
   Pagination,
-  ResultOf,
   ThumbnailSize,
-  UUID,
 } from '@graasp/sdk';
 
 import { StatusCodes } from 'http-status-codes';
@@ -19,10 +15,8 @@ import {
   AVATAR_URL_RESPONSE,
   FILE_NOT_FOUND_RESPONSE,
   UNAUTHORIZED_RESPONSE,
-  buildResultOfData,
-  generateMembers,
 } from '../../test/constants.js';
-import { mockHook, setUpTest, splitEndpointByIds } from '../../test/utils.js';
+import { mockHook, setUpTest } from '../../test/utils.js';
 import { memberKeys } from '../keys.js';
 import { MEMBER_STORAGE_ITEM_RESPONSE } from './fixtures.js';
 import {
@@ -31,7 +25,6 @@ import {
   buildGetMemberRoute,
   buildGetMemberStorageFilesRoute,
   buildGetMemberStorageRoute,
-  buildGetMembersByIdRoute,
 } from './routes.js';
 
 const { hooks, wrapper, queryClient } = setUpTest();
@@ -125,131 +118,6 @@ describe('Member Hooks', () => {
         queryClient.getQueryData(memberKeys.single(id).content),
       ).toBeFalsy();
     });
-  });
-
-  describe('useMembers', () => {
-    const response = generateMembers(MAX_TARGETS_FOR_READ_REQUEST + 1);
-    const ids = response.map(({ id }) => id);
-
-    it(`Does not run for empty ids`, async () => {
-      const emptyIds: UUID[] = [];
-      const endpoints = [
-        {
-          route: `/${buildGetMembersByIdRoute(emptyIds)}`,
-          response,
-        },
-      ];
-      const hook = () => hooks.useMembers(emptyIds);
-      const { data } = await mockHook({
-        hook,
-        wrapper,
-        endpoints,
-        enabled: false,
-      });
-
-      expect(data).toBeFalsy();
-      // verify cache keys
-      expect(queryClient.getQueryData(memberKeys.many(emptyIds))).toBeFalsy();
-    });
-
-    it(`Receive one member`, async () => {
-      const m = response[0];
-      const oneMemberResponse = buildResultOfData([m]);
-      const oneMemberIds = [m.id];
-      const endpoints = [
-        {
-          route: `/${buildGetMembersByIdRoute(oneMemberIds)}`,
-          response: oneMemberResponse,
-        },
-      ];
-      const hook = () => hooks.useMembers(oneMemberIds);
-      const { data: members } = await mockHook({
-        hook,
-        wrapper,
-        endpoints,
-      });
-
-      expect(members).toEqual(oneMemberResponse);
-      // verify cache keys
-      expect(queryClient.getQueryData(memberKeys.many(oneMemberIds))).toEqual(
-        members,
-      );
-    });
-
-    it(`Receive two members`, async () => {
-      const twoMembers = response.slice(0, 2);
-      const twoIds = twoMembers.map(({ id }) => id);
-      const endpointResponse = buildResultOfData(twoMembers);
-      const endpoints = [
-        {
-          route: `/${buildGetMembersByIdRoute(twoIds)}`,
-          response: endpointResponse,
-        },
-      ];
-      const hook = () => hooks.useMembers(twoIds);
-      const { data: members } = await mockHook({
-        hook,
-        wrapper,
-        endpoints,
-      });
-
-      expect(members).toEqual(endpointResponse);
-      // verify cache keys
-      expect(
-        queryClient.getQueryData<ResultOf<Member>>(memberKeys.many(twoIds)),
-      ).toEqual(endpointResponse);
-    });
-
-    it(`Receive lots of members`, async () => {
-      const endpoints = splitEndpointByIds(
-        ids,
-        MAX_TARGETS_FOR_READ_REQUEST,
-        (chunk) => `/${buildGetMembersByIdRoute(chunk)}`,
-        response,
-      );
-      const fullResponse = buildResultOfData(response);
-
-      const hook = () => hooks.useMembers(ids);
-      const { data: members } = await mockHook({
-        hook,
-        wrapper,
-        endpoints,
-      });
-
-      expect(members).toEqual(fullResponse);
-      // verify cache keys
-      expect(
-        queryClient.getQueryData<ResultOf<Member>>(memberKeys.many(ids)),
-      ).toEqual(fullResponse);
-    });
-
-    it(`Unauthorized`, async () => {
-      const hook = () => hooks.useMembers(ids);
-      const endpoints = [
-        {
-          route: `/${buildGetMembersByIdRoute(ids)}`,
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-        },
-      ];
-      const { data, isError } = await mockHook({
-        hook,
-        wrapper,
-        endpoints,
-      });
-
-      expect(data).toBeFalsy();
-      expect(isError).toBeTruthy();
-      // verify cache keys
-      expect(queryClient.getQueryData(memberKeys.many(ids))).toBeFalsy();
-      for (const id of ids) {
-        expect(
-          queryClient.getQueryData<Member>(memberKeys.single(id).content),
-        ).toBeFalsy();
-      }
-    });
-
-    // TODO: errors
   });
 
   describe('useAvatar', () => {

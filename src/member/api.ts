@@ -7,7 +7,6 @@ import {
   Paginated,
   Pagination,
   Password,
-  ResultOf,
   UUID,
 } from '@graasp/sdk';
 
@@ -25,8 +24,6 @@ import {
   buildGetMemberRoute,
   buildGetMemberStorageFilesRoute,
   buildGetMemberStorageRoute,
-  buildGetMembersByEmailRoute,
-  buildGetMembersByIdRoute,
   buildPatchCurrentMemberRoute,
   buildPatchMemberPasswordRoute,
   buildPostMemberEmailUpdateRoute,
@@ -34,28 +31,12 @@ import {
   buildUploadAvatarRoute,
 } from './routes.js';
 
-export const getMembersByEmail = async (
-  { emails }: { emails: string[] },
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  axios
-    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersByEmailRoute(emails)}`)
-    .then(({ data }) => data);
-
 export const getMember = async (
   { id }: { id: UUID },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get<Member>(`${API_HOST}/${buildGetMemberRoute(id)}`)
-    .then(({ data }) => data);
-
-export const getMembers = (
-  { ids }: { ids: UUID[] },
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  axios
-    .get<ResultOf<Member>>(`${API_HOST}/${buildGetMembersByIdRoute(ids)}`)
     .then(({ data }) => data);
 
 export const getCurrentMember = async ({
