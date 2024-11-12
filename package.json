@@ -73,7 +73,7 @@
     "vitest": "2.1.2"
   },
   "peerDependencies": {
-    "@graasp/sdk": "^4.0.0",
+    "@graasp/sdk": "^4.0.0 || ^5.0.0",
     "@graasp/translations": "*",
     "react": "^18.0.0"
   },
