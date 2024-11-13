@@ -494,17 +494,16 @@ export const ACTIONS_DATA: ActionData = createMockActionData({
     requestedSampleSize: 24,
   },
 });
-export const MEMBER_PUBLIC_PROFILE: PublicProfile = {
+export const MEMBER_PUBLIC_PROFILE = {
   id: v4(),
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
-  member: MemberFactory(),
   bio: 'some random bio',
   visibility: true,
   linkedinID: 'user',
   facebookID: 'user',
   twitterID: 'user',
-};
+} satisfies PublicProfile;
 
 export const AGGREGATE_ACTIONS_DATA = [
   { aggregateResult: 1.5, createdDay: '2023-10-10T00:00:00.000Z' },

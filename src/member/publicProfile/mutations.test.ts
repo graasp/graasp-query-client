@@ -43,7 +43,6 @@ describe('Public Profile Mutations', () => {
         id: 'someid',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        member: MemberFactory(),
       };
 
       queryClient.setQueryData(memberKeys.current().profile, response);
