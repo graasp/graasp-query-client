@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.2](https://github.com/graasp/graasp-query-client/compare/v5.4.1...v5.4.2) (2024-11-13)
+
+
+### Bug Fixes
+
+* update dependencies ([63880df](https://github.com/graasp/graasp-query-client/commit/63880df7aafbe1c8d16487db6e35b6b239b75aac))
+
 ## [5.4.1](https://github.com/graasp/graasp-query-client/compare/v5.4.0...v5.4.1) (2024-11-12)
 
 
