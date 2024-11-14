@@ -129,18 +129,9 @@ export const itemKeys = {
   allMany: () => [...itemKeys.all, 'many'] as const,
   many: (ids?: UUID[]) => {
     const manyBaseKey = [...itemKeys.allMany(), ids] as const;
-    const allVisibilities = [...manyBaseKey, 'visibilities'] as const;
     return {
       // data for the items requested
       content: [...manyBaseKey, 'content'],
-
-      // children data for the many items requested
-      children: [...manyBaseKey, 'children'],
-
-      // published info
-      publishedInformation: [...manyBaseKey, 'publishedInformation'],
-
-      visibilities: allVisibilities,
     };
   },
 

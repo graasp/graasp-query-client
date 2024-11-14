@@ -246,8 +246,6 @@ export const buildItemUnpublishRoute = (itemId: UUID) =>
 
 export const buildGetItemPublishedInformationRoute = (itemId: UUID) =>
   `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/${itemId}/informations`;
-export const buildManyGetItemPublishedInformationsRoute = (itemIds: UUID[]) =>
-  `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}/informations?${new URLSearchParams(itemIds.map((id) => ['itemId', id]))}`;
 export const buildGetAllPublishedItemsRoute = (categoryIds?: UUID[]) => {
   const route = `${ITEMS_ROUTE}/${COLLECTIONS_ROUTE}`;
   if (categoryIds && categoryIds.length) {
@@ -404,7 +402,6 @@ export const API_ROUTES = {
   buildImportZipRoute,
   buildItemPublishRoute,
   buildItemUnpublishRoute,
-  buildManyGetItemPublishedInformationsRoute,
   buildPatchInvitationRoute,
   buildPatchItemChatMessageRoute,
   buildPatchShortLinkRoute,
