@@ -2,7 +2,6 @@ import {
   DiscriminatedItem,
   ItemPublished,
   PackedItem,
-  ResultOf,
   UUID,
 } from '@graasp/sdk';
 
@@ -14,7 +13,6 @@ import {
   buildGetPublishedItemsForMemberRoute,
   buildItemPublishRoute,
   buildItemUnpublishRoute,
-  buildManyGetItemPublishedInformationsRoute,
 } from '../routes.js';
 import { PartialQueryConfigForApi } from '../types.js';
 import { verifyAuthentication } from './axios.js';
@@ -67,16 +65,6 @@ export const getItemPublishedInformation = async (
     .get<ItemPublished | null>(
       `${API_HOST}/${buildGetItemPublishedInformationRoute(id)}`,
     )
-    .then(({ data }) => data);
-
-export const getManyItemPublishedInformations = async (
-  ids: UUID[],
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  axios
-    .get<
-      ResultOf<ItemPublished>
-    >(`${API_HOST}/${buildManyGetItemPublishedInformationsRoute(ids)}`)
     .then(({ data }) => data);
 
 export const publishItem = async (
