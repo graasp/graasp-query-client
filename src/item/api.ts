@@ -67,10 +67,7 @@ export const editItem = async (
   id: UUID,
   item: Pick<DiscriminatedItem, 'id'> &
     Partial<
-      Pick<
-        DiscriminatedItem,
-        'name' | 'displayName' | 'description' | 'extra' | 'settings'
-      >
+      Pick<DiscriminatedItem, 'name' | 'description' | 'extra' | 'settings'>
     >,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ): Promise<DiscriminatedItem> =>
@@ -79,7 +76,6 @@ export const editItem = async (
       .patch<DiscriminatedItem>(`${API_HOST}/${buildEditItemRoute(id)}`, {
         ...item,
         name: item.name?.trim(),
-        displayName: item.displayName?.trim() ?? item.name?.trim(),
       })
       .then(({ data }) => data),
   );

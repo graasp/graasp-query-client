@@ -17,7 +17,6 @@ import {
 export const postItem = async (
   {
     name,
-    displayName,
     type,
     description,
     extra,
@@ -34,7 +33,6 @@ export const postItem = async (
         `${API_HOST}/${buildPostItemRoute(parentId, previousItemId)}`,
         {
           name: name.trim(),
-          displayName: displayName?.trim() ?? name.trim(),
           type,
           description,
           extra,
@@ -48,7 +46,6 @@ export const postItem = async (
 export const postItemWithThumbnail = async (
   {
     name,
-    displayName,
     type,
     description,
     extra,
@@ -65,9 +62,6 @@ export const postItemWithThumbnail = async (
     // name and type are required
     itemPayload.append('name', name);
     itemPayload.append('type', type);
-    if (displayName) {
-      itemPayload.append('displayName', displayName);
-    }
     if (description) {
       itemPayload.append('description', description);
     }
