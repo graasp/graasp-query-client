@@ -32,11 +32,11 @@
   "devDependencies": {
     "@commitlint/cli": "19.6.0",
     "@commitlint/config-conventional": "19.6.0",
-    "@eslint/compat": "1.2.2",
+    "@eslint/compat": "1.2.3",
     "@eslint/eslintrc": "3.2.0",
     "@eslint/js": "9.15.0",
-    "@graasp/sdk": "5.2.1",
-    "@graasp/translations": "1.41.0",
+    "@graasp/sdk": "5.3.1",
+    "@graasp/translations": "1.42.0",
     "@testing-library/dom": "10.4.0",
     "@testing-library/react": "16.0.1",
     "@testing-library/user-event": "14.5.2",
@@ -47,7 +47,7 @@
     "@types/uuid": "10.0.0",
     "@typescript-eslint/eslint-plugin": "8.15.0",
     "@typescript-eslint/parser": "8.15.0",
-    "@vitest/ui": "2.1.4",
+    "@vitest/ui": "2.1.5",
     "date-fns": "4.1.0",
     "env-cmd": "10.1.0",
     "eslint": "9.15.0",
@@ -58,8 +58,8 @@
     "eslint-plugin-react": "7.37.2",
     "eslint-plugin-react-hooks": "5.0.0",
     "globals": "15.12.0",
-    "husky": "9.1.6",
-    "i18next": "23.16.5",
+    "husky": "9.1.7",
+    "i18next": "23.16.8",
     "jsdom": "25.0.1",
     "mock-socket": "9.3.1",
     "nock": "13.5.6",
@@ -70,7 +70,7 @@
     "tsc-alias": "1.8.10",
     "typescript": "5.6.3",
     "uuid": "11.0.3",
-    "vitest": "2.1.4"
+    "vitest": "2.1.5"
   },
   "peerDependencies": {
     "@graasp/sdk": "^4.0.0 || ^5.0.0",
