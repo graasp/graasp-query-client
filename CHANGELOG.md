@@ -1,5 +1,18 @@
 # Changelog
 
+## [5.5.0](https://github.com/graasp/graasp-query-client/compare/v5.4.2...v5.5.0) (2024-11-21)
+
+
+### Features
+
+* remove get many collections info ([#991](https://github.com/graasp/graasp-query-client/issues/991)) ([34bd6cd](https://github.com/graasp/graasp-query-client/commit/34bd6cdffe7755c8b64dd093cda032ea180bb2fa))
+
+
+### Bug Fixes
+
+* **deps:** update tanstack-query monorepo to v5.61.0 ([#990](https://github.com/graasp/graasp-query-client/issues/990)) ([040dab5](https://github.com/graasp/graasp-query-client/commit/040dab55797badb008fc86df137b0dada38f192b))
+* remove displayName ([#996](https://github.com/graasp/graasp-query-client/issues/996)) ([bd14014](https://github.com/graasp/graasp-query-client/commit/bd14014a31f47f7b56907140793337555c93d756))
+
 ## [5.4.2](https://github.com/graasp/graasp-query-client/compare/v5.4.1...v5.4.2) (2024-11-13)
 
 
