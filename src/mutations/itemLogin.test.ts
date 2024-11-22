@@ -17,10 +17,12 @@ import { ITEM_LOGIN_RESPONSE } from '../../test/constants.js';
 import { mockMutation, setUpTest, waitForMutation } from '../../test/utils.js';
 import { itemKeys, memberKeys } from '../keys.js';
 import {
+  buildDeleteItemLoginSchemaRoute,
   buildPostItemLoginSignInRoute,
   buildPutItemLoginSchemaRoute,
 } from '../routes.js';
 import {
+  deleteItemLoginSchemaRoutine,
   postItemLoginRoutine,
   putItemLoginSchemaRoutine,
 } from '../routines/itemLogin.js';
@@ -233,6 +235,82 @@ describe('Item Login Mutations', () => {
       expect(mockedNotifier).toHaveBeenCalledWith(
         expect.objectContaining({
           type: putItemLoginSchemaRoutine.FAILURE,
+        }),
+      );
+    });
+  });
+
+  describe('useDeleteItemLoginSchema', () => {
+    const route = `/${buildDeleteItemLoginSchemaRoute(itemId)}`;
+    const mutation = mutations.useDeleteItemLoginSchema;
+    const loginSchema = ITEM_LOGIN_RESPONSE;
+    const itemLoginKey = itemKeys.single(itemId).itemLoginSchema.content;
+
+    it('Delete item login schema', async () => {
+      queryClient.setQueryData(itemLoginKey, loginSchema);
+
+      const endpoints = [
+        {
+          response: {},
+          method: HttpMethod.Delete,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({ itemId });
+        await waitForMutation();
+      });
+
+      // check all set keys are reset
+      expect(
+        queryClient.getQueryState(itemLoginKey)?.isInvalidated,
+      ).toBeTruthy();
+      expect(mockedNotifier).toHaveBeenCalledWith({
+        type: deleteItemLoginSchemaRoutine.SUCCESS,
+        payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_LOGIN_SCHEMA },
+      });
+    });
+
+    it('Unauthorized to delete item login schema', async () => {
+      queryClient.setQueryData(itemLoginKey, loginSchema);
+
+      const endpoints = [
+        {
+          response: {},
+          statusCode: StatusCodes.UNAUTHORIZED,
+          method: HttpMethod.Delete,
+          route,
+        },
+      ];
+
+      const mockedMutation = await mockMutation({
+        endpoints,
+        mutation,
+        wrapper,
+      });
+
+      await act(async () => {
+        mockedMutation.mutate({
+          itemId,
+        });
+        await waitForMutation();
+      });
+
+      // check all set keys are reset
+      expect(
+        queryClient.getQueryState(itemLoginKey)?.isInvalidated,
+      ).toBeTruthy();
+
+      expect(mockedNotifier).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: deleteItemLoginSchemaRoutine.FAILURE,
         }),
       );
     });
