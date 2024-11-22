@@ -69,15 +69,16 @@ export default (queryConfig: QueryClientConfig) => {
   const useDeleteItemLoginSchema = () => {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn: (payload: {
-        itemId: UUID;
-        type?: ItemLoginSchemaType;
-        status?: ItemLoginSchemaStatus;
-      }) => Api.deleteItemLoginSchema(payload, queryConfig),
-      onSuccess: () => {
+      mutationFn: (payload: { itemId: UUID }) =>
+        Api.deleteItemLoginSchema(payload, queryConfig),
+      onSuccess: (_, { itemId }) => {
         notifier?.({
           type: deleteItemLoginSchemaRoutine.SUCCESS,
           payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_LOGIN_SCHEMA },
+        });
+
+        queryClient.resetQueries({
+          queryKey: itemKeys.single(itemId).itemLoginSchema.content,
         });
       },
       onError: (error: Error) => {

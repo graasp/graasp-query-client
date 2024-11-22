@@ -272,6 +272,7 @@ describe('Item Login Mutations', () => {
       expect(
         queryClient.getQueryState(itemLoginKey)?.isInvalidated,
       ).toBeTruthy();
+      expect(queryClient.getQueryData(itemLoginKey)).toBeUndefined();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: deleteItemLoginSchemaRoutine.SUCCESS,
         payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_LOGIN_SCHEMA },
