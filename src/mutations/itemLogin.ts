@@ -77,6 +77,7 @@ export default (queryConfig: QueryClientConfig) => {
           payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_LOGIN_SCHEMA },
         });
 
+        // delete content of item login schema
         queryClient.resetQueries({
           queryKey: itemKeys.single(itemId).itemLoginSchema.content,
         });
@@ -90,6 +91,9 @@ export default (queryConfig: QueryClientConfig) => {
       onSettled: (_data, _error, { itemId }) => {
         queryClient.invalidateQueries({
           queryKey: itemKeys.single(itemId).itemLoginSchema.content,
+        });
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(itemId).memberships,
         });
       },
     });

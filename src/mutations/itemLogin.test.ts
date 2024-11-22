@@ -248,6 +248,7 @@ describe('Item Login Mutations', () => {
 
     it('Delete item login schema', async () => {
       queryClient.setQueryData(itemLoginKey, loginSchema);
+      queryClient.setQueryData(itemKeys.single(itemId).memberships, []);
 
       const endpoints = [
         {
@@ -272,6 +273,10 @@ describe('Item Login Mutations', () => {
       expect(
         queryClient.getQueryState(itemLoginKey)?.isInvalidated,
       ).toBeTruthy();
+      expect(
+        queryClient.getQueryState(itemKeys.single(itemId).memberships)
+          ?.isInvalidated,
+      ).toBeTruthy();
       expect(queryClient.getQueryData(itemLoginKey)).toBeUndefined();
       expect(mockedNotifier).toHaveBeenCalledWith({
         type: deleteItemLoginSchemaRoutine.SUCCESS,
@@ -281,6 +286,7 @@ describe('Item Login Mutations', () => {
 
     it('Unauthorized to delete item login schema', async () => {
       queryClient.setQueryData(itemLoginKey, loginSchema);
+      queryClient.setQueryData(itemKeys.single(itemId).memberships, []);
 
       const endpoints = [
         {
@@ -305,6 +311,10 @@ describe('Item Login Mutations', () => {
       });
 
       // check all set keys are reset
+      expect(
+        queryClient.getQueryState(itemKeys.single(itemId).memberships)
+          ?.isInvalidated,
+      ).toBeTruthy();
       expect(
         queryClient.getQueryState(itemLoginKey)?.isInvalidated,
       ).toBeTruthy();
