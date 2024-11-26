@@ -252,7 +252,7 @@ describe('Item Login Mutations', () => {
 
       const endpoints = [
         {
-          response: {},
+          response: loginSchema.id,
           method: HttpMethod.Delete,
           route,
         },
