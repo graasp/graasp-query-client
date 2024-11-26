@@ -7,6 +7,7 @@ import * as Api from '../api/itemLogin.js';
 import { useEnroll } from '../item/itemLogin/mutations.js';
 import { itemKeys } from '../keys.js';
 import {
+  deleteItemLoginSchemaRoutine,
   postItemLoginRoutine,
   putItemLoginSchemaRoutine,
 } from '../routines/itemLogin.js';
@@ -65,9 +66,43 @@ export default (queryConfig: QueryClientConfig) => {
     });
   };
 
+  const useDeleteItemLoginSchema = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: (payload: { itemId: UUID }) =>
+        Api.deleteItemLoginSchema(payload, queryConfig),
+      onSuccess: (_, { itemId }) => {
+        notifier?.({
+          type: deleteItemLoginSchemaRoutine.SUCCESS,
+          payload: { message: SUCCESS_MESSAGES.DELETE_ITEM_LOGIN_SCHEMA },
+        });
+
+        // delete content of item login schema
+        queryClient.resetQueries({
+          queryKey: itemKeys.single(itemId).itemLoginSchema.content,
+        });
+      },
+      onError: (error: Error) => {
+        notifier?.({
+          type: deleteItemLoginSchemaRoutine.FAILURE,
+          payload: { error },
+        });
+      },
+      onSettled: (_data, _error, { itemId }) => {
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(itemId).itemLoginSchema.content,
+        });
+        queryClient.invalidateQueries({
+          queryKey: itemKeys.single(itemId).memberships,
+        });
+      },
+    });
+  };
+
   return {
     useEnroll: useEnroll(queryConfig),
     usePostItemLogin,
     usePutItemLoginSchema,
+    useDeleteItemLoginSchema,
   };
 };

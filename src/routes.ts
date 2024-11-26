@@ -101,6 +101,8 @@ export const buildPostItemVisibilityRoute = ({
 }) => `${ITEMS_ROUTE}/${itemId}/visibilities/${type}`;
 export const buildPutItemLoginSchemaRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema`;
+export const buildDeleteItemLoginSchemaRoute = (id: UUID) =>
+  `${ITEMS_ROUTE}/${id}/login-schema`;
 export const buildGetItemLoginSchemaRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/login-schema`;
 export const buildGetItemLoginSchemaTypeRoute = (id: UUID) =>

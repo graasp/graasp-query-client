@@ -7,6 +7,7 @@ import {
 } from '@graasp/sdk';
 
 import {
+  buildDeleteItemLoginSchemaRoute,
   buildGetItemLoginSchemaRoute,
   buildGetItemLoginSchemaTypeRoute,
   buildPostItemLoginSignInRoute,
@@ -70,6 +71,22 @@ export const putItemLoginSchema = async (
           type,
           status,
         },
+      )
+      .then(({ data }) => data),
+  );
+
+export const deleteItemLoginSchema = async (
+  {
+    itemId,
+  }: {
+    itemId: UUID;
+  },
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) =>
+  verifyAuthentication(() =>
+    axios
+      .delete<ItemLoginSchema>(
+        `${API_HOST}/${buildDeleteItemLoginSchemaRoute(itemId)}`,
       )
       .then(({ data }) => data),
   );
