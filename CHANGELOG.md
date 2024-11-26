@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.6.1](https://github.com/graasp/graasp-query-client/compare/v5.6.0...v5.6.1) (2024-11-26)
+
+
+### Bug Fixes
+
+* do not reset queries when login with email ([#1004](https://github.com/graasp/graasp-query-client/issues/1004)) ([7b20063](https://github.com/graasp/graasp-query-client/commit/7b20063332cb6d9f7a3d735340bc8391886846e4))
+
 ## [5.6.0](https://github.com/graasp/graasp-query-client/compare/v5.5.0...v5.6.0) (2024-11-26)
 
 
