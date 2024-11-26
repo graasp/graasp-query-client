@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.6.0](https://github.com/graasp/graasp-query-client/compare/v5.5.0...v5.6.0) (2024-11-26)
+
+
+### Features
+
+* add delete item login schema mutation ([#998](https://github.com/graasp/graasp-query-client/issues/998)) ([1f7daee](https://github.com/graasp/graasp-query-client/commit/1f7daee7999c092690840c6d2191d769b311da53))
+
 ## [5.5.0](https://github.com/graasp/graasp-query-client/compare/v5.4.2...v5.5.0) (2024-11-21)
 
 
