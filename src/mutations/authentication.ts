@@ -20,7 +20,6 @@ export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
   const useSignIn = () => {
-    const queryClient = useQueryClient();
     return useMutation({
       mutationFn: (payload: { email: string; captcha: string; url?: string }) =>
         Api.signIn(payload, queryConfig),
@@ -29,7 +28,6 @@ export default (queryConfig: QueryClientConfig) => {
           type: signInRoutine.SUCCESS,
           payload: { message: SUCCESS_MESSAGES.SIGN_IN },
         });
-        queryClient.resetQueries();
       },
       onError: (error: Error) => {
         notifier?.({
