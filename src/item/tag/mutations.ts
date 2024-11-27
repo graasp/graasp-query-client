@@ -21,8 +21,6 @@ export default (queryConfig: QueryClientConfig) => {
         notifier?.({
           type: addTagRoutine.SUCCESS,
         });
-
-        queryClient.resetQueries();
       },
       onError: (error: Error, _args, _context) => {
         notifier?.({
@@ -49,8 +47,6 @@ export default (queryConfig: QueryClientConfig) => {
         notifier?.({
           type: removeTagRoutine.SUCCESS,
         });
-
-        queryClient.resetQueries();
       },
       onError: (error: Error, _args, _context) => {
         notifier?.({
