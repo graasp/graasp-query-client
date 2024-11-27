@@ -11,6 +11,6 @@ export const getTags = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) => {
   return axios
-    .post<Tag>(`${API_HOST}/${buildgetTagsRoute(args)}`)
+    .post<Tag[]>(`${API_HOST}/${buildgetTagsRoute(args)}`)
     .then(({ data }) => data);
 };

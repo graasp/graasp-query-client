@@ -16,5 +16,5 @@ export const buildgetTagsRoute = ({
   if (category) {
     searchParams.set('category', category);
   }
-  return `/tags?${searchParams}`;
+  return `tags?${searchParams}`;
 };
