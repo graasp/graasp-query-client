@@ -1,4 +1,5 @@
 import itemMutations from '../item/mutations.js';
+import itemTagMutations from '../item/tag/mutations.js';
 import memberMutations from '../member/mutations.js';
 import publicProfileMutations from '../member/publicProfile/mutations.js';
 import membershipRequestsMutations from '../membership/request/mutations.js';
@@ -47,6 +48,7 @@ const configureMutations = (queryConfig: QueryClientConfig) => ({
   ...shortLinksMutations(queryConfig),
   ...visibilitiesMutations(queryConfig),
   ...membershipRequestsMutations(queryConfig),
+  ...itemTagMutations(queryConfig),
 });
 
 export default configureMutations;
