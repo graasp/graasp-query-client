@@ -1,4 +1,4 @@
-import { Tag } from '@graasp/sdk';
+import { Tag, TagCategory } from '@graasp/sdk';
 
 import { useQuery } from '@tanstack/react-query';
 
@@ -14,9 +14,7 @@ export default (queryConfig: QueryClientConfig) => {
   return {
     useSearchPublishedItems: ({
       attributesToCrop,
-      disciplines,
-      levels,
-      resourceTypes,
+      tags,
       cropLength,
       enabled = true,
       isPublishedRoot = true,
@@ -34,17 +32,18 @@ export default (queryConfig: QueryClientConfig) => {
       isPublishedRoot?: boolean;
       query?: string;
       langs?: string[];
-      disciplines: Tag['name'][];
-      levels: Tag['name'][];
-      resourceTypes: Tag['name'][];
+      tags?: Record<TagCategory, Tag['name'][]>;
+      // {
+      //   discipline: Tag['name'][];
+      //   level: Tag['name'][];
+      //   resourceType: Tag['name'][];
+      // };
     } & Api.MeiliSearchProps) => {
       const debouncedQuery = useDebounce(query, 500);
       return useQuery({
         queryKey: itemKeys.search({
           query: debouncedQuery,
-          disciplines,
-          levels,
-          resourceTypes,
+          tags,
           isPublishedRoot,
           sort,
           highlightPreTag,
@@ -56,9 +55,7 @@ export default (queryConfig: QueryClientConfig) => {
           Api.searchPublishedItems(
             {
               attributesToCrop,
-              disciplines,
-              levels,
-              resourceTypes,
+              tags,
               cropLength,
               isPublishedRoot,
               limit: page ? elementsPerPage : limit,

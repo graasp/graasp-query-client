@@ -1,4 +1,4 @@
-import { HttpMethod } from '@graasp/sdk';
+import { HttpMethod, TagCategory } from '@graasp/sdk';
 
 import axios from 'axios';
 import nock from 'nock';
@@ -103,12 +103,16 @@ describe('Published Search Hook', () => {
 
     it(`Receive search results`, async () => {
       const query = 'some string';
-      const categories = [['mycategoryid']];
+      const tags = {
+        [TagCategory.Discipline]: ['mycategoryid'],
+        [TagCategory.Level]: [],
+        [TagCategory.ResourceType]: [],
+      };
       const hook = () =>
-        hooks.useSearchPublishedItems({ query, categories, page: 1 });
+        hooks.useSearchPublishedItems({ query, tags, page: 1 });
       const key = itemKeys.search({
         query,
-        categories,
+        tags,
         page: 1,
         isPublishedRoot: true,
       });
@@ -142,22 +146,26 @@ describe('Published Search Hook', () => {
       expect(queryClient.getQueryData(key)).toBeFalsy();
     });
 
-    it(`search for categories and published root = true`, async () => {
+    it(`search for tags and published root = true`, async () => {
       const query = 'some string';
-      const categories = [['mycategoryid']];
+      const tags = {
+        [TagCategory.Discipline]: ['mycategoryid'],
+        [TagCategory.Level]: [],
+        [TagCategory.ResourceType]: [],
+      };
       const isPublishedRoot = true;
 
       const spy = vi.spyOn(axios, 'post');
       const key = itemKeys.search({
         isPublishedRoot,
         query,
-        categories,
+        tags,
         page: 1,
       });
       const hook = () =>
         hooks.useSearchPublishedItems({
           query,
-          categories,
+          tags,
           isPublishedRoot,
           page: 1,
         });
@@ -195,20 +203,17 @@ describe('Published Search Hook', () => {
 
     it(`search for page 3`, async () => {
       const query = 'some string';
-      const categories = [['mycategoryid']];
       const isPublishedRoot = true;
       const page = 3;
       const spy = vi.spyOn(axios, 'post');
       const key = itemKeys.search({
         isPublishedRoot,
         query,
-        categories,
         page,
       });
       const hook = () =>
         hooks.useSearchPublishedItems({
           query,
-          categories,
           isPublishedRoot,
           page,
         });
@@ -289,18 +294,15 @@ describe('Published Search Hook', () => {
 
     it(`does not fetch for enabled = false`, async () => {
       const query = 'some string';
-      const categories = [['mycategoryid']];
       const isPublishedRoot = true;
       const key = itemKeys.search({
         isPublishedRoot,
         query,
-        categories,
         page: 1,
       });
       const hook = () =>
         hooks.useSearchPublishedItems({
           query,
-          categories,
           isPublishedRoot,
           enabled: false,
         });
