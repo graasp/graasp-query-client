@@ -10,13 +10,13 @@ import { addTagRoutine, removeTagRoutine } from './routines.js';
 export default (queryConfig: QueryClientConfig) => {
   const { notifier } = queryConfig;
 
-  const useAddTag = (args: {
-    itemId: DiscriminatedItem['id'];
-    tagName: Tag['name'];
-  }) => {
+  const useAddTag = () => {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn: () => addTag(args, queryConfig),
+      mutationFn: (args: {
+        itemId: DiscriminatedItem['id'];
+        tagName: Tag['name'];
+      }) => addTag(args, queryConfig),
       onSuccess: () => {
         notifier?.({
           type: addTagRoutine.SUCCESS,
@@ -30,21 +30,21 @@ export default (queryConfig: QueryClientConfig) => {
           payload: { error },
         });
       },
-      onSettled: () => {
+      onSettled: (_d, _e, { itemId }) => {
         queryClient.invalidateQueries({
-          queryKey: itemKeys.single(args.itemId).tags,
+          queryKey: itemKeys.single(itemId).tags,
         });
       },
     });
   };
 
-  const useRemoveTag = (args: {
-    itemId: DiscriminatedItem['id'];
-    tagName: Tag['name'];
-  }) => {
+  const useRemoveTag = () => {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn: () => removeTag(args, queryConfig),
+      mutationFn: (args: {
+        itemId: DiscriminatedItem['id'];
+        tagName: Tag['name'];
+      }) => removeTag(args, queryConfig),
       onSuccess: () => {
         notifier?.({
           type: removeTagRoutine.SUCCESS,
@@ -58,9 +58,9 @@ export default (queryConfig: QueryClientConfig) => {
           payload: { error },
         });
       },
-      onSettled: () => {
+      onSettled: (_d, _e, { itemId }) => {
         queryClient.invalidateQueries({
-          queryKey: itemKeys.single(args.itemId).tags,
+          queryKey: itemKeys.single(itemId).tags,
         });
       },
     });
