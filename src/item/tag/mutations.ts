@@ -15,7 +15,7 @@ export default (queryConfig: QueryClientConfig) => {
     return useMutation({
       mutationFn: (args: {
         itemId: DiscriminatedItem['id'];
-        tagName: Tag['name'];
+        tag: Pick<Tag, 'category' | 'name'>;
       }) => addTag(args, queryConfig),
       onSuccess: () => {
         notifier?.({
@@ -43,7 +43,7 @@ export default (queryConfig: QueryClientConfig) => {
     return useMutation({
       mutationFn: (args: {
         itemId: DiscriminatedItem['id'];
-        tagName: Tag['name'];
+        tagId: Tag['id'];
       }) => removeTag(args, queryConfig),
       onSuccess: () => {
         notifier?.({

@@ -21,19 +21,19 @@ export const getTagsByItem = async (
 export const addTag = async (
   args: {
     itemId: DiscriminatedItem['id'];
-    tagName: string;
+    tag: Pick<Tag, 'category' | 'name'>;
   },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) => {
   return axios
-    .post<void>(`${API_HOST}/${buildAddTagRoute(args)}`)
+    .post<void>(`${API_HOST}/${buildAddTagRoute(args)}`, args.tag)
     .then(({ data }) => data);
 };
 
 export const removeTag = async (
   args: {
     itemId: DiscriminatedItem['id'];
-    tagName: string;
+    tagId: Tag['id'];
   },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) => {

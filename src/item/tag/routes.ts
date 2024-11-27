@@ -1,4 +1,4 @@
-import { DiscriminatedItem } from '@graasp/sdk';
+import { DiscriminatedItem, Tag } from '@graasp/sdk';
 
 import { ITEMS_ROUTE } from '../routes.js';
 
@@ -20,8 +20,10 @@ export const buildAddTagRoute = ({
 
 export const buildRemoveTagRoute = ({
   itemId,
+  tagId,
 }: {
   itemId: DiscriminatedItem['id'];
+  tagId: Tag['id'];
 }) => {
-  return `${ITEMS_ROUTE}/${itemId}/tags`;
+  return `${ITEMS_ROUTE}/${itemId}/tags/${tagId}`;
 };
