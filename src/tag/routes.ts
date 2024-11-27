@@ -1,6 +1,6 @@
 import { TagCategory } from '@graasp/sdk';
 
-export const buildgetTagsRoute = ({
+export const buildGetTagsRoute = ({
   search,
   category,
 }: {

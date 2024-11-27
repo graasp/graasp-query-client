@@ -122,6 +122,8 @@ export const itemKeys = {
       memberships: [...singleBaseKey, 'memberships'] as const,
 
       publicationStatus: [...singleBaseKey, 'publication', 'status'] as const,
+
+      tags: [...singleBaseKey, 'tags'] as const,
     };
   },
 

@@ -1,7 +1,7 @@
 import { Tag, TagCategory } from '@graasp/sdk';
 
 import { PartialQueryConfigForApi } from '../types.js';
-import { buildgetTagsRoute } from './routes.js';
+import { buildGetTagsRoute } from './routes.js';
 
 export const getTags = async (
   args: {
@@ -11,6 +11,6 @@ export const getTags = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) => {
   return axios
-    .get<Tag[]>(`${API_HOST}/${buildgetTagsRoute(args)}`)
+    .get<Tag[]>(`${API_HOST}/${buildGetTagsRoute(args)}`)
     .then(({ data }) => data);
 };
