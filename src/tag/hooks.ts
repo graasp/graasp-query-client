@@ -2,7 +2,6 @@ import { TagCategory } from '@graasp/sdk';
 
 import { useQuery } from '@tanstack/react-query';
 
-import useDebounce from '../hooks/useDebounce.js';
 import { QueryClientConfig } from '../types.js';
 import { getTags } from './api.js';
 import { tagKeys } from './keys.js';
@@ -18,21 +17,20 @@ export default (queryConfig: QueryClientConfig) => {
       search?: string;
       category?: TagCategory;
     }) => {
-      const debouncedSearch = useDebounce(search, 500);
       return useQuery({
         queryKey: tagKeys.search({
-          search: debouncedSearch,
+          search,
           category,
         }),
         queryFn: () =>
           getTags(
             {
-              search: debouncedSearch,
+              search,
               category,
             },
             queryConfig,
           ),
-        enabled: Boolean(debouncedSearch),
+        enabled: Boolean(search),
         ...defaultQueryOptions,
       });
     },
