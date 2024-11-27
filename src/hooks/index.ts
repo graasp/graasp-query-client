@@ -8,6 +8,7 @@ import configureMemberPasswordHooks from '../member/password/hooks.js';
 import configurePublicProfileHooks from '../member/publicProfile/hooks.js';
 import configureSubscriptionHooks from '../member/subscription/hooks.js';
 import configureMembershipRequestHooks from '../membership/request/hooks.js';
+import configureTagHooks from '../tag/hooks.js';
 import { QueryClientConfig } from '../types.js';
 import configureActionHooks from './action.js';
 import configureAppsHooks from './apps.js';
@@ -64,6 +65,7 @@ export default (
     ...configureMembershipRequestHooks(queryConfig),
     ...configureMemberPasswordHooks(queryConfig),
     ...configureRecycledHooks(queryConfig),
+    ...configureTagHooks(queryConfig),
     useDebounce,
   };
 };

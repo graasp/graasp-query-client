@@ -21,3 +21,4 @@ export * from './membership.js';
 export * from './mention.js';
 export * from './search.js';
 export * from './shortLink.js';
+export * from '../tag/api.js';
