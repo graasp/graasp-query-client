@@ -1,11 +1,11 @@
 import {
   AggregateBy,
-  Category,
   DiscriminatedItem,
   ItemGeolocation,
   ItemType,
   ItemTypeUnion,
   Pagination,
+  Tag,
   UUID,
   UnionOfConst,
 } from '@graasp/sdk';
@@ -146,7 +146,9 @@ export const itemKeys = {
 
   search: (args: {
     query?: string;
-    categories?: Category['id'][][];
+    disciplines: Tag['name'][];
+    levels: Tag['name'][];
+    resourceTypes: Tag['name'][];
     isPublishedRoot?: boolean;
     limit?: number;
     offset?: number;

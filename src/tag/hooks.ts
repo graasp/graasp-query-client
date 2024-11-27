@@ -3,7 +3,7 @@ import { TagCategory } from '@graasp/sdk';
 import { useQuery } from '@tanstack/react-query';
 
 import { QueryClientConfig } from '../types.js';
-import { getTags } from './api.js';
+import { getTagCounts } from './api.js';
 import { tagKeys } from './keys.js';
 
 export default (queryConfig: QueryClientConfig) => {
@@ -23,7 +23,7 @@ export default (queryConfig: QueryClientConfig) => {
           category,
         }),
         queryFn: () =>
-          getTags(
+          getTagCounts(
             {
               search,
               category,

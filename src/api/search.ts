@@ -1,4 +1,4 @@
-import { Category, INDEX_NAME, MeiliSearchResults } from '@graasp/sdk';
+import { INDEX_NAME, MeiliSearchResults, Tag } from '@graasp/sdk';
 
 import { SEARCH_PUBLISHED_ITEMS_ROUTE } from '../routes.js';
 import { PartialQueryConfigForApi } from '../types.js';
@@ -18,7 +18,9 @@ export type MeiliSearchProps = {
 export const searchPublishedItems = async (
   {
     query: q,
-    categories,
+    disciplines,
+    levels,
+    resourceTypes,
     isPublishedRoot = true,
     limit,
     offset,
@@ -30,7 +32,9 @@ export const searchPublishedItems = async (
     langs,
   }: {
     query?: string;
-    categories?: Category['id'][][];
+    disciplines: Tag['name'][];
+    levels: Tag['name'][];
+    resourceTypes: Tag['name'][];
     isPublishedRoot?: boolean;
     langs?: string[];
   } & MeiliSearchProps,
@@ -55,18 +59,26 @@ export const searchPublishedItems = async (
   };
 
   // handle filters
-  const categoriesFilter = categories
-    ?.map(
-      (categoriesForType) => `categories IN [${categoriesForType.join(',')}]`,
-    )
-    ?.join(' AND ');
+  const disciplineFilter = disciplines
+    ? `disciplines IN [${disciplines.join(',')}]`
+    : '';
+  const levelFilter = levels ? `levels IN [${levels.join(',')}]` : '';
+  const resourceTypeFilter = resourceTypes
+    ? `resourceTypes IN [${resourceTypes.join(',')}]`
+    : '';
 
   const isPublishedFilter = isPublishedRoot
     ? `isPublishedRoot = ${isPublishedRoot}`
     : '';
   const langsFilter = langs?.length ? `lang IN [${langs.join(',')}]` : '';
-  const filters = [categoriesFilter, isPublishedFilter, langsFilter]
-    .filter((v) => v)
+  const filters = [
+    disciplineFilter,
+    levelFilter,
+    resourceTypeFilter,
+    isPublishedFilter,
+    langsFilter,
+  ]
+    .filter(Boolean)
     .join(' AND ');
 
   if (filters) {
