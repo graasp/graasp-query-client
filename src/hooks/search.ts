@@ -3,7 +3,7 @@ import { Tag, TagCategory } from '@graasp/sdk';
 import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/search.js';
-import { itemKeys } from '../keys.js';
+import { facetKeys, itemKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import useDebounce from './useDebounce.js';
 
@@ -70,6 +70,18 @@ export default (queryConfig: QueryClientConfig) => {
           ),
         // we could add data in success, but not sure the data will be consistent with GET /item
         enabled,
+        ...defaultQueryOptions,
+      });
+    },
+    useSearchFacets: (args: { facetName: string; facetQuery?: string }) => {
+      const debouncedFacetQuery = useDebounce(args.facetQuery, 500);
+      return useQuery({
+        queryKey: facetKeys({
+          facetQuery: debouncedFacetQuery,
+          facetName: args.facetName,
+        }),
+        queryFn: () => Api.getSearchFacets(args, queryConfig),
+        enabled: Boolean(args.facetName),
         ...defaultQueryOptions,
       });
     },

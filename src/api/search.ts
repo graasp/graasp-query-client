@@ -1,6 +1,9 @@
 import { INDEX_NAME, MeiliSearchResults, Tag, TagCategory } from '@graasp/sdk';
 
-import { SEARCH_PUBLISHED_ITEMS_ROUTE } from '../routes.js';
+import {
+  SEARCH_PUBLISHED_ITEMS_ROUTE,
+  buildGetSearchFacets,
+} from '../routes.js';
 import { PartialQueryConfigForApi } from '../types.js';
 
 export type MeiliSearchProps = {
@@ -87,5 +90,17 @@ export const searchPublishedItems = async (
     .post<MeiliSearchResults>(`${API_HOST}/${SEARCH_PUBLISHED_ITEMS_ROUTE}`, {
       queries: [query],
     })
+    .then(({ data }) => data);
+};
+
+export const getSearchFacets = async (
+  args: {
+    facetName: string;
+    facetQuery?: string;
+  },
+  { API_HOST, axios }: PartialQueryConfigForApi,
+) => {
+  return axios
+    .get<any>(`${API_HOST}/${buildGetSearchFacets(args)}`)
     .then(({ data }) => data);
 };

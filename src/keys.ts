@@ -360,6 +360,11 @@ export const buildEmbeddedLinkMetadataKey = (link: string) => [
   link,
 ];
 
+export const facetKeys = (args: {
+  facetName?: string;
+  facetQuery?: string;
+}) => ['facets', args];
+
 export const DATA_KEYS = {
   APPS_KEY,
   itemKeys,
