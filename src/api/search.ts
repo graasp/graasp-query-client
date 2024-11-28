@@ -58,13 +58,13 @@ export const searchPublishedItems = async (
   };
 
   // handle filters
-  const disciplineFilter = tags?.[TagCategory.Discipline]
+  const disciplineFilter = tags?.[TagCategory.Discipline]?.length
     ? `disciplines IN [${tags?.[TagCategory.Discipline].join(',')}]`
     : '';
-  const levelFilter = tags?.[TagCategory.Level]
+  const levelFilter = tags?.[TagCategory.Level]?.length
     ? `levels IN [${tags?.[TagCategory.Level].join(',')}]`
     : '';
-  const resourceTypeFilter = tags?.[TagCategory.ResourceType]
+  const resourceTypeFilter = tags?.[TagCategory.ResourceType]?.length
     ? `resourceTypes IN [${tags?.[TagCategory.ResourceType].join(',')}]`
     : '';
 
