@@ -58,27 +58,15 @@ export const searchPublishedItems = async (
   };
 
   // handle filters
-  const disciplineFilter = tags?.[TagCategory.Discipline]?.length
-    ? `disciplines IN [${tags?.[TagCategory.Discipline].join(',')}]`
-    : '';
-  const levelFilter = tags?.[TagCategory.Level]?.length
-    ? `levels IN [${tags?.[TagCategory.Level].join(',')}]`
-    : '';
-  const resourceTypeFilter = tags?.[TagCategory.ResourceType]?.length
-    ? `resourceTypes IN [${tags?.[TagCategory.ResourceType].join(',')}]`
-    : '';
+  const tagCategoryFilters = Object.values(TagCategory).map((c) => {
+    return tags?.[c]?.length ? `${c} IN [${tags?.[c].join(',')}]` : '';
+  });
 
   const isPublishedFilter = isPublishedRoot
     ? `isPublishedRoot = ${isPublishedRoot}`
     : '';
   const langsFilter = langs?.length ? `lang IN [${langs.join(',')}]` : '';
-  const filters = [
-    disciplineFilter,
-    levelFilter,
-    resourceTypeFilter,
-    isPublishedFilter,
-    langsFilter,
-  ]
+  const filters = [...tagCategoryFilters, isPublishedFilter, langsFilter]
     .filter(Boolean)
     .join(' AND ');
 
@@ -101,6 +89,8 @@ export const getSearchFacets = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) => {
   return axios
-    .get<any>(`${API_HOST}/${buildGetSearchFacets(args)}`)
+    .get<{
+      facetHits: { value: string; count: number }[];
+    }>(`${API_HOST}/${buildGetSearchFacets(args)}`)
     .then(({ data }) => data);
 };
