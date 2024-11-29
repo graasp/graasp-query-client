@@ -59,7 +59,9 @@ export const searchPublishedItems = async (
 
   // handle filters
   const tagCategoryFilters = Object.values(TagCategory).map((c) => {
-    return tags?.[c]?.length ? `${c} IN [${tags?.[c].join(',')}]` : '';
+    return tags?.[c]?.length
+      ? `${c} IN [${tags?.[c].map((t) => `'${t}'`).join(',')}]`
+      : '';
   });
 
   const isPublishedFilter = isPublishedRoot
