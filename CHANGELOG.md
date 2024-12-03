@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.6.2](https://github.com/graasp/graasp-query-client/compare/v5.6.1...v5.6.2) (2024-12-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v1.7.8 ([#1003](https://github.com/graasp/graasp-query-client/issues/1003)) ([72dded7](https://github.com/graasp/graasp-query-client/commit/72dded78838ac759d513b4a9ca63934b53f4bea9))
+* **deps:** update tanstack-query monorepo to v5.61.5 ([#1001](https://github.com/graasp/graasp-query-client/issues/1001)) ([3552bb3](https://github.com/graasp/graasp-query-client/commit/3552bb3a7981b72ae8bb4e8a3c06be18dd8ffbaa))
+
 ## [5.6.1](https://github.com/graasp/graasp-query-client/compare/v5.6.0...v5.6.1) (2024-11-26)
 
 
