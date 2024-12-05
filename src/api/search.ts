@@ -1,4 +1,4 @@
-import { INDEX_NAME, MeiliSearchResults, Tag, TagCategory } from '@graasp/sdk';
+import { MeiliSearchResults, Tag, TagCategory } from '@graasp/sdk';
 
 import {
   SEARCH_PUBLISHED_ITEMS_ROUTE,
@@ -16,70 +16,21 @@ export type MeiliSearchProps = {
   highlightPostTag?: string;
   page?: number;
   elementsPerPage?: number;
+  query?: string;
+  tags?: Record<TagCategory, Tag['name'][]>;
+  isPublishedRoot?: boolean;
+  langs?: string[];
 };
 
 export const searchPublishedItems = async (
-  {
-    query: q,
-    tags,
-    isPublishedRoot = true,
-    limit,
-    offset,
-    sort,
-    attributesToCrop,
-    cropLength,
-    highlightPreTag,
-    highlightPostTag,
-    langs,
-  }: {
-    query?: string;
-    tags?: Record<TagCategory, Tag['name'][]>;
-    isPublishedRoot?: boolean;
-    langs?: string[];
-  } & MeiliSearchProps,
+  query: MeiliSearchProps,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) => {
-  const query: {
-    indexUid: string;
-    attributesToHighlight: string[];
-    q?: string;
-    filter?: string;
-  } & MeiliSearchProps = {
-    indexUid: INDEX_NAME,
-    attributesToHighlight: ['name', 'description', 'content', 'creator'],
-    attributesToCrop,
-    cropLength,
-    q,
-    limit,
-    offset,
-    sort,
-    highlightPreTag,
-    highlightPostTag,
-  };
-
-  // handle filters
-  const tagCategoryFilters = Object.values(TagCategory).map((c) => {
-    return tags?.[c]?.length
-      ? `${c} IN [${tags?.[c].map((t) => `'${t}'`).join(',')}]`
-      : '';
-  });
-
-  const isPublishedFilter = isPublishedRoot
-    ? `isPublishedRoot = ${isPublishedRoot}`
-    : '';
-  const langsFilter = langs?.length ? `lang IN [${langs.join(',')}]` : '';
-  const filters = [...tagCategoryFilters, isPublishedFilter, langsFilter]
-    .filter(Boolean)
-    .join(' AND ');
-
-  if (filters) {
-    query.filter = filters;
-  }
-
   return axios
-    .post<MeiliSearchResults>(`${API_HOST}/${SEARCH_PUBLISHED_ITEMS_ROUTE}`, {
-      queries: [query],
-    })
+    .post<MeiliSearchResults>(
+      `${API_HOST}/${SEARCH_PUBLISHED_ITEMS_ROUTE}`,
+      query,
+    )
     .then(({ data }) => data);
 };
 

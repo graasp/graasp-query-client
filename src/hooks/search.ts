@@ -1,5 +1,3 @@
-import { Tag, TagCategory } from '@graasp/sdk';
-
 import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/search.js';
@@ -13,61 +11,30 @@ export default (queryConfig: QueryClientConfig) => {
   // get search results
   return {
     useSearchPublishedItems: ({
-      attributesToCrop,
-      tags,
-      cropLength,
-      enabled = true,
-      isPublishedRoot = true,
-      query,
-      sort,
-      highlightPreTag,
-      highlightPostTag,
-      page,
-      limit,
-      offset,
-      elementsPerPage = 24,
-      langs,
+      enabled,
+      ...args
     }: {
       enabled?: boolean;
-      isPublishedRoot?: boolean;
-      query?: string;
-      langs?: string[];
-      tags?: Record<TagCategory, Tag['name'][]>;
-      // {
-      //   discipline: Tag['name'][];
-      //   level: Tag['name'][];
-      //   resourceType: Tag['name'][];
-      // };
     } & Api.MeiliSearchProps) => {
-      const debouncedQuery = useDebounce(query, 500);
+      const debouncedQuery = useDebounce(args.query, 500);
       return useQuery({
         queryKey: itemKeys.search({
+          ...args,
           query: debouncedQuery,
-          tags,
-          isPublishedRoot,
-          sort,
-          highlightPreTag,
-          highlightPostTag,
-          page,
-          langs,
         }),
-        queryFn: () =>
-          Api.searchPublishedItems(
+        queryFn: () => {
+          const { page, limit, elementsPerPage = 24 } = args;
+          return Api.searchPublishedItems(
             {
-              attributesToCrop,
-              tags,
-              cropLength,
-              isPublishedRoot,
+              isPublishedRoot: true,
+              ...args,
+              elementsPerPage,
               limit: page ? elementsPerPage : limit,
-              offset: page ? elementsPerPage * (page - 1) : offset,
               query: debouncedQuery,
-              sort,
-              highlightPreTag,
-              highlightPostTag,
-              langs,
             },
             queryConfig,
-          ),
+          );
+        },
         // we could add data in success, but not sure the data will be consistent with GET /item
         enabled,
         ...defaultQueryOptions,
