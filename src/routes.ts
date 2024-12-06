@@ -359,6 +359,16 @@ export const buildGetEmbeddedLinkMetadata = (link: string) =>
 export const buildGetPublicationStatusRoute = (itemId: string) =>
   `${ITEMS_ROUTE}/publication/${itemId}/status`;
 
+export const buildGetSearchFacets = (facetName: string) => {
+  const params = new URLSearchParams();
+  params.append('facetName', facetName);
+  // if (args.facetQuery) {
+  //   params.append('facetQuery', args.facetQuery);
+  // }
+
+  return `${ITEMS_ROUTE}/collections/facets?${params.toString()}`;
+};
+
 export const API_ROUTES = {
   ...itemRoutes,
   ...memberRoutes,

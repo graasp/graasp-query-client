@@ -1,9 +1,7 @@
-import { Category } from '@graasp/sdk';
-
 import { useQuery } from '@tanstack/react-query';
 
 import * as Api from '../api/search.js';
-import { itemKeys } from '../keys.js';
+import { facetKeys, itemKeys } from '../keys.js';
 import { QueryClientConfig } from '../types.js';
 import useDebounce from './useDebounce.js';
 
@@ -13,58 +11,43 @@ export default (queryConfig: QueryClientConfig) => {
   // get search results
   return {
     useSearchPublishedItems: ({
-      attributesToCrop,
-      categories,
-      cropLength,
-      enabled = true,
-      isPublishedRoot = true,
-      query,
-      sort,
-      highlightPreTag,
-      highlightPostTag,
-      page,
-      limit,
-      offset,
-      elementsPerPage = 24,
-      langs,
+      enabled,
+      ...args
     }: {
-      categories?: Category['id'][][];
       enabled?: boolean;
-      isPublishedRoot?: boolean;
-      query?: string;
-      langs?: string[];
     } & Api.MeiliSearchProps) => {
-      const debouncedQuery = useDebounce(query, 500);
+      const debouncedQuery = useDebounce(args.query, 500);
       return useQuery({
         queryKey: itemKeys.search({
+          ...args,
           query: debouncedQuery,
-          categories,
-          isPublishedRoot,
-          sort,
-          highlightPreTag,
-          highlightPostTag,
-          page,
-          langs,
         }),
-        queryFn: () =>
-          Api.searchPublishedItems(
+        queryFn: () => {
+          const { page, limit, elementsPerPage = 24 } = args;
+          return Api.searchPublishedItems(
             {
-              attributesToCrop,
-              categories,
-              cropLength,
-              isPublishedRoot,
+              isPublishedRoot: true,
+              ...args,
+              elementsPerPage,
               limit: page ? elementsPerPage : limit,
-              offset: page ? elementsPerPage * (page - 1) : offset,
               query: debouncedQuery,
-              sort,
-              highlightPreTag,
-              highlightPostTag,
-              langs,
             },
             queryConfig,
-          ),
+          );
+        },
         // we could add data in success, but not sure the data will be consistent with GET /item
         enabled,
+        ...defaultQueryOptions,
+      });
+    },
+    useSearchFacets: (args: { facetName: string } & Api.MeiliSearchProps) => {
+      const debouncedQuery = useDebounce(args.query, 500);
+      return useQuery({
+        queryKey: facetKeys({
+          ...args,
+          query: debouncedQuery,
+        }),
+        queryFn: () => Api.getSearchFacets(args, queryConfig),
         ...defaultQueryOptions,
       });
     },
