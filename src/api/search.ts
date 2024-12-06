@@ -27,10 +27,9 @@ export const searchPublishedItems = async (
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) => {
   return axios
-    .post<MeiliSearchResults>(
-      `${API_HOST}/${SEARCH_PUBLISHED_ITEMS_ROUTE}`,
-      query,
-    )
+    .post<
+      MeiliSearchResults['results'][0]
+    >(`${API_HOST}/${SEARCH_PUBLISHED_ITEMS_ROUTE}`, query)
     .then(({ data }) => data);
 };
 
