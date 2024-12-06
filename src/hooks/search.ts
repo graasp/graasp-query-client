@@ -40,10 +40,7 @@ export default (queryConfig: QueryClientConfig) => {
         ...defaultQueryOptions,
       });
     },
-    useSearchFacets: (
-      args: { facetName: string } & Api.MeiliSearchProps,
-      { enabled = false }: { enabled?: boolean },
-    ) => {
+    useSearchFacets: (args: { facetName: string } & Api.MeiliSearchProps) => {
       const debouncedQuery = useDebounce(args.query, 500);
       return useQuery({
         queryKey: facetKeys({
@@ -51,7 +48,6 @@ export default (queryConfig: QueryClientConfig) => {
           query: debouncedQuery,
         }),
         queryFn: () => Api.getSearchFacets(args, queryConfig),
-        enabled,
         ...defaultQueryOptions,
       });
     },
