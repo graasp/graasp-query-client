@@ -12,6 +12,7 @@ import {
 } from '@graasp/sdk';
 import { DEFAULT_LANG } from '@graasp/translations';
 
+import { MeiliSearchProps } from './api/search.js';
 import { DEFAULT_THUMBNAIL_SIZE } from './config/constants.js';
 import { ItemSearchParams } from './item/types.js';
 import { AggregateActionsArgs } from './utils/action.js';
@@ -360,10 +361,11 @@ export const buildEmbeddedLinkMetadataKey = (link: string) => [
   link,
 ];
 
-export const facetKeys = (args: {
-  facetName?: string;
-  facetQuery?: string;
-}) => ['facets', args];
+export const facetKeys = (
+  args: {
+    facetName?: string;
+  } & MeiliSearchProps,
+) => ['facets', args.facetName, args];
 
 export const DATA_KEYS = {
   APPS_KEY,

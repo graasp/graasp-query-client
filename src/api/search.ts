@@ -35,15 +35,12 @@ export const searchPublishedItems = async (
 };
 
 export const getSearchFacets = async (
-  args: {
-    facetName: string;
-    facetQuery?: string;
-  },
+  query: MeiliSearchProps & { facetName: string },
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) => {
   return axios
-    .get<{
-      facetHits: { value: string; count: number }[];
-    }>(`${API_HOST}/${buildGetSearchFacets(args)}`)
+    .post<
+      Record<string, number>
+    >(`${API_HOST}/${buildGetSearchFacets(query.facetName)}`, query)
     .then(({ data }) => data);
 };
