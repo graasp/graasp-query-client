@@ -35,7 +35,7 @@
     "@eslint/compat": "1.2.3",
     "@eslint/eslintrc": "3.2.0",
     "@eslint/js": "9.15.0",
-    "@graasp/sdk": "5.3.1",
+    "@graasp/sdk": "5.4.0",
     "@graasp/translations": "1.42.0",
     "@testing-library/dom": "10.4.0",
     "@testing-library/react": "16.0.1",

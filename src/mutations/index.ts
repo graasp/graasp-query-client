@@ -1,4 +1,5 @@
 import itemMutations from '../item/mutations.js';
+import itemTagMutations from '../item/tag/mutations.js';
 import memberMutations from '../member/mutations.js';
 import publicProfileMutations from '../member/publicProfile/mutations.js';
 import membershipRequestsMutations from '../membership/request/mutations.js';
@@ -10,7 +11,6 @@ import csvUserImportMutations from './csvUserImport.js';
 import etherpadMutations from './etherpad.js';
 import invitationMutations from './invitation.js';
 import itemBookmarkMutations from './itemBookmark.js';
-import itemCategoryMutations from './itemCategory.js';
 import itemExportMutations from './itemExport.js';
 import flagsMutations from './itemFlag.js';
 import itemGeolocationMutations from './itemGeolocation.js';
@@ -32,7 +32,6 @@ const configureMutations = (queryConfig: QueryClientConfig) => ({
   ...flagsMutations(queryConfig),
   ...invitationMutations(queryConfig),
   ...itemBookmarkMutations(queryConfig),
-  ...itemCategoryMutations(queryConfig),
   ...itemExportMutations(queryConfig),
   ...itemGeolocationMutations(queryConfig),
   ...itemLikeMutations(queryConfig),
@@ -47,6 +46,7 @@ const configureMutations = (queryConfig: QueryClientConfig) => ({
   ...shortLinksMutations(queryConfig),
   ...visibilitiesMutations(queryConfig),
   ...membershipRequestsMutations(queryConfig),
+  ...itemTagMutations(queryConfig),
 });
 
 export default configureMutations;

@@ -8,7 +8,6 @@ export * from './authentication.js';
 export * from './chat.js';
 export * from './invitation.js';
 export * from './itemBookmark.js';
-export * from './itemCategory.js';
 export * from './itemExport.js';
 export * from './itemFlag.js';
 export * from './itemGeolocation.js';

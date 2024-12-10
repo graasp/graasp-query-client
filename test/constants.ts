@@ -5,8 +5,6 @@ import {
   Action,
   ActionData,
   App,
-  Category,
-  CategoryType,
   ChatMention,
   ChatMessage,
   Context,
@@ -16,7 +14,6 @@ import {
   HttpMethod,
   Invitation,
   ItemBookmark,
-  ItemCategory,
   ItemFlag,
   ItemGeolocation,
   ItemLike,
@@ -383,52 +380,6 @@ export const CHAT_MESSAGES: ChatMessage[] = [
     body: 'text of second message',
   },
 ];
-
-const defaultCategoryValues: Category = {
-  id: 'category-id1',
-  name: 'category-name1',
-  type: CategoryType.Discipline,
-};
-
-const CATEGORY_1: Category = {
-  id: 'category-id1',
-  name: 'category-name1',
-  type: CategoryType.Discipline,
-};
-
-const CATEGORY_2: Category = {
-  id: 'category-id2',
-  name: 'category-name2',
-  type: CategoryType.Discipline,
-};
-
-export const CATEGORIES = [CATEGORY_1, CATEGORY_2];
-
-const defaultItemCategoryValues: ItemCategory = {
-  id: 'id1',
-  item: FolderItemFactory(),
-  category: defaultCategoryValues,
-  createdAt: '2023-09-06T11:50:32.894Z',
-  creator: MemberFactory(),
-};
-const createMockItemCategory = (
-  values: Partial<ItemCategory>,
-): ItemCategory => ({ ...values, ...defaultItemCategoryValues });
-
-const ITEM_CATEGORY_1: ItemCategory = createMockItemCategory({
-  id: 'id1',
-  item: FolderItemFactory(),
-  category: defaultCategoryValues,
-});
-
-const ITEM_CATEGORY_2: ItemCategory = createMockItemCategory({
-  id: 'id2',
-  item: FolderItemFactory(),
-  category: defaultCategoryValues,
-});
-
-export const ITEM_CATEGORIES = [ITEM_CATEGORY_1, ITEM_CATEGORY_2];
-
 const buildItemLikes = (): ItemLike[] => [
   {
     id: 'id1',
