@@ -1,16 +1,18 @@
 import {
   AggregateBy,
-  Category,
   DiscriminatedItem,
   ItemGeolocation,
   ItemType,
   ItemTypeUnion,
   Pagination,
+  Tag,
+  TagCategory,
   UUID,
   UnionOfConst,
 } from '@graasp/sdk';
 import { DEFAULT_LANG } from '@graasp/translations';
 
+import { MeiliSearchProps } from './api/search.js';
 import { DEFAULT_THUMBNAIL_SIZE } from './config/constants.js';
 import { ItemSearchParams } from './item/types.js';
 import { AggregateActionsArgs } from './utils/action.js';
@@ -75,9 +77,6 @@ export const itemKeys = {
       // parents
       parents: [...singleBaseKey, 'parents'] as const,
 
-      // categories
-      categories: [...singleBaseKey, 'categories'] as const,
-
       // item login
       itemLoginSchema: {
         content: [...itemLoginSchema] as const,
@@ -122,6 +121,8 @@ export const itemKeys = {
       memberships: [...singleBaseKey, 'memberships'] as const,
 
       publicationStatus: [...singleBaseKey, 'publication', 'status'] as const,
+
+      tags: [...singleBaseKey, 'tags'] as const,
     };
   },
 
@@ -144,7 +145,7 @@ export const itemKeys = {
 
   search: (args: {
     query?: string;
-    categories?: Category['id'][][];
+    tags?: { [key in TagCategory]: Tag['name'][] };
     isPublishedRoot?: boolean;
     limit?: number;
     offset?: number;
@@ -356,6 +357,12 @@ export const buildEmbeddedLinkMetadataKey = (link: string) => [
   'metadata',
   link,
 ];
+
+export const buildFacetKey = (
+  args: {
+    facetName?: string;
+  } & MeiliSearchProps,
+) => ['facets', args.facetName, args];
 
 export const DATA_KEYS = {
   APPS_KEY,
