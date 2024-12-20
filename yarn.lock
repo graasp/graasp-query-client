@@ -671,7 +671,7 @@ __metadata:
     globals: "npm:15.12.0"
     http-status-codes: "npm:2.3.0"
     husky: "npm:9.1.7"
-    i18next: "npm:23.16.8"
+    i18next: "npm:24.2.0"
     jsdom: "npm:25.0.1"
     mock-socket: "npm:9.3.1"
     nock: "npm:13.5.6"
@@ -3618,12 +3618,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:23.16.8":
-  version: 23.16.8
-  resolution: "i18next@npm:23.16.8"
+"i18next@npm:24.2.0":
+  version: 24.2.0
+  resolution: "i18next@npm:24.2.0"
   dependencies:
     "@babel/runtime": "npm:^7.23.2"
-  checksum: 10/d5c38011de4d3b4aa466fac6773520eb28007b9d6138e03432bfbfc0d041c04df45e15c67d96f22cd660088cc9b24d3eda32cddc9fb4c6508c5afada6c2e6290
+  peerDependencies:
+    typescript: ^5
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10/43e15d15fcf046c0fb7a44f7de6c224e17145c66334e81bb45b36b0e3e550cc849f80f9de406f3805f57c2050fd8d33bed561933dfaca5e4681a8addc1957be1
   languageName: node
   linkType: hard
 
