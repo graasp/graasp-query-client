@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.7.1](https://github.com/graasp/graasp-query-client/compare/v5.7.0...v5.7.1) (2025-01-10)
+
+
+### Miscellaneous Chores
+
+* release 5.7.1 ([94539ff](https://github.com/graasp/graasp-query-client/commit/94539ff7a9d4e6b1b6ebc34b3c7854ffed1bb888))
+
 ## [5.7.0](https://github.com/graasp/graasp-query-client/compare/v5.6.1...v5.7.0) (2024-12-11)
 
 
