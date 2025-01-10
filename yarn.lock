@@ -643,7 +643,7 @@ __metadata:
     "@eslint/compat": "npm:1.2.3"
     "@eslint/eslintrc": "npm:3.2.0"
     "@eslint/js": "npm:9.15.0"
-    "@graasp/sdk": "npm:5.5.0"
+    "@graasp/sdk": "npm:5.6.0"
     "@graasp/translations": "npm:1.43.0"
     "@tanstack/react-query": "npm:5.61.5"
     "@tanstack/react-query-devtools": "npm:5.61.5"
@@ -690,9 +690,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graasp/sdk@npm:5.5.0":
-  version: 5.5.0
-  resolution: "@graasp/sdk@npm:5.5.0"
+"@graasp/sdk@npm:5.6.0":
+  version: 5.6.0
+  resolution: "@graasp/sdk@npm:5.6.0"
   dependencies:
     "@faker-js/faker": "npm:9.2.0"
     filesize: "npm:10.1.6"
@@ -700,7 +700,7 @@ __metadata:
   peerDependencies:
     date-fns: ^3 || ^4.0.0
     uuid: ^9 || ^10 || ^11.0.0
-  checksum: 10/4ae3ffbe9df6a351d849e30561f248390f0928f2664eb82b6c50c43a88c2f2ad3f76ab8e296296765716541e009262f9c76c3035f5d6da5572501bf9a295e51b
+  checksum: 10/212575ce29e97ce7772477c8bc55d315cbc1a1a50cbf0a184d356384f0d6ee5480750ad049afddbfc0d4fac5b0ce0913c02bf3c81e9c4dd4051e7914f9358d0d
   languageName: node
   linkType: hard
 
