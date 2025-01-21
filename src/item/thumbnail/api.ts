@@ -11,23 +11,6 @@ import {
   buildUploadItemThumbnailRoute,
 } from '../routes.js';
 
-export const downloadItemThumbnail = async (
-  { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  axios
-    .get<Blob>(
-      `${API_HOST}/${buildDownloadItemThumbnailRoute({
-        id,
-        size,
-        replyUrl: false,
-      })}`,
-      {
-        responseType: 'blob',
-      },
-    )
-    .then(({ data }) => data);
-
 export const downloadItemThumbnailUrl = async (
   { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
   { API_HOST, axios }: PartialQueryConfigForApi,
