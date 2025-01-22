@@ -1,17 +1,10 @@
-import {
-  FolderItemFactory,
-  HttpMethod,
-  MAX_FILE_SIZE,
-  ThumbnailSize,
-} from '@graasp/sdk';
-import { SUCCESS_MESSAGES } from '@graasp/translations';
+import { HttpMethod, MAX_FILE_SIZE } from '@graasp/sdk';
 
 import { act } from '@testing-library/react';
 import { StatusCodes } from 'http-status-codes';
 import { describe, expect, it, vi } from 'vitest';
 
 import {
-  THUMBNAIL_BLOB_RESPONSE,
   UNAUTHORIZED_RESPONSE,
   generateFolders,
 } from '../../../test/constants.js';
@@ -33,104 +26,6 @@ import {
 const mockedNotifier = vi.fn();
 const { wrapper, queryClient, mutations } = setUpTest({
   notifier: mockedNotifier,
-});
-
-describe('useUploadItemThumbnailFeedback', () => {
-  const mutation = mutations.useUploadItemThumbnailFeedback;
-  const { id } = FolderItemFactory();
-
-  it('Upload thumbnail', async () => {
-    const route = `/${buildUploadItemThumbnailRoute(id)}`;
-
-    // set data in cache
-    Object.values(ThumbnailSize).forEach((size) => {
-      const key = itemKeys.single(id).thumbnail({ size });
-      queryClient.setQueryData(key, 'thumbnail');
-    });
-
-    const response = THUMBNAIL_BLOB_RESPONSE;
-
-    const endpoints = [
-      {
-        response,
-        method: HttpMethod.Post,
-        route,
-      },
-    ];
-
-    const mockedMutation = await mockMutation({
-      endpoints,
-      mutation,
-      wrapper,
-    });
-
-    await act(async () => {
-      mockedMutation.mutate({ id, data: [id] });
-      await waitForMutation();
-    });
-
-    // verify item is still available
-    // in real cases, the path should be different
-    for (const size of Object.values(ThumbnailSize)) {
-      const key = itemKeys.single(id).thumbnail({ size });
-      const state = queryClient.getQueryState(key);
-      expect(state?.isInvalidated).toBeTruthy();
-    }
-    expect(mockedNotifier).toHaveBeenCalledWith({
-      type: uploadItemThumbnailRoutine.SUCCESS,
-      payload: { message: SUCCESS_MESSAGES.UPLOAD_ITEM_THUMBNAIL },
-    });
-  });
-
-  it('Unauthorized to upload a thumbnail', async () => {
-    const route = `/${buildUploadItemThumbnailRoute(id)}`;
-    // set data in cache
-    Object.values(ThumbnailSize).forEach((size) => {
-      const key = itemKeys.single(id).thumbnail({ size });
-      queryClient.setQueryData(key, 'thumbnail');
-    });
-
-    const response = UNAUTHORIZED_RESPONSE;
-
-    const endpoints = [
-      {
-        response,
-        statusCode: StatusCodes.UNAUTHORIZED,
-        method: HttpMethod.Post,
-        route,
-      },
-    ];
-
-    const mockedMutation = await mockMutation({
-      endpoints,
-      mutation,
-      wrapper,
-    });
-
-    const error = new Error(`${StatusCodes.UNAUTHORIZED}`);
-
-    await act(async () => {
-      mockedMutation.mutate({
-        id,
-        error,
-      });
-      await waitForMutation();
-    });
-
-    // verify item is still available
-    // in real cases, the path should be different
-    for (const size of Object.values(ThumbnailSize)) {
-      const key = itemKeys.single(id).thumbnail({ size });
-      const state = queryClient.getQueryState(key);
-      expect(state?.isInvalidated).toBeTruthy();
-    }
-    expect(mockedNotifier).toHaveBeenCalledWith({
-      type: uploadItemThumbnailRoutine.FAILURE,
-      payload: {
-        error,
-      },
-    });
-  });
 });
 
 describe('useDeleteItemThumbnail', () => {

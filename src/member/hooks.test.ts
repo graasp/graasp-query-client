@@ -11,7 +11,6 @@ import nock from 'nock';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
-  AVATAR_BLOB_RESPONSE,
   AVATAR_URL_RESPONSE,
   FILE_NOT_FOUND_RESPONSE,
   UNAUTHORIZED_RESPONSE,
@@ -120,111 +119,6 @@ describe('Member Hooks', () => {
     });
   });
 
-  describe('useAvatar', () => {
-    const account = AccountFactory();
-    const replyUrl = false;
-    const response = AVATAR_BLOB_RESPONSE;
-    const route = `/${buildDownloadAvatarRoute({ id: account.id, replyUrl })}`;
-    const hook = () => hooks.useAvatar({ id: account.id });
-    const key = memberKeys.single(account.id).avatar({ replyUrl });
-
-    it(`Receive default avatar`, async () => {
-      const endpoints = [
-        { route, response, headers: { 'Content-Type': 'image/jpeg' } },
-      ];
-      const { data } = await mockHook({ endpoints, hook, wrapper });
-
-      expect(data).toBeTruthy();
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeTruthy();
-    });
-
-    it(`Receive large avatar`, async () => {
-      const size = ThumbnailSize.Large;
-      const routeLarge = `/${buildDownloadAvatarRoute({
-        id: account.id,
-        replyUrl,
-        size,
-      })}`;
-      const hookLarge = () => hooks.useAvatar({ id: account.id, size });
-      const keyLarge = memberKeys.single(account.id).avatar({ size, replyUrl });
-
-      const endpoints = [
-        {
-          route: routeLarge,
-          response,
-          headers: { 'Content-Type': 'image/jpeg' },
-        },
-      ];
-      const { data } = await mockHook({
-        endpoints,
-        hook: hookLarge,
-        wrapper,
-      });
-
-      expect(data).toBeTruthy();
-      // verify cache keys
-      expect(queryClient.getQueryData(keyLarge)).toBeTruthy();
-    });
-
-    it(`Undefined id does not fetch`, async () => {
-      const endpoints = [
-        {
-          route,
-          response,
-        },
-      ];
-      const { data, isFetched } = await mockHook({
-        endpoints,
-        hook: () => hooks.useAvatar({ id: undefined }),
-        wrapper,
-        enabled: false,
-      });
-
-      expect(data).toBeFalsy();
-      expect(isFetched).toBeFalsy();
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeFalsy();
-    });
-
-    it(`Error fetching avatar`, async () => {
-      const endpoints = [
-        {
-          route,
-          response: FILE_NOT_FOUND_RESPONSE,
-          statusCode: StatusCodes.NOT_FOUND,
-        },
-      ];
-      const { data, isFetched, isError } = await mockHook({
-        endpoints,
-        hook: () => hooks.useAvatar({ id: account.id }),
-        wrapper,
-      });
-
-      expect(data).toBeFalsy();
-      expect(isFetched).toBeTruthy();
-      expect(isError).toBeTruthy();
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeFalsy();
-    });
-
-    it(`Unauthorized`, async () => {
-      const endpoints = [
-        {
-          route,
-          response: UNAUTHORIZED_RESPONSE,
-          statusCode: StatusCodes.UNAUTHORIZED,
-        },
-      ];
-      const { data, isError } = await mockHook({ endpoints, hook, wrapper });
-
-      expect(data).toBeFalsy();
-      expect(isError).toBeTruthy();
-      // verify cache keys
-      expect(queryClient.getQueryData(key)).toBeFalsy();
-    });
-  });
-
   describe('useAvatarUrl', () => {
     const member = AccountFactory();
     const replyUrl = true;
@@ -277,7 +171,7 @@ describe('Member Hooks', () => {
       ];
       const { data, isFetched } = await mockHook({
         endpoints,
-        hook: () => hooks.useAvatar({ id: undefined }),
+        hook: () => hooks.useAvatarUrl({ id: undefined }),
         wrapper,
         enabled: false,
       });
@@ -298,7 +192,7 @@ describe('Member Hooks', () => {
       ];
       const { data, isFetched, isError } = await mockHook({
         endpoints,
-        hook: () => hooks.useAvatar({ id: member.id }),
+        hook: () => hooks.useAvatarUrl({ id: member.id }),
         wrapper,
       });
 

@@ -165,19 +165,6 @@ export const uploadAvatar = async (
     .then(({ data }) => data);
 };
 
-export const downloadAvatar = async (
-  { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  axios
-    .get<Blob>(
-      `${API_HOST}/${buildDownloadAvatarRoute({ id, size, replyUrl: false })}`,
-      {
-        responseType: 'blob',
-      },
-    )
-    .then(({ data }) => data);
-
 export const downloadAvatarUrl = async (
   { id, size = DEFAULT_THUMBNAIL_SIZE }: { id: UUID; size?: string },
   { API_HOST, axios }: PartialQueryConfigForApi,

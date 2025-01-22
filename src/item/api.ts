@@ -148,16 +148,6 @@ export const getSharedItems = async ({
       .then(({ data }) => data),
   );
 
-export const getFileContent = async (
-  id: UUID,
-  { API_HOST, axios }: PartialQueryConfigForApi,
-) =>
-  axios
-    .get<Blob>(`${API_HOST}/${buildDownloadFilesRoute(id)}`, {
-      responseType: 'blob',
-    })
-    .then(({ data }) => data);
-
 export const getFileContentUrl = async (
   id: UUID,
   { API_HOST, axios }: PartialQueryConfigForApi,

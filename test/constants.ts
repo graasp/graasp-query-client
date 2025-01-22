@@ -169,19 +169,7 @@ export const ITEM_LOGIN_RESPONSE: ItemLoginSchema = {
   status: ItemLoginSchemaStatus.Active,
 };
 
-const BlobMock = {
-  blob: () => 'blob',
-};
-
-export const FILE_RESPONSE = 'somedata';
-
-export const S3_FILE_RESPONSE = {
-  key: 'someurl',
-};
-export const S3_FILE_BLOB_RESPONSE = BlobMock;
-export const THUMBNAIL_BLOB_RESPONSE = BlobMock;
 export const THUMBNAIL_URL_RESPONSE = 'some-thumbnail-url';
-export const AVATAR_BLOB_RESPONSE = BlobMock;
 export const AVATAR_URL_RESPONSE = 'some-avatar-url';
 
 export const buildMentionResponse = (

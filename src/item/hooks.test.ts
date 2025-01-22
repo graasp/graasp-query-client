@@ -12,7 +12,7 @@ import nock from 'nock';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
-  FILE_RESPONSE,
+  THUMBNAIL_URL_RESPONSE,
   UNAUTHORIZED_RESPONSE,
   buildResultOfData,
   generateFolders,
@@ -413,22 +413,21 @@ describe('useItems', () => {
   // TODO: errors, contains errors, full errors
 });
 
-describe('useFileContent', () => {
+describe('useFileContentUrl', () => {
   afterEach(() => {
     nock.cleanAll();
     queryClient.clear();
   });
 
-  const response = FILE_RESPONSE;
+  const response = THUMBNAIL_URL_RESPONSE;
   const { id } = LocalFileItemFactory();
-  const route = `/${buildDownloadFilesRoute(id)}`;
-  const hook = () => hooks.useFileContent(id);
-  const key = itemKeys.single(id).file({ replyUrl: false });
+  const route = `/${buildDownloadFilesRoute(id)}?replyUrl=true`;
+  const hook = () => hooks.useFileContentUrl(id);
+  const key = itemKeys.single(id).file({ replyUrl: true });
 
-  it(`Receive file content`, async () => {
+  it(`Receive file url`, async () => {
     const endpoints = [{ route, response }];
     const { data } = await mockHook({ endpoints, hook, wrapper });
-
     expect(data).toBeTruthy();
     // verify cache keys
     expect(queryClient.getQueryData(key)).toBeTruthy();
@@ -438,7 +437,7 @@ describe('useFileContent', () => {
     const endpoints = [{ route, response }];
     const { data, isFetched } = await mockHook({
       endpoints,
-      hook: () => hooks.useFileContent(undefined),
+      hook: () => hooks.useFileContentUrl(undefined),
       wrapper,
       enabled: false,
     });
@@ -453,7 +452,7 @@ describe('useFileContent', () => {
     // build endpoint for each item
     const endpoints: Endpoint[] = [];
     const { data, isFetched } = await mockHook({
-      hook: () => hooks.useFileContent(id, { enabled: false }),
+      hook: () => hooks.useFileContentUrl(id, { enabled: false }),
       endpoints,
       wrapper,
       enabled: false,

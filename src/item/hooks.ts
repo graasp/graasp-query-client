@@ -24,7 +24,7 @@ import {
 } from './accessible/hooks.js';
 import * as Api from './api.js';
 import { useDescendants } from './descendants/hooks.js';
-import { useItemThumbnail, useItemThumbnailUrl } from './thumbnail/hooks.js';
+import { useItemThumbnailUrl } from './thumbnail/hooks.js';
 import { ItemChildrenParams } from './types.js';
 
 const config = (
@@ -170,28 +170,6 @@ const config = (
       });
     },
 
-    /**
-     * @deprecated use url alternative when possible
-     * @param id itemId to download content from
-     * @returns Blob of the content
-     */
-    useFileContent: (
-      id?: UUID,
-      { enabled = true }: { enabled?: boolean } = {},
-    ) =>
-      useQuery({
-        queryKey: itemKeys.single(id).file({ replyUrl: false }),
-        queryFn: () => {
-          if (!id) {
-            throw new UndefinedArgument();
-          }
-          return Api.getFileContent(id, queryConfig);
-        },
-        enabled: Boolean(id) && enabled,
-        ...defaultQueryOptions,
-        staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
-      }),
-
     useFileContentUrl: (
       id?: UUID,
       { enabled = true }: { enabled?: boolean } = {},
@@ -211,7 +189,6 @@ const config = (
 
     useItemFeedbackUpdates: itemWsHooks?.useItemFeedbackUpdates,
 
-    useItemThumbnail: useItemThumbnail(queryConfig),
     useItemThumbnailUrl: useItemThumbnailUrl(queryConfig),
   };
 };

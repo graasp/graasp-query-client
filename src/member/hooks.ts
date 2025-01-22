@@ -35,39 +35,6 @@ export default (queryConfig: QueryClientConfig) => {
         ...defaultQueryOptions,
       }),
 
-    useAvatar: ({
-      id,
-      size = DEFAULT_THUMBNAIL_SIZE,
-    }: {
-      id?: UUID;
-      size?: string;
-    }) => {
-      const queryClient = useQueryClient();
-      let shouldFetch = true;
-      if (id) {
-        // TODO: this casting is totally wrong, but allows to work for current member
-        // to be fixed
-        shouldFetch =
-          (
-            queryClient.getQueryData<Member>(
-              memberKeys.single(id).content,
-            ) as CompleteMember
-          )?.extra?.hasAvatar ?? true;
-      }
-      return useQuery({
-        queryKey: memberKeys.single(id).avatar({ size, replyUrl: false }),
-        queryFn: () => {
-          if (!id) {
-            throw new UndefinedArgument();
-          }
-          return Api.downloadAvatar({ id, size }, queryConfig);
-        },
-        ...defaultQueryOptions,
-        enabled: Boolean(id) && shouldFetch,
-        staleTime: CONSTANT_KEY_STALE_TIME_MILLISECONDS,
-      });
-    },
-
     // use another hook because of key content
     useAvatarUrl: ({
       id,
