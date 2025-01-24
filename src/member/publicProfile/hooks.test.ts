@@ -27,7 +27,7 @@ describe('Public Profile Hooks', () => {
     const response = MEMBER_PUBLIC_PROFILE;
 
     const hook = () => hooks.useOwnProfile();
-    it(`Receive actions for item id`, async () => {
+    it('Receive own profile', async () => {
       const endpoints = [{ route, response }];
       const { data } = await mockHook({ endpoints, hook, wrapper });
       expect(data).toEqual(response);
@@ -36,7 +36,21 @@ describe('Public Profile Hooks', () => {
       );
     });
 
-    it(`Unauthorized`, async () => {
+    it('Own profile does not exist, data should be null', async () => {
+      const endpoints = [
+        {
+          route,
+          // set a string on the response to see if it will be set in the query client: it should not, the key value should be "null"
+          response: 'toto',
+          statusCode: StatusCodes.NO_CONTENT,
+        },
+      ];
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+      expect(data).toBeNull();
+      expect(queryClient.getQueryData(memberKeys.current().profile)).toBeNull();
+    });
+
+    it('Unauthorized', async () => {
       const endpoints = [
         {
           route,
@@ -60,15 +74,16 @@ describe('Public Profile Hooks', () => {
   describe('usePublicProfile', () => {
     const id = 'member-id';
     const response = MEMBER_PUBLIC_PROFILE;
+    const route = `/${buildGetPublicProfileRoute(id)}`;
+    const hook = () => hooks.usePublicProfile(id);
 
     it(`Receive member public profile for member-id = ${id}`, async () => {
       const endpoints = [
         {
-          route: `/${buildGetPublicProfileRoute(id)}`,
+          route,
           response,
         },
       ];
-      const hook = () => hooks.usePublicProfile(id);
       const { data } = await mockHook({
         hook,
         wrapper,
@@ -78,6 +93,23 @@ describe('Public Profile Hooks', () => {
         response,
       );
       expect(data).toMatchObject(response);
+    });
+
+    it('Member profile does not exist, data should be null', async () => {
+      const endpoints = [
+        {
+          route,
+          // set a string on the response to see if it will be set in the query client: it should not, the key value should be "null"
+          response: 'toto',
+          statusCode: StatusCodes.NO_CONTENT,
+        },
+      ];
+
+      const { data } = await mockHook({ endpoints, hook, wrapper });
+      expect(data).toBeNull();
+      expect(
+        queryClient.getQueryData(memberKeys.single(id).profile),
+      ).toBeNull();
     });
   });
 });

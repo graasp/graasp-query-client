@@ -1,5 +1,7 @@
 import { PublicProfile, UUID } from '@graasp/sdk';
 
+import { StatusCodes } from 'http-status-codes';
+
 import { PartialQueryConfigForApi } from '../../types.js';
 import {
   buildGetOwnPublicProfileRoute,
@@ -11,7 +13,13 @@ import {
 export const getOwnProfile = ({ API_HOST, axios }: PartialQueryConfigForApi) =>
   axios
     .get<PublicProfile | null>(`${API_HOST}/${buildGetOwnPublicProfileRoute()}`)
-    .then(({ data }) => data);
+    .then(({ status, data }) => {
+      if (status === StatusCodes.NO_CONTENT) {
+        return null;
+      } else {
+        return data;
+      }
+    });
 
 export const getPublicProfile = (
   memberId: UUID,
@@ -21,7 +29,13 @@ export const getPublicProfile = (
     .get<PublicProfile | null>(
       `${API_HOST}/${buildGetPublicProfileRoute(memberId)}`,
     )
-    .then(({ data }) => data);
+    .then(({ status, data }) => {
+      if (status === StatusCodes.NO_CONTENT) {
+        return null;
+      } else {
+        return data;
+      }
+    });
 
 export type PostPublicProfilePayloadType = {
   bio: string;
