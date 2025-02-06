@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.8.0](https://github.com/graasp/graasp-query-client/compare/v5.7.1...v5.8.0) (2025-02-06)
+
+
+### Features
+
+* update sdk ([#1021](https://github.com/graasp/graasp-query-client/issues/1021)) ([fde0ece](https://github.com/graasp/graasp-query-client/commit/fde0ece96464bfa35805fc6338dd57422635b464))
+
+
+### Bug Fixes
+
+* update all deps ([3bcc63a](https://github.com/graasp/graasp-query-client/commit/3bcc63a7530a26191c13ce51d677aedb8709b456))
+
 ## [5.7.1](https://github.com/graasp/graasp-query-client/compare/v5.7.0...v5.7.1) (2025-01-10)
 
 
