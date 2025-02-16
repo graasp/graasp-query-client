@@ -32,8 +32,8 @@ export const buildPostItemMembershipRoute = (id: UUID) =>
 export const buildPostManyItemMembershipsRoute = (id: UUID) =>
   `item-memberships/${id}`;
 export const buildInviteRoute = (id: UUID) => `invite/${id}`;
-export const buildGetItemMembershipsForItemsRoute = (ids: UUID[]) =>
-  `item-memberships?${new URLSearchParams(ids.map((id) => ['itemId', id]))}`;
+export const buildGetItemMembershipsForItemRoute = (id: UUID) =>
+  `item-memberships/${id}`;
 export const buildGetItemInvitationsForItemRoute = (id: UUID) =>
   `${ITEMS_ROUTE}/${id}/invitations`;
 export const buildPostUserCSVUploadRoute = (id: UUID) =>
@@ -397,7 +397,7 @@ export const API_ROUTES = {
   buildGetItemLikesRoute,
   buildGetItemLoginSchemaRoute,
   buildGetItemLoginSchemaTypeRoute,
-  buildGetItemMembershipsForItemsRoute,
+  buildGetItemMembershipsForItemRoute,
   buildGetItemPublishedInformationRoute,
   buildGetItemsInCategoryRoute,
   buildGetLastItemValidationGroupRoute,

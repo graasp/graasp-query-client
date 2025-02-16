@@ -277,12 +277,6 @@ export const buildMentionKey = () => [MENTIONS_CONTEXT];
 export const getKeyForParentId = (parentId?: UUID | null) =>
   parentId ? itemKeys.single(parentId).allChildren : itemKeys.allAccessible();
 
-export const buildManyItemMembershipsKey = (ids?: UUID[]) => [
-  ITEMS_CONTEXT,
-  'memberships',
-  ids,
-];
-
 export const categoryKeys = {
   all: ['category'] as const,
   single: (id?: UUID) => [...categoryKeys.all, id] as const,
@@ -370,7 +364,6 @@ export const DATA_KEYS = {
   buildItemChatKey,
   buildMentionKey,
   getKeyForParentId,
-  buildManyItemMembershipsKey,
   buildInvitationKey,
   CARDS_KEY,
   itemsWithGeolocationKeys,

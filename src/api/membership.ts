@@ -9,21 +9,21 @@ import {
 import {
   buildDeleteItemMembershipRoute,
   buildEditItemMembershipRoute,
-  buildGetItemMembershipsForItemsRoute,
+  buildGetItemMembershipsForItemRoute,
   buildPostItemMembershipRoute,
   buildPostManyItemMembershipsRoute,
 } from '../routes.js';
 import { PartialQueryConfigForApi } from '../types.js';
 import { verifyAuthentication } from './axios.js';
 
-export const getMembershipsForItems = async (
-  ids: UUID[],
+export const getMembershipsForItem = async (
+  id: UUID,
   { API_HOST, axios }: PartialQueryConfigForApi,
 ) =>
   axios
     .get<
-      ResultOf<ItemMembership[]>
-    >(`${API_HOST}/${buildGetItemMembershipsForItemsRoute(ids)}`)
+      ItemMembership[]
+    >(`${API_HOST}/${buildGetItemMembershipsForItemRoute(id)}`)
     .then(({ data }) => data);
 
 export const postManyItemMemberships = async (
