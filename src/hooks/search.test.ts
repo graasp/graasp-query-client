@@ -80,8 +80,8 @@ const RESPONSE = {
   ],
   query: 'lettre',
   processingTimeMs: 13,
-  limit: 20,
-  offset: 0,
+  hitsPerPage: 20,
+  page: 1,
   estimatedTotalHits: 2,
 };
 
@@ -178,9 +178,8 @@ describe('Published Search Hook', () => {
         query,
         tags,
         isPublishedRoot: true,
-        limit: 24,
+        hitsPerPage: DEFAULT_ELEMENTS_PER_PAGE,
         page: 1,
-        elementsPerPage: DEFAULT_ELEMENTS_PER_PAGE,
       });
 
       expect(data).toEqual(response);
@@ -211,9 +210,8 @@ describe('Published Search Hook', () => {
 
       expect(spy).toHaveBeenCalledWith(expect.stringContaining(route), {
         query,
-        limit: DEFAULT_ELEMENTS_PER_PAGE,
+        hitsPerPage: DEFAULT_ELEMENTS_PER_PAGE,
         page: 3,
-        elementsPerPage: DEFAULT_ELEMENTS_PER_PAGE,
         isPublishedRoot: true,
       });
 
@@ -242,10 +240,8 @@ describe('Published Search Hook', () => {
       expect(spy).toHaveBeenCalledWith(expect.stringContaining(route), {
         isPublishedRoot: true,
         langs,
-        limit: 24,
-
         page,
-        elementsPerPage: DEFAULT_ELEMENTS_PER_PAGE,
+        hitsPerPage: DEFAULT_ELEMENTS_PER_PAGE,
         query: undefined,
       });
 
