@@ -25,17 +25,13 @@ export default (queryConfig: QueryClientConfig) => {
           query: debouncedQuery,
         }),
         queryFn: () => {
-          const {
-            page,
-            limit,
-            elementsPerPage = DEFAULT_ELEMENTS_PER_PAGE,
-          } = args;
+          const { page = 1, hitsPerPage = DEFAULT_ELEMENTS_PER_PAGE } = args;
           return Api.searchPublishedItems(
             {
               isPublishedRoot: true,
               ...args,
-              elementsPerPage,
-              limit: page ? elementsPerPage : limit,
+              page,
+              hitsPerPage,
               query: debouncedQuery,
             },
             queryConfig,

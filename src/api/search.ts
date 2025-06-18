@@ -7,15 +7,13 @@ import {
 import { PartialQueryConfigForApi } from '../types.js';
 
 export type MeiliSearchProps = {
-  limit?: number;
-  offset?: number;
   sort?: string[];
   attributesToCrop?: string[];
   cropLength?: number;
   highlightPreTag?: string;
   highlightPostTag?: string;
   page?: number;
-  elementsPerPage?: number;
+  hitsPerPage?: number;
   query?: string;
   tags?: Record<TagCategory, Tag['name'][]>;
   isPublishedRoot?: boolean;
