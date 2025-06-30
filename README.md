@@ -1,3 +1,6 @@
+> [!WARNING]
+> This repository is archived since we have moved the code to the client project and use the automatic generation from the OpenAPI spec for new features.
+
 # Graasp Query Client
 
 React Query package to consume the Graasp API.
